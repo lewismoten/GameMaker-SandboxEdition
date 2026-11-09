@@ -5,7 +5,8 @@
 import { createZip, type ZipEntry } from '@lewismoten/gamemaker-sandbox-archives/zip';
 import type { GameFiles } from '../project/files';
 import { REPO_URL } from '../seo/site';
-import { dosNames, WEB_ONLY } from './exportDos';
+import { dosNames } from './dosNames';
+import { WEB_ONLY } from './webOnly';
 import { PROJECT } from './notices';
 import { recordedAudioNotice, recordedClips } from './recordedAudio';
 

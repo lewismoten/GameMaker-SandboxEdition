@@ -11,6 +11,7 @@ import { birds, dirtVariant, farHill, grassShade, grassVariant, leaf, wisp } fro
 import { ladderOnRock } from './art/high';
 import { crown, rock } from './art/land';
 import { OPEN, type Level } from './level';
+import { logLadderTop as ladderTop } from './art/style';
 
 export interface DressOptions {
   /** Indoors or underground: no wisps of cloud, no birds. */
@@ -271,4 +272,40 @@ export function dress(l: Level, pal: Pal, o: DressOptions = {}): void {
     }
     put(x, y, onBack(n, back));
   }
+
+  // ladders meet what they climb (tools/joins.ts): one through a floor shows the floor behind its rails, and the
+  // top one, standing on the floor it climbs to, ends in capped poles instead of rails cut off in the air
+  const lad = book.pics.get('ladder');
+  if (!lad) return;
+  const FLOOR = /^(ledge|grass|plank|deck|floor|tFloor|footbridge|step)/;
+  const isLadder = (n: string) => /^ladder/.test(n);
+  const over = (top: Pixels, back: Pixels) => top.crop(0, 0, 20, 20).map((x, y, c) => (c === sky ? back.get(x, y) : c));
+  const behind = (n: string): string => (n === 'ladderRock' ? 'rock' : n.includes('@') ? n.slice(n.indexOf('@') + 1) : 'sky');
+  const capped = ladderTop(pal);
+  for (let y = 1; y < H; y++)
+    for (let x = 1; x < W - 1; x++) {
+      const n = nameAt(x, y);
+      if (!isLadder(n) || /Thru|Top/.test(n)) continue;
+      const [a, b] = [nameAt(x - 1, y), nameAt(x + 1, y)];
+      if (FLOOR.test(a) && FLOOR.test(b)) {
+        const floor = a.replace(/@.*/, '');
+        put(
+          x,
+          y,
+          add(`ladderThru@${floor}`, () => over(lad, book.pics.get(floor) as Pixels), 'ladder'),
+        );
+        continue;
+      }
+      const up = nameAt(x, y - 1);
+      if (!isLadder(up) && !solid(up) && isLadder(nameAt(x, y + 1))) {
+        const back = behind(n);
+        const pic = book.pics.get(back);
+        if (pic)
+          put(
+            x,
+            y,
+            add(`ladderTop@${back}`, () => over(capped, pic), 'ladder'),
+          );
+      }
+    }
 }

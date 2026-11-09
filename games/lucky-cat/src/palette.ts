@@ -48,6 +48,45 @@ export const LOOKS: Record<string, Record<string, Tint>> = {
       [84, 28, 34],
     ],
   },
+  // saucer alley: a brick-brown plate and a cream-white spot
+  alley: {
+    sky: [
+      [30, 14, 10],
+      [176, 118, 88],
+      [66, 34, 24],
+    ],
+    gold: [
+      [120, 100, 60],
+      [255, 252, 224],
+      [236, 216, 150],
+    ],
+  },
+  // the mirror shop: a plum plate and a silver spot
+  shop: {
+    sky: [
+      [24, 10, 34],
+      [150, 110, 170],
+      [56, 26, 74],
+    ],
+    gold: [
+      [90, 100, 120],
+      [250, 252, 255],
+      [180, 196, 214],
+    ],
+  },
+  // the granary stair: a green-gray plate and a lantern-orange spot
+  steps: {
+    sky: [
+      [14, 24, 22],
+      [128, 160, 140],
+      [34, 56, 50],
+    ],
+    gold: [
+      [120, 50, 0],
+      [255, 220, 150],
+      [240, 140, 40],
+    ],
+  },
   // earlier that morning: the print turned over, a pale dawn plate and a tangerine spot (Rascal's hour)
   morning: {
     sky: [
@@ -98,6 +137,45 @@ export const LOOKS: Record<string, Record<string, Tint>> = {
       [60, 90, 40],
       [230, 255, 190],
       [170, 220, 110],
+    ],
+  },
+  // wash day: a sunrise rose plate and a bright gold spot
+  dawn: {
+    sky: [
+      [84, 36, 50],
+      [255, 196, 160],
+      [170, 84, 84],
+    ],
+    gold: [
+      [150, 90, 0],
+      [255, 250, 190],
+      [255, 210, 80],
+    ],
+  },
+  // the other side of the mirror: the town in negative, a pale silver plate
+  glass: {
+    sky: [
+      [170, 196, 206],
+      [252, 255, 255],
+      [214, 230, 236],
+    ],
+    gold: [
+      [60, 70, 96],
+      [190, 200, 230],
+      [110, 126, 170],
+    ],
+  },
+  // the night market: an indigo plate and lantern red
+  market: {
+    sky: [
+      [12, 10, 40],
+      [120, 120, 190],
+      [34, 30, 88],
+    ],
+    red: [
+      [120, 16, 24],
+      [255, 170, 100],
+      [240, 70, 36],
     ],
   },
   // payback: a red-black plate and the hottest gold

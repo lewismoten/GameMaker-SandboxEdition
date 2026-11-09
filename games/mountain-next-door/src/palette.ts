@@ -30,7 +30,9 @@ function extraRamps(b: PaletteBuilder): void {
 /** The base palette (the morning), with Tess in the hero's index ranges. */
 export function buildMountainPalette(): Pal {
   const base = buildStarterPalette(extraRamps);
-  return { ...base, pal: recolor(base, TESS) };
+  const tess = { ...base, pal: recolor(base, TESS) };
+  // the printed morning is the base: the title, menus and every screen without a look of its own use it
+  return { ...tess, pal: lookOf(tess, 'morning') };
 }
 
 /** A ramp's new look: [darkest, lightest, middle]. */
@@ -48,11 +50,122 @@ export function swapped(pal: Pal, tints: Record<string, Tint>): Uint8Array {
   return out;
 }
 
-/** The palette bytes of a look ('' is the base). */
-export const lookOf = (pal: Pal, look: string): Uint8Array => (look ? swapped(pal, LOOKS[look]) : pal.pal);
+/** The palette bytes of a look ('' is the morning). */
+export const lookOf = (pal: Pal, look: string): Uint8Array => swapped(pal, { ...LOOKS[look || 'morning'], ink: PRINT_INK[look || 'morning'] });
 
-/** Each time of the day. The morning keeps the base palette. */
+/**
+ * The printer's ink for each time of the day: every outline, gouge and hatch in the game is cut in the ink ramp, so
+ * one tinted ink per look makes each level read as one print (sepia by day, plum at dusk, indigo by night).
+ */
+const PRINT_INK: Record<string, Tint> = {
+  morning: [
+    [34, 30, 36],
+    [104, 96, 100],
+  ],
+  dawn: [
+    [44, 26, 66],
+    [120, 96, 150],
+  ],
+  high: [
+    [18, 30, 62],
+    [84, 104, 150],
+  ],
+  library: [
+    [52, 22, 18],
+    [130, 80, 60],
+  ],
+  mist: [
+    [36, 44, 58],
+    [110, 120, 140],
+  ],
+  rain: [
+    [16, 34, 58],
+    [80, 110, 140],
+  ],
+  noon: [
+    [56, 34, 16],
+    [140, 100, 60],
+  ],
+  sunset: [
+    [66, 18, 30],
+    [150, 70, 80],
+  ],
+  gloaming: [
+    [54, 18, 52],
+    [130, 80, 130],
+  ],
+  dusk: [
+    [30, 18, 62],
+    [100, 84, 150],
+  ],
+  tunnel: [
+    [14, 8, 8],
+    [70, 50, 40],
+  ],
+  night: [
+    [8, 12, 40],
+    [60, 70, 120],
+  ],
+  town: [
+    [18, 14, 44],
+    [80, 70, 130],
+  ],
+  sunrise: [
+    [66, 30, 20],
+    [160, 90, 60],
+  ],
+  // the records cellar: deep archive-green ink
+  cellar: [
+    [10, 36, 36],
+    [70, 120, 112],
+  ],
+  // the cold hour: steel-blue ink
+  frost: [
+    [30, 48, 74],
+    [140, 170, 198],
+  ],
+  // the blue hour: gaslight yellow-brown ink
+  lamplit: [
+    [40, 36, 10],
+    [146, 126, 52],
+  ],
+  // the afternoon in the orchard: bottle-green ink
+  afternoon: [
+    [20, 46, 30],
+    [96, 136, 100],
+  ],
+};
+
+/** Each time of the day. */
 export const LOOKS: Record<string, Record<string, Tint>> = {
+  // the morning, printed: a cool teal sky, olive turf, warm gray stone and red-brown earth (no Starter blue or green)
+  morning: {
+    sky: [
+      [70, 140, 160],
+      [226, 242, 228],
+      [128, 192, 196],
+    ],
+    grass: [
+      [40, 84, 40],
+      [214, 222, 126],
+      [110, 158, 70],
+    ],
+    moss: [
+      [34, 70, 40],
+      [200, 214, 120],
+      [96, 140, 66],
+    ],
+    rock: [
+      [52, 48, 58],
+      [226, 216, 200],
+      [134, 124, 124],
+    ],
+    dirt: [
+      [78, 40, 24],
+      [232, 172, 112],
+      [150, 88, 50],
+    ],
+  },
   // first light through the fog: lavender and peach, everything soft
   dawn: {
     sky: [
@@ -150,15 +263,31 @@ export const LOOKS: Record<string, Record<string, Tint>> = {
   },
   // noon at the crossroads: a high, bright sky and warm wood
   noon: {
+    // high noon, printed in two inks and a gold: an ochre sky, sun-bleached olive turf, sienna earth
     sky: [
-      [60, 140, 230],
-      [214, 244, 255],
-      [120, 196, 250],
+      [200, 150, 70],
+      [255, 244, 204],
+      [240, 206, 128],
     ],
     grass: [
-      [60, 120, 40],
-      [220, 240, 110],
-      [130, 190, 60],
+      [70, 80, 26],
+      [232, 222, 120],
+      [150, 156, 56],
+    ],
+    moss: [
+      [60, 70, 24],
+      [220, 214, 110],
+      [130, 140, 50],
+    ],
+    dirt: [
+      [92, 40, 20],
+      [236, 160, 100],
+      [170, 84, 44],
+    ],
+    rock: [
+      [70, 50, 40],
+      [240, 220, 190],
+      [160, 130, 110],
     ],
   },
   // sunset over the empty spot
@@ -322,6 +451,118 @@ export const LOOKS: Record<string, Record<string, Tint>> = {
       [20, 20, 40],
       [110, 100, 140],
       [56, 50, 80],
+    ],
+  },
+  // the records cellar: the tunnel's dark, with greener, paper-dusty walls
+  cellar: {
+    sky: [
+      [6, 12, 16],
+      [40, 56, 60],
+      [16, 28, 32],
+    ],
+    brick: [
+      [14, 22, 20],
+      [96, 118, 100],
+      [44, 62, 54],
+    ],
+    stone: [
+      [16, 26, 24],
+      [116, 138, 120],
+      [52, 70, 62],
+    ],
+    dirt: [
+      [14, 12, 10],
+      [84, 64, 52],
+      [38, 30, 26],
+    ],
+    grass: [
+      [14, 30, 26],
+      [80, 120, 100],
+      [34, 64, 54],
+    ],
+  },
+  // the cold hour before dawn: pale ice-blue sky, frosted turf, glassy water
+  frost: {
+    sky: [
+      [96, 128, 176],
+      [240, 246, 255],
+      [176, 206, 232],
+    ],
+    grass: [
+      [60, 94, 84],
+      [210, 232, 226],
+      [136, 176, 164],
+    ],
+    dirt: [
+      [60, 46, 56],
+      [190, 164, 170],
+      [118, 92, 100],
+    ],
+    rock: [
+      [50, 58, 80],
+      [226, 234, 244],
+      [140, 150, 176],
+    ],
+    water: [
+      [46, 86, 140],
+      [236, 248, 255],
+      [150, 196, 230],
+    ],
+    stone: [
+      [64, 84, 120],
+      [240, 248, 255],
+      [170, 196, 224],
+    ],
+  },
+  // the blue hour on the hill: a deep blue sky going amber at the rim, the terraces dim
+  lamplit: {
+    sky: [
+      [20, 44, 96],
+      [250, 190, 116],
+      [66, 84, 130],
+    ],
+    grass: [
+      [30, 54, 44],
+      [170, 180, 100],
+      [84, 116, 72],
+    ],
+    dirt: [
+      [56, 28, 36],
+      [196, 124, 96],
+      [116, 66, 60],
+    ],
+    rock: [
+      [46, 42, 66],
+      [214, 192, 190],
+      [106, 98, 122],
+    ],
+  },
+  // the orchard in the afternoon: honey sky, apple-green turf, warm sienna earth
+  afternoon: {
+    sky: [
+      [150, 130, 70],
+      [255, 238, 180],
+      [236, 206, 130],
+    ],
+    grass: [
+      [36, 80, 36],
+      [204, 224, 110],
+      [110, 164, 62],
+    ],
+    moss: [
+      [30, 66, 36],
+      [190, 214, 110],
+      [90, 140, 60],
+    ],
+    dirt: [
+      [84, 40, 22],
+      [226, 160, 96],
+      [160, 90, 48],
+    ],
+    rock: [
+      [60, 50, 50],
+      [234, 218, 190],
+      [150, 128, 112],
     ],
   },
   // the next morning on top: gold and rose

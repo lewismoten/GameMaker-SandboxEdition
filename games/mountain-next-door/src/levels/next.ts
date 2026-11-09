@@ -45,6 +45,15 @@ export function levelNext(pal: Pal): Level {
   // the sleepy face, then the fog over it, in four waves from the left
   const [el, er, ey] = NEXT_AT.eyes;
   placeFace(m, NEXT.face, el, er, ey, NEXT_AT.mouth[0], NEXT_AT.mouth[1]);
+  // the pupils, and a ring of solid rock round each eye that keeps them in it (nobody walks up here)
+  for (const x of [el, er]) {
+    m.mon(NEXT.pupil, x, ey);
+    for (let k = 0; k < 2; k++)
+      m.set(x - 1, ey + k, 'rockWall')
+        .set(x + 2, ey + k, 'rockWall')
+        .set(x + k, ey - 1, 'rockWall')
+        .set(x + k, ey + 2, 'rockWall');
+  }
   const [f0, f1, fy] = NEXT_AT.fog;
   const cx = (f0 + f1) / 2;
   for (let y = fy; y < GROUND; y++)

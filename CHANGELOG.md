@@ -6,6 +6,32 @@ changelog: [engine](web/packages/engine/CHANGELOG.md), [archives](web/packages/a
 
 ## [Unreleased]
 
+## [3.3.0] - 2026-11-09
+
+Four games grow: The Mountain Moved Next Door (3.2, twenty-four levels, about an hour), Pass the Pie (3.3, thirteen levels, inked
+art), Lucky Cat (3.1, fifteen levels) and The Thank-You Parade (3.2, fifteen levels). The Library gets seven art courses and
+pauses its music while a video plays, Pocket Player is easier to pick up, and two small desk and phone fixes come along.
+
+### Added
+
+- Art courses (#/art-courses): seven courses on drawing a game's art, from blocks and palettes to moving characters and title screens, on the Library shelf.
+- DOS downloads include INSTALL.BAT and plain installation instructions for hard disks and floppy copies, with an optional 1.44 MB disk-layout script and numbered disk prompts.
+
+### Changed
+
+- The Mountain Moved Next Door 3.2: a bolder printed look with a palette for each time of day, and twenty-four levels (eleven new) that run about an hour from dawn to the next sunrise, among them a clock-tower Bell Loft.
+- Pass the Pie 3.3: rebuilt levels, inked halftone art, new music and sound effects, a three-part fight with Big Gobble and six new levels, thirteen in all.
+- Lucky Cat 3.1: seven new levels, 15 in all, including a mirror level that runs right to left and a Night Market where the shutters slam at the 13th chime.
+- The Thank-You Parade 3.2 grows from seven levels to fifteen, with a page of story after every level card, a Cannon Truck boss, a cartoon between acts and two new songs.
+- The Library's background music pauses while a video or walkthrough is open, and the AV cart's TV looks like a 1990s set.
+- Pocket Player is easier to pick up: a hint to tap a game again to play it, grayed buttons that would do nothing, a second tap to restart, redrawn hand pictures and a small character in Try the controls.
+
+### Fixed
+
+- The phone's Hint Giant says Gwinn, THE CHEZ and the Round Tuit more clearly in the clips that name them.
+- On the 1994 desk, Scoot's speech bubble now shows in front of the PC instead of being cut off behind it.
+- Pocket Player returns to the game list, with a short message, when a scene card can't be read, instead of drawing a partly loaded level.
+
 ## [3.2.0] - 2026-11-07
 
 Specials arrive: limited-time games that come out only on their day or season, on the home page and on the 1994 desk.
@@ -59,6 +85,7 @@ for every Game-Maker file type; the web player; and the set of new games built i
 - Exports to a web page, a DOS ZIP and native players, and opening a game another site links to.
 - Achievements, a guided tour with voice clips, and offline use as an installable app.
 
-[Unreleased]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/pages-v3.2.0...HEAD
+[Unreleased]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/pages-v3.3.0...HEAD
+[3.3.0]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/pages-v3.2.0...pages-v3.3.0
 [3.2.0]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/pages-v3.1.0...pages-v3.2.0
 [3.1.0]: https://github.com/lewismoten/GameMaker-SandboxEdition/releases/tag/pages-v3.1.0

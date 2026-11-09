@@ -54,14 +54,19 @@ export function levelTower(pal: Pal): Level {
       if (outside && (x * 13 + y * 7) % 19 === 0) m.set(x, y, ['starA', 'starB', 'starC'][(x + y) % 3]);
     }
   // the legs, a wall at each end of every storey (open at the foot, the way in)
-  for (const x of T.legs) for (let y = LANDINGS[6] - 6; y < G_TOWER - 2; y++) m.set(x, y, 'leg');
+  for (const x of T.legs) for (let y = LANDINGS[6] - 6; y < G_TOWER; y++) m.set(x, y, y < G_TOWER - 2 ? 'leg' : 'legFoot');
   // the cab's shingled roof
   for (let x = T.legs[0] - 1; x <= T.legs[1] + 1; x++) m.set(x, LANDINGS[6] - 7, x < T.legs[0] ? 'roofL' : x > T.legs[1] ? 'roofR' : 'roofM');
   LANDINGS.forEach((row, k) => {
-    for (let x = T.legs[0]; x <= T.legs[1]; x++) m.set(x, row, x % 4 ? 'deck' : 'deck2');
-    // cross-bracing under the landing above, at both ends
+    for (let x = T.legs[0]; x <= T.legs[1]; x++) m.set(x, row, (T.legs as readonly number[]).includes(x) ? 'deckLeg' : x % 4 ? 'deck' : 'deck2');
+    // knee braces under the landing above, at both ends
     if (k < LANDINGS.length)
-      for (const x0 of [T.legs[0] + 1, T.legs[1] - 2]) for (let i = 0; i < 4; i++) m.set(x0 + (i % 2), row - 6 + Math.floor(i / 2), `brace${i}`);
+      for (const [x0, side, skip] of [
+        [T.legs[0] + 1, 'L', 3],
+        [T.legs[1] - 2, 'R', 2],
+      ] as const)
+        for (let i = 0; i < 4; i++) if (i !== skip) m.set(x0 + (i % 2), row - 6 + Math.floor(i / 2), `brace${side}${i}`);
+    if (k < LANDINGS.length) m.set(T.legs[0], row - 5, 'legKneeL').set(T.legs[1], row - 5, 'legKneeR');
     m.set(T.legs[0] + 1, row - 1, 'rail').set(T.legs[1] - 1, row - 1, 'rail');
   });
   T.ladders.forEach((x, k) => {

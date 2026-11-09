@@ -6,15 +6,17 @@ import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { parseBackdrop, parseSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
 import { parseSoundSet } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
 import { WEB_ONLY } from '../../export/webOnly';
+import { dosInstallFiles } from '../../export/dosInstall';
 import { normalize, type GameFiles } from '../../project/files';
 
-/** PLAYGAME's files as the DOS export adds them (cd/gm/: XFERPLAY.EXE, SNDBLAST.DRV, CONFIG.HLP) plus the two small text files. */
+/** PLAYGAME's files as the DOS export adds them, plus setup, estimated notices and installation text. */
 export const RUNTIME_FILES: [string, number][] = [
   ['XFERPLAY.EXE', 160598],
   ['SNDBLAST.DRV', 2493],
   ['CONFIG.HLP', 2722],
   ['CONFIG.BAT', 24],
   ['README.TXT', 1500],
+  ...dosInstallFiles('XFERPLAY').map((e): [string, number] => [e.name, e.data.length]),
 ];
 
 interface Density {

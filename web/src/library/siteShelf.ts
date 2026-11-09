@@ -30,6 +30,10 @@ export function siteShelf(zineFound: boolean): ShelfItem[] {
       via: 'href',
       href: '#/programmers-guide',
     }),
+    site('art-courses', 'Art courses', 'How to draw blocks, tiles and scenery for a game, with real blocks', '🎨', 'guide', {
+      via: 'href',
+      href: '#/art-courses',
+    }),
     site('mac', 'Playing on a Mac', 'The downloaded games on macOS', '🍏', 'guide', { via: 'href', href: '#/mac' }),
     site('windows', 'Playing on Windows', 'The downloaded games on Windows', '🪟', 'guide', { via: 'href', href: '#/windows' }),
     site('linux', 'Playing on Linux', 'The downloaded games on Linux', '🐧', 'guide', { via: 'href', href: '#/linux' }),

@@ -9,7 +9,23 @@ import type { SongName } from './song';
 export const TITLE = 'LUCKY CAT';
 
 /** The song each level plays (the title, menu and endings use the theme and the finale). */
-export const LEVEL_SONGS: SongName[] = ['theme', 'mirror', 'theme', 'rascal', 'fair', 'tower', 'theme', 'finale'];
+export const LEVEL_SONGS: Record<string, SongName> = {
+  one: 'theme',
+  alley: 'mirror',
+  two: 'mirror',
+  steps: 'tower',
+  three: 'theme',
+  shop: 'mirror',
+  glass: 'mirror',
+  rascal: 'rascal',
+  still: 'rascal',
+  wash: 'rascal',
+  four: 'fair',
+  tower: 'tower',
+  five: 'theme',
+  market: 'fair',
+  six: 'finale',
+};
 
 export function buildGame(levels: Level[]): Game {
   const game = newGame(TITLE);
@@ -45,7 +61,7 @@ export function buildGame(levels: Level[]): Game {
       `${l.chr}.chr`,
       l.chr === 'rascal' ? 'rascal.cbl' : 'hero.cbl',
       'lucky.snd',
-      `${LEVEL_SONGS[i]}.cmf`,
+      `${LEVEL_SONGS[l.file]}.cmf`,
       `${l.file}.lst`,
       '',
       ...new Array(9).fill(''),

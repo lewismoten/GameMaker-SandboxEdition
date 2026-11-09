@@ -205,6 +205,8 @@ After the display setup (2.8 inch) or at the first start (3.5 inch), once the ga
 2. **Pick your hand:** two big buttons, Pad left (right-handed) and Pad right (left-handed). This sets Hand.
 3. **Try the controls:** the real pad (floating if Pad position is Float) and Jump over a gray field. Each key lights up and its name shows on the bottom line. **Done** sits at the top, between the pad's side and Jump's side.
 
+**The hands** are Lewis Moten's ChatGPT-made vector art, `art/hand-left.svg` (a left hand; the right one is its mirror), colored a friendly mint green with a blue cuff rather than a skin tone. `tools/svgHand.py` flattens its paths (M/L/H/V/Q/C/Z) to polygons and writes `src/handshape.h`; `src/handdraw.h` fills them with anti-aliased edges and strokes their outlines. Change the art, then rerun `python3 hardware/pocket-player/tools/svgHand.py` (stdlib only) and rebuild. `host/firstruntest.cpp` checks the shapes, the thumbnail landing on the pad and Jump, and the mirror.
+
 Done writes `firstrun` in NVS (namespace `pocket`) and saves the settings, so the flow never comes back on its own. Settings, Controls, **Try the controls** opens the playground alone; its Done goes back to Settings. Over serial, `FIRST reset` erases only that key (never the rest of NVS) and `FIRST` opens the flow from the game list.
 
 ## Games, memory and size
@@ -382,3 +384,5 @@ cold/warm discovery, page and search timings. Serial `BOOT` / `LIB` lines report
 host tests cannot establish those hardware timings.
 
 The pad drawing is shared by `src/paddraw.h` and `host/paddrawtest.cpp`. `web/scripts/pocketControlsCheck.ts` checks its framebuffer snapshots on both boards, all three sizes, both hands, idle/held states and both software turns. To inspect it, compile the host test with `-DPOCKET_CYD28 -I hardware/pocket-player/src` and pass an output PPM path: rows are small, medium and large; columns are right-handed idle/held, then left-handed idle/held.
+
+**Hand pictures (`hand()` in `src/firstrun.h`).** Each first-run hand is built finger by finger from tapered capsules (distance fields) placed from the board's lower corner: the palm's heel, wrist and two-segment thumb as one form over the glass, the curled index finger and the middle and ring fingertips drawn behind the board's edge, and a cuff. Each shape has its own outline, one shade and anti-aliased edges; the right hand is a mirror image. `host/firstruntest.cpp` renders it on both boards.

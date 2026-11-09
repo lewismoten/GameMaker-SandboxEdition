@@ -5,6 +5,14 @@ import { playLevels } from '../../kit/levelRun';
 import { emptySpot, footprints, lowTunnel, gateHunt, nextDoor, signposts, steppingStones, summitPicnic, windyRidge, zigzagHome } from './route';
 import { library, mossbackBack } from './routeMore';
 import { lookout, rooftops } from './routeLate';
+import { excuseMe, gatheringMist, theFord } from './routeNew';
+import { theSurveyLine } from './routeGrow';
+import { theSpillway } from './routeSpill';
+import { theClockTower } from './routeClock';
+import { halesOrchard } from './routeHour';
+import { lamplightersStair } from './routeLamps';
+import { frozenTarn } from './routeTarn';
+import { recordsCellar } from './routeVault';
 import { GameSim } from './sim';
 
 export const SEED = 1;
@@ -15,13 +23,23 @@ const ROUTES = [
   footprints,
   library,
   steppingStones,
+  gatheringMist,
   signposts,
+  theSurveyLine,
+  halesOrchard,
   emptySpot,
   lookout,
   windyRidge,
+  theSpillway,
+  lamplightersStair,
   rooftops,
   lowTunnel,
+  excuseMe,
+  theClockTower,
+  recordsCellar,
+  theFord,
   zigzagHome,
+  frozenTarn,
   summitPicnic,
 ];
 

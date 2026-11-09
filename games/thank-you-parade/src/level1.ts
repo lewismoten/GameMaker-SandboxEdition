@@ -3,6 +3,7 @@
 // flute is on a lily pad in the duck pond. A band member is a gate: bring the right thing and walk into them. Geese
 // patrol between the tree and the pond. It all looks like wind until the note taped to the last gate.
 // Gigi's first playbook page is on a branch on the far side of the tree, halfway up the trunk.
+import { addRoofs } from './extra';
 import { StarterMap } from '../../kit/starter/map';
 import { addPage, baseBook } from './base';
 import { CALLTIME_SIGNS } from './text';
@@ -38,6 +39,7 @@ function gate(m: StarterMap, x: number, who: string): void {
 
 export function level1(pal: Pal): Level {
   const book = baseBook(pal);
+  addRoofs(book, pal);
   addPark(book, pal);
   addBandArch(book, pal);
   addPage(book, pal);
@@ -80,6 +82,8 @@ export function level1(pal: Pal): Level {
   m.set(AT1.lilies[0], 9, 'lily').set(AT1.lilies[1], 8, 'lily').set(AT1.lilies[2], 9, 'lily');
   m.set(AT1.flute, 7, 'flute');
   m.set(AT1.pond[0] - 1, GROUND - 1, 'reeds').set(AT1.pond[1] + 1, GROUND - 1, 'reeds');
+  // donuts on the way to the pond, for the pecks
+  for (const x of [7, 9, 22, 24, 26]) m.set(x, GROUND - 1, 'donut');
   for (const x of AT1.geese) m.mon(MONS.goose, x, GROUND - 1);
   // placards
   m.sign(5, onGround(GROUND, s.start), s.start);

@@ -98,7 +98,9 @@ Hand a card to a veteran by walking up with one in hand.
 
 Geese peck. Cannons fire on the beat. A dog takes cards. Watch the drums and the gust meter.
 
-Gigi lost her playbook pages. Four of them are well hidden.
+Gigi lost her playbook pages. Nine of them are well hidden, and a few need a ladder.
+
+Donuts give back a hit point.
 
 |ESC for the menu.
 `);
@@ -141,6 +143,75 @@ Out of lives. Gigi takes the front, and the Hornets march behind the street swee
 
 Try again: wait for the gap, count the beat, and keep a spare card for the dog.
 `);
+
+export const BAKERY_SIGNS: Defs = {
+  start: ['7:20. BAKERY ROW. THE FRONT DOOR IS LOCKED. THE ROOF IS NOT.', 6, 3],
+  clock: ['MR. OKAFOR PULLS THE SHUTTER AT 7:50. HE IS CLEAR ABOUT THIS.', 6, 3],
+  ladder: ['LADDERS GO UP. DOWN IS FASTER.', 5, 2],
+  donuts: ['TAKE DONUTS. THE BAND RUNS ON THEM.', 5, 2],
+  down: ['THE AWNINGS ARE SLOWER AND TASTIER.', 5, 2],
+  secret: ['PLAYBOOK P.5: A WATER TOWER IS A LOOKOUT.', 6, 2, 'purple'],
+  exit: EXIT,
+};
+
+export const CREEK_SIGNS: Defs = {
+  start: ['8:05. MILL CREEK. THE BRIDGE IS OUT.', 5, 2],
+  bridge: ['THE SIGN SAYS BRIDGE OUT. THE SIGN IS ON THE BRIDGE.', 6, 3],
+  bed: ['OR WALK THE BED. A KEY IS DOWN THERE. THE WATER IS FINE.', 6, 3],
+  toll: ['TWO TOLLS: BRASS, THEN STEEL. NOBODY COLLECTS. THEY ARE GATES.', 6, 3],
+  mill: ["THE MILL HASN'T MILLED SINCE 1952. THE ROOF HAS A VIEW.", 6, 3],
+  secret: ['PLAYBOOK P.6: GIGI CHECKED THE ROOF TOO.', 6, 2, 'purple'],
+  exit: EXIT,
+};
+
+export const HALL_SIGNS: Defs = {
+  start: ["RIDGEMONT'S PRACTICE HALL. THE DOOR WAS UNLOCKED. SUSPICIOUS.", 6, 3, 'purple'],
+  shelf: ['A BRASS KEY ON A SHELF. GIGI LABELS EVERYTHING.', 5, 2, 'purple'],
+  lights: ['STEEL KEY: UP WHERE THE LIGHTS ARE. SO IS THE DUST.', 6, 3, 'purple'],
+  geese: ['GOOSE TRAINING, ROOM B. GIGI CALLS THE HOLE THE FILING SYSTEM.', 6, 3, 'purple'],
+  secret: ['PLAYBOOK P.7: NOBODY LOOKS UP IN A BIG ROOM.', 6, 2, 'purple'],
+  exit: EXIT,
+};
+
+export const RUSH_SIGNS: Defs = {
+  start: ['7:50. CROSSWALK CORNER. MR. BOYLE HAS FIVE GATES AND ONE WHISTLE.', 6, 3],
+  gates: ['GREEN, YELLOW, RED. EACH GATE IS ON ITS OWN LIGHT. NOBODY ASKED THEM TO AGREE.', 7, 3],
+  key: ["BRASS KEY: THE BARBER'S ROOF. THE BARBER IS FINE WITH IT.", 6, 3],
+  brass: ['THE LAST GATE IS BRASS. MR. BOYLE LOST ITS KEY ON A ROOF.', 6, 3],
+  exit: EXIT,
+};
+
+export const THAW_SIGNS: Defs = {
+  start: ['8:15. FROST LOT. GIGI FLOODED IT LAST NIGHT. THE SUN IS OUT.', 6, 3],
+  thaw: ['THE ICE LETS GO FROM THIS END, ONE SECTION AT A TIME. THE METER KNOWS.', 7, 3],
+  bed: ['MISS IT? THE POND IS FINE. LADDERS AT BOTH ENDS. WATCH THE CONES.', 7, 3],
+  tent: ['WARMING TENT. TUBA, TOWELS AND A SURPRISING NUMBER OF DONUTS.', 6, 3],
+  exit: EXIT,
+};
+
+export const CLOCK_SIGNS: Defs = {
+  start: ['9:20. THE CLOCK TOWER. THE DOOR IS AT THE TOP. THE CLOCK IS TEN MINUTES SLOW.', 7, 3],
+  cogs: ['THE COGS BLINK. ONE IS ALWAYS OUT. THE GAP TRAVELS. SO CAN YOU.', 6, 3],
+  late: ['THE BELL RINGS WHEN THE CLOCK SAYS 9:30. IT HAS NEVER SAID 9:30.', 6, 3],
+  door: ['THE CLOCK FACE IS THE DOOR. ONE MORE BRIDGE.', 6, 2],
+};
+
+export const TRUCK_SIGNS: Defs = {
+  start: ["9:40. RIDGEMONT'S CONFETTI TRUCK. THREE FUSES KEEP IT PARKED.", 6, 3, 'purple'],
+  sweep: ['THE SWEEPER HAS ONE SETTING.', 5, 2, 'purple'],
+  high: ['THE LADDERS ARE FOR LOOKING AT CANNONS FROM ABOVE.', 6, 3],
+  gigi: ['GIGI: THE TRUCK ONLY STARTS WITH ALL THREE FUSES. WHY DID I SAY THAT OUT LOUD?', 7, 3, 'purple'],
+  secret: ['PLAYBOOK P.9: THE TRUCK HAS A SUNROOF.', 6, 2, 'purple'],
+  exit: EXIT,
+};
+
+export const BLEACHER_SIGNS: Defs = {
+  start: ['9:10. THE BLEACHERS. FOUR JUDGES. FOUR CARDS. FIVE ROWS.', 6, 3],
+  judges: ['THE JUDGES SIT HIGHER EACH ROW. THAT IS HOW BLEACHERS WORK.', 6, 3],
+  cannon: ['GIGI RENTED THE CANNONS BY THE HOUR.', 5, 3, 'purple'],
+  secret: ["PLAYBOOK P.8: THE SCOREBOARD IS HONEST. THIS ONE ISN'T.", 6, 3, 'purple'],
+  exit: EXIT,
+};
 
 /** What each level card says under its title. */
 export const CARD_NOTES = [

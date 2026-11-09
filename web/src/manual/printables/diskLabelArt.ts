@@ -130,7 +130,8 @@ function lines(g: CanvasRenderingContext2D, text: string, width: number): string
 
 /**
  * One label with its top left at the canvas's origin, in hundredths of an inch (scale the
- * canvas first). `disk` is "Disk 1" in a set, empty for a one-disk game; `of` is how many.
+ * canvas first). `disk` is the one-based disk number; `of` is the set's total,
+ * including a one-disk game.
  * `bleed` (hundredths) is how far the backgrounds run past the cut.
  */
 export function paintDiskLabel(g: CanvasRenderingContext2D, entry: CatalogEntry, art: DiskLabelArt, disk: number, of: number, bleed: number): void {
@@ -143,7 +144,7 @@ export function paintDiskLabel(g: CanvasRenderingContext2D, entry: CatalogEntry,
   const acc = box?.accent ?? '#ffd400';
   const bink = box?.ink ?? '#fff';
   const [main, sub] = splitTitle(entry.title);
-  const tag = of > 1 ? `Disk ${disk}` : '';
+  const tag = `Disk ${disk} of ${of}`;
   const b = bleed;
   g.save();
   // the label's own outline, grown by the bleed: nothing is drawn past it
@@ -170,7 +171,7 @@ export function paintDiskLabel(g: CanvasRenderingContext2D, entry: CatalogEntry,
 
   // the banner: the box's color, a strip of the game fading in behind the title, the hero in front
   const top = FRONT + bandH + 3;
-  const bottom = LH - 56;
+  const bottom = LH - 72;
   const bh = bottom - top;
   g.fillStyle = bbg;
   g.fillRect(-b, top, LW + 2 * b, bh);
@@ -264,6 +265,8 @@ export function paintDiskLabel(g: CanvasRenderingContext2D, entry: CatalogEntry,
   const printW = LW - 2 * PAD - (art.logo ? logoW + 6 : 0);
   g.fillText(`Shareware${entry.price ? ` · ${entry.price} Registration` : ''}`, PAD, LH - 36, printW);
   g.fillText(`© ${entry.year ?? 1995} ${entry.company ?? 'Sandbox Software'}`, PAD, LH - 20, printW);
+  g.font = ARIAL(10, 400);
+  g.fillText('To install: insert disk 1, type A:INSTALL', PAD, LH - 54, printW);
 
   // the back strip, upside down so it reads once folded over the top edge
   g.save();
@@ -280,7 +283,7 @@ export function paintDiskLabel(g: CanvasRenderingContext2D, entry: CatalogEntry,
   g.font = ARIAL(10, 700);
   g.fillStyle = bink;
   g.letterSpacing = '0.8px';
-  g.fillText([tag && `${tag.toUpperCase()} OF ${of}`, logoText(entry), 'SHAREWARE'].filter(Boolean).join(' · '), 0, 16, LW - 2 * PAD);
+  g.fillText([tag.toUpperCase(), logoText(entry), 'SHAREWARE'].join(' · '), 0, 16, LW - 2 * PAD);
   g.restore();
   g.restore();
 }

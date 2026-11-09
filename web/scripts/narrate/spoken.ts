@@ -42,7 +42,7 @@ export function sayNumber(digits: string): string {
 
 /** Words said differently from how they're written, in order; whole words, case as given. */
 const SAY: [RegExp, string][] = [
-  [/\bTHE CHEZ\b/g, 'the Shay'],
+  [/\bTHE CHEZ\b/g, 'the Shae'],
   [/\bPLAYGAME\b/g, 'Play Game'],
   [/\bGame-Maker\b/g, 'Game Maker'],
   [/\bBBSes\b/g, 'bee bee esses'],

@@ -47,12 +47,12 @@ describe('spokenText', () => {
     expect(spokenText('Games got around on the BBSes.')).toBe('Games got around on the bee bee esses.');
     expect(spokenText('It boots DOS; type GM to play PLAYGAME.')).toBe('It boots doss; type G M to play Play Game.');
     expect(spokenText('THE CHEZ needs charging. Game-Maker was $89 on an old 286.')).toBe(
-      'the Shay needs charging. Game Maker was eighty-nine dollars on an old two-eighty-six.',
+      'the Shae needs charging. Game Maker was eighty-nine dollars on an old two-eighty-six.',
     );
     expect(spokenText('That’s drive A:. Its CD is in drive D:, 3½ inches…')).toBe("That's drive A. Its CD is in drive D, three and a half inches...");
     expect(spokenText('TURBO BUTTON and the GRAVITAS pad, with an OPL2 chip.')).toBe('Turbo Button and the Gravitahss pad, with an O P L two chip.');
   });
-  it('leaves typography to Kokoro, which reads it', () => expect(spokenText('I’m Gwinn… in 1994.', 'kokoro')).toBe('I’m Gwinn… in nineteen ninety-four.'));
+  it('leaves typography to Kokoro, which reads it', () => expect(spokenText('I’m Teddy… in 1994.', 'kokoro')).toBe('I’m Teddy… in nineteen ninety-four.'));
   it('leaves plain words alone', () => expect(spokenText('Pick any tile and its game moves up top.')).toBe('Pick any tile and its game moves up top.'));
 });
 

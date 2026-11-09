@@ -379,6 +379,12 @@ export const GUIDE_SECTIONS: [id: string, title: string, html: string][] = [
     <p>The original files with the game’s own <code>.EXE</code> (the stand-alone player, named
     after the game), for DOSBox or a real DOS PC. <b>▤ DOS player</b> in the <code>.GAM</code>
     changes that player’s words, colors and frames, and its files’ extensions.</p>
+    <p>Unzip the download first. On a DOS PC, read <code>INSTALL.TXT</code> and run
+    <code>INSTALL</code> from the source drive and folder to copy the files to the
+    hard disk (<code>INSTALL D:</code> chooses drive D: instead of C:). Check every
+    COPY message, then change to the installed game’s folder, run <code>CONFIG</code>
+    once and the game’s <code>.EXE</code>. The TXT also explains manual copying and
+    floppy disks; the ZIP itself is not a floppy image.</p>
     <h3>Game files</h3>
     <p>Just the game’s files, to back them up or open them in another browser.</p>
     <h3>Windows</h3>

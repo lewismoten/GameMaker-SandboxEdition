@@ -4,10 +4,11 @@
 #include "picker.h"
 namespace pk {
 constexpr uint16_t C_WHITE = 0xFFFF, C_BLACK = 0, C_YELLOW = 0xFF2A, C_GRAY = 0x7BEF, C_DARK = 0x2104;
-template <class G> void drawButton(G& g, int x0, int y0, int x1, int y1, const char* label) {
+// on=false draws it gray: a button that would do nothing now (the first page's back arrow, Details with no game picked).
+template <class G> void drawButton(G& g, int x0, int y0, int x1, int y1, const char* label, bool on = true) {
   g.fillRoundRect(x0, y0, x1 - x0, y1 - y0, 6, C_DARK);
-  g.drawRoundRect(x0, y0, x1 - x0, y1 - y0, 6, C_WHITE);
-  g.setTextSize(2); g.setTextColor(C_WHITE, C_DARK);
+  g.drawRoundRect(x0, y0, x1 - x0, y1 - y0, 6, on ? C_WHITE : C_GRAY);
+  g.setTextSize(2); g.setTextColor(on ? C_WHITE : C_GRAY, C_DARK);
   g.setCursor((x0 + x1) / 2 - (int)strlen(label) * 6, (y0 + y1) / 2 - 8); g.print(label);
 }
 // Icon buttons are 44 pixels wide or larger on both boards.
@@ -225,14 +226,21 @@ constexpr uint32_t GEAR20[20] = {0x00F00,0x00F00,0x18F18,0x3CF3C,0x3FFFC,0x1FFF8
 template<class G> void drawBits20(G&g,int x0,int y0,const uint32_t*rows,uint16_t c=C_WHITE) {
   for(int y=0;y<20;y++)for(int x=0;x<20;){if(!(rows[y]>>(19-x)&1)){x++;continue;}int e=x;while(e<20&&(rows[y]>>(19-e)&1))e++;g.fillRect(x0+x,y0+y,e-x,1,c);x=e;}
 }
-template<class G> void libraryFrame(G&g,int W,int H,const char*breadcrumb,int page,int pages,const char*action,bool back=true) {
-  // back=false on the root page (nothing above it); action=nullptr leaves the right-hand footer button off
+template<class G> void libraryFrame(G&g,int W,int H,const char*breadcrumb,int page,int pages,const char*action,bool back=true,bool picked=true) {
+  // back=false on the root page (nothing above it); action=nullptr leaves the right-hand footer button off; the page arrows
+  // go gray where there is no such page; picked=false (a game list, no game chosen yet) grays Details and says how to choose.
   g.fillRect(0,0,W,32,C_DARK);if(back)drawButton(g,0,0,32,32,"<");
   int bx=back?36:8;Tile clip={bx,0,W-68-bx,32,0,0};clippedText(g,clip,breadcrumb,bx,12,1,C_WHITE);
   drawButton(g,W-64,0,W-32,32,"");drawButton(g,W-32,0,W,32,"");
   drawBits20(g,W-58,6,MAGNIFIER20);drawBits20(g,W-26,6,GEAR20);
-  int f=footer(W);g.fillRect(0,f,W,H-f,C_BLACK);drawButton(g,0,f,48,H,"<");drawButton(g,50,f,98,H,">");
+  int f=footer(W);g.fillRect(0,f,W,H-f,C_BLACK);drawButton(g,0,f,48,H,"<",page>0);drawButton(g,50,f,98,H,">",page+1<pages);
   char count[24];snprintf(count,sizeof count,"%d/%d",page+1,pages?pages:1);
-  Tile c={102,f,W-204,H-f,0,0};clippedText(g,c,count,108,f+(H-f-8)/2,1,C_WHITE);if(action)drawButton(g,W-100,f,W,H,action);
+  Tile c={102,f,W-204,H-f,0,0};clippedText(g,c,count,108,f+(H-f-8)/2,1,C_WHITE);
+  bool details=action&&!strcmp(action,"Details");
+  if(details){  // what a first-time player needs: one tap picks a game, a second plays it
+    const char*hint=picked?"Tap again to play":"Tap a game";if(picked&&(int)strlen(hint)*6>c.w-36)hint="Tap to play";
+    g.setTextSize(1);g.setTextColor(C_YELLOW,C_BLACK);g.setCursor(144,f+(H-f-8)/2);g.print(hint);
+  }
+  if(action)drawButton(g,W-100,f,W,H,action,!details||picked);
 }
 } // namespace pk

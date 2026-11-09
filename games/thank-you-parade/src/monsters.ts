@@ -13,7 +13,8 @@ import { Book } from '../../kit/starter/book';
 import { halftone, inkLine, type Pal } from './print';
 import { CARDS } from './town';
 
-export const MONS = { goose: 0, balloon: 1, dog: 2 } as const;
+export const MONS = { goose: 0, balloon: 1, dog: 2, sweeper: 3 } as const;
+export const SWEEP = 6;
 export const POP_POINTS = 20;
 export const PECK = 1;
 const T = 255;
@@ -67,6 +68,19 @@ function dog(pal: Pal, step: boolean): Pixels {
   return inkLine(p, ink);
 }
 
+/** Gigi's street sweeper: an orange cab, a navy hopper and a spinning brush that sticks out in front. */
+function sweeper(pal: Pal, spin: boolean): Pixels {
+  const { c } = pal;
+  const p = new Pixels(20, 20, T);
+  p.rect(3, 6, 14, 8, c('orange', 3)).rect(3, 6, 14, 2, c('orange', 4)).rect(11, 3, 6, 4, c('orange', 3));
+  p.rect(13, 4, 3, 2, c('white', 3)).rect(1, 9, 5, 5, c('blue', 2));
+  halftone(p, 3, 10, 14, 4, c('orange', 1), 2, [c('orange', 3)]);
+  p.rect(0, 13, 3, 4, spin ? c('stone', 2) : c('stone', 3));
+  for (const x of [5, 14]) p.disc(x, 16, 3, c('ink', 1)).set(x, 16, c('stone', 3));
+  p.rect(7, 2, 2, 3, c('gold', 3)); // the beacon
+  return inkLine(p, c('ink', 0));
+}
+
 /** The monster pictures (.MBL). */
 export function monsterPictures(pal: Pal): Book {
   const mb = new Book('mbl');
@@ -76,13 +90,15 @@ export function monsterPictures(pal: Pal): Book {
   mb.add('balloon1', balloon(pal, 1), { score: POP_POINTS });
   mb.add('dog0', dog(pal, false), { effect: CARDS, eamt: -1 });
   mb.add('dog1', dog(pal, true), { effect: CARDS, eamt: -1 });
+  mb.add('sweeper0', sweeper(pal, false), { hp: -SWEEP });
+  mb.add('sweeper1', sweeper(pal, true), { hp: -SWEEP });
   return mb;
 }
 
 export const finishMonsterPictures = (mb: Book): Block[] => mb.finish();
 
 /** The .MON file. `run` is how many blocks the goose and the dog go before turning. */
-export function monsterSet(mb: Book, o: { goose?: number; dog?: number } = {}): Monster[] {
+export function monsterSet(mb: Book, o: { goose?: number; dog?: number; sweeper?: number } = {}): Monster[] {
   const set = newMonsterSet();
   set[MONS.goose] = mon(
     [
@@ -107,6 +123,14 @@ export function monsterSet(mb: Book, o: { goose?: number; dog?: number } = {}): 
     ],
     { power: 1, thru: 1 },
     pace(o.dog ?? 8, 2),
+  );
+  set[MONS.sweeper] = mon(
+    [
+      [mb.n('sweeper0'), 3],
+      [mb.n('sweeper1'), 3],
+    ],
+    { power: 150, thru: 1 },
+    pace(o.sweeper ?? 10, 1),
   );
   return set;
 }
