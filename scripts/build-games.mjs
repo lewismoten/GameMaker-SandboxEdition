@@ -360,6 +360,18 @@ if (!process.env.GM_SKIP_LASER_NICKELS && (!only.length || only.includes('sleuth
     'laser stage box',
   );
 }
+// Snowbound's laser Plowed Street box (games/snowbound/laser/plowedStreet.ts) writes web/public/laser/snowbound/plowed-street/; it is
+// cheap, so it is redrawn whenever its game is built.
+if (!process.env.GM_SKIP_LASER_NICKELS && (!only.length || only.includes('snowbound')) && ids.includes('snowbound')) {
+  await runEntry(
+    'laser-plowed-street',
+    { file: join(root, 'games/snowbound/laser/plowedStreet.ts') },
+    '../games/snowbound/laser/plowedStreet.ts',
+    [],
+    { cwd: join(root, 'web'), maxBuffer: 16 << 20, timeout: 240_000 },
+    'laser plowed street',
+  );
+}
 // Maximus's embroidered patch (games/maximus/patch/build.ts: stitch files, thread list and stitch simulation in
 // web/public/laser/maximus/patch/); a few seconds, so it is redone whenever its game is built.
 if (!process.env.GM_SKIP_LASER_NICKELS && (!only.length || only.includes('maximus')) && ids.includes('maximus')) {
