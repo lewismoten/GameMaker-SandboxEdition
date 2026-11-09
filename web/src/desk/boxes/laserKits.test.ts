@@ -58,7 +58,9 @@ describe('loadLaserKits', () => {
       'fetch',
       (u: string) => (
         asked.push(u),
-        u.includes('box/') || u.includes('patch/') || u.includes('plowed-street/') ? Promise.resolve({ ok: false } as Response) : reply(nickel)
+        u.includes('box/') || u.includes('patch/') || u.includes('plowed-street/') || u.includes('papercraft-chez/')
+          ? Promise.resolve({ ok: false } as Response)
+          : reply(nickel)
       ),
     );
     const kits = await loadLaserKits('realm');
@@ -67,6 +69,7 @@ describe('loadLaserKits', () => {
       './laser/realm/stage-box/manifest.json',
       './laser/realm/plowed-street/manifest.json',
       './laser/realm/patch/manifest.json',
+      './laser/realm/papercraft-chez/manifest.json',
     ]);
     expect(kits).toHaveLength(1);
   });
@@ -88,7 +91,9 @@ describe('loadLaserKits', () => {
   it('lists the nickel and the stage box together, the box with its own folder as base', async () => {
     const box = { kit: { title: 'Stage Box', summary: 'A box.', previews: [{ file: 'a.png', alt: 'A' }], downloads: [{ file: 'a.svg', label: 'A' }] } };
     vi.stubGlobal('fetch', (u: string) =>
-      u.includes('patch/') || u.includes('plowed-street/') ? Promise.resolve({ ok: false } as Response) : reply(u.includes('stage-box') ? box : nickel),
+      u.includes('patch/') || u.includes('plowed-street/') || u.includes('papercraft-chez/')
+        ? Promise.resolve({ ok: false } as Response)
+        : reply(u.includes('stage-box') ? box : nickel),
     );
     const kits = await loadLaserKits('sleuth');
     expect(kits.map((k) => k.title)).toEqual(['Wooden nickel', 'Stage Box']);
