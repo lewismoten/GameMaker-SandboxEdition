@@ -15,6 +15,7 @@ pauses its music while a video plays, Pocket Player is easier to pick up, and tw
 ### Added
 
 - Art courses (#/art-courses): seven courses on drawing a game's art, from blocks and palettes to moving characters and title screens, on the Library shelf.
+- DOS downloads include INSTALL.BAT and plain installation instructions for hard disks and floppy copies, with an optional 1.44 MB disk-layout script and numbered disk prompts.
 
 ### Changed
 
@@ -29,6 +30,7 @@ pauses its music while a video plays, Pocket Player is easier to pick up, and tw
 
 - The phone's Hint Giant says Gwinn, THE CHEZ and the Round Tuit more clearly in the clips that name them.
 - On the 1994 desk, Scoot's speech bubble now shows in front of the PC instead of being cut off behind it.
+- Pocket Player returns to the game list, with a short message, when a scene card can't be read, instead of drawing a partly loaded level.
 
 ## [3.2.0] - 2026-11-07
 
