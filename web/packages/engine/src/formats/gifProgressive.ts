@@ -97,7 +97,7 @@ export function decodePartialGif(bytes: Uint8Array): PartialGif | undefined {
     n += take;
     p += take;
   }
-  if (width * height > GIF_MAX_PIXELS) throw new Error(`GIF picture ${width} x ${height} is too large to open`);
+  if (width * height > GIF_MAX_PIXELS) throw new Error(`GIF picture ${width} x ${height} is too large to show`);
   const done = { count: 0 };
   const stored = lzwDecode(data.subarray(0, n), minCodeSize, width * height, done);
   return {

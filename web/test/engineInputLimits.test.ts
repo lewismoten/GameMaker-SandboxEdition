@@ -6,9 +6,7 @@ import { newGame, parseGame, serializeGame } from '@lewismoten/gamemaker-sandbox
 import { decodeVoc } from '@lewismoten/gamemaker-sandbox-engine/formats/voc';
 
 // 65535 x 65535 image header with a few bytes of LZW data (the review's 38-byte repro, shortened).
-const hugeGif = Uint8Array.from([
-  ...Buffer.from('GIF89a'), 1, 0, 1, 0, 0, 0, 0, 0x2c, 0, 0, 0, 0, 0xff, 0xff, 0xff, 0xff, 0, 2, 2, 0x44, 1, 0,
-]);
+const hugeGif = Uint8Array.from([...Buffer.from('GIF89a'), 1, 0, 1, 0, 0, 0, 0, 0x2c, 0, 0, 0, 0, 0xff, 0xff, 0xff, 0xff, 0, 2, 2, 0x44, 1, 0]);
 
 // A VOC of many silence blocks, each 65536 samples, repeated by a repeat block.
 function silenceVoc(blocks: number): Uint8Array {
@@ -20,8 +18,8 @@ function silenceVoc(blocks: number): Uint8Array {
 
 describe('input limits', () => {
   it('refuses a GIF whose size would allocate gigabytes', () => {
-    expect(() => decodeGif(hugeGif)).toThrow(/too large/);
-    expect(() => decodePartialGif(hugeGif)).toThrow(/too large/);
+    expect(() => decodeGif(hugeGif)).toThrow(/too large to show/);
+    expect(() => decodePartialGif(hugeGif)).toThrow(/too large to show/);
   });
   it('refuses a VOC whose silence blocks add up to hours', () => {
     expect(() => decodeVoc(silenceVoc(1000))).toThrow(/too long/);

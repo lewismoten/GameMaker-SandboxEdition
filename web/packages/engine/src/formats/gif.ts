@@ -12,7 +12,13 @@
 // 0x40 (image flags only) = interlaced.
 import { PALETTE_SIZE, vga8, type Palette } from './palette';
 
-/** Largest picture decodeGif opens: about twice the biggest GIF on the CD (8.45 million pixels). */
+/**
+ * Largest picture decodeGif opens, sized from what the app can show: 4096 x 4096 covers a 4K screen at
+ * 1x with room, and is twice the biggest GIF on the CD (8.45 million pixels). Every caller wants the
+ * whole picture (about twenty of them, almost all 320 x 200 or smaller), so bigger ones are refused
+ * before anything is allocated. Decoding just the visible rows would need a streaming reader
+ * (LZW is sequential) and a viewport-based caller; that is a follow-up.
+ */
 export const GIF_MAX_PIXELS = 4096 * 4096;
 
 export interface IndexedImage {
@@ -76,7 +82,7 @@ export function decodeGif(bytes: Uint8Array): IndexedImage {
     if (!len) break;
     for (let i = 0; i < len && p < bytes.length; i++) chunks.push(bytes[p++]);
   }
-  if (width * height > GIF_MAX_PIXELS) throw new Error(`GIF picture ${width} x ${height} is too large to open`);
+  if (width * height > GIF_MAX_PIXELS) throw new Error(`GIF picture ${width} x ${height} is too large to show`);
   const indices = lzwDecode(Uint8Array.from(chunks), minCodeSize, width * height);
 
   const pixels = new Uint8Array(width * height);
