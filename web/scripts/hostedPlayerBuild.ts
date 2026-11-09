@@ -14,24 +14,55 @@ import { type Plugin } from 'vite';
 import { resolve } from 'node:path';
 import { bundleOnePage } from './singlePageBuild';
 import type { CdCatalogEntry } from './cdGames';
+import { escapeHtml, metaTags, OG_IMAGE, OG_IMAGE_ALT, SITE_URL } from '../src/seo/site';
+import { PRODUCT } from '../src/edition';
 
 const root = resolve(__dirname, '..');
 const ENTRY = resolve(root, 'src/hostedPlayer/main.ts');
 
-async function buildHostedPlayer(): Promise<string> {
-  const { script, style } = await bundleOnePage(ENTRY);
+/** The two copies of the page each have their own words and address (the download is the one to find). */
+const PAGES = {
+  download: {
+    file: 'web-player.html',
+    title: `Web player for old Game-Maker games · ${PRODUCT}`,
+    h1: 'Game-Maker web player',
+    description:
+      'A single web page that plays old Game-Maker DOS games from the folders beside it, in any browser, with saves and high scores kept on the visitor’s device. Free to download and put on a web host (MIT License).',
+  },
+  try: {
+    file: 'player/index.html',
+    title: `Try the web player with this site’s games · ${PRODUCT}`,
+    h1: 'Game-Maker web player: this site’s games',
+    description:
+      'The web player running on this site with its games listed: pick one and play it in the page. The same file is offered for download as web-player.html.',
+  },
+} as const;
+
+function headTags(page: keyof typeof PAGES): string {
+  const p = PAGES[page];
+  const meta = metaTags({
+    title: p.title,
+    description: p.description, // the download is hosted by others, so it names no address of this site's
+    url: page === 'try' ? `${SITE_URL}${p.file}` : undefined,
+    image: OG_IMAGE,
+    imageAlt: OG_IMAGE_ALT,
+  });
+  return `<title>${escapeHtml(p.title)}</title>\n${meta}`;
+}
+
+async function buildHostedPlayer(page: keyof typeof PAGES = 'download', bundled?: ReturnType<typeof bundleOnePage>): Promise<string> {
+  const { script, style } = await (bundled ?? bundleOnePage(ENTRY));
   return `<!doctype html>
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="color-scheme" content="light dark" />
-<title>Game-Maker web player</title>
-<meta name="description" content="Plays Game-Maker DOS games from the folders beside this page, in the browser. Made with Game-Maker: Sandbox Edition (MIT License)." />
+${headTags(page)}
 <style>${style}</style>
 </head>
 <body class="wp-body">
-<div id="wp-root"><noscript>The Game-Maker web player needs JavaScript to play the games.</noscript></div>
+<div id="wp-root"><noscript><h1>${escapeHtml(PAGES[page].h1)}</h1><p>The Game-Maker web player needs JavaScript to play the games.</p></noscript></div>
 <script>${script}</script>
 </body>
 </html>
@@ -70,10 +101,15 @@ export function hostedPlayer(): Plugin {
       order: 'post',
       async handler(_options, bundle) {
         if (command !== 'build') return;
-        const html = await buildHostedPlayer();
+        const bundled = bundleOnePage(ENTRY);
+        const html = await buildHostedPlayer('download', bundled);
         this.emitFile({ type: 'asset', fileName: 'web-player.html', source: html });
         // The copy to try on this site is kept out of search results (it repeats web-player.html, which is the download and stays byte for byte as offered).
-        this.emitFile({ type: 'asset', fileName: 'player/index.html', source: html.replace('<title>', '<meta name="robots" content="noindex" />\n<title>') });
+        this.emitFile({
+          type: 'asset',
+          fileName: 'player/index.html',
+          source: (await buildHostedPlayer('try', bundled)).replace('<title>', '<meta name="robots" content="noindex" />\n<title>'),
+        });
         const index = bundle['games/index.json'];
         const catalog = index?.type === 'asset' ? (JSON.parse(String(index.source)) as CdCatalogEntry[]) : [];
         this.emitFile({ type: 'asset', fileName: 'player/games.json', source: siteGameList(catalog) });
