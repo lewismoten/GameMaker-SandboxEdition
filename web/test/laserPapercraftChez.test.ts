@@ -6,7 +6,7 @@ import { BED } from '@lewismoten/gamemaker-sandbox-tools/kit/laserLayout';
 import { CUT, ENGRAVE, SCORE } from '@lewismoten/gamemaker-sandbox-tools/kit/laserSvg';
 import { EDGES_COUNT, WIDTH, edgeLen } from '../../games/tuneup/laser/papercraftDims';
 import { buildLaser } from '../../games/tuneup/laser/papercraftLaser';
-import { allPieces } from '../../games/tuneup/laser/papercraftParts';
+import { COLOR, allPieces } from '../../games/tuneup/laser/papercraftParts';
 import { PAPER, layoutPages, pagePng, pageSvg, pdf } from '../../games/tuneup/laser/papercraftPrint';
 
 const pieces = allPieces();
@@ -76,6 +76,26 @@ describe('the print pages', () => {
         expect(q.x + q.w).toBeLessThanOrEqual(paper.w);
         expect(q.y + q.h).toBeLessThanOrEqual(paper.h);
       }
+    });
+  }
+  for (const [name, paper] of Object.entries(PAPER)) {
+    it(`prints all 4 wheels across the ${name} pages, in the SVG and the PDF as well as the placement list`, () => {
+      const pages = layoutPages(pieces, paper);
+      expect(pages.flatMap((p) => p.placed).filter((q) => q.name === 'Wheel')).toHaveLength(4);
+      const tires = pages.flatMap((p) => p.prims).filter((p) => p.fill === COLOR.tire);
+      expect(tires).toHaveLength(4);
+      expect(
+        pages
+          .map((p) => pageSvg(p, 't'))
+          .join('')
+          .split(`fill="${COLOR.tire}"`).length - 1,
+      ).toBe(4);
+      const rg = COLOR.tire
+        .slice(1)
+        .match(/../g)!
+        .map((h) => (parseInt(h, 16) / 255).toFixed(3))
+        .join(' ');
+      expect(Buffer.from(pdf(pages)).toString('latin1').split(`${rg} rg`).length - 1).toBe(4);
     });
   }
   it('writes an SVG in millimeters, a PDF and a PNG', () => {
