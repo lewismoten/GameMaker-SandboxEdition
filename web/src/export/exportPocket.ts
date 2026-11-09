@@ -1,5 +1,5 @@
 // The "Pocket Player (microSD)" download: a game as one file, NAME.GMP, for the Pocket Player firmware
-// (hardware/pocket-player) to read from the pocket folder on its microSD card. Packed by pocketPack.ts
+// (the gamemaker-pocket repository) to read from the pocket folder on its microSD card. Packed by pocketPack.ts
 // (the same packer as web/scripts/pocketData.ts), bundled by pocketFile.ts. What the board can't play
 // comes back as plain advice: `notes` when it still plays, an error when it can't.
 import { gamCrc32, type PocketContext, type PocketLibrary } from './pocketLibrary';

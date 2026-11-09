@@ -152,6 +152,7 @@ preserve what was there.
   belong in `web/packages/tools/src`. Check its APIs before adding helpers under `games/`.
   Keep game artwork, palettes, routes and repository metadata policy in `games/`; packages must
   build from their own folders and declared dependencies.
+- **Pocket Player:** its firmware, host tests and board tools (`pocketStatus.py`, `pocketWalk.py`, the heap audit) live in https://github.com/lewismoten/gamemaker-pocket, not here. GameMaker keeps what makes the data the board plays (`web/scripts/pocketData.ts`, `pocketArt.ts` and the `.gmp` and library exporters write to the git-ignored `pocket-out/`, or to `--out`) and the three host checks that compile its C++ (`pocketHostCheck.ts`, `pocketCardsCheck.ts`, `pocketControlsCheck.ts`). They find the clone through `GAMEMAKER_POCKET_DIR` (default `../gamemaker-pocket`) and skip with a message when it is absent. Nothing in test, lint, typecheck or verify needs it.
 - **Files:** keep them small, one purpose each, with a short header comment. Export only
   what another file imports.
 - **Loading:** each editor, the desk, today's web and the Guide are separate chunks loaded
