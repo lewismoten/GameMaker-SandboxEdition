@@ -51,3 +51,7 @@ __pycache__/
 
 # Output of web/scripts/pocketData.ts and pocketArt.ts; the gamemaker-pocket repository copies from it.
 /pocket-out/
+
+# Leftover PlatformIO build cache from before the Pocket Player moved to gamemaker-pocket
+/hardware/pocket-player/
+.pio/
