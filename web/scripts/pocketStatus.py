@@ -3,7 +3,8 @@
 
   ~/.platformio/penv/bin/python web/scripts/pocketStatus.py /dev/cu.usbserial-XXXX "Checking held input"
   ~/.platformio/penv/bin/python web/scripts/pocketStatus.py /dev/cu.usbserial-XXXX off
-  (add --id X to name the board; by default usbserial-1140 is A, -1130 B, -120 C: see BOARDS below)
+    ~/.platformio/penv/bin/python web/scripts/pocketStatus.py --find     (lists which board is on which port, asked of the boards)
+  (add --id X to override the board's own letter; the badge normally comes from its `FW` answer)
 Run it when you take a board's lock and again with `off` when you let go. The banner also clears when someone touches
 the screen, and by itself after 2 minutes with no serial traffic. Before a flash run it with `flash` (shows "Flashing new firmware") first (the
 chip is in its bootloader afterward and can't draw). Other scripts import `show`, `clear` and `banner`.
@@ -11,24 +12,59 @@ chip is in its bootloader afterward and can't draw). Other scripts import `show`
 import sys, time
 
 LIMIT = 40
-# Lewis's boards by USB serial port: the letter shows as a bold badge at the left of the banner (and is what he says: "board B").
-BOARDS = {
-    "usbserial-1140": ("A", '3.5" 480x320, GT911 capacitive touch'),
-    "usbserial-1130": ("B", '2.8" 320x240, ESP32-2432S028, resistive touch'),
-    "usbserial-120": ("C", '2.8" 320x240, ESP32-2432S028, resistive touch'),
-}
+# Each board keeps its own letter in flash (`ID set C`, NVS "bid"); the firmware prints it in `FW board=C ...`. So the letter is
+# asked of the board, not read from the port name (USB serial names change with the port or hub: on 2026-11-09 the boards
+# were on -120, -130 and -210, not the -1140/-1130/-120 of 2026-11-05). A board that was never named reports the last 4 hex
+# digits of its chip id; give it a letter with `ID set A` over serial (A: 3.5" 480x320, GT911 touch; B and C: 2.8" 320x240,
+# ESP32-2432S028, resistive touch).
 _override = {}
+_asked = {}
+
+
+def ask_board(s):
+    """Sends `FW` and returns the board's name from `FW board=X ...` ("" if nothing answers, e.g. in the bootloader)."""
+    old = s.timeout
+    s.timeout = 0.3
+    try:
+        s.write(b"FW\n"); s.flush()
+        end = time.time() + 1.5
+        while time.time() < end:
+            l = s.readline().decode("utf-8", "replace")
+            if l.startswith("FW board="):
+                return l.split()[1][6:]
+    finally:
+        s.timeout = old
+    return ""
 
 
 def board_id(s):
-    """The ID for an open port: --id / set_id if given, else the table above by the port name, else none."""
+    """The ID for an open port: --id / set_id if given, else asked of the board once (`FW`), else none."""
     port = getattr(s, "port", "") or ""
     if port in _override:
         return _override[port]
-    for k, (i, _) in BOARDS.items():
-        if port.endswith(k):
-            return i
-    return ""
+    if port not in _asked:
+        _asked[port] = ask_board(s)
+    return _asked[port]
+
+
+def find_ports():
+    """{name: port} for every USB serial board on this Mac (/dev/cu.usbserial-*; the Pi's usbmodem is left alone), asking each
+    one `FW`. A port that doesn't answer is listed under its own name."""
+    import glob, serial
+    out = {}
+    for p in sorted(glob.glob("/dev/cu.usbserial-*")):
+        try:
+            with serial.Serial(p, 115200, timeout=0.3) as s:
+                time.sleep(0.3)
+                out[ask_board(s) or p] = p
+        except Exception:
+            out[p] = p
+    return out
+
+
+def port_for(letter):
+    """The port of board `letter` (A, B or C), or None."""
+    return find_ports().get(letter)
 
 
 def set_id(s, i):
@@ -77,6 +113,10 @@ if __name__ == "__main__":
         k = args.index("--id")
         ident = args[k + 1] if k + 1 < len(args) else ""
         del args[k:k + 2]
+    if args == ["--find"]:
+        for k, v in find_ports().items():
+            print(k, v)
+        sys.exit(0)
     if len(args) != 2:
         print(__doc__); sys.exit(2)
     import serial
