@@ -4,12 +4,36 @@ import { MALL, PITCH, START, STREET, STREETS, cellX, cellY, channelX, lug, maze,
 import { makeParts } from './plowedParts';
 
 const cards = [
-  { title: '1. Box', parts: ['P', 'K', 'L', 'R', 'B'], lines: ['Glue P, K, L, R to B (finger joints).', 'Leave the lid off. P is the front, with', 'the drawer opening; T goes on last.'] },
-  { title: '2. Shelf and plate', parts: ['F', 'PL'], lines: ['Drop F into the wall slots (no glue yet).', 'PL rests loose on F: never glue it.', 'The channel in PL faces the front.'] },
-  { title: '3. Knobs', parts: ['STEM', 'CAP'], lines: ['Glue two STEM discs on each dot on PL,', 'one on top of the other. Put a CAP on', 'each, but only after the lid is on (step 6).'] },
-  { title: '4. Drawer', parts: ['DB', 'DF', 'DK', 'DL', 'DR'], lines: ['Glue the five panels. DK, the one with the', 'tab on top, goes at the back, tab up.', 'Glue the two RAILs on the base under the sides.'] },
-  { title: '5. Check', parts: ['DK', 'F'], lines: ['Slide the drawer in. The tab must pass through', "F's slot and stand inside PL's bay.", 'Pull it out and in; it should move freely.'] },
-  { title: '6. Lid', parts: ['T', 'STEM', 'CAP'], lines: ['Set T on, with both stems in their streets.', 'Glue CAPs on the stems above T. Then glue T.', 'Slide the plow to HOME, then to LaVale Mall.'] },
+  {
+    title: '1. Box',
+    parts: ['P', 'K', 'L', 'R', 'B'],
+    lines: ['Glue P, K, L, R to B (finger joints).', 'Leave the lid off. P is the front, with', 'the drawer opening; T goes on last.'],
+  },
+  {
+    title: '2. Shelf and plate',
+    parts: ['F', 'PL'],
+    lines: ['Drop F into the wall slots (no glue yet).', 'PL rests loose on F: never glue it.', 'The channel in PL faces the front.'],
+  },
+  {
+    title: '3. Knobs',
+    parts: ['STEM', 'CAP'],
+    lines: ['Glue two STEM discs on each dot on PL,', 'one on top of the other. Put a CAP on', 'each, but only after the lid is on (step 6).'],
+  },
+  {
+    title: '4. Drawer',
+    parts: ['DB', 'DF', 'DK', 'DL', 'DR'],
+    lines: ['Glue the five panels. DK, the one with the', 'tab on top, goes at the back, tab up.', 'Glue the two RAILs on the base under the sides.'],
+  },
+  {
+    title: '5. Check',
+    parts: ['DK', 'F'],
+    lines: ['Slide the drawer in. The tab must pass through', "F's slot and stand inside PL's bay.", 'Pull it out and in; it should move freely.'],
+  },
+  {
+    title: '6. Lid',
+    parts: ['T', 'STEM', 'CAP'],
+    lines: ['Set T on, with both stems in their streets.', 'Glue CAPs on the stems above T. Then glue T.', 'Slide the plow to HOME, then to LaVale Mall.'],
+  },
 ];
 
 function cardsSvg(kerf: number): string {
@@ -47,7 +71,21 @@ function mapSvg(): string {
   const slots = streetRects()
     .map(([a, b, c, d]) => `<rect x="${(a - x0) * s}" y="${(b - y0) * s}" width="${(c - a) * s}" height="${(d - b) * s}" fill="#fff"/>`)
     .join('');
-  const way: [number, number][] = [[0, 0], [1, 0], [2, 0], [2, 1], [2, 2], [3, 2], [4, 2], [4, 1], [4, 0], [5, 0], [5, 1], [5, 2], [6, 2]];
+  const way: [number, number][] = [
+    [0, 0],
+    [1, 0],
+    [2, 0],
+    [2, 1],
+    [2, 2],
+    [3, 2],
+    [4, 2],
+    [4, 1],
+    [4, 0],
+    [5, 0],
+    [5, 1],
+    [5, 2],
+    [6, 2],
+  ];
   const line = way.map(([c, r]) => `${(cellX(c) - x0) * s},${(cellY(r) - y0) * s}`).join(' ');
   return `<g><rect width="${w}" height="${h}" fill="#e9dcc3"/>${slots}<polyline points="${line}" fill="none" stroke="#e07a10" stroke-width="2.2" stroke-linejoin="round" stroke-dasharray="5 3"/>
 <circle cx="${(cellX(START[0]) - x0) * s}" cy="${(cellY(START[1]) - y0) * s}" r="4" fill="#e07a10"/><text x="${(cellX(0) - x0) * s - 6}" y="${(cellY(0) - y0) * s - 8}" font-size="10">HOME</text>
@@ -68,7 +106,7 @@ function gateSvg(kx: number, ky: number): string {
 
 export function assemblySvg(kerf = 0.2): string {
   const w = 760;
-  const h = 1020;
+  const h = 840;
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" font-family="sans-serif" fill="#222" role="img" aria-label="Plowed Street box assembly steps and lock">
 <rect width="${w}" height="${h}" fill="#fff"/>
 <text x="20" y="24" font-size="18" font-weight="bold">Plowed Street box: assembly and lock</text>

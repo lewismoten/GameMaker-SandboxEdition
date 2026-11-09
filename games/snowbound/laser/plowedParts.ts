@@ -41,7 +41,14 @@ export function makeParts(kerf: number): Parts {
   const wall = { top: E.wallH, bottom: E.wallH };
 
   // --- the outer box ---------------------------------------------------------------------------------------------
-  const front = add('P', Wo, Ho, 1, 'front: drawer opening with a narrow slot above it for the lug', jointOutline(Wo, Ho, T, { ...wall, left: E.front, right: E.front }, FIT));
+  const front = add(
+    'P',
+    Wo,
+    Ho,
+    1,
+    'front: drawer opening with a narrow slot above it for the lug',
+    jointOutline(Wo, Ho, T, { ...wall, left: E.front, right: E.front }, FIT),
+  );
   const dx0 = T + drawer.x0 - dFit;
   const dx1 = T + drawer.x0 + drawer.w + dFit;
   front.hole(
@@ -62,11 +69,25 @@ export function makeParts(kerf: number): Parts {
     ['L', false],
     ['R', true],
   ] as const) {
-    const side = add(name, Do, Ho, 1, `${name === 'L' ? 'left' : 'right'} wall: two slots for the shelf's tabs`, jointOutline(Do, Ho, T, { ...wall, left: E.side, right: E.side }, FIT));
+    const side = add(
+      name,
+      Do,
+      Ho,
+      1,
+      `${name === 'L' ? 'left' : 'right'} wall: two slots for the shelf's tabs`,
+      jointOutline(Do, Ho, T, { ...wall, left: E.side, right: E.side }, FIT),
+    );
     slots(mirror).forEach((p, i) => side.hole(`shelf slot ${i + 1}`, p));
   }
   // the lid: the street map. Two identical sets of streets are cut out; the knobs ride in them.
-  const lid = add('T', Wo, Do, 1, 'lid: two identical street maps, cut out as slots', jointOutline(Wo, Do, T, { top: E.own, bottom: E.own, left: E.own, right: E.own }, FIT));
+  const lid = add(
+    'T',
+    Wo,
+    Do,
+    1,
+    'lid: two identical street maps, cut out as slots',
+    jointOutline(Wo, Do, T, { top: E.own, bottom: E.own, left: E.own, right: E.own }, FIT),
+  );
   [0, maze.dyTwin].forEach((dy, i) => {
     const pts = outlineFromRects(streetRects(dy).map(([a, b, c, d]) => rect(a + T, b + T, c + T, d + T)));
     lid.hole(`streets ${i + 1}`, pts);
@@ -85,7 +106,14 @@ export function makeParts(kerf: number): Parts {
   );
   const [bx0, by0, bx1, by1] = plate.bay;
   const ch = [channelX - plate.channelHalf, by1 - 0.01, channelX + plate.channelHalf, plate.d] as const;
-  add('PL', plate.w, plate.d, 1, 'plate: a bay for the lug and one channel out of its front; the knobs stand on it', outlineFromRects([rect(0, 0, plate.w, plate.d)], [rect(bx0, by0, bx1, by1), rect(...ch)]));
+  add(
+    'PL',
+    plate.w,
+    plate.d,
+    1,
+    'plate: a bay for the lug and one channel out of its front; the knobs stand on it',
+    outlineFromRects([rect(0, 0, plate.w, plate.d)], [rect(bx0, by0, bx1, by1), rect(...ch)]),
+  );
 
   // --- the knobs --------------------------------------------------------------------------------------------------
   const disc = (name: string, d: number, qty: number, note: string) => {

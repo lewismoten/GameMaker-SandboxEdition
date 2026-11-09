@@ -85,7 +85,12 @@ export interface Check {
 /** Walk every place the knob can reach (0.1 mm grid, square stem), and test the gate at each. */
 export function checkLock(kerf = 0.2, step = 0.1): Check {
   const slot = STREET - kerf;
-  const rects = streetRects().map(([a, b, c, d]) => [a + (STREET - slot) / 2 + STEM / 2, b + (STREET - slot) / 2 + STEM / 2, c - (STREET - slot) / 2 - STEM / 2, d - (STREET - slot) / 2 - STEM / 2]);
+  const rects = streetRects().map(([a, b, c, d]) => [
+    a + (STREET - slot) / 2 + STEM / 2,
+    b + (STREET - slot) / 2 + STEM / 2,
+    c - (STREET - slot) / 2 - STEM / 2,
+    d - (STREET - slot) / 2 - STEM / 2,
+  ]);
   const x0 = Math.min(...rects.map((r) => r[0]));
   const y0 = Math.min(...rects.map((r) => r[1]));
   const W = Math.round((Math.max(...rects.map((r) => r[2])) - x0) / step) + 1;
@@ -117,14 +122,20 @@ export function checkLock(kerf = 0.2, step = 0.1): Check {
     const py = ky - plate.q1[1];
     if (px < 0.5 || px + plate.w > Wi - 0.5 || py < 0.5 || py + plate.d > Di - 0.5) contained = false;
     // the channel through the front lip (the kerf takes half off each side of the part, so the lug grows and the channel widens)
-    const through = lx - lug.w / 2 - kerf / 2 >= channelX - plate.channelHalf - kerf / 2 && lx + lug.w / 2 + kerf / 2 <= channelX + plate.channelHalf + kerf / 2;
+    const through =
+      lx - lug.w / 2 - kerf / 2 >= channelX - plate.channelHalf - kerf / 2 && lx + lug.w / 2 + kerf / 2 <= channelX + plate.channelHalf + kerf / 2;
     if (through) {
       const c = Math.round((kx - cellX(0)) / PITCH);
       const r = Math.round((ky - cellY(0)) / PITCH);
       open.add(`${c},${r}`);
       if (c === MALL[0] && r === MALL[1]) mallReached = true;
     } else rattle = Math.max(rattle, by1 - (ly + T / 2));
-    for (const [di, dj] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
+    for (const [di, dj] of [
+      [1, 0],
+      [-1, 0],
+      [0, 1],
+      [0, -1],
+    ]) {
       const ni = i + di;
       const nj = j + dj;
       if (ni < 0 || nj < 0 || ni >= W || nj >= H) continue;
@@ -150,5 +161,12 @@ export function checkLock(kerf = 0.2, step = 0.1): Check {
         q.push(nb);
       }
   }
-  return { startReachesMall: mallReached, openCells: [...open].sort(), maxRattle: rattle, alwaysContained: contained, shortest: dist.get(`${MALL}`) ?? -1, stemPlay: slot - STEM };
+  return {
+    startReachesMall: mallReached,
+    openCells: [...open].sort(),
+    maxRattle: rattle,
+    alwaysContained: contained,
+    shortest: dist.get(`${MALL}`) ?? -1,
+    stemPlay: slot - STEM,
+  };
 }

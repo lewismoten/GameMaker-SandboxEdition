@@ -21,9 +21,23 @@ export function buildPlowedStreet(kerf = 0.2, checks = true): Built {
   const one = (n: string) => [parts[n].part];
   const many = (n: string) => Array.from({ length: parts[n].qty }, () => parts[n].part);
   const layout: [string, string, Part[][]][] = [
-    ['sheet-1-walls', 'Sheet 1: the four walls', [[...one('P'), ...one('K')], [...one('L'), ...one('R')]]],
+    [
+      'sheet-1-walls',
+      'Sheet 1: the four walls',
+      [
+        [...one('P'), ...one('K')],
+        [...one('L'), ...one('R')],
+      ],
+    ],
     ['sheet-2-lid-base', 'Sheet 2: the lid and the base', [[...one('T'), ...one('B')]]],
-    ['sheet-3-inside', 'Sheet 3: the shelf, the plate and the knobs', [[...one('F'), ...one('PL'), ...many('RAIL')], [...many('STEM'), ...many('CAP')]]],
+    [
+      'sheet-3-inside',
+      'Sheet 3: the shelf, the plate and the knobs',
+      [
+        [...one('F'), ...one('PL'), ...many('RAIL')],
+        [...many('STEM'), ...many('CAP')],
+      ],
+    ],
     ['sheet-4-drawer', 'Sheet 4: the drawer', [[...one('DF'), ...one('DK')], [...one('DL'), ...one('DR')], [...one('DB')]]],
   ];
   const sheets = layout.map(([file, title, rows]) => ({ file, title, ...packRows(title, rows) }));

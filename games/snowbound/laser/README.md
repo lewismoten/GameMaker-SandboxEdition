@@ -57,17 +57,17 @@ along the way are the drifts. Pull the drawer out the front.
 
 ## Parts (25 pieces, 4 sheets)
 
-| Part | Qty | What |
-| --- | --- | --- |
-| P | 1 | front: drawer opening, a slot above it for the lug, title |
-| K, L, R | 1 each | back and side walls; the sides have two slots for the shelf's tabs |
-| T | 1 | lid: two identical street maps cut out as slots, the title, the tagline |
-| B | 1 | base |
-| F | 1 | shelf under the plate: tabs in the side walls, slot open at the front |
-| PL | 1 | plate: bay, channel, a dot where each knob stands |
-| STEM | 4 | 5 mm discs: glue two (one on the other) on each dot of the plate |
-| CAP | 2 | 14 mm discs: glue on top of a stem, above the lid |
-| RAIL | 2 | strips under the drawer's sides |
+| Part               | Qty    | What                                                                     |
+| ------------------ | ------ | ------------------------------------------------------------------------ |
+| P                  | 1      | front: drawer opening, a slot above it for the lug, title                |
+| K, L, R            | 1 each | back and side walls; the sides have two slots for the shelf's tabs       |
+| T                  | 1      | lid: two identical street maps cut out as slots, the title, the tagline  |
+| B                  | 1      | base                                                                     |
+| F                  | 1      | shelf under the plate: tabs in the side walls, slot open at the front    |
+| PL                 | 1      | plate: bay, channel, a dot where each knob stands                        |
+| STEM               | 4      | 5 mm discs: glue two (one on the other) on each dot of the plate         |
+| CAP                | 2      | 14 mm discs: glue on top of a stem, above the lid                        |
+| RAIL               | 2      | strips under the drawer's sides                                          |
 | DF, DK, DL, DR, DB | 1 each | drawer: front (finger hole), back (the lug tab), sides, floor (the note) |
 
 ## Assembly
