@@ -10,12 +10,14 @@ const repoRoot = new URL('../../', import.meta.url).pathname;
 /** The Pocket Player repository's folder, with a trailing slash. */
 export const pocketRepoDir = resolve(process.env.GAMEMAKER_POCKET_DIR ?? resolve(repoRoot, '../gamemaker-pocket')) + '/';
 
-/** GameMaker-owned output of pocketData.ts (data/) and pocketArt.ts (src/); git ignores it. The Pocket repository copies from here. */
-export const pocketOutDir = repoRoot + 'pocket-out/';
+/** GameMaker-owned output (in the repository root, next to web/) of pocketData.ts (data/) and pocketArt.ts (src/); git ignores it. The Pocket repository copies from here. */
+export const pocketOutDir = resolve('../pocket-out') + '/'; // relative to web/, where these scripts run
 
 /** Exits 0 with a message when the Pocket Player repository is not present, so a check that needs its C++ skips cleanly. */
 export function requirePocketRepo(check: string): void {
   if (existsSync(pocketRepoDir + 'src')) return;
-  console.log(`${check}: skipped. The Pocket Player repository is not at ${pocketRepoDir} (clone https://github.com/lewismoten/gamemaker-pocket there or set GAMEMAKER_POCKET_DIR).`);
+  console.log(
+    `${check}: skipped. The Pocket Player repository is not at ${pocketRepoDir} (clone https://github.com/lewismoten/gamemaker-pocket there or set GAMEMAKER_POCKET_DIR).`,
+  );
   process.exit(0);
 }
