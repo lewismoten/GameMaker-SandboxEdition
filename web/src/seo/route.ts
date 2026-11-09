@@ -63,6 +63,11 @@ function syncRouteMeta(): void {
  * #/help/<id>, so each gets a description of what it says rather than the guide's).
  */
 function pageDescription(route: RouteName): string | undefined {
+  // a course in the art courses says what it teaches; the contents page keeps its own description
+  if (route === 'artCourses' && /^#\/art-courses\/[^/?]/.test(location.hash)) {
+    const text = document.querySelector('.ac-page > h1 + p')?.textContent?.trim();
+    return text && text.length > 40 ? clip(text, 160) : undefined;
+  }
   // the guide's front page keeps the guide's own description
   if (route !== 'guide' || !/^#\/help\/[^/?]/.test(location.hash)) return undefined;
   const p = document.querySelector('.guide article > h1 ~ p:not(.guide-kicker, .lead)');
