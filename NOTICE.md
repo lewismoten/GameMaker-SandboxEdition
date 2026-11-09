@@ -135,6 +135,7 @@ game folder opens in the browser unchanged.
   directed by Lewis Moten. No game content or generated disk formats changed.
 - **Repository merge gate, worker bootstrap and branch triage** (`scripts/`): implementation,
   regression tests and documentation made with **OpenAI Codex (GPT-6)**, directed by Lewis Moten.
+- **Courier C99 library, local nightly validation, task records, Pocket heap audit and theme check** (`hardware/courier/`, `scripts/nightly.py`, `scripts/task-records/`, `scripts/pocket-heap-audit.py`, `web/scripts/themeCheck.ts`): code, tests and documentation made with **Hermes Agent running OpenAI Codex GPT-6.1 Sol**, directed by Lewis Moten. The courier library is dependency-free C that reads and writes this project's own capsule format and is checked against this repository's TypeScript implementation; the others are development tools and ship in no download. No game content or generated disk formats changed.
 - **The npm engine package** (`web/packages/engine/`): extracted and documented with
   **OpenAI Codex (GPT-6)** through Visual Studio Code, directed by Lewis, from this fork's
   existing TypeScript web engine.
