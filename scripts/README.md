@@ -185,7 +185,7 @@ date. Tests: `web/test/already.test.mjs`.
 `look.mjs` (`npm run look -- [<shot>] [--out f.jpg] [--width 1280] [--crop x,y,w,h] [--ocr] [--expect "text"]`)
 looks at a screen through the Ghost Jack camera bridge (127.0.0.1:8787, token in
 `~/.config/ghostjack/token`): with no shot it snapshots the current view (no move); with a slot or name it makes one `goto` and
-saves the JPEG under `.for-lewis/progress-shots/<date>/look/` (git-ignored). `--ocr` prints what
+saves the JPEG under `.for-lewis/progress-shots/<date>/look/` (git-ignored). `--ocr` (a 1920-wide picture unless `--width`; ffmpeg turns it gray, resizes by `--ocr-scale`, default 1.5, and cuts it to black and white at two brightness levels; tesseract `--ocr-psm`, default 11, reads each and the confident words are merged) prints what
 `tesseract` reads, if installed; `--expect` exits 1 unless that text is on the screen. Saved shots must be re-saved after the camera is moved (SET + number on
 the Ghost Jack page). Snapshots and saved shots only. Tests: `web/test/look.test.mjs`.
 

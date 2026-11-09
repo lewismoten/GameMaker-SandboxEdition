@@ -1,6 +1,6 @@
 // Tests for scripts/look.mjs (npm run look): argument parsing, shot-name resolution and the two bridge calls, with a fake fetch.
 import { describe, expect, it } from 'vitest';
-import { look, parseArgs, resolveShot, textHas } from '../../scripts/look.mjs';
+import { OCR_THRESHOLDS, look, mergeWords, parseArgs, parseTsv, preprocessArgs, resolveShot, tesseractArgs, textHas } from '../../scripts/look.mjs';
 
 const shots = [{ name: 'CYD' }, null, { name: 'R-HDMI' }];
 
@@ -17,6 +17,27 @@ describe('look', () => {
     expect(() => parseArgs(['1', '--crop', '1,2'])).toThrow(/crop/);
     expect(() => parseArgs(['1', '--width', '5'])).toThrow(/width/);
     expect(() => parseArgs(['1', '--say'])).toThrow(/unknown/);
+  });
+  it('parses the OCR options', () => {
+    expect(parseArgs([])).toMatchObject({ ocrPsm: 11, ocrScale: 1.5 });
+    expect(parseArgs(['--ocr-psm', '6', '--ocr-scale', '2'])).toMatchObject({ ocrPsm: 6, ocrScale: 2 });
+    expect(() => parseArgs(['--ocr-psm', '2'])).toThrow(/psm/);
+    expect(() => parseArgs(['--ocr-scale', '9'])).toThrow(/scale/);
+    expect(() => parseArgs(['--ocr-psm'])).toThrow(/needs a value/);
+  });
+  it('builds the preprocessing and tesseract commands', () => {
+    const a = preprocessArgs('in.jpg', 'out.png', 2, 200);
+    expect(a.slice(-3, -1)).toEqual(['-vf', "format=gray,scale=iw*2:ih*2:flags=lanczos,lutyuv=y='if(gt(val,200),255,0)'"]);
+    expect(a[a.indexOf('-i') + 1]).toBe('in.jpg');
+    expect(a.at(-1)).toBe('out.png');
+    expect(tesseractArgs('x.png', 6)).toEqual(['x.png', 'stdout', '--psm', '6', 'tsv']);
+    expect(OCR_THRESHOLDS.length).toBeGreaterThan(1);
+  });
+  it('keeps confident words from tesseract TSV and merges reads', () => {
+    const row = (conf, w) => ['5', '1', '1', '1', '1', '1', '0', '0', '9', '9', conf, w].join('\t');
+    const tsv = ['level\tpage', row(90, 'BOOT'), row(30, 'xq'), row(75, '15'), row(80, 'HOST'), row(10, '')].join('\n');
+    expect(parseTsv(tsv)).toEqual({ all: 'BOOT xq 15 HOST', text: 'BOOT HOST' });
+    expect(mergeWords({ all: 'a Boot', text: 'Boot' }, { all: 'boot Host', text: 'boot Host' })).toEqual({ all: 'a Boot Host', text: 'Boot Host' });
   });
   it('resolves a slot, a name and a prefix', () => {
     expect(resolveShot(shots, '3')).toBe(3);
