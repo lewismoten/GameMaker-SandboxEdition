@@ -1,0 +1,12 @@
+# The library walk: taps on the first tile and what follows (board already on the game list; positions are for 320 x 240).
+banner 1 library home
+shot home
+tap 60 70
+banner 2 tapped 1st tile
+shot category
+tap 60 70
+banner 3 tapped again
+shot list
+tap 60 70
+banner 4 tap a game
+shot pick
