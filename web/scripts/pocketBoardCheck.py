@@ -10,17 +10,18 @@ Needs the board on the game list. Exits 1 on any failed load, a stack high-water
 """
 import sys, time, argparse
 import serial
-from pocketStatus import show, clear
+from pocketStatus import show, clear, open_port
 
 ap = argparse.ArgumentParser()
 ap.add_argument("port")
 ap.add_argument("--ticks", type=int, default=300)
 ap.add_argument("--index", help="one game index instead of all")
+ap.add_argument("--reset", action="store_true", help="reset the board when opening the port")
 ap.add_argument("--cards", action="store_true")
 ap.add_argument("--timeout", type=float, default=600)
 a = ap.parse_args()
 
-s = serial.Serial(a.port, 115200, timeout=1)
+s = open_port(a.port, 1, a.reset)
 time.sleep(0.3)
 s.reset_input_buffer()
 show(s, "Board check: starting")

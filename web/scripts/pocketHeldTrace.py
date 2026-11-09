@@ -3,11 +3,12 @@
 Starts the game from the list (G), turns the trace on (V 1), optionally holds a made-up finger at screen x,y (I), prints
 tick-by-tick key lines (K) and chip reports (R), summarizes: ticks with the key down, gaps. Without x y it just listens (for a live test)."""
 import sys, time, serial
-from pocketStatus import show, clear
+from pocketStatus import show, clear, open_port, take_reset_flag
+reset = take_reset_flag()
 port, g = sys.argv[1], sys.argv[2]
 xy = sys.argv[3:5] if len(sys.argv) >= 5 else None
 secs = float(sys.argv[5] if len(sys.argv) >= 6 else (sys.argv[3] if len(sys.argv) == 4 else 6))
-s = serial.Serial(port, 115200, timeout=0.2)
+s = open_port(port, 0.2, reset)
 time.sleep(0.3); s.reset_input_buffer()
 show(s, 'Held-input trace')
 if g != '-':
