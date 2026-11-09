@@ -372,6 +372,18 @@ if (!process.env.GM_SKIP_LASER_NICKELS && (!only.length || only.includes('snowbo
     'laser plowed street',
   );
 }
+// Year 2000's laser cryptex (games/year2000/laser/cryptex.ts) writes web/public/laser/year2000/cryptex/; it takes a few seconds
+// (it tries every combination), so it is redrawn whenever its game is built.
+if (!process.env.GM_SKIP_LASER_NICKELS && (!only.length || only.includes('year2000')) && ids.includes('year2000')) {
+  await runEntry(
+    'laser-cryptex',
+    { file: join(root, 'games/year2000/laser/cryptex.ts') },
+    '../games/year2000/laser/cryptex.ts',
+    [],
+    { cwd: join(root, 'web'), maxBuffer: 16 << 20, timeout: 240_000 },
+    'laser cryptex',
+  );
+}
 // Maximus's embroidered patch (games/maximus/patch/build.ts: stitch files, thread list and stitch simulation in
 // web/public/laser/maximus/patch/); a few seconds, so it is redone whenever its game is built.
 if (!process.env.GM_SKIP_LASER_NICKELS && (!only.length || only.includes('maximus')) && ids.includes('maximus')) {
