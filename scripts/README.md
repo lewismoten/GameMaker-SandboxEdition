@@ -182,6 +182,13 @@ Restore into an empty folder for a drill; inspect the script's input list before
 and optional local research notes for earlier work. Results rank by matching words and
 date. Tests: `web/test/already.test.mjs`.
 
+`look.mjs` (`npm run look -- [<shot>] [--out f.jpg] [--width 1280] [--crop x,y,w,h] [--ocr] [--expect "text"]`)
+looks at a screen through the Ghost Jack camera bridge (127.0.0.1:8787, token in
+`~/.config/ghostjack/token`): with no shot it snapshots the current view (no move); with a slot or name it makes one `goto` and
+saves the JPEG under `.for-lewis/progress-shots/<date>/look/` (git-ignored). `--ocr` prints what
+`tesseract` reads, if installed; `--expect` exits 1 unless that text is on the screen. Saved shots must be re-saved after the camera is moved (SET + number on
+the Ghost Jack page). Snapshots and saved shots only. Tests: `web/test/look.test.mjs`.
+
 `heavy.mjs` (`npm run heavy -- <command...>`, root or `web/`) runs a heavy job (a build, full vitest,
 `verify:perf`, `check:games`, a walkthrough recording) in one of 2 shared slots, so agents on one Mac don't
 run them all at once. Slots are lock files in `~/.cache/gamemaker-heavy/` (outside any worktree) holding the
