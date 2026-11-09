@@ -140,7 +140,7 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[], opti
       picker.use(stops);
     };
     // the stage scrolls a tall piece: focusable, so the keyboard can scroll it too
-    const stage = h('div', { class: 'gmb-stage', tabindex: 0, role: 'region', 'aria-label': 'The piece shown' });
+    const stage = h('div', { class: 'gmb-stage', tabindex: 0, role: 'region', 'aria-label': 'The piece shown', 'data-list-area': '' });
     const tray = h('ul', { class: 'gmb-tray-list' });
     const counter = h('span', { class: 'gmb-counter' });
     const hasGlass = items.some((i) => i.glass);
