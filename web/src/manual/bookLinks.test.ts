@@ -175,7 +175,7 @@ describe.skipIf(!existsSync(join(pub, 'laser')))('the files the Feelies offer (b
   it('exist for every laser kit: its pictures, sheets and downloads', () => {
     let kits = 0;
     for (const id of readdirSync(join(pub, 'laser'))) {
-      for (const sub of ['', 'stage-box/', 'patch/']) {
+      for (const sub of ['', 'stage-box/', 'plowed-street/', 'patch/']) {
         const dir = join(pub, 'laser', id, sub);
         if (!existsSync(join(dir, 'manifest.json'))) continue;
         const kit = kitOf(JSON.parse(readFileSync(join(dir, 'manifest.json'), 'utf8')), dir);
