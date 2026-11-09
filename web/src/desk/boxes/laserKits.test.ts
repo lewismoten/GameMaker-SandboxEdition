@@ -58,7 +58,7 @@ describe('loadLaserKits', () => {
       'fetch',
       (u: string) => (
         asked.push(u),
-        u.includes('box/') || u.includes('patch/') || u.includes('plowed-street/') || u.includes('papercraft-chez/')
+        u.includes('box/') || u.includes('patch/') || u.includes('plowed-street/') || u.includes('cryptex/') || u.includes('papercraft-chez/')
           ? Promise.resolve({ ok: false } as Response)
           : reply(nickel)
       ),
@@ -68,6 +68,7 @@ describe('loadLaserKits', () => {
       './laser/realm/manifest.json',
       './laser/realm/stage-box/manifest.json',
       './laser/realm/plowed-street/manifest.json',
+      './laser/realm/cryptex/manifest.json',
       './laser/realm/patch/manifest.json',
       './laser/realm/papercraft-chez/manifest.json',
     ]);
@@ -91,7 +92,7 @@ describe('loadLaserKits', () => {
   it('lists the nickel and the stage box together, the box with its own folder as base', async () => {
     const box = { kit: { title: 'Stage Box', summary: 'A box.', previews: [{ file: 'a.png', alt: 'A' }], downloads: [{ file: 'a.svg', label: 'A' }] } };
     vi.stubGlobal('fetch', (u: string) =>
-      u.includes('patch/') || u.includes('plowed-street/') || u.includes('papercraft-chez/')
+      u.includes('patch/') || u.includes('plowed-street/') || u.includes('cryptex/') || u.includes('papercraft-chez/')
         ? Promise.resolve({ ok: false } as Response)
         : reply(u.includes('stage-box') ? box : nickel),
     );
