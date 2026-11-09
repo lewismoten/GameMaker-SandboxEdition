@@ -70,11 +70,16 @@ try {
         try {
           await page.goto(srv.base + (scene.route ?? '/#/'));
 
+          if (scene.themeFirst) {
+            await page.waitForSelector('.topbar', { timeout: 15000 });
+            await page.waitForTimeout(1500);
+            await assertTheme(page, theme);
+          }
           await scene.open(page);
           await page.addStyleTag({ content: '.ach-toasts, .toasts { display: none !important; }' }); // toasts are not part of a dialog
           await page.waitForSelector('dialog[open], [role="dialog"]', { timeout: 4000 }).catch(() => undefined);
           await page.waitForTimeout(scene.settle ?? 400);
-          await assertTheme(page, theme);
+          if (!scene.themeFirst) await assertTheme(page, theme);
           m = await measure(page);
           if (out) await page.screenshot({ path: `${out}/${scene.id}-${sz}-${theme}.png` });
           if (runAxe && m.open) {
