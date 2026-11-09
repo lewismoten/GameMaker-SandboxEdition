@@ -4,7 +4,7 @@
   ~/.platformio/penv/bin/python web/scripts/pocketStatus.py /dev/cu.usbserial-XXXX "Checking held input"
   ~/.platformio/penv/bin/python web/scripts/pocketStatus.py /dev/cu.usbserial-XXXX off
     ~/.platformio/penv/bin/python web/scripts/pocketStatus.py --find     (lists which board is on which port, asked of the boards)
-  (add --id X to override the board's own letter; the badge normally comes from its `FW` answer)
+  (add --reset to reset the board on open; add --id X to override the board's own letter; the badge normally comes from its `FW` answer)
 Run it when you take a board's lock and again with `off` when you let go. The banner also clears when someone touches
 the screen, and by itself after 2 minutes with no serial traffic. Before a flash run it with `flash` (shows "Flashing new firmware") first (the
 chip is in its bootloader afterward and can't draw). Other scripts import `show`, `clear` and `banner`.
@@ -17,6 +17,34 @@ LIMIT = 40
 # were on -120, -130 and -210, not the -1140/-1130/-120 of 2026-11-05). A board that was never named reports the last 4 hex
 # digits of its chip id; give it a letter with `ID set A` over serial (A: 3.5" 480x320, GT911 touch; B and C: 2.8" 320x240,
 # ESP32-2432S028, resistive touch).
+def take_reset_flag():
+    """Removes `--reset` from sys.argv (for scripts that read positional arguments) and says whether it was there."""
+    r = "--reset" in sys.argv
+    if r:
+        sys.argv.remove("--reset")
+    return r
+
+
+def open_port(port, timeout=1, reset=False):
+    """Opens a board's serial port WITHOUT the DTR/RTS reset pulse the USB-serial chip gives on a plain open
+    (so the board keeps its screen and a banner sent at once is not lost). Do NOT set .dtr/.rts to False before opening:
+    on this Mac's CH340/CP210x drivers that deasserts lines the driver had just asserted and pulses the board (tested
+    2026-11-09: it rebooted; leaving both untouched did not). reset=True pulses the board on purpose
+    (EN low through RTS) and waits for the boot."""
+    import serial
+    s = serial.Serial()
+    s.port, s.baudrate, s.timeout = port, 115200, timeout
+    s.dsrdtr = s.rtscts = s.xonxoff = False
+    s.open()
+    if reset:
+        s.dtr = False
+        s.rts = True
+        time.sleep(0.1)
+        s.rts = False
+        time.sleep(2.5)
+    return s
+
+
 _override = {}
 _asked = {}
 
@@ -54,7 +82,7 @@ def find_ports():
     out = {}
     for p in sorted(glob.glob("/dev/cu.usbserial-*")):
         try:
-            with serial.Serial(p, 115200, timeout=0.3) as s:
+            with open_port(p, 0.3) as s:
                 time.sleep(0.3)
                 out[ask_board(s) or p] = p
         except Exception:
@@ -107,7 +135,8 @@ class banner:
 
 
 if __name__ == "__main__":
-    args = sys.argv[1:]
+    reset = "--reset" in sys.argv
+    args = [x for x in sys.argv[1:] if x != "--reset"]
     ident = None
     if "--id" in args:
         k = args.index("--id")
@@ -120,7 +149,7 @@ if __name__ == "__main__":
     if len(args) != 2:
         print(__doc__); sys.exit(2)
     import serial
-    s = serial.Serial(args[0], 115200, timeout=1)
+    s = open_port(args[0], 1, reset)
     time.sleep(0.3)
     if ident is not None:
         set_id(s, ident)

@@ -6,11 +6,12 @@ Needs the board freshly 'S forget nvs' + restart (step 1). Run it with the Platf
 Each BOOT press is 'S boot' and an OK is 'S tap RX RY' (any position counts); the three calibration taps use raw readings
 made from the wiring the way src/touchcal.h expects (bit 2: axes swapped, bit 1: the x axis counts down, bit 0: the y axis does)."""
 import sys, time, serial
-from pocketStatus import show, clear
+from pocketStatus import show, clear, open_port, take_reset_flag
+reset = take_reset_flag()
 port = sys.argv[1]
 mirror, orient, colors = (int(a) for a in sys.argv[2:5])
 wiring = int(sys.argv[5]) if len(sys.argv) > 5 else 5
-s = serial.Serial(port, 115200, timeout=0.2)
+s = open_port(port, 0.2, reset)
 def pump(t):
     end = time.time() + t
     while time.time() < end:

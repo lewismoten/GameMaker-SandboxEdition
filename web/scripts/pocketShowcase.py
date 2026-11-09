@@ -169,8 +169,8 @@ class Board(threading.Thread):
 
     def run(self):
         try:
-            import serial
-            self.s = serial.Serial(self.cfg["port"], 115200, timeout=0.3)
+            from pocketStatus import open_port
+            self.s = open_port(self.cfg["port"], 0.3)
             time.sleep(0.4)
             self.ctx.ready.wait()
             time.sleep(self.ctx.stagger[self.letter])
