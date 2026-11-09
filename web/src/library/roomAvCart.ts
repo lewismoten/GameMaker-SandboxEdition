@@ -36,7 +36,7 @@ function vfdClock(lcd: { x: number; y: number; w: number; h: number }): string {
       out += bar(x + colon / 2 - t / 2, y0 + dh * 0.3, t, t) + bar(x + colon / 2 - t / 2, y0 + dh * 0.62, t, t);
       x += colon;
     }
-    const on = SEGMENTS[d]!;
+    const on = SEGMENTS[d];
     const half = (dh - t) / 2;
     const seg: Record<string, [number, number, number, number]> = {
       a: [x, y0, dw, t],
@@ -47,7 +47,7 @@ function vfdClock(lcd: { x: number; y: number; w: number; h: number }): string {
       e: [x, y0 + half, t, half + t],
       c: [x + dw - t, y0 + half, t, half + t],
     };
-    for (const k of on) out += bar(...seg[k]!);
+    for (const k of on) out += bar(...seg[k]);
     x += pitch;
   }
   return `<g class="av-blink" fill="#6ef4ff" filter="url(#av-vfd)">${out}</g>`;
