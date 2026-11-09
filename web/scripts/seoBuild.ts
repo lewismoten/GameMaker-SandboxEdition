@@ -60,7 +60,7 @@ const BODY_START = '<!--seo:body-->';
 const BODY_END = '<!--/seo:body-->';
 
 // a Special (series "special") is out only in its window, so it has no page of its own, no sitemap line and no download card
-const playable = (catalog: CdCatalogEntry[]) => catalog.filter((g) => g.gam && g.series !== 'special');
+export const playable = (catalog: CdCatalogEntry[]) => catalog.filter((g) => g.gam && g.series !== 'special');
 const credit = (g: CdCatalogEntry) => [g.author ?? g.company, g.year].filter(Boolean).join(', ');
 const imageUrl = (g: CdCatalogEntry) => `${SITE_URL}${gameImagePath(g.id)}`;
 const pageTitle = (g: CdCatalogEntry) => `${g.title} · play in your browser · ${PRODUCT}`;
@@ -470,6 +470,7 @@ function sitemapXml(catalog: CdCatalogEntry[], lastmod: string): string {
     { loc: SITE_URL, priority: '1.0' },
     { loc: `${SITE_URL}dos.html`, priority: '0.7' },
     { loc: `${SITE_URL}downloads.html`, priority: '0.6' },
+    { loc: `${SITE_URL}web-player.html`, priority: '0.5' },
     ...playable(catalog).map((g) => ({ loc: playUrl(g.id), priority: g.original ? '0.8' : '0.6' })),
     ...GUIDE_SECTIONS.map(([id]) => ({ loc: `${SITE_URL}${guideFile(id)}`, priority: '0.5' })),
     ...staticPages(catalog).map((p) => ({ loc: `${SITE_URL}${p.file}`, priority: '0.5' })),

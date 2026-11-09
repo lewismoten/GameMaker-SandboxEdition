@@ -2,7 +2,10 @@
 import { describe, expect, it } from 'vitest';
 import { inflateSync } from 'node:zlib';
 import type { CdCatalogEntry } from '../scripts/cdGames';
-import { gamePageHtml } from '../scripts/seoBuild';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
+import { cdCatalog } from '../scripts/cdGames';
+import { gamePageHtml, playable } from '../scripts/seoBuild';
 import { CARD_H, CARD_W, encodePng, gameCard, wrap } from '../scripts/ogImage';
 import { SITE_URL } from '../src/seo/site';
 
@@ -52,5 +55,19 @@ describe('preview picture', () => {
 
   it('wraps titles on words', () => {
     expect(wrap('Woman Warrior and the Outer Limits', 10)).toEqual(['Woman', 'Warrior', 'and the', 'Outer', 'Limits']);
+  });
+});
+
+describe('which games get a page', () => {
+  const cd = resolve(__dirname, '../../cd');
+  const games = resolve(__dirname, '../../games');
+  const about = (d: string) => resolve(games, d, 'about.json');
+  const ids = (pick: (a: { secret?: boolean; series?: string }) => boolean) =>
+    existsSync(games) ? readdirSync(games).filter((d) => existsSync(about(d)) && pick(JSON.parse(readFileSync(about(d), 'utf8')))) : [];
+
+  it.skipIf(!existsSync(cd))('gives no page to a secret game or a Special, and one to every other game', () => {
+    const paged = playable(cdCatalog(cd)).map((g) => g.id);
+    for (const id of [...ids((a) => a.secret === true), ...ids((a) => a.series === 'special')]) expect(paged).not.toContain(id);
+    for (const id of ids((a) => !a.secret && a.series !== 'special')) expect(paged).toContain(id);
   });
 });
