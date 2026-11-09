@@ -1,4 +1,4 @@
-// Packs one game for the Pocket Player (hardware/pocket-player): its levels, links and keys as the .cfg
+// Packs one game for the Pocket Player (the gamemaker-pocket repository): its levels, links and keys as the .cfg
 // lines the firmware reads (src/gmcfg.h, src/gmcards.h), and its files named by content so games share
 // them. A map is the block numbers (plus, for a level that can have monsters, the monster layer and the
 // placed monsters), a .bbl keeps only the blocks the maps use (and the blocks those turn into), a .mon

@@ -1,4 +1,4 @@
-// Phase-one SDL launcher; the play rules stay in hardware/pocket-player/src.
+// Phase-one SDL launcher; the play rules stay in the gamemaker-pocket repository's src.
 #include "audio.h"
 #include "display.h"
 #include "input.h"

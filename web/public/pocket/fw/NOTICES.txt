@@ -15,7 +15,7 @@ Copyright: Copyright (c) 2005-2013 Arduino Team. All right reserved.
 Source: https://github.com/espressif/arduino-esp32/tree/2.0.16
 License: https://github.com/espressif/arduino-esp32/blob/2.0.16/LICENSE.md
 
-The Arduino-ESP32 framework is selected by hardware/pocket-player/platformio.ini.
+The Arduino-ESP32 framework is selected by platformio.ini in https://github.com/lewismoten/gamemaker-pocket.
 The complete GNU LGPL version 2.1 text follows in this file.
 
 ESP-IDF v4.4.7
@@ -46,7 +46,7 @@ Copyright: Copyright (c) 2020 lovyan03 (https://github.com/lovyan03)
 Source: https://github.com/lovyan03/LovyanGFX/tree/1.1.16
 License: https://github.com/lovyan03/LovyanGFX/blob/1.1.16/license.txt
 
-LovyanGFX is selected by hardware/pocket-player/platformio.ini and is compiled
+LovyanGFX is selected by platformio.ini in https://github.com/lewismoten/gamemaker-pocket and is compiled
 into firmware.bin. Its upstream license file contains the complete LovyanGFX,
 Adafruit_ILI9341, Adafruit_GFX, and TFT_eSPI notices and is reproduced below.
 

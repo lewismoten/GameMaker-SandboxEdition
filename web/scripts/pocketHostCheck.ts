@@ -1,4 +1,4 @@
-// Checks the Pocket Player's play loop (hardware/pocket-player/src/gmcore.h) against the real engine,
+// Checks the Pocket Player's play loop (the Pocket Player repository, src/gmcore.h) against the real engine,
 // game by game. Each game's committed walkthrough (games/<id>/walkthrough.json) is replayed on the
 // engine's headless player (kit/gameSim.ts); the state after every tick (position, sequence, scroll,
 // score, hit points, lives, the counters and a hash of the 312 by 196 picture) is recorded. The C++ core
@@ -27,14 +27,18 @@ const opt = (n: string) => (args.includes(n) ? args[args.indexOf(n) + 1] : undef
 const limit = Number(opt('--ticks') ?? 1e9);
 const resume = args.includes('--resume');
 const work = opt('--keep') ?? mkdtempSync(join(tmpdir(), 'pocket-host-'));
-const here = new URL('../../hardware/pocket-player/', import.meta.url).pathname;
+import { pocketOutDir, pocketRepoDir, requirePocketRepo } from './pocketRepo';
+
+requirePocketRepo('pocketHostCheck');
+const here = pocketRepoDir;
+const dataHere = pocketOutDir + 'data/';
 // --data <dir>: a folder with <id>.cfg and the files (a card's /pocket folder, with its .cfg copied to <id>.cfg)
-const dataDir = opt('--data') ?? here + 'data';
+const dataDir = opt('--data') ?? dataHere;
 const games = new URL('../../games/', import.meta.url).pathname;
 const skipArg = new Set([opt('--ticks'), opt('--keep'), opt('--data')]);
 let ids = args.filter((a) => !a.startsWith('--') && !skipArg.has(a));
 if (!ids.length)
-  ids = readFileSync(here + 'data/games.txt', 'utf8')
+  ids = readFileSync(dataHere + 'games.txt', 'utf8')
     .trim()
     .split('\n')
     .map((l) => l.split('|')[0]);

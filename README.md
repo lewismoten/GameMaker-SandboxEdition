@@ -266,6 +266,6 @@ for full credits, the story behind this fork and third-party trademarks.
 
 Released under the [MIT License](LICENSE).
 
-The [native SDL host prototype](hardware/pi-player/README.md) compiles the Pocket Player core for macOS and prepares the Raspberry Pi OS Lite player.
+The [native SDL host prototype](hardware/pi-player/README.md) compiles the [Pocket Player](https://github.com/lewismoten/gamemaker-pocket) core (its own repository) for macOS and prepares the Raspberry Pi OS Lite player.
 
 The [courier C99 wire library](hardware/courier/README.md) provides self-checking courier IDs and the capsule v1 codec for hardware integrations.

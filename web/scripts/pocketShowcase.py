@@ -14,6 +14,7 @@ terminal (so the Mac screen can be in the shot). Never writes to a card, never t
 --dry-run prints the plan without opening a port. --countdown N shows "Starting in N..." on all three first.
 """
 import argparse, os, random, sys, threading, time
+sys.path.insert(0, os.path.join(os.environ.get('GAMEMAKER_POCKET_DIR') or os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', '..', 'gamemaker-pocket'), 'scripts'))  # pocketStatus.py
 
 SCRATCH = "/private/tmp/claude-501/-Users-lewismoten-dev-GameMaker/abcc4d80-e3bd-43cb-8228-cbfe3453cb89/scratchpad"
 # letter: port (None: found at start by asking each board `FW`, pocketStatus.find_ports),  lock folder, screen size, pad centre / Space / MENU chip / "Back to list" button (screen pixels, default controls)

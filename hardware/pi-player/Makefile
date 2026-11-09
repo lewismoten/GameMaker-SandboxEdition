@@ -1,13 +1,15 @@
-# SDL host adapters; the Pocket core is compiled directly, never copied.
+# SDL host adapters; the Pocket core (the gamemaker-pocket repository) is compiled directly, never copied.
+# POCKET_DIR is the clone of lewismoten/gamemaker-pocket (default ../../../gamemaker-pocket beside this repository).
+POCKET_DIR ?= ../../../gamemaker-pocket
 CXX ?= c++
 PYTHON ?= python3
 SDL_CONFIG ?= $(shell command -v sdl2-config 2>/dev/null || echo /opt/homebrew/bin/sdl2-config)
-CPPFLAGS += -I../pocket-player/src -Ibuild $(shell $(SDL_CONFIG) --cflags)
+CPPFLAGS += -I$(POCKET_DIR)/src -Ibuild $(shell $(SDL_CONFIG) --cflags)
 CXXFLAGS ?= -O2 -g
 CXXFLAGS += -std=c++17 -Wall -Wextra -Wno-unused-parameter
 LDLIBS += $(shell $(SDL_CONFIG) --libs) -lz
 SOURCES = src/main.cpp src/files.cpp src/audio.cpp src/replay.cpp
-HEADERS = $(wildcard src/*.h ../pocket-player/src/*.h)
+HEADERS = $(wildcard src/*.h $(POCKET_DIR)/src/*.h)
 .PHONY: all check clean
 all: build/pi-player
 build/public-games.h: tools/catalog.py $(wildcard ../../games/*/about.json)

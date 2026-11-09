@@ -1,4 +1,4 @@
-// Checks the Pocket Player's between-level cards (hardware/pocket-player/src/gmcards.h) against the engine: for each
+// Checks the Pocket Player's between-level cards (the Pocket Player repository, src/gmcards.h) against the engine: for each
 // packed game, the pictures and text pages of every scene slot (intro, exit, won, lost) are drawn on the engine's
 // Screen the way ShowGraphic and Display_File do, and the board code's pixels, palette and wait times must match,
 // page by page; the game's own title, story and instructions pages (read from Details) too. FLI animations (left out of the packing) are skipped on both sides. One line per game; exit 1 on a difference.
@@ -13,13 +13,17 @@ import { decodeGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
 import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { parseBackdrop, parseSlideList, textLines } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
 
-const here = new URL('../../hardware/pocket-player/', import.meta.url).pathname;
-const dataDir = process.argv.includes('--data') ? process.argv[process.argv.indexOf('--data') + 1] : here + 'data';
+import { pocketOutDir, pocketRepoDir, requirePocketRepo } from './pocketRepo';
+
+requirePocketRepo('pocketCardsCheck');
+const here = pocketRepoDir;
+const dataHere = pocketOutDir + 'data/';
+const dataDir = process.argv.includes('--data') ? process.argv[process.argv.indexOf('--data') + 1] : dataHere;
 const games = new URL('../../games/', import.meta.url).pathname;
-const flash = dataDir === here + 'data';
+const flash = dataDir === dataHere;
 let ids = process.argv.slice(2).filter((a, i, all) => a !== '--data' && all[i - 1] !== '--data');
 if (!ids.length)
-  ids = readFileSync(here + 'data/games.txt', 'utf8')
+  ids = readFileSync(dataHere + 'games.txt', 'utf8')
     .trim()
     .split('\n')
     .map((l) => l.split('|')[0]);

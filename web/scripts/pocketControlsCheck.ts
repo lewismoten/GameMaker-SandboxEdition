@@ -1,4 +1,4 @@
-// Builds and runs the Pocket Player's touch-controls test (hardware/pocket-player/host/controlstest.cpp):
+// Builds and runs the Pocket Player's touch-controls test (the Pocket Player repository, host/controlstest.cpp):
 // scripted touch events (sliding fingers, two fingers, stylus taps, palm contacts, left-handed layout, the
 // key menu, the floating pad) go into src/controls.h and the keys it presses are checked. No board needed.
 //   cd web && npx vite-node scripts/pocketControlsCheck.ts
@@ -8,7 +8,11 @@ import { mkdtempSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
-const here = new URL('../../hardware/pocket-player/', import.meta.url).pathname;
+import { pocketOutDir, pocketRepoDir, requirePocketRepo } from './pocketRepo';
+
+requirePocketRepo('pocketControlsCheck');
+const here = pocketRepoDir;
+const dataHere = pocketOutDir + 'data/';
 // Check pad drawing snapshots, hands and turns, plus card redraws, bounded bands and palette-0 clearing.
 for (const flags of [[], ['-DPOCKET_CYD28']]) {
   const padExe = join(mkdtempSync(join(tmpdir(), 'pocket-paddraw-')), 'paddrawtest');
@@ -31,7 +35,7 @@ for (const [name, flags] of [
 ] as const) {
   const exe = join(mkdtempSync(join(tmpdir(), 'pocket-playshots-exe-')), 'playshots' + name);
   execFileSync('c++', ['-std=c++17', '-O1', '-Wall', ...flags, '-I', here + 'src', here + 'host/playshots.cpp', '-lz', '-o', exe], { stdio: 'inherit' });
-  const out = execFileSync(exe, [here + 'data', playDir], { maxBuffer: 1 << 24 }).toString();
+  const out = execFileSync(exe, [dataHere, playDir], { maxBuffer: 1 << 24 }).toString();
   const got = createHash('sha256').update(out).digest('hex').slice(0, 16);
   if (got !== playHashes[name]) {
     playBad = 1;
@@ -62,11 +66,11 @@ const e = spawnSync(shotsExe, [shotsDir], { stdio: 'inherit', cwd: here });
 // The six-thumbnail picker uses real packed title pictures, with bounded metadata/cache and RAM tests.
 const libraryExe = join(shotsDir, 'librarytest');
 execFileSync('c++', ['-std=c++17', '-O1', '-Wall', '-I', here + 'src', here + 'host/librarytest.cpp', '-lz', '-o', libraryExe], { stdio: 'inherit' });
-const library = spawnSync(libraryExe, [here + 'data', shotsDir], { stdio: 'inherit' });
+const library = spawnSync(libraryExe, [dataHere, shotsDir], { stdio: 'inherit' });
 // Recently played and Favorites (src/favorites.h): list rules, the 8 and 32 limits, the stored NVS form, virtual pages and renders
 const favoritesExe = join(shotsDir, 'favoritestest');
 execFileSync('c++', ['-std=c++17', '-O1', '-Wall', '-I', here + 'src', here + 'host/favoritestest.cpp', '-lz', '-o', favoritesExe], { stdio: 'inherit' });
-const favorites = spawnSync(favoritesExe, [here + 'data', shotsDir], { stdio: 'inherit' });
+const favorites = spawnSync(favoritesExe, [dataHere, shotsDir], { stdio: 'inherit' });
 // The tabbed Settings screen (src/settingsdraw.h): every button 32 x 32 or more, found by the hit table, labels that fit, every row
 // on a page; renders of every tab and page at both hands, the lit preview and Near pad + Raised (PNGs to GM_SETTINGSSHOTS_OUT).
 const settingsDir = process.env.GM_SETTINGSSHOTS_OUT ?? mkdtempSync(join(tmpdir(), 'pocket-settings-'));
@@ -102,7 +106,7 @@ for (const [name, flags] of [
 ] as const) {
   const storyExe = join(storyDir, 'storytest' + name);
   execFileSync('c++', ['-std=c++17', '-O1', '-Wall', ...flags, '-I', here + 'src', here + 'host/storytest.cpp', '-lz', '-o', storyExe], { stdio: 'inherit' });
-  storyBad ||= spawnSync(storyExe, [here + 'data', storyDir, 'first-steps', 'your-first-game'], { stdio: 'inherit' }).status ?? 1;
+  storyBad ||= spawnSync(storyExe, [dataHere, storyDir, 'first-steps', 'your-first-game'], { stdio: 'inherit' }).status ?? 1;
 }
 // The first run (host/firstruntest.cpp): How to hold it, Pick your hand and the touch playground as a flow, their buttons' sizes
 // and hit table, Done clear of the pad and Jump, and renders of each card and the playground, fixed and floating, idle and

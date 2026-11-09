@@ -1,5 +1,5 @@
 import { writeLibrary, type PocketLibrary } from './pocketLibrary';
-// The Pocket Player's bundle of files, "GMS1" (hardware/pocket-player/src/gmsmall.h): "GMS1", a count, entries
+// The Pocket Player's bundle of files, "GMS1" (gamemaker-pocket, src/gmsmall.h): "GMS1", a count, entries
 // sorted by name (name[32], offset, length; little endian), then the data. The Starters' small.pak is one,
 // and so is a game on its own for the microSD card, NAME.GMP in the card's /pocket folder: its `game.txt`
 // ("GMP 1", then id|title|levels, then "version <game version>" when known, for a catalog to match), `<id>.cfg`, `cards.pak` (the card references in the .cfg are offsets
