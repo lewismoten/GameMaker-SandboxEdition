@@ -16,7 +16,7 @@
 #include "screen.h"
 #include "settingsdraw.h"
 namespace fr {
-constexpr uint16_t C_WHITE = 0xFFFF, C_BLACK = 0, C_YELLOW = 0xFF2A, C_GRAY = 0x7BEF, C_DARK = 0x2104, C_BLUE = 0x3A9C, C_FIELD = 0x4208,
+constexpr uint16_t C_WHITE = 0xFFFF, C_BLACK = 0, C_YELLOW = 0xFF2A, C_GRAY = 0x7BEF, C_HINT = 0xC638, C_DARK = 0x2104, C_BLUE = 0x3A9C, C_FIELD = 0x4208,
                    C_SCREEN = 0x10A6, C_SKIN = 0xE5B1, C_NAIL = 0xF6D7, C_EDGE = 0x8A65;
 constexpr int W = scr::W, H = scr::H;
 
@@ -165,7 +165,7 @@ template <class G> void howTo(G& g) {
     int n = (int)strlen(l.t), rows = (n + cols - 1) / cols;
     y += rows * ((int)(8 * TEXT) + 3) + (scr::SMALL ? 8 : 12);
   }
-  st::wrapped(g, captionBox().x0, captionBox().y0, "Left-handed? The next page puts the pad on the right.", scr::SMALL ? 32 : 30, 2, TEXT, C_GRAY);
+  st::wrapped(g, captionBox().x0, captionBox().y0, "Left-handed? The next page puts the pad on the right.", scr::SMALL ? 32 : 30, 2, TEXT, C_HINT);
   Box n = nextBox();
   ovl::button(g, n.x0, n.y0, n.x1, n.y1, "Next", false, C_BLUE, 2);
 }
@@ -187,7 +187,7 @@ template <class G> void pickHand(G& g, int sel = -1) {
     int ty = b.y0 + m + ph + (b.y1 - (b.y0 + m + ph)) / 3;
     g.drawString(k ? "Pad right" : "Pad left", (b.x0 + b.x1) / 2, ty);
     g.setTextSize(scr::SMALL ? 1.0f : 1.5f);
-    g.setTextColor(on ? C_BLACK : C_GRAY, bg);
+    g.setTextColor(on ? C_BLACK : C_HINT, bg);
     g.drawString(k ? "left-handed" : "right-handed", (b.x0 + b.x1) / 2, ty + (scr::SMALL ? 18 : 26));
     g.setTextDatum(textdatum_t::top_left);
   }
@@ -246,9 +246,9 @@ template <class G> void playground(G& g, const ctl::Layout& L, const ctl::Need& 
     char k[40];
     st::heldText(held, k, sizeof k);
     snprintf(t, sizeof t, "%s", k);
-  } else snprintf(t, sizeof t, floatPad ? "Put a thumb down on the pad's side" : "Touch the pad or Jump");
+  } else snprintf(t, sizeof t, floatPad ? "Thumb on the pad's side, then tap Done" : "Touch the pad or Jump, then tap Done");
   g.setTextSize(scr::SMALL && held ? 2.0f : TEXT);
-  g.setTextColor(held ? C_YELLOW : C_GRAY, C_BLACK);
+  g.setTextColor(held ? C_YELLOW : C_HINT, C_BLACK);
   g.setTextDatum(textdatum_t::middle_center);
   g.drawString(t, W / 2, scr::VIEW_H + (H - scr::VIEW_H) / 2);
   if (buddy && full) { buddy->drawn = {0, 0, -1, -1}; bd::paint(g, *buddy, C_FIELD); }
