@@ -384,6 +384,18 @@ if (!process.env.GM_SKIP_LASER_NICKELS && (!only.length || only.includes('year20
     'laser cryptex',
   );
 }
+// Tune-Up's paper THE CHEZ (games/tuneup/laser/chezPapercraft.ts) writes web/public/laser/tuneup/papercraft-chez/: a laser sheet and
+// color print pages. It takes a few seconds, so it is redrawn whenever its game is built.
+if (!process.env.GM_SKIP_LASER_NICKELS && (!only.length || only.includes('tuneup')) && ids.includes('tuneup')) {
+  await runEntry(
+    'laser-papercraft-chez',
+    { file: join(root, 'games/tuneup/laser/chezPapercraft.ts') },
+    '../games/tuneup/laser/chezPapercraft.ts',
+    [],
+    { cwd: join(root, 'web'), maxBuffer: 16 << 20, timeout: 240_000 },
+    'laser papercraft chez',
+  );
+}
 // Maximus's embroidered patch (games/maximus/patch/build.ts: stitch files, thread list and stitch simulation in
 // web/public/laser/maximus/patch/); a few seconds, so it is redone whenever its game is built.
 if (!process.env.GM_SKIP_LASER_NICKELS && (!only.length || only.includes('maximus')) && ids.includes('maximus')) {

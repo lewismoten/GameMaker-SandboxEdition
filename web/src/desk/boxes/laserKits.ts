@@ -119,7 +119,7 @@ export function kitOf(manifest: unknown, base: string): LaserKit | null {
 }
 
 /** Folders under laser/<id>/ that each hold one kit's manifest.json: the wooden nickel's is the folder itself. */
-const KIT_FOLDERS = ['', 'stage-box/', 'plowed-street/', 'cryptex/', 'patch/'];
+const KIT_FOLDERS = ['', 'stage-box/', 'plowed-street/', 'cryptex/', 'patch/', 'papercraft-chez/'];
 
 /** Game `id`'s laser kits, or none when it has no manifest (a dev server answers a missing file with the page, so the type is checked). */
 export async function loadLaserKits(id: string): Promise<LaserKit[]> {
