@@ -136,6 +136,14 @@ export interface ZipLimits {
   maxBytes: number;
 }
 
+/**
+ * What listZip and readZip use when a caller passes none: 8192 entries and 256 MB unpacked, with
+ * wide headroom over the web app's own downloads (about 40 MB) and every zip on the CD (273 KB
+ * at most). Because each entry is inflated no further than its directory says, this also caps
+ * the compression ratio a lying directory could claim.
+ */
+export const DEFAULT_ZIP_LIMITS: ZipLimits = { maxEntries: 8192, maxBytes: 256 * 1024 * 1024 };
+
 /** Inflates at most `cap` bytes; a stream that would give more throws (a zip bomb, or a lying directory). */
 async function inflateCapped(data: Uint8Array, cap: number): Promise<Uint8Array> {
   const reader = new Blob([data as BlobPart]).stream().pipeThrough(new DecompressionStream('deflate-raw')).getReader();
@@ -174,7 +182,7 @@ export interface ZipListing {
  * too, which is never run): an import looks for the
  * .gam files first and reads the rest only for the games picked (project/importScan.ts).
  */
-export function listZip(bytes: Uint8Array, limits?: ZipLimits): ZipListing[] {
+export function listZip(bytes: Uint8Array, limits: ZipLimits = DEFAULT_ZIP_LIMITS): ZipListing[] {
   const v = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
   let eocd = -1;
   // The end record is 22 bytes plus a comment of up to 65535 bytes, so scan back from the
@@ -187,7 +195,7 @@ export function listZip(bytes: Uint8Array, limits?: ZipLimits): ZipListing[] {
   }
   if (eocd < 0) throw new Error('Not a ZIP file');
   const count = v.getUint16(eocd + 10, true);
-  if (limits && count > limits.maxEntries) throw new Error(`The ZIP holds ${count} entries, more than ${limits.maxEntries}`);
+  if (count > limits.maxEntries) throw new Error(`The ZIP holds ${count} entries, more than ${limits.maxEntries}`);
   let declared = 0;
   // A self-extracting .EXE is a program with the zip after it: its packer may have counted the
   // offsets from the zip's start, not the file's, so they are moved by however far the
@@ -214,7 +222,7 @@ export function listZip(bytes: Uint8Array, limits?: ZipLimits): ZipListing[] {
     // lengths can differ from the directory's, so they are read from the local header.
     // CRCs are not checked, and entries using other methods read as undefined.
     if (name.endsWith('/')) continue;
-    if (limits && (declared += unpacked) > limits.maxBytes) throw new Error(`The ZIP unpacks to more than ${limits.maxBytes} bytes`);
+    if ((declared += unpacked) > limits.maxBytes) throw new Error(`The ZIP unpacks to more than ${limits.maxBytes} bytes`);
     const read = async (): Promise<Uint8Array | undefined> => {
       if (localOffset + 30 > bytes.length) throw new Error('Damaged ZIP entry');
       const lNameLen = v.getUint16(localOffset + 26, true);
@@ -225,7 +233,7 @@ export function listZip(bytes: Uint8Array, limits?: ZipLimits): ZipListing[] {
       if (method === 8) {
         // The stream's own errors are TypeErrors with little or no message; say what is wrong.
         try {
-          return await (limits ? inflateCapped(body, unpacked) : transform(body, new DecompressionStream('deflate-raw')));
+          return await inflateCapped(body, unpacked);
         } catch (e) {
           if (e instanceof TypeError) throw new Error(`The ZIP entry ${name} is damaged (its compressed data does not unpack)`, { cause: e });
           throw e;
@@ -238,7 +246,7 @@ export function listZip(bytes: Uint8Array, limits?: ZipLimits): ZipListing[] {
   return out;
 }
 
-export async function readZip(bytes: Uint8Array, limits?: ZipLimits): Promise<ZipEntry[]> {
+export async function readZip(bytes: Uint8Array, limits: ZipLimits = DEFAULT_ZIP_LIMITS): Promise<ZipEntry[]> {
   const out: ZipEntry[] = [];
   for (const e of listZip(bytes, limits)) {
     const data = await e.read();

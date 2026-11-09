@@ -33,6 +33,8 @@ export const SCENEDESCLEN = 20;
 export const SCENEFILES = 20;
 export const MAXSCENELINKS = 20;
 const SCENE_SIZE = 283;
+/** SceneFiles::MaxMem in GRATOR.H: the most the scenes' file-name pool may hold. */
+export const SCENE_FILES_MAX_MEM = 10000;
 const HEADER_SIZE = 256;
 export const GAM_VERSION = 300;
 const GAM_FILETYPE = 8;
@@ -183,6 +185,8 @@ function parseV3(bytes: Uint8Array): Game {
   const numScenes = r.i16();
   const filesPerScene = r.i16();
   const linksPerScene = r.i16();
+  if (r.offset + numScenes * SCENE_SIZE > bytes.length)
+    throw new Error(`The game file is too short for its ${numScenes} scenes (${bytes.length} bytes, ${r.offset + numScenes * SCENE_SIZE} needed)`);
   const raw: { scene: Scene; offsets: number[] }[] = [];
   for (let s = 0; s < numScenes; s++) {
     const gametype = r.u16();
@@ -287,6 +291,9 @@ export function serializeGame(g: Game): Uint8Array {
     offsets = g.poolOffsets;
   } else {
     ({ pool, offsets } = buildPool(g.scenes));
+    // A pool read from a file is kept as it was; only a newly built one has to fit DOS's limit.
+    if (pool.length > SCENE_FILES_MAX_MEM)
+      throw new Error(`The scenes' file names take ${pool.length} bytes; DOS Game-Maker holds at most ${SCENE_FILES_MAX_MEM} (shorten or share some names)`);
   }
 
   g.scenes.forEach((s, i) => {

@@ -29,6 +29,9 @@ export function isVoc(bytes: Uint8Array): boolean {
   return true;
 }
 
+/** Most samples decodeVoc returns: about 12 minutes at 22 kHz; the biggest real VOC is 201 KB. */
+export const VOC_MAX_SAMPLES = 16_000_000;
+
 export function decodeVoc(bytes: Uint8Array): DecodedVoc {
   if (!isVoc(bytes)) throw new Error('Not a VOC file');
   // Offset of the first block, from the header.
@@ -40,6 +43,12 @@ export function decodeVoc(bytes: Uint8Array): DecodedVoc {
   let guard = 0;
   let codec = 0;
   let adpcm: AdpcmState | undefined;
+  let count = 0;
+  const add = (s: Float32Array): void => {
+    count += s.length;
+    if (count > VOC_MAX_SAMPLES) throw new Error('VOC sound is too long to open');
+    parts.push(s);
+  };
   const decodeBlock = (data: Uint8Array): Float32Array => {
     if (codec === 0) return pcm8(data);
     const table = ADPCM[codec];
@@ -65,15 +74,17 @@ export function decodeVoc(bytes: Uint8Array): DecodedVoc {
         sampleRate ||= rate;
         codec = bytes[d + 1];
         adpcm = undefined;
-        parts.push(decodeBlock(bytes.subarray(d + 2, end)));
+        add(decodeBlock(bytes.subarray(d + 2, end)));
         break;
       }
       case 2:
-        parts.push(decodeBlock(bytes.subarray(d, end)));
+        add(decodeBlock(bytes.subarray(d, end)));
         break;
       case 3: {
         const len = (bytes[d] | (bytes[d + 1] << 8)) + 1;
         sampleRate ||= Math.round(1_000_000 / (256 - bytes[d + 2]));
+        count += len;
+        if (count > VOC_MAX_SAMPLES) throw new Error('VOC sound is too long to open');
         parts.push(new Float32Array(len));
         break;
       }
@@ -102,7 +113,7 @@ export function decodeVoc(bytes: Uint8Array): DecodedVoc {
         // Channels (d + 5) and codec (d + 6) are not checked; samples follow 12 header bytes.
         const bits = bytes[d + 4];
         const data = bytes.subarray(d + 12, end);
-        parts.push(bits === 16 ? pcm16(data) : pcm8(data));
+        add(bits === 16 ? pcm16(data) : pcm8(data));
         break;
       }
     }
