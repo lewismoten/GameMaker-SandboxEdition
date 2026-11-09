@@ -61,17 +61,18 @@ describe('seoBuild', () => {
     for (const g of secret) expect(secretHits(`<a href="./${gamePage(g.id)}">${g.title}</a>`)).toHaveLength(2);
   });
 
-  it('writes a sitemap of the home page, dos.html, each listed game’s page and each Guide section’s page', () => {
+  it('writes a sitemap of the home page, dos.html, downloads.html, web-player.html, each listed game’s page and each Guide section’s page', () => {
     const xml = files['sitemap.xml'];
     const locs = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
     expect(locs[0]).toBe(SITE_URL);
     expect(locs).toContain(`${SITE_URL}dos.html`);
     expect(locs).toContain(`${SITE_URL}downloads.html`);
+    expect(locs).toContain(`${SITE_URL}web-player.html`);
     const guide = locs.filter((l) => /\/help-[\w-]+\.html$/.test(l));
     expect(guide.sort()).toEqual(GUIDE_SECTIONS.map(([id]) => `${SITE_URL}help-${id}.html`).sort());
     expect(
       locs
-        .slice(3)
+        .slice(4)
         .filter((l) => !guide.includes(l) && !/\/(cast|library|magazine)\.html$/.test(l))
         .sort(),
     ).toEqual(playable.map((g) => `${SITE_URL}${gamePage(g.id)}`).sort());
