@@ -2,6 +2,7 @@
 import { describe, expect, it } from 'vitest';
 import { decodeGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
 import { decodePartialGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gifProgressive';
+import { newGame, parseGame, serializeGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { decodeVoc } from '@lewismoten/gamemaker-sandbox-engine/formats/voc';
 
 // 65535 x 65535 image header with a few bytes of LZW data (the review's 38-byte repro, shortened).
@@ -27,5 +28,23 @@ describe('input limits', () => {
   });
   it('still decodes a short VOC with silence', () => {
     expect(decodeVoc(silenceVoc(2)).samples.length).toBe(2 * 65536);
+  });
+});
+
+describe('game file limits', () => {
+  it('refuses a game file too short for its declared scenes', () => {
+    const real = serializeGame(newGame());
+    const cut = real.slice(0, 262);
+    expect(() => parseGame(cut)).toThrow(/too short/);
+    const lying = real.slice();
+    new DataView(lying.buffer).setInt16(256, 32767, true);
+    expect(() => parseGame(lying)).toThrow(/too short/);
+  });
+  it('refuses to write a pool past DOS MaxMem', () => {
+    const g = newGame();
+    g.scenes[0].files = Array.from({ length: g.filesPerScene }, (_, i) => `a${i}`);
+    expect(() => serializeGame(g)).not.toThrow();
+    g.scenes = Array.from({ length: 400 }, (_, i) => ({ ...g.scenes[0], files: Array.from({ length: g.filesPerScene }, (_, f) => `scene${i}file${f}.pcx`) }));
+    expect(() => serializeGame(g)).toThrow(/at most 10000/);
   });
 });
