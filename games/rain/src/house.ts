@@ -10,7 +10,7 @@ import { RAIN_TICKS, rainTile, streakHeads, type Timed } from './rain';
 const CLEAR = 255;
 /** Five columns of house and one of spout and barrel; five rows: two of roof, three of wall. */
 export const HOUSE = { cols: 6, rows: 5 } as const;
-const SPOUT = { x0: 101, x1: 104, top: 69, rim: 83 };
+const SPOUT = { x0: 105, x1: 109, top: 68, rim: 83 };
 
 function drawHouse(pal: Pal): Pixels {
   const p = new Pixels(120, 100, CLEAR);
@@ -33,11 +33,17 @@ function drawHouse(pal: Pal): Pixels {
   // gutter along the eave, ending in a downspout: a pipe down the wall's right edge, an elbow at the
   // bottom and an outlet mouth over the rain barrel
   p.rect(0, 33, 99, 4, c('stone', 3)).rect(0, 33, 99, 1, c('stone', 4)).rect(0, 36, 99, 1, c('stone', 1));
-  p.rect(95, 33, 5, 5, c('stone', 2)).rect(95, 33, 5, 1, c('stone', 4)).rect(99, 33, 1, 5, c('stone', 0));
-  p.rect(95, 38, 4, 30, c('stone', 2)).rect(95, 38, 1, 30, c('stone', 4)).rect(98, 38, 1, 30, c('stone', 1));
-  for (const by of [46, 58]) p.rect(94, by, 6, 2, c('stone', 0));
-  p.rect(95, 64, 10, 5, c('stone', 2)).rect(95, 64, 10, 1, c('stone', 4)).rect(95, 68, 10, 1, c('stone', 1));
-  p.rect(104, 64, 2, 6, c('stone', 0)).rect(100, 69, 5, 1, c('stone', 0));
+  const out = c('stone', 0);
+  const pipe = (x: number, y: number, w: number, h: number) =>
+    p
+      .rect(x, y, w, h, out)
+      .rect(x + 1, y + 1, w - 2, h - 2, c('white', 2))
+      .rect(x + 1, y + 1, 1, h - 2, c('white', 4));
+  pipe(94, 32, 7, 7);
+  pipe(96, 38, 5, 28);
+  for (const by of [46, 58]) p.rect(95, by, 7, 2, out);
+  pipe(96, 60, 11, 7);
+  p.rect(105, 66, 5, 3, out).rect(106, 66, 3, 2, c('blue', 1));
   // walls: painted boards, trims, a shadow under the gutter, a stone footing
   p.rect(1, 37, 94, 57, c('stone', 3));
   for (let y = 42; y < 94; y += 6) p.rect(1, y, 94, 1, c('stone', 2));
@@ -71,7 +77,7 @@ function pour(pal: Pal, p: Pixels, frame: number, oy: number): void {
   for (let gy = Math.max(SPOUT.top, oy); gy < Math.min(SPOUT.rim + 1, oy + 20); gy++)
     for (let x = SPOUT.x0; x <= SPOUT.x1; x++) {
       const edge = x === SPOUT.x0 || x === SPOUT.x1;
-      const lane = x === 102 ? 0 : x === 103 ? 10 : 5;
+      const lane = x === 106 ? 0 : x === 108 ? 10 : 5;
       const glint = (((gy - frame * 5 - lane) % 20) + 20) % 20 < 3;
       p.set(x - 100, gy - oy, glint ? pal.c('white', 3) : edge ? pal.c('blue', 2) : pal.c('blue', 3));
     }
@@ -79,8 +85,8 @@ function pour(pal: Pal, p: Pixels, frame: number, oy: number): void {
   if (oy + 20 > SPOUT.rim) {
     const y = SPOUT.rim - oy;
     const left = frame % 2 === 0;
-    p.set(left ? 0 : 6, y - 2, pal.c('blue', 4)).set(left ? 6 : 0, y - 1, pal.c('blue', 3));
-    p.set(left ? 1 : 5, y - 3, pal.c('white', 3)).set(left ? 5 : 1, y - 2, pal.c('blue', 4));
+    p.set(left ? 3 : 11, y - 2, pal.c('blue', 4)).set(left ? 11 : 3, y - 1, pal.c('blue', 3));
+    p.set(left ? 4 : 10, y - 3, pal.c('white', 3)).set(left ? 10 : 4, y - 2, pal.c('blue', 4));
   }
 }
 
