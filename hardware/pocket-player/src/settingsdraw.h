@@ -41,7 +41,7 @@ inline Info info(Item i) {
     case I_SOUND: return {"Sound", "Off|Low|Medium|High", ""};
     case I_CLICKS: return {"Button clicks", "Off|On", ""};
     case I_RESCAN: return {"Library", "Rescan card", ""};
-    case I_TRY: return {"Practice", "Try the controls", "A gray field with the real pad and Jump: each key lights up and says its name."};
+    case I_TRY: return {"Practice", "Hold it|Try pad", "Hold it: the hands steps again. Try pad: a gray field with the real pad and Jump, each key named."};
     default: return {"", "", ""};
   }
 }

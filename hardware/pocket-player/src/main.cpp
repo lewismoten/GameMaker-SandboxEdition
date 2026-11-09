@@ -1466,6 +1466,7 @@ static void openDetails() {
   snprintf(name, sizeof name, "%s.cfg", fileOf(games[selected]));
   detailsMask = selectGame(games[selected]) ? gm::menuPagesOfFile(cfgLines, name) : 0;
   mode = DETAILS_SCREEN;
+  Serial.println("DETAILS open");
   drawDetails();
 }
 // Title, Story or Instructions from Details (k: 0, 1, 2): the game's own pictures and text pages, as its DOS menu showed them,
@@ -1858,9 +1859,10 @@ static void drawFirstRun() {
   }
   banner::paint(tft, 0, 0);
 }
-static void openFirstRun(bool fromSettings) {
+static void openFirstRun(bool fromSettings, bool hands = false) {
   frPaused = fromSettings && setView.fromPause;
-  frFlow.start(fromSettings);
+  frFlow.start(fromSettings, hands);
+  Serial.printf("FIRST %s\n", frFlow.step == fr::HOWTO ? "howto" : "play");
   mode = FIRST_RUN;
   wasDown = true;  // the touch that opened it is not a tap here
   drawFirstRun();
@@ -2111,7 +2113,7 @@ static void chooseSetting(st::Item it, int chip) {
       if (!fromPause) { saveSettings(); rescanCard(); return; }
       drawSettings();
       return;
-    case st::I_TRY: saveSettings(); openFirstRun(true); return;
+    case st::I_TRY: saveSettings(); openFirstRun(true, chip == 0); return;
 #ifdef POCKET_CYD28
     case st::I_CAL: saveSettings(); if (runCalibration()) dsCalDone(); drawSettings(); return;
     case st::I_PANEL:
@@ -2370,7 +2372,7 @@ void loop() {
         if(slot>=0&&at<count){
           if(browsingCategories&&!category&&categorySlots[at]==CONTINUE_SLOT){int g=resumeGame();if(g>=0){gm::EntryState e=resumeRec.e;if(!launchGame(g,&e)){resumeClear();enterPicker();}else wasDown=true;}}
           else if(browsingCategories){if(!category){category=categorySlots[at];subcategory=-1;browsingCategories=category==1||category==5||category==6;}else{subcategory=categorySlots[at];browsingCategories=false;}page=0;selected=-1;drawPicker();}
-          else {int i=catalog->matches[at];if(selected!=i){restoreSelection=false;selected=i;drawPicker();}else{if(!launchGame(i))enterPicker();else wasDown=true;}}
+          else {int i=catalog->matches[at];restoreSelection=false;selected=i;openDetails();}  // a tap opens Details (Back, Favorite, Play); Play starts it there
         }
       }
     }

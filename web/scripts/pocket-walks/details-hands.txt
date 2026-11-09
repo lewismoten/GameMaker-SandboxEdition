@@ -1,0 +1,24 @@
+# Tap a game opens Details (not Play); Settings, Controls, Practice, Hold it replays the hands. 320 x 240, board freshly reset at the library home, first run done: second tile, then a game, first run done.
+banner 1 game list
+shot list 0.82,0.455,0.15,0.18
+tap 160 70
+wait 1500
+tap 60 70
+banner 2 tap = Details
+wait 600
+shot details 0.82,0.455,0.15,0.18
+tap 25 215
+banner 3 Back
+wait 600
+tap 304 16
+banner 4 Settings
+wait 600
+tap 240 215
+wait 400
+tap 240 215
+wait 400
+shot more3 0.82,0.455,0.15,0.18
+tap 40 100
+banner 5 Hold it
+wait 1500
+shot hands 0.82,0.455,0.15,0.18

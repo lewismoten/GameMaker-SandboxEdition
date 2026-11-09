@@ -237,8 +237,8 @@ template<class G> void libraryFrame(G&g,int W,int H,const char*breadcrumb,int pa
   char count[24];snprintf(count,sizeof count,"%d/%d",page+1,pages?pages:1);
   Tile c={102,f,W-204,H-f,0,0};clippedText(g,c,count,108,f+(H-f-8)/2,1,C_WHITE);
   bool details=action&&!strcmp(action,"Details");
-  if(details){  // what a first-time player needs: one tap picks a game, a second plays it
-    const char*hint=picked?"Tap again to play":"Tap a game";if(picked&&(int)strlen(hint)*6>c.w-36)hint="Tap to play";
+  if(details){  // one tap opens a game's Details, where Play starts it
+    const char*hint="Tap a game";(void)picked;
     g.setTextSize(1);g.setTextColor(C_YELLOW,C_BLACK);g.setCursor(144,f+(H-f-8)/2);g.print(hint);
   }
   if(action)drawButton(g,W-100,f,W,H,action,!details||picked);
