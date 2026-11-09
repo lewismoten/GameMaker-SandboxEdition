@@ -126,7 +126,7 @@ it('leaves the diagnostic out of actual Pocket output files in default, any, car
     const output = execFileSync(viteNode, [cli, ...args], { cwd: join(root, 'web'), encoding: 'utf8', env: { ...process.env, GM_SKIP_GAME_BUILD: '1' } });
     expect(output).not.toContain('sound-stress');
     if (i !== 4) expect(output).toContain(i === 2 || i === 3 ? 'retail' : 'control');
-    const dir = i === 2 ? join(root, 'card/pocket') : i === 3 ? join(root, 'gmp/pocket') : join(root, 'hardware/pocket-player/data');
+    const dir = i === 2 ? join(root, 'card/pocket') : i === 3 ? join(root, 'gmp/pocket') : join(root, 'pocket-out/data');
     const names = readdirSync(dir);
     expect(names.join()).not.toContain('sound-stress');
     if (i !== 3) {

@@ -48,3 +48,6 @@ __pycache__/
 *.p12
 /web/public/trinkets/
 /web/public/laser/
+
+# Output of web/scripts/pocketData.ts and pocketArt.ts; the gamemaker-pocket repository copies from it.
+/pocket-out/

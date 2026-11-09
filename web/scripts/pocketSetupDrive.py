@@ -6,6 +6,8 @@ Needs the board freshly 'S forget nvs' + restart (step 1). Run it with the Platf
 Each BOOT press is 'S boot' and an OK is 'S tap RX RY' (any position counts); the three calibration taps use raw readings
 made from the wiring the way src/touchcal.h expects (bit 2: axes swapped, bit 1: the x axis counts down, bit 0: the y axis does)."""
 import sys, time, serial
+import os as _os, sys as _sys
+_sys.path.insert(0, _os.path.join(_os.environ.get('GAMEMAKER_POCKET_DIR') or _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), '..', '..', '..', 'gamemaker-pocket'), 'scripts'))  # pocketStatus.py lives in the gamemaker-pocket repository
 from pocketStatus import show, clear, open_port, take_reset_flag
 reset = take_reset_flag()
 port = sys.argv[1]

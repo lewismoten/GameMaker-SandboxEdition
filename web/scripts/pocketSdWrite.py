@@ -8,6 +8,8 @@ Sends every file of the folder to /pocket/ on the card (256 bytes at a time, abo
 last, then resets the board so it reads the new list. A file already on the card is replaced. Exits 1 on any error.
 """
 import sys, os, time, argparse
+import os as _os, sys as _sys
+_sys.path.insert(0, _os.path.join(_os.environ.get('GAMEMAKER_POCKET_DIR') or _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), '..', '..', '..', 'gamemaker-pocket'), 'scripts'))  # pocketStatus.py lives in the gamemaker-pocket repository
 import serial
 from pocketStatus import show, clear, open_port
 

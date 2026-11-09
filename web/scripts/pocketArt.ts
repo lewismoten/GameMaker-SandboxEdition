@@ -1,11 +1,13 @@
 // Generates the Pocket Player's own art as C headers (committed): the Sandbox splash (the last full frame of the Sandbox sting,
 // games/kit/sandlogo.ts, halved to 160x100 in 565 color) and the 16x16 category icons (drawn here in code, one shared 16-color palette).
 //   cd web && npx vite-node scripts/pocketArt.ts [--preview <dir>]
-// Writes hardware/pocket-player/src/splash_data.h and icons_data.h; --preview also writes splash.ppm and icons.ppm (4x, on the tile color).
-import { readFileSync, writeFileSync, existsSync, readdirSync } from 'node:fs';
+// Writes pocket-out/src/splash_data.h and icons_data.h (git-ignored; copy them into the gamemaker-pocket repository's src/); --preview also writes splash.ppm and icons.ppm (4x, on the tile color).
+import { readFileSync, writeFileSync, existsSync, readdirSync, mkdirSync } from 'node:fs';
+import { pocketOutDir } from './pocketRepo';
 import { applyFliFrame, newFliCanvas, parseFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
 
-const out = '../hardware/pocket-player/src/';
+const out = pocketOutDir + 'src/';
+mkdirSync(out, { recursive: true });
 const preview = process.argv.includes('--preview') ? process.argv[process.argv.indexOf('--preview') + 1] : '';
 const rgb565 = (r: number, g: number, b: number) => ((r >> 3) << 11) | ((g >> 2) << 5) | (b >> 3);
 const hex = (v: number) => '0x' + v.toString(16).padStart(4, '0');

@@ -1,6 +1,6 @@
-// Fills hardware/pocket-player/data/ for the Pocket Player: every Starter the board's play loop can run,
+// Fills pocket-out/data/ (git-ignored, GameMaker-owned; the gamemaker-pocket repository copies from it) for the Pocket Player: every Starter the board's play loop can run,
 // packed small (src/export/pocketPack.ts). Per game it writes <id>.cfg (levels, links, keys; see
-// hardware/pocket-player/src/gmcfg.h) into small.pak and games.txt lists them; files are named by content so games share them.
+// gamemaker-pocket src/gmcfg.h) into small.pak and games.txt lists them; files are named by content so games share them.
 // Run it after rebuilding a game:
 //   cd web && npx vite-node scripts/pocketData.ts [--list] [--series starter|any|<name>] [--only id,id] [--force id,id]
 // With --out <dir> it writes a microSD card instead (see "The microSD card" in the Pocket Player README): <dir>/pocket/ holds
@@ -23,6 +23,7 @@ import { GameFiles } from '@lewismoten/gamemaker-sandbox-engine/core/gameFiles';
 import { newCards, packPocketGame, shortHash, type PocketStore } from '../src/export/pocketPack';
 import { pocketThumbnail } from '../src/export/pocketThumbnail';
 import { pocketCategory, gamCrc32, writeLibrary, uniqueGmpName, type PocketLibrary } from '../src/export/pocketLibrary';
+import { pocketOutDir } from './pocketRepo';
 import { gmpName, readBundle, writeBundle, writeGmp, writeOsGmp } from '../src/export/pocketFile';
 
 const args = process.argv.slice(2);
@@ -35,7 +36,7 @@ const gmpDir = opt('--gmp')[0];
 const withDos = !args.includes('--no-dos');
 const gmos = !!gmpDir && args.includes('--gmos');
 const series = opt('--series')[0] ?? (cardRoot || gmpDir ? 'any' : 'starter');
-const outDir = gmpDir ? `${gmpDir}/pocket/` : cardRoot ? `${cardRoot}/pocket/` : '../hardware/pocket-player/data/';
+const outDir = gmpDir ? `${gmpDir}/pocket/` : cardRoot ? `${cardRoot}/pocket/` : pocketOutDir + 'data/';
 /** Games the card leaves out (id: reason): their host check differs from the engine (the same with the old fixed level table, so not the streaming). */
 const CARD_HOLD: Record<string, string> = {
   logic: 'host check: the walkthrough takes a level change on tick 1, the board starts elsewhere',
@@ -58,7 +59,7 @@ const store: PocketStore = new Map();
 const pak = newCards();
 /**
  * LittleFS gives every file a 4 KB block, so the many small files (each game's .cfg, the shared .b .m .p .r .c .o .k .s) are bundled into
- * small.pak: "GMS1", a count, entries sorted by name (name[32], offset, length), then the data (hardware/pocket-player/src/gmsmall.h).
+ * small.pak: "GMS1", a count, entries sorted by name (name[32], offset, length), then the data (gamemaker-pocket src/gmsmall.h).
  * cards.pak, font.bin and games.txt stay files.
  */
 function bundleSmallFiles(cfgs: Map<string, Uint8Array>) {
