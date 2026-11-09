@@ -10,6 +10,8 @@ export interface Scene {
   route?: string;
   /** Extra wait after opening, ms. */
   settle?: number;
+  /** A full-screen viewer in fixed paper colors (the print shop): certify the theme on the page behind it, before it opens. */
+  themeFirst?: boolean;
 }
 
 /** The desk is the default interface: switch to today's web (home). */
