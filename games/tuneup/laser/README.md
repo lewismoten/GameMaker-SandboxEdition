@@ -4,7 +4,7 @@ A fold-up paper model of THE CHEZ, the tomato-red 1976½ CitiCar, 180 mm long (o
 `games/kit/chez.ts`, is 4.5 mm) and 84 mm wide. Two ways to make it from the same pieces:
 
 - **Glowforge**, on cardstock: `laser.svg`. Red `#FF0000` is cut (outlines, the windows and headlights), magenta
-  `#FF00FF` is score (the folds), blue `#0000FF` is engrave (the charcoal racing stripes, the black roof, the tires and
+  `#FF00FF` is score (the folds), blue `#0000FF` is engrave (the charcoal racing stripes, the black roof, the tire rings and
   the charge port). Run engrave, then score, then cut. Red cardstock is the body; the white pinstripe beside each stripe
   is left to a white paint pen. The sheet is 491 x 216 mm, inside the 495 x 279 mm bed.
 - **Home printer**: `print-letter.pdf` or `print-a4.pdf` (three landscape pages), in color. Cut the solid black lines,

@@ -42,8 +42,8 @@ export function buildLaser(pieces: Piece[]): LaserBuild {
   const byName = (n: string) => pieces.find((p) => p.name === n)!;
   const times = (p: Piece) => Array.from({ length: p.qty }, () => p);
   rows[0] = [byName('Underside strip'), byName('Top strip')];
-  rows[1] = [byName('Driver side panel'), byName('Passenger side panel'), ...times(byName('Tire'))];
-  rows[2] = [...times(byName('Bumper')), ...times(byName('Wheel'))];
+  rows[1] = [byName('Driver side panel'), byName('Passenger side panel'), ...times(byName('Wheel'))];
+  rows[2] = [...times(byName('Bumper'))];
   const problems: string[] = [];
   const cache = new Map<string, LaserSheet>();
   const placed: LaserBuild['placed'] = [];

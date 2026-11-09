@@ -26,38 +26,35 @@ function drawPiece(p: Piece, ox: number, oy: number): Prim[] {
   ];
 }
 
-/** Shelf-packs every piece (times its quantity), tallest first, onto as many pages of this paper as it takes. */
+/** First-fit shelf packing: every piece (times its quantity), tallest first, goes on the first shelf of any page where it fits. */
 export function layoutPages(pieces: Piece[], paper: { w: number; h: number }): Page[] {
   const items = pieces.flatMap((p) => Array.from({ length: p.qty }, () => p));
   items.sort((a, b) => b.h - a.h);
   const pages: Page[] = [];
-  let page: Page | null = null;
-  let x = MARGIN;
-  let y = MARGIN;
-  let rowH = 0;
-  const fresh = () => {
-    page = { ...paper, prims: [], placed: [] };
-    pages.push(page);
-    x = MARGIN;
-    y = MARGIN;
-    rowH = 0;
-  };
+  const shelves: { page: Page; x: number; y: number; h: number }[] = [];
   for (const p of items) {
     if (p.w > paper.w - 2 * MARGIN || p.h > paper.h - 2 * MARGIN) throw new Error(`${p.name} (${p.w.toFixed(0)} x ${p.h.toFixed(0)} mm) does not fit the page`);
-    if (!page) fresh();
-    if (x + p.w > paper.w - MARGIN) {
-      x = MARGIN;
-      y += rowH + GAP;
-      rowH = 0;
+    let shelf = shelves.find((s) => s.x + p.w <= paper.w - MARGIN && s.y + Math.max(s.h, p.h) <= paper.h - MARGIN);
+    if (!shelf) {
+      let page = pages.find((pg) => {
+        const last = shelves.filter((s) => s.page === pg).at(-1)!;
+        return last.y + last.h + GAP + p.h <= paper.h - MARGIN;
+      });
+      let y = MARGIN;
+      if (page) {
+        const last = shelves.filter((s) => s.page === page).at(-1)!;
+        y = last.y + last.h + GAP;
+      } else {
+        page = { ...paper, prims: [], placed: [] };
+        pages.push(page);
+      }
+      shelf = { page, x: MARGIN, y, h: 0 };
+      shelves.push(shelf);
     }
-    if (y + p.h > paper.h - MARGIN) {
-      fresh();
-    }
-    const pg = page as unknown as Page;
-    pg.prims.push(...drawPiece(p, x, y));
-    pg.placed.push({ name: p.name, x, y, w: p.w, h: p.h });
-    x += p.w + GAP;
-    rowH = Math.max(rowH, p.h);
+    shelf.page.prims.push(...drawPiece(p, shelf.x, shelf.y));
+    shelf.page.placed.push({ name: p.name, x: shelf.x, y: shelf.y, w: p.w, h: p.h });
+    shelf.x += p.w + GAP;
+    shelf.h = Math.max(shelf.h, p.h);
   }
   return pages;
 }

@@ -349,35 +349,25 @@ export function panel(side: 'driver' | 'passenger'): Piece {
   });
 }
 
-/** A wheel: a black tire disc with an engraved ring (and a printed one), plus a separate white wheel disc to glue on it. */
-export function tire(): Piece {
-  const cx = TIRE_R;
-  return finish({
-    name: 'Tire',
-    qty: 4,
-    w: 0,
-    h: 0,
-    outline: ring(cx, cx, TIRE_R, 64),
-    folds: [],
-    holes: [],
-    engrave: [{ label: 'tire', rings: [[cx, cx, RIM_R + 0.5, TIRE_R - 1.8]] }],
-    art: [{ pts: ring(cx, cx, TIRE_R, 64), fill: COLOR.tire }],
-    meta: {},
-  });
-}
-export function rim(): Piece {
+/** A wheel: a black tire ring round a white wheel face with a chrome cap (as the side view draws it). On a laser the ring and a small hub dot are engraved and the face is left bare paper. */
+export function wheel(): Piece {
+  const c = TIRE_R;
   return finish({
     name: 'Wheel',
     qty: 4,
     w: 0,
     h: 0,
-    outline: ring(RIM_R, RIM_R, RIM_R, 48),
+    outline: ring(c, c, TIRE_R, 64),
     folds: [],
     holes: [],
-    engrave: [],
+    engrave: [
+      { label: 'tire', rings: [[c, c, RIM_R + 0.8, TIRE_R - 1.8]] },
+      { label: 'hub', circles: [[c, c, 2]] },
+    ],
     art: [
-      { pts: ring(RIM_R, RIM_R, RIM_R, 48), fill: COLOR.rim },
-      { pts: ring(RIM_R, RIM_R, HUB_R, 32), fill: COLOR.hub, stroke: '#777', w: 0.2 },
+      { pts: ring(c, c, TIRE_R, 64), fill: COLOR.tire },
+      { pts: ring(c, c, RIM_R, 48), fill: COLOR.rim },
+      { pts: ring(c, c, HUB_R, 32), fill: COLOR.hub, stroke: '#777', w: 0.2 },
     ],
     meta: {},
   });
@@ -467,5 +457,5 @@ export function bumper(): Piece {
 }
 
 export function allPieces(): Piece[] {
-  return [strip('Underside strip', STRIP_UNDER, false), strip('Top strip', STRIP_TOP, true), panel('driver'), panel('passenger'), tire(), rim(), bumper()];
+  return [strip('Underside strip', STRIP_UNDER, false), strip('Top strip', STRIP_TOP, true), panel('driver'), panel('passenger'), wheel(), bumper()];
 }
