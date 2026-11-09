@@ -40,7 +40,13 @@ const PAGES = {
 
 function headTags(page: keyof typeof PAGES): string {
   const p = PAGES[page];
-  const meta = metaTags({ title: p.title, description: p.description, url: `${SITE_URL}${p.file}`, image: OG_IMAGE, imageAlt: OG_IMAGE_ALT });
+  const meta = metaTags({
+    title: p.title,
+    description: p.description, // the download is hosted by others, so it names no address of this site's
+    url: page === 'try' ? `${SITE_URL}${p.file}` : undefined,
+    image: OG_IMAGE,
+    imageAlt: OG_IMAGE_ALT,
+  });
   return `<title>${escapeHtml(p.title)}</title>\n${meta}`;
 }
 
