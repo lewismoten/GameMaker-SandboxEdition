@@ -28,7 +28,7 @@ struct Flow {
   bool fromSettings = false;  // the playground alone, from Settings: Done goes back there and nothing is marked
   bool chose = false;         // a hand was picked
   uint8_t lefty = 0;          // the hand picked (ctl::Settings::lefty: 1 puts the pad on the right)
-  void start(bool settings) { fromSettings = settings; step = settings ? PLAY : HOWTO; chose = false; }
+  void start(bool settings, bool hands = false) { fromSettings = settings; step = settings && !hands ? PLAY : HOWTO; chose = false; }  // hands: Settings replays all three steps
   // A tap on the step showing; true when the step changed. FINISHED: main.cpp saves (first run only) and leaves.
   bool apply(Tap t) {
     switch (step) {
