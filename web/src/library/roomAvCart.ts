@@ -11,6 +11,48 @@ const BLACK = '#1b1b1f';
 const EDGE = '#4a4a52';
 const SHELF_TOP = 0.88;
 
+/** Seven-segment strokes (a to g) lit for each digit of the VCR clock. */
+const SEGMENTS: Record<string, string> = { '0': 'abcdef', '1': 'bc', '2': 'abged' };
+
+/**
+ * The VCR's blinking 12:00, drawn as shapes: segments, not a text node, so a screen reader reads the button's label
+ * and not a stray "12:00" that the label (axe: label-content-name-mismatch) would have to repeat.
+ */
+function vfdClock(lcd: { x: number; y: number; w: number; h: number }): string {
+  const dh = lcd.h * 0.56; // digit height
+  const dw = dh * 0.5;
+  const t = dh * 0.14; // stroke
+  const pitch = dw + t * 1.6;
+  const colon = t * 2.4;
+  const total = pitch * 4 + colon;
+  const x0 = lcd.x + (lcd.w - total) / 2;
+  const y0 = lcd.y + (lcd.h - dh) / 2;
+  const f = (n: number) => n.toFixed(1);
+  const bar = (x: number, y: number, w: number, h: number) => `<rect x="${f(x)}" y="${f(y)}" width="${f(w)}" height="${f(h)}"/>`;
+  let out = '';
+  let x = x0;
+  for (const [n, d] of ['1', '2', '0', '0'].entries()) {
+    if (n === 2) {
+      out += bar(x + colon / 2 - t / 2, y0 + dh * 0.3, t, t) + bar(x + colon / 2 - t / 2, y0 + dh * 0.62, t, t);
+      x += colon;
+    }
+    const on = SEGMENTS[d]!;
+    const half = (dh - t) / 2;
+    const seg: Record<string, [number, number, number, number]> = {
+      a: [x, y0, dw, t],
+      g: [x, y0 + half, dw, t],
+      d: [x, y0 + dh - t, dw, t],
+      f: [x, y0, t, half + t],
+      b: [x + dw - t, y0, t, half + t],
+      e: [x, y0 + half, t, half + t],
+      c: [x + dw - t, y0 + half, t, half + t],
+    };
+    for (const k of on) out += bar(...seg[k]!);
+    x += pitch;
+  }
+  return `<g class="av-blink" fill="#6ef4ff" filter="url(#av-vfd)">${out}</g>`;
+}
+
 /** How far the frame is drawn in at height y: the cart tapers toward the top. */
 const taper = (y: number) => (y / SHELF_TOP) * 0.045;
 
@@ -42,7 +84,7 @@ export function avCartArt(): Spot {
   const display =
     `<defs><filter id="av-vfd" x="-30%" y="-60%" width="160%" height="220%"><feGaussianBlur stdDeviation="1.4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>` +
     rect(lcd, 'fill="#031116" stroke="#0a2a33" stroke-width=".6"') +
-    `<text class="av-blink" x="${(lcd.x + lcd.w / 2).toFixed(1)}" y="${(lcd.y + lcd.h * 0.78).toFixed(1)}" text-anchor="middle" font-family="ui-monospace,Menlo,Consolas,monospace" font-weight="700" font-size="${(lcd.h * 0.8).toFixed(1)}" fill="#6ef4ff" filter="url(#av-vfd)">12:00</text>`;
+    vfdClock(lcd);
   const vcrArt = faces(vcr, '#35353b', '#44444b', '#232328') + door + display;
 
   // the CRT TV: a wide front box (a 20-inch set, wider than tall) with a 4:3 tube and knobs, and a deep tapering back for the tube
