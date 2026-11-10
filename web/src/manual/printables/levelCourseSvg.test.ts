@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from 'vitest';
 import type { Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import type { CourseLayout } from './levelCourse';
 import type { Level } from './levelMapLayout';
-import { wholeCourseSize, wholeCourseSvg } from './levelCourseSvg';
+import { dataUrl, wholeCourseSize, wholeCourseSvg } from './levelCourseSvg';
 
 type Drawing = { tag: string; attrs: Record<string, string | number>; children: (Drawing | string)[]; append(...children: (Drawing | string)[]): void };
 vi.mock('./worldMapArt', () => ({
@@ -94,5 +94,16 @@ describe('continuous course drawing', () => {
     const end = nodes(d).find((n) => n.tag === 'text' && words(n) === 'the end of the way')!;
     expect(words(start)).toContain('ride down');
     expect(Number(start.attrs.y)).toBeLessThan(Number(end.attrs.y));
+  });
+});
+
+describe('dataUrl', () => {
+  it('makes a data URL without a blob URL, which nothing would revoke', () => {
+    const make = vi.fn(() => 'blob:none');
+    vi.stubGlobal('URL', { createObjectURL: make });
+    const canvas = { toDataURL: () => 'data:image/png;base64,AAAA' } as unknown as HTMLCanvasElement;
+    expect(dataUrl(new Blob(['x']), canvas)).toBe('data:image/png;base64,AAAA');
+    expect(make).not.toHaveBeenCalled();
+    vi.unstubAllGlobals();
   });
 });
