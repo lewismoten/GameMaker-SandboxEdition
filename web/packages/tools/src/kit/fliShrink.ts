@@ -261,7 +261,7 @@ export function snapColorsStep(orig: FliFrames, opts: { tolerance: number }, bas
   const pal = brightest(orig);
   const use = new Array<number>(256).fill(0);
   for (const f of orig.frames) for (let x = 0; x < f.length; x += 7) use[f[x]]++;
-  const order = use.map((n, c) => c).sort((a, b) => use[b] - use[a]);
+  const order = Array.from(use.keys()).sort((a, b) => use[b] - use[a]);
   const map = Array.from({ length: 256 }, (_, c) => c);
   const kept: number[] = [];
   for (const c of order) {
@@ -279,8 +279,7 @@ export function maxColorsStep(orig: FliFrames, opts: { colors: number }, base: F
   const pal = brightest(orig);
   const use = new Array<number>(256).fill(0);
   for (const f of orig.frames) for (let x = 0; x < f.length; x++) use[f[x]]++;
-  const order = use
-    .map((n, c) => c)
+  const order = Array.from(use.keys())
     .filter((c) => use[c])
     .sort((a, b) => use[b] - use[a]);
   const keep = order.slice(0, Math.max(1, opts.colors));

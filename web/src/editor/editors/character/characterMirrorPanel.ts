@@ -42,8 +42,8 @@ export interface MirrorContext {
   go(i: number): void;
 }
 
-export const seqLinks = (ctx: Pick<MirrorContext, 'project' | 'file'>): SeqLink[] => ctx.project.extras<SeqLink[]>(ctx.file, 'mirrors', []);
-export const blockLinks = (project: Project, cbl: string): BlockLink[] => (cbl ? project.extras<BlockLink[]>(cbl, 'mirrors', []) : []);
+const seqLinks = (ctx: Pick<MirrorContext, 'project' | 'file'>): SeqLink[] => ctx.project.extras<SeqLink[]>(ctx.file, 'mirrors', []);
+const blockLinks = (project: Project, cbl: string): BlockLink[] => (cbl ? project.extras<BlockLink[]>(cbl, 'mirrors', []) : []);
 
 /** Every block any hero of the project shows, so new pictures never land on one in use. */
 function blocksInUse(ctx: MirrorContext): Set<number> {

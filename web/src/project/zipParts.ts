@@ -9,7 +9,7 @@
 /** Where shared data goes back in: [offset in the ZIP, length, blob name]. */
 export type SharedRange = [offset: number, length: number, name: string];
 
-export interface PartHeader {
+interface PartHeader {
   /** The joined ZIP's length in bytes. */
   size: number;
   /** In offset order. */

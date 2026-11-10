@@ -16,8 +16,7 @@ import { parseBlocks, BACKBL, CHARBL, MONBL } from '@lewismoten/gamemaker-sandbo
 import { parseCharacter } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 import { characterActions } from '../editor/keymap/keyMap';
 
-export const TAGS = ['platformer', 'top-down', 'shooter', 'keys and doors', 'puzzle', 'maze'] as const;
-export type GameTag = (typeof TAGS)[number];
+type GameTag = 'platformer' | 'top-down' | 'shooter' | 'keys and doors' | 'puzzle' | 'maze';
 
 /** What the rules read: facts about the whole game. */
 export interface TagFacts {

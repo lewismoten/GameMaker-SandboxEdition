@@ -30,8 +30,6 @@ export const FARAWAY = 'a faraway world';
 
 export const worldName = (id: number): string => WORLDS[id] ?? FARAWAY;
 
-export const LANDMARKS: readonly string[] = ['lighthouse', 'kite tower', 'windmill', 'bandstand'];
-
 /** A postcard's colors: sky, land, ink. */
 export const PALETTES: readonly { name: string; sky: string; land: string; ink: string }[] = [
   { name: 'sea glass', sky: '#bfe3dc', land: '#5f9e8f', ink: '#1d3b35' },

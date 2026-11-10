@@ -4,7 +4,7 @@
 
 const KEY = 'gm-desk-buddy';
 
-export interface BuddySaved {
+interface BuddySaved {
   quiet?: boolean;
   met?: boolean;
   helloDay?: string;

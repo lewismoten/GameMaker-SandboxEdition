@@ -10,7 +10,7 @@ import { publicCatalog } from './stamps';
 import { makeCourierId } from './courierId';
 
 /** Why an arriving capsule was turned away: one this screen wrote, a trip that came before, a visitor already here, a full satchel, no catalog to read it with, or a bad file. */
-export type Refusal = 'mine' | 'replay' | 'busy' | 'full' | 'catalog' | CapsuleProblem;
+type Refusal = 'mine' | 'replay' | 'busy' | 'full' | 'catalog' | CapsuleProblem;
 
 export type Arrival = { kind: 'home'; postcards: number } | { kind: 'visitor'; world: number } | { kind: 'refused'; why: Refusal };
 

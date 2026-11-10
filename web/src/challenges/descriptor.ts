@@ -1,7 +1,7 @@
 // Bounded, canonical challenge text. Parsing is pure: no fetches, game execution or storage.
 import { BACKYARD } from './profile';
 
-export interface ChallengeDescriptor {
+interface ChallengeDescriptor {
   v: 1;
   game: string;
   version: string;

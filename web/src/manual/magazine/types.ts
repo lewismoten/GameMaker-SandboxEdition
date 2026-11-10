@@ -180,8 +180,7 @@ export const WEB_SHOTS = ['games', 'map', 'blocks', 'character', 'monster', 'mus
 export type WebShot = (typeof WEB_SHOTS)[number];
 
 /** Made-up early-1995 web pages in a made-up browser (scripts/oldWebShots.ts): public/magazine/oldweb-<name>.webp, 640 x 480. */
-export const OLD_WEB_SHOTS = ['dict', 'zip', 'recipes', 'soups', 'weather', 'yellow', 'gopher'] as const;
-export type OldWebShot = (typeof OLD_WEB_SHOTS)[number];
+export type OldWebShot = 'dict' | 'zip' | 'recipes' | 'soups' | 'weather' | 'yellow' | 'gopher';
 
 /**
  * Pictures drawn for the magazine (art.ts), and the photos of the desk and of today's web.
