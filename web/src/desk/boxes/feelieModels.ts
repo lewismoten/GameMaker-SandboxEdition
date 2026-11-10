@@ -81,5 +81,10 @@ export async function viewMaker(f: Feelie, colors = true): Promise<ViewMaker> {
   if (f.kind === 'nickel') return coin(f.kit);
   if (f.kind === 'box') return stageBox(f.kit);
   if (f.kind === 'patch') return patch(f.kit);
+  if (f.kind === 'kit' && f.kit.assembly) {
+    const [{ assemblyModel }, { assemblyView }] = await Promise.all([import('./kitAssemblyModel'), import('./kitAssemblyDraw')]);
+    const model = assemblyModel(f.kit.assembly);
+    return (canvas) => assemblyView(canvas, model);
+  }
   throw new Error('no 3D view');
 }

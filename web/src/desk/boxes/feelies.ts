@@ -32,6 +32,7 @@ export async function loadFeelies(id: string): Promise<Feelie[]> {
 
 /** A picture file already rendered for a feelie (the nickel's front), or undefined when its thumbnail is drawn in 3D. */
 export function stillThumb(f: Feelie): string | undefined {
+  if (f.kind === 'kit' && f.kit.previews[0]) return `${f.kit.base}${f.kit.previews[0].file}`;
   if (f.kind === 'nickel') return `${f.kit.base}${f.kit.previews[0]?.file ?? 'front.png'}`;
   return undefined;
 }
