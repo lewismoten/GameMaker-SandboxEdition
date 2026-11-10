@@ -54,3 +54,19 @@ describe('nested scan budget', () => {
     expect(tight.badZips[0].error).toMatch(/in all/);
   });
 });
+
+describe('stored entries', () => {
+  it('refuses a stored entry whose directory declares less than the bytes it holds', async () => {
+    const z = await createZip([{ name: 'x.gam', data: new Uint8Array(32), store: true }]);
+    const v = new DataView(z.buffer, z.byteOffset, z.byteLength);
+    let cd = 0;
+    while (v.getUint32(cd, true) !== 0x02014b50) cd++;
+    v.setUint32(cd + 24, 1, true); // declares 1 unpacked byte; 32 are stored
+    const limits = { maxBytes: 1, maxEntries: 2 };
+    await expect(readZip(z, limits)).rejects.toThrow(/stored size/);
+  });
+  it('still reads an honest stored entry', async () => {
+    const z = await createZip([{ name: 'x.gam', data: new Uint8Array(32), store: true }]);
+    expect((await readZip(z))[0].data.length).toBe(32);
+  });
+});
