@@ -34,7 +34,7 @@ they were taken. The text describes the current editor.
 
 ## The home page and your games
 
-![The home page's Sandbox tab: thirteen new games in a grid, with Snowbound picked and its demo playing in the side panel](screenshots/web-home-sandbox.png)
+![The home page's Sandbox tab: fourteen new games in a grid, with Snowbound picked and its demo playing in the side panel](screenshots/web-home-sandbox.png)
 
 The home page groups games in tabs: **My games**, **Imported**, **Starters**, **Sandbox**,
 **Bizarre**, **Special**, **Community** and **CD** (Gameware and Shareware together).

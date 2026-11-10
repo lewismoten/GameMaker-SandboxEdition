@@ -30,6 +30,7 @@
     "release:check": "vite-node scripts/release/check.ts",
     "verify:changed": "node ../scripts/verify-changed.mjs",
     "heavy": "node ../scripts/heavy.mjs",
+    "docs:editor-shots": "vite-node scripts/docEditorShots.ts --",
     "editor:touch": "vite-node scripts/editorTouch.ts",
     "check:dialogs": "vite-node scripts/dialogsFit.ts",
     "check:offline": "vite-node scripts/checkOffline.ts",
