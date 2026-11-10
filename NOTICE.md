@@ -907,9 +907,9 @@ frame-dump hook and kept the results. This fork uses two things from it:
 
 The firmware's source and its own credits moved to its own repository, https://github.com/lewismoten/gamemaker-pocket (see its NOTICE.md). What follows stays here because GameMaker still serves the prebuilt firmware images and the install page (`web/public/pocket/`) and makes the data the board plays.
 
-OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, implemented the category and six-thumbnail library browser, optional version-1 package/index metadata, source-name overlays, title search scope, disposable card metadata cache, stable project identities, preview packing, host renders and regression checks. The previews reuse existing game artwork and this project's title/level renderers; their original credits remain.
+OpenAI Codex (GPT-6), directed by Lewis Moten, implemented the category and six-thumbnail library browser, optional version-1 package/index metadata, source-name overlays, title search scope, disposable card metadata cache, stable project identities, preview packing, host renders and regression checks. The previews reuse existing game artwork and this project's title/level renderers; their original credits remain.
 
-OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, revised the Pocket Player's card discovery, picker search and labels (including incremental search and paging redraws, the search icon and the calibration explanation), display options and setup flow, touch packet handling, single-touch jump wedges, saved sticky direction, packers, full-panel scene and text-page clearing, bounded picture bands and regression checks. Existing game assets retain their own credits.
+OpenAI Codex (GPT-6), directed by Lewis Moten, revised the Pocket Player's card discovery, picker search and labels (including incremental search and paging redraws, the search icon and the calibration explanation), display options and setup flow, touch packet handling, single-touch jump wedges, saved sticky direction, packers, full-panel scene and text-page clearing, bounded picture bands and regression checks. Existing game assets retain their own credits.
 
 A firmware for the ESP32-3248S035 board that plays the Starter games, and an install page (`web/public/pocket/`). Claude Sonnet 5.5 wrote the firmware and the page. The firmware binaries' complete third-party notices are in [`web/public/pocket/fw/NOTICES.txt`](web/public/pocket/fw/NOTICES.txt).
 
@@ -923,7 +923,7 @@ A firmware for the ESP32-3248S035 board that plays the Starter games, and an ins
 
 ## Tools used to build and test
 
-OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, added capture-matrix validation and failure regressions to the PLAYGAME measurement collector and plotter (`tools/dosbox-286/`).
+OpenAI Codex (GPT-6), directed by Lewis Moten, added capture-matrix validation and failure regressions to the PLAYGAME measurement collector and plotter (`tools/dosbox-286/`).
 
 Built with [TypeScript](https://www.typescriptlang.org/) (Apache-2.0),
 [Vite](https://vitejs.dev/), [Vitest](https://vitest.dev/) and vite-node (MIT, both from the
