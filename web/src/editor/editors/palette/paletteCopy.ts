@@ -39,7 +39,7 @@ export function paletteCopy(project: Project, file: string, pal: Palette, select
     validate();
     return h(
       'div',
-      { class: 'stack' },
+      { class: 'stack pal-copy' },
       h('label', { class: 'field' }, h('span', null, 'Source palette'), source),
       first.el,
       last.el,

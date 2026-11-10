@@ -136,3 +136,18 @@ dialog.modal .rec-bot label.check {
     row-gap: 8px;
   }
 }
+
+/* Scene, length and budget share a row, leaving room for the bot's status and actions. */
+@media (max-height: 480px) and (orientation: landscape) {
+  .rec-bot {
+    max-width: none;
+  }
+  .rec-bot-pick {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+  .rec-bot-status {
+    min-height: 0;
+  }
+}

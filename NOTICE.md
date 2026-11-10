@@ -56,6 +56,8 @@ game folder opens in the browser unchanged.
 
 ## Credits
 
+- **Short landscape dialogs (November 10, 2026)**: OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, added landscape layouts for phone dialogs using the existing forms and previews. No new third-party assets or game content were added.
+
 - **Entry loading (November 10, 2026)**: OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, deferred home demo file inspection and playback, split optional title rendering, screenshot encoding, registration panels and gamepad controls, and separated FLAGS help from file-list metadata, with regression tests.
 
 - **Source area documentation (November 10, 2026)**: OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, documented the Graphics Image Reader layers and completed the source README index.

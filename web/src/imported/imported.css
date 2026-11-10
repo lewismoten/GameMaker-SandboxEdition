@@ -267,3 +267,29 @@ dialog.modal .ir-ratings .ir-rating {
 .tile-tags-guess .tile-tag {
   border-style: dashed;
 }
+
+/* Rating and provenance beside the note, with Save below both columns. */
+@media (max-height: 480px) and (orientation: landscape) {
+  dialog.modal .note-dialog {
+    max-width: none;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+    gap: 4px 12px;
+  }
+  .note-dialog > label {
+    grid-column: 2;
+    grid-row: 1;
+    align-self: end;
+  }
+  .note-dialog textarea {
+    grid-column: 2;
+    grid-row: 2 / span 2;
+    min-height: 120px;
+  }
+  .note-dialog .note-facts {
+    grid-column: 1;
+    font-size: 12px;
+  }
+  .note-dialog .buttons {
+    grid-column: 1 / -1;
+  }
+}
