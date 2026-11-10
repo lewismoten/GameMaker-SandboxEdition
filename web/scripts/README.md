@@ -29,14 +29,14 @@ This folder holds the build's Vite plugins and the scripts run by hand (from
     `og/<id>.png` (drawn by `ogImage.ts`), `downloads.html` (a plain page linking every listed Sandbox and Bizarre game's ZIP, for crawlers and the Internet Archive), each Guide section's page `help-<id>.html` (its text from
     `manual/guideSections.ts`, which `webManual.ts` shows), and The Sandbox Scoop's RSS feed `scoop.xml`
     (`scoopFeed.ts`: every game's `printables.json` news story, dated from `scoopDates.json`).
-- `artCourseFigures.ts` (`npx vite-node scripts/artCourseFigures.ts`): redraws the figures of the art courses (`../src/artCourses/figures/*.png`) from real 20x20 blocks drawn in code. `artCourseFigures6.ts` draws course 6's word monsters; `artCourseFigures7.ts` course 7's, from the built disks of three Starters (`GM_GAMES` sets another games folder).
+- `artCourseFigures.ts` (`npx vite-node scripts/artCourseFigures.ts`): redraws course 1’s pixel-art figures (`../src/artCourses/figures/*.png`) from real 20x20 blocks drawn in code. `artCourseFigures6.ts` draws course 6's word monsters; `artCourseFigures7.ts` course 7's, from the built disks of three Starters (`GM_GAMES` sets another games folder).
 - `playChunks.test.ts`: checks `../vite.config.ts`'s production chunk ownership with a small module graph: Home remains a separate route root, so its shared data does not fall into the play-only runtime after removing its static re-export. Production network captures remain necessary to check the complete emitted graph.
 - `leakSweep.sh` (`npm run check:leaks -- [built-folder] [since-rev]`): a leak sweep over the tracked files, recent commit messages and a production build: secret games' ids and titles outside their folders, "Dowden", local paths, `.for-lewis`, token shapes. It prints counts and paths only, never a secret name; exits 1 if the build has a hit.
-- `seoStaticPages.ts`: the text of `cast.html`, `library.html` and `magazine.html` (TURBO BUTTON's words, read from `src/seo/magazineText.json`), static pages for the two parts of the app that live only at a `#/…` address (title, description, canonical, h1, and plain text linking to the games' play pages, from the public catalog only, so no secret game); `seoBuild.ts` wraps and emits them like the Guide's `help-<id>.html` and lists them in the sitemap.
+- `seoStaticPages.ts`: the text of `cast.html`, `library.html` and `magazine.html` (TURBO BUTTON's words, read from `src/seo/magazineText.json`), static pages for the parts of the app that live only at a `#/…` address (title, description, canonical, h1, and plain text linking to the games' play pages, from the public catalog only, so no secret game); `seoBuild.ts` wraps and emits them like the Guide's `help-<id>.html` and lists them in the sitemap.
 - `magazineText.ts` (`npx vite-node scripts/magazineText.ts`): rewrites `src/seo/magazineText.json`, the magazine's words as plain text (`manual/magazine/plainText.ts`, `staticText.ts`), for `magazine.html`; `magazineText.test.ts` fails when the file is out of date or a page holds a sentence the text lacks.
 - `ogAudit.mjs <built-folder> [secret-ids...]`: checks a build's `og/*.png` link previews: each is 1200 x 630, under 300 KB, shows a real picture of the game (not the plain text-only card) and none belongs to a secret game; exits 1 on a finding.
 - `seoAudit.mjs <built-folder> [starter-ids-file]`: checks a built site folder's pages for titles, descriptions, canonical and Open Graph tags, English language, one h1, matching Open Graph/Twitter tags and images, valid JSON-LD, unique 50–160 character descriptions, broken internal links, images without alt, crawler-file coverage, secret-game leaks, and that downloads.html names no Starter. Search tags are optional for noindex utility pages; the verification token is exempt. Exits 1 on a finding (`node` only, no build step of its own).
-- `release/` (`npm run release:draft -- <pages|engine|archives|tools>`, `release:cut -- <target> <version> [date]`, `release:check`): release notes. `fragments.ts` reads and validates target-specific `changes/unreleased/<target>/*.md` files; `draft.ts` prints them with legacy Unreleased notes, followed by separately labeled suggestions from the commits since the target's last tag (`classify.ts` sorts them into Added/Changed/Fixed/Removed, groups an "Area:" prefix into one line and leaves out merges, formatting, tests-only, docs-only, agent notes and anything touching a secret game; `git.ts` reads git); `cut.ts` combines fragments with Unreleased into a dated version, sets a package's version and removes only that target's consumed fragments; `check.ts` fails when a package changed since its tag with no fragment or Unreleased entry. The changelog parsing is `../../scripts/release/changelog.mjs`, which the tag workflows run with bare node (`section.mjs` prints one version's section for the GitHub Release). See `../../docs/package-releases.md`.
+- `release/` (`npm run release:draft -- <pages|engine|archives|tools>`, `release:cut -- <target> <version> [date]`, `release:check`): release notes. `release/fragments.ts` reads and validates target-specific `changes/unreleased/<target>/*.md` files; `release/draft.ts` prints them with legacy Unreleased notes, followed by separately labeled suggestions from the commits since the target's last tag (`release/classify.ts` sorts them into Added/Changed/Fixed/Removed, groups an "Area:" prefix into one line and leaves out merges, formatting, tests-only, docs-only, agent notes and anything touching a secret game; `release/git.ts` reads git); `release/cut.ts` combines fragments with Unreleased into a dated version, sets a package's version and removes only that target's consumed fragments; `release/check.ts` fails when a package changed since its tag with no fragment or Unreleased entry. The changelog parsing is `../../scripts/release/changelog.mjs`, which the tag workflows run with bare node (`section.mjs` prints one version's section for the GitHub Release). See `../../docs/package-releases.md`.
 - `devLog.ts`: the dev server's `gamemaker-dev-log` plugin (`vite serve` only). It appends the page's opt-in interaction log (`src/devLog/interactionLog.ts`) to `../.for-lewis/debug/interaction-log/<local date>.jsonl`, taking only POSTs from this machine of at most 256 KB.
 - `waybackInventory.ts`, `waybackCheck.ts`, `waybackSave.ts` (`npm run wayback:inventory -- <out.json> <file-or-folder>... [--skip-hosts regex]`, `wayback:check -- <urls.json> <out.json> [--gap ms]`, `wayback:save -- <checklist.md> <log.tsv> [--gap seconds] [--limit n]`; shared code in `waybackLib.ts`): list the outside URLs a set of text files cite, ask the Wayback availability API which have a snapshot, and ask Save Page Now to archive the unticked `- [ ] <url>` items of a checklist. They send a generic user agent with no contact details, make one request per gap (1.1 s to look up, 60 s to save) and stop after three refusals. Tests use a fake fetch.
 - `agentUsage.ts` (`npm run agent:usage -- <log-dir> [--since YYYY-MM-DD] [--out file.csv]`, counting in `agentUsageLib.ts`): one CSV row per sub-agent, with its start, end, a plain-words `title` (right after `agent`: the task description with whitespace folded to single spaces, else `<agent type> task (<id>)`, else `Untitled task (<id>)`; never empty; `task` still holds the raw description), model, task and input, cache and output tokens, from session logs laid out as `<log-dir>/<session>/subagents/agent-<id>.jsonl`. Each streamed message counts once; the directory is always an argument.
@@ -133,14 +133,14 @@ This folder holds the build's Vite plugins and the scripts run by hand (from
     download URL).
 - The guided tour's voice: `narrate.ts` (`npm run voice`; `npm run voice:all` records every
   line again) speaks each line of `tour/lines.ts` in its host's voice (cloned from one of Lewis's voice
-  samples with Pocket TTS, or one of Kokoro's stock voices via `kokoro.ts`, which runs Kokoro in
+  samples with Pocket TTS, or one of Kokoro's stock voices via `narrate/kokoro.ts`, which runs Kokoro in
   a child process from the git-ignored `/.narrate` folder that `npm run voice:setup` fills; then
   shifted in pitch and speed as `HOSTS` in `tour/steps.ts` says),
   locally, into `../public/tour/voice/<chapter>/<id>.ogg` (Opus, mono, about 10 kbps), and
   rewrites `index.json` (id → chapter, where, words, seconds and hashes, so unchanged lines are
-  skipped) and the generated `README.md` there. Its parts are in `narrate/`: `pocketTts.ts` (the
-  engine, ported from pocket-tts-js, MIT), `audio.ts` (ffmpeg in and out: the voice sample's
-  clearest 10 s, the pitch and speed shift, even loudness, the Opus encoding), `spoken.ts`, `lineIndex.ts` and `voiceReadme.ts`. The
+  skipped) and the generated `README.md` there. Its parts are in `narrate/`: `narrate/pocketTts.ts` (the
+  engine, ported from pocket-tts-js, MIT), `narrate/audio.ts` (ffmpeg in and out: the voice sample's
+  clearest 10 s, the pitch and speed shift, even loudness, the Opus encoding), `spoken.ts`, `narrate/lineIndex.ts` and `narrate/voiceReadme.ts`. The
   model, the engine and the voice samples stay outside the repo (`--model`, `--engine`, or
   `POCKET_TTS_MODEL`, `POCKET_TTS_ENGINE`, and `NARRATE_SAMPLE_<NAME>` for a sample named in
   `SAMPLES`; `--sample <file>` puts every line in one recording, to compare); CI never runs it.
@@ -271,14 +271,14 @@ from the slim home-page catalog. Copying a selected file still reads its origina
 - `pocketColorCheck.ts`: host check of the Pocket Player's level colors (`pocket-out/data/` (made by `pocketData.ts`)): the same palette and byte-order math, compared with the engine's render, written as a side-by-side PNG (`npx vite-node scripts/pocketColorCheck.ts out.png`).
 - `pocketHostCheck.ts`: the Pocket Player's play rules (the Pocket repository's `src/gmcore.h`) against the real engine, game by game: each packed game's committed walkthrough replays on the engine's headless player, the same keys replay through `host/hosttest.cpp` (built with `c++` and zlib), and position, frame, scroll, score, hit points, lives, counters and a picture hash must match on every tick, and the PC speaker effects it starts (tick, number, frequencies) must be the same; one line per game (`npx vite-node scripts/pocketHostCheck.ts [id ...]`).
 - `pocketSetupDrive.py PORT MIRROR ORIENT COLORS [WIRING]`: drives the three-step display setup with pretend BOOT presses and taps, then touch calibration; orientation takes 0 to 5 presses. Needs a board and PlatformIO's Python.
-- `pocketControlsCheck.ts`: also checks full-panel card clearing, palette-0 margins and final picture bands at both board sizes (`host/carddrawtest.cpp`), interrupted GT911 packets, sustained flight holds, title labels/search, and both boards' picture sizes and setup orientations. The Pocket Player's touch controls (`hardware/pocket-player/src/controls.h`) in a touch-event replay (`host/controlstest.cpp`): sliding a finger across the pad, two fingers, a stylus tap against a drag, palm contacts, the left-handed layout, the key menu, and the layout's target sizes.
+- `pocketControlsCheck.ts`: also checks full-panel card clearing, palette-0 margins and final picture bands at both board sizes (`host/carddrawtest.cpp`), interrupted GT911 packets, sustained flight holds, title labels/search, and both boards' picture sizes and setup orientations. The Pocket Player's touch controls (`src/controls.h` in the Pocket repository) in a touch-event replay (`host/controlstest.cpp`): sliding a finger across the pad, two fingers, a stylus tap against a drag, palm contacts, the left-handed layout, the key menu, and the layout's target sizes.
 - `pocketShowcase.py [--minutes 4] [--countdown 5] [--dry-run] [--boards A,B,C]`: a choreographed demo on all three Pocket Player boards at once, for filming (takes the three lock folders, one thread per board: A plays games by self-test, B plays with made-up touches on the pad, C loads SD card games and level cards; big `S2` banners, a live three-column status in the terminal, "All tests passed" at the end, banners off and locks released even on Ctrl-C). Needs firmware with `S2` and `L`.
-- `pocketData.ts`: packs every Starter the board can run into `pocket-out/data/` (made by `pocketData.ts`) (deflated files shared by content, one `.cfg` per game, `games.txt`); `--list` says why each one is left out; `--out <card>` writes a microSD card's `pocket/` folder, `--gmp <card>` one `pocket/NAME.GMP` per game (the Download chooser's Pocket file). The packing is `src/export/pocketPack.ts`.
+- `pocketData.ts`: packs every Starter the board can run into ignored `pocket-out/data/` (deflated files shared by content, one `.cfg` per game, `games.txt`); `--list` says why each one is left out; `--out <card>` writes a microSD card's `pocket/` folder, `--gmp <card>` one `pocket/NAME.GMP` per game (the Download chooser's Pocket file). The packing is `src/export/pocketPack.ts`.
 - `gmosCard.ts`: writes games for Game-Maker OS (the Raspberry Pi player) to a card folder: `GAMES/<DIR>/` with each public game's DOS files, and `GAMES/LIBRARY.JSL`, its library index in `pocketData.ts`'s `library.jsonl` format plus each game's company, year and blurb; `--index-only` writes the index alone.
-- `fidelityWeb.ts` and `fidelity/` (spike, 2026-11-04): the engine against real DOS. `fidelity/dosCapture.sh` runs a CD game in DOSBox with a timed key script (`fidelity/keyseq.swift` posts held keys; `volume-keys.txt` is an example) and records video and sound with DOSBox's own capture; `fidelityWeb.ts` plays the same game headless and writes a frame per game tick; `fidelity/compare.ts` prints the share of identical pixels per tick. `ALL=1` also records every presented screen (palette fades, slides, menus) in `<out>.all.rgb`/`.all.txt` through `runHeadless`'s `onPresent`. `dosCapture.sh` exits 2 when the screen is locked and 3 when no AVI was captured. Run only while Lewis is away (it opens DOSBox; the display must be awake and unlocked). Round 3 (2026-11-05): `fidelityWeb.ts` with `-` now plays from the start in record mode (the idle menu would run `demo.rec` and press keys of its own) and `KEYS` ticks count from the first tick of scene `KEYSCENE` (default 2); `fidelity/score.mjs` aligns a web run with a decoded DOS level AVI (monotone dynamic programming) and prints identical pixels per tick, the first difference and a web | DOS | diff picture; `fidelity/pair.mjs` draws one such picture; `fidelity/fades.mjs` counts how many presented screens (fades) appear exactly in a DOS capture; `CYCLES="fixed 40000"` overrides DOSBox's speed in `dosCapture.sh`. Notes: `.for-lewis/research/fidelity/2026-11-04-spike.md`, `2026-11-05-dos.md`.
+- `fidelityWeb.ts` and `fidelity/` (spike, 2026-11-04): the engine against real DOS. `fidelity/dosCapture.sh` runs a CD game in DOSBox with a timed key script (`fidelity/keyseq.swift` posts held keys; `fidelity/volume-keys.txt` is an example) and records video and sound with DOSBox's own capture; `fidelityWeb.ts` plays the same game headless and writes a frame per game tick; `fidelity/compare.ts` prints the share of identical pixels per tick. `ALL=1` also records every presented screen (palette fades, slides, menus) in `<out>.all.rgb`/`.all.txt` through `runHeadless`'s `onPresent`. `dosCapture.sh` exits 2 when the screen is locked and 3 when no AVI was captured. Run only while Lewis is away (it opens DOSBox; the display must be awake and unlocked). Round 3 (2026-11-05): `fidelityWeb.ts` with `-` now plays from the start in record mode (the idle menu would run `demo.rec` and press keys of its own) and `KEYS` ticks count from the first tick of scene `KEYSCENE` (default 2); `fidelity/score.mjs` aligns a web run with a decoded DOS level AVI (monotone dynamic programming) and prints identical pixels per tick, the first difference and a web | DOS | diff picture; `fidelity/pair.mjs` draws one such picture; `fidelity/fades.mjs` counts how many presented screens (fades) appear exactly in a DOS capture; `CYCLES="fixed 40000"` overrides DOSBox's speed in `dosCapture.sh`. Notes: `.for-lewis/research/fidelity/2026-11-04-spike.md`, `2026-11-05-dos.md`.
 - `deepSearchCheck.ts <port> <out-dir>`: headless check of the home deep search (a word only inside one game's text file, its "found in" hint, the live announcement, axe at 1440 and 390 in light and dark, no horizontal scroll, slowest key event while indexing); starts its own dev server.
 
-- `pocketArt.ts`: writes the Pocket Player's committed art headers, `splash_data.h` (the Sandbox sting's last full frame, 160x100) and `icons_data.h` (19 category icons); `--preview <dir>` writes PPM shots. Needs a built game disk for `SANDLOGO.FLI`.
+- `pocketArt.ts`: writes the Pocket Player’s art headers to ignored `pocket-out/src/` for copying into its repository, `splash_data.h` (the Sandbox sting's last full frame, 160x100) and `icons_data.h` (19 category icons); `--preview <dir>` writes PPM shots. Needs a built game disk for `SANDLOGO.FLI`.
 
 Pocket library additions: `pocketData.ts` writes optional version-1 `library.jsonl` and a
 shared, deduplicated `thumbs.pak` alongside unchanged legacy lists. `--scores <file>` reads
@@ -291,8 +291,131 @@ cache-corruption and 512-game RAM checks. The Pocket Player README (gamemaker-po
 - `cydFriendly.ts` (`npm run check:cyd -- [--out file.json] [--report file.md]` from the root or `web/`): headless CYD touch-board advisory for every public game and Starter; always excludes secret games. Reads built disks, `controls.json`, recorded walkthroughs, route-tool inventory and optional `walkPaths.json`; never builds or rewrites games. Run after the usual game build. Defaults to `.for-lewis/research/pocket/cyd-friendly.json` and `cyd-friendly.md`. JSON schema version 1 has a `games` table keyed by each row's `id`, version, Starter flag, nullable score, measured/provisional/unrated status, reasons, raw metrics, per-jump early/late timing-slack probes, walking-path tick counts and warnings; a later Pocket packer can read it without parsing Markdown. Missing inputs, replay divergence and unsupported random-seed modes produce an unrated row, never a perfect score. `cydReplay.ts` runs the engine simulator, probes earlier and later jump starts and measures solid landing widths; `cydScore.ts` holds the tested scoring policy. The generated report documents units, exact penalties and limitations. These are suggestions from one route, not proof of required precision or board playability. Unknown local flights make a score provisional; always review warnings and test on a touch board before curating a library.
 - `knownGamesTable.ts`, `knownGamesSheets.ts` and `knownGamesSources.ts` (`npx vite-node scripts/knownGamesTable.ts [--reference <dir>]`, `npx vite-node scripts/knownGamesSheets.ts <out dir> [--per 12] [--reference <dir>]`): the Imported tab's known-games table. `knownGamesSources.ts` lists the known games (the CD's, and with the maintainer's reference folder the found games and the public archive's zips) and reads the archive walk bot's results. `knownGamesSheets.ts` draws contact sheets for tagging them by eye: per game its title picture and three level views drawn as the engine draws them, with its name, level count, the walk bot's result and what the tag rules read. `knownGamesTable.ts` writes `src/imported/knownGames.json` from the curated tags in `src/imported/knownGames.curated.json` (the rules' guesses where a game has none), with each game's level count and the walk bot's result.
 
+The headless CYD advisory and Pocket host checks are hardware-untested evidence: they do not establish physical touch, display, sound or timing behavior.
+
 ## The Pocket Player repository
 
 The Pocket Player firmware and its board tools live in https://github.com/lewismoten/gamemaker-pocket (clone it beside this repository, or set `GAMEMAKER_POCKET_DIR`). Its `pocketStatus.py`, `pocketWalk.py` (with its walk scripts), `pocketBoardCheck.py`, `pocketHeldTrace.py` and `pocketIconsShot.py` moved there; `pocketSdWrite.py`, `pocketSetupDrive.py` and `pocketShowcase.py` stay here and import `pocketStatus.py` from it. GameMaker makes what the board plays: `pocketData.ts` writes `pocket-out/data/` (the repository copies it into its `data/`), `pocketArt.ts` writes `pocket-out/src/splash_data.h` and `icons_data.h` (copy into its `src/`), and the library and `.gmp` exporters, `gmosCard.ts` and `pocketHostCheck.ts`, `pocketCardsCheck.ts` and `pocketControlsCheck.ts` stay here. Those three compile the repository's C++, so they print a skip message and exit 0 when it is not there; nothing in `npm test`, lint, typecheck or verify needs it. The checks read `pocket-out/data/`, so run `pocketData.ts` first.
 
 Firmware downloads: `web/public/pocket/` (the web flasher and its committed firmware images) keeps working here unchanged. The canonical flasher will be https://lewismoten.github.io/gamemaker-pocket/ (the new repository's GitHub Pages); this page becomes a redirect only after that one is live. Follow-up: build and release images from the new repository.
+
+## Other modules and data
+
+Commands here run from `web/` unless a line says otherwise.
+
+- [README.md](README.md) — this build-time file and command map.
+- `achievementHonors.ts` — draws the stage honors certificates and Sandbox Diploma achievement badges without game art.
+- `artCourseFigures2.ts` — draws course 2’s shadows and depth figures (`npx vite-node scripts/artCourseFigures2.ts`).
+- `artCourseFigures3.ts` — draws course 3’s palette ramps, swaps and color-use figures, including built-disk data (`npx vite-node scripts/artCourseFigures3.ts`).
+- `artCourseFigures4.ts` — draws course 4’s traveler facings, climb and walk frames and silhouettes (`npx vite-node scripts/artCourseFigures4.ts`).
+- `artCourseFigures5.ts` — draws course 5’s animation rings, water and torch frames, and examples from built Starter disks (`npx vite-node scripts/artCourseFigures5.ts`).
+- `artCourseKit.ts` — shared six-bit palette, PNG saving and drawing helpers for the art-course figures.
+- `levelGenShots.ts` — captures the map editor’s Generate dialog and dungeon or forest results on a server supplied with `--url` (`npx vite-node scripts/levelGenShots.ts --url <own-server> --out <dir> --kind dungeon|forest --roles "3=Wall,25=Floor"`).
+- `pocketRepo.ts` — locates the separate Pocket repository through `GAMEMAKER_POCKET_DIR`, defines `pocket-out/` and skips host checks when that clone is absent.
+- `pocketCardsCheck.ts` — compares packed scene cards, text, titles and instructions against the engine, including pixels, palettes and waits; skips unpacked FLIs (`npx vite-node scripts/pocketCardsCheck.ts [id ...] [--data <dir>]`).
+- `pocketSdWrite.py` — sends a folder to the board’s microSD card over USB serial, replacing matching files and resetting the board afterward (`python web/scripts/pocketSdWrite.py <port> <folder>` from the root with PlatformIO’s Python).
+- `fidelity/pipemare-keys.txt` — timed macOS key events for the Pipemare DOS capture.
+- `fidelity/sample-keys.txt` — sample timed key events for the DOS capture helper.
+- `mcp/README.md` — setup, commands and limits for the local MCP server.
+- `mcp/main.ts` — starts the stdio server and reads roots and the built-app directory from CLI options.
+- `mcp/server.ts` — exposes the shared game tools and server tools over an MCP transport.
+- `mcp/serverTools.ts` — finds, opens, creates and saves games and builds their downloads.
+- `mcp/session.ts` — keeps the open game in memory and copies read-only sources into an allowed working folder on save.
+- `mcp/sources.ts` — finds folders and ZIPs in allowed roots, public repository games and CD samples, with their player patches.
+- `mcp/roots.ts` — resolves allowed folders and links, keeping original and catalog files read-only.
+- `mcp/bridge.ts` — pairs one editor tab over a localhost WebSocket, validates origin and pairing codes, and relays tool calls.
+- `mcp/exports.ts` — runs the editor’s exporters in Node with local built-site assets and a restricted file fetch.
+- `mcp/vite.config.ts` — silent Vite settings for the MCP runner, with no site build plugins, watching or HMR.
+- `mcp/mcp.example.json` — example stdio client configuration with a writable game folder.
+- `narrate/whisper.ts` — runs local whisper.cpp or openai-whisper on clips for voice checks and word timings, without downloading models.
+
+## Regression files
+
+Run selected files with `npx vitest run scripts/<file>.test.ts`. Browser tests use bundled headless browsers; they do not establish real-device behavior.
+
+- `achievementArtKeep.test.ts` — keeps hand-drawn badges byte-identical and checks deliberate adoption and generated-art ownership.
+- `agentUsage.test.ts` — checks log message deduplication, task times and CSV quoting.
+- `archiveCache.test.ts` — checks cache hits and invalidation when input bytes or imported code change.
+- `archiveQueue.test.ts` — checks build order, request priority, retained results and clearing.
+- `badgeSimilarMetrics.test.ts` — checks shape, hue-only and color-vision similarity measurements.
+- `cdGamesCp437.test.ts` — checks normalization of CP437-framed catalog titles.
+- `cydReplay.test.ts` — replays a built walkthrough and measures landings and jump timing slack.
+- `cydScore.test.ts` — checks the CYD scoring penalties, missing inputs and provisional results.
+- `deskTargetSizes.test.ts` — measures the desk controls’ rendered hit targets.
+- `dialogAccessibility.test.ts` — checks shared modal names against visible headings.
+- `dialogLayouts.test.ts` — checks the Community proposal form’s portrait-phone layout.
+- `dialogTargets.test.ts` — checks visible dialog controls’ hit targets.
+- `dialogsFitMeasure.test.ts` — checks checkbox hit areas, collapsed details and dialog measurements.
+- `diskDiff.test.ts` — checks disk diff summaries, format changes and deterministic output.
+- `diskDiffArgs.test.ts` — checks two-path and game-at-revision command arguments.
+- `dosFloppies.test.ts` — checks floppy layout from a DOS export and refusal to overwrite output.
+- `dosNames.test.ts` — checks distinct DOS 8.3 archive names and directory names.
+- `editorOverviewTouch.test.ts` — checks actual hits on extended link targets and phone overflow.
+- `editorTouchAudit.test.ts` — checks failures for missing editors, overflow, small targets and axe findings.
+- `gameArchive.test.ts` — checks reproducible DOS ZIPs, runtime files and reversible player customizations.
+- `hostedPlayerBuild.test.ts` — checks metadata and indexing rules for the hosted player copies.
+- `levelMetadataFiles.test.ts` — checks canonical per-game JSON, removal of retired entries and preservation of unchanged files.
+- `mcp/bridge.test.ts` — checks tab pairing, origin rules, lockout and calls through the editor bridge.
+- `mcp/exports.test.ts` — checks that local asset reads cannot escape into a sibling folder with a shared name prefix.
+- `mcp/server.test.ts` — checks tools, folder rules, game creation and the real stdio server with an MCP client.
+- `narrate/compare.test.ts` — checks spoken-word normalization and differences using synthetic transcripts.
+- `narrate/narrate.test.ts` — checks line validation, take selection, README generation and audio processing with synthetic tones.
+- `narrate/pauses.test.ts` — checks expected pauses and detected inner silence.
+- `narrate/phoneLines.test.ts` — checks caller casting and recorded clips for every generated phone line.
+- `narrate/split.test.ts` — checks splitting, joining, trimming and stretching narration pauses.
+- `narrate/spoken.test.ts` — checks spoken numbers, names, initialisms and pronunciation replacements.
+- `narrate/voiceReadme.test.ts` — checks repeatable README output without changing its supplied heading text.
+- `pageCatalog.test.ts` — checks that the slim Starter catalog retains fields needed at page load.
+- `release/changelog.test.ts` — checks changelog sections, version selection and release cuts.
+- `release/classify.test.ts` — checks commit categories, grouping and omitted private or irrelevant changes.
+- `release/cut.test.ts` — checks release cutting against temporary files without a real release.
+- `release/fragments.test.ts` — checks target-specific fragments beside legacy notes and removal after a cut.
+- `release/supervised.test.ts` — checks the release guard’s main-checkout marker and tag matching.
+- `releaseNotes.test.ts` — checks release-note grouping, order, truncation and determinism from disk diffs.
+- `replayLogArgs.test.ts` — checks replay options, frame defaults and malformed logs.
+- `sameBytes.test.ts` — checks added, removed and changed file hashes.
+- `seoAudit.test.ts` — checks built-page metadata and deliberate regressions in temporary folders.
+- `versionDisksFiles.test.ts` — reads tracked historical disk bytes from a temporary Git repository.
+- `walkAutoArgs.test.ts` — checks walkthrough options, game selection and scene output.
+- `waybackLib.test.ts` — checks URL extraction and archive requests with a fake fetch.
+- `zipShare.test.ts` — checks that split Starter ZIPs reassemble byte for byte and save space.
+
+## Workspace commands
+
+The specialized web commands are listed with their scripts above or in the [kit README](../../games/kit/README.md). The remaining package scripts are below. Root-only commands run from the repository root; details of repository tools are in the [repository scripts README](../../scripts/README.md).
+
+- `npm run dev` — root or `web/`: starts Vite; the web `predev` hook refreshes existing game outputs in the background and waits when disks are missing.
+- `npm run start` — root only: runs the web development command.
+- `npm run build` — root: builds SDK packages then the web app; `web/`: typechecks and builds the Vite bundle after refreshing games.
+- `npm run build:packages` — root only: builds engine, archives and tools distributions in dependency order.
+- `npm run prepare` — root install hook: builds SDK packages and game outputs.
+- `npm run preview` — `web/` only: previews a Vite production build.
+- `npm run build:games` — root only: generates game disks and extras; `--force` rebuilds games and `--force-all` also rebuilds extras.
+- `npm run verify` — root only: runs web format checking, lint, typecheck, tests, package isolation and release-note checks.
+- `npm run verify:changed` — root or `web/`: checks changed files against `origin/develop` or `--base <ref>`, with whole-project typechecking.
+- `npm run verify:packages` — root only: builds and verifies SDK packages outside the monorepo.
+- `npm run test` — root or `web/`: runs Vitest after refreshing game outputs.
+- `npm run typecheck` — root or `web/`: checks TypeScript with an incremental build-info cache.
+- `npm run format` — root or `web/`: formats the repository with Prettier’s content cache.
+- `npm run format:check` — `web/` only: checks repository formatting with the same Prettier cache.
+- `npm run lint` — root or `web/`: runs type-aware ESLint with a content cache.
+- `npm run lint:full` — `web/` only: runs ESLint without its cache.
+- `npm run lint:fix` — `web/` only: runs ESLint and applies available fixes.
+- `npm run pretypecheck` — web hook: checks SDK declaration freshness before typechecking.
+- `npm run prelint` — web hook: checks SDK declaration freshness before linting.
+- `npm run predev` — web hook: refreshes existing games in the background and waits when disks are missing.
+- `npm run prebuild` — web hook: refreshes generated games before building.
+- `npm run pretest` — web hook: refreshes generated games before the full test suite.
+- `npm run pretest:fast` — web hook: refreshes generated games before the fast test suite.
+- `npm run precheck:games` — web hook: refreshes generated games before their checks.
+- `npm run already` — root only: searches commits, tracked code and private notes for prior work matching task words.
+- `npm run heavy` — root or `web/`: runs a command through the shared heavy-job scheduler.
+- `npm run look` — root only: captures the current view or a saved shot through the Ghost Jack camera bridge, with optional OCR.
+- `npm run phone:build` — root only: rebuilds both phone variants’ boards, checks, Gerbers, parts, previews and shells; physical output is hardware-untested by the build.
+- `npm run backup:local` — root only: writes a dated encrypted archive of local work outside Git.
+- `npm run backup:restore` — root only: decrypts a local backup into a new or empty folder.
+- `npm run release:sizes` — root only: checks site, offline-copy, package and native-download size budgets.
+- `npm run release:pages` — root only: builds a release tag in a temporary worktree and prepares the Pages commit; publishing needs `--push` and the supervised tag marker.
+- `npm run merge:gate` — root only: merges pinned feature revisions into an isolated candidate, runs required checks and optionally pushes the tested result to develop.
+- `npm run worker:bootstrap` — root only: creates a feature worktree with private generated outputs and installs dependencies; `--doctor` reports host capabilities.
+- `npm run branches:triage` — root only: reports cached unmerged feature refs, prior equivalent work, conflicts and worktree state without deleting branches.
