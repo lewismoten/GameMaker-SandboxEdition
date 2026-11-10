@@ -2,41 +2,41 @@
   "about": "Written by npm run verify:perf -- --update. Bytes and requests: median of the runs plus 10%. INP at 4x CPU slowdown: median plus 50% or 80 ms, whichever is more (timings swing; a failing click is measured twice).",
   "pages": {
     "home": {
-      "kb": 248,
-      "requests": 65
+      "kb": 1091,
+      "requests": 70
     },
     "editor map": {
-      "kb": 1637,
-      "requests": 112
+      "kb": 1787,
+      "requests": 120
     },
     "library": {
-      "kb": 930,
-      "requests": 167
+      "kb": 1129,
+      "requests": 173
     },
     "desk": {
-      "kb": 470,
-      "requests": 164
+      "kb": 662,
+      "requests": 157
     },
     "dos.html": {
-      "kb": 235,
-      "requests": 52
+      "kb": 301,
+      "requests": 54
     }
   },
   "clicks": {
     "editor map: tab Blocks": {
-      "inpMs": 300
+      "inpMs": 240
     },
     "editor map: tab Monsters": {
-      "inpMs": 152
+      "inpMs": 144
     },
     "editor map: tab Tool options": {
       "inpMs": 96
     },
     "desk: open Virus Blaster box": {
-      "inpMs": 152
+      "inpMs": 144
     },
     "desk: close Virus Blaster box": {
-      "inpMs": 128
+      "inpMs": 120
     }
   }
 }

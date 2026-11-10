@@ -8,23 +8,7 @@ import { mkdirSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import type { CDPSession, Page } from 'playwright-core';
 import { applySlowdown, arg, launch, OBSERVE, target } from './perfLib';
-
-const PAGES: [string, string][] = [
-  ['home', '/#/'],
-  ['editor overview', '/#/p/look:carl/menu.cmf'],
-  ['editor map', '/#/p/look:blaster/bus2.map'],
-  ['editor blocks', '/#/p/look:blaster/b1.bbl'],
-  ['guide', '/#/help'],
-  ['library', '/#/library'],
-  ['achievements', '/#/achievements'],
-  ['cast', '/#/cast'],
-  ['credits', '/#/credits'],
-  ['mac', '/#/mac'],
-  ['desk', '/#/desk'],
-  ['magazine', '/#/magazine'],
-  ['dos.html', '/dos.html'],
-  ['play.html', '/play.html'],
-];
+import { TRACE_PAGES, waitForTraceContent } from './perfTracePages';
 
 interface Row {
   page: string;
@@ -76,7 +60,7 @@ function topSelf(name: string, profile: CpuProfile) {
   console.log(`\n${name}: top self time\n` + top.map(([k, ms]) => `  ${ms.toFixed(1).padStart(7)} ms  ${k}`).join('\n'));
 }
 
-async function trace(page: Page, cdp: CDPSession, name: string, url: string, traceDir?: string, profileDir?: string): Promise<Row> {
+async function trace(page: Page, cdp: CDPSession, name: string, url: string, ready?: string, traceDir?: string, profileDir?: string): Promise<Row> {
   const reqs = new Map<string, { url: string; type: string; bytes: number }>();
   cdp.on('Network.requestWillBeSent', (e: { requestId: string; request: { url: string }; type?: string }) =>
     reqs.set(e.requestId, { url: e.request.url, type: e.type ?? '', bytes: 0 }),
@@ -86,6 +70,8 @@ async function trace(page: Page, cdp: CDPSession, name: string, url: string, tra
     if (r) r.bytes = e.encodedDataLength;
   });
   await cdp.send('Network.enable');
+  // Count cold transfers, including the game ZIP, rather than HTTP-cache hits.
+  await cdp.send('Network.setCacheDisabled', { cacheDisabled: true });
   await applySlowdown(cdp);
   await cdp.send('Performance.enable');
   if (traceDir)
@@ -97,7 +83,8 @@ async function trace(page: Page, cdp: CDPSession, name: string, url: string, tra
   }
   const t0 = Date.now();
   await page.goto(url);
-  // quiet: no request for 1 s and no long task for 1 s (at most 40 s)
+  await waitForTraceContent(page, ready);
+  // After route content: network idle (500 ms without requests), then no long task for 1 s (at most 40 s).
   await page.waitForLoadState('networkidle', { timeout: 40_000 }).catch(() => undefined);
   await page.evaluate(
     () =>
@@ -186,17 +173,27 @@ const profileDir = arg('profile') ? resolve(arg('profile')!) : undefined;
 const traceDir = arg('trace') ? resolve(arg('trace')!) : undefined;
 const rows: Row[] = [];
 try {
-  for (const [name, path] of PAGES) {
+  for (const [name, path, ready] of TRACE_PAGES) {
     if (only && !only.some((o) => name.includes(o))) continue;
-    const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+    // A first-visit service worker can claim even a fresh page and hide transfers from this CDP session.
+    const context = await browser.newContext({ viewport: { width: 1440, height: 900 }, serviceWorkers: 'block' });
     const page = await context.newPage();
     await page.addInitScript(OBSERVE);
+    // Home features a random game (homeCategories.ts pickFeatured) and fetches its zip, so home bytes swing by
+    // hundreds of KB. The app has no URL or storage switch for it, so the trace gives every page a seeded
+    // Math.random (mulberry32): the same game is featured on each run.
+    await page.addInitScript(() => {
+      let a = 0x9e3779b9;
+      Math.random = () => {
+        a = (a + 0x6d2b79f5) | 0;
+        let t = Math.imul(a ^ (a >>> 15), 1 | a);
+        t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+        return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+      };
+    });
     const cdp = await context.newCDPSession(page);
-    rows.push(
-      await trace(page, cdp, name, srv.base + path, traceDir, profileDir).catch(
-        (e: Error) => ({ page: name, biggest: `FAILED ${e.message.slice(0, 80)}` }) as Row,
-      ),
-    );
+    // A missing map must fail the trace, rather than emit undefined bytes that pass a budget comparison.
+    rows.push(await trace(page, cdp, name, srv.base + path, ready, traceDir, profileDir));
     console.log(JSON.stringify(rows[rows.length - 1]));
     await context.close();
   }
