@@ -3,11 +3,7 @@ import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 export { recolor } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
 export { shadeAt, gradient, blob, speckle } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';
 
-/** Rotates a square picture a quarter turn clockwise. */
-export function rotate(src: Pixels): Pixels {
-  const p = new Pixels(src.w, src.h);
-  return p.map((x, y) => src.get(y, src.w - 1 - x));
-}
+export { turn90 as rotate } from '@lewismoten/gamemaker-sandbox-tools/kit/transforms';
 
 export function sprite(rows: string[], key: Record<string, number>, w = 20, h = 20, dx?: number, dy?: number): Pixels {
   const p = new Pixels(w, h, 255);

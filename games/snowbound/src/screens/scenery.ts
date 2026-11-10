@@ -15,14 +15,7 @@ export function gif(p: Pixels, pal: Uint8Array): Uint8Array {
   return encodeGif({ width: p.w, height: p.h, pixels: p.px, palette: pal });
 }
 
-/** Copies a picture scaled up by an integer factor, skipping transparent (255) pixels. */
-export function scaleBlit(dst: Pixels, src: Pixels, x: number, y: number, s: number, flip = false): void {
-  for (let yy = 0; yy < src.h; yy++)
-    for (let xx = 0; xx < src.w; xx++) {
-      const c = src.px[yy * src.w + (flip ? src.w - 1 - xx : xx)];
-      if (c !== 255) dst.rect(x + xx * s, y + yy * s, s, s, c);
-    }
-}
+export { scaleBlit } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
 
 /** Big snow-capped title lettering. */
 export function snowTitle(p: Pixels, pal: Pal, y: number, s: string, scale: number, fillRamp: string): void {
