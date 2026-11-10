@@ -1290,3 +1290,27 @@ a.button.with-ico {
   font-weight: 600;
   overflow-wrap: anywhere;
 }
+
+/* Home on a touch screen: the Keys and Manual buttons over a game's picture, the "More" and
+   "AI setup" links and the links of Getting started were 16 to 32 px tall (the touch audit's
+   home route; the same rule as the rest of the shell: 44 px, or 24 px for a link inside a line). */
+@media (hover: none) and (pointer: coarse) {
+  .lib-lead-more,
+  .home-start .link-btn {
+    min-height: 44px;
+    min-width: 44px;
+    padding-inline: 8px;
+  }
+  .home-start .meta a {
+    padding-block: 4px;
+  }
+}
+
+/* a phone held sideways is short and its tiles narrow: the picture buttons stay compact there */
+@media (hover: none) and (pointer: coarse) and (min-height: 501px) {
+  .shot-icon {
+    min-width: 44px;
+    height: 44px;
+    border-radius: 22px;
+  }
+}
