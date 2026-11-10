@@ -56,18 +56,20 @@ export function diskMenu(host: DiskMenuHost): {
     list,
   );
   document.body.append(dialog);
-  dialog.addEventListener('close', () => host.pc()?.focus());
-  // Esc closes it even while a game plays (the game's keyboard may have claimed the key first)
-  window.addEventListener(
-    'keydown',
-    (e: KeyboardEvent) => {
-      if (e.key !== 'Escape' || !dialog.open) return;
-      e.preventDefault();
-      e.stopImmediatePropagation();
-      dialog.close();
-    },
-    true,
-  );
+  dialog.addEventListener('close', () => {
+    window.removeEventListener('keydown', onKey, true);
+    if (button.isConnected) button.focus({ preventScroll: true });
+    else host.pc()?.focus();
+  });
+  // A nested dialog or popover owns its Escape, including the browser's cancel action.
+  const onKey = (e: KeyboardEvent) => {
+    if (e.key !== 'Escape' || !dialog.open) return;
+    const layer = (e.target as Element | null)?.closest('dialog[open], [popover]');
+    if (layer !== dialog) return;
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    dialog.close();
+  };
 
   function showDrive(): void {
     driveLine.textContent = inDrive ? `In drive A: ${inDrive.kind === 'blank' ? 'a blank disk' : inDrive.title}` : 'Drive A: is empty.';
@@ -140,6 +142,7 @@ export function diskMenu(host: DiskMenuHost): {
     if (!disks.length) await refresh();
     draw();
     dialog.showModal();
+    window.addEventListener('keydown', onKey, true);
   }
 
   /** Puts a disk in drive A: (the one there comes out), whatever the PC is doing. */

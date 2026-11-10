@@ -15,6 +15,7 @@ export const folderText = (d: OpenDesigner) => `${d.work.folder.drive}:\\${d.wor
  * or null to keep designing.
  */
 export function askSaveFirst(d: OpenDesigner, readOnly = false): Promise<string | null> {
+  const opener = document.activeElement instanceof HTMLElement ? document.activeElement : undefined;
   return new Promise((resolve) => {
     const exts = d.contents().map((c) => `.${c.ext.toUpperCase()}`);
     const current = noExt(d.work.curfile);
@@ -29,6 +30,7 @@ export function askSaveFirst(d: OpenDesigner, readOnly = false): Promise<string 
     const done = (answer: string | null) => {
       window.removeEventListener('keydown', onKey, true);
       overlay.remove();
+      if (opener?.isConnected) opener.focus({ preventScroll: true });
       resolve(answer);
     };
     const save = () => {

@@ -96,6 +96,7 @@ export class Tour {
   private unopenable = new Set<unknown>();
   /** Where the keyboard goes back once a menu that kept it for a press is done with (focusBack). */
   private focusLater?: HTMLElement;
+  private releaseFocusHold?: () => void;
   /** Steps whose page act was asked for (once a tour), and the chapters they were in. */
   private acted = new Set<string>();
   private actedIn = new Set<Chapter>();
@@ -179,9 +180,11 @@ export class Tour {
     window.addEventListener('hashchange', this.onHash);
     window.addEventListener('resize', this.onResize);
     this.sprites = await loadSprites();
+    if (now.tour !== this) return;
     // carried on from another page: the browser may let the sound start without a click (a
     // recording still asks for one, to share the new page)
     if (this.opts.cont) await this.sound.startNow();
+    if (now.tour !== this) return;
     if (this.opts.record) {
       // a click on Start lets the music play and the tab be recorded (asked again on each page,
       // since a recording can't carry over a page load); the pointer is hidden from then on
@@ -714,6 +717,7 @@ export class Tour {
    * lets it go at once.
    */
   private holdFocus(el: HTMLElement): void {
+    this.releaseFocusHold?.();
     const onIn = (e: FocusEvent) => {
       if (now.tour !== this || !el.isConnected) return off();
       if (!this.bar.contains(e.target as Node)) el.focus({ preventScroll: true });
@@ -722,7 +726,9 @@ export class Tour {
       document.removeEventListener('focusin', onIn, true);
       window.removeEventListener('pointerdown', off, true);
       clearTimeout(timer);
+      if (this.releaseFocusHold === off) this.releaseFocusHold = undefined;
     };
+    this.releaseFocusHold = off;
     document.addEventListener('focusin', onIn, true);
     window.addEventListener('pointerdown', off, true);
     const timer = window.setTimeout(off, 4000);
@@ -878,7 +884,13 @@ export class Tour {
       start.focus();
       return new Promise((resolve) => {
         start.addEventListener('click', () => resolve(done(now.tour === this)));
-        card.addEventListener('keydown', (e) => e.key === 'Escape' && (this.end(), resolve(done(false))));
+        card.addEventListener('keydown', (e) => {
+          if (e.key !== 'Escape') return;
+          e.preventDefault();
+          e.stopPropagation();
+          this.end();
+          resolve(done(false));
+        });
       });
     }
     return sleep(ms).then(() => done(now.tour === this));
@@ -889,6 +901,8 @@ export class Tour {
     if (now.tour !== this) return;
     now.tour = undefined;
     this.token++;
+    this.releaseFocusHold?.();
+    this.focusLater = undefined;
     this.cancelHold();
     this.unpress();
     void this.leaveChapter();

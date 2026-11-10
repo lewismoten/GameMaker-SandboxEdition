@@ -141,6 +141,10 @@ export function modal<T>(title: string, build: (close: (v: T | undefined) => voi
       dlg.remove();
       resolve(v);
     };
+    // Keep the native cancel action, but do not send Escape to the screen underneath.
+    dlg.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') e.stopPropagation();
+    });
     dlg.addEventListener('cancel', (e) => {
       e.preventDefault();
       close(undefined);
