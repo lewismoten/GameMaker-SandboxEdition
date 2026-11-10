@@ -737,7 +737,10 @@ export function levelMaps(ctx: PrintContext):
   return {
     /** Lets go of the viewer's blob pictures (when the box viewer closes); the next open paints them again. */
     release() {
-      for (const url of blobs) URL.revokeObjectURL(url);
+      const gone = blobs;
+      for (const url of gone) URL.revokeObjectURL(url);
+      // a picture still being painted for the closed viewer lands here later: let go of it as it arrives
+      gone.add = (url) => (URL.revokeObjectURL(url), gone);
       blobs = new Set();
       loaded = undefined;
     },
