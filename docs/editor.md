@@ -45,7 +45,7 @@ _+ New game_ starts a game ready to play or an empty one, or, with _✦ Describe
 has your own AI build one from a few lines of description (see
 [the Assistant](#the-assistant-and-the-mcp-server)).
 
-![The My games tab with one game, a copy of Snowbound, under "Continue where you left off", and a Getting started box](screenshots/editor/01-my-games.webp)
+![The My games tab with one game, a copy of Snowbound, picked: its side panel says "Continue where you left off" and offers Open, Play, Keys, Download, Walkthrough, Saves & scores and Demo video](screenshots/editor/01-my-games.webp)
 
 Games you make or copy are kept in this browser under _My games_, newest first, and the side
 panel offers to pick up where you left off. Changes save automatically; the editor shows
@@ -87,7 +87,7 @@ doesn't have is never touched.
 
 ## Opening a copy of a Sandbox game
 
-![Snowbound opened with Look inside: a read-only banner with an Edit a copy button, the file list on the left, and the game's scenes as a graph](screenshots/editor/02-look-inside.webp)
+![Snowbound opened with Look inside: a Read-only badge beside an Edit a copy button, the breadcrumb, the file list on the left, and the game's scenes as a graph](screenshots/editor/02-look-inside.webp)
 
 _Look inside_ opens a game exactly as it was released, read-only, so you can see how it was put
 together without changing it. _Edit a copy_ makes your own copy under My games, which every
@@ -224,7 +224,7 @@ games don't end up in your project.
 
 ## Blocks
 
-![The block editor with LaVale Mall's background blocks: the numbered block grid, a large pencil canvas, the 256-color palette, and the block's solid sides and gravity settings](screenshots/editor/05-blocks.webp)
+![The block editor with LaVale Mall's background blocks: the numbered block grid, a large pencil canvas, the 256-color palette, and the Walking tab with the block's solid sides and gravity settings](screenshots/editor/05-blocks.webp)
 
 The block editor is BLOCEDIT: pick a block, draw it with the pencil, shading, fill and lines,
 then say how it behaves in **Walking**, **Touch** and **Time**: which sides are solid, which
@@ -255,7 +255,7 @@ the hero moves and for how many ticks.
 
 ## Palettes
 
-![The palette editor with noon.pal: 256 color swatches, a color picked with its red, green and blue sliders, spread range and shade ramp buttons, and which blocks use the color](screenshots/editor/08-palette.webp)
+![The palette editor with noon.pal: 256 color swatches, the Color, Vision and Backgrounds tabs, a color picked with Color help open above its red, green and blue sliders](screenshots/editor/08-palette.webp)
 
 A palette is 256 colors, as in PALCHOS. Click a color to change it, Shift-click a second to
 pick a range, then spread a blend between them or make a shade ramp. Two colors are special,
@@ -325,7 +325,7 @@ DOS player draws them. The preview on the right is the game's own drawing of it.
 
 ## The Integrator and the DOS player
 
-![The Integrator with snowbnd.gam: the start scene and level scenes as a graph joined by their links, and the start scene's files on the right](screenshots/editor/15-integrator.webp)
+![The Integrator with snowbnd.gam: the start scene and level scenes as a graph joined by their links, with Gale Street picked and its Scene panel on the right: Generate level layout…, Play from here and the scene's files](screenshots/editor/15-integrator.webp)
 
 The `.GAM` file is the Integrator's (GRATOR's): every scene of the game and how they link. Here
 it is a graph. Scenes can be added, arranged and joined, and the side panel lists each scene's
@@ -336,7 +336,7 @@ Demo recordings (`.REC`) have an editor for recording, playback and trimming, in
 making a demo from a bot walkthrough. High-score tables (`.HIS`) have an editor for names
 and scores, separate from the DOS player's screen layout.
 
-![The DOS player panel: tabs for the main menu, text pages, high scores, status, save, load, help and about screens, with the menu words listed on the left and a preview of Snowbound's menu as the DOS player draws it](screenshots/editor/16-dos-player.webp)
+![The DOS player tab of the Overview: a tab for each screen, with Gameplay, Colors and Files among them, the menu words listed on the left, a preview of Snowbound's menu as the DOS player draws it, and the Patch Lab below it](screenshots/editor/16-dos-player.webp)
 
 Authors in the 1990s changed the DOS player's words, colors and screens with a hex editor. The
 DOS player tab of the Overview does it safely, a tab for each screen: rename or hide menu words, move or
@@ -360,18 +360,18 @@ badges, and **☑ Before you upload…** ticks the checklist where the checks ca
 to **My heat map**, which can be combined or compared with the bot's; an exit-reaching take
 can also be kept for a walkthrough.
 
-![Make a walkthrough: a bot's run through each scene, with how it got through each one and where it stopped](screenshots/editor/18-walkthrough.webp)
+![Make a walkthrough: a bot's run through each scene, with how it got through each one, how long it played, and a Play it myself button for each](screenshots/editor/18-walkthrough.webp)
 
 _Make a walkthrough_ sends a bot through every scene, trying quicker play styles first, and
 says how far it got. Its run can be watched, or opened on the map in the Level check.
 **Time for each scene** sets its budget; a partial run still plays as far as it reached.
 For a scene you played and kept, choose **Mine** or **Bot**, then make the walkthrough again
-to continue from there. The picture shows an older run that stopped in LaVale Mall at one
-minute a scene.
+to continue from there. The picture shows one run at a minute a scene, with each scene's play style and a
+**Play it myself** button beside it.
 
 ## Downloads
 
-![The Download dialog: Windows, Mac, Linux, web page, web player, DOS and game files, each with a line on what it is](screenshots/editor/19-download.webp)
+![The Download dialog: web page, web player, DOS, Pocket Player (microSD), game files, Windows, Mac and Linux, each with a line on what it is](screenshots/editor/19-download.webp)
 
 A game downloads as a Windows program, a Mac app or a Linux folder that plays in its own window;
 as a one-page web game or an installable web app; as the web player for your own site; as a DOS
@@ -397,7 +397,7 @@ and note back. Imported cards also show **Tags** for recognized games with curat
 
 ## The Library and the printables
 
-![The Library sorted by type: the Game-Maker Owner's Guide, The Ultimate Owner's Guide and each game's printed manual as cards](screenshots/editor/22-library.webp)
+![The Library as a room: the Card catalog, The stacks, a TV, the Copier and the Notebook, each opening its own part of the Library](screenshots/editor/22-library.webp)
 
 The Library holds everything to read or print: the Game-Maker guides, each game's manual,
 hint book, maps, newsletter, stickers and cards, the walkthroughs and the videos. In the room,
