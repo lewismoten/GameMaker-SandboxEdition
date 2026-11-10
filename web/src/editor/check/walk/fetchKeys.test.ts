@@ -9,6 +9,8 @@ import { autoWalk } from './autoWalk';
 import { lockedWhy } from './gates';
 import { fetchKeys, locksAtEntry, MAX_KEY_TRIPS, tripCapReached } from './fetchKeys';
 import { verifyWalk } from './verify';
+import { replayMine } from './replayMine';
+import { encodeKeys, keysAt } from '../../../walkthrough/format';
 
 // the start is in the middle: the key is to the left, the door and the exit to the right
 // prettier-ignore
@@ -163,11 +165,15 @@ describe('fetching keys', () => {
   }, 60_000);
 
   it('goes back for a second key when one trip is not enough', async () => {
-    const t = lockedGame(TWO);
+    const t = lockedGame(TWO, 2);
     const entry = { start: { x: 7, y: 3 }, ci: startCharInfo(), clock: 1 };
     const locks = locksAtEntry(t.game, t, 2, entry);
     const r = await fetchKeys(t.game, t, 2, entry, locks, { goal: [3 * MLEN + 14], wanted: new Set([0]), budgetMs: 10_000 });
     expect(r.replay?.link).toBe(0);
+    const trips = r.diagnostics.rounds.filter((round) => round.kind === 'key');
+    expect(trips.length).toBeGreaterThanOrEqual(2);
+    // The right-hand key was collected first; the next trip heads for the remaining left key.
+    expect(trips[1].candidates).toEqual([{ counter: 20, cell: 301 }]);
   }, 60_000);
 
   it('says plainly when a key exists but was never reached', () => {
@@ -250,4 +256,48 @@ it('keeps a required pickup collected on the wanted exit', async () => {
   expect(result.replay?.link).toBe(0);
   expect(result.replay?.ci.meter[20]).toBe(2);
   expect(result.diagnostics.cutoff).toBeNull();
+});
+
+it('stops targeting an already supplied counter while fetching another kind of key', async () => {
+  const t = lockedGame(TWO, 1);
+  const blocks = parseBlocks(t.files.get('test.bbl')!, newBlockSet('bbl').length);
+  Object.assign(blocks[6], { grav: 4, effect: 21, eamt: 1, touchBl: 0 });
+  const map = parseMap(t.files.get('test.map')!);
+  map.blocks[301] = 6;
+  t.files.set('test.map', serializeMap(map));
+  t.files.set('test.bbl', serializeBlocks(blocks));
+  const required = {
+    owed: new Map([
+      [20, 1],
+      [21, 1],
+    ]),
+    wanted: new Set([20, 21]),
+    sources: [
+      { counter: 20, cell: 310 },
+      { counter: 21, cell: 301 },
+    ],
+  };
+  const r = await fetchKeys(t.game, t, 2, { start: { x: 7, y: 3 }, ci: startCharInfo(), clock: 1 }, required, {
+    goal: [314],
+    wanted: new Set([0]),
+    budgetMs: 10_000,
+    now: () => 0,
+  });
+  expect(r.replay?.link).toBe(0);
+  const trips = r.diagnostics.rounds.filter((round) => round.kind === 'key');
+  expect(trips[1].candidates).toEqual([{ counter: 21, cell: 301 }]);
+});
+
+it('backs out of a key-search checkpoint with no surviving way to collect the remaining keys', async () => {
+  const t = lockedGame(
+    ['##################', '#................#', '#................#', '#EDkk.....S......#', '###########..#####', '###########k.#####', '##################'],
+    2,
+  );
+  const entry = { start: { x: 10, y: 3 }, ci: startCharInfo(), clock: 1 };
+  const locks = locksAtEntry(t.game, t, 2, entry);
+  const r = await fetchKeys(t.game, t, 2, entry, locks, { goal: [301], wanted: new Set([0]), budgetMs: 10_000, now: () => 0 });
+  expect(r.replay?.link).toBe(0);
+  expect(r.diagnostics.rounds.some((round) => round.complete)).toBe(true);
+  const replay = await replayMine(t.game, t, 2, entry, encodeKeys(keysAt(r.replay!.events)));
+  expect(replay?.link).toBe(0);
 });

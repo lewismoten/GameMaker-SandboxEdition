@@ -28,6 +28,8 @@ export interface ExploreOptions {
   maxNodes?: number;
   /** Keep active-key and flight checkpoints for continuous walkthrough steering. */
   steerAirborne?: boolean;
+  /** Preserve top-down alignment and mid-animation turns for a detailed maze search. */
+  alignTurns?: boolean;
   /** Key search: preserve combat/momentum transitions and favor less explored cells. */
   resourceSearch?: boolean;
   /** Told now and then how far it has got, with the heat and deaths so far (live, not copies); return true to stop. */
@@ -199,6 +201,7 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
   const w = sim.w;
   const bg = w.bg;
   const gravity = opt.steerAirborne ? directionalGravity(w) : bg.some((b) => b.grav !== 0);
+  const turning = opt.steerAirborne && !gravity && opt.alignTurns;
   const sequencesByKey = new Map<number, number[]>();
   w.chr.sequences.forEach((sequence, index) => {
     const key = sequence.key >> 8;
@@ -211,7 +214,7 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
   const moves = opt.steadyTicks ? steadyMoves(all, opt.steadyTicks, opt.steadySteering) : all;
   const goal = opt.goal?.map((c) => ({ x: c % MLEN, y: Math.floor(c / MLEN) }));
   const routeDistance = goal && opt.steerAirborne ? goalDistances(w, opt.goal!) : undefined;
-  const footings = goal && opt.steerAirborne ? platformGoals(w, opt.goal!) : undefined;
+  const footings = goal && opt.steerAirborne && gravity && !flying ? platformGoals(w, opt.goal!) : undefined;
   /** Blocks from the nearest goal cell (wrapping as the map does). */
   const distance = (cell: number) => {
     const x = cell % MLEN;
@@ -313,7 +316,7 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
     for (const e of gateCounters) s += `|${e}:${ci.meter[e] > 0 ? Math.min(ci.meter[e], gateNeed.get(e)!) : 0}`;
     for (const q of limitedSeqs) s += `|q${q}:${Math.min(ci.meter[q], 3)}`;
     s += `|on:${ci.seqon.join('')}`;
-    if (opt.steerAirborne && gravity && !flying && (sim.held.size || w.chr.cseq !== 0))
+    if (opt.steerAirborne && (gravity || turning) && !flying && (sim.held.size || w.chr.cseq !== 0))
       s += `|held:${[...sim.held].sort((a, b) => a - b).join('.')}:${w.chr.cseq},${w.chr.cframe},${ci.nextAni - w.clock}`;
     // Defeating a foe or leaving a shot in flight can open a route without moving the hero.
     // Ignore ordinary enemy motion and duplicate shots in the same cell.
@@ -341,7 +344,10 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
     // half a block across matters for where a jump starts; up and down the hero rests on floors
     const motion =
       gravity && (opt.resourceSearch || opt.steerAirborne) ? `${c.y[1] >= BLEN / 2 ? 1 : 0}:${Math.round(w.ci.gravx / 4)},${Math.round(w.ci.gravy / 4)}` : '';
-    const spot = `${c.x[0]},${c.y[0]},${gravity && c.x[1] >= BLEN / 2 ? 1 : 0},${motion},${signature()}`;
+    // In a maze, a turn can require exact alignment on either axis.
+    // Do not merge a centered corridor position with an overlapping wall edge.
+    const alignment = turning ? `${c.x[1]},${c.y[1]}` : `${gravity && c.x[1] >= BLEN / 2 ? 1 : 0}`;
+    const spot = `${c.x[0]},${c.y[0]},${alignment},${motion},${signature()}`;
     let key = spot;
     if (timedHere) {
       const v = visitsAt.get(spot) ?? 0;
@@ -378,7 +384,10 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
     // (keeping to paths: the way so far and the distance left, and of two as good, the nearer)
     if (goal && paths) heap.push(id, (cost! + distance(cellOf())) * 1000 + distance(cellOf()) * 10 + (w.clock - startClock) / 100);
     else if (goal) {
-      const crowd = opt.resourceSearch || opt.steerAirborne ? 2 * visitsByCell[cellOf()]++ : 0;
+      const visits = opt.resourceSearch || opt.steerAirborne ? visitsByCell[cellOf()]++ : 0;
+      // Maze alignment creates several useful states in a cell. A linear penalty
+      // would send the search away from a corridor simply for lining up a turn.
+      const crowd = 2 * (turning ? Math.log2(1 + visits) : visits);
       const bearing = footCell(w);
       const bearingX = bearing % MLEN;
       let toward = footingDistance(bearing);
@@ -548,7 +557,7 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
     const r = await driveMove(sim, m, {
       tick: step,
       carried: () => to.push(addPlace()),
-      active: opt.steerAirborne && gravity && !flying ? () => to.push(addPlace()) : undefined,
+      active: opt.steerAirborne && (gravity || turning) && !flying ? () => to.push(addPlace()) : undefined,
       airborne: opt.steerAirborne ? () => to.push(addPlace()) : undefined,
     });
     if (typeof r.end === 'number') return { to, exits: [r.end] };

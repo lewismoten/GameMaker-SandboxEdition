@@ -10,7 +10,7 @@ import { MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import type { World } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
 import { explore, type Entry, type Exploration } from '../explore';
 import { SceneSim, type FileSource } from '../sim';
-import { locksOf, type Locks } from './gates';
+import { locksOf, sourcesOf, liveMonsterSources, type Locks } from './gates';
 import { pathTo, replayPath, type Replay } from './replayPath';
 
 /** The source cells a keys-search round was trying to reach. */
@@ -43,7 +43,7 @@ interface FetchKeysRoundDiagnostic {
   exits: number;
   deaths: number;
   incidents: number;
-  /** Null for a round that led onward; the terminal round names the precise failed cutoff. */
+  /** Null for a nonterminal round (including a discarded checkpoint); the last failed round names its cutoff. */
   cutoff: FetchKeysCutoff | null;
 }
 
@@ -208,8 +208,8 @@ export async function fetchKeys(
   if (!locks.wanted.size) return { diagnostics: { rounds, cutoff: 'no-reachable-state' } };
   const owed = locks.owed;
   const paid = (meter: ArrayLike<number>) => [...locks.wanted].every((c) => meter[c] === INF_REPEAT || meter[c] > (owed.get(c) ?? 0));
-  const sources = locks.sources.filter((source) => locks.wanted.has(source.counter)).map(({ counter, cell }) => ({ counter, cell }));
-  const sourceDistance = distancesTo(sources.map((source) => source.cell));
+  let sources = locks.sources.filter((source) => locks.wanted.has(source.counter)).map(({ counter, cell }) => ({ counter, cell }));
+  let sourceDistance = distancesTo(sources.map((source) => source.cell));
   const now = o.now ?? (() => performance.now());
   const seed = o.seed ?? 1;
   const deadline = now() + o.budgetMs * 0.5;
@@ -217,7 +217,24 @@ export async function fetchKeys(
   // plays that on and looks again from there. A door that takes several keys, or keys the hero must
   // come back between, needs more than one; stop when a round gains nothing or at the trip cap.
   let r1: Replay | undefined;
-  let meter: ArrayLike<number> = new SceneSim(game, scene, files, entry.start, entry.ci, entry.clock, entry.prev).w.ci.meter;
+  const initial = new SceneSim(game, scene, files, entry.start, entry.ci, entry.clock, entry.prev).w;
+  let meter: ArrayLike<number> = initial.ci.meter;
+  const history: (Replay | undefined)[] = [];
+  const refused = new Set<string>();
+  // Refusing a checkpoint does not prune its moves: another trajectory through
+  // that cell can still carry the pickup onward and stop in a different cell.
+  const checkpoint = (w: World) => JSON.stringify([w.chr.x[0], w.chr.y[0], w.ci.hitpts, w.ci.meter, w.ci.inv, w.ci.seqon]);
+  const refresh = () => {
+    if (!r1) {
+      sources = locks.sources.filter((source) => locks.wanted.has(source.counter)).map(({ counter, cell }) => ({ counter, cell }));
+    } else {
+      // Follow moving/dropped supplies and ignore collected or already paid targets.
+      const w = r1.world;
+      const short = new Set([...locks.wanted].filter((c) => meter[c] !== INF_REPEAT && meter[c] <= (owed.get(c) ?? 0)));
+      sources = sourcesOf(w.map, w.bg, short, liveMonsterSources(w), (n) => w.blkmap[n], w).map(({ counter, cell }) => ({ counter, cell }));
+    }
+    sourceDistance = distancesTo(sources.map((source) => source.cell));
+  };
   let cutoff: FetchKeysCutoff | null = null;
   const maxTrips = o.maxTrips ?? MAX_KEY_TRIPS;
   for (let round = 0; round < maxTrips && !paid(meter); round++) {
@@ -228,7 +245,7 @@ export async function fetchKeys(
       break;
     }
     const before = Array.from(meter);
-    const gained = (w: World) => [...locks.wanted].some((c) => w.ci.meter[c] > before[c]);
+    const gained = (w: World) => [...locks.wanted].some((c) => before[c] !== INF_REPEAT && before[c] <= (owed.get(c) ?? 0) && w.ci.meter[c] > before[c]);
     let leavingPaid = false;
     const ex1 = await explore(game, scene, files, entry, {
       budgetMs: left,
@@ -238,8 +255,9 @@ export async function fetchKeys(
       steadyTicks: 3,
       steadySteering: true,
       steerAirborne: true,
+      alignTurns: true,
       goal: sources.map((source) => source.cell),
-      stopWhen: (w) => paid(w.ci.meter) || gained(w),
+      stopWhen: (w) => (paid(w.ci.meter) || gained(w)) && !refused.has(checkpoint(w)),
       onTick: (w) => {
         leavingPaid = paid(w.ci.meter);
       },
@@ -269,6 +287,16 @@ export async function fetchKeys(
     }
     const at = ex1.reached === undefined ? undefined : ex1.places[ex1.reached]?.via;
     if (!at) {
+      // A greedy pickup may strand the hero. An exhausted search from that
+      // checkpoint is evidence to try another pickup route from its predecessor.
+      // This rewinds planning only; the final recording contains the chosen route.
+      if (ex1.complete && r1 && history.length) {
+        refused.add(checkpoint(r1.world));
+        r1 = history.pop();
+        meter = r1?.ci.meter ?? initial.ci.meter;
+        refresh();
+        continue;
+      }
       cutoff = ex1.complete ? 'no-reachable-state' : 'budget';
       diagnostic.cutoff = cutoff;
       break;
@@ -279,8 +307,10 @@ export async function fetchKeys(
       diagnostic.cutoff = cutoff;
       break;
     }
+    history.push(r1);
     r1 = r1 ? { ...r, events: [...r1.events, ...r.events] } : r;
     meter = r.ci.meter;
+    refresh();
   }
   if (!r1?.snap || !paid(meter)) {
     cutoff ??= 'round-limit';
@@ -295,6 +325,7 @@ export async function fetchKeys(
     steadyTicks: 3,
     steadySteering: true,
     steerAirborne: true,
+    alignTurns: true,
     start: r1.snap,
     exact: true,
     budgetMs: o.budgetMs * 0.5,
