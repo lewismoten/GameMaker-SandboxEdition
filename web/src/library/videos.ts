@@ -27,10 +27,14 @@ export interface Video {
   /** It has a transcript, public/videos/<id>.transcript.json, made from YouTube's automatic
    * captions (scripts/videoTranscript.ts) or from its audio by Whisper (npm run video:transcript). */
   transcript?: 'captions' | 'audio';
+  /** Who wrote its description, chapters or title, when an AI tool did; shown under the description. */
+  credit?: string;
 }
 
 const PLAY = 'https://lewismoten.github.io/GameMaker-SandboxEdition/';
 const SOURCE = 'https://github.com/lewismoten/GameMaker-SandboxEdition';
+
+const LIVE_CREDIT = "Description, chapters and title written with ChatGPT from the video's transcript.";
 
 const VIDEOS: readonly Video[] = [
   {
@@ -99,6 +103,7 @@ const VIDEOS: readonly Video[] = [
       `Source code: ${SOURCE}`,
       'Note: Crystal Palace 9 for the Commodore 64 mentioned in the video was released the next morning on 🤗 Hugging Face as a d64 disk image along with its source files. Play it here: https://huggingface.co/lewismoten/crystal-9',
     ],
+    credit: LIVE_CREDIT,
     chapters: [
       [0, 'Welcome and what this project is'],
       [30, 'The 1992 ad and the TURBO BUTTON magazine'],
