@@ -83,7 +83,7 @@ export function edgeSetDialog(blocks: Block[], current: number, pal: Palette): P
       h(
         'p',
         { class: 'meta' },
-        `Block ${current} is the fill. The 8 edges and corners and the 4 inner corners are painted from it and the ground round it, in the order the map’s terrain brush expects.`,
+        `Block ${current} is the fill. Its 8 edges and corners and 4 inner corners are painted from it and the ground round it, in the terrain brush’s order.`,
       ),
       h('div', { class: 'grid-fields' }, field('Ground round it (block)', outside), field('Border depth (pixels)', depth), field('First new block', at)),
       check('Wavy border', wavy),
