@@ -54,7 +54,11 @@ for (const id of ids) {
   rows.push(t);
 }
 
-const pct = (n: number, of: number) => (of ? `${Math.round((100 * n) / of)}%` : '-');
+// Keep a small amount of extra-key use visible instead of rounding it to 100% basic.
+const pct = (n: number, of: number) => (of ? (n === of ? '100%' : `${Math.min(99.9, (100 * n) / of).toFixed(1)}%`) : '-');
+console.log(
+  'Recorded key-down events, not time held. Diagonals counts keypad 7/9/1/3 only; letter diagonals appear under other keys. Suggestion bar: 80% basic.',
+);
 console.log('game       presses  basic  diagonals  other keys (presses)');
 const notes: string[] = [];
 for (const t of rows) {
@@ -72,4 +76,7 @@ for (const t of rows) {
     );
 }
 if (notes.length) console.log(`\nSuggestions (the walkthrough is one way through; a person may well find another):\n${notes.map((n) => `- ${n}`).join('\n')}`);
-else console.log('\nEvery game plays mostly with the arrows, Space and Enter.');
+else
+  console.log(
+    '\nEvery reported walkthrough has at least 80% basic-key presses and no keypad diagonal presses; this does not prove a basic-key-only way through.',
+  );
