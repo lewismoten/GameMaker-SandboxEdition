@@ -217,3 +217,37 @@ it('keeps climbing actual footings rather than chasing nearby platforms in the a
   expect(ex.exits).not.toHaveLength(0);
   expect((await replayPath(t.game, t, 2, entry, ex.moves, pathTo(ex, ex.exits[0].via)))?.link).toBe(0);
 });
+
+it('can turn in a one-cell top-down corridor before a long walk animation finishes', async () => {
+  const t = testGame(['##########', '#S.......#', '#####.####', '#####.####', '#####E####', '##########']);
+  const blocks = parseBlocks(t.get('test.bbl')!, BACKBL);
+  blocks[0].grav = 0;
+  t.files.set('test.bbl', serializeBlocks(blocks));
+  const chr = parseCharacter(t.get('test.chr')!);
+  for (const [seq, key, dx, dy] of [
+    [5, 77, 10, 0],
+    [6, 75, -10, 0],
+    [7, 80, 0, 10],
+    [8, 72, 0, -10],
+  ]) {
+    const s = chr.sequences[seq];
+    s.key = key << 8;
+    for (let i = 0; i < 6; i++) Object.assign(s.frames[i], { x: dx, y: dy, pic1: 50, pic2: 0, pause: 1 });
+  }
+  chr.sequences[0].frames[0].pic1 = 50;
+  t.files.set('test.chr', serializeCharacter(chr));
+  const entry = { start: { x: 1, y: 1 }, ci: startCharInfo(), clock: 1 };
+  const ex = await explore(t.game, 2, t, entry, {
+    goal: [405],
+    steerAirborne: true,
+    alignTurns: true,
+    steadyTicks: 3,
+    steadySteering: true,
+    stopAt: () => true,
+    maxNodes: 3000,
+    now: () => 0,
+  });
+  expect(ex.exits).not.toHaveLength(0);
+  const r = await replayPath(t.game, t, 2, entry, ex.moves, pathTo(ex, ex.exits[0].via));
+  expect(r?.link).toBe(0);
+});

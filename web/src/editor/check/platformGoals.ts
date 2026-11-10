@@ -10,10 +10,12 @@ interface Guidance {
   abilities: number[];
 }
 
-/** Only gravity on placed terrain matters; opposite directions cancel in PLAYGAME. */
+/** Infer the movement mode from survivable, open terrain; opposite pulls cancel in PLAYGAME. */
 export function directionalGravity(w: World): boolean {
   return [...new Set(w.map)].some((n) => {
-    const g = w.bg[w.blkmap[n]].grav;
+    const b = w.bg[w.blkmap[n]];
+    if (b.solid === 15 || (b.chHitPt < 0 && -b.chHitPt >= w.ci.hitpts)) return false;
+    const g = b.grav;
     return !!(g & 1) !== !!(g & 4) || !!(g & 2) !== !!(g & 8);
   });
 }
