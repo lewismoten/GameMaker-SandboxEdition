@@ -1,8 +1,8 @@
 // What the build gives search engines (scripts/seoBuild.ts): the sitemap, robots.txt, llms.txt,
 // the home page's and the play pages' tags, JSON-LD and readable text. Every list and count of
-// games leaves out the secret ones, and no page, file or picture name gives one away; downloads.html
-// is the one exception (Lewis's choice): it lists them, with no play page and inlined pictures.
+// games leaves out the secret ones, and no page, file or picture name gives one away.
 import { join } from 'node:path';
+import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import type { IndexHtmlTransformContext } from 'vite';
 import { cdCatalog, cdSecretCatalog } from '../../scripts/cdGames';
@@ -27,11 +27,9 @@ function generatedFiles(): Record<string, string> {
   return out;
 }
 
-const SHELL = '<!doctype html><html><head><title>x</title><!--SEO:HEAD--></head><body><!--SEO:BODY--></body></html>';
-
 function page(name: string): string {
   const hook = plugin.transformIndexHtml as (html: string, ctx: IndexHtmlTransformContext) => string;
-  return hook(SHELL, { filename: `/site/${name}`, path: `/${name}` });
+  return hook(readFileSync(join(__dirname, '../..', name), 'utf8'), { filename: `/site/${name}`, path: `/${name}` });
 }
 
 /** The JSON-LD nodes in a page. */
@@ -54,6 +52,48 @@ describe('seoBuild', () => {
   const files = generatedFiles();
   const home = page('index.html');
   const play = page('play.html');
+
+  it('gives every public page unique, bounded descriptions and complete, consistent metadata', () => {
+    const pages = {
+      'index.html': home,
+      'dos.html': page('dos.html'),
+      'play.html': play,
+      'downloads.html': files['downloads.html'],
+      ...Object.fromEntries(playable.map((g) => [gamePage(g.id), gamePageHtml(play, g)])),
+      ...Object.fromEntries(GUIDE_SECTIONS.map((s) => [`help-${s[0]}.html`, guidePageHtml(home, s, catalog)])),
+      ...Object.fromEntries(staticPages(catalog).map((p) => [p.file, staticPageHtml(home, p)])),
+    };
+    const titles = new Set<string>();
+    const descriptions = new Set<string>();
+    const decode = (s: string) => s.replace(/&#(\d+);/g, (_, n: string) => String.fromCharCode(Number(n))).replace(/&amp;/g, '&');
+    for (const [name, html] of Object.entries(pages)) {
+      const meta = (key: string) => decode(new RegExp(`<meta (?:name|property)="${key}" content="([^"]*)"`).exec(html)?.[1] ?? '');
+      const title = decode(/<title>([^<]+)<\/title>/.exec(html)?.[1] ?? '');
+      const description = meta('description');
+      const url = `${SITE_URL}${name === 'index.html' ? '' : name}`;
+      expect(html, name).toContain('<html lang="en">');
+      expect(html.match(/<h1\b/g), name).toHaveLength(1);
+      expect(title.length, name).toBeGreaterThan(0);
+      expect(titles.has(title), name).toBe(false);
+      expect(descriptions.has(description), name).toBe(false);
+      titles.add(title);
+      descriptions.add(description);
+      expect(description.length, name).toBeGreaterThanOrEqual(50);
+      expect(description.length, name).toBeLessThanOrEqual(160);
+      expect(html.match(/<link rel="canonical"/g), name).toHaveLength(1);
+      expect(html, name).toContain(`rel="canonical" href="${url}"`);
+      expect(meta('og:url'), name).toBe(url);
+      for (const prefix of ['og', 'twitter']) {
+        expect(meta(`${prefix}:title`), name).toBe(title);
+        expect(meta(`${prefix}:description`), name).toBe(description);
+        expect(meta(`${prefix}:image`), name).toMatch(/^https:\/\//);
+        expect(meta(`${prefix}:image:alt`).length, name).toBeGreaterThan(0);
+      }
+      expect(meta('twitter:card'), name).toBe('summary_large_image');
+      expect(secretHits(html), name).toEqual([]);
+      if (name !== 'play.html') expect(files['sitemap.xml'], name).toContain(`<loc>${url}</loc>`);
+    }
+  });
 
   it('has secret games to keep out (or the checks below prove nothing)', () => {
     expect(secret.length).toBeGreaterThan(0);
@@ -154,17 +194,14 @@ describe('seoBuild', () => {
     expect(html.match(/<h1>/g)).toHaveLength(1);
   });
 
-  it('lists every original game’s ZIP on downloads.html (not the Starters), the secret ones last with no play page', () => {
+  it('lists only public original game ZIPs on downloads.html, with no Starters or secret games', () => {
     const html = files['downloads.html'];
     const originals = playable.filter((g) => g.original && !isStarterGame(g));
     expect(originals.length).toBeGreaterThan(0);
-    for (const g of [...originals, ...secret]) expect(html).toContain(`href="./${g.path}${g.pack}"`);
+    for (const g of originals) expect(html).toContain(`href="./${g.path}${g.pack}"`);
     for (const g of playable.filter((p) => isStarterGame(p))) expect(html).not.toContain(`game-${g.id}"`);
-    for (const g of secret) {
-      expect(html).not.toContain(gamePage(g.id));
-      expect(html).not.toContain(`games/shots/${g.id}-`);
-      expect(html.indexOf(`game-${g.id}"`)).toBeGreaterThan(Math.max(...originals.map((o) => html.indexOf(`game-${o.id}"`))));
-    }
+    expect(secretHits(html)).toEqual([]);
+    expect(html).not.toContain('Hidden games');
     expect(html).not.toMatch(/href="\.\/games\/(gameware|shareware)\//);
     expect(html.match(/<h1>/g)).toHaveLength(1);
     for (const img of html.match(/<img [^>]*>/g) ?? []) expect(img).toMatch(/ alt="[^"]+"[^>]* width="\d+" height="\d+"| width="\d+" height="\d+" alt="[^"]+"/);
@@ -175,9 +212,8 @@ describe('seoBuild', () => {
     expect(files['robots.txt']).toMatch(/^User-agent: \*\nAllow: \//);
   });
 
-  it('never names or links a secret game in a generated file or page but downloads.html', () => {
-    const { 'downloads.html': _downloads, ...others } = files;
-    for (const [name, text] of Object.entries({ ...others, home, play })) expect(secretHits(text), name).toEqual([]);
+  it('never names or links a secret game in any generated file or page', () => {
+    for (const [name, text] of Object.entries({ ...files, home, play })) expect(secretHits(text), name).toEqual([]);
     for (const g of playable) expect(secretHits(gamePageHtml(play, g)), g.id).toEqual([]);
   });
 

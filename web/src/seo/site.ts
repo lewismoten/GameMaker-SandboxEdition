@@ -161,7 +161,7 @@ export function gameDescription(game: GameSeo): string {
             : 'A game made with Game-Maker';
   const head = `${game.title}${made ? ` ${made}` : ''}: ${what.charAt(0).toLowerCase()}${what.slice(1)}, playable in your browser.`;
   const text = game.blurb ? `${head} ${game.blurb}` : head;
-  return clip(text, 200);
+  return clip(text, 160);
 }
 
 export function clip(text: string, max: number): string {
@@ -185,14 +185,15 @@ interface PageMeta {
 
 /** <meta>/<link> tags for a page head (no <title>; the page has its own). */
 export function metaTags(m: PageMeta): string {
-  const tags: string[] = [`<meta name="description" content="${escapeHtml(m.description)}" />`];
+  const description = clip(m.description, 160);
+  const tags: string[] = [`<meta name="description" content="${escapeHtml(description)}" />`];
   const size = m.image && (m.imageSize ?? (m.image === OG_IMAGE ? ([1200, 630] as const) : undefined));
   if (m.url) tags.push(`<link rel="canonical" href="${escapeHtml(m.url)}" />`);
   const og: [string, string | undefined][] = [
     ['og:type', m.type ?? 'website'],
     ['og:site_name', m.siteName ?? PRODUCT],
     ['og:title', m.title],
-    ['og:description', m.description],
+    ['og:description', description],
     ['og:url', m.url],
     ['og:image', m.image],
     ['og:image:width', size && String(size[0])],
@@ -203,7 +204,7 @@ export function metaTags(m: PageMeta): string {
   const tw: [string, string | undefined][] = [
     ['twitter:card', m.image ? 'summary_large_image' : 'summary'],
     ['twitter:title', m.title],
-    ['twitter:description', m.description],
+    ['twitter:description', description],
     ['twitter:image', m.image],
     ['twitter:image:alt', m.image ? m.imageAlt : undefined],
   ];

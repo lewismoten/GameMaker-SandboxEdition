@@ -44,7 +44,7 @@ function syncRouteMeta(): void {
   // Swap the app's short titles for the descriptive ones; keep specific ones (a game's name).
   if (route !== 'editor' && GENERIC_TITLES.has(document.title)) document.title = info.title;
   const title = document.title;
-  const description = pageDescription(route) ?? info.description;
+  const description = clip(pageDescription(route) ?? info.description, 160);
   for (const [sel, make] of [
     ['meta[name="description"]', named('description')],
     ['meta[property="og:description"]', property('og:description')],

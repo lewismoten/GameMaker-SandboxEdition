@@ -19,7 +19,7 @@
 import type { IndexHtmlTransformContext, Plugin } from 'vite';
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { cdCatalog, cdFiles, cdSecretCatalog, type CdCatalogEntry } from './cdGames';
+import { cdCatalog, cdFiles, type CdCatalogEntry } from './cdGames';
 import { gameCardPng } from './ogImage';
 import { DOWNLOADS_STYLE, cardPictures, downloadCard } from './downloadsList';
 import { readScoopDates, SCOOP_TITLE, scoopRss } from './scoopFeed';
@@ -185,7 +185,7 @@ function dosBody(): string {
 
 /** play.html: what each game is, so the page can name itself before the game loads. */
 function playHead(catalog: CdCatalogEntry[]): string {
-  const meta = metaTags({ ...ROUTES.player, image: OG_IMAGE, imageAlt: OG_IMAGE_ALT });
+  const meta = metaTags({ ...ROUTES.player, url: `${SITE_URL}play.html`, image: OG_IMAGE, imageAlt: OG_IMAGE_ALT });
   // each game's title and description; its addresses follow from its id (playUrl, gameImagePath)
   const games = Object.fromEntries(playable(catalog).map((g) => [g.id, { title: g.title, description: gameDescription(g) }]));
   // Runs before the app: the page's title, description, picture and canonical address (the
@@ -209,8 +209,8 @@ function playHead(catalog: CdCatalogEntry[]): string {
           ['meta[property="og:title"]', 'meta[name="twitter:title"]'].forEach(function (s) { set(s, 'content', title); });
           ['meta[property="og:image"]', 'meta[name="twitter:image"]'].forEach(function (s) { set(s, 'content', g.image); });
           ['meta[property="og:image:alt"]', 'meta[name="twitter:image:alt"]'].forEach(function (s) { set(s, 'content', g.title + ': its title screen'); });
-          var link = document.createElement('link'); link.rel = 'canonical'; link.href = url; document.head.appendChild(link);
-          var og = document.createElement('meta'); og.setAttribute('property', 'og:url'); og.content = url; document.head.appendChild(og);
+          set('link[rel="canonical"]', 'href', url);
+          set('meta[property="og:url"]', 'content', url);
         }
       })();
     </script>`;
@@ -409,21 +409,18 @@ function versionOf(cdRoot: string, id: string): string | undefined {
 /**
  * downloads.html: a plain, crawlable page linking the ZIP of every listed Sandbox Software and
  * Bizarre game (the same permanent files the player fetches, games/originals/<id>/<game>.zip),
- * for the Internet Archive and search engines. The secret games are listed here too, after the
- * others, with no play page (Lewis's choice: this page only; nothing else names them).
+ * for the Internet Archive and search engines. Only the public catalog is included.
  */
-export function downloadsPageHtml(catalog: CdCatalogEntry[], cdRoot: string, secretCatalog: CdCatalogEntry[] = []): string {
+export function downloadsPageHtml(catalog: CdCatalogEntry[], cdRoot: string): string {
   const games = playable(catalog).filter((g) => g.original && g.pack && !isStarterGame(g)); // the Starters are examples, not downloads
-  const secret = secretCatalog.filter((g) => g.original && g.pack);
   const bizarre = hasBizarreTab(games) ? games.filter(isBizarreGame) : [];
   const sections: [string, string, CdCatalogEntry[]][] = [
     ['Sandbox Software games', 'Made for this project with Game-Maker.', games.filter((g) => !bizarre.includes(g))],
     ['Bizarre games', 'Songs by The Bard of Bizarre, turned into games.', bizarre],
-    ['Hidden games', 'Games the desk keeps hidden until you find them.', secret],
   ];
-  const pics = new Map([...cardPictures(games, cdRoot), ...cardPictures(secret, cdRoot, true)]);
+  const pics = cardPictures(games, cdRoot);
   const item = (g: CdCatalogEntry, i: number, list: CdCatalogEntry[]) =>
-    downloadCard(g, versionOf(cdRoot, g.id), secret.includes(g) ? undefined : `./${gamePage(g.id)}`, list === sections[0][2] && i < 2, pics.get(g.id));
+    downloadCard(g, versionOf(cdRoot, g.id), `./${gamePage(g.id)}`, list === sections[0][2] && i < 2, pics.get(g.id));
   const body = sections
     .filter(([, , list]) => list.length)
     .map(
@@ -564,7 +561,7 @@ function generated(cdRoot: string): Record<string, { type: string; body: () => s
   return {
     'robots.txt': { type: 'text/plain; charset=utf-8', body: robotsTxt },
     'sitemap.xml': { type: 'application/xml; charset=utf-8', body: () => sitemapXml(cdCatalog(cdRoot), new Date().toISOString().slice(0, 10)) },
-    'downloads.html': { type: 'text/html; charset=utf-8', body: () => downloadsPageHtml(cdCatalog(cdRoot), cdRoot, cdSecretCatalog(cdRoot)) },
+    'downloads.html': { type: 'text/html; charset=utf-8', body: () => downloadsPageHtml(cdCatalog(cdRoot), cdRoot) },
     'llms.txt': { type: 'text/plain; charset=utf-8', body: () => llmsTxt(cdCatalog(cdRoot)) },
     'scoop.xml': { type: 'application/rss+xml; charset=utf-8', body: () => scoopRss(cdCatalog(cdRoot), readScoopDates()) },
   };
