@@ -24,7 +24,7 @@ const pts = (poly: V2[]) =>
 const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
 /** One face's art in a 100-unit square centered on 0, y down, the face's up toward -y. */
-function faceArt(f: CubeFace, lid: boolean): string {
+export function faceArt(f: CubeFace, lid: boolean): string {
   const g = 25;
   const grid: Record<number, V2[]> = {
     1: [[0, 0]],
@@ -245,6 +245,20 @@ const legend = (): HTMLElement =>
       `<span><svg viewBox="0 0 24 8"><rect width="24" height="8" fill="#ece8dc"/><path d="M0,8L8,0M8,8L16,0M16,8L24,0" stroke="#9a948a" stroke-width="1.6"/></svg>tucks inside</span>`,
   );
 
+/** On screen only: a button that loads the 3D fold animation (its own chunk) in place. */
+function watchButton(it: BalloonCubeItem): HTMLElement {
+  const open = h('button', { type: 'button', class: 'bc-live-open' }, 'Watch it fold in 3D');
+  const box = h('div', { class: 'bc-live' }, open);
+  open.addEventListener('click', () => {
+    open.disabled = true;
+    open.textContent = 'Loading...';
+    void import('./balloonCubeFoldView').then(({ foldViewer }) => {
+      box.replaceChildren(foldViewer(it));
+    });
+  });
+  return box;
+}
+
 /** The balloon cube's two letter sheets: the square to cut out and fold, then the steps. */
 export async function balloonCubeSheets(it: BalloonCubeItem): Promise<Sheet[]> {
   const step = (n: number, text: string, svg: string): HTMLElement =>
@@ -292,6 +306,7 @@ export async function balloonCubeSheets(it: BalloonCubeItem): Promise<Sheet[]> {
         step(5, 'The corners now meet at a small hole, with a seam to each corner of the lid. Blow gently into it.', cubeSvg(it, Math.PI / 2, false)),
         step(6, 'Press out the corners. It is a die, and the lid is the 0. Roll it to pick a booth.', cubeSvg(it, Math.PI / 2, true)),
       ),
+      watchButton(it),
       it.foot ? h('p', { class: 'bc-foot' }, it.foot) : null,
     ),
   ];
