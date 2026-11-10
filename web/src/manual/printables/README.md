@@ -236,4 +236,6 @@ Regenerate after building matching disks; the existing Level Maps tests and
 `games/kit/syncCheck.ts` still reject stale hashes and secrets. These metadata files never
 change a game’s disk bytes.
 
+The balloon cube's sheet 2 ends with a "Watch it fold in 3D" button (screen only, hidden when printed) that loads `balloonCubeFoldView.ts` (its own chunk): the flat square folded to the finished die, one fold per step, with a labeled slider, Back/Next, an optional Play (never autoplays; no tweening under prefers-reduced-motion) and a caption per step. `balloonCubeFold.ts` is its step model (hinge tree over the same panels, the sides' turn, the tucks' turn solved so both halves of a tuck stay together, one corner triangle per step); `balloonCubeFold.test.ts` checks that the last pose is the cube `balloonCubeModel.ts` describes.
+
 The balloon cube’s second folding step uses `balloonCubeLift.ts` to show the faces partly raised around the flat middle before the open cube view.
