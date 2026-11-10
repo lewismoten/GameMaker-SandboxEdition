@@ -17,6 +17,7 @@ import { downloadButton } from './downloadButton';
 import { catalogDownloadable } from '../../export/downloadable';
 import { fictionNote } from '../../export/fiction';
 import { fillRating } from './homeRatings';
+import { deferHomeDemo, mayStartHomeDemo } from './homeDemoStart';
 
 const KIND_LABEL: Record<GameKind, string> = {
   mine: 'My game',
@@ -28,12 +29,6 @@ const KIND_LABEL: Record<GameKind, string> = {
   special: 'Special',
   community: 'Community',
 };
-
-/** Movement is welcome, data is not scarce and no guided tour is on: demos may start by themselves. */
-const mayAutoplay = () =>
-  !document.documentElement.classList.contains('tour-on') &&
-  !matchMedia('(prefers-reduced-motion: reduce)').matches &&
-  !(navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData;
 
 /** Once the visitor stops a demo, no other starts by itself until they watch one again (kept for the visit). */
 const STOPPED_KEY = 'gm-demos-stopped';
@@ -55,40 +50,6 @@ const setDemosStopped = (on: boolean): void => {
 
 /** A featured game plays by itself only when its files are this small (a demo needs them all). */
 const AUTOPLAY_BYTES = 1.2e6;
-
-/** After the page is idle, the demo waits this long more: the player (about 118 kB) is not what the page needs first. */
-const AUTOPLAY_QUIET_MS = 2500;
-
-/**
- * Runs `f` once, when `el` is on screen and the page has loaded, `ready` (the title picture) is
- * done, and a quiet moment has passed; or at once when the visitor points at, touches or
- * focuses `el` (so the player is fetched when someone shows interest, else late).
- */
-function whenIdleAndSeen(el: Element, ready: Promise<unknown>, f: () => void): void {
-  let done = false;
-  const go = () => {
-    if (done) return;
-    done = true;
-    if (!el.isConnected) return void io.disconnect(); // the visitor has gone to another page meanwhile
-    io.disconnect();
-    for (const t of ['pointerenter', 'pointerdown', 'focusin']) el.removeEventListener(t, go);
-    f();
-  };
-  const idle = () => {
-    const after = () => setTimeout(go, AUTOPLAY_QUIET_MS);
-    if ('requestIdleCallback' in window) requestIdleCallback(after, { timeout: 3000 });
-    else after();
-  };
-  const io = new IntersectionObserver((entries) => {
-    if (!entries.some((e) => e.isIntersecting)) return;
-    io.disconnect();
-    void ready.then(idle);
-  });
-  for (const t of ['pointerenter', 'pointerdown', 'focusin']) el.addEventListener(t, go, { once: true });
-  const start = () => io.observe(el);
-  if (document.readyState === 'complete') start();
-  else addEventListener('load', start, { once: true });
-}
 
 /** "Download" (download.ts): for the catalog's games that may be shared (export/downloadable.ts); a game of yours has its own in gameActions. */
 function catalogDownload(game: HomeGame): HTMLElement | null {
@@ -163,6 +124,7 @@ export function showcase(nav: HomeNav, refresh: () => Promise<void>, life?: Abor
   // next page may draw a moment after the address changes, so look again shortly after)
   const gone = () => {
     if (el.isConnected) return false;
+    cancelDemoStart?.();
     demo?.stop();
     demo = undefined;
     window.removeEventListener('hashchange', onLeave);
@@ -172,11 +134,21 @@ export function showcase(nav: HomeNav, refresh: () => Promise<void>, life?: Abor
     if (!gone()) for (const ms of [100, 600, 2000]) setTimeout(gone, ms);
   };
   window.addEventListener('hashchange', onLeave, { signal: life });
+  let cancelDemoStart: (() => void) | undefined;
+  life?.addEventListener(
+    'abort',
+    () => {
+      cancelDemoStart?.();
+      demo?.stop();
+    },
+    { once: true },
+  );
   let generation = 0;
   let saves: ReturnType<typeof savesButton> = null;
 
   const show: Showcase['show'] = (game, how) => {
     const gen = ++generation;
+    cancelDemoStart?.();
     demo?.stop();
     demo = undefined;
     current = game;
@@ -244,15 +216,16 @@ export function showcase(nav: HomeNav, refresh: () => Promise<void>, life?: Abor
       demo = demoInPicture(game, screen, { loop: true, onState: (on) => gen === generation && setPlaying(on) });
     };
     playBtn.addEventListener('click', () => {
+      cancelDemoStart?.();
       setDemosStopped(!!demo);
       if (demo) demo.stop();
-      else play();
+      else void prepareDemo(true);
     });
     // the guided tour (tour/tourEngine.ts) holds the preview still, and starts it when it shows it
     tourPlay = (what) => {
       if (gen !== generation || playBtn.hidden) return;
       if (what === 'stop') demo?.stop();
-      else if (!demo) play();
+      else if (!demo) void prepareDemo(true);
     };
 
     clear(actions, ...gameActions(game, nav, refresh));
@@ -287,18 +260,36 @@ export function showcase(nav: HomeNav, refresh: () => Promise<void>, life?: Abor
       if (kind === 'attract') return ['The original game has no title demo; its preview here just shows the game running.'];
       return [];
     };
-    clear(notes, game.health?.released ? healthNote({ ...game.health, notes: demoNotes }) : null);
-    void game.hasDemo().then((yes) => {
-      if (gen !== generation || !yes) return;
+    clear(notes);
+    // Even asking whether a demo exists can fetch the ZIP; notes inspect the same files.
+    // Keep both behind the same start gate as the player, including on data-saving visits.
+    let checked: Promise<boolean> | undefined;
+    const prepareDemo = async (explicit: boolean) => {
+      checked ??= (async () => {
+        if (game.health?.released) clear(notes, healthNote({ ...game.health, notes: demoNotes }));
+        const yes = await game.hasDemo();
+        if (gen !== generation || !el.isConnected || life?.aborted) return false;
+        playBtn.hidden = !yes;
+        if (yes) {
+          const dialog = demoDialogButton(game);
+          if (dialog) actions.insertBefore(dialog, actions.querySelector('.card-more'));
+        }
+        return yes;
+      })().catch(() => false);
+      const yes = await checked;
+      if (gen !== generation || !el.isConnected || life?.aborted || !yes || demo) return;
+      if (explicit || (mayStartHomeDemo() && !demosStopped())) play();
+    };
+    if (game.gam) {
       playBtn.hidden = false;
       setPlaying(false);
-      const dialog = demoDialogButton(game);
-      if (dialog) actions.insertBefore(dialog, actions.querySelector('.card-more'));
-      if (!mayAutoplay() || demosStopped()) return;
-      // a game the visitor chose plays straight away; one shown by itself waits for the page, and only when small
-      if (!how.featured && !how.resume) play();
-      else if ((game.entry?.bytes ?? 0) <= AUTOPLAY_BYTES) whenIdleAndSeen(screen, shown, () => gen === generation && !demo && play());
-    });
+      cancelDemoStart = deferHomeDemo(
+        screen,
+        shown,
+        () => mayStartHomeDemo() && !demosStopped() && ((!how.featured && !how.resume) || (game.entry?.bytes ?? 0) <= AUTOPLAY_BYTES),
+        () => void prepareDemo(false),
+      );
+    }
   };
 
   return {

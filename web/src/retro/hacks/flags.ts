@@ -6,7 +6,7 @@
 import type { RetroHost } from '../host';
 import { toCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 import { FlagError, ITEMS } from './flagsItems';
-import { FLAGS_HELP, FLAGS_TITLE } from './flagsText';
+import { FLAGS_HELP, FLAGS_TITLE } from './flagsHelp';
 import { makeBak, parseBak, readBak, restoreBak, writeBak, BAK_NAME } from './flagsBackup';
 
 type FlagsCmd =

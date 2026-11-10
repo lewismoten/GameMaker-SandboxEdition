@@ -8,7 +8,7 @@ Part of the [source map](../README.md). A self-contained player (canvas, input a
 - `speedPick.ts`: "Run like a..." slows the game loop to an older machine.
 - `touch.ts`, `moveKeys.ts`: the touch d-pad and which keys it sends.
 - `screenKeys.ts`: a panel of on-screen keys (Esc, F1 to F10, Enter, Space...).
-- `snapshot.ts`: the full-window play page’s camera button; copies the visible palette indices and current VGA palette into an unscaled PNG. `Screen.dosCropped` follows PLAYGAME’s CropScreen/UnCropScreen boundaries, including full-size function-key screens.
+- `snapshot.ts`: the full-window play page’s camera button; loads the PNG encoder on the first screenshot request and copies the visible palette indices and current VGA palette into an unscaled PNG. `Screen.dosCropped` follows PLAYGAME’s CropScreen/UnCropScreen boundaries, including full-size function-key screens.
 - `cursorHide.ts`: hides the mouse pointer once it rests.
 - [`dosConfig/`](dosConfig/README.md): PLAYGAME's own Configure screen on the 1994 PC's monitor.
 
