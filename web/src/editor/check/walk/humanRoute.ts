@@ -17,14 +17,18 @@ const SIGHT = { x: 20, y: 12 };
 const MOST_LEGS = 14;
 const MOST_MISSES = 3;
 
-const have = (ci: CharInfo) => ci.inv.filter((b) => b < BACKBL).length * 1000 + Math.max(0, ci.score) + Math.max(0, ci.hitpts);
+const have = (ci: CharInfo) =>
+  ci.inv.filter((b) => b < BACKBL).length * 1000 +
+  ci.meter.slice(3).reduce((sum, n) => sum + Math.max(0, n), 0) +
+  Math.max(0, ci.score) +
+  Math.max(0, ci.hitpts);
 
 /** Cells holding what a player would walk to: pickups that score or heal, and foes worth points. */
 function wanted(w: World): number[] {
   const out: number[] = [];
   for (let c = 0; c < w.map.length; c++) {
     const b = w.bg[w.blkmap[w.map[c]]];
-    if (b && !b.solid && (b.scorePts > 0 || b.chHitPt > 0)) out.push(c);
+    if (b && !b.solid && (b.scorePts > 0 || b.chHitPt > 0 || (b.effect >= 3 && b.eamt > 0))) out.push(c);
   }
   for (let l = 0; l < LASTMM; l++) {
     const mm = w.mm[l];
@@ -57,7 +61,7 @@ export async function humanRoute(
   const left = () => budgetMs - (performance.now() - t0);
   const moveFilter = (m: { name: string; waits?: boolean }) => !m.waits;
   let at = { x: entry.start.x, y: entry.start.y };
-  let base = have(entry.ci);
+  let base = have(start.ci);
   let misses = 0;
   for (let leg = 0; leg < MOST_LEGS && misses < MOST_MISSES && targets.length && left() > 0; leg++) {
     const near = targets

@@ -69,7 +69,8 @@ describe('fetching keys', () => {
     expect(r.replay?.link).toBe(0);
     expect(r.diagnostics.cutoff).toBeNull();
     const keyRounds = r.diagnostics.rounds.filter((round) => round.kind === 'key');
-    expect(keyRounds).not.toHaveLength(0);
+    // Character initialization is not a pickup: one actual key, one key trip.
+    expect(keyRounds).toHaveLength(1);
     const key = keyRounds[0];
     const exit = r.diagnostics.rounds.at(-1)!;
     expect(key).toMatchObject({
@@ -79,7 +80,7 @@ describe('fetching keys', () => {
       budgetMs: 5_000,
       ms: 0,
       complete: false,
-      nearestGoalDistance: 6,
+      nearestGoalDistance: 0,
       cutoff: null,
     });
     expect(key.places).toBeGreaterThan(1);

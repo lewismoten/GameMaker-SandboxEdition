@@ -56,16 +56,19 @@ export function keyRoles(chr: Character, gravity: boolean): KeyRoles {
     same.add(sig);
     let dx = 0;
     let dy = 0;
+    let top = 0;
     for (const f of s.frames) {
       if (f.pic2 === CHARBL + 1) break;
       if (f.pic2 === MONBL) continue;
       dx += f.x;
       dy += f.y;
+      top = Math.min(top, dy);
     }
     // a sequence that moves and comes back (up and down again) is played like a jump
     const moves = s.frames.some((f) => f.pic2 !== CHARBL + 1 && f.pic2 !== MONBL && (f.x || f.y));
     const hold = !s.norepeat && !s.ground;
-    if (action.kind === 'action' && moves && !dx && !dy) roles.jump.push({ scan, dx: 0, hold });
+    if (gravity && top <= -6) roles.jump.push({ scan, dx: Math.sign(dx), hold });
+    else if (action.kind === 'action' && moves && !dx && !dy) roles.jump.push({ scan, dx: 0, hold });
     else if (action.kind === 'move') roles.move.push({ scan, dx: Math.sign(dx), dy: Math.sign(dy), ...(s.norepeat ? { once: true } : {}) });
     else if (action.kind === 'jump') roles.jump.push({ scan, dx: Math.sign(dx), hold });
     // a trick that neither moves the hero, fires anything nor picks up can't take them anywhere new

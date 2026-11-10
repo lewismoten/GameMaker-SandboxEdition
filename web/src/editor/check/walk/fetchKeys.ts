@@ -210,7 +210,7 @@ export async function fetchKeys(game: Game, files: FileSource, scene: number, en
   // plays that on and looks again from there. A door that takes several keys, or keys the hero must
   // come back between, needs more than one; stop when a round gains nothing or at the trip cap.
   let r1: Replay | undefined;
-  let meter: ArrayLike<number> = entry.ci.meter;
+  let meter: ArrayLike<number> = new SceneSim(game, scene, files, entry.start, entry.ci, entry.clock, entry.prev).w.ci.meter;
   let cutoff: FetchKeysCutoff | null = null;
   const maxTrips = o.maxTrips ?? MAX_KEY_TRIPS;
   for (let round = 0; round < maxTrips && !paid(meter); round++) {
@@ -224,6 +224,7 @@ export async function fetchKeys(game: Game, files: FileSource, scene: number, en
     const gained = (w: World) => [...locks.wanted].some((c) => w.ci.meter[c] > before[c]);
     const ex1 = await explore(game, scene, files, entry, {
       budgetMs: left,
+      resourceSearch: true,
       goal: sources.map((source) => source.cell),
       stopWhen: (w) => paid(w.ci.meter) || gained(w),
       ...(r1 ? { start: r1.snap, exact: true } : {}),
@@ -256,6 +257,7 @@ export async function fetchKeys(game: Game, files: FileSource, scene: number, en
   const exitDistance = distancesTo(o.goal);
   const ex2 = await explore(game, scene, files, entry, {
     goal: o.goal,
+    resourceSearch: true,
     start: r1.snap,
     exact: true,
     budgetMs: o.budgetMs * 0.5,
