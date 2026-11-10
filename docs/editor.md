@@ -8,8 +8,9 @@ MAPMAKER, CHAREDIT, IMAGE, SNDEDIT, GRATOR), the web editor does the same job in
 window, and a few jobs DOS left to other programs (music, animations, digital sounds) have an
 editor here too.
 
-These pictures were taken in a copy of _Snowbound: The $89 Shovel_, at 1440 × 900 in the dark
-theme. Some are cropped to the part that matters.
+These older pictures were taken in a copy of _Snowbound: The $89 Shovel_, at 1440 × 900 in the dark
+theme. Some are cropped to the part that matters; layouts and controls have changed since
+they were taken. The text describes the current editor.
 
 - [The home page and your games](#the-home-page-and-your-games)
 - [Make a first level](#make-a-first-level)
@@ -35,8 +36,10 @@ theme. Some are cropped to the part that matters.
 
 ![The home page's Sandbox tab: thirteen new games in a grid, with Snowbound picked and its demo playing in the side panel](screenshots/web-home-sandbox.png)
 
-The home page lists every game by tab: _My games_, _Imported_, the Sandbox and Bizarre games,
-the CD's Gameware and its Shareware. Picking one plays its title demo in the side panel, with
+The home page groups games in tabs: **My games**, **Imported**, **Starters**, **Sandbox**,
+**Bizarre**, **Special**, **Community** and **CD** (Gameware and Shareware together).
+**Special** shows games while they are available, plus any you have kept by playing, looking
+inside or copying them. Picking one plays its title demo in the side panel, with
 Play, Look inside, Keys, the manual, the walkthrough, saves and scores, and Download beside it.
 _+ New game_ starts a game ready to play or an empty one, or, with _✦ Describe it to your AI…_,
 has your own AI build one from a few lines of description (see
@@ -45,7 +48,9 @@ has your own AI build one from a few lines of description (see
 ![The My games tab with one game, a copy of Snowbound, under "Continue where you left off", and a Getting started box](screenshots/editor/01-my-games.webp)
 
 Games you make or copy are kept in this browser under _My games_, newest first, and the side
-panel offers to pick up where you left off. Nothing is uploaded, unless you set up your own AI to work on a game.
+panel offers to pick up where you left off. Changes save automatically; the editor shows
+**Unsaved changes…** and **Saving…** until they are saved, or **Not saved. Download a .zip**
+if saving fails. Nothing is uploaded, unless you set up your own AI to work on a game.
 
 ## Make a first level
 
@@ -101,8 +106,8 @@ stamp. Only Play, play tests and downloads get the stamped picture; your game fi
 
 **Files** is the asset browser. Each file type has a preview and a file count;
 _None yet_ marks an empty category. Choose a category to see its files, then click a thumbnail
-to open its editor. **Assets** returns to that file's category, and **All assets** opens the
-overview. Back and Forward keep these views too.
+to open its editor. The breadcrumb above an open file returns to its category or **Overview**;
+**← All assets** returns from a category to the full gallery. Back and Forward keep these views too.
 
 The **Search this game** box above the thumbnails looks through everything at once, ignoring
 case, and shows what it finds as cards grouped by kind, with a count for each: **File names**;
@@ -133,7 +138,7 @@ known now and a button that opens it: **Level check** (a picture of the first le
 a saved check and what it found), **Before You Upload** (lines ticked), **Make a walkthrough**
 (whether one was made and how far it got), **Health check** (reads every file and lists the
 broken ones), **First steps** (in games started from the starter), **Color vision check** (the
-palette, drawn) and **Play Game** and **Download**. The status comes from what is already saved;
+palette, drawn), **Optimize**, **Game version**, **About this game**, **Play Game** and **Download**. The status comes from what is already saved;
 opening the tab never runs a check. Each tool also opens from where it always did.
 
 Reserved ranges are optional and are never enforced. Colors in no range are global, any kind of art may use them, and color 0 (the background color) and 255 (transparency) are always fine. With ranges set, the Level check suggests a look at a block that draws with a color reserved for another kind (a character block using a monster color, say); dismiss it if it is on purpose. The block editors also say so, in the note under the color swatches, when you pick a color reserved for another kind; painting is never blocked.
@@ -161,10 +166,13 @@ available converters. **From this game…** makes a copy of an existing file. Co
 another project in this browser tab, then use **Paste** in the matching category. Block groups
 and other settings belonging to the copied file follow it.
 
-Right-click a file or choose its **⋯** button for Edit, Duplicate, Copy, Paste to replace,
-Delete and Download. The menu also opens with Shift+F10; use the arrow keys and Escape.
+Right-click a file or choose its **⋯** button for **Edit**, **Duplicate…**, **Copy**,
+**Paste to replace…**, **Delete…** and **Download**. The menu also opens with Shift+F10; use the arrow keys and Escape.
 Replacing a file keeps its name and asks for confirmation. **Download** saves the file's current
 native bytes.
+
+The Library file picker separates **Starters** from **Sandbox & Bizarre** and lets you filter
+by source game as well as file name.
 
 Drop matching native files on the first card to add several at once. Existing names get new
 DOS names, so a dropped file is added alongside the one already there.
@@ -182,9 +190,28 @@ as a PNG.
 **Wrap** (∞) keeps scrolling through any edge to the opposite side. All the visible copies
 edit the same map, including selections, pasted blocks and terrain brushes. Use Shift+wheel
 or the focused map's arrow keys to scroll; on a touch screen, choose **Scroll** before dragging.
-The Wrap preference is remembered and included in preference backups.
+Pinch with two fingers to zoom, or move them together to pan, with any tool chosen. Hold one
+finger still to open **Map actions**, with **Pick this block** and, where available,
+**Erase monster** or **Use as the exit's place**. The Wrap preference is remembered and
+included in preference backups.
 
-The **Show** list above the block palette keeps only the blocks marked as a wall, floor, tree and so on in the block editor's Uses tab. **Generate** draws a dungeon (rooms joined by corridors), a castle (outer wall, towers, gate, courtyard and a keep), a forest (trees, clearings and a winding path), or a home or shop with furniture (beds and shelves against walls, chairs facing the table, a lane from the door), or a **Platform** side view (ground with pits, steps, ladders, spikes, stepping stones and ledges sized to the hero's real jump, with a Difficulty slider; each preview says Jump math or Bot won) from those marked blocks: it shows four real previews from a seed, for the whole map or the selection, and nothing changes until you pick one. If a kind needs a block you have not marked, it says which and links to the Uses tab. A layout is ordinary blocks in one undo step; where the block set has a terrain brush for walls, trees or paths, it also gets edges and corners. It proposes where the hero could start and an exit but links nothing.
+In the **Blocks** panel, **Show** (named **Show blocks used as** for screen readers) filters
+the palette by roles marked in the block editor's **Uses** tab. **All blocks** restores the
+whole set; **No role set** finds unmarked blocks. The filter appears only when roles are set.
+
+**✨ Generate…** opens **Generate a layout** in the Blocks panel. Choose a dungeon, castle,
+forest, home, shop, town, overworld or platform side view, made from those marked blocks.
+It shows four real previews from a seed, for the whole map or a rectangular selection;
+**Use this layout** draws the chosen one in a single Undo step. Missing roles link to the
+Uses tab, and terrain brushes supply edges and corners where available. Platform layouts
+use the hero's own jump and a difficulty slider; previews say **Jump math**, **Bot won** or
+**Not proven**. These checks do not judge monsters or fun.
+
+Layouts suggest a start and exits. Where doors or sites are proposed, **Make these scenes…** can also
+create maps and scenes for eligible doors or sites, with links both ways; the confirmation
+explains that Undo takes back the layout, while added scenes must be removed in the Integrator.
+**Add monsters (replaces those in the area)** optionally places monsters for layouts that
+support them; if the DOS placement slots fill up, the editor reports those left out.
 
 ## Play Game and Play Level
 
@@ -200,10 +227,11 @@ games don't end up in your project.
 ![The block editor with LaVale Mall's background blocks: the numbered block grid, a large pencil canvas, the 256-color palette, and the block's solid sides and gravity settings](screenshots/editor/05-blocks.webp)
 
 The block editor is BLOCEDIT: pick a block, draw it with the pencil, shading, fill and lines,
-then say how it behaves: which sides are solid, which way gravity pulls, whether it can be picked
-up.
+then say how it behaves in **Walking**, **Touch** and **Time**: which sides are solid, which
+way gravity pulls, whether it can be picked up. The picker explains the fixed DOS capacities:
+150 background blocks, 100 monster blocks or 50 hero blocks per set.
 Shift- or Ctrl-click several blocks to group them and change them together. Flip, rotate,
-shift and _Make an edge set_ save a lot of drawing.
+shift and _Make an edge set…_ save a lot of drawing.
 The **Uses** tab marks what a block is for (wall, door, key, chair facing south...) with chips; the editor suggests some from what the block does, and you tap to keep them. They are saved with the project, never in the game's files.
 
 ## Monsters and their paths
@@ -213,13 +241,15 @@ The **Uses** tab marks what a block is for (wall, door, key, chair facing south.
 As in MONEDIT, each monster has its animation, its power and score, what it becomes when
 destroyed, and how it moves. Its path and attack path are drawn right on the map it lives in:
 click to lay down corners and drag them to move them, and watch it walk the path as you go.
+Unused slots show no active monster; retained frames are labeled as template data.
+**＋ New monster** explains when every DOS monster slot is already in use.
 
 ## The hero's sequences
 
 ![The character editor with kid.chr on its Sequences tab: the built-in and key sequences down the left, the Idle sequence playing, and its frames with their moves and ticks](screenshots/editor/07-hero.webp)
 
 The character editor is CHAREDIT. _At the start_ sets the hero's hit points, lives, money,
-counters and starting inventory. _Sequences_ is how it moves: one sequence per key or event
+counters and starting inventory. _Sequences (moves)_ is how it moves: one sequence per key or event
 (idle, die, hurt, pick up, the arrow keys, Space and the rest), each a row of frames with how far
 the hero moves and for how many ticks.
 
@@ -231,14 +261,15 @@ A palette is 256 colors, as in PALCHOS. Click a color to change it, Shift-click 
 pick a range, then spread a blend between them or make a shade ramp. Two colors are special,
 as they were in DOS: color 255 is drawn as see-through in monster and character blocks, and
 color 0 is the background of PLAYGAME's menus. The panel below lists the blocks that use each
-color, so you can see what a change will touch.
+color, so you can see what a change will touch. **Color**, **Vision** and **Backgrounds**
+split color editing, color-vision previews and menu background previews into tabs.
 
 **Color help** (a small control in the palette editor and in the block, monster and character
-painters) holds three choices, kept only in your browser: show each color's plain name ("dark
-red", "light blue-green") on its swatch and on the selected color's line; warn about colors that
+painters) holds three choices, kept only in your browser: **Show color names** adds each color's plain name ("dark
+red", "light blue-green") on its swatch and on the selected color's line; **Warn me about look-alike colors** marks colors that
 look alike to some eyes, red and green or blue and yellow, with dashed outlines in the palette and
-a note when two such colors touch in a picture you are painting; and preview the color or picture
-as others might see it, side by side. An optional **Quick color check** (a few "which tile looks
+a note when two such colors touch in a picture you are painting; and **Preview as others might see it**
+shows the color or picture side by side. An optional **Quick color check…** (a few "which tile looks
 different?" screens) only suggests which of these to turn on. It is not a medical test and keeps
 no answers.
 
@@ -269,11 +300,16 @@ Under the waveform a time ruler marks seconds and game ticks, with a yellow zone
 
 ## Animations, slide shows, backdrops and text screens
 
+The picture editor opens `.GIF` files, replaces them with imported art and copies selected
+20 × 20 regions into blocks, keeping the blocks' other settings.
+
 ![The animation editor with intro.fli: a winter street at Gale St and Dunn Dr, playback controls and speed, and the frames in a strip](screenshots/editor/12-fli.webp)
 
 Game-Maker showed `.FLI` animations between scenes, made in Autodesk Animator back then. The
 animation editor steps through the frames, sets the speed, duplicates, moves and replaces
-frames, and exports a frame, every frame, an animated GIF or an MP4.
+frames, and exports a frame, every frame, an animated GIF or a video (MP4 where the browser
+supports it, otherwise WebM). **🎬 Scene maker** builds animations from objects, paths,
+a timeline and fades, keeping the editable scene with the project.
 
 ![The slide show editor with title.lst: a preview of the chosen slide, how long it waits, and the slides in a timeline above the game's pictures](screenshots/editor/13-slides.webp)
 
@@ -293,7 +329,12 @@ DOS player draws them. The preview on the right is the game's own drawing of it.
 
 The `.GAM` file is the Integrator's (GRATOR's): every scene of the game and how they link. Here
 it is a graph. Scenes can be added, arranged and joined, and the side panel lists each scene's
-pictures, songs and maps, or every screen and song at once.
+pictures, songs and maps, or every screen and song at once. The **Scene** tab offers
+**Generate level layout…** for a level's map.
+
+Demo recordings (`.REC`) have an editor for recording, playback and trimming, including
+making a demo from a bot walkthrough. High-score tables (`.HIS`) have an editor for names
+and scores, separate from the DOS player's screen layout.
 
 ![The DOS player panel: tabs for the main menu, text pages, high scores, status, save, load, help and about screens, with the menu words listed on the left and a preview of Snowbound's menu as the DOS player draws it](screenshots/editor/16-dos-player.webp)
 
@@ -301,22 +342,32 @@ Authors in the 1990s changed the DOS player's words, colors and screens with a h
 DOS player tab of the Overview does it safely, a tab for each screen: rename or hide menu words, move or
 resize a frame by dragging it on the preview, and pick colors, timings, F-keys and file
 extensions. The DOS export writes the changes into its `XFERPLAY.EXE`, and Play and the web
-exports show them too.
+exports show them too. The **Gameplay** tab holds settings marked **Experimental** that
+change how scenes play; its warning asks you to test the patched game in DOSBox before sharing.
 
 ## The Level check and Make a walkthrough
 
-![The Level check on LaVale Mall: a heat map over the map of every place the hero could reach, with the result and buttons to open a report, play and record or watch the bot](screenshots/editor/17-level-check.webp)
+![The Level check on LaVale Mall: a heat map over the places the bot reached, with the result and buttons to open a report, play and record or watch the bot](screenshots/editor/17-level-check.webp)
 
-The Level check plays a scene on the real engine, trying every move from every place the hero
-can stand. The heat map shows where the hero got, and it marks the places a player can get
-stuck, with fixes where it knows one. The block, monster and sound editors show what it found
-as badges, and the _Before you upload…_ list ticks itself off.
+The Level check explores a scene on the real engine within the chosen time budget. The heat
+map shows where the bot got, and it marks possible stuck spots, with fixes where it knows one.
+These are suggestions: a timed search can miss routes, and it cannot judge whether a level is
+fun. **✓ That’s on purpose** or **✓ Mark as checked: it’s meant to be** accepts a finding;
+accepted findings can be shown again. The block, monster and sound editors show findings as
+badges, and **☑ Before you upload…** ticks the checklist where the checks can tell.
+
+**Slower hands** tries a pause between key changes. **▶ Play and record** adds your own play
+to **My heat map**, which can be combined or compared with the bot's; an exit-reaching take
+can also be kept for a walkthrough.
 
 ![Make a walkthrough: a bot's run through each scene, with how it got through each one and where it stopped](screenshots/editor/18-walkthrough.webp)
 
 _Make a walkthrough_ sends a bot through every scene, trying quicker play styles first, and
-says how far it got. Its run can be watched, or opened on the map in the Level check. Here it
-stopped in LaVale Mall, the hardest level, at one minute a scene.
+says how far it got. Its run can be watched, or opened on the map in the Level check.
+**Time for each scene** sets its budget; a partial run still plays as far as it reached.
+For a scene you played and kept, choose **Mine** or **Bot**, then make the walkthrough again
+to continue from there. The picture shows an older run that stopped in LaVale Mall at one
+minute a scene.
 
 ## Downloads
 
@@ -324,8 +375,10 @@ stopped in LaVale Mall, the hardest level, at one minute a scene.
 
 A game downloads as a Windows program, a Mac app or a Linux folder that plays in its own window;
 as a one-page web game or an installable web app; as the web player for your own site; as a DOS
-folder with PLAYGAME, for DOSBox or a real PC; or as its files alone. All of them are built
-right in the browser.
+folder with the stand-alone player, for DOSBox or a real PC; or as **Game files** alone.
+**Pocket Player (microSD)** saves one `.gmp` file for the board's microSD card, with PC speaker
+sounds. Downloads from an edited game are built in the browser; a released game's DOS choice
+uses its prepared ZIP.
 
 ## Imports, ratings and notes
 
@@ -339,15 +392,18 @@ archive can come in at once.
 
 Imported games get a 1–5 star rating and a note, kept in this browser and never in the game's
 files. The Library collects the notes, and a game removed and imported again gets its rating
-and note back.
+and note back. Imported cards also show **Tags** for recognized games with curated tags, or
+**Suggested tags** for the editor's guesses; the **Tag** picker filters the list.
 
 ## The Library and the printables
 
 ![The Library sorted by type: the Game-Maker Owner's Guide, The Ultimate Owner's Guide and each game's printed manual as cards](screenshots/editor/22-library.webp)
 
-The Library holds everything to read or print: the Game-Maker box's two guides, each game's
-manual, hint book, maps, newsletter, stickers and cards, the walkthroughs and the videos. Sort
-it by game or by type and narrow it to one kind.
+The Library holds everything to read or print: the Game-Maker guides, each game's manual,
+hint book, maps, newsletter, stickers and cards, the walkthroughs and the videos. In the room,
+open **Card catalog**, choose **By game** or **By type**, and open a drawer; **The stacks**
+shows its contents as a list. **Copier** handles printing, **TV** gathers videos and walkthroughs,
+and **Notebook** opens imported games' ratings and notes.
 
 ![Snowbound's Level Maps in Scroll view: the box's contents down the left, the scene list, and the Gale Street map with its start and exits marked](screenshots/editor/24-level-maps.webp)
 
@@ -363,7 +419,7 @@ The ✦ button beside a file's title opens the Assistant, a chat with your own A
 game. _AI setup_ connects it to Ollama, on this computer or another, or to any OpenAI-compatible
 server; the address, model and key stay in this browser. The AI looks at the game with the same
 tools the Level check and the bot use, and makes small changes and play-tests them. In _Ask
-before changing_ each change waits for Apply or Skip; _Change freely_ applies them with Undo
+before changing_ each change waits for Apply or Skip; _Change freely (Undo still works)_ applies them with Undo
 still there, and _Read-only_ keeps it to looking. _What should I do next?_ runs the Level check, the bot
 and the file checks and has the AI say what to fix first (with no AI set up, it lists what the
 checks found), and the game keeps a to-do list. _Describe a game…_, for an empty game here, or

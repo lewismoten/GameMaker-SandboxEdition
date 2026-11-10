@@ -1167,3 +1167,4 @@ maker "ZORP" is invented. The shell is untested: nothing has been printed.
 - **SEO housekeeping (November 2026)**: OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, revised metadata and public download generators and added discoverability regression checks. No new third-party code or artwork was added.
 
 - **Portable animation Level check:** OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, extracted the animation findings and tests into the tools package using the existing engine decoders.
+- **Web editor tour review (November 10, 2026)** (`docs/editor.md`): OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, checked the tour against the editor source and revised its descriptions of controls and flows. Existing screenshots and their artwork retain their credits.
