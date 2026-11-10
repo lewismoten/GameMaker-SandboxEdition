@@ -50,6 +50,8 @@ interface PocketPacked {
   /** The .cfg's lines. */
   lines: string[];
   levels: number;
+  /** Added stored card bytes for scene 0 slots 2/7/8 (SD only; includes deduplication and patches). */
+  menuBytes: number;
   /** Why the board can't play it (empty: it packs). */
   why: string[];
   /** Plain advice: it packs, but the board may not manage this. */
@@ -226,7 +228,7 @@ export async function packPocketGame(src: PocketSource, store: PocketStore, pak:
   // The cards between scenes (ShowGraphic's pictures and text pages, in the order the engine shows them).
   /** This game's pictures packed so far (768 palette bytes, then 64000 indices) and their pak references. */
   const pictures: { buf: Uint8Array; ref: string }[] = [];
-  const menu = (where: string) => where === 't' || where === 's' || where === 'h';
+  const menu = (where: string) => ['t', 's', 'h', 'm', 'c', 'b'].includes(where);
   // A menu page's picture as a patch over a picture already packed (src/gmcards.h `p`): a Starter's story picture is its
   // instructions picture with another heading, about 150 bytes packed instead of 1.6 KB. Undefined when no picture is close.
   const patchOf = async (buf: Uint8Array): Promise<{ ref: string; base: string } | undefined> => {
@@ -256,7 +258,7 @@ export async function packPocketGame(src: PocketSource, store: PocketStore, pak:
     for (let r = 0; r < best.h; r++) patch.set(buf.subarray(768 + (best.y0 + r) * 320 + best.x0, 768 + (best.y0 + r) * 320 + best.x0 + best.w), 8 + r * best.w);
     return { ref: await inPak(patch), base: best.base.replace('.', ' ') };
   };
-  const cards = async (where: string, name: string | undefined) => {
+  const cards = async (where: string, name: string | undefined, pause?: number) => {
     if (!name) return;
     const find = (n: string) => names.find((d) => d.toLowerCase() === n.toLowerCase());
     let cols: Uint8Array | undefined; // the palette of the last picture shown in this list (the engine's `cols`)
@@ -265,7 +267,7 @@ export async function packPocketGame(src: PocketSource, store: PocketStore, pak:
       const e = fname.split('.').pop()!.toLowerCase();
       if (!real) return;
       if (e === 'lst') {
-        for (const x of parseSlideList(file(real))) await one(x.name, x.pause ?? 0xffff, 0xffff);
+        for (const x of parseSlideList(file(real))) await one(x.name, x.pause ?? pause ?? 0xffff, 0xffff);
       } else if (e === 'gif') {
         const im = decodeGif(file(real));
         if (im.width !== 320 || im.height !== 200) {
@@ -334,7 +336,7 @@ export async function packPocketGame(src: PocketSource, store: PocketStore, pak:
         lines.push(`card ${where} f ${await inPak(table)} ${pause ?? 0} ${anim.speed} ${anim.frameCount}`);
       } else leftOut[e] = (leftOut[e] ?? 0) + 1;
     };
-    await one(name, undefined, 15);
+    await one(name, pause, 15);
   };
   for (const [n, { s }] of play.entries()) {
     await cards(`i${n}`, s.files[9]);
@@ -347,6 +349,15 @@ export async function packPocketGame(src: PocketSource, store: PocketStore, pak:
   if (card) await cards('t', game.scenes[0]?.files[0]);
   await cards('h', game.scenes[0]?.files[6]); // before the story, whose picture is often a patch over this one
   await cards('s', game.scenes[0]?.files[4]);
+  // PLAYGAME shows the menu and Top Ten backgrounds with PauseLen 0; credits use ShowGraphic's defaults.
+  // These extra pages stay off the nearly full LittleFS starter image. Tags: m menu, c credits, b score backdrop.
+  const menuStart = pak.size;
+  if (card) {
+    await cards('m', game.scenes[0]?.files[2], 0);
+    await cards('c', game.scenes[0]?.files[7]);
+    await cards('b', game.scenes[0]?.files[8], 0);
+  }
+  const menuBytes = pak.size - menuStart;
   play.forEach(({ s }, n) => {
     let count = 0;
     for (let l = 0; l < MAXSCENELINKS; l++) {
@@ -368,5 +379,5 @@ export async function packPocketGame(src: PocketSource, store: PocketStore, pak:
       lines.push(`key ${scan} ${v.short.replace(/\s+/g, ' ')}`);
     }
   for (const [n, text] of Object.entries(src.controls?.counters ?? {})) if (typeof text === 'string') lines.push(`ctr ${n} ${text.split(':')[0].slice(0, 19)}`);
-  return { lines, levels: play.length, why: [...new Set(why)], warn, leftOut };
+  return { lines, levels: play.length, menuBytes, why: [...new Set(why)], warn, leftOut };
 }
