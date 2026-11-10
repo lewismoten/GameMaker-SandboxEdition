@@ -165,6 +165,11 @@
       "gamemaker-source": "./src/delta.ts",
       "import": "./dist/delta.js"
     },
+    "./fli-check": {
+      "types": "./dist/types/fliCheck.d.ts",
+      "gamemaker-source": "./src/fliCheck.ts",
+      "import": "./dist/fli-check.js"
+    },
     "./disk-diff": {
       "types": "./dist/types/diskDiff.d.ts",
       "gamemaker-source": "./src/diskDiff.ts",

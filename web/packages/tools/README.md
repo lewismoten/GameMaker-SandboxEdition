@@ -313,6 +313,12 @@ summary per changed file by type (`.gam`, `.pal`, blocks, `.map`, `.chr`, `.mon`
 
 ### Headless checking
 
+`fliCheck` from `@lewismoten/gamemaker-sandbox-tools/fli-check` checks native animations
+for PLAYGAME decoder limits and returns the Level check's file findings. It accepts the
+`get` and `byExtension` methods of engine `GameFiles` and works in browsers and Node.
+It reads no project metadata; callers decide how to display or accept suggestions.
+Colocated `src/fliCheck.test.ts` covers the animation findings.
+
 `kit/hopBot` provides configurable hopping, steering and retry support for `GameSim`.
 `kit/align` audits caller-supplied disks, multi-block layouts and pixel seams; finding the
 games to audit and reporting the results belong to the consumer. `simulation` also exposes route scene

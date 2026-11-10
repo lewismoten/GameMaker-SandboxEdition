@@ -12,6 +12,7 @@ const sources = {
   'audio-files': 'audioFiles',
   colors: 'colors',
   'disk-diff': 'diskDiff',
+  'fli-check': 'fliCheck',
   'look-alike': 'lookAlike',
   delta: 'delta',
   'color-reduce': 'colorReduce',

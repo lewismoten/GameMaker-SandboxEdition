@@ -3,11 +3,18 @@
 // files only; the fix is to save the animation again in the editor, which writes it in pieces
 // DOS reads.
 import { describeFliFault, fliFaults } from '@lewismoten/gamemaker-sandbox-engine/formats/fliLimits';
-import type { GameFiles } from '../../../project/files';
-import type { Finding } from '../findings';
+import type { GameFiles } from '@lewismoten/gamemaker-sandbox-engine/core/gameFiles';
+// Matches the editor's finding shape without depending on editor metadata or UI types.
+interface FliFinding {
+  check: 'fli';
+  severity: 'warning';
+  title: string;
+  detail: string;
+  where: { file: string };
+}
 
-export function fliCheck(files: GameFiles): Finding[] {
-  const out: Finding[] = [];
+export function fliCheck(files: Pick<GameFiles, 'byExtension' | 'get'>): FliFinding[] {
+  const out: FliFinding[] = [];
   for (const name of files.byExtension('fli')) {
     const bytes = files.get(name);
     const faults = bytes ? fliFaults(bytes) : [];
