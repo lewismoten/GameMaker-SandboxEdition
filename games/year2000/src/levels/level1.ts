@@ -21,10 +21,8 @@ const LEGEND: Legend = {
   h: 'hedge',
   T: 'tree',
   M: 'mailbox',
-  S: 'dish',
   K: 'doghouse',
-  P: 'pool',
-  W: 'mowdock',
+  P: { big: 'swim', w: 2, h: 2 },
   N: 'newscannon',
   G: 'garagedoor',
   g: 'garagewall',
@@ -33,8 +31,6 @@ const LEGEND: Legend = {
   r: 'booth_ring',
   p: 'page_grass',
   q: 'quarter_grass',
-  Q: 'quarter_sidewalk',
-  '&': 'page_sidewalk',
   '*': 'pill_grass',
   a: 'battery_grass',
   z: 'zapper_grass',
@@ -44,6 +40,8 @@ const LEGEND: Legend = {
   E: { big: 'domeB', w: 4, h: 3 },
   C: { big: 'citi', w: 2, h: 2 },
   c: 'charger',
+  k: 'cord',
+  m: 'doormat',
   H: { big: 'bbHome', w: 3, h: 2 },
   '@': { tile: 'grass', mark: 'start' },
   '1': { mon: MON.mowerH },
@@ -71,8 +69,8 @@ const ROWS = [
   'ggggggGggggggo||.....h..h...q...||:.....5......I', // 9
   'I.DDDD...K...:||..p..h.Lh.......||:...T....q...I', // 10
   'I.DDDD...CC..:||.....h..h...6...||N.........,,.I', // 11
-  'I.DDDD...CCc.:||..EEEE.........,||:..1.........I', // 12
-  'I...@..q.....:||..EEEE...1......||:......B..B..I', // 13
+  'I.DDDD...CCkc:||..EEEE.........,||:..1.........I', // 12
+  'I...@..q..m..:||..EEEE...1......||:......B..B..I', // 13
   'I.M.....,....:||..EEEE..........||:......x..r..I', // 14
   'I............:||.....q.......3..||:..*.........I', // 15
   'I.,,.....T...:||.T..............||:.......q...BI', // 16
