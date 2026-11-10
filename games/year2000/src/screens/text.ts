@@ -113,10 +113,10 @@ and Claude Opus 5.5
 
 A postcard from the future:
 "The grandkids still argue
-over the family root beer.
-The recipe calls for thirteen
-of something. Thirteen eggs,
-it turns out, are not it."`,
+over whose turn it is to
+drive the hover car. The robot
+butler keeps the schedule, and
+nobody trusts it."`,
 );
 if (POSTCARD.split('\n').length > 16) throw new Error('postcard: more than one page');
 

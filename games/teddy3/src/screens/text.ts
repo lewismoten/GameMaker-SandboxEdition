@@ -238,9 +238,9 @@ export const EGG = pages(
     '',
     'Tucked in with the lost party',
     'hats: a place card in Doc',
-    'Leo\'s hand. "ONE MORE CHAIR',
-    'AT THE TABLE. Keep it for',
-    'whoever is still coming."',
+    'Leo\'s hand. "RESERVED FOR',
+    'THE GUEST OF HONOR. Please',
+    'do not sit in it."',
     'Teddy sat in it anyway.',
   ],
   [
