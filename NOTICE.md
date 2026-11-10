@@ -1165,3 +1165,5 @@ maker "ZORP" is invented. The shell is untested: nothing has been printed.
 - **Try Again plank landing** (`games/one-more-try/`): OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, widened the upper plank and added headless jump checks against the original PLAYGAME collision rules. Existing Starter art and music retain their credits.
 
 - **SEO housekeeping (November 2026)**: OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, revised metadata and public download generators and added discoverability regression checks. No new third-party code or artwork was added.
+
+- **Web editor tour review (November 10, 2026)** (`docs/editor.md`): OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, checked the tour against the editor source and revised its descriptions of controls and flows. Existing screenshots and their artwork retain their credits.
