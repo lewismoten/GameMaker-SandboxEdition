@@ -193,11 +193,21 @@ export function reachFrom(a: Area, p: HeroPhysics, start: number, locksOpen: boo
         const b = body(X, ny);
         if (b === OUTSIDE) return;
         if (b === BLOCKED) {
+          // PLAYGAME.C chkups (3628): a solid side below masks the ceiling in that column.
+          // A ceiling in just one column can snap him sideways into the open column, even
+          // though this tick still stops his rise (movechars then snaps Y to a whole row).
+          const cl = Math.floor(X / BLEN),
+            x1 = X - cl * BLEN,
+            row = Math.floor(ny / BLEN),
+            bottom = ny % BLEN !== 0;
+          const l = solid(cell(cl, row - 1)) && !(bottom && solid(cell(cl, row + 1))),
+            r = x1 > 0 && solid(cell(cl + 1, row - 1)) && !(bottom && solid(cell(cl + 1, row + 1)));
+          if (!l && !r) return;
+          if (l && !r && x1 > BLEN / 2) X = (cl + 1) * BLEN;
+          if (r && !l && x1 < BLEN / 2) X = cl * BLEN;
           f.bump();
-          // up to the ceiling
-          let top = py;
-          while (body(X, top - 1) === FREE) top--;
-          py = top;
+          py = (row + 1) * BLEN;
+          if (body(X, py) !== FREE) return;
         } else if (b === DEADLY) return;
         else py = ny;
       }
