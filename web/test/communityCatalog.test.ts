@@ -8,7 +8,7 @@ describe('community catalog', () => {
   it('includes the maintainer-confirmed independent integration project', () => {
     const game = COMMUNITY_GAMES.find((game) => game.id === 'the-chez')!;
     expect(game.url).toBe('https://lewismoten.github.io/the-chez/');
-    expect(game.archiveUrl).toBe('https://lewismoten.github.io/the-chez/stripe.zip');
+    expect(game.archiveUrl).toBe('https://lewismoten.github.io/the-chez/hypothesis.zip');
     expect(game.title).toContain('THE\u00a0CHEZ');
     expect(Object.isFrozen(COMMUNITY_GAMES)).toBe(true);
     expect(Object.isFrozen(game)).toBe(true);
