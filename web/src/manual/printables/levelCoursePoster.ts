@@ -8,7 +8,7 @@ import { levelsOf } from './levelMapLayout';
 import { listedSecrets } from './levelSecrets';
 import { listedCourses } from './levelViews';
 import { listedRoomHints } from './levelRoomHints';
-import { GUTTER, PANEL_GAP, PANEL_HEAD, coursePanelUrls, wholeCourseSvg, wholeCourseSize } from './levelCourseSvg';
+import { GUTTER, PANEL_GAP, PANEL_HEAD, coursePanelUrls, dataUrl, wholeCourseSvg, wholeCourseSize } from './levelCourseSvg';
 import type { CatalogEntry } from '../../project/files';
 
 /** The course on `map` drawn to fit a `box` (paper units) without cutting the route, as an SVG. */
@@ -28,7 +28,7 @@ export async function coursePosterSvg(entry: CatalogEntry, map: string, box: { w
   });
   const l = levels.find((v) => v.course && v.group.map === map.toLowerCase());
   if (!l?.course) return undefined;
-  const urls = await coursePanelUrls(x.game, x.files, l);
+  const urls = await coursePanelUrls(x.game, x.files, l, dataUrl);
   const size = wholeCourseSize(l.course);
   return el(
     'svg',

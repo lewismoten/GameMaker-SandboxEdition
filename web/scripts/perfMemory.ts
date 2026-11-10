@@ -155,6 +155,54 @@ try {
         await page.keyboard.press('Escape');
       }
     },
+    // views added since 2026-11-02: a kit's 3D assembly viewer in its desk box, the balloon cube's 3D fold, the Library video dialog
+    'desk kit 3D': async () => {
+      await go('#/desk');
+      await page.locator('[aria-label="The 1994 desk"]').waitFor({ timeout: 30_000 });
+      await page.waitForTimeout(2500);
+      await page.locator('[aria-label="The 1994 desk"] [aria-label^="Snowbound"][aria-label$=" box"]').first().click({ timeout: 5000 });
+      await page.waitForTimeout(1500);
+      await page.locator('button.feelie[aria-label*="Plowed Street"]').first().click({ timeout: 8000 });
+      await page.waitForTimeout(1500);
+      await page.keyboard.press('ArrowRight');
+      await page.waitForTimeout(1500);
+      await page.keyboard.press('Escape');
+      await page.waitForTimeout(300);
+      await page.keyboard.press('Escape');
+    },
+    'die fold 3D': async () => {
+      await go('#/desk');
+      await page.locator('[aria-label="The 1994 desk"]').waitFor({ timeout: 30_000 });
+      await page.waitForTimeout(2500);
+      await page.locator('[aria-label="The 1994 desk"] [aria-label^="In The Year 2000"][aria-label$=" box"]').first().click({ timeout: 5000 });
+      await page.waitForTimeout(1500);
+      await page
+        .locator('.box-list-item', { hasText: /Wrong-Number Die/ })
+        .first()
+        .click({ timeout: 8000 });
+      await page
+        .getByRole('button', { name: /Watch it fold in 3D/ })
+        .first()
+        .click({ timeout: 15_000 });
+      await page.waitForTimeout(2500);
+      await page.keyboard.press('Escape');
+      await page.waitForTimeout(300);
+      await page.keyboard.press('Escape');
+    },
+    'library video': async () => {
+      await go('#/library');
+      await page.waitForTimeout(2000);
+      await page.locator('.lib-o-tv').click({ timeout: 8000 });
+      await page
+        .locator('.lib-card', { hasText: /Plays from YouTube/ })
+        .first()
+        .click({ timeout: 8000 });
+      await page.locator('.lib-video').waitFor({ timeout: 10_000 });
+      await page.waitForTimeout(800);
+      await page.keyboard.press('Escape');
+      await page.waitForTimeout(300);
+      await page.keyboard.press('Escape');
+    },
     library: async () => {
       await go('#/library');
       await page.waitForTimeout(1500);
