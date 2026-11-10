@@ -1,378 +1,140 @@
 # @lewismoten/gamemaker-sandbox-tools
 
-Tools for creating and checking native RSD Game-Maker data. Browser playback belongs to `@lewismoten/gamemaker-sandbox-engine`; this package has no game artwork, recordings, characters, or game-specific palettes.
+Version **3.4.0**. Tools for creating and checking native RSD Game-Maker data, without
+game assets. ES modules with TypeScript declarations; Node.js **22.12+**. Runtime npm
+dependencies are `@lewismoten/gamemaker-sandbox-engine` **^3.2.0** and
+`@lewismoten/gamemaker-sandbox-archives` **^3.2.0**.
 
-Requires Node.js 22.12 or newer. Install as a development dependency from your configured npm registry:
+Install through your configured npm registry (configure its authentication if needed):
 
 ```sh
 npm install --save-dev @lewismoten/gamemaker-sandbox-tools
 ```
 
-If your registry requires authentication or a scope mapping, configure npm using that registry's instructions.
+There is **no root import**. Import a subpath. `drawing`, `simulation`, `formats/*` and
+`audio-files` reject browser imports. Other entries include browser-safe APIs; PNG and
+compressed tar output need `CompressionStream`. Filesystem helpers such as `kit/disk`,
+`kit/photo`, `kit/png`, `kit/laserPreview` and `mesh/trinketTool` need Node.
 
-## APIs
+## Main entries
 
-- `formats/blocks`, `character`, `game`, `map`, `monster`, `palette`, `gif`, `graphicScripts`, `sound`, `fli`, `fliLimits`, `voc`, `recording`, and `cmf`: native readers, writers, types, and limits. Each is a separate `formats/<name>` subpath.
-- `gif-shrink`: `shrinkGif(bytes)` returns a smaller GIF with a trimmed color table, or `undefined` when it can't shrink without changing what PLAYGAME shows.
-- `drawing`: indexed pixels, VGA palette builders, font drawing, shading, compositing, and cartoon reels.
-- `audio`: original FM instrument presets, CMF composition, PC speaker effects, and VOC synthesis.
-- `images`: indexed PNG encoding, CRC-32, color reduction, indexed drawing and picture transforms.
-- `simulation`: headless `Sim`, `GameSim`, `readDisk`, `diskSim`, and `newCharInfo` for fixture checks. This includes the reference simulation; it does not replace testing the browser engine package.
-
-The browser-safe `images` entry also exports `Pixels`, `flipX`, `flipY`, `turn90`,
-`turn180`, and `shiftPixels` for indexed pictures of any size. Quarter turns return a
-picture with exchanged dimensions. `mirrorAll`, `line`, `box`, and `floodFill` support
-painting across tile boundaries. Fill accepts optional mask and writer callbacks for
-missing cells or repeated references to the same tile; traversal uses the original
-pixels so writes to shared cells do not break the fill.
-Shift offsets use whole pixels. Fill ignores seeds outside the image, inside a masked
-cell, or at non-integer coordinates; mismatched buffer dimensions throw a `RangeError`.
+`drawing` exports `Pixels`, `PaletteBuilder`, fonts, text rendering, compositing, shading,
+transforms and cartoon reels. Native format subpaths re-export engine codecs:
+`formats/blocks`, `character`, `cmf`, `fli`, `fliLimits`, `game`, `gif`, `graphicScripts`,
+`map`, `monster`, `palette`, `recording`, `sound`, and `voc` (each prefixed `formats/`).
 
 ```ts
-import { emptyBlock, serializeBlocks } from '@lewismoten/gamemaker-sandbox-tools/formats/blocks';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/drawing';
+import { emptyBlock, serializeBlocks } from '@lewismoten/gamemaker-sandbox-tools/formats/blocks';
 
 const blocks = Array.from({ length: 150 }, (_, i) => emptyBlock(i));
 blocks[0].pixels.set(new Pixels(20, 20, 1).px);
 const data = serializeBlocks(blocks);
 ```
 
-`medianCutRgba` from `images` chooses up to a requested 1–256 eight-bit RGB colors from portable RGBA image buffers. It needs no canvas or DOM; flatten transparency onto the intended background before calling it. The palette is based on pixel colors and their frequency, not unused color-table entries.
-
-Keep drawing and simulation imports in Node build scripts and tests; those entry points reject browser imports. Browser-safe `audio`, `images`, `text`, `colors`, `microFont`, `music/compose`, `image/png`, `kit/tar`, `kit/blockRoles` and `menu-version` (stamps "v1.0" on a game menu picture) entry points also support the web editor. Playback through the engine and archives packages does not load this toolkit. Generated game data and your own copied assets belong in the consuming project.
-
-## Fonts, text images, and lighting
-
-`drawing` exports the complete `FONT_CP437` (256 × 8 rows, bit 0 leftmost), including DOS symbols, accents, block shading, and box drawing. NUL, space, and nonbreaking space are intentionally blank. The legacy `FONT8X8` and `text` helpers retain their ASCII behavior. `glyphRows(code)` returns a copy; `encodeText`, `toCp437`, and `fromCp437` convert Unicode DOS symbols and CP437 codes. This is the DOS glyph set, not an ANSI escape-sequence parser.
-
-`MICRO_GLYPHS` exposes the project's original 3×5 uppercase font and punctuation. `glyphRows(code, 'micro')` accepts lowercase as uppercase and uses `?` for unsupported glyphs. It does not include game-specific lettering.
+`audio` exports `song`, `blankSong`, `sbi`, `INSTRUMENTS`, `tune`, speaker effects and
+sample synthesis, without playback devices. `images` exports indexed PNG encoding,
+`crc32`, `medianCutRgba`, `Pixels`, transforms and painting helpers.
 
 ```ts
-import { renderText, encodeText, PaletteBuilder, lightColor, TIME_OF_DAY_SKY } from '@lewismoten/gamemaker-sandbox-tools/drawing';
+import { song, INSTRUMENTS } from '@lewismoten/gamemaker-sandbox-tools/audio';
+import { encodePng } from '@lewismoten/gamemaker-sandbox-tools/images';
 
-const caption = renderText('╔═╗\n║é║\n╚═╝', {
-  color: 12, outline: 0, shadow: { color: 8 },
+const cmf = song(120, [{ channel: 0, instrument: INSTRUMENTS.piano, notes: 'C4 q, E4 q, G4 h' }]);
+const png = await encodePng({
+  width: 1, height: 1, pixels: Uint8Array.of(1),
+  palette: new Uint8Array(768).fill(63), // 256 × RGB, six-bit VGA levels
 });
-// caption.width, caption.height, caption.pixels suit indexed GIF/picture builders.
-// Copy small images into a native block's 20×20 pixel array before serializing it.
-const sign = renderText('GO!', { font: 'micro', color: 15, scale: 2 });
-const rawGlyphs = renderText(Uint8Array.of(1, 3, 10, 219), { color: 15 });
-const dosTextBytes = encodeText('Café ♥');
-
-const palette = new PaletteBuilder();
-palette.designerColors();
-const [dark, light, middle] = TIME_OF_DAY_SKY.sunset;
-palette.ramp('sky', 8, dark, light, middle);
-const lit = lightColor([100, 180, 80], 'night');
 ```
 
-`renderText` returns row-major indexed pixels with transparent index 255 and an origin for the first text cell. It pads the output for a one-pixel outline and shadow, even at larger scales or negative shadow offsets. Strings support LF/CRLF lines; raw byte arrays draw every byte as a glyph on one line. Empty text returns a 0×0 image. Unsupported Unicode throws rather than selecting an unrelated glyph. Ink indexes are 0–254.
-
-`outline` and `dropShadow` also decorate `Pixels` sprites within their existing bounds; edges clip. The existing sprite outline uses four neighbors, while text outlines include all eight neighbors.
-
-`colorRamp` returns eight-bit RGB stops without allocating palette entries. `rgbToHsv` and `hsvToRgb` convert eight-bit RGB and hue in degrees with saturation/value in 0..1, without changing inputs. `PaletteBuilder.ramp` allocates named ramps in a six-bit VGA palette. `TIME_OF_DAY_LIGHT`, `TIME_OF_DAY_SKY`, and `lightColor` provide morning, noon, afternoon, sunset, night, and stage-light presets. `adjustPalette` returns an adjusted native VGA palette without mutating its input. By default it preserves indexes 0 and 255; pass a custom index list to protect glowing colors or designer inks. Game-specific ramp names and cast colors belong in the consumer.
-
-## Source audio files to VOC (Node.js)
-
-Mono unsigned 8-bit PCM WAV files at the requested rate decode directly in Node.js, with
-no additional software. For Ogg, FLAC, other WAV variants or resampling, install
-[FFmpeg](https://ffmpeg.org/download.html) separately and make `ffmpeg` available on PATH,
-or pass its executable path as `ffmpegPath`. No decoder binary is bundled, and browser
-playback gains no dependency.
+`simulation` exports `Sim`, `GameSim`, `readDisk`, `diskSim`, `newCharInfo`,
+`TICKS_PER_SECOND`, scene initialization, route assertions and `GameSimState`.
+It provides headless checks; a bot win does not establish playability.
 
 ```ts
-import { audioFileToVoc, decodeAudioFile } from '@lewismoten/gamemaker-sandbox-tools/audio-files';
-import { writeFileSync } from 'node:fs';
+import { GameSim, readDisk } from '@lewismoten/gamemaker-sandbox-tools/simulation';
 
-writeFileSync('VOICE.VOC', audioFileToVoc(new URL('./voice.wav', import.meta.url), {
-  sampleRate: 11025, maxBytes: 39999,
-}));
-const samples = decodeAudioFile('voice.ogg', { sampleRate: 8000 });
+const sim = new GameSim(readDisk('./disk'), 1); // caller's complete DOS game directory
+const before = sim.snapshot();
+sim.restore(before);
 ```
 
-FLAC, Ogg, WAV and other formats supported by your FFmpeg build are accepted. Output is
-mono at the requested sample rate (11025 Hz by default). VOC conversion defaults to a
-65535-byte DOS limit; oversized clips fail instead of being shortened. `decodeAudioFile`
-returns samples for mixing or other authoring operations, bounded by `maxSamples`
-(default 16 MiB). Both functions accept `timeoutMs` (default 30000).
-
-Use PCM WAV sources for inline GitHub audio previews and sample-exact native game builds.
-Lossless FLAC input is also supported at its original sample rate.
-The converter disables dithering and uses the inverse of the native VOC encoder's byte
-mapping. Lossy sources such as Ogg Vorbis are supported for new audio, but cannot recreate
-a previous recording's exact samples. Source `.wav`/`.ogg`/`.flac` files are authoring assets; only
-8.3-named `.VOC` files belong on the generated DOS disk.
-
-### Extended micro fonts
-
-`microFont` exports `MICRO_GLYPHS`, `MICRO_SQUARE_GLYPHS`, and `microGlyphs(characters, square?)`.
-The shared repertoire includes the sign and technical-label additions such as `µ`, `¢`,
-`#`, `%`, `@`, `~`, quotes, underscore, and backslash. Both rounded and square letterforms
-are preserved. `renderText(text, {font: 'micro-square'})` selects the square style;
-`glyphRows(code, 'micro-square')` returns its five rows. `microGlyphs` can select an exact
-legacy repertoire when an existing game's unsupported-character behavior must stay the same.
-See NOTICE.md for the source and license of both project fonts.
-
-### Shared text renderers
-
-`drawing` exports `createMicroText` and `createPcText` for adapting existing lettering
-without copying drawing loops. Micro text accepts a glyph repertoire, fallback, spacing,
-and optional consumer-owned multicolor glyphs. PC text accepts custom glyph artwork,
-scaled or absolute shadow offsets, and outline spacing. Both report ink to the existing
-text-bounds audit. The default `text`, `outlined`, and `centered` retain their old behavior.
-
-### Sprite composition
-
-`drawing` also exports ASCII sprites, nearest-pixel rotations and reflections, and
-`resampleBlit` for fractional scaling. `outline` can ignore existing outline-colored
-neighbors or use an explicit transparent index; `outlineInPlace` keeps the original
-canvas. `scaleBlitTransparent` selects transparency without changing its mirroring flag.
-`bevel` accepts separate top/left/bottom/right shade offsets, and `pool` paints radial light.
-
-`microWidth` measures visible cells with zero width for an empty string; `microAdvance`
-retains the older cell-advance formula when preserving legacy layout. Default micro
-drawing recognizes direct symbols such as `µ` before trying their uppercase forms.
-
-### Palette and texture helpers
-
-`drawing` and `kit/coverPaint` expose seeded tileable value noise, RGB mixing, smoothstep,
-and clamping. `kit/palRamps` exports `Pal` and `wrap` for named palette ramps.
-
-### Software rendering
-
-`kit/quantize` chooses shared VGA palettes and ordered dithering for RGB frames.
-`kit/sdftext` provides rounded stroke lettering, distance grids and extrusion; `kit/raytrace`
-provides shapes, transforms, cameras and lighting. Consumers supply their own scenes.
-The stroke glyphs, implementation provenance and method references are in NOTICE.md.
-
-### Archives for downloads
-
-`kit/blockRoles` is the block-role vocabulary (wall, door, locked door and key with a lock number, furniture with a facing...), `suggestRoles` (guesses from a block's behavior and picture; it never decides) and `cleanRoles`/`packRoles` for editor companion data; it needs no DOM and changes no game bytes.
-
-`kit/levelGen` draws a dungeon (binary space partition: rooms joined by corridors) or a forest (cellular automata on a tree mask, clearings, a winding path) into a rectangle of a map from the blocks that hold roles. `checkNeeds(kind, roles)` says which roles a kind needs and which it uses when present; `generate(roles, { kind, seed, rect })` returns block numbers, the plain kind of each cell, the cells a terrain brush should give edges to, and a proposed entry and exit (never applied or linked), or a plain message when a needed role is missing; `offerSeed` gives the four seeds of a set of offers; `verifyReach` checks every open cell can be reached from the entry. Dungeons also get locked doors (a one-wide passage that cuts the entry from the exit, with the matching key placed in the part still reachable with that lock and every later one shut), treasure and a heart in corners and dead ends, and `monsters` (pass monster numbers in `params.monsters`; spread out, five or more steps from the entry); forests get treasure, a heart and monsters. `proveResult` plays the keys out and checks reach, key-before-lock and that everything can be collected. It needs no DOM, runs in a Worker, and the same seed always gives the same blocks. It writes no game data: the map editor places the cells. `town` (a winding main street between two gates, cross streets that end on one side only, a plaza, and houses with a door on the street) and `overworld` (value noise for sea level, mountains and forest, periodic when `GenParams.wrap` is set so the land lines up across the seam; a road cut between three to five sites) also return `links`: doors and sites a person could link to other scenes (`SceneLink`: cell, kind, label). They are proposals only; nothing creates a scene or a link, and `proveResult` checks each can be reached from the entry (`linked`).
-
-`generatePlatform({ roles, hero, seed, rect, difficulty, monsters })` draws a **side view** (platform) level and is meant for a game's `build.ts` as well as the editor. `hero` is the parsed character file (`hero.chr`): `heroPhysics(chr)` reads his walk speed, the jump's upward push (the momentum sequence) and whether he climbs, and plays them with the engine's gravity (one pixel a tick back, at most 11 pixels a tick). Nothing about the hero is written in the generator, so a game with a bigger or smaller jump gets bigger or smaller pits. `capability(physics)` measures, with the reach model, the highest step he jumps onto and the widest pit he clears on level ground (and spikes); `difficulty` (percent, 80 by default) is the share of those the layout asks. The layout has ground with pits (spiked at the bottom with a hazard block), steps up and down, towers with a ladder (only with a ladder block and a hero who climbs), spikes to jump over, stepping stones across wide pits, ledges to jump up to (`platform` blocks, solid on top only), coins where the jumps pass, a heart at the highest place he can stand, one tall locked door with its key on an earlier stretch, and monsters on the long stretches. It needs wall and sky blocks; every other role is optional. The entry is on the left and the exit on the right (proposals; nothing is linked). The result's `platform.proof` says whether the reach model (`reachFrom`: walks, jumps with every steering length, falls off edges and ladders tick by tick against the cells) proved the exit reachable, every coin, heart and key touchable, and the locked door a real barrier (the exit unreachable until the key); a layout that cannot be proven is drawn again, easier. The same seed always draws the same layout; `proveResult` and the Generate dialog's chip use the proof. The editor goes one step further (`editors/map/generate/platformBot.ts`): a bot presses the hero's own keys along the model's route on the real engine and the chip says "Bot won". Monsters and fun are not judged.
-
-`kit/tar` writes and reads POSIX ustar archives (`createTar`, `createTarGz`, `readTar`). Entries keep
-their Unix mode, so a game folder's programs and scripts unpack executable, and names over 100
-bytes use the header's prefix field. It has no dependencies and runs in Node and browsers
-(`.tar.gz` uses the platform's `CompressionStream`).
-
-### ISO disk images
-
-`createIso(entries, { volume, date?, application? })` from
-`@lewismoten/gamemaker-sandbox-tools/iso9660` writes an ISO 9660 image with Rock Ridge
-long names, Unix modes and symbolic links. Entries supply `path`, optional `data`,
-`mode` and `symlink`; folders are implied or supplied as entries without data or a link.
-It returns a `Uint8Array`, has no dependencies and runs in browsers and Node.
-Supply a fixed date for reproducible bytes. Format references and credits are in `NOTICE.md`.
-
-### Native object builders
-
-`kit/laserJoints` makes flat wooden-box panel outlines for the laser kits: finger (box) joints whose two sides mesh,
-rectilinear outlines from rectangles, and mitered kerf offsets (`jointOutline`, `outlineFromRects`, `offsetPoly`).
-`kit/laserLayout` has `Part` (one flat piece with named elements, kerf applied, spacing-checked with
-`kit/laserClearance`) and `packRows`, which lays parts out on a Glowforge-bed sheet and throws if they do not fit.
-Games' laser kits (`games/sleuth/laser/`) build on them with `kit/laserSvg`, `laserPixels` and `laserPreview`.
-
-`embroidery/*` turns a vector design into machine-embroidery files. A `Design` is color blocks of items: `fill` (polygons), `satin` (a center line and a width) and `run`. `compile` sews each item with an underlay (an edge walk inside the shape, loose rows under big shapes, a center walk and zigzag under satin) and then its top stitching, and adds the jumps, trims, small tie stitches, color stops and an end, capping every stitch at 7 mm (`Params`: fill rows 0.4 mm apart with 3.5 mm stitches whose holes are staggered in thirds, satin 0.4 mm apart, 0.3 mm of pull compensation on satin and 0.15 mm on fills, a satin wider than 7 mm sewn as lanes). `fill` makes the tatami rows (a notched shape becomes several chains), `satin` the zigzag columns and their underlay, `strokeFont` a single-line capital alphabet that `arcText` bends around a circle for satin lettering (draw it 5 mm tall or more), and `geom` the outlines (`circle`, `star`, `inset`). `dst` (Tajima: a text header and 3-byte ternary records, a trim written as tiny jumps), `exp` (Melco, Bernina) and `pes` (Brother, Baby Lock: PES v1 written by hand, its PEC section with 7- and 12-bit moves, thread-chart indices and bitmaps) each write and read a `Pattern` (the readers are for checks). `units` turns a pattern into 0.1 mm moves and splits long jumps, `validate` reports stitch count, longest stitch, extents, jumps and color changes against a hoop, `simulate` draws the stitches thread by thread, and `svg` writes the design as a vector drawing in millimeters. None of it has been run on a real machine; sew a test on scrap first. `games/maximus/patch/` is the first design.
-
-`kit/actors` builds character sequences and monster paths. `kit/screenText` validates
-30-column, 16-line DOS text pages and looks up caller-supplied named sprites.
-
-`kit/road3d` provides three-lane perspective geometry, timed spawner chains and sprite
-shrinking. `kit/saveSlots` provides PLAYGAME's save-slot rectangles and their backgrounds.
-These helpers take the consuming game's data and palette.
-
-### Image preparation and previews
-
-`kit/photo` reads a caller-supplied JPEG (`readScan`) and provides resampling, toning,
-quantization, dithering and indexed photo composition. No photographs are included.
-`kit/png` writes synchronous RGB preview PNGs with a checkerboard for transparent pixels
-and builds block sheets. `kit/levelPicture` renders a level region with its placed monsters, and `kit/levelGrid` is a character grid to paint a level in code.
-These Node build helpers complement the browser-safe `images` API.
-
-### Sound and arrangement helpers
-
-`audio` / `kit/synthParts` expose low-pass noise, envelopes, gates and filtering.
-`kit/song` builds CMF arrangements from caller-supplied sections; `kit/songFx` adds native
-CMF swells, arpeggios, glides, echoes and rhythm effects. Instrument presets are original
-project data under the MIT License; recordings and complete songs are not included.
-
-### Mumble-speak (nonsense talk as VOC)
-
-`kit/mumble` is a small formant synthesizer that says nonsense, the way a game of 1994 might hum a character's
-talk. A line is a list of syllables `[vowel, fromHz, toHz, seconds, restSeconds?]`. `mumble(line, { rate, gain })`
-returns samples in -1..1, `mumbleVoc(line)` returns an 8-bit mono 11 kHz .VOC, and `syllablesFromText(text, { pitch, speed, seed })`
-turns a line of text into syllables (vowels from its letters, so the same line and seed mumble the same way;
-a question rises, a sentence falls). `MUMBLE_VOICES` has `bright`, `deep` and `small` settings.
+`iso9660` exports `createIso(entries, { volume, date?, application? })`, returning an
+ISO 9660 image with Rock Ridge long names, Unix modes and symbolic links. Folders are
+implied or supplied without data or a link. It works in Node and browsers.
 
 ```ts
-import { MUMBLE_VOICES, mumbleVoc, syllablesFromText } from '@lewismoten/gamemaker-sandbox-tools/kit/mumble';
+import { createIso } from '@lewismoten/gamemaker-sandbox-tools/iso9660';
 
-const voc = mumbleVoc(syllablesFromText('Welcome to the show!', MUMBLE_VOICES.bright)); // write it as HELLO.VOC
+const iso = createIso([
+  { path: 'README.TXT', data: new TextEncoder().encode('How to play'), mode: 0o644 },
+], { volume: 'GAME', date: new Date('2000-01-01T00:00:00Z') });
 ```
 
-### Native animations and demos
+## Checks and build helpers
 
-`kit/fadeOut` adds palette-only FLI fades. `kit/fliClips` splits long animations at stable
-palette boundaries and builds their slide-list entries; its opt-in `ClipOptions` leave out
-the closing ring frame no player shows (`noLoopFrame`, also an `encodeFli` option) and put
-cuts where a whole frame costs the fewest extra bytes (`cheapCuts`), and run `shrink` steps first.
-`kit/fliShrink` is the size report (`fliReport`: bytes per chunk type per frame, and why) and the shrink
-steps (`sparsePalettesStep` lossless; `holdStillStep`, `snapColorsStep`, `maxColorsStep`,
-`flattenDitherStep`, `dropFramesStep` lossy), each returning the new frames, the bytes saved and how
-visible the change is (`Visibility`: mean, worst, changed share); `decodeFli`/`encodeFrames` convert,
-`shrinkFrames` chains steps. `kit/recordedDemo` turns delta/key
-pairs into a native title demo with configurable Escape press and release delays.
+- `fli-check`: `fliCheck(files)` accepts engine `GameFiles`' `get` and `byExtension`
+  methods and returns warning findings for PLAYGAME animation decoder limits. It works
+  in Node and browsers, reads no project metadata, and leaves accepting suggestions to callers.
+- `kit/blockRoles` and `kit/levelGen`: role-based seeded map generation. The latter
+  exports `generate`, `generatePlatform`, `heroPhysics`, `capability`, `proveResult` and
+  `reachFrom(area, physics, start, locksOpen, options?)`. The reach model tracks touched
+  and standing cells; `{ route: true }` enables `routeTo(cell)`. It treats space above the
+  generated rectangle as unknown and rejects moves through ledges that require uncertain
+  engine correction. Its proof does not judge monsters or fun.
+- `kit/fliShrink`: `fliReport`, decoding/encoding, lossless sparse palettes and optional
+  lossy shrink steps with visibility scores. `kit/fliClips` splits clips; `kit/fadeOut`
+  adds palette fades; `kit/recordedDemo` builds native demos.
+- `kit/tar`: `createTar`, `createTarGz`, `readTar`, with Unix modes and ustar prefixes.
+- `audio-files`: `decodeAudioFile`, `audioFileToVoc`. Matching mono unsigned 8-bit PCM WAV
+  decodes directly; other inputs/resampling require separately installed FFmpeg on PATH
+  or `ffmpegPath`. VOC defaults to 11025 Hz and a 65535-byte cap; oversize output throws.
 
-### Shared block sets
+Laser helpers use millimeters and take caller-supplied designs:
 
-`kit/shareBlocks` merges several scenes' background blocks into one `.BBL`: only the blocks a
-map uses (and what they change into) are kept, matching blocks and rings become one, a pinned
-number (such as a felt egg's) stays put, and each scene's map is renumbered.
+- `kit/laserJoints`: `jointOutline`, `outlineFromRects`, `offsetPoly`, rectangle and rotation helpers.
+- `kit/laserLayout`: kerf-adjusted `Part`, `BED`, `PART_GAP`, `packRows`; packing throws
+  when rows exceed the sheet. Call `Part.close()` to check spacing.
+- `kit/laserSvg`: `LaserSheet`, operation colors and shape types; `.svg(title)` writes SVG.
+- `kit/laserPixels`: pixel engraving, straight/arc text, bitmap toning and ink bounds.
+- `kit/laserClearance`: `tooClose` reports element pairs below supplied gaps.
+- `kit/laserPreview`: Node raster previews and PNG output.
 
-### Look-alike blocks
+## Other subpaths
 
-`findLookAlikes` finds background blocks that are drawn the same colors under every palette a set
-is shown with and play the same (it keeps what they turn into in step), and lists blocks that
-share a shape in other colors without joining them: a scene has one palette. `applyFold` removes
-the folded blocks and renumbers maps and links. Import from `@lewismoten/gamemaker-sandbox-tools/look-alike`.
+| Entry                             | Public surface                                                                    |
+| --------------------------------- | --------------------------------------------------------------------------------- |
+| `text`, `microFont`, `colors`     | CP437 and micro glyphs, `renderText`, lighting, RGB/HSV and ramps                 |
+| `palettes`                        | `libraryDefaultPalette`, `PALETTE_PRESETS`, `createPalettePreset`                 |
+| `menu-version`                    | `stampMenuVersion` and `MenuVersionSpot`                                          |
+| `gif-shrink`                      | `shrinkGif`, smaller GIFs preserving PLAYGAME's display                           |
+| `block-merge`, `look-alike`       | `mergeBackgroundSets`, `findLookAlikes`, `applyFold`                              |
+| `color-reduce`, `palette-reserve` | `reduceBlocks`, `planRanges`, `syncRange` and scoring helpers                     |
+| `delta`                           | File/version diffs, patch application and `deltaSize`                             |
+| `disk-diff`, `release-notes`      | `diffDisks`, `formatDiff`, `releaseNotes` and summaries                           |
+| `music/*`                         | `music/compose`: CMF composition and instrument presets                           |
+| `image/*`                         | `png`, `animatedGif`, `surface`: encoding and indexed painting                    |
+| `embroidery/*`                    | Designs, stitch compilation, DST/EXP/PES readers/writers, validation and previews |
+| `mesh/*`                          | Distance fields, mesh generation/checks, STL/3MF, color bodies and trinket output |
+| `pack/*`                          | `meshPack`, `threeMfPack`: lossless mesh packing                                  |
+| `kit/*`                           | Drawing, text, palette, song, disk, simulation, layout and build helpers          |
 
-### Versions as deltas
+Wildcard paths expose existing modules, not arbitrary filenames. The
+[public source tree](https://github.com/lewismoten/GameMaker-SandboxEdition/tree/master/web/packages/tools/src)
+and [export map](https://github.com/lewismoten/GameMaker-SandboxEdition/blob/master/web/packages/tools/package.json)
+list their modules and signatures. Embroidery output has not been tested on a real machine;
+sew a test on scrap before using a design.
 
-`diffVersions`, `applyDelta` and `deltaSize` keep a game's earlier versions like a git repository: a binary file
-is a list of byte-range patches (one recolored block or map cell is a few bytes), a text file (lst, txt, json,
-md...) a line patch, so each version costs only what changed. Lossless for any bytes. Import from
-`@lewismoten/gamemaker-sandbox-tools/delta`.
+## Development and license
 
-### Color reduction
+Run `npm run build`, `npm run verify` or `npm pack` in the package folder. Standalone
+builds use only package-owned source and declared dependencies. Repository development
+uses root `npm ci`; root `npm run verify:packages` checks isolated builds with packed
+sibling dependencies. See the
+[monorepo guide](https://github.com/lewismoten/GameMaker-SandboxEdition/blob/master/docs/monorepo.md)
+and [release guide](https://github.com/lewismoten/GameMaker-SandboxEdition/blob/master/docs/package-releases.md).
 
-`reduceBlocks` moves the pixels of blocks that use colors outside their allowed set (a block type's reserved
-range plus the colors nobody reserved) to the nearest allowed color, and scores the change in CIELAB delta E
-(mean over changed pixels, worst pixel; a block is flagged above 6 mean or 20 worst, thresholds a guess). Index
-0 and 255 never move. Import from `@lewismoten/gamemaker-sandbox-tools/color-reduce`.
-
-### Palette reservations
-
-`planRanges` proposes, for a game with no reservations, a range of color numbers for monsters and one for
-characters (sized by the different colors their blocks draw, at most 48 each, starting at 16 because 1-15 look
-like the engine's own interface colors, placed where the fewest other blocks already draw). `syncRange` makes a
-reserved range identical in every palette a role's files are shown with: the role's colors move into the range
-(pixels renumbered, palettes updated), and colors beyond the range's size become the nearest kept one, all scored
-in delta E. Import from `@lewismoten/gamemaker-sandbox-tools/palette-reserve`.
-
-### Joining block sets
-
-`mergeBackgroundSets` moves one background set's drawn blocks into another's free slots (reusing an
-identical block already there) and renumbers the moved set's maps; the kept set is not renumbered.
-Pickups, required and starting items and block 0 keep their number or the join is refused.
-Import from `@lewismoten/gamemaker-sandbox-tools/block-merge`.
-
-### Meshes for 3D printing
-
-`mesh/surfaceNets` turns a signed distance field (negative inside) into a closed triangle mesh
-(`surfaceNets(field, { min, max, cell })`; it retries with a shifted grid until every edge is in exactly two
-triangles), `mesh/stl` writes and reads binary STL (`writeStl`, `readStl`; a color per triangle goes in the
-attribute bytes the VisCAM way, which slicers ignore) and `mesh/meshCheck` reports whether a mesh is closed,
-how many pieces it has, its size and volume (`inspectMesh`). `mesh/tetraMesh` is the other mesher (four times
-the triangles, but closed for any field, and neighbors meet on the same vertices); `mesh/overhang` measures what
-an FDM printer cannot print (`overhang`) and builds the support pillars as a body of their own (`supportBody`);
-`mesh/colorBodies` picks at most four colors from a colored mesh (`pickPalette`) and splits the solid into one
-closed body per color (`colorBodies`, thinned and grown to the volume you give it); `mesh/decimate` takes the triangles a
-closed mesh does not need out by quadric edge collapse (`decimate(mesh, { maxError })`: stays closed and in one piece, and the
-borders between a triangle color and the next stay put); `mesh/sampledField` samples a field once on a grid and reads it back
-by trilinear interpolation, for the many passes over one figure (`sampledField`); `mesh/threeMf` writes and reads multi-color 3MF files (`write3mf(parts,
-title, codec)`, `read3mf`: parts are a mesh and a color), over the small ZIP writer `mesh/zipFile` (pass Node's
-`deflateRawSync` as `codec.deflate` to compress). `pack/meshPack` packs a binary STL losslessly into a much smaller file
-(`packStl`, `unpackStl`: a table of distinct corners in byte planes, corner numbers as varints, normals worked out again;
-deflate the result) and gives the pieces (`toPlanes`, `packIndices`) for other mesh files; `pack/threeMfPack` does the same
-for a 3MF `write3mf` wrote (`pack3mf`, `unpack3mf`: corners in thousandths, as the file has them; `threeMfEntries` makes
-its inner files again, the same bytes, to zip with any deflate). `mesh/voxel` meshes filled voxels (`voxelMesh`: coplanar faces merged into
-rectangles, no T-junctions, so it stays closed) and `mesh/pixelFigure` turns a pixel sprite into a standee on a base with at
-most four color bodies (`pixelFigure`). They are browser safe, except `mesh/trinketTool`.
-
-Trinkets made of distance fields (Depth Perception's, Quest for the Round Tuit's) share one pipeline, all in millimeters
-with the floor at z = 0: `mesh/sdfShapes` has the 2D shapes (circle, rounded rectangle, polygon, ring, capsule and
-`pixelText2`, lettering in the 3x5 micro font), `extrude` and the solid combiners; `mesh/strokeText` (`strokeText2`, `ringText2`) letters raised or sunk text in smooth capsule strokes (capitals, digits, marks; use it instead of the stair-stepped `pixelText2` for anything printed); `mesh/figureShapes` has ellipsoids, round cones, a smooth union and `place3` for 3D figures; `mesh/trinketKinds` builds a `plate` (coin,
-token, key-chain tag or badge: outline, raised rim, raised relief, sunk art, holes, a pin-back `pocket` from `pinBack`), a key-chain `ringTab`, a faceted `gem` (also a crystal shard) and a `die`; `mesh/fieldTrinket`
-(`meshFieldTrinket`) meshes a field with a color per triangle and gives the checks (eroded pieces and specks, overhang),
-up to four color bodies and supports; `mesh/trinketTool` (`runTrinketTool`, Node only) writes the STL, 3MF and manifest.json
-of a game's trinkets, with a source key so an unchanged game is skipped, in worker threads when `--workers N` runs a bundle.
-A game keeps its designs in `games/<id>/src/trinkets/` (`TRINKETS` and `makeTrinket`) and a four-line `tools/trinkets.ts`.
-Surface nets need a cell smaller than half of any gap between pieces (a 0.6 mm kerf wants a 0.26 mm cell).
-
-### Disk comparison
-
-`diffDisks(a, b)` takes two `Map<name, bytes>` disks and returns the added, removed and changed files, with a plain-text
-summary per changed file by type (`.gam`, `.pal`, blocks, `.map`, `.chr`, `.mon`, text, GIF, FLI, VOC, else bytes).
-`formatDiff` prints it, sorted and the same every time. Import from
-`@lewismoten/gamemaker-sandbox-tools/disk-diff`; `npm run disk:diff` in `web/` is the command line.
-`releaseNotes(diff)` (`.../release-notes`) turns a diff into short paste-ready text grouped by kind of file, such as
-"Changed 2 maps (A.MAP, B.MAP) and 1 palette (X.PAL). Added 1 sound (SONG3.VOC)."; `disk:diff -- --notes` prints it.
-
-### Headless checking
-
-`fliCheck` from `@lewismoten/gamemaker-sandbox-tools/fli-check` checks native animations
-for PLAYGAME decoder limits and returns the Level check's file findings. It accepts the
-`get` and `byExtension` methods of engine `GameFiles` and works in browsers and Node.
-It reads no project metadata; callers decide how to display or accept suggestions.
-Colocated `src/fliCheck.test.ts` covers the animation findings.
-
-`kit/hopBot` provides configurable hopping, steering and retry support for `GameSim`.
-`kit/align` audits caller-supplied disks, multi-block layouts and pixel seams; finding the
-games to audit and reporting the results belong to the consumer. `simulation` also exposes route scene
-assertions and scene initialization that delegates to the engine. `GameSimState` names
-the snapshot type; compatibility initialization preserves older block-birth bookkeeping.
-
-### DOS disk output
-
-`kit/disk` exports `Disk` for collecting 8.3-named files and writing a clean output
-directory, plus the legacy `dosText` byte conversion. Destination and metadata are
-caller-supplied. `kit/menuVersion` can stamp a supplied version on a native menu GIF;
-this package reads no game metadata files and imposes no version policy.
-
-`kit/palRamps` also exports `wrapWithBuilder` and `buildRampPalette`: supply ramp
-descriptors, optional named endpoint replacements, and a color transform. The game
-keeps its actual colors and lighting choices. `colors` and `text` are direct browser-safe
-entries for the existing lighting, ramp, glyph-row, and rendered-text APIs.
-
-`kit/textfit` audits caller-supplied native files for menu, save-slot, score-table and
-text-page layout and contrast. Choosing which games to check, and printing the results, are left to the consumer.
-
-## Original Library palette
-
-`libraryDefaultPalette()` from `@lewismoten/gamemaker-sandbox-tools/palettes` returns
-an independent 768-byte copy of the CD Library's `DEFAULT.PAL`, with black at index
-zero. This is the original RSD palette, rather than the engine's generated fallback.
-It works in browsers and Node without fetching the CD or using repository files.
-See `NOTICE.md` for its source and license.
-
-### Palette templates
-
-`PALETTE_PRESETS` from `palettes` lists 20 ready-made templates with names, descriptions,
-occupied entry counts and DOS-safe filename stems. `createPalettePreset(id)` returns a fresh
-768-byte VGA palette with menu black at index 0, transparency reserved at 255, and unused
-entries black. Templates include monochrome, Atari NTSC/PAL, NES, CGA, EGA, EGA with skin/hair
-ramps, LCD greens, Sega Master System, Commodore 64, web-safe colors and grayscale steps.
-128-step grayscale necessarily repeats VGA's 64 distinct gray shades. LCD greens include
-four green shades plus menu black. Console RGB references and their licenses are in NOTICE.md;
-all values are adapted to six-bit VGA and do not impose the original consoles' drawing limits.
-
-## Developing
-
-This package's source lives in [the project's repository](https://github.com/lewismoten/GameMaker-SandboxEdition), in `web/packages/tools`. The folder holds its builders in `src/`, build configuration, license and notices. Shared codecs and runtime types come through declared engine and archives dependencies, and it never reads source from another repository folder. After `npm install` in a standalone copy, or `npm ci` at the repository root:
-
-```sh
-npm run build
-npm run verify
-npm pack
-```
-
-The build bundles source from the format, drawing, audio, and simulation modules. It does not use or restart the site's Vite configuration. The tarball contains JavaScript, declarations, this guide, the MIT license, and notices. From the repository root, `npm run verify:packages` copies each package outside the repository, builds it with packed declared dependencies, and tests its npm distribution, which also supports unpublished sibling versions.
-
-`verify` installs the tarball in a temporary npm consumer and checks codecs, drawing, sound generation, headless simulation, NodeNext declarations, absence of game content, and rejected browser imports. Tarballs are local build artifacts and must not be committed to a consuming project. The [monorepo guide](https://github.com/lewismoten/GameMaker-SandboxEdition/blob/master/docs/monorepo.md) covers the workspace layout, and the [package release guide](https://github.com/lewismoten/GameMaker-SandboxEdition/blob/master/docs/package-releases.md) covers publishing.
-
-## License and notices
-
-The source is MIT licensed. The published package carries `LICENSE` and `NOTICE.md` (credits for third-party code and formats); it includes no game assets.
+The tarball includes JavaScript, declarations, README, changelog,
+[LICENSE](https://github.com/lewismoten/GameMaker-SandboxEdition/blob/master/web/packages/tools/LICENSE)
+and [NOTICE.md](https://github.com/lewismoten/GameMaker-SandboxEdition/blob/master/web/packages/tools/NOTICE.md).
+Source is MIT licensed; no game assets or decoder binaries are bundled.
