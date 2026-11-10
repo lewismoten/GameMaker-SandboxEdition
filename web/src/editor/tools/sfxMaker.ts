@@ -186,12 +186,7 @@ export function sfxMaker(project: Project, opts: Options = {}): Promise<SfxMade 
       'div',
       { class: 'sfxm' },
       presetBar,
-      h(
-        'div',
-        { class: 'sfxm-body', dataset: { listArea: '' } },
-        h('div', { class: 'sfxm-left' }, waveSeg, wave, info, h('button', { type: 'button', class: 'primary', onclick: () => play(samples) }, '▶ Listen')),
-        grid,
-      ),
+      h('div', { class: 'sfxm-body', dataset: { listArea: '' } }, h('div', { class: 'sfxm-left' }, waveSeg, wave, info), grid),
       h(
         'div',
         { class: 'sfxm-foot' },
@@ -205,6 +200,7 @@ export function sfxMaker(project: Project, opts: Options = {}): Promise<SfxMade 
         h(
           'div',
           { class: 'buttons' },
+          h('button', { type: 'button', onclick: () => play(samples) }, '▶ Listen'),
           h('button', { type: 'button', onclick: () => finish(undefined) }, 'Cancel'),
           h('button', { type: 'button', class: 'primary', onclick: save }, 'Save .VOC'),
         ),
