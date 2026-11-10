@@ -11,11 +11,17 @@ import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob } from '../../../snowbound/src/art/draw';
 import { micro } from '../../../snowbound/src/art/font';
 import { makeBook, T } from '../../../snowbound/src/sprites/kidArt';
-import { outline } from '../../../mustard/src/sprites/sprites';
+import { outline as outlineSprite } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
 import type { Pal } from '../art/pal';
 import { SOLLEF, SOLRIG } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 
-export { T, outline };
+export { T };
+
+/** Keeps the sprite canvas and excludes existing ink when adding its outline. */
+export function outline(p: Pixels, ink: number): Pixels {
+  p.px.set(outlineSprite(p, ink, { ignoreInk: true }).px);
+  return p;
+}
 
 export type Form = 'loaf' | 'bundle';
 
