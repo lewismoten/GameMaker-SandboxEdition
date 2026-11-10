@@ -5,6 +5,16 @@ Changes to `@lewismoten/gamemaker-sandbox-archives`, released as `archives-v*` t
 
 ## [Unreleased]
 
+## [3.2.1] - 2026-11-09
+
+Security fix: zip reading now has safe default limits.
+
+### Security
+
+- Reading a zip with no limits given now uses safe defaults (8,192 entries, 256 MB unpacked), and zips inside zips in an import share one byte budget, so a small zip can no longer unpack to gigabytes.
+
+Full list: [changes/release/archives/3.2.1.md](https://github.com/lewismoten/GameMaker-SandboxEdition/blob/archives-v3.2.1/changes/release/archives/3.2.1.md)
+
 ## [3.2.0] - 2026-11-07
 
 The first release: game discovery, ZIP and SFX extraction, ZIP creation and a full import scanner, with no Node-only
@@ -18,5 +28,6 @@ code. Imports check what FLI, GIF and VOC files really hold and keep the player'
 
 Full list: [changes/release/archives/3.2.0.md](https://github.com/lewismoten/GameMaker-SandboxEdition/blob/archives-v3.2.0/changes/release/archives/3.2.0.md)
 
-[Unreleased]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/archives-v3.2.0...HEAD
+[Unreleased]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/archives-v3.2.1...HEAD
+[3.2.1]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/archives-v3.2.0...archives-v3.2.1
 [3.2.0]: https://github.com/lewismoten/GameMaker-SandboxEdition/releases/tag/archives-v3.2.0

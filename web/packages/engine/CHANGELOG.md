@@ -5,6 +5,16 @@ Changes to `@lewismoten/gamemaker-sandbox-engine`, released as `engine-v*` tags.
 
 ## [Unreleased]
 
+## [3.3.1] - 2026-11-09
+
+Security fixes: file decoders and readers refuse inputs that would allocate gigabytes or read past their data.
+
+### Security
+
+- The GIF and VOC decoders refuse sizes that would allocate gigabytes, and `parseGame` rejects a file too short for its scenes. `serializeGame` refuses a name pool past DOS's 10000 bytes.
+
+Full list: [changes/release/engine/3.3.1.md](https://github.com/lewismoten/GameMaker-SandboxEdition/blob/engine-v3.3.1/changes/release/engine/3.3.1.md)
+
 ## [3.3.0] - 2026-11-07
 
 Slow-PC presets that play a game at the pace of a 486, 386, 286 or IBM PS/1, experimental gameplay patches, live
@@ -37,6 +47,7 @@ for every Game-Maker file format, OPL2 and CMF audio, screen, input and fonts.
 
 - The engine, scoped as `@lewismoten/gamemaker-sandbox-engine` and published to GitHub Packages from version tags.
 
-[Unreleased]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/engine-v3.3.0...HEAD
+[Unreleased]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/engine-v3.3.1...HEAD
+[3.3.1]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/engine-v3.3.0...engine-v3.3.1
 [3.3.0]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/engine-v3.1.0...engine-v3.3.0
 [3.1.0]: https://github.com/lewismoten/GameMaker-SandboxEdition/releases/tag/engine-v3.1.0
