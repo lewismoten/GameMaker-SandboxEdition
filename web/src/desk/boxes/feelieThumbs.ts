@@ -4,6 +4,8 @@
 import type { Feelie } from './feelies';
 import { stillThumb } from './feelies';
 import { viewMaker } from './feelieModels';
+// shared with feelies.ts and feelieItems.ts, so a dynamic import here would move nothing
+import { loadPhone } from './phone/phoneData';
 
 const SIZE = 160;
 const done = new Map<string, Promise<string | undefined>>();
