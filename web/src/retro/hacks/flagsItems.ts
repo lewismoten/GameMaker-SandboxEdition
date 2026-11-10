@@ -353,21 +353,4 @@ export const ITEMS: readonly FlagItem[] = [
 ];
 
 /** Everything the backup keeps in localStorage. */
-export const BACKUP_KEYS = [
-  'gm-eggs',
-  'gm-egg-taps',
-  'gm-egg-hatched',
-  'gm-tin-hearts',
-  'gm-clock-heart',
-  'gm-clock-pops',
-  'gm-hearts-before-clock',
-  'gm-heart-reveal',
-  'gm-score-trophies',
-  'gm-reg-mail',
-  'gm-reg-reply',
-  'gm-hint-phone-bill',
-  'gm-bbs-sandbox-user',
-  'gm-bbs-signups',
-  'gm-bbs-door-tictactoe',
-  'gm-desk-clock',
-] as const;
+export { BACKUP_KEYS } from './flagsBackupKeys';

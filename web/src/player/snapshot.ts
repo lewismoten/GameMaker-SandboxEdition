@@ -1,5 +1,5 @@
 // Pixel-exact DOS screenshots: copy indices and the live DAC before asynchronous PNG compression.
-import { encodePng, type IndexedPicture } from '@lewismoten/gamemaker-sandbox-tools/image/png';
+import type { IndexedPicture } from '@lewismoten/gamemaker-sandbox-tools/image/png';
 import type { Screen } from '@lewismoten/gamemaker-sandbox-engine/gfx/screen';
 import { VISIBLE_W, VISIBLE_H } from '@lewismoten/gamemaker-sandbox-engine/engine/render';
 
@@ -54,7 +54,8 @@ export function snapshotButton(corner: HTMLElement, screen: Screen, gameId: stri
     e.stopPropagation();
     const name = snapshotName(gameId, screen);
     const picture = snapshotPicture(screen);
-    void encodePng(picture)
+    void import('@lewismoten/gamemaker-sandbox-tools/image/png')
+      .then(({ encodePng }) => encodePng(picture))
       .then((bytes) => {
         const url = URL.createObjectURL(new Blob([bytes as BlobPart], { type: 'image/png' }));
         const link = Object.assign(document.createElement('a'), { href: url, download: name });

@@ -5,7 +5,6 @@ import { GameFiles, peekGameFile, type CatalogEntry } from '../project/files';
 import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { BUILT_SHOTS, builtMapShotPath, builtMapViews, builtShotPath, busiest, firstLevels, levelPixels, scenePixels, type MapView } from './levelPicture';
 import { paintIndexed } from '../editor/core/draw';
-import { builtTitlePath, titlePixels, titleSource } from './titlePicture';
 
 async function fetchFile(entry: CatalogEntry, name: string): Promise<Uint8Array | undefined> {
   // the CD stores A-J.BKD as a_j.bkd (ISO 9660 names); fetched once, shared. A peek reads the
@@ -112,12 +111,13 @@ export async function renderTitle(entry: CatalogEntry, canvas: HTMLCanvasElement
   if (!entry.gam) return false;
   // a built site drew every listed game's title it could: none there means it has none
   if (entry.shots) {
-    const built = await loadImage(builtTitlePath(entry.id));
+    const built = await loadImage(`games/shots/${entry.id}-title.png`);
     return built ? !!onCanvas(built, canvas) : false;
   }
   const gam = await fetchFile(entry, entry.gam);
   if (!gam) return false;
   const game = parseGame(gam);
+  const { titlePixels, titleSource } = await import('./titlePicture');
   const pic = titlePixels(await titleSource(game, (n) => fetchFile(entry, n)), game);
   if (!pic) return false;
   paintIndexed(canvas, pic.pixels, pic.width, pic.height, pic.palette);

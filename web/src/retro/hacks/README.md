@@ -11,6 +11,7 @@ Entry points: `retro/computer.ts` runs them from the DOS prompt; `retro/bbs/ware
 - `gm30Install.ts`, `gm30Text.ts`: the "rip" of Game-Maker 3.00 and its installer.
 - `patchingText.ts`: PATCHING.TXT and its FILE_ID.DIZ.
 - `flags.ts`, `flagsItems.ts`, `flagsBackup.ts`, `flagsPlayed.ts`, `flagsText.ts`: FLAGS.EXE, the desk PC's hard-to-see browser state.
+- `flagsHelp.ts`, `flagsBackupKeys.ts`: Command help loads with FLAGS, while the backup key list lets the PC list FLAGS.BAK without loading flag handlers or the achievement catalog.
 - `roomFix.ts`, `roomFixItems.ts`: ROOMFIX.EXE, putting the room's small remembered states back.
 - `fastPlay.ts`, `fastPlayText.ts`: FASTPLAY.EXE, the first-run setup policy.
 - `reggie.ts`, `reggieText.ts`: REGGIE.EXE, who the rubber chicken is.

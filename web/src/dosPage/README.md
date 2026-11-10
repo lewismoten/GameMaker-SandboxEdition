@@ -20,3 +20,5 @@ Tests: `boundary.test.ts` walks every import reachable from `dosPage/dosPage.ts`
 
 Check: `cd web && npx vitest run src/dosPage`, then open `/dos.html` on your own dev server port
 and look at the bar at phone width and desktop width.
+
+Registration panels load through `regSideLater` when GM first asks, after the initial monitor render.

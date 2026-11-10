@@ -11,7 +11,6 @@ import { plugDeskPad } from '../../input/deskJoystick';
 import { gamePadArt } from './gamePadArt';
 import { PadHolds, pressWithPointer } from './gamePadHolds';
 import { throwDrawnSwitch } from './gamePadSwitch';
-import { gamePadPanel } from './gamePadPanel';
 
 /** Shows a real gamepad's presses on the desk's pad while one is plugged in (the browser says so on its first press). */
 function followGamepads(holds: PadHolds, alive: () => boolean): () => void {
@@ -65,9 +64,15 @@ export function deskGamePad(): HTMLElement {
       pressed = false;
       return;
     }
-    panel.open(e.detail === 0);
+    const focus = e.detail === 0;
+    void (panelLoading ??= import('./gamePadPanel').then(({ gamePadPanel }) => (spot.isConnected ? (panel = gamePadPanel(holds, pad)) : undefined)))
+      .then((loaded) => {
+        if (spot.isConnected) loaded?.open(focus);
+      })
+      .catch(() => (panelLoading = undefined));
   });
-  const panel = gamePadPanel(holds, pad);
+  let panel: ReturnType<typeof import('./gamePadPanel').gamePadPanel> | undefined;
+  let panelLoading: Promise<typeof panel> | undefined;
   holds.watch(art);
   const unplug = plugDeskPad();
   const unfollow = followGamepads(holds, () => spot.isConnected);
@@ -80,7 +85,7 @@ export function deskGamePad(): HTMLElement {
     unfollow();
     holds.stop();
     unplug();
-    panel.close();
+    panel?.close();
   });
   requestAnimationFrame(() => watch.observe(document.body, { childList: true, subtree: true }));
   return spot;

@@ -36,8 +36,18 @@ const RULES: [entry: string, mustNot: [what: string, match: RegExp][]][] = [
     [
       ['the magazine or the level check', /^(manual\/magazine|editor\/check)\//],
       ['the felt eggs’ art', /^eggs\/eggArt\.ts$/],
+      ['the enlarged gamepad controls', /^desk\/pc\/gamePadPanel\.ts$/],
     ],
   ],
+  [
+    'dosPage/dosPage.ts',
+    [
+      ['registration panels before GM asks', /^retro\/gmReg\/reg(Side|GuidePanel|CardPanel)\.ts$/],
+      ['FLAGS handlers and achievement catalog', /^(retro\/hacks\/flags(Items|Help)|achievements\/catalog)\.ts$/],
+    ],
+  ],
+  ['play.ts', [['the screenshot PNG encoder', /packages\/tools\/src\/image\/png\.ts$/]]],
+  ['gfx/gameShots.ts', [['live title rendering before a built picture is tried', /^gfx\/titlePicture\.ts$/]]],
   ['export/exportDos.ts', [['installation support', /^export\/(dosInstall|dosFloppies)\.ts$/]]],
   ['export/exportWebPlayer.ts', [['DOS ZIP export', DOS_EXPORT]]],
   ['assistant/tools/checkTools.ts', [['DOS ZIP export', DOS_EXPORT]]],
@@ -48,6 +58,7 @@ const RULES: [entry: string, mustNot: [what: string, match: RegExp][]][] = [
       ['the Library', /^library\//],
       ['new game and importing', /^editor\/shell\/homeImport\.ts$/],
       ['the engine', /^engine\//],
+      ['live title rendering for prebuilt pictures', /^gfx\/titlePicture\.ts$/],
     ],
   ],
   // a new game's opening: its fields and preview up front, the cards' renderer when the game is made
