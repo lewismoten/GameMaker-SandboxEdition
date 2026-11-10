@@ -136,9 +136,14 @@ export function settingsMenu(): HTMLElement {
       close(true);
     } else if (e.key === 'Tab') close(false);
   });
-  menu.addEventListener('click', (e) => {
-    if (!(e.target as Element).closest('.theme-item')) close(false);
-  });
+  menu.addEventListener(
+    'click',
+    (e) => {
+      // Dialogs opened by an item remember the visible gear, rather than the hidden item.
+      if (!(e.target as Element).closest('.theme-item')) close(true);
+    },
+    true,
+  );
   // a click elsewhere closes it (and once the header is replaced, this stops listening)
   const outside = (e: MouseEvent) => {
     if (!wrap.isConnected) document.removeEventListener('click', outside);

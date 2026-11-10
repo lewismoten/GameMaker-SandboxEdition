@@ -449,6 +449,7 @@ export function showKeyMap(
   close.title = 'Close (Esc)';
   close.setAttribute('aria-label', 'Close');
   const dlg = el('dialog', 'km-dialog', el('header', 'km-head', el('h2', null, el('span', 'km-icon', icon('keys')), ` Keys · ${title}`), close), body);
+  dlg.setAttribute('aria-label', `Keys · ${title}`);
   const done = () => {
     dlg.close();
     dlg.remove();

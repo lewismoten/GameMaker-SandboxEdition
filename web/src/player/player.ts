@@ -134,6 +134,7 @@ export function mountPlayer(container: HTMLElement, files: GameFiles, gamFile: s
     link.textContent = 'Shareware · read the author’s notice';
     const dialog = document.createElement('dialog');
     dialog.className = 'gm-notice';
+    dialog.setAttribute('aria-label', 'Shareware notice');
     const pre = document.createElement('pre');
     pre.textContent = opts.notice;
     const close = document.createElement('button');

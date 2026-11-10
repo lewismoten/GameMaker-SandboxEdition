@@ -21,9 +21,16 @@ export function moreMenu(name: string, items: HTMLElement[]): HTMLElement {
     summary.focus();
   });
   // a button chosen closes it (the Sound Blaster checkbox stays open, to see it change)
-  panel.addEventListener('click', (e) => {
-    if ((e.target as Element).closest('button')) menu.open = false;
-  });
+  panel.addEventListener(
+    'click',
+    (e) => {
+      if ((e.target as Element).closest('button')) {
+        menu.open = false;
+        summary.focus();
+      }
+    },
+    true,
+  );
   document.addEventListener('click', (e) => {
     if (menu.open && !menu.contains(e.target as Node)) menu.open = false;
   });
