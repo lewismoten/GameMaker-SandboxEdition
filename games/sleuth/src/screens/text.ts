@@ -236,10 +236,10 @@ Doc Leo, hobo clown (standing backward in line, as usual)
 \f
 A NOTE TUCKED INSIDE
 
-Case 13, never closed: one recipe card lifted in 1776, one root beer the family will not discuss, one kitchen door with flour on the knob.
+Case file, never closed: one missing pie, one suspect who will not discuss it, one back door with flour on the knob.
 
 Last note, underlined twice:
-"Count the eggs again. A baker always does."`;
+"Count the eggs again. A detective always does."`;
 
 // ---------------------------------------------------------------- the interviews
 

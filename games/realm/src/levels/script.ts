@@ -185,7 +185,7 @@ I'd make you a shield, but I've been putting it off.`,
     'The Procrastinating Pony',
     `Welcome to the Procrastinating Pony! A bed's ten gold at the counter: sleep it off, wake up a good deal better.
 
-Root beer? Family recipe. A dozen ingredients and a thirteenth nobody will name. Gran swore it's why we won a war once. Nobody talks about it.
+Root beer? Gran's recipe, brewed out back. She swears it's the only thing that ever got this pony anywhere on time. Nobody believes her.
 
 And there's a hermit up at Eventually Falls who says the falls hide a garden, the garden hides a nest, and the nest is only full some of the time. Hermits.`,
   ),
@@ -531,7 +531,7 @@ Map inked by Lewis "Lewie" Moten III
 
 Roads curved by Claude Opus 5.5
 
-The royal map ends at the edge of the kingdom with "Here Be Root Beer," and a line the cartographer was far too polite to finish: "Taken from the Redcoats, fair and square, on a Tuesday, by..."`,
+The royal map ends at the edge of the kingdom with "Here Be Dragons," and a line the cartographer was far too polite to finish: "Very friendly, really, as long as nobody mentions Tuesday, when..."`,
       'lore',
     ),
     before: ['eggshow.gif'],

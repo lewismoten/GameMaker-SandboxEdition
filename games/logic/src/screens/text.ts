@@ -153,9 +153,9 @@ Copper-orange felt with a yellow lightning bolt on each side, a zigzag of black 
 
 Wired up by
 Claude Opus 5.5`,
-  `Taped inside the fuse box: "KITCHEN CIRCUIT. DO NOT TRIP DURING THE BOIL."
+  `Taped inside the fuse box: "PANEL B. DO NOT TRIP DURING THE STORM."
 
-Under it, in much older ink: "The stove was never the secret ingredient."
+Under it, in much older ink: "The fuse was never the problem."
 
 Watt closes the panel very gently.`,
 ]);
