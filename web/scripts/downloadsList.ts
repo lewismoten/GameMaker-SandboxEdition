@@ -1,8 +1,7 @@
 // The game list of downloads.html, dressed up: one card per game with its real title screen and a
 // level picture (the build's games/shots/<id>-title.png and <id>-16x10.png, 320 x 200 each) above
 // its ZIP link, and the page's styles. Pictures are used only when the build draws them; never a
-// stand-in. The secret games are listed here too (Lewis's choice, this page only): their pictures
-// are inlined, as the build writes no games/shots/ file for them.
+// stand-in. Only games from the public catalog are listed.
 import type { CdCatalogEntry } from './cdGames';
 import { builtShotPath } from '../src/gfx/levelPicture';
 import { builtTitlePath } from '../src/gfx/titlePicture';
