@@ -1,8 +1,5 @@
-// A read-only disk image written in plain JavaScript: an ISO 9660 file system with Rock
-// Ridge extensions, which macOS mounts when it is opened (as a .dmg, too: DiskImageMounter
-// takes a raw CD image). Rock Ridge keeps what a Mac app needs and plain ISO 9660 cannot
-// store: long, mixed-case names (NM), Unix permissions so the program is executable (PX),
-// and symbolic links (SL), for the "Applications" shortcut a game is dragged onto.
+// ISO 9660 / Rock Ridge read-only images with long names, Unix modes and symbolic links.
+// Format references and implementation credits: ../NOTICE.md.
 //
 // Layout (ECMA-119; Rock Ridge is IEEE P1282 on SUSP, IEEE P1281): 2048-byte sectors;
 // sectors 0-15 unused, 16 the primary volume descriptor, 17 the terminator, then the path

@@ -23,6 +23,10 @@ player panel's Files tab gives them), and the Mac, Windows and Linux downloads
 `web/scripts/macDmg.ts`, `winExe.ts` and `linuxTar.ts`, which run the same code from the command
 line.
 
+The Mac disk image uses `createIso` from `@lewismoten/gamemaker-sandbox-tools/iso9660`
+for the generic ISO 9660 / Rock Ridge file system. App branding, icons, signing,
+Finder layout and UDIF compression stay here.
+
 `exportDos` also accepts supplied CD runtime bytes and a fixed ZIP date for reproducible website distributions without browser globals or network requests.
 
 ## Installing the DOS download

@@ -809,7 +809,9 @@ itself, under its window menu's "Third-party notices…"); the text is in
 - Zig itself is a build tool; beyond the runtime pieces above, the Windows and Linux
   players may contain a few of its compiler support routines (compiler_rt, MIT License,
   Copyright (c) Zig contributors). The `.dmg`, `.tar.gz` and `.zip` containers, the Mac code signature and the Windows
-  resources are written by this project's own code in `web/src/export/`.
+  resources are written by this project's own code in `web/src/export/`, with the generic
+  ISO 9660 / Rock Ridge writer in `web/packages/tools/src/iso9660.ts` (format references
+  and implementation credits in that package's `NOTICE.md`).
 
 ## Third-party code and acknowledgments in the original source
 

@@ -5,7 +5,7 @@
 // game, and an icon drawn from the game. The player's ad-hoc signature is re-sealed for the
 // new Info.plist and resources (macSign.ts), so the app's signature is valid.
 //
-// It comes as a disk image (.dmg: an ISO 9660 + Rock Ridge image, iso9660.ts, compressed
+// It comes as a disk image (.dmg: an ISO 9660 + Rock Ridge image from tools/iso9660, compressed
 // as a UDZO image, udif.ts, that opens to the app beside an Applications shortcut to drag
 // it onto) or a .zip (the Finder's
 // Archive Utility unzips it to the app, still executable).
@@ -18,7 +18,7 @@ import { applyFliFrame, isFli, newFliCanvas, parseFli } from '@lewismoten/gamema
 import { gamePicture, type FileSource } from '../gfx/levelPicture';
 import { createZip } from '@lewismoten/gamemaker-sandbox-archives/zip';
 import { SITE_URL } from '../seo/site';
-import { createIso } from './iso9660';
+import { createIso } from '@lewismoten/gamemaker-sandbox-tools/iso9660';
 import { udzo } from './udif';
 import { dsStore } from './dsStore';
 import { macIcon, type IconColors } from './macIcon';

@@ -158,6 +158,15 @@ their Unix mode, so a game folder's programs and scripts unpack executable, and 
 bytes use the header's prefix field. It has no dependencies and runs in Node and browsers
 (`.tar.gz` uses the platform's `CompressionStream`).
 
+### ISO disk images
+
+`createIso(entries, { volume, date?, application? })` from
+`@lewismoten/gamemaker-sandbox-tools/iso9660` writes an ISO 9660 image with Rock Ridge
+long names, Unix modes and symbolic links. Entries supply `path`, optional `data`,
+`mode` and `symlink`; folders are implied or supplied as entries without data or a link.
+It returns a `Uint8Array`, has no dependencies and runs in browsers and Node.
+Supply a fixed date for reproducible bytes. Format references and credits are in `NOTICE.md`.
+
 ### Native object builders
 
 `kit/laserJoints` makes flat wooden-box panel outlines for the laser kits: finger (box) joints whose two sides mesh,

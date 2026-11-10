@@ -7,6 +7,7 @@ import { createRequire } from 'node:module';
 import { execFileSync } from 'node:child_process';
 const here = dirname(fileURLToPath(import.meta.url));
 const sources = {
+  iso9660: 'iso9660',
   audio: 'audio',
   'audio-files': 'audioFiles',
   colors: 'colors',
