@@ -22,7 +22,7 @@ function snap(canvas: HTMLCanvasElement, view: { fixed?: number; draw(): unknown
 async function draw(f: Feelie): Promise<string | undefined> {
   const canvas = document.createElement('canvas');
   if (f.kind === 'phone') {
-    const [{ loadPhone }, { createPhoneView }] = await Promise.all([import('./phone/phoneData'), import('./phone/phoneGl')]);
+    const { createPhoneView } = await import('./phone/phoneGl');
     const [mine, other] = await Promise.all([loadPhone('cheap'), loadPhone('deluxe').catch(() => undefined)]);
     const view = createPhoneView(canvas, mine.parts, other?.parts ?? []);
     if (!view) return undefined;
