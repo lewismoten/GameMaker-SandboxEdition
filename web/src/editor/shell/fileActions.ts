@@ -34,7 +34,7 @@ export function fileActions(acts: FileAction[]): HTMLElement {
           class: cls(a),
           title: a.title,
           onclick: () => {
-            more.open = false;
+            shut();
             a.run();
           },
         },

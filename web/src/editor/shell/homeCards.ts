@@ -462,7 +462,11 @@ function moreMenu(...items: (HTMLElement | null | false | undefined)[]): HTMLEle
   );
   // Close when something else is clicked, or after choosing an item.
   const outside = (e: Event) => {
-    if (!menu.contains(e.target as Node) || (e.target as HTMLElement).closest('.card-more-menu button')) menu.open = false;
+    const chosen = menu.contains(e.target as Node) && (e.target as HTMLElement).closest('.card-more-menu button');
+    if (!menu.contains(e.target as Node) || chosen) {
+      menu.open = false;
+      if (chosen) menu.querySelector('summary')?.focus();
+    }
   };
   menu.addEventListener('toggle', () => {
     if (menu.open) setTimeout(() => document.addEventListener('click', outside, true));
