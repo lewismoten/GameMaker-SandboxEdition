@@ -56,6 +56,8 @@ game folder opens in the browser unchanged.
 
 ## Credits
 
+- **Performance map measurement** (`web/scripts/perfTrace*.ts`): OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, added map-content readiness, cold-load cache isolation and regression tests. No third-party code or game assets were added.
+
 - **Walkthrough bot planning**: **OpenAI Codex (GPT-6)**, directed by Lewis Moten, revised gate dependency planning, jump discovery, search states, and regression tests.
 
 - **Pocket Player host hardening**: **Hermes Agent running OpenAI Codex GPT-6.1 Sol**, directed by Lewis Moten, added deterministic reader-failure probes, source-slice error-path regressions, and reproducible per-level host frame profiling. Host timings are not CYD measurements.
