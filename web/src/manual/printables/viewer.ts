@@ -506,6 +506,7 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[], opti
     const opener = document.activeElement as HTMLElement | null;
     const shut: HTMLElement[] = [];
     const close = () => {
+      current = ''; // a reader still loading now finds it is not the piece shown, and disposes itself
       dropColumn();
       dropReader();
       for (const it of items) it.release?.();
