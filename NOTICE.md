@@ -1042,6 +1042,27 @@ method of Michael Garland and Paul Heckbert's "Surface Simplification Using Quad
 algorithm, not licensed code. It was written with Anthropic Claude Sonnet 5.5 under Lewis Moten's
 direction.
 
+### New paper and laser kits, fold viewer and art courses
+
+Snowbound's Plowed Street puzzle box (`games/snowbound/laser/`), In The Year 2000!'s
+Teleport-A-Phone cryptex (`games/year2000/laser/`) and Tune-Up's paper THE CHEZ
+(`games/tuneup/laser/`) were designed and coded with **Claude Sonnet 5.5** (Anthropic),
+directed by Lewis Moten, under this project's MIT License. Their cut shapes, engraving,
+print artwork and assembly sheets are drawn in code, using the project's existing laser
+helpers and credited pixel fonts. Existing game artwork and words retain their credits.
+
+Wrong Number's die fold model and animated SVG viewer
+(`web/src/manual/printables/balloonCubeFold.ts`, `balloonCubeFoldView.ts`) were written
+with **Claude Sonnet 5.5** (Anthropic), directed by Lewis Moten, using the project's
+existing paper net and face art. The earlier intermediate folding diagram retains its
+OpenAI Codex credit below.
+
+The seven art courses (`web/src/artCourses/`) and their figure generators
+(`web/scripts/artCourseFigures*.ts`, `artCourseKit.ts`) were written and drawn with
+**Claude Sonnet 5.5** (Anthropic), directed by Lewis Moten, under this project's MIT
+License. Their figures use original code-drawn blocks and this project's existing game
+art; those games' credits remain.
+
 ### Tiny Shelf Classification
 
 The Library's call numbers (such as 614-MAH) use the **Tiny Shelf Classification**, dedicated to
