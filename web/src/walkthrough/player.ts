@@ -173,7 +173,8 @@ async function watch(
   const speeds = [1, 2, 4].map((v) =>
     h('button', { type: 'button', class: 'wt-speed', 'aria-pressed': String(v === 1), 'aria-label': `Speed ${v}×`, dataset: { speed: String(v) } }, `${v}×`),
   );
-  const soundPick = demoAudioPicker({ label: 'Sound', className: 'wt-sound' });
+  const lifetime = new AbortController();
+  const soundPick = demoAudioPicker({ label: 'Sound', className: 'wt-sound', signal: lifetime.signal });
   const chapterList = h('ol', { class: 'wt-chapters' });
   const status = h('p', { class: 'meta wt-status', role: 'status' });
   const exportLine = h('p', { class: 'meta wt-export-line', 'aria-live': 'off', hidden: true });
@@ -556,7 +557,9 @@ async function watch(
 
   let copied: ReturnType<typeof setTimeout> | undefined;
   copyBtn.addEventListener('click', async () => {
-    if (await copyText(ytText, copyBtn.parentElement ?? copyBtn)) {
+    const ok = await copyText(ytText, copyBtn.parentElement ?? copyBtn);
+    if (closed) return;
+    if (ok) {
       copyBtn.textContent = '✓ Copied!';
       copyBtn.classList.add('copied');
       status.textContent = `Copied the YouTube title, description${marks ? ` and ${marks} chapter markers` : ''}.`;
@@ -635,6 +638,8 @@ async function watch(
     ),
   );
   closed = true;
+  lifetime.abort();
+  clearTimeout(copied);
   offAudio();
   making?.abort();
   cancelAnimationFrame(raf);
