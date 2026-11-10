@@ -19,7 +19,7 @@ export type BuddyEvent =
 export type Pose = 'idle' | 'wave' | 'look' | 'happy' | 'cheer' | 'sleep';
 
 /** What it remembers while the desk is open (and, for `met` and `helloDay`, between visits). */
-export interface Mind {
+interface Mind {
   quiet: boolean;
   met: boolean;
   helloDay?: string;
@@ -33,7 +33,7 @@ export interface Mind {
   turn: number;
 }
 
-export interface Reaction {
+interface Reaction {
   pose: Pose;
   line?: string;
 }

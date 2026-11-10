@@ -57,7 +57,7 @@ export function usedByLine(project: Project, file: string): HTMLElement {
 }
 
 /** "Uses" for a list of files: each a link that opens it (so the breadcrumb and Back work), or nothing when none exist. */
-export function usesLine(project: Project, files: readonly string[]): HTMLElement | null {
+function usesLine(project: Project, files: readonly string[]): HTMLElement | null {
   const seen = new Set<string>();
   const found = files.filter((f) => f && project.files.has(f) && !seen.has(f.toLowerCase()) && !!seen.add(f.toLowerCase()));
   if (!found.length) return null;

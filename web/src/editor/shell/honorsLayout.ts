@@ -3,7 +3,7 @@
 // with the six stage honors beside it: the first three on the left, the next three on the right, in stage order.
 // Pure rules, no DOM.
 
-export interface HonorSlot {
+interface HonorSlot {
   /** Index into the ceremonies in the order given (stages first, the diploma last). */
   index: number;
   place: 'plain' | 'diploma' | 'left' | 'right';

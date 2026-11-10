@@ -38,7 +38,7 @@ function hingeTurn(a: V2, b: V2, toward: V2, angle: number): Mat {
   return [R[0], R[1], R[2], t[0], R[3], R[4], R[5], t[1], R[6], R[7], R[8], t[2]];
 }
 
-export type PanelKind = 'bottom' | 'side' | 'tuck' | 'corner';
+type PanelKind = 'bottom' | 'side' | 'tuck' | 'corner';
 export interface Panel {
   id: string;
   kind: PanelKind;
@@ -105,7 +105,7 @@ const byId = new Map(PANELS.map((p) => [p.id, p]));
 
 const QUARTER = Math.PI / 2;
 /** How far each fold has turned. `wall` is the sides' turn from flat (0 to a quarter turn). */
-export interface FoldState {
+interface FoldState {
   wall: number;
   /** Each corner triangle's turn over the top, in CORNER_PARENT order. */
   corner: [number, number, number, number];
@@ -171,7 +171,7 @@ export function pose(state: FoldState): Map<string, Mat> {
   return out;
 }
 
-export interface FoldStep {
+interface FoldStep {
   /** Short label for the slider's spoken value. */
   label: string;
   /** What folds, in plain words. */

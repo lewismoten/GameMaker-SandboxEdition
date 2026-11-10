@@ -14,7 +14,7 @@ export const SOUND_KINDS = [
   { id: 'rw', name: 'Read/write' },
 ] as const;
 export type Drive = (typeof DRIVES)[number]['id'];
-export type SoundKind = (typeof SOUND_KINDS)[number]['id'];
+type SoundKind = (typeof SOUND_KINDS)[number]['id'];
 /** 'load': a disk seating or ejecting, the CD tray: only the master switch covers it. */
 export type SoundPart = SoundKind | 'load';
 export type DriveSwitches = { all: boolean } & Record<Drive, Record<SoundKind, boolean>>;

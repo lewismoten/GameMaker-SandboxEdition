@@ -3,7 +3,7 @@
 // capsule's 512 bytes (and one more, so an oversized file is refused, not cut short).
 import { CAPSULE_MAX } from './capsule';
 
-export const CAPSULE_FILE = 'SCOOT.SCT';
+const CAPSULE_FILE = 'SCOOT.SCT';
 
 /** Saves `bytes` as SCOOT.SCT. */
 export function saveCapsuleFile(bytes: Uint8Array): void {
@@ -18,7 +18,7 @@ export function saveCapsuleFile(bytes: Uint8Array): void {
 }
 
 /** The first bytes of a file the player picks (undefined when they cancel). */
-export async function readCapsuleFile(file: File): Promise<Uint8Array> {
+async function readCapsuleFile(file: File): Promise<Uint8Array> {
   return new Uint8Array(await file.slice(0, CAPSULE_MAX + 1).arrayBuffer());
 }
 
