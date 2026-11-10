@@ -80,6 +80,8 @@ export function onDemoAudio(f: (m: DemoAudio) => void): () => void {
 let groups = 0;
 
 interface DemoAudioPickerOptions {
+  /** The owner's lifetime: unsubscribe immediately when its dialog or page closes. */
+  signal?: AbortSignal;
   /** Short labels (Off · SB · PC), for over a small picture; the full names stay for screen readers. */
   compact?: boolean;
   /** The group's name for screen readers (default "Demo sound"). */
@@ -141,5 +143,7 @@ export function demoAudioPicker(o: DemoAudioPickerOptions = {}): HTMLElement {
     else if (seen) return off();
     for (const i of inputs) i.checked = i.value === m;
   });
+  if (o.signal?.aborted) off();
+  else o.signal?.addEventListener('abort', () => void off(), { once: true });
   return el;
 }
