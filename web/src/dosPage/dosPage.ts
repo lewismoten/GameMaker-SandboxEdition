@@ -18,7 +18,7 @@ import { setPretendUnregistered } from '../retro/gmReg/tourPretend';
 import './dosPage.css';
 import { h, clear } from '../editor/core/ui';
 import { Computer } from '../retro/computer';
-import { regSide } from '../retro/gmReg/regSide';
+import { regSideLater } from '../retro/gmReg/regSideLater';
 import { soundBlaster, setSoundBlaster } from '../retro/computer/soundBlaster';
 import { getVolume, setVolume } from '@lewismoten/gamemaker-sandbox-engine/audio/output';
 import type { SpeedSetting } from '@lewismoten/gamemaker-sandbox-engine/engine/scene';
@@ -343,7 +343,7 @@ function placeNotesHere(host: HTMLElement): void {
 placeNotes(placeNotesHere);
 
 // GM's copy check and GM REGISTER: the Owner's Guide and the registration card beside the screen
-regSide(
+regSideLater(
   () => crt,
   () => pc?.focus(),
 );

@@ -116,3 +116,14 @@ it('ignores unused gravity blocks and canceled directions on placed terrain', ()
   w.map[102] = 12;
   expect(directionalGravity(w)).toBe(true);
 });
+
+it('does not turn top-down swimming into jumping because lethal terrain pulls downward', () => {
+  const t = testGame(['########', '#S.^..E#', '########']);
+  const w = new SceneSim(t.game, 2, t, { x: 1, y: 1 }).w;
+  w.bg[0].grav = 0;
+  w.bg[1].grav = 4; // Gravity inside a permanent wall is not a movement mode.
+  w.bg[3].chHitPt = -w.ci.hitpts;
+  expect(directionalGravity(w)).toBe(false);
+  w.bg[0].grav = 4;
+  expect(directionalGravity(w)).toBe(true);
+});

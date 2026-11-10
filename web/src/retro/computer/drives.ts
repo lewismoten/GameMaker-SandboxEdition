@@ -12,7 +12,7 @@ import { hardDiskGames, hdFiles, type HdGame } from '../dos/hardDisk';
 import { Downloads, type InsertedDisk } from '../host';
 import type { Disk } from '../dos/disks';
 import { sampleFolders, type SampleFolder } from '../dos/sampleDisk';
-import { loadCatalog, loadHostedGame, type CatalogEntry, GameFiles } from '../../project/files';
+import { loadCatalog, loadLeanGameList, loadHostedGame, type CatalogEntry, GameFiles } from '../../project/files';
 import { Vga } from '../../vga/shared/vga';
 import { h } from '../../editor/core/ui';
 import type { GmInstallEntry } from '../../../scripts/cdGames';
@@ -358,8 +358,9 @@ export abstract class ComputerDrives {
   /** The game folders in C:\GM: installed with Game-Maker, plus yours. */
   async hdGames(): Promise<HdGame[]> {
     const index = await this.gmIndexList();
+    // the lean list (games/catalog.json): a folder needs a game's id, title and .gam, and loading it asks for its own file list
     return hardDiskGames(
-      await this.catalog(),
+      await loadLeanGameList().catch(() => []),
       index.filter((e) => e.dir).map((e) => e.name),
     );
   }

@@ -5,7 +5,7 @@ import { idbRecord } from '../dos/cDriveStore';
 import { loadAchievements, replaceAchievements, parseRecord, type AchievementRecord } from '../../achievements/store';
 import { setDeskClock } from '../dos/deskClock';
 import { restoreAccount } from '../bbs/ratio';
-import { BACKUP_KEYS } from './flagsItems';
+import { BACKUP_KEYS } from './flagsBackupKeys';
 import { file, type DosNode } from '../dos/vfs';
 
 export const BAK_NAME = 'FLAGS.BAK';

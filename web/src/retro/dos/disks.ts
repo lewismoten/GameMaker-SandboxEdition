@@ -1,6 +1,6 @@
 // The 3.5" floppy disks in the desk's disk box: Recreational Software Designs' own
 // games first, the other gameware samples, your projects, and blank disks.
-import { isSandboxGame, loadGameList, loadHostedGame, type CatalogEntry, GameFiles } from '../../project/files';
+import { isSandboxGame, loadGameList, loadLeanGameList, loadHostedGame, type CatalogEntry, GameFiles } from '../../project/files';
 import { listProjects, loadProject } from '../../project/storage';
 import { isBizarreGame } from '../../project/bizarre';
 import { isSpecialGame } from '../../project/special';
@@ -79,8 +79,12 @@ export function diskCount(bytes: number): number {
   return Math.max(1, Math.ceil(bytes / FLOPPY_BYTES));
 }
 
-export async function loadDisks(): Promise<Disk[]> {
-  const catalog = await loadGameList().catch(() => [] as CatalogEntry[]);
+/**
+ * Every disk. `lean`: a page that only lists and loads them (the DOS page) skips the file lists of
+ * games/catalog-files.json (about 45 kB); loading a disk asks for its game's list itself.
+ */
+export async function loadDisks(lean = false): Promise<Disk[]> {
+  const catalog = await (lean ? loadLeanGameList() : loadGameList()).catch(() => [] as CatalogEntry[]);
   const gameware = catalog.filter((g) => g.kind === 'gameware');
   PUBLISHERS.length = 0;
   for (const g of gameware) if (!RSD_GAMES.includes(g.id) && (g.company ?? g.author)) PUBLISHERS.push((g.company ?? g.author)!);

@@ -38,11 +38,6 @@ dialog.modal:has(.sfxm) {
   gap: 8px;
 }
 
-.sfxm-left > button {
-  align-self: flex-start;
-  min-height: 30px;
-}
-
 .sfxm-waves {
   flex-wrap: wrap;
 }

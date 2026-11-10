@@ -132,7 +132,7 @@ export function diskMenu(host: DiskMenuHost): {
 
   /** Reads the disks again; `insertId` is one the PC has just put in drive A: (a new game's). */
   async function refresh(insertId?: string): Promise<void> {
-    disks = await loadDisks();
+    disks = await loadDisks(true);
     if (insertId) inDrive = disks.find((d) => d.id === insertId) ?? inDrive;
     if (dialog.open) draw();
     else showDrive();
