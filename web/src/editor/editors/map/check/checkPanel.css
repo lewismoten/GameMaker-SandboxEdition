@@ -201,3 +201,24 @@
 .lc-mine p {
   margin: 0;
 }
+
+/* a finger: the panel's small controls are 44px tall (a checkbox's label is the target) */
+@media (pointer: coarse) {
+  .lc-panel .toolbar select,
+  .lc-panel .toolbar input:not([type='checkbox']),
+  .lc-panel .toolbar button,
+  .lc-gen summary,
+  .lc-gen button {
+    box-sizing: border-box;
+    min-height: 44px;
+  }
+  .lc-gen summary {
+    display: flex;
+    align-items: center;
+  }
+  .lc-panel label.check {
+    box-sizing: border-box;
+    min-height: 44px;
+    align-items: center;
+  }
+}
