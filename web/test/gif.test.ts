@@ -35,3 +35,14 @@ describe('gif', () => {
     60_000,
   );
 });
+
+describe('gif size cap', () => {
+  it('refuses a huge picture from its descriptor, with a large payload after it', () => {
+    const head = [...'GIF89a'].map((c) => c.charCodeAt(0));
+    const screen = [0xff, 0xff, 0xff, 0xff, 0x00, 0, 0]; // 65535 x 65535, no color table
+    const image = [0x2c, 0, 0, 0, 0, 0xff, 0xff, 0xff, 0xff, 0x00, 8];
+    const blocks = Array.from({ length: 200 }, () => [255, ...new Array(255).fill(1)]).flat();
+    const bytes = Uint8Array.from([...head, ...screen, ...image, ...blocks, 0, 0x3b]);
+    expect(() => decodeGif(bytes)).toThrow(/too large/);
+  });
+});
