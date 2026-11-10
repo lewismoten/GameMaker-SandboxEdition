@@ -2,7 +2,7 @@
 // asked not to) the playtest of the game or of one scene (a whole game a second time leaving
 // behind all it can, and each scene again with steady hands when asked), all gathered into one
 // report the worker can post back (plain data: heat maps as typed arrays, no engine objects).
-import type { GameFiles } from '../../project/files';
+import type { GameFiles } from '@lewismoten/gamemaker-sandbox-engine/core/gameFiles';
 import { fromCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 import { blockChecks, counterSources, counters } from './checks/blockChecks';
 import { counterLedger } from './checks/counterLedger';
@@ -12,7 +12,7 @@ import { bigVocs, stutterVocs, missingFiles, missingVocs, outOfRange } from './c
 import { monsterChecks, startThreat } from './checks/monsterChecks';
 import { sealed } from './checks/sealed';
 import { facing } from './checks/facing';
-import { fliCheck } from './checks/fliCheck';
+import { fliCheck } from '@lewismoten/gamemaker-sandbox-tools/fli-check';
 import type { PlayerPatches } from '@lewismoten/gamemaker-sandbox-engine/player/patchRules';
 import { lookalike, tapTwice, teachFirst } from './checks/playerChecks';
 import { keyReach } from './checks/keyReach';

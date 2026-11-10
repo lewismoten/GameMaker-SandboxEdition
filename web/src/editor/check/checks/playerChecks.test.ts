@@ -1,5 +1,5 @@
 // The level check's checks for every player, from the files (playerChecks.ts, monsterChecks.ts
-// startThreat, fliCheck.ts), on the tiny game in testGame.ts.
+// startThreat), on the tiny game in testGame.ts.
 import { describe, expect, it } from 'vitest';
 import { BACKBL, newBlockSet, parseBlocks, serializeBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { PICKUPSEQ, parseCharacter, serializeCharacter } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
@@ -9,7 +9,6 @@ import { textBytes } from '@lewismoten/gamemaker-sandbox-engine/formats/binary';
 import { GameFiles } from '../../../project/files';
 import { scenesOf } from '../sceneData';
 import { COIN, RIGHT, testGame, type TestGame } from '../testGame';
-import { fliCheck } from './fliCheck';
 import { marchReaches, startThreat } from './monsterChecks';
 import { lookalike, tapTwice, teachFirst } from './playerChecks';
 
@@ -163,24 +162,5 @@ describe('keys taught at the start', () => {
 
   it('is happy when the instructions name it', () => {
     expect(withPickup('Stand on it and press G')).toEqual([]);
-  });
-});
-
-describe('animations DOS can’t play', () => {
-  it('finds an .FLI with an all-black chunk', () => {
-    const fli = new Uint8Array(128 + 22);
-    const dv = new DataView(fli.buffer);
-    dv.setUint32(0, fli.length, true);
-    dv.setUint16(4, 0xaf11, true);
-    dv.setUint16(6, 1, true);
-    dv.setUint16(12, 8, true);
-    dv.setUint32(128, 22, true);
-    dv.setUint16(132, 0xf1fa, true);
-    dv.setUint16(134, 1, true);
-    dv.setUint32(144, 6, true);
-    dv.setUint16(148, 13, true);
-    const f = fliCheck(new GameFiles([['intro.fli', fli]]));
-    expect(f.map((x) => x.title)).toEqual(['intro.fli can’t play right in real DOS: an all-black chunk in its first frame (PLAYGAME crashes on it)']);
-    expect(f[0].where.file).toBe('intro.fli');
   });
 });

@@ -18,7 +18,9 @@ export default defineConfig(
       sourceType: 'module',
       globals: { ...globals.browser, ...globals.node },
       parserOptions: {
-        projectService: { allowDefaultProject: ['eslint.config.js', 'test/*.mjs', 'packages/tools/src/iso9660.test.ts'] },
+        projectService: {
+          allowDefaultProject: ['eslint.config.js', 'test/*.mjs', 'packages/tools/src/iso9660.test.ts', 'packages/tools/src/fliCheck.test.ts'],
+        },
         tsconfigRootDir: import.meta.dirname,
       },
     },
