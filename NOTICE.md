@@ -907,9 +907,9 @@ frame-dump hook and kept the results. This fork uses two things from it:
 
 The firmware's source and its own credits moved to its own repository, https://github.com/lewismoten/gamemaker-pocket (see its NOTICE.md). What follows stays here because GameMaker still serves the prebuilt firmware images and the install page (`web/public/pocket/`) and makes the data the board plays.
 
-OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, implemented the category and six-thumbnail library browser, optional version-1 package/index metadata, source-name overlays, title search scope, disposable card metadata cache, stable project identities, preview packing, host renders and regression checks. The previews reuse existing game artwork and this project's title/level renderers; their original credits remain.
+OpenAI Codex (GPT-6), directed by Lewis Moten, implemented the category and six-thumbnail library browser, optional version-1 package/index metadata, source-name overlays, title search scope, disposable card metadata cache, stable project identities, preview packing, host renders and regression checks. The previews reuse existing game artwork and this project's title/level renderers; their original credits remain.
 
-OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, revised the Pocket Player's card discovery, picker search and labels (including incremental search and paging redraws, the search icon and the calibration explanation), display options and setup flow, touch packet handling, single-touch jump wedges, saved sticky direction, packers, full-panel scene and text-page clearing, bounded picture bands and regression checks. Existing game assets retain their own credits.
+OpenAI Codex (GPT-6), directed by Lewis Moten, revised the Pocket Player's card discovery, picker search and labels (including incremental search and paging redraws, the search icon and the calibration explanation), display options and setup flow, touch packet handling, single-touch jump wedges, saved sticky direction, packers, full-panel scene and text-page clearing, bounded picture bands and regression checks. Existing game assets retain their own credits.
 
 A firmware for the ESP32-3248S035 board that plays the Starter games, and an install page (`web/public/pocket/`). Claude Sonnet 5.5 wrote the firmware and the page. The firmware binaries' complete third-party notices are in [`web/public/pocket/fw/NOTICES.txt`](web/public/pocket/fw/NOTICES.txt).
 
@@ -923,7 +923,7 @@ A firmware for the ESP32-3248S035 board that plays the Starter games, and an ins
 
 ## Tools used to build and test
 
-OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, added capture-matrix validation and failure regressions to the PLAYGAME measurement collector and plotter (`tools/dosbox-286/`).
+OpenAI Codex (GPT-6), directed by Lewis Moten, added capture-matrix validation and failure regressions to the PLAYGAME measurement collector and plotter (`tools/dosbox-286/`).
 
 Built with [TypeScript](https://www.typescriptlang.org/) (Apache-2.0),
 [Vite](https://vitejs.dev/), [Vitest](https://vitest.dev/) and vite-node (MIT, both from the
@@ -1144,14 +1144,14 @@ maker "ZORP" is invented. The shell is untested: nothing has been printed.
 - **ymfm**, by Aaron Giles and contributors, **BSD-3-Clause** ([upstream](https://github.com/aaronsgiles/ymfm)), is the planned OPL2 backend documented in `hardware/pi-player/MUSIC.md`. No ymfm code or binary is included or linked yet.
 - **Player Patching Manual** (`web/src/programmersGuide/patching1994.md`, `web/src/manual/printables/patchingManual.ts`, `patchingPlates.ts`): original words, byte-layout figures, booklet integration and verification written with **OpenAI Codex (GPT-6)**, directed by Lewis Moten. References are this project's Programmer's Guide, player patch tables, Sandbox game metadata and the original RSD source and CD executables; the existing RSD MIT credit remains. No text from the printed RSD manual was copied.
 
-- **Livestream game follow-up (November 2026):** OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, implemented Colors That Work’s playable palette lesson, removed unused Beat the Clock monster templates, drew the paper cube’s intermediate folding diagram, revised the Stage Box assembly and lock diagrams, and added the phone BOM’s numeric cost export and regressions. Existing game art, music, source data, and color-vision algorithm credits remain.
+- **Livestream game follow-up (November 2026):** OpenAI Codex (GPT-6), directed by Lewis Moten, implemented Colors That Work’s playable palette lesson, removed unused Beat the Clock monster templates, drew the paper cube’s intermediate folding diagram, revised the Stage Box assembly and lock diagrams, and added the phone BOM’s numeric cost export and regressions. Existing game art, music, source data, and color-vision algorithm credits remain.
 
-- **Desk machine settings** (`web/src/desk/pc/machine*.ts`): OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, implemented the hardware dialog, remembered CPU and disk timing, accessibility checks and regression tests using the existing engine estimates. No new third-party assets or game content were added.
-- **Livestream Desk, Editor, Site and Library follow-up**: OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, implemented navigation, asset filtering, scene-panel layout, creation labels, download discoverability, cached-search scheduling, and regression checks. Existing game data and artwork retain their credits.
+- **Desk machine settings** (`web/src/desk/pc/machine*.ts`): OpenAI Codex (GPT-6), directed by Lewis Moten, implemented the hardware dialog, remembered CPU and disk timing, accessibility checks and regression tests using the existing engine estimates. No new third-party assets or game content were added.
+- **Livestream Desk, Editor, Site and Library follow-up**: OpenAI Codex (GPT-6), directed by Lewis Moten, implemented navigation, asset filtering, scene-panel layout, creation labels, download discoverability, cached-search scheduling, and regression checks. Existing game data and artwork retain their credits.
 
-- **Full-window player snapshots**: OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, implemented the camera control, DOS crop metadata, PNG regressions and documentation using this project’s existing PNG encoder. Original game artwork retains its existing credits.
-- **CYD friendliness check** (`web/scripts/cyd*.ts`): OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, implemented the recorded-route measurements, engine probes, scoring, tests, and documentation. No game content or third-party material was added.
-- **Try Again plank landing** (`games/one-more-try/`): OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, widened the upper plank and added headless jump checks against the original PLAYGAME collision rules. Existing Starter art and music retain their credits.
+- **Full-window player snapshots**: OpenAI Codex (GPT-6), directed by Lewis Moten, implemented the camera control, DOS crop metadata, PNG regressions and documentation using this project’s existing PNG encoder. Original game artwork retains its existing credits.
+- **CYD friendliness check** (`web/scripts/cyd*.ts`): OpenAI Codex (GPT-6), directed by Lewis Moten, implemented the recorded-route measurements, engine probes, scoring, tests, and documentation. No game content or third-party material was added.
+- **Try Again plank landing** (`games/one-more-try/`): OpenAI Codex (GPT-6), directed by Lewis Moten, widened the upper plank and added headless jump checks against the original PLAYGAME collision rules. Existing Starter art and music retain their credits.
 
 - **Game-Maker history source notes** (`docs/history.md`): OpenAI Codex (GPT-6.1 Sol), directed
   by Lewis Moten, researched and wrote the dated summaries. The cited interviews by EJR
