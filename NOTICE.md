@@ -56,6 +56,8 @@ game folder opens in the browser unchanged.
 
 ## Credits
 
+- **Source area documentation (November 10, 2026)**: OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, documented the Graphics Image Reader layers and completed the source README index.
+
 - **Keyboard walkthrough report** (`games/kit/keyAccess.ts`): OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, clarified press percentages, keypad-diagonal counts and recording limits, with regression tests. Game content and recordings are unchanged.
 
 - **Walkthrough bot planning**: **OpenAI Codex (GPT-6)**, directed by Lewis Moten, revised gate dependency planning, jump discovery, search states, and regression tests.

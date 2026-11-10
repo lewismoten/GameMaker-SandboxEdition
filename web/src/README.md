@@ -131,6 +131,8 @@ SDK implementation lives in the packages below; the app imports their declared e
   direction and which keys that leaves off the touch strip in `moveKeys.ts`), on-screen keys (`screenKeys.ts`) and a
   pointer that hides itself (`cursorHide.ts`). Used by `play.ts`, the editor's play test, the desk
   and exports.
+  Subarea:
+  - [`player/dosConfig/`](player/dosConfig/README.md): PLAYGAME's DOS Configure screen, hardware choices and setup loop.
 - [`media/`](media/README.md): demos (`.REC`), the attract mode, and saving the screen as MP4, GIF
   or WAV.
 - [`walkthrough/`](walkthrough/README.md): a Sandbox game's walkthrough: played on the real engine,
@@ -247,6 +249,7 @@ SDK implementation lives in the packages below; the app imports their declared e
   boxes, disks and props.
   Sub-areas: [`pc/`](desk/pc/README.md), [`room/`](desk/room/README.md), [`props/`](desk/props/README.md), [`diploma/`](desk/diploma/README.md), [`disks/`](desk/disks/README.md), [`mug/`](desk/mug/README.md), [`boxes/`](desk/boxes/README.md).
   Subareas:
+  - [`desk/buddy/`](desk/buddy/README.md): Scoot's desk toy, event responses, courier card and preferences.
   - [`desk/boxes/covers/`](desk/boxes/covers/README.md): on-demand painted box-cover artwork.
   - [`desk/boxes/phone/`](desk/boxes/phone/README.md): phone kit mesh data and interactive 3D views.
   - [`desk/props/outside/`](desk/props/outside/README.md): scheduled scenes outside the window.
@@ -262,6 +265,7 @@ SDK implementation lives in the packages below; the app imports their declared e
   - [`vga/blocedit/`](vga/blocedit/README.md): Block Designer layers.
   - [`vga/charedit/`](vga/charedit/README.md): Character Maker layers.
   - [`vga/grator/`](vga/grator/README.md): Integrator layers.
+  - [`vga/image/`](vga/image/README.md): Graphics Image Reader layout, GIF drawing and block capture screen.
   - [`vga/mapmaker/`](vga/mapmaker/README.md): Map Maker layers.
   - [`vga/monedit/`](vga/monedit/README.md): Monster Maker layers.
   - [`vga/shared/`](vga/shared/README.md): indexed screen, input and common designer controls.
@@ -284,6 +288,7 @@ SDK implementation lives in the packages below; the app imports their declared e
   - [`manual/magazine/`](manual/magazine/README.md): TURBO BUTTON issue assembly and reading/rendering.
   - [`manual/magazine/sections/`](manual/magazine/sections/README.md): magazine article/ad section factories.
   - [`manual/magazine/sections/spring93/`](manual/magazine/sections/spring93/README.md): spring 1993 issue-specific sections.
+  - [`manual/printables/`](manual/printables/README.md): manuals, printable box extras and Level Maps metadata.
   - [`manual/ultimate/`](manual/ultimate/README.md): ultimate Owner's Guide chapter content and booklet flow.
   - [`manual/zine/`](manual/zine/README.md): NO CARRIER and Tiny Pockets Press paper items.
 
