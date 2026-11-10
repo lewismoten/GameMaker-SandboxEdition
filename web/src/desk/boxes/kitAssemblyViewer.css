@@ -17,7 +17,7 @@
 }
 .ka .trk-canvas {
   width: 100%;
-  height: clamp(110px, 23vh, 220px);
+  height: clamp(130px, 30vh, 280px);
 }
 .ka input {
   width: 100%;
@@ -47,4 +47,10 @@
 }
 .trk-float:has(.ka) {
   z-index: 4;
+}
+
+@media (max-width: 600px) {
+  .ka .trk-canvas {
+    height: clamp(110px, 22vh, 190px);
+  }
 }

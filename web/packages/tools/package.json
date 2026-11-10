@@ -68,6 +68,31 @@
       "gamemaker-source": "./src/kit/levelGen/index.ts",
       "import": "./dist/kit/levelGen.js"
     },
+    "./kit/laserJoints": {
+      "types": "./dist/types/kit/laserJoints.d.ts",
+      "gamemaker-source": "./src/kit/laserJoints.ts",
+      "import": "./dist/kit/laserJoints.js"
+    },
+    "./kit/laserLayout": {
+      "types": "./dist/types/kit/laserLayout.d.ts",
+      "gamemaker-source": "./src/kit/laserLayout.ts",
+      "import": "./dist/kit/laserLayout.js"
+    },
+    "./kit/laserSvg": {
+      "types": "./dist/types/kit/laserSvg.d.ts",
+      "gamemaker-source": "./src/kit/laserSvg.ts",
+      "import": "./dist/kit/laserSvg.js"
+    },
+    "./kit/laserPixels": {
+      "types": "./dist/types/kit/laserPixels.d.ts",
+      "gamemaker-source": "./src/kit/laserPixels.ts",
+      "import": "./dist/kit/laserPixels.js"
+    },
+    "./kit/laserClearance": {
+      "types": "./dist/types/kit/laserClearance.d.ts",
+      "gamemaker-source": "./src/kit/laserClearance.ts",
+      "import": "./dist/kit/laserClearance.js"
+    },
     "./kit/*": {
       "types": "./dist/types/kit/*.d.ts",
       "browser": null,

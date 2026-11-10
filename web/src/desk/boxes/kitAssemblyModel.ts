@@ -57,7 +57,7 @@ export function assemblyModel(kind: 'plowed-street' | 'cryptex'): AssemblyModel 
     const center = C.BASE / 2;
     const disc = (name: string, z: number, caption: string) => {
       const p = stock[name].part;
-      add(name, [center - p.w / 2, center - p.h / 2, z], caption, 'flat', [0, 0, 35 + parts.length * 3]);
+      add(name, [center - p.w / 2, center - p.h / 2, z], caption, 'flat', [0, 0, 30 + parts.length * 6]);
     };
     add('BASE', [0, 0, 0], 'Glue the four PK plates on BASE, one on another, their ridge slots lined up and on the side of the marker (right).');
     for (let i = 0; i < 4; i++)

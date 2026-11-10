@@ -50,7 +50,7 @@ export function kitAssemblyViewer(kit: LaserKit): { root: HTMLElement; close(): 
     }
     const tick = (now: number) => {
       if (closed || !root.isConnected) return stop();
-      const t = reduced() ? 1 : Math.min(1, (now - start) / (650 * Math.max(1, Math.abs(target - from))));
+      const t = reduced() ? 1 : Math.min(1, (now - start) / Math.min(1800, 650 * Math.max(1, Math.abs(target - from))));
       view.step = from + (target - from) * (t * t * (3 - 2 * t));
       view.draw();
       if (t < 1) raf = requestAnimationFrame(tick);

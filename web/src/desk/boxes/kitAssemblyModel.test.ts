@@ -50,10 +50,10 @@ for (const [kind, builder, instructions] of [
       const source = words(instructions(0));
       for (const p of model.parts) expect(source, p.id).toContain(words(p.caption));
     });
-    it('routes the manifest to assembly and supplies a still thumbnail', () => {
+    it('routes the manifest to assembly and draws its thumbnail assembled', () => {
       const kit = kitOf({ id: kind, kit: { title: 'Kit', summary: 'Plywood', previews: [{ file: 'sheet.png', alt: 'Cut sheet' }] } }, './laser/test/')!;
       expect(kit.assembly).toBe(kind);
-      expect(stillThumb({ kind: 'kit', key: kind, title: 'Kit', kit })).toBe('./laser/test/sheet.png');
+      expect(stillThumb({ kind: 'kit', key: kind, title: 'Kit', kit })).toBeUndefined();
     });
   });
 
