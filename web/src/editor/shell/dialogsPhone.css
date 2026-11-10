@@ -165,3 +165,135 @@
     padding-right: 2px;
   }
 }
+
+/* Short landscape windows use their width before falling back to scrolling. Portrait stays unchanged. */
+@media (max-height: 480px) and (orientation: landscape) {
+  dialog.modal {
+    box-sizing: border-box;
+    min-width: 0;
+    padding: 8px 12px;
+  }
+
+  dialog.modal:has(
+      .community-submit,
+      .note-dialog,
+      .pal-hsv,
+      .pal-copy,
+      .pal-role-copy,
+      .recolor-check,
+      .opening-fields,
+      .disk-compare,
+      .rec-bot,
+      .machine-settings,
+      .snd-body
+    ) {
+    width: min(780px, calc(100vw - 16px));
+  }
+
+  dialog.modal .modal-head {
+    margin: 0 0 4px;
+    flex-shrink: 0;
+  }
+
+  dialog.modal .stack {
+    gap: 4px;
+  }
+
+  dialog.modal :is(.meta, .hint) {
+    margin-block: 4px;
+    font-size: 12px;
+    line-height: 1.3;
+  }
+
+  /* Touch defaults are 44px; short windows still keep every control at least 24px. */
+  dialog.modal[open] :is(input, select) {
+    min-height: 28px;
+  }
+
+  dialog.modal input:is([type='checkbox'], [type='radio']) {
+    min-width: 24px;
+    min-height: 24px;
+  }
+
+  dialog.modal[open] .buttons button {
+    min-height: 32px;
+  }
+
+  dialog.modal label {
+    gap: 2px;
+    min-width: 0;
+  }
+
+  dialog.modal :is(.buttons, .start-choices) {
+    position: sticky;
+    bottom: -8px;
+    z-index: 1;
+    flex-shrink: 0;
+    margin: 4px 0 -8px;
+    padding: 4px 0 8px;
+    background: var(--panel);
+    border-top: 1px solid var(--border);
+  }
+
+  dialog.modal :is(.pal-copy, .pal-role-copy, .pal-hsv) > .toolbar:last-child {
+    position: sticky;
+    bottom: -8px;
+    z-index: 1;
+    padding-block: 4px 8px;
+    background: var(--panel);
+    border-top: 1px solid var(--border);
+  }
+
+  /* Keep the opening list next to the optional studio field rather than above it. */
+  dialog.modal .opening-fields {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+    align-items: start;
+    gap: 12px;
+  }
+
+  dialog.modal .opening-preview {
+    flex-basis: 96px;
+  }
+
+  dialog.modal .opening-play {
+    width: 24px;
+    height: 24px;
+  }
+
+  dialog.modal .opening-name input {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* New game: the title occupies the right column above the studio field. */
+  dialog.modal form:has(> .start-choices) {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+    gap: 4px 12px;
+    align-items: start;
+  }
+
+  dialog.modal form:has(> .start-choices) > label {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  dialog.modal form:has(> .start-choices) .opening-fields {
+    display: contents;
+  }
+
+  dialog.modal form:has(> .start-choices) .opening-pick {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+  }
+
+  dialog.modal form:has(> .start-choices) .opening-name {
+    grid-column: 2;
+    grid-row: 2;
+  }
+
+  dialog.modal .start-choices {
+    grid-column: 1 / -1;
+  }
+}

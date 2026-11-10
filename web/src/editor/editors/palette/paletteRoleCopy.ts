@@ -113,7 +113,7 @@ export async function paletteRoleCopy(project: Project, pal: Uint8Array): Promis
     void load();
     return h(
       'div',
-      { class: 'stack', style: 'width:min(520px,calc(100vw - 72px))' },
+      { class: 'stack pal-role-copy', style: 'width:min(520px,calc(100vw - 72px))' },
       h(
         'p',
         { class: 'meta' },

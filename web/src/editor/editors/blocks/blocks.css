@@ -425,3 +425,40 @@ dialog.modal label.recolor-check {
   outline: 3px solid var(--accent);
   outline-offset: 2px;
 }
+
+/* Wide, shallow forms: three number fields in a row, and the edge preview beside them. */
+@media (max-height: 480px) and (orientation: landscape) {
+  dialog.modal form:has(.recolor-check) > .grid-fields {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  dialog.modal form:has(.recolor-check) .field > span {
+    white-space: normal;
+  }
+  dialog.modal form:has(.edge-preview) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: start;
+    gap: 4px 12px;
+  }
+  dialog.modal form:has(.edge-preview) > :is(p:first-child, .buttons) {
+    grid-column: 1 / -1;
+  }
+  dialog.modal form:has(.edge-preview) > .grid-fields {
+    grid-column: 1;
+    grid-row: 2;
+  }
+  dialog.modal form:has(.edge-preview) > .recolor-check {
+    grid-column: 1;
+    margin-top: 0;
+  }
+  .edge-preview {
+    grid-column: 2;
+    grid-row: 2 / span 3;
+    width: 100%;
+    box-sizing: border-box;
+    margin: 0;
+  }
+  dialog.modal form:has(.edge-preview) > p:not(:first-child) {
+    grid-column: 1 / -1;
+  }
+}

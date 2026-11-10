@@ -61,3 +61,20 @@
   min-height: 32px;
   min-width: 80px;
 }
+
+/* Two channels per row keep the volume controls and Done visible when held sideways. */
+@media (max-height: 480px) and (orientation: landscape) {
+  .snd-body {
+    width: 100%;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 4px 16px;
+    padding: 0;
+  }
+  .snd-row {
+    padding: 4px 0;
+  }
+  .snd-foot {
+    align-self: end;
+    padding: 4px 0;
+  }
+}

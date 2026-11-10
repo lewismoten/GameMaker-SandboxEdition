@@ -128,3 +128,21 @@ dialog.modal:has(.download-chooser) {
     margin: 4px 0;
   }
 }
+
+/* Four columns of formats leave room for the selected format's description and actions. */
+@media (max-height: 480px) and (orientation: landscape) {
+  dialog.modal:has(.download-chooser) {
+    width: min(780px, calc(100vw - 16px));
+  }
+  .download-chooser .dl-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+  .download-chooser .dl-choice {
+    padding: 3px 6px;
+    font-size: 13px;
+  }
+  .download-chooser .dl-line {
+    min-height: 0;
+    line-height: 1.3;
+  }
+}
