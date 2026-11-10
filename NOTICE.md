@@ -638,6 +638,8 @@ formats from their published descriptions and from Game-Maker's own source.
   one service under its successive names) and **DeepAI** are their owners' names for the
   tools used to make the Bard of Bizarre songs and art, and **ChatGPT** and **Gemini** for
   the tools Lewis reviews and brainstorms with (see Credits); none of their code is used.
+- **ChatGPT** (OpenAI) also wrote the YouTube description, chapters and title of the livestream
+  the Library shows ("RDS Game-Maker Sandbox Edition - Live"), from the video's transcript that Lewis gave it.
 - **MS-DOS** is a trademark of Microsoft Corporation; **IBM PC** of IBM; **DOSBox** is a
   separate GPL program and is not included. `npm run dosbox` (`web/scripts/dosbox.ts`) only lays
   out a folder of this repository's files for a DOSBox the developer installs, and opens it.

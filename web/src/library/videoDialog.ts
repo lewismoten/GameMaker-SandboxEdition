@@ -123,6 +123,7 @@ export function openVideo(id: string, title: string, picture: string | undefined
       'div',
       { class: 'lib-video-more', tabindex: 0, role: 'region', 'aria-label': 'About this video' },
       video?.about.length ? h('section', { class: 'lib-video-about' }, video.about.map(linked)) : null,
+      video?.credit ? h('p', { class: 'lib-video-credit' }, video.credit) : null,
       video?.chapters?.length
         ? h(
             'section',
