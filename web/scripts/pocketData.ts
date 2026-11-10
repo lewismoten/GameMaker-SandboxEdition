@@ -169,7 +169,9 @@ for (const id of ids) {
     for (const [k, v] of Object.entries(packed.leftOut)) leftOut[k] = (leftOut[k] ?? 0) + v;
     const short = (await shortHash(utf8(id))).slice(0, 7) + 'g';
     const ok = !why.length || forced.has(id);
-    console.log(`${id.padEnd(24)} ${ok ? 'pack' : 'left out: ' + [...new Set(why)].join(', ')}${packed.warn.length ? ' (' + packed.warn.join(' ') + ')' : ''}`);
+    console.log(
+      `${id.padEnd(24)} ${ok ? 'pack' : 'left out: ' + [...new Set(why)].join(', ')}${own ? `; menu/credits/Top Ten +${(packed.menuBytes / 1024).toFixed(1)} KiB stored` : ''}${packed.warn.length ? ' (' + packed.warn.join(' ') + ')' : ''}`,
+    );
     if (!listOnly && !ok && gmos) writeOsOnly(id, about, files);
     if (listOnly || !ok) continue;
     const cfg = utf8(packed.lines.join('\n') + '\n');

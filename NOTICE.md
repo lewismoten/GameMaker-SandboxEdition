@@ -1180,3 +1180,7 @@ maker "ZORP" is invented. The shell is untested: nothing has been printed.
 - **Level generator ceiling landings** (`web/packages/tools/src/kit/levelGen/platformReach.ts`): OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, matched the reach model's ceiling collision snaps to PLAYGAME and added engine comparison regressions. The original RSD code remains the behavioral reference.
 
 - **Memory harness completion** (`web/scripts/perfMemory.ts`): OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, added explicit failure diagnostics, cleanup handling and browser-free regression tests.
+
+- **Pocket packs: menu picture, credits and Top Ten background (November 10, 2026)** (`web/src/export/pocketPack.ts`): OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, packed PLAYGAME scene 0 slots 2, 7 and 8 into SD-card Pocket packs, with tests.
+
+- **Landscape dialog layouts (November 10, 2026)** (web/src editor, desk and settings dialog CSS): OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, added short-landscape layouts so dialogs fit a phone held sideways; checked in a browser by Claude (Sonnet 5.5).
