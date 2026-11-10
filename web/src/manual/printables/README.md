@@ -230,7 +230,7 @@ data, made by `web/scripts/phoneBoardPhotos.ts`; run it again after the board ch
 `yieldNow.ts`: `yieldNow()` hands the browser back between slices of a long drawing (the sticker sheet, level maps and world map are drawn right after a box opens), and `whenQuiet()` waits until no key or press has come in for a moment. The box's "In the box" pictures use both, so a key pressed while they are drawn is not kept waiting.
 
 Level Maps scan results live in one JSON file per game under `levelViews/` and
-`levelSecrets/`. `levelMetadata.ts` assembles them in filename order for consumers.
+`levelSecrets/`. `levelMetadata.ts` assembles them in filename order for tests and scan scripts; the site reads them through `levelMetadataLazy.ts` (one game's file when its maps are drawn, so the Library's first load carries none of it).
 `web/scripts/levelMetadataFiles.ts` writes canonical JSON and leaves unchanged files alone.
 Regenerate after building matching disks; the existing Level Maps tests and
 `games/kit/syncCheck.ts` still reject stale hashes and secrets. These metadata files never

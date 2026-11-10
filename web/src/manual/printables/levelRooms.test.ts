@@ -11,8 +11,8 @@ import { MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { readDisk } from '../../../scripts/levelViewsScan';
 import { cutRooms, passesThrough, separateRooms } from './levelRooms';
 import { levelsOf, trimPadding } from './levelMapLayout';
-import { listedSecrets } from './levelSecrets';
-import { listedUnrolled, listedViews } from './levelViews';
+import { loadSecrets } from './levelSecrets';
+import { loadViews } from './levelViews';
 import { listedRoomHints } from './levelRoomHints';
 
 const OPEN = 0;
@@ -184,50 +184,51 @@ const DISKS = ['logic', 'maximus', 'realm', 'sleuth', 'teddy', 'teddy2', 'year20
 const hasDisks = DISKS.every((id) => existsSync(join(games, id, 'disk')));
 
 describe.skipIf(!hasDisks)('on the real disks', () => {
-  const load = (id: string) => {
+  const load = async (id: string) => {
     const d = readDisk(join(games, id, 'disk'))!;
+    const views = await loadViews(id);
     return {
       game: d.game,
-      levels: levelsOf(d.game, { get: (n) => d.files.get(n.toLowerCase()) }, listedSecrets(id)!, listedViews(id), listedUnrolled(id), listedRoomHints(id)),
+      levels: levelsOf(d.game, { get: (n) => d.files.get(n.toLowerCase()) }, (await loadSecrets(id))!, views?.maps, views?.unrolled ?? {}, listedRoomHints(id)),
     };
   };
 
-  it("draws Final Curtain's green room once, with its five suspects beside it, and its stage rooms apart", () => {
-    const green = load('sleuth').levels.filter((l) => l.group.map === 'green.map');
+  it("draws Final Curtain's green room once, with its five suspects beside it, and its stage rooms apart", async () => {
+    const green = (await load('sleuth')).levels.filter((l) => l.group.map === 'green.map');
     expect(green.map((l) => l.name)).toEqual(['The Green Room', 'Dawn', 'How?', 'Why?', 'The Commissioner', 'Stage Door']);
     expect(green[0].area).toEqual({ x: 0, y: 0, w: 16, h: 10 });
     expect(green[0].cast!.people).toHaveLength(5);
     expect(green[0].cast!.people.every((p) => p.visits.every((v) => v.scenes.length === 4))).toBe(true);
   });
 
-  it('prints each room of the Teleport-A-Phone Exchange apart, its booths named by the room they reach', () => {
-    const ex = load('year2000').levels.filter((l) => l.group.map === 'exchange.map');
+  it('prints each room of the Teleport-A-Phone Exchange apart, its booths named by the room they reach', async () => {
+    const ex = (await load('year2000')).levels.filter((l) => l.group.map === 'exchange.map');
     expect(ex).toHaveLength(6);
     expect(ex[0].marks.filter((m) => m.kind === 'exit').map((m) => m.text)).toEqual(['Florida', 'Sea', 'TV set']);
   });
 
-  it("numbers Ohm Sweet Ohm's boards as the hint book does, each one its slot", () => {
-    const boards = load('logic').levels;
+  it("numbers Ohm Sweet Ohm's boards as the hint book does, each one its slot", async () => {
+    const boards = (await load('logic')).levels;
     const computer = boards.find((l) => l.name === 'Board 19: The Home Computer')!;
     expect(computer.area).toEqual({ x: 2, y: 2, w: 16, h: 10 });
     expect(boards.filter((l) => l.name.startsWith('Board '))).toHaveLength(23);
   });
 
-  it("leaves out Quest for the Round Tuit's talk map, and prints its towns apart", () => {
-    const { levels } = load('realm');
+  it("leaves out Quest for the Round Tuit's talk map, and prints its towns apart", async () => {
+    const { levels } = await load('realm');
     expect(levels.some((l) => l.group.map === 'pass.map')).toBe(false);
     expect(levels.filter((l) => l.group.map === 'town.map').map((l) => l.name)).toEqual(['Laterburg', 'Nowish']);
   });
 
-  it("lays Teddy's Little Bigger Adventure's main street out hedge to hedge, its den apart", () => {
-    const main = load('teddy2').levels.filter((l) => l.group.map === 'main.map');
+  it("lays Teddy's Little Bigger Adventure's main street out hedge to hedge, its den apart", async () => {
+    const main = (await load('teddy2')).levels.filter((l) => l.group.map === 'main.map');
     expect(main.map((l) => l.name)).toEqual(['Main Street', "Gwinn's Den"]);
     expect(main[0].unrolled!.loops).toEqual([false, false]);
-    expect(load('teddy').levels.some((l) => l.name === 'The Dog House')).toBe(true);
+    expect((await load('teddy')).levels.some((l) => l.name === 'The Dog House')).toBe(true);
   });
 
-  it('prints no planet of Maximus with a slab of bedrock under its floor, only one line of it', () => {
-    const { levels } = load('maximus');
+  it('prints no planet of Maximus with a slab of bedrock under its floor, only one line of it', async () => {
+    const { levels } = await load('maximus');
     for (const l of levels) {
       const row = (y: number) => new Set(Array.from({ length: l.area.w }, (_, k) => l.cells[(((y % MWID) + MWID) % MWID) * MLEN + ((l.area.x + k) % MLEN)]));
       const last = l.area.y + l.area.h - 1;
@@ -236,9 +237,9 @@ describe.skipIf(!hasDisks)('on the real disks', () => {
     }
   });
 
-  it('keeps marks of every level inside its crop', () => {
+  it('keeps marks of every level inside its crop', async () => {
     for (const id of ['sleuth', 'year2000', 'logic', 'realm', 'teddy', 'teddy2', 'risi'])
-      for (const l of load(id).levels)
+      for (const l of (await load(id)).levels)
         for (const m of l.marks)
           expect(m.x >= l.area.x && m.y >= l.area.y && m.x + m.w <= l.area.x + l.area.w && m.y + m.h <= l.area.y + l.area.h, `${id} ${l.name}`).toBe(true);
   });
