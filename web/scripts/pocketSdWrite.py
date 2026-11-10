@@ -5,18 +5,55 @@ Run with PlatformIO's Python (it has pyserial), with the board on its game list 
   cd web && npx vite-node scripts/pocketData.ts --out /tmp/pocketcard
   ~/.platformio/penv/bin/python web/scripts/pocketSdWrite.py /dev/cu.usbserial-XXXX /tmp/pocketcard/pocket
 Sends every file of the folder to /pocket/ on the card (256 bytes at a time, about 10 KB/s: 2 MB takes several minutes), the list
-last, then resets the board so it reads the new list. A file already on the card is replaced. Exits 1 on any error.
+last, then resets the board so it reads the new list. A file already on the card is replaced. Lines the board logs before a reply (SCREEN, PACK, LOG...) are skipped; a reply that never comes within 10 s fails and shows the last skipped lines.
+Exits 1 on any error. `--self-check` tests that reader with a fake port.
 """
 import sys, os, time, argparse
 import os as _os, sys as _sys
 _sys.path.insert(0, _os.path.join(_os.environ.get('GAMEMAKER_POCKET_DIR') or _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), '..', '..', '..', 'gamemaker-pocket'), 'scripts'))  # pocketStatus.py lives in the gamemaker-pocket repository
-import serial
-from pocketStatus import show, clear, open_port
+
+
+def wait_reply(s, want, timeout=10.0):
+    """Reads lines until the protocol reply `want` (GO or OK) or an ERR line; returns (reply, skipped).
+    Board log lines (SCREEN ..., PACK ..., LOG ..., anything else) are skipped and collected; reply is None on timeout."""
+    skipped, end = [], time.time() + timeout
+    while time.time() < end:
+        line = s.readline().decode("utf-8", "replace").strip()
+        if line == want or line.startswith("ERR"):
+            return line, skipped
+        if line:
+            skipped.append(line)
+    return None, skipped
+
+
+def fail(n, line, skipped):
+    print(f"{n}: board said {line!r}" if line else f"{n}: no reply from the board")
+    if skipped:
+        print("  last lines skipped: " + " | ".join(skipped[-5:]))
+    sys.exit(1)
+
+
+def self_check():
+    class Fake:
+        def __init__(self, lines): self.lines = [l.encode() + b"\n" for l in lines]
+        def readline(self): return self.lines.pop(0) if self.lines else b""
+    assert wait_reply(Fake(["SCREEN picker", "PACK 3", "", "GO"]), "GO", 1) == ("GO", ["SCREEN picker", "PACK 3"])
+    assert wait_reply(Fake(["LOG x", "ERR full"]), "OK", 1) == ("ERR full", ["LOG x"])
+    assert wait_reply(Fake(["LOG a"]), "GO", 0.3) == (None, ["LOG a"])
+    print("self-check ok")
+
 
 ap = argparse.ArgumentParser()
-ap.add_argument("port")
-ap.add_argument("folder")
+ap.add_argument("port", nargs="?")
+ap.add_argument("folder", nargs="?")
+ap.add_argument("--self-check", action="store_true", help="test the reply reader with a fake serial port and exit")
 a = ap.parse_args()
+if a.self_check:
+    self_check(); sys.exit(0)
+if not (a.port and a.folder):
+    ap.error("port and folder are required")
+import serial
+from pocketStatus import show, clear, open_port
 s = open_port(a.port, 5)
 time.sleep(0.3)
 s.reset_input_buffer()
@@ -28,16 +65,16 @@ try:
     for i, n in enumerate(names):
         data = open(os.path.join(a.folder, n), "rb").read()
         s.write(f"W {n} {len(data)}\n".encode())
-        line = s.readline().decode("utf-8", "replace").strip()
+        line, skipped = wait_reply(s, "GO")
         if line != "GO":
-            print(f"{n}: board said {line!r}"); sys.exit(1)
+            fail(n, line, skipped)
         for k in range(0, len(data), 256):
             s.write(data[k:k + 256])
             if s.read(1) != b".":
                 print(f"{n}: no acknowledgement at byte {k}"); sys.exit(1)
-        line = s.readline().decode("utf-8", "replace").strip()
+        line, skipped = wait_reply(s, "OK")
         if line != "OK":
-            print(f"{n}: board said {line!r}"); sys.exit(1)
+            fail(n, line, skipped)
         sent += len(data)
         if i % 25 == 0:
             print(f"{i}/{len(names)} files, {sent}/{total} bytes, {int(time.time()-t0)} s", flush=True)
