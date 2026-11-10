@@ -2568,7 +2568,7 @@
     },
     {
       "name": "vite",
-      "version": "7.3.7",
+      "version": "7.3.8",
       "license": "MIT",
       "runtime": false,
       "direct": true,

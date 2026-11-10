@@ -129,37 +129,8 @@ games keep their incremental cache entries before the parent fails. Tests: `web/
 
 ## Pocket host allocation audit
 
-`python3 scripts/pocket-heap-audit.py --card <card-root>/pocket --out <private-report-dir> --replay`
-reads the onboard and microSD indexes, records every game (even with missing assets),
-compiles `hardware/pocket-player/host/heaptest.cpp`, and measures every indexed level.
-Generate the card first from `web/` with `npx vite-node -c ../scripts/game-build.config.mjs scripts/pocketData.ts --out <card-root>`;
-build ignored game disks with `npm run build:games` first. Run the audit through
-`npm run heavy --` when replaying walkthroughs. It copies the card into the report
-and adds `<id>.cfg` aliases only there, leaving the real card untouched.
+`pocket-heap-audit.py`, `pocket-heap-test.py` and `pocket-inventory-test.py` moved to the Pocket Player's own repository, https://github.com/lewismoten/gamemaker-pocket (`scripts/`). The audit reads a card made here: from `web/`, `npx vite-node -c ../scripts/game-build.config.mjs scripts/pocketData.ts --out <card-root>` (after `npm run build:games`).
 
-Reports include `inventory.json` (disk/walkthrough/index hashes), per-command logs
-and durations, `heap.json`/`heap.csv`, environment and summary. A duplicate id is an
-error; a mismatch with `--expected-games` (default 121) is reported, not truncated.
-The full original `pocketHostCheck.ts` replays both sources separately with `--replay`.
-The requested `npm run check:cyd` is also attempted and its actual exit is retained;
-this tool does not invent an alias if that command is absent.
-
-Allocation numbers are **scoped host requested bytes**, not ESP32 free heap,
-headroom, fragmentation or RSS. Each level loads in config order through
-`Assets::load`, preserving inherited hero names but releasing buffers between levels
-(as for cards). `live_bytes` is retained core asset storage; `peak_bytes` includes
-those assets, their transient compressed input and zlib's explicitly instrumented
-work allocations. `largest_request_bytes` is one allocation, not a largest free
-block. Counts exclude stdio, C++ containers, allocator overhead, stack/static data,
-firmware display buffers, SD prefetch/mount state and ESP32's ROM inflater. This is a
-load audit, not gameplay-transition or interstitial-card memory coverage. The ten
-largest host peaks are a provisional proxy for the requested "10 tightest"; only
-board readings can establish the actual ten tightest CYD cases. The runner exits
-nonzero for inventory mismatch, failed heap loads, replay differences or check:cyd
-failure, while retaining completed results.
-
-Regressions: `python3 scripts/pocket-heap-test.py` and
-`python3 scripts/pocket-inventory-test.py` (C++17, zlib, Python stdlib).
 Implemented with Hermes Agent using OpenAI Codex GPT-6.1 Sol, directed by Lewis Moten.
 
 Site build-time tools remain in [`web/scripts`](../web/scripts/README.md).
@@ -181,6 +152,13 @@ Restore into an empty folder for a drill; inspect the script's input list before
 `already.mjs` (`npm run already -- <words...>`) searches commit history, tracked files
 and optional local research notes for earlier work. Results rank by matching words and
 date. Tests: `web/test/already.test.mjs`.
+
+`look.mjs` (`npm run look -- [<shot>] [--out f.jpg] [--width 1280] [--crop x,y,w,h] [--ocr] [--expect "text"]`)
+looks at a screen through the Ghost Jack camera bridge (127.0.0.1:8787, token in
+`~/.config/ghostjack/token`): with no shot it snapshots the current view (no move); with a slot or name it makes one `goto` and
+saves the JPEG under `.for-lewis/progress-shots/<date>/look/` (git-ignored). `--ocr` (a 1920-wide picture unless `--width`; ffmpeg turns it gray, resizes by `--ocr-scale`, default 1.5, and cuts it to black and white at two brightness levels; tesseract `--ocr-psm`, default 11, reads each and the confident words are merged) prints what
+`tesseract` reads, if installed; `--expect` exits 1 unless that text is on the screen. Saved shots must be re-saved after the camera is moved (SET + number on
+the Ghost Jack page). Snapshots and saved shots only. Tests: `web/test/look.test.mjs`.
 
 `heavy.mjs` (`npm run heavy -- <command...>`, root or `web/`) runs a heavy job (a build, full vitest,
 `verify:perf`, `check:games`, a walkthrough recording) in one of 2 shared slots, so agents on one Mac don't

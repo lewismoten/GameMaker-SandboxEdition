@@ -1,5 +1,5 @@
-// A small house by the path: rain splashes on its roof, the gutter's spout pours a falling sheet of
-// rain water from roof height into a rain barrel. Drawn whole on one canvas, then cut into blocks;
+// A small house by the path: rain splashes on its roof, the gutter runs into a downspout pipe down the wall whose
+// mouth pours a short sheet of rain water into a rain barrel. Drawn whole on one canvas, then cut into blocks;
 // the roof's top row and the spout's column are four-frame rings on the rain's clock (rain behind,
 // splashes where drops hit the shingles), the walls are plain blocks. Nothing here is solid.
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
@@ -10,7 +10,7 @@ import { RAIN_TICKS, rainTile, streakHeads, type Timed } from './rain';
 const CLEAR = 255;
 /** Five columns of house and one of spout and barrel; five rows: two of roof, three of wall. */
 export const HOUSE = { cols: 6, rows: 5 } as const;
-const SPOUT = { x0: 101, x1: 104, top: 38, rim: 83 };
+const SPOUT = { x0: 105, x1: 109, top: 68, rim: 83 };
 
 function drawHouse(pal: Pal): Pixels {
   const p = new Pixels(120, 100, CLEAR);
@@ -30,9 +30,20 @@ function drawHouse(pal: Pal): Pixels {
     }
   }
   p.rect(14, 6, 72, 1, c('brick', 4));
-  // gutter along the eave, its open spout reaching out past the right wall
-  p.rect(0, 33, 100, 4, c('stone', 3)).rect(0, 33, 100, 1, c('stone', 4)).rect(0, 36, 100, 1, c('stone', 1));
-  p.rect(100, 34, 6, 3, c('stone', 3)).rect(100, 34, 6, 1, c('stone', 4)).rect(105, 34, 1, 4, c('stone', 2));
+  // gutter along the eave, ending in a downspout: a pipe down the wall's right edge, an elbow at the
+  // bottom and an outlet mouth over the rain barrel
+  p.rect(0, 33, 99, 4, c('stone', 3)).rect(0, 33, 99, 1, c('stone', 4)).rect(0, 36, 99, 1, c('stone', 1));
+  const out = c('stone', 0);
+  const pipe = (x: number, y: number, w: number, h: number) =>
+    p
+      .rect(x, y, w, h, out)
+      .rect(x + 1, y + 1, w - 2, h - 2, c('white', 2))
+      .rect(x + 1, y + 1, 1, h - 2, c('white', 4));
+  pipe(94, 32, 7, 7);
+  pipe(96, 38, 5, 28);
+  for (const by of [46, 58]) p.rect(95, by, 7, 2, out);
+  pipe(96, 60, 11, 7);
+  p.rect(105, 66, 5, 3, out).rect(106, 66, 3, 2, c('blue', 1));
   // walls: painted boards, trims, a shadow under the gutter, a stone footing
   p.rect(1, 37, 94, 57, c('stone', 3));
   for (let y = 42; y < 94; y += 6) p.rect(1, y, 94, 1, c('stone', 2));
@@ -66,7 +77,7 @@ function pour(pal: Pal, p: Pixels, frame: number, oy: number): void {
   for (let gy = Math.max(SPOUT.top, oy); gy < Math.min(SPOUT.rim + 1, oy + 20); gy++)
     for (let x = SPOUT.x0; x <= SPOUT.x1; x++) {
       const edge = x === SPOUT.x0 || x === SPOUT.x1;
-      const lane = x === 102 ? 0 : x === 103 ? 10 : 5;
+      const lane = x === 106 ? 0 : x === 108 ? 10 : 5;
       const glint = (((gy - frame * 5 - lane) % 20) + 20) % 20 < 3;
       p.set(x - 100, gy - oy, glint ? pal.c('white', 3) : edge ? pal.c('blue', 2) : pal.c('blue', 3));
     }
@@ -74,7 +85,8 @@ function pour(pal: Pal, p: Pixels, frame: number, oy: number): void {
   if (oy + 20 > SPOUT.rim) {
     const y = SPOUT.rim - oy;
     const left = frame % 2 === 0;
-    p.set(left ? 0 : 6, y - 2, pal.c('blue', 4)).set(left ? 6 : 0, y - 1, pal.c('blue', 3));
+    p.set(left ? 3 : 11, y - 2, pal.c('blue', 4)).set(left ? 11 : 3, y - 1, pal.c('blue', 3));
+    p.set(left ? 4 : 10, y - 3, pal.c('white', 3)).set(left ? 10 : 4, y - 2, pal.c('blue', 4));
   }
 }
 

@@ -360,6 +360,42 @@ if (!process.env.GM_SKIP_LASER_NICKELS && (!only.length || only.includes('sleuth
     'laser stage box',
   );
 }
+// Snowbound's laser Plowed Street box (games/snowbound/laser/plowedStreet.ts) writes web/public/laser/snowbound/plowed-street/; it is
+// cheap, so it is redrawn whenever its game is built.
+if (!process.env.GM_SKIP_LASER_NICKELS && (!only.length || only.includes('snowbound')) && ids.includes('snowbound')) {
+  await runEntry(
+    'laser-plowed-street',
+    { file: join(root, 'games/snowbound/laser/plowedStreet.ts') },
+    '../games/snowbound/laser/plowedStreet.ts',
+    [],
+    { cwd: join(root, 'web'), maxBuffer: 16 << 20, timeout: 240_000 },
+    'laser plowed street',
+  );
+}
+// Year 2000's laser cryptex (games/year2000/laser/cryptex.ts) writes web/public/laser/year2000/cryptex/; it takes a few seconds
+// (it tries every combination), so it is redrawn whenever its game is built.
+if (!process.env.GM_SKIP_LASER_NICKELS && (!only.length || only.includes('year2000')) && ids.includes('year2000')) {
+  await runEntry(
+    'laser-cryptex',
+    { file: join(root, 'games/year2000/laser/cryptex.ts') },
+    '../games/year2000/laser/cryptex.ts',
+    [],
+    { cwd: join(root, 'web'), maxBuffer: 16 << 20, timeout: 240_000 },
+    'laser cryptex',
+  );
+}
+// Tune-Up's paper THE CHEZ (games/tuneup/laser/chezPapercraft.ts) writes web/public/laser/tuneup/papercraft-chez/: a laser sheet and
+// color print pages. It takes a few seconds, so it is redrawn whenever its game is built.
+if (!process.env.GM_SKIP_LASER_NICKELS && (!only.length || only.includes('tuneup')) && ids.includes('tuneup')) {
+  await runEntry(
+    'laser-papercraft-chez',
+    { file: join(root, 'games/tuneup/laser/chezPapercraft.ts') },
+    '../games/tuneup/laser/chezPapercraft.ts',
+    [],
+    { cwd: join(root, 'web'), maxBuffer: 16 << 20, timeout: 240_000 },
+    'laser papercraft chez',
+  );
+}
 // Maximus's embroidered patch (games/maximus/patch/build.ts: stitch files, thread list and stitch simulation in
 // web/public/laser/maximus/patch/); a few seconds, so it is redone whenever its game is built.
 if (!process.env.GM_SKIP_LASER_NICKELS && (!only.length || only.includes('maximus')) && ids.includes('maximus')) {

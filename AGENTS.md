@@ -63,6 +63,7 @@ npm run check:gestures -- [--route r] [--out dir]  # map editor touch gestures (
 npm run check:audio-unlock -- [--engines webkit,chromium] [--page desk,home]  # desk makes its AudioContext outside input handlers and it runs after the first tap; headless WebKit is not iOS proof
 npm run replay:log -- <log.jsonl> [--session id] [--out dir]  # replay a game the dev interaction log (the 🐵 switch) recorded, headless; checks each snapshot; PNG frames with --out; exits 1 on divergence
 npm run verify:perf                            # performance budgets (bytes, requests, INP at 4x) on a scratch production build, about 70 s; --update rewrites web/scripts/perfBudgets.json on purpose
+npm run look -- [<shot>] [--out f.jpg] [--ocr] [--expect "text"]  # a snapshot or saved shot of a screen through the Ghost Jack camera bridge (127.0.0.1:8787); --ocr prints the text tesseract reads, --expect exits 1 unless it is there
 npm run badges:similar                             # advisory: achievement badges that look alike in gray or to color-blind eyes; HTML report in .for-lewis/research/badges-similar/
 npm run release:draft -- <pages|engine|archives|tools>  # pending fragments and legacy Unreleased notes, plus commit suggestions (prints; never writes)
 npm run release:cut -- <target> <version>          # Unreleased becomes a dated version; sets a package's version
@@ -151,6 +152,7 @@ preserve what was there.
   belong in `web/packages/tools/src`. Check its APIs before adding helpers under `games/`.
   Keep game artwork, palettes, routes and repository metadata policy in `games/`; packages must
   build from their own folders and declared dependencies.
+- **Pocket Player:** its firmware, host tests and board tools (`pocketStatus.py`, `pocketWalk.py`, the heap audit) live in https://github.com/lewismoten/gamemaker-pocket, not here. GameMaker keeps what makes the data the board plays (`web/scripts/pocketData.ts`, `pocketArt.ts` and the `.gmp` and library exporters write to the git-ignored `pocket-out/`, or to `--out`) and the three host checks that compile its C++ (`pocketHostCheck.ts`, `pocketCardsCheck.ts`, `pocketControlsCheck.ts`). They find the clone through `GAMEMAKER_POCKET_DIR` (default `../gamemaker-pocket`) and skip with a message when it is absent. Nothing in test, lint, typecheck or verify needs it.
 - **Files:** keep them small, one purpose each, with a short header comment. Export only
   what another file imports.
 - **Loading:** each editor, the desk, today's web and the Guide are separate chunks loaded

@@ -45,7 +45,7 @@ export const CREDITS = withCreditPage(
 |NEXT DOOR  v${about.version}
 |(c) 1994 Sandbox Software
 
-Story, pixels, beeps, songs and levels by Claude Sonnet 5.5, an AI model made by Anthropic.
+Story, pixels, beeps, songs and levels by Claude Sonnet 5.5 and Claude Opus 5.5, AI models made by Anthropic.
 
 Old Mossback's voice: Pocket TTS by Kyutai (CC BY 4.0), in a cloned voice.
 

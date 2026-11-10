@@ -1,4 +1,4 @@
-// Host-side check of the Pocket Player's level colors (hardware/pocket-player/src/main.cpp). Mirrors
+// Host-side check of the Pocket Player's level colors (gamemaker-pocket src/main.cpp). Mirrors
 // its palette math (VGA 6 bit -> 8 bit -> RGB565 -> panel byte order) and 1.5x block scaling, models
 // the ST7796 reading each pushed value's bytes low byte first as big-endian RGB565, and compares
 // with the engine's own render of the same cells. Writes expected | new firmware | old firmware

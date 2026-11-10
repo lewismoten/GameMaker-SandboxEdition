@@ -1,7 +1,7 @@
 # Native Pi player (host phase)
 
 SDL2 launcher and player for macOS now and Raspberry Pi OS Lite later. It compiles
-`../pocket-player/src/gmcore.h`, `gmmon.h`, `gmcfg.h`, `gmsmall.h` and `pcspeaker.h`
+`gmcore.h`, `gmmon.h`, `gmcfg.h`, `gmsmall.h` and `pcspeaker.h`
 in place. No copied core headers, board changes, firmware writes, browser or server.
 This is the compact Pocket compatibility profile, **not a complete DOS player or OS image**.
 
@@ -111,7 +111,7 @@ npx vite-node scripts/pocketHostCheck.ts
 ```
 
 Run board builds only, never upload: from the repository root,
-`npm run heavy -- ~/.platformio/penv/bin/pio run -d hardware/pocket-player -e esp32-3248s035 -e cyd-2432s028`.
+`npm run heavy -- ~/.platformio/penv/bin/pio run -d ../gamemaker-pocket -e esp32-3248s035 -e cyd-2432s028` (the Pocket Player lives in its own repository, https://github.com/lewismoten/gamemaker-pocket; `make` finds it through `POCKET_DIR`, default `../gamemaker-pocket`).
 
 ## Raspberry Pi OS Lite and ARMv6 later
 
@@ -132,7 +132,7 @@ SDL2/zlib (never Homebrew libraries). For example, after preparing that sysroot:
 make CXX=/toolchain/bin/arm-linux-gnueabihf-g++ \
   SDL_CONFIG=/sysroot-tools/sdl2-config \
   CXXFLAGS='-O2 -std=c++17 -Wall -Wextra -march=armv6zk -mtune=arm1176jzf-s -mfpu=vfp -mfloat-abi=hard' \
-  CPPFLAGS='--sysroot=/pi-sysroot -I../pocket-player/src -Ibuild -I/pi-sysroot/usr/include/SDL2 -D_REENTRANT' \
+  CPPFLAGS='--sysroot=/pi-sysroot -I$(POCKET_DIR)/src -Ibuild -I/pi-sysroot/usr/include/SDL2 -D_REENTRANT' \
   LDFLAGS='--sysroot=/pi-sysroot' LDLIBS='-lSDL2 -lz'
 ```
 

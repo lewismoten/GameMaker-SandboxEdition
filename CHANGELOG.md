@@ -6,6 +6,31 @@ changelog: [engine](web/packages/engine/CHANGELOG.md), [archives](web/packages/a
 
 ## [Unreleased]
 
+## [3.4.0] - 2026-11-09
+
+Three new laser and paper kits on the box shelf (the Snowbound puzzle box, the In The Year 2000! cryptex and a paper THE CHEZ), Pocket Player opens a game's Details first, Rain on the Path 1.2, and better search descriptions.
+
+### Added
+
+- A laser-cut puzzle box for Snowbound on its box shelf: the lid is a street map, and sliding the plow along the plowed streets to LaVale Mall opens the drawer (SVG sheets for a Glowforge, previews and assembly steps).
+- A laser-cut cryptex for In The Year 2000! on its box shelf: four stepped rings of digits, dial the year and the hollow core slides out, and the combination can be changed (SVG sheets for a Glowforge, previews and assembly steps).
+- A fold-up paper model of THE CHEZ on the Tune-Up box shelf: a Glowforge sheet (cardstock, with scored folds and cut windows and headlights) and color print pages for Letter or A4.
+- The web player page (web-player.html and its try-it copy) has its own title, description, address and sharing picture, a heading without JavaScript, and a line in the sitemap.
+
+### Changed
+
+- Pocket Player: tapping a game opens its Details (Back, Favorite, Play) instead of starting it, and Settings, Controls, Practice has a "Hold it" button that shows the "How to hold it" hands again.
+- Pocket Player's first run says how to finish ("Touch the pad or Jump, then tap Done"), and its small hint text is a lighter gray, easier to read at arm's length.
+- The Pocket Player firmware now has its own public repository, and the Pocket Player download page and card help point there.
+- Rain on the Path 1.2: the cottage's gutter now runs into a downspout pipe down the wall, pouring into the rain barrel with a splash at its base.
+- Each art course page now has its own search and link-preview description, not the contents page's.
+
+### Fixed
+
+- The credits screens of two games now name both AI models that made them, Claude Sonnet 5.5 and Claude Opus 5.5.
+
+Full list: [changes/release/pages/3.4.0.md](https://github.com/lewismoten/GameMaker-SandboxEdition/blob/pages-v3.4.0/changes/release/pages/3.4.0.md)
+
 ## [3.3.0] - 2026-11-09
 
 Four games grow: The Mountain Moved Next Door (3.2, twenty-four levels, about an hour), Pass the Pie (3.3, thirteen levels, inked
@@ -85,7 +110,8 @@ for every Game-Maker file type; the web player; and the set of new games built i
 - Exports to a web page, a DOS ZIP and native players, and opening a game another site links to.
 - Achievements, a guided tour with voice clips, and offline use as an installable app.
 
-[Unreleased]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/pages-v3.3.0...HEAD
+[Unreleased]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/pages-v3.4.0...HEAD
+[3.4.0]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/pages-v3.3.0...pages-v3.4.0
 [3.3.0]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/pages-v3.2.0...pages-v3.3.0
 [3.2.0]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/pages-v3.1.0...pages-v3.2.0
 [3.1.0]: https://github.com/lewismoten/GameMaker-SandboxEdition/releases/tag/pages-v3.1.0

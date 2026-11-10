@@ -6,16 +6,21 @@ Needs the board freshly 'S forget nvs' + restart (step 1). Run it with the Platf
 Each BOOT press is 'S boot' and an OK is 'S tap RX RY' (any position counts); the three calibration taps use raw readings
 made from the wiring the way src/touchcal.h expects (bit 2: axes swapped, bit 1: the x axis counts down, bit 0: the y axis does)."""
 import sys, time, serial
+import os as _os, sys as _sys
+_sys.path.insert(0, _os.path.join(_os.environ.get('GAMEMAKER_POCKET_DIR') or _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), '..', '..', '..', 'gamemaker-pocket'), 'scripts'))  # pocketStatus.py lives in the gamemaker-pocket repository
+from pocketStatus import show, clear, open_port, take_reset_flag
+reset = take_reset_flag()
 port = sys.argv[1]
 mirror, orient, colors = (int(a) for a in sys.argv[2:5])
 wiring = int(sys.argv[5]) if len(sys.argv) > 5 else 5
-s = serial.Serial(port, 115200, timeout=0.2)
+s = open_port(port, 0.2, reset)
 def pump(t):
     end = time.time() + t
     while time.time() < end:
         l = s.readline().decode('utf-8', 'replace').rstrip()
         if l and ('setup' in l or 'SETUP' in l or 'cal' in l or 'display' in l): print('<', l)
 def send(c, wait=1.2):
+    if not c.startswith('S st'): show(s, ('Setup drive: ' + c)[:40])
     s.write((c + '\n').encode()); print('>', c); pump(wait)
 def raw_of(x, y):  # raw reading of a logical screen point (320 x 240) for the pretend wiring, margin 24
     sw, fx, fy = wiring >> 2 & 1, wiring >> 1 & 1, wiring & 1
@@ -25,6 +30,7 @@ def raw_of(x, y):  # raw reading of a logical screen point (320 x 240) for the p
     a, b = ax(x, 320, fx), ax(y, 240, fy)
     return (b, a) if sw else (a, b)
 pump(1)
+show(s, 'Setup drive: starting')
 send('S st')
 for _ in range(mirror): send('S boot')
 send('S tap 2000 2000')          # OK step 1
@@ -37,3 +43,4 @@ for x, y in ((24, 24), (295, 24), (24, 215)):
 pump(2)
 rx, ry = raw_of(264, 218); send(f'S tap {rx} {ry}', 1.5)  # Done on the calibration's check screen
 send('S st', 2.5)
+clear(s); time.sleep(0.2)

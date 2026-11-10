@@ -95,7 +95,7 @@ const CHOICES: Choice[] = [
     name: 'Pocket Player (microSD)',
     format: '.gmp',
     line: 'One file for the Pocket Player on an ESP32 “cheap yellow display” board. Copy it into the pocket folder on the board’s microSD card (FAT32), then restart the board: the game is listed with an SD tag. It plays the PC speaker sounds, not Sound Blaster sounds or music.',
-    details: `${REPO_URL}/blob/master/hardware/pocket-player/README.md#the-microsd-card`,
+    details: 'https://github.com/lewismoten/gamemaker-pocket#the-microsd-card',
   },
   { kind: 'files', name: 'Game files', format: '.zip', line: 'Your game’s files just as they are here, to keep a copy safe or import it again.' },
   {

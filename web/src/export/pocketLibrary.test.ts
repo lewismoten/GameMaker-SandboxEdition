@@ -95,7 +95,9 @@ describe('new GMP in legacy container', () => {
 });
 
 it('keeps generated flash previews and metadata inside their budgets, with no secret entries', () => {
-  const data = new URL('../../../hardware/pocket-player/data/', import.meta.url);
+  // Written by web/scripts/pocketData.ts; absent on a fresh checkout, so the budget check waits for it.
+  const data = new URL('../../../pocket-out/data/', import.meta.url);
+  if (!existsSync(new URL('library.jsonl', data))) return;
   const metadata = readFileSync(new URL('library.jsonl', data));
   const thumbs = readFileSync(new URL('thumbs.pak', data));
   expect(metadata.length).toBeLessThanOrEqual(64 * 1024);

@@ -6,7 +6,7 @@
 // games picked are read again by GameReader. No DOM: the home page's import (editor/shell/
 // homeImport.ts, importChooser.ts) shows it.
 import { cdName, GameFiles, IGNORED_FILE, normalize } from '@lewismoten/gamemaker-sandbox-engine/core/gameFiles';
-import { crc32, isZip, listZip, type ZipLimits } from './zip';
+import { crc32, DEFAULT_ZIP_LIMITS, isZip, listZip, type ZipLimits } from './zip';
 import { parseGame, gameTitle } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { isFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
 import { isGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
@@ -224,12 +224,27 @@ export interface ScanOptions {
   onStep?: (step: 'unpack' | 'find', path: string) => void;
 }
 
+/**
+ * A listZip that adds up the unpacked bytes every zip it opens declares, so zips inside zips
+ * share one budget (limits.maxBytes) instead of each getting a fresh one.
+ */
+function sharedBudgetLister(limits: ZipLimits = DEFAULT_ZIP_LIMITS) {
+  let used = 0;
+  return (bytes: Uint8Array) => {
+    const entries = listZip(bytes, limits);
+    for (const e of entries) used += e.size;
+    if (used > limits.maxBytes) throw new Error(`The zips inside zips unpack to more than ${limits.maxBytes} bytes in all`);
+    return entries;
+  };
+}
+
 /** Waits a moment, so a long look through many zips leaves the page free to draw and click. */
 const breathe = () => new Promise<void>((r) => setTimeout(r, 0));
 
 /** Looks through what was given for its games. Throws an AbortError when canceled. */
 export async function scanImport(given: ScanFile[], { signal, onProgress, onStep, zipLimits }: ScanOptions = {}): Promise<ScanReport> {
   const report: ScanReport = { games: [], zips: 0, emptyZips: [], badZips: [], loose: [] };
+  const listShared = sharedBudgetLister(zipLimits);
   const topZips = given.filter((f) => isZipName(f.path));
   let done = 0;
 
@@ -329,13 +344,13 @@ export async function scanImport(given: ScanFile[], { signal, onProgress, onStep
         // an MS-DOS program (MZ) with a zip's end record in it
         if (!bytes || bytes[0] !== 0x4d || bytes[1] !== 0x5a) return undefined;
         try {
-          entries = listZip(bytes, zipLimits).map((e) => ({ path: e.name, size: e.size, read: e.read }));
+          entries = listShared(bytes).map((e) => ({ path: e.name, size: e.size, read: e.read }));
         } catch {
           return undefined;
         }
       } else {
         if (!bytes || !isZip(bytes)) throw new Error('It is not a zip file.');
-        entries = listZip(bytes, zipLimits).map((e) => ({ path: e.name, size: e.size, read: e.read }));
+        entries = listShared(bytes).map((e) => ({ path: e.name, size: e.size, read: e.read }));
       }
     } catch (e) {
       report.zips++;

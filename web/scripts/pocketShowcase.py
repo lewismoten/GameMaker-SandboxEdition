@@ -14,13 +14,14 @@ terminal (so the Mac screen can be in the shot). Never writes to a card, never t
 --dry-run prints the plan without opening a port. --countdown N shows "Starting in N..." on all three first.
 """
 import argparse, os, random, sys, threading, time
+sys.path.insert(0, os.path.join(os.environ.get('GAMEMAKER_POCKET_DIR') or os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', '..', 'gamemaker-pocket'), 'scripts'))  # pocketStatus.py
 
 SCRATCH = "/private/tmp/claude-501/-Users-lewismoten-dev-GameMaker/abcc4d80-e3bd-43cb-8228-cbfe3453cb89/scratchpad"
-# letter: port, lock folder, screen size, pad centre / Space / MENU chip / "Back to list" button (screen pixels, default controls)
+# letter: port (None: found at start by asking each board `FW`, pocketStatus.find_ports),  lock folder, screen size, pad centre / Space / MENU chip / "Back to list" button (screen pixels, default controls)
 BOARDS = {
-    "A": dict(port="/dev/cu.usbserial-1140", lock="board.lock", w=480, pad=(86, 216), space=(434, 256), menu=(34, 30), back=(240, 188), r=34),
-    "B": dict(port="/dev/cu.usbserial-1130", lock="board-1130.lock", w=320, pad=(56, 144), space=(288, 168), menu=(24, 19), back=(160, 120), r=30),
-    "C": dict(port="/dev/cu.usbserial-120", lock="board-120.lock", w=320, pad=(56, 144), space=(288, 168), menu=(24, 19), back=(160, 120), r=30),
+    "A": dict(port=None, lock="board-A.lock", w=480, pad=(86, 216), space=(434, 256), menu=(34, 30), back=(240, 188), r=34),
+    "B": dict(port=None, lock="board-B.lock", w=320, pad=(56, 144), space=(288, 168), menu=(24, 19), back=(160, 120), r=30),
+    "C": dict(port=None, lock="board-C.lock", w=320, pad=(56, 144), space=(288, 168), menu=(24, 19), back=(160, 120), r=30),
 }
 DIRS = {"Up": (0, -1), "Down": (0, 1), "Left": (-1, 0), "Right": (1, 0), "Up-Right": (1, -1), "Up-Left": (-1, -1), "Down-Right": (1, 1)}
 REFRESH = 20  # seconds between banner re-sends
@@ -169,8 +170,8 @@ class Board(threading.Thread):
 
     def run(self):
         try:
-            import serial
-            self.s = serial.Serial(self.cfg["port"], 115200, timeout=0.3)
+            from pocketStatus import open_port
+            self.s = open_port(self.cfg["port"], 0.3)
             time.sleep(0.4)
             self.ctx.ready.wait()
             time.sleep(self.ctx.stagger[self.letter])
@@ -326,6 +327,11 @@ def main():
     ap.add_argument("--boards", default="A,B,C")
     a = ap.parse_args()
     letters = [x for x in a.boards.upper().split(",") if x in BOARDS]
+    found = {} if a.dry_run else __import__("pocketStatus").find_ports()
+    for l in letters:
+        BOARDS[l]["port"] = found.get(l)
+        if not BOARDS[l]["port"] and not a.dry_run:
+            sys.exit(f"Board {l} not found; boards answering: {found or 'none'} (name one with `ID set {l}`)")
     if a.dry_run:
         print(f"Plan: {a.minutes:g} minutes on boards {', '.join(letters)}; locks {', '.join(BOARDS[l]['lock'] for l in letters)}")
         if a.countdown:

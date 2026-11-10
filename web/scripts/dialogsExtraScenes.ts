@@ -53,7 +53,25 @@ const moduleScene = (id: string, module: string, fn: string, args: unknown[] = [
   },
 });
 
+/** The Library's per-game Disk labels print shop, opened as its shelf does (a real catalog entry). */
+const diskLabels: Scene = {
+  id: 'disk-labels',
+  open: async (page: Page) => {
+    await page.waitForSelector('.topbar', { timeout: 15000 });
+    await page.evaluate(`(async () => {
+      const { loadCatalogList } = await import('/src/project/files.ts');
+      const { openPrintShop } = await import('/src/manual/printables/printShop.ts');
+      const list = await loadCatalogList();
+      const entry = list.find((e) => e.kind === 'shareware' && !e.secret) ?? list[0];
+      void openPrintShop('disklabels', entry);
+    })()`);
+  },
+  settle: 1500,
+  themeFirst: true,
+};
+
 export const extraScenes: Scene[] = [
+  diskLabels,
   moduleScene('describe-game', 'assistant/chat/homeDescribe', 'askDescription'),
   moduleScene('quick-color-check', 'editor/colorHelp/quickCheck', 'openQuickCheck'),
   moduleScene('import-history', 'editor/shell/importHistoryDialog', 'showImportHistory'),

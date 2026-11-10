@@ -20,7 +20,21 @@ import { phoneAttachments } from './printables/feelieItems';
 const here = import.meta.dirname;
 const src = (f: string) => readFileSync(join(here, f), 'utf8');
 const pub = resolve(here, '../../public');
-const SITE_PATHS = ['p', 'game', 'help', 'cast', 'credits', 'achievements', 'mac', 'windows', 'linux', 'magazine', 'library', 'programmers-guide', 'art-courses'];
+const SITE_PATHS = [
+  'p',
+  'game',
+  'help',
+  'cast',
+  'credits',
+  'achievements',
+  'mac',
+  'windows',
+  'linux',
+  'magazine',
+  'library',
+  'programmers-guide',
+  'art-courses',
+];
 
 /** The DOS folder name of every game that has one. */
 function sampleNames(): Set<string> {
@@ -161,7 +175,7 @@ describe.skipIf(!existsSync(join(pub, 'laser')))('the files the Feelies offer (b
   it('exist for every laser kit: its pictures, sheets and downloads', () => {
     let kits = 0;
     for (const id of readdirSync(join(pub, 'laser'))) {
-      for (const sub of ['', 'stage-box/', 'patch/']) {
+      for (const sub of ['', 'stage-box/', 'plowed-street/', 'cryptex/', 'patch/']) {
         const dir = join(pub, 'laser', id, sub);
         if (!existsSync(join(dir, 'manifest.json'))) continue;
         const kit = kitOf(JSON.parse(readFileSync(join(dir, 'manifest.json'), 'utf8')), dir);
