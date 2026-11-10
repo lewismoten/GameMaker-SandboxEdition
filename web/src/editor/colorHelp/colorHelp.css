@@ -115,3 +115,10 @@
   text-align: left;
   min-height: 24px;
 }
+
+/* a finger: the summary is 44px tall */
+@media (pointer: coarse) {
+  .color-help > summary {
+    min-height: 44px;
+  }
+}
