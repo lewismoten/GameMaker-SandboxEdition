@@ -179,6 +179,18 @@ try {
     const context = await browser.newContext({ viewport: { width: 1440, height: 900 }, serviceWorkers: 'block' });
     const page = await context.newPage();
     await page.addInitScript(OBSERVE);
+    // Home features a random game (homeCategories.ts pickFeatured) and fetches its zip, so home bytes swing by
+    // hundreds of KB. The app has no URL or storage switch for it, so the trace gives every page a seeded
+    // Math.random (mulberry32): the same game is featured on each run.
+    await page.addInitScript(() => {
+      let a = 0x9e3779b9;
+      Math.random = () => {
+        a = (a + 0x6d2b79f5) | 0;
+        let t = Math.imul(a ^ (a >>> 15), 1 | a);
+        t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+        return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+      };
+    });
     const cdp = await context.newCDPSession(page);
     // A missing map must fail the trace, rather than emit undefined bytes that pass a budget comparison.
     rows.push(await trace(page, cdp, name, srv.base + path, ready, traceDir, profileDir));
