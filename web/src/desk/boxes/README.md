@@ -17,3 +17,9 @@ Must not: be imported from outside `desk/` except through the dynamic load of `d
 Tests: `boxAddress`, `boxUv`, `feelies`, `laserKits` and `playtime`, each a `.test.ts` here.
 
 Check: `cd web && npx vitest run src/desk/boxes`; then turn a box and a trinket in the viewer and look at them zoomed.
+
+`kitAssemblyModel.ts` uses the Snowbound and Year 2000 laser builders' nominal cut loops and engraving directly,
+with a pose and assembly caption for each physical piece. `kitAssemblyDraw.ts` extrudes these loops (including holes)
+through 3 mm plywood and shares the feelie turntable camera. `kitAssemblyViewer.ts` loads only when a supported kit
+is selected: labeled step slider, Back/Next/Play, no automatic playback, and immediate steps for reduced motion.
+The kit tiles use their existing sheet preview PNGs without loading the assembly chunk.

@@ -37,6 +37,8 @@ export interface LaserSheet {
 export interface LaserKit {
   /** 'nickel': a wooden coin; 'box': the Final Curtain Stage Box (drawn in 3D from its parts); 'kit': any other. */
   kind: 'nickel' | 'box' | 'kit' | 'patch';
+  /** Kits whose cut geometry has an assembly viewer. */
+  assembly?: 'plowed-street' | 'cryptex';
   title: string;
   /** Material thickness in mm (the nickel's wood, the box's plywood). */
   thickness?: number;
@@ -82,6 +84,7 @@ export function kitOf(manifest: unknown, base: string): LaserKit | null {
     });
     return {
       kind: m.id === 'stage-box' && sheets.length ? 'box' : m.id === 'embroidery-patch' ? 'patch' : 'kit',
+      assembly: m.id === 'plowed-street' || m.id === 'cryptex' ? m.id : undefined,
       coin: typeof m.diameter === 'number' ? m.diameter : undefined,
       pictureMm: typeof m.pictureMm === 'number' ? m.pictureMm : undefined,
       title: kit.title,

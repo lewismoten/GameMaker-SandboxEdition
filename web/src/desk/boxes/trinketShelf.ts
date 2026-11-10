@@ -35,6 +35,7 @@ const ABOUT =
 function strip(list: Feelie[], paperTiles: HTMLElement[]): HTMLElement[] {
   let at = -1; // -1: the box is showing
   let pv: PhoneViewer | undefined;
+  let assembly: { close(): void } | undefined;
   const total = list.length;
 
   // PageUp and PageDown change feelie; the turntable has the rest of the keys
@@ -82,6 +83,11 @@ function strip(list: Feelie[], paperTiles: HTMLElement[]): HTMLElement[] {
   /** Chooses feelie `i` (in the box viewer's place), or -1 for the box again. */
   async function choose(i: number) {
     const was = at;
+    if (assembly) {
+      assembly.close();
+      assembly = undefined;
+      float.replaceChildren(canvas, status, hint);
+    }
     at = i;
     thumbs.forEach((c, k) => c.setAttribute('aria-pressed', String(k === i)));
     const viewer = row.closest('.box-viewer');
@@ -99,6 +105,16 @@ function strip(list: Feelie[], paperTiles: HTMLElement[]): HTMLElement[] {
     if (!f) {
       table.clear();
       if (was >= 0) thumbs[was].focus({ preventScroll: true });
+      return;
+    }
+    if (f.kind === 'kit' && f.kit.assembly) {
+      table.clear();
+      const { kitAssemblyViewer } = await import('./kitAssemblyViewer');
+      if (at !== i) return;
+      const kitView = kitAssemblyViewer(f.kit);
+      assembly = kitView;
+      float.replaceChildren(kitView.root);
+      kitView.focus();
       return;
     }
     if (f.kind === 'phone') {

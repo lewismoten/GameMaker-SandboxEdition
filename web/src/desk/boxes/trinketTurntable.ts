@@ -22,10 +22,10 @@ interface Turntable {
 }
 
 /** A turntable; `keys` sees each key the canvas gets first and returns true for one it used. */
-export function trinketTurntable(keys?: (e: KeyboardEvent) => boolean, { zoom = false } = {}): Turntable {
+export function trinketTurntable(keys?: (e: KeyboardEvent) => boolean, { zoom = false, spin: autoSpin = true } = {}): Turntable {
   let view: TrinketView | undefined;
   let visible = true;
-  let spinning = !reduced();
+  let spinning = autoSpin && !reduced();
   let last = 0;
   let raf = 0;
   let showing = 0; // which load is current, so a slow file can't replace a later one

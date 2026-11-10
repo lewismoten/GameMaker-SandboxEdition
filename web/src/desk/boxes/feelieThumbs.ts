@@ -31,6 +31,13 @@ async function draw(f: Feelie): Promise<string | undefined> {
     view.pitch = -0.2;
     return snap(canvas, view);
   }
+  if (f.kind === 'kit' && f.kit.assembly) {
+    // a plywood kit shows itself assembled (a sheet picture is only a dark page of flat parts)
+    const [{ assemblyModel }, { assemblyView }] = await Promise.all([import('./kitAssemblyModel'), import('./kitAssemblyDraw')]);
+    const view = assemblyView(canvas, assemblyModel(f.kit.assembly));
+    view.yaw = 0.6;
+    return snap(canvas, view);
+  }
   const view = (await viewMaker(f))(canvas);
   return view ? snap(canvas, view) : undefined;
 }
