@@ -16,6 +16,7 @@
 import { encodeKeys, keysAt, WALKTHROUGH_FPS, type Walkthrough } from '../../../walkthrough/format';
 import { fromCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 import type { Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { preferSuppliedBranches } from './scenePlan';
 import { bestAttempt } from './bestAttempt';
 import { MLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { explore, type Entry, type Exploration, type ExploreOptions } from '../explore';
@@ -144,6 +145,9 @@ export async function autoWalk(game: Game, files: FileSource, gameId: string, op
   let entry: Entry = { start: first.to, ci: startCharInfo(), clock: 1 };
   const seen = new Set<number>([scene]);
   const taken = new Map<string, number>();
+  // A refused branch is retried only after carried resources change.
+  const refused = new Set<string>();
+  const resources = () => JSON.stringify([entry.ci.meter, entry.ci.inv]);
   /** Arrival points used, and the cells of each scene the bot's searches reached. */
   const arrived = new Set<string>([`${scene}@${first.to.x},${first.to.y}`]);
   const reached = new Map<number, Uint8Array>();
@@ -175,7 +179,7 @@ export async function autoWalk(game: Game, files: FileSource, gameId: string, op
     const level = (l: { toScene: number }) => l.toScene === 1 || (l.toScene > 1 && l.toScene < game.scenes.length);
     // a scene not played yet (or the won scene); else back the way a hub game goes (a side room
     // returns to the hub), each way taken at most twice so the bot can't go round for ever
-    let ways = s.links.filter((l) => level(l) && (l.toScene === 1 || !seen.has(l.toScene)));
+    let ways = s.links.filter((l) => level(l) && (l.toScene === 1 || !seen.has(l.toScene)) && !refused.has(`${scene}>${l.toScene}:${resources()}`));
     const backOnly = !ways.length;
     if (backOnly) ways = s.links.filter((l) => level(l) && l.toScene !== scene && (taken.get(`${scene}>${l.toScene}`) ?? 0) < 2);
     const outcome: SceneOutcome = { scene, name, tried: [] };
@@ -185,13 +189,15 @@ export async function autoWalk(game: Game, files: FileSource, gameId: string, op
       ending = endingOf(name, 'no-way', scene);
       break;
     }
-    const goal = ways.map((l) => l.from.y * MLEN + l.from.x);
+    const alternatives = ways;
+    ways = preferSuppliedBranches(game, files, scene, entry, ways);
     // back to a hub: a way that lands somewhere in it the bot hasn't been beats the way it came in
     if (backOnly) {
       const fresh = ways.filter((l) => !arrived.has(`${l.toScene}@${l.to.x},${l.to.y}`) && !reached.get(l.toScene)?.[(l.to.y % 100) * MLEN + (l.to.x % MLEN)]);
       if (fresh.length) ways = fresh;
     }
-    const wanted = new Set(ways.map((l) => s.links.indexOf(l)));
+    let goal = ways.map((l) => l.from.y * MLEN + l.from.x);
+    let wanted = new Set(ways.map((l) => s.links.indexOf(l)));
     let biggest: Exploration | undefined;
     let lockWhy: string | undefined;
     let found: { replay: Replay; strategy: Strategy } | undefined;
@@ -333,6 +339,28 @@ export async function autoWalk(game: Game, files: FileSource, gameId: string, op
       lockWhy = lockedWhy(locks, unreached, otherScenesAdding(game, files, scene, locks.missing), tripCap);
     }
     if (!found && !canceled && !backOnly) await collect();
+    // Static dependencies order attempts, but cannot prove that the preferred branch is reachable.
+    if (!found && !canceled && ways.length < alternatives.length) {
+      const deferred = alternatives.filter((l) => !ways.includes(l));
+      goal = deferred.map((l) => l.from.y * MLEN + l.from.x);
+      wanted = new Set(deferred.map((l) => s.links.indexOf(l)));
+      const st = STRATEGIES.find((x) => x.id === 'search')!;
+      const replay = await tryStyle(st);
+      if (replay) found = { replay, strategy: st };
+    }
+    // A gate refused the forward route: physically return, retaining the carried resources.
+    // Do not rewind the recording or invent a scene transition.
+    if (!found && !canceled && lockWhy && !backOnly) {
+      for (const l of ways) refused.add(`${scene}>${l.toScene}:${resources()}`);
+      const back = s.links.filter((l) => level(l) && l.toScene !== scene && seen.has(l.toScene) && (taken.get(`${scene}>${l.toScene}`) ?? 0) < 2);
+      if (back.length) {
+        goal = back.map((l) => l.from.y * MLEN + l.from.x);
+        wanted = new Set(back.map((l) => s.links.indexOf(l)));
+        const st = STRATEGIES.find((x) => x.id === 'search')!;
+        const replay = await tryStyle(st);
+        if (replay) found = { replay, strategy: st };
+      }
+    }
     if (canceled) {
       out.stopped = 'Stopped.';
       ending = endingOf(name, 'stopped', scene);

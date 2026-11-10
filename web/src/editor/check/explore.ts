@@ -24,6 +24,8 @@ export interface ExploreOptions {
   /** Stop after this long (ms of work); the result says it was cut short. */
   budgetMs?: number;
   maxNodes?: number;
+  /** Key search: preserve combat/momentum transitions and favor less explored cells. */
+  resourceSearch?: boolean;
   /** Told now and then how far it has got, with the heat and deaths so far (live, not copies); return true to stop. */
   progress?: (nodes: number, queued: number, live: ExploreLive) => boolean | void;
   now?: () => number;
@@ -242,6 +244,8 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
     incidents.push(i);
   };
   const baseMap = w.map.slice();
+  const visitsByCell = new Uint32Array(CELLS);
+  const baseMonsters = w.mm.map((m) => m.monnum);
   const places: Place[] = [];
   const index = new Map<string, number>();
   const visitsAt = new Map<string, number>();
@@ -276,12 +280,24 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
     const ci = w.ci;
     let s = ci.inv.filter((b) => b < BACKBL).join('.');
     for (const e of gateCounters) s += `|${e}:${ci.meter[e] > 0 ? Math.min(ci.meter[e], gateNeed.get(e)!) : 0}`;
-    for (const q of limitedSeqs) s += `|q${Math.min(ci.meter[q], 3)}`;
+    for (const q of limitedSeqs) s += `|q${q}:${Math.min(ci.meter[q], 3)}`;
+    s += `|on:${ci.seqon.join('')}`;
+    // Defeating a foe or leaving a shot in flight can open a route without moving the hero.
+    // Ignore ordinary enemy motion and duplicate shots in the same cell.
+    const shots = new Set<string>();
+    for (let l = 0; opt.resourceSearch && l < LASTMM; l++) {
+      const n = w.mm[l].monnum;
+      const mi = w.mi[l];
+      if (baseMonsters[l] < LASTMON && n !== baseMonsters[l]) s += `|m${l}:${n}`;
+      if (n < LASTMON && mi.fromchar && Math.abs(mi.curx[0] - w.chr.x[0]) <= 8 && Math.abs(mi.cury[0] - w.chr.y[0]) <= 8)
+        shots.add(`${n}:${mi.curx[0]},${mi.cury[0]}`);
+    }
+    s += `|shots:${[...shots].sort().join(';')}`;
     const d = changedCells(baseMap, w.map);
     for (let i = 0; i < d.length; i += 2) {
       const a = bg[baseMap[d[i]]];
       const b = bg[d[i + 1]];
-      if (a.solid !== b.solid || a.grav !== b.grav) s += `|${d[i]}`;
+      if (a.solid !== b.solid || a.grav !== b.grav) s += `|${d[i]}:${d[i + 1]}`;
     }
     return s;
   };
@@ -289,7 +305,8 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
     const c = w.chr;
     const timedHere = nearTimed();
     // half a block across matters for where a jump starts; up and down the hero rests on floors
-    const spot = `${c.x[0]},${c.y[0]},${gravity && c.x[1] >= BLEN / 2 ? 1 : 0},${signature()}`;
+    const motion = gravity && opt.resourceSearch ? `${c.y[1] >= BLEN / 2 ? 1 : 0}:${Math.round(w.ci.gravx / 4)},${Math.round(w.ci.gravy / 4)}` : '';
+    const spot = `${c.x[0]},${c.y[0]},${gravity && c.x[1] >= BLEN / 2 ? 1 : 0},${motion},${signature()}`;
     let key = spot;
     if (timedHere) {
       const v = visitsAt.get(spot) ?? 0;
@@ -324,8 +341,10 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
     if (timedHere && !index.has(`${spot}#first`)) index.set(`${spot}#first`, id);
     // (keeping to paths: the way so far and the distance left, and of two as good, the nearer)
     if (goal && paths) heap.push(id, (cost! + distance(cellOf())) * 1000 + distance(cellOf()) * 10 + (w.clock - startClock) / 100);
-    else if (goal) heap.push(id, distance(cellOf()) * 1000 + (w.clock - startClock) / 100);
-    else (newCells ? fresh : queue).push(id);
+    else if (goal) {
+      const crowd = opt.resourceSearch ? 2 * Math.log2(1 + visitsByCell[cellOf()]++) : 0;
+      heap.push(id, (distance(cellOf()) + crowd) * 1000 + (w.clock - startClock) / 100);
+    } else (newCells ? fresh : queue).push(id);
     return id;
   };
 

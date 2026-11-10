@@ -6,6 +6,7 @@ Builds, replays and keeps author/bot walkthrough routes through a game using the
 
 ## Main files
 
+- [`scenePlan.ts`](scenePlan.ts): Ranks hub branches by unpaid counter gates, deferring branches that need resources from another trip. A refused forward route can return through a real link; retries depend on carried resources. Static ranking is only a suggestion, and engine exploration confirms each route.
 - [`autoWalk.ts`](autoWalk.ts): Builds recorded routes from the title’s first link, trying author/reused keys and bot strategies while carrying replayed state between scenes.
 - [`walkClient.ts`](walkClient.ts): Runs the bot worker; cancellation discards work, while stopping verifies the last completed-scene checkpoint in a fresh worker.
 - [`walkWorker.ts`](walkWorker.ts): Supports whole-game, single-scene, and supplied-walk verification requests, then attaches measured timeline data.
@@ -27,3 +28,5 @@ From `web/`:
 ```sh
 npx vitest run src/editor/check/walk
 ```
+
+Jump sequences that also fire use held and steered jump templates. Search states retain sequence availability and distinct opened-passage block values; visible counter pickups and ability refills are targets of the human-paced route.

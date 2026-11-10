@@ -56,6 +56,8 @@ game folder opens in the browser unchanged.
 
 ## Credits
 
+- **Walkthrough bot planning**: **OpenAI Codex (GPT-6)**, directed by Lewis Moten, revised gate dependency planning, jump discovery, search states, and regression tests.
+
 - **Pocket Player host hardening**: **Hermes Agent running OpenAI Codex GPT-6.1 Sol**, directed by Lewis Moten, added deterministic reader-failure probes, source-slice error-path regressions, and reproducible per-level host frame profiling. Host timings are not CYD measurements.
 - **Livestream follow-up tools and booklet contents**: **OpenAI Codex (GPT-6)**, directed by Lewis Moten, implemented measured Technical Reference contents, development refresh progress and admission control, update labels and regression checks. No new game assets or third-party material were added.
 
