@@ -315,7 +315,7 @@ Commands here run from `web/` unless a line says otherwise.
 - `levelGenShots.ts` — captures the map editor’s Generate dialog and dungeon or forest results on a server supplied with `--url` (`npx vite-node scripts/levelGenShots.ts --url <own-server> --out <dir> --kind dungeon|forest --roles "3=Wall,25=Floor"`).
 - `pocketRepo.ts` — locates the separate Pocket repository through `GAMEMAKER_POCKET_DIR`, defines `pocket-out/` and skips host checks when that clone is absent.
 - `pocketCardsCheck.ts` — compares packed scene cards, text, titles and instructions against the engine, including pixels, palettes and waits; skips unpacked FLIs (`npx vite-node scripts/pocketCardsCheck.ts [id ...] [--data <dir>]`).
-- `pocketSdWrite.py` — sends a folder to the board’s microSD card over USB serial, replacing matching files and resetting the board afterward (`python web/scripts/pocketSdWrite.py <port> <folder>` from the root with PlatformIO’s Python).
+- `pocketSdWrite.py` — sends a folder to the board’s microSD card over USB serial, replacing matching files and resetting the board afterward; it skips log lines the board prints before a reply (`python web/scripts/pocketSdWrite.py <port> <folder>` from the root with PlatformIO’s Python; `--self-check` tests the reply reader).
 - `fidelity/pipemare-keys.txt` — timed macOS key events for the Pipemare DOS capture.
 - `fidelity/sample-keys.txt` — sample timed key events for the DOS capture helper.
 - `mcp/README.md` — setup, commands and limits for the local MCP server.
