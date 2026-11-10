@@ -5,7 +5,7 @@
 // On the way it keeps where the hero went (the heat map), what it touched, and what went
 // wrong as it played: deaths, falls the player can't see, hurts that hold the hero, scoring
 // that never stops. stuck.ts then finds the places with no way out.
-import { BACKBL, BLEN, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { BACKBL, BLEN, SOLTOP, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { DIESEQ, HURTSEQ } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 import { MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { LASTMM, LASTMON, type CharInfo, type World } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
@@ -16,6 +16,8 @@ import { driveMove } from './drive';
 import { frees, getsAway } from './escape';
 import { canLeave, stuckAreas } from './stuck';
 import type { Game, Link } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { goalDistances } from './goalDistances';
+import { continuousFlight, directionalGravity, platformGoals } from './platformGoals';
 import { footCell } from './walk/walkPaths';
 
 const CELLS = MLEN * MWID;
@@ -24,6 +26,8 @@ export interface ExploreOptions {
   /** Stop after this long (ms of work); the result says it was cut short. */
   budgetMs?: number;
   maxNodes?: number;
+  /** Keep active-key and flight checkpoints for continuous walkthrough steering. */
+  steerAirborne?: boolean;
   /** Key search: preserve combat/momentum transitions and favor less explored cells. */
   resourceSearch?: boolean;
   /** Told now and then how far it has got, with the heat and deaths so far (live, not copies); return true to stop. */
@@ -35,6 +39,8 @@ export interface ExploreOptions {
   moveFilter?: (m: Move) => boolean;
   /** Play with steady hands: one key at a time, at least this many ticks between key changes (inputs.ts steadyMoves). */
   steadyTicks?: number;
+  /** Permit ordinary steering chords and direct key changes while keeping minimum holds. */
+  steadySteering?: boolean;
   /** Wait at every place, not only near lifts and timed blocks. */
   waitEverywhere?: boolean;
   /** Cells to head for: places nearer them are tried first. */
@@ -82,7 +88,7 @@ export interface Via {
   ticks: number;
 }
 
-/** A resting place (a node of the graph). */
+/** A searchable state: settled, or moving in a walkthrough search. */
 interface Place {
   cell: number;
   /** Undefined for the place the hero enters at. */
@@ -192,14 +198,25 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
   if (opt.start) sim.restore(opt.start);
   const w = sim.w;
   const bg = w.bg;
-  const gravity = bg.some((b) => b.grav !== 0);
-  const all = movesFor(keyRoles(w.chr, gravity), gravity).filter((m) => keysAllowed(m) && (!opt.moveFilter || opt.moveFilter(m)));
-  const moves = opt.steadyTicks ? steadyMoves(all, opt.steadyTicks) : all;
+  const gravity = opt.steerAirborne ? directionalGravity(w) : bg.some((b) => b.grav !== 0);
+  const sequencesByKey = new Map<number, number[]>();
+  w.chr.sequences.forEach((sequence, index) => {
+    const key = sequence.key >> 8;
+    if (key) sequencesByKey.set(key, [...(sequencesByKey.get(key) ?? []), index]);
+  });
+  const flying = opt.steerAirborne && continuousFlight(w);
+  const all = movesFor(keyRoles(w.chr, gravity && !flying), gravity && !flying, opt.steerAirborne).filter(
+    (m) => keysAllowed(m) && (!opt.moveFilter || opt.moveFilter(m)),
+  );
+  const moves = opt.steadyTicks ? steadyMoves(all, opt.steadyTicks, opt.steadySteering) : all;
   const goal = opt.goal?.map((c) => ({ x: c % MLEN, y: Math.floor(c / MLEN) }));
+  const routeDistance = goal && opt.steerAirborne ? goalDistances(w, opt.goal!) : undefined;
+  const footings = goal && opt.steerAirborne ? platformGoals(w, opt.goal!) : undefined;
   /** Blocks from the nearest goal cell (wrapping as the map does). */
   const distance = (cell: number) => {
     const x = cell % MLEN;
     const y = Math.floor(cell / MLEN);
+    if (routeDistance && routeDistance[cell] !== 0xffff) return routeDistance[cell];
     let best = Infinity;
     for (const g of goal ?? []) {
       const dx = Math.abs(g.x - x);
@@ -207,6 +224,19 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
       best = Math.min(best, Math.min(dx, MLEN - dx) + Math.min(dy, MWID - dy));
     }
     return best;
+  };
+  const fallbackCost = (field: Uint16Array | undefined) => (field ? field.reduce((max, n) => (n === 0xffff ? max : Math.max(max, n)), 0) * 5 + MLEN + MWID : 0);
+  const normalFallback = fallbackCost(footings?.normal),
+    boostedFallback = fallbackCost(footings?.boosted);
+  const footingDistance = (cell: number) => {
+    const boosted = !!footings?.boosted && (w.ci.gravy < 0 || footings.abilities.some((q) => w.ci.seqon[q] && w.ci.meter[q] > 0));
+    const field = boosted ? footings.boosted : footings?.normal;
+    // Keep unknown routes available, but never make an unsupported shortcut
+    // cheaper solely because its fallback uses cells instead of jump counts.
+    if (field && field[cell] !== 0xffff) return field[cell] * 5;
+    // Rising beside a higher platform does not mean it has been reached.
+    // Real footings (or the projected landing below) count as route progress.
+    return distance(cell) + (boosted ? boostedFallback : normalFallback);
   };
   const heap = new PlaceHeap();
   const paths = goal && opt.paths?.blocks.size ? opt.paths : undefined;
@@ -232,7 +262,7 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
   const heat = new Uint32Array(CELLS);
   const first = new Int32Array(CELLS).fill(-1);
   const monsters = new Set<number>();
-  const exits = new Map<number, ExitReach>();
+  const exits = new Map<number | string, ExitReach>();
   const poorExits = new Map<number, ExitReach>();
   const incidents: Incident[] = [];
   const deathsAt = new Map<number, number>();
@@ -257,6 +287,7 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
   let newCells = 0;
   let via: Via | undefined;
   let moveTicks = 0;
+  let verticalMotion = 0;
   const touch = new Int32Array(6);
 
   const cellOf = () => w.chr.y[0] * MLEN + w.chr.x[0];
@@ -282,10 +313,12 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
     for (const e of gateCounters) s += `|${e}:${ci.meter[e] > 0 ? Math.min(ci.meter[e], gateNeed.get(e)!) : 0}`;
     for (const q of limitedSeqs) s += `|q${q}:${Math.min(ci.meter[q], 3)}`;
     s += `|on:${ci.seqon.join('')}`;
+    if (opt.steerAirborne && gravity && !flying && (sim.held.size || w.chr.cseq !== 0))
+      s += `|held:${[...sim.held].sort((a, b) => a - b).join('.')}:${w.chr.cseq},${w.chr.cframe},${ci.nextAni - w.clock}`;
     // Defeating a foe or leaving a shot in flight can open a route without moving the hero.
     // Ignore ordinary enemy motion and duplicate shots in the same cell.
     const shots = new Set<string>();
-    for (let l = 0; opt.resourceSearch && l < LASTMM; l++) {
+    for (let l = 0; (opt.resourceSearch || opt.steerAirborne) && l < LASTMM; l++) {
       const n = w.mm[l].monnum;
       const mi = w.mi[l];
       if (baseMonsters[l] < LASTMON && n !== baseMonsters[l]) s += `|m${l}:${n}`;
@@ -293,6 +326,7 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
         shots.add(`${n}:${mi.curx[0]},${mi.cury[0]}`);
     }
     s += `|shots:${[...shots].sort().join(';')}`;
+    if (opt.resourceSearch || opt.steerAirborne) s += `|aim:${Math.sign(ci.netx)},${Math.sign(ci.nety)}`;
     const d = changedCells(baseMap, w.map);
     for (let i = 0; i < d.length; i += 2) {
       const a = bg[baseMap[d[i]]];
@@ -305,18 +339,20 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
     const c = w.chr;
     const timedHere = nearTimed();
     // half a block across matters for where a jump starts; up and down the hero rests on floors
-    const motion = gravity && opt.resourceSearch ? `${c.y[1] >= BLEN / 2 ? 1 : 0}:${Math.round(w.ci.gravx / 4)},${Math.round(w.ci.gravy / 4)}` : '';
+    const motion =
+      gravity && (opt.resourceSearch || opt.steerAirborne) ? `${c.y[1] >= BLEN / 2 ? 1 : 0}:${Math.round(w.ci.gravx / 4)},${Math.round(w.ci.gravy / 4)}` : '';
     const spot = `${c.x[0]},${c.y[0]},${gravity && c.x[1] >= BLEN / 2 ? 1 : 0},${motion},${signature()}`;
     let key = spot;
     if (timedHere) {
       const v = visitsAt.get(spot) ?? 0;
       key = `${spot}@${Math.floor((w.clock - startClock) / 18)}`;
-      if (index.has(key)) return index.get(key)!;
-      if (v >= 8) return index.get(`${spot}#first`) ?? -1;
-      visitsAt.set(spot, v + 1);
+      if (!index.has(key)) {
+        if (v >= 8) return index.get(`${spot}#first`) ?? -1;
+        visitsAt.set(spot, v + 1);
+      }
     }
     const had = index.get(key);
-    if (had !== undefined) return had;
+    if (had !== undefined && w.ci.hitpts <= places[had].hp) return had;
     const id = places.length;
     const cost = paths && (via ? (places[via.parent]?.cost ?? 0) + 1 + (paths.blocks.has(w.map[footCell(w)]) ? 0 : offCost) : 0);
     places.push({
@@ -342,8 +378,23 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
     // (keeping to paths: the way so far and the distance left, and of two as good, the nearer)
     if (goal && paths) heap.push(id, (cost! + distance(cellOf())) * 1000 + distance(cellOf()) * 10 + (w.clock - startClock) / 100);
     else if (goal) {
-      const crowd = opt.resourceSearch ? 2 * Math.log2(1 + visitsByCell[cellOf()]++) : 0;
-      heap.push(id, (distance(cellOf()) + crowd) * 1000 + (w.clock - startClock) / 100);
+      const crowd = opt.resourceSearch || opt.steerAirborne ? 2 * visitsByCell[cellOf()]++ : 0;
+      const bearing = footCell(w);
+      const bearingX = bearing % MLEN;
+      let toward = footingDistance(bearing);
+      // Falling past the goal is not progress. Rank a released airborne state by
+      // its next footing, where steering can become a useful standing route.
+      if (opt.steerAirborne && verticalMotion > 0) {
+        for (let dy = 1; dy <= MWID; dy++) {
+          const y = (c.y[0] + dy) % MWID;
+          const b = bg[w.blkmap[w.map[y * MLEN + bearingX]]];
+          if (b.solid & SOLTOP) {
+            toward = footingDistance(((y + MWID - 1) % MWID) * MLEN + bearingX) + distance(cellOf()) / 100;
+            break;
+          }
+        }
+      }
+      heap.push(id, (toward + crowd) * 1000 + (w.clock - startClock) / 100);
     } else (newCells ? fresh : queue).push(id);
     return id;
   };
@@ -362,6 +413,11 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
     const score = w.ci.score;
     const before = sim.px;
     const t = await sim.tick();
+    // Gravity can point down while an active sequence moves the hero upward.
+    // Use actual wrapped displacement when ranking rising versus falling states.
+    verticalMotion = sim.px.y - before.y;
+    if (verticalMotion > (MWID * BLEN) / 2) verticalMotion -= MWID * BLEN;
+    if (verticalMotion < -(MWID * BLEN) / 2) verticalMotion += MWID * BLEN;
     opt.onTick?.(w);
     // the death sequence has started: nothing the player does stops it (touch.ts sets it at 0 hit points)
     const r = t === undefined && w.chr.cseq === DIESEQ ? 'dead' : t;
@@ -452,7 +508,10 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
     if (r) {
       const link = r.link;
       const l = game.scenes[scene].links[link];
-      const had = exits.get(link);
+      // The same exit reached with different supplies is a different usable route.
+      // Keep its path together with its carried state, including later pickups.
+      const exitKey = opt.steerAirborne ? `${link}|${w.ci.inv.join(',')}|${w.ci.meter.join(',')}|${w.ci.seqon.join('')}` : link;
+      const had = exits.get(exitKey);
       const reach = (prev?: ExitReach): ExitReach => ({
         link,
         toScene: l.toScene,
@@ -464,7 +523,7 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
         world: w,
         via: { ...via!, ticks: moveTicks },
       });
-      if (!had || w.ci.hitpts > had.hp) exits.set(link, { ...reach(had), via: had?.via ?? { ...via!, ticks: moveTicks } });
+      if (!had || w.ci.hitpts > had.hp) exits.set(exitKey, opt.steerAirborne ? reach() : { ...reach(had), via: had?.via ?? { ...via!, ticks: moveTicks } });
       // carrying the least: fewer things and counters (worth in thousands), then more hit points
       const poor = poorExits.get(link);
       const carry = Math.floor(worthOf(w.ci) / 1000);
@@ -486,7 +545,12 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
     scoreRun.n = scoreRun.heal = 0;
     newCells = 0;
     moveTicks = 0;
-    const r = await driveMove(sim, m, { tick: step, carried: () => to.push(addPlace()) });
+    const r = await driveMove(sim, m, {
+      tick: step,
+      carried: () => to.push(addPlace()),
+      active: opt.steerAirborne && gravity && !flying ? () => to.push(addPlace()) : undefined,
+      airborne: opt.steerAirborne ? () => to.push(addPlace()) : undefined,
+    });
     if (typeof r.end === 'number') return { to, exits: [r.end] };
     if (r.end === 'dead') return { to, exits: [], dead: true };
     const drop = w.chr.y[0] - startY > 2 ? w.chr.y[0] - startY : undefined;
@@ -512,6 +576,11 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
     for (const [mi, m] of moves.entries()) {
       if (m.waits && !p.waits && !opt.waitEverywhere) continue;
       sim.restore(p.snap!);
+      if (
+        opt.steerAirborne &&
+        m.steps.some((step) => step.keys.some((key) => !(sequencesByKey.get(key) ?? []).some((seq) => w.ci.seqon[seq] && w.ci.meter[seq] > 0)))
+      )
+        continue;
       via = { parent: id, move: mi, ticks: 0 };
       const r = await play(m);
       tried++;
@@ -663,5 +732,6 @@ class PlaceHeap {
 function worthOf(ci: CharInfo): number {
   let counters = 0;
   for (let i = 20; i < 30; i++) counters += Math.max(0, ci.meter[i] ?? 0);
+  for (let i = 5; i < 20; i++) if (ci.meter[i] > 0 && ci.meter[i] < 32767) counters += ci.meter[i];
   return ci.inv.filter((b) => b < BACKBL).length * 1e6 + (counters + Math.max(0, ci.meter[3] ?? 0)) * 1e3 + ci.score;
 }

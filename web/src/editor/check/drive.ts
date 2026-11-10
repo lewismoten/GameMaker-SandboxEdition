@@ -16,6 +16,10 @@ interface DriveHooks {
   tick(): Promise<Outcome>;
   /** The hero is being carried (a lift) and has gone on a while: a place on the way. */
   carried?(): void;
+  /** Human-spaced checkpoints while keys are still held, before any settling pause. */
+  active?(): void;
+  /** A safe interval in flight where a search may start another move. */
+  airborne?(): void;
   /** Stop after this many ticks of the move (a replay to a place found partway). */
   limit?: number;
 }
@@ -63,23 +67,26 @@ export async function driveMove(sim: SceneSim, m: Move, h: DriveHooks): Promise<
     ticks++;
     return h.tick();
   };
+  const launchY = sim.px.y;
   for (const s of m.steps) {
     sim.hold(s.keys);
     const cell = cellOf();
     const startCols = colsOf(w);
-    const startY = sim.px.y;
     let airborne = false;
+    const cadence = Math.max(3, m.settle ?? 0, s.min ?? 0);
     let was = sim.px;
     for (let t = 0; t < s.max; t++) {
       const r = await go();
       if (r !== undefined) return { end: r, ticks };
+      if (ticks >= limit) return { end: 'limit', ticks };
+      if ((t + 1) % cadence === 0) h.active?.();
       if (w.ci.gravy !== 0) airborne = true;
       if (t + 1 < (s.min ?? 0)) continue;
       if (s.until === 'cell' && cellOf() !== cell) break;
       // (a landing counts once he stays put a tick: a jump pressed against a pillar's side touches down for one tick on its way up)
       const settled = sim.px.x === was.x && sim.px.y === was.y;
       was = sim.px;
-      if (s.until === 'over' && ((sim.px.y < startY && overLanding(w, startCols)) || (airborne && w.ci.gravy === 0 && t > 1 && settled))) break;
+      if (s.until === 'over' && ((sim.px.y < launchY && overLanding(w, startCols)) || (airborne && w.ci.gravy === 0 && t > 1 && settled))) break;
       // landed again, or never left the ground
       if (s.until === 'land' && w.ci.gravy === 0 && (airborne ? t > 1 : t >= 4)) break;
     }
@@ -89,11 +96,13 @@ export async function driveMove(sim: SceneSim, m: Move, h: DriveHooks): Promise<
   let last = sim.px;
   let still = 0;
   let carried = 0;
+  let flying = 0;
   let sameCell = 0;
   let cell = cellOf();
   for (let t = 0; t < 90; t++) {
     const r = await go();
     if (r !== undefined) return { end: r, ticks };
+    if (ticks >= limit) return { end: 'limit', ticks };
     const p = sim.px;
     const resting = w.ci.gravx === 0 && w.ci.gravy === 0 && p.x === last.x && p.y === last.y && (w.chr.cseq === 0 || w.curkey === 0);
     // steady hands wait a while after letting go before the next key
@@ -107,6 +116,7 @@ export async function driveMove(sim: SceneSim, m: Move, h: DriveHooks): Promise<
       sameCell = 0;
       cell = cellOf();
     }
+    if ((w.ci.gravx !== 0 || w.ci.gravy !== 0) && ++flying % 6 === 0) h.airborne?.();
     if (w.ci.gravy === 0 && (p.x !== last.x || p.y !== last.y) && ++carried % 9 === 0) h.carried?.();
     last = p;
   }

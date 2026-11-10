@@ -5,9 +5,11 @@ import { explore } from './explore';
 import { playtestGame } from './playtest';
 import { SceneSim, startCharInfo } from './sim';
 import { stuckAreas } from './stuck';
+import { pathTo, replayPath } from './walk/replayPath';
 import { RIGHT, testGame } from './testGame';
 import { parseMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
-import { BACKBL, parseBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { parseCharacter, serializeCharacter } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import { BACKBL, parseBlocks, serializeBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 
 // prettier-ignore
 const ROWS = [
@@ -76,4 +78,142 @@ describe('the level check explorer', () => {
     expect(ex.places.some((p) => p.cell === cell(6, 3) && p.hp < 100)).toBe(true);
     expect(ex.incidents.filter((i) => i.kind === 'hurt-lock')).toHaveLength(0);
   });
+});
+
+it('can replay a steering decision during a fall before the hero lands', async () => {
+  const t = testGame(['############', ...Array.from({ length: 14 }, () => '#..........#'), '############']);
+  const entry = { start: { x: 3, y: 2 }, ci: startCharInfo(), clock: 1 };
+  const ex = await explore(t.game, 2, t, entry, {
+    steadyTicks: 3,
+    steerAirborne: true,
+    stopWhen: (w) => w.ci.gravy > 0 && w.chr.y[0] > entry.start.y,
+  });
+  expect(ex.reached).toBeDefined();
+  const place = ex.places[ex.reached!];
+  expect(place.cell / 100).toBeLessThan(14);
+  expect(place.via!.ticks).toBeGreaterThanOrEqual(9);
+  const replay = await replayPath(t.game, t, 2, entry, ex.moves, pathTo(ex, place.via!));
+  expect(replay?.link).toBe(-1);
+  expect(replay?.ci.gravy).toBeGreaterThan(0);
+  expect(replay!.world.chr.y[0] * 100 + replay!.world.chr.x[0]).toBe(place.cell);
+});
+
+it('keeps a healed return to a state first reached with fewer hit points', async () => {
+  const t = testGame(['##########', '#........#', '#........#', '#S..c...E#', '##########']);
+  const blocks = parseBlocks(t.files.get('test.bbl')!, BACKBL);
+  Object.assign(blocks[2], { scorePts: 0, chHitPt: 20 });
+  t.files.set('test.bbl', serializeBlocks(blocks));
+  const ci = startCharInfo();
+  ci.hitpts = 1;
+  const ex = await explore(
+    t.game,
+    2,
+    t,
+    { start: { x: 1, y: 3 }, ci, clock: 1 },
+    { goal: [301], steadyTicks: 3, stopWhen: (w) => w.chr.x[0] === 1 && w.ci.hitpts > 1 },
+  );
+  expect(ex.reached).toBeDefined();
+  expect(ex.places[ex.reached!].hp).toBeGreaterThan(1);
+});
+
+it('keeps replayable routes to the same exit with different supplies', async () => {
+  const t = testGame(['##########', '#........#', '#........#', '#E.S.c...#', '##########']);
+  const blocks = parseBlocks(t.files.get('test.bbl')!, BACKBL);
+  Object.assign(blocks[2], { scorePts: 0, effect: 20, eamt: 1 });
+  t.files.set('test.bbl', serializeBlocks(blocks));
+  const entry = { start: { x: 3, y: 3 }, ci: startCharInfo(), clock: 1 };
+  const ex = await explore(t.game, 2, t, entry, { steerAirborne: true, steadyTicks: 3, maxNodes: 2000 });
+  expect(ex.exits.some((e) => e.ci.meter[20] === 1)).toBe(true);
+  const loaded = ex.exits.find((e) => e.ci.meter[20] > 1);
+  expect(loaded).toBeDefined();
+  const replay = await replayPath(t.game, t, 2, entry, ex.moves, pathTo(ex, loaded!.via));
+  expect(replay?.link).toBe(loaded!.link);
+  expect(replay?.ci.meter[20]).toBe(loaded!.ci.meter[20]);
+});
+
+it('steers through a narrow shaft before jumping onto its upper ledge', async () => {
+  const t = testGame(['##########', '#........#', '#.......E#', '#.#.######', '#S.......#', '##.......#', '##########']);
+  const chr = parseCharacter(t.get('test.chr')!);
+  for (const [seq, key, dx] of [
+    [7, 72, 0],
+    [8, 71, -8],
+    [9, 73, 8],
+  ]) {
+    const s = chr.sequences[seq];
+    s.key = key << 8;
+    for (let i = 0; i < 4; i++) Object.assign(s.frames[i], { x: dx, y: i === 3 ? -10 : -12, pic1: 0, pic2: 1, pause: 1 });
+  }
+  t.files.set('test.chr', serializeCharacter(chr));
+  const entry = { start: { x: 1, y: 4 }, ci: startCharInfo(), clock: 1 };
+  const ex = await explore(t.game, 2, t, entry, {
+    goal: [208],
+    steerAirborne: true,
+    steadyTicks: 3,
+    steadySteering: true,
+    exact: true,
+    stopAt: () => true,
+    maxNodes: 20000,
+  });
+  expect(ex.exits).not.toHaveLength(0);
+  const replay = await replayPath(t.game, t, 2, entry, ex.moves, pathTo(ex, ex.exits[0].via));
+  expect(replay?.link).toBe(0);
+});
+
+it('steers a continuously flying character through a vertical passage', async () => {
+  const t = testGame(['#####', '#E..#', '#...#', '#...#', '#...#', '#...#', '#...#', '#...#', '#S..#', '#####']);
+  const blocks = parseBlocks(t.get('test.bbl')!, BACKBL);
+  blocks[0].grav = 15; // Opposing directions cancel, as in a free-flight area.
+  t.files.set('test.bbl', serializeBlocks(blocks));
+  const chr = parseCharacter(t.get('test.chr')!);
+  const up = chr.sequences[7];
+  up.key = 0x4800;
+  for (const frame of up.frames) Object.assign(frame, { x: 0, y: -2, pic1: 0, pic2: 1, pause: 1 });
+  t.files.set('test.chr', serializeCharacter(chr));
+  const entry = { start: { x: 1, y: 8 }, ci: startCharInfo(), clock: 1 };
+  const ex = await explore(t.game, 2, t, entry, {
+    goal: [101],
+    steerAirborne: true,
+    steadyTicks: 3,
+    steadySteering: true,
+    moveFilter: (move) => move.name.startsWith('walk'),
+    stopAt: () => true,
+  });
+  expect(ex.exits).not.toHaveLength(0);
+  const r = await replayPath(t.game, t, 2, entry, ex.moves, pathTo(ex, ex.exits[0].via));
+  expect(r?.link).toBe(0);
+});
+
+it('keeps climbing actual footings rather than chasing nearby platforms in the air', async () => {
+  const rows = Array.from({ length: 34 }, (_, y) => (y === 0 || y === 33 ? '#'.repeat(18) : '#' + '.'.repeat(16) + '#'));
+  rows[2] = '#...............E#';
+  rows[3] = '#.#.##############';
+  for (let y = 5; y <= 31; y += 2) {
+    const x = y % 4 === 1 ? 1 : 2;
+    rows[y] = rows[y].slice(0, x) + '#' + rows[y].slice(x + 1);
+  }
+  const t = testGame(rows);
+  const chr = parseCharacter(t.get('test.chr')!);
+  for (const s of chr.sequences) for (const f of s.frames) if (f.pic2 < 50) f.pic1 = 50;
+  for (const [seq, key, dx] of [
+    [7, 72, 0],
+    [8, 71, -8],
+    [9, 73, 8],
+  ]) {
+    const s = chr.sequences[seq];
+    s.key = key << 8;
+    for (let i = 0; i < 4; i++) Object.assign(s.frames[i], { x: dx, y: i === 3 ? -10 : -12, pic1: 50, pic2: 0, pause: 1 });
+  }
+  t.files.set('test.chr', serializeCharacter(chr));
+  const entry = { start: { x: 2, y: 32 }, ci: startCharInfo(), clock: 1 };
+  const ex = await explore(t.game, 2, t, entry, {
+    goal: [216],
+    steadyTicks: 3,
+    steadySteering: true,
+    steerAirborne: true,
+    stopAt: () => true,
+    maxNodes: 12000,
+    now: () => 0,
+  });
+  expect(ex.exits).not.toHaveLength(0);
+  expect((await replayPath(t.game, t, 2, entry, ex.moves, pathTo(ex, ex.exits[0].via)))?.link).toBe(0);
 });

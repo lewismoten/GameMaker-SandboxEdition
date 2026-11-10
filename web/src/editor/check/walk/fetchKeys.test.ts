@@ -231,3 +231,23 @@ describe('the key trip cap', () => {
     expect(why).not.toContain('in its time');
   }, 60_000);
 });
+
+it('keeps a required pickup collected on the wanted exit', async () => {
+  const t = testGame(['########', '#......#', '#......#', '#S....E#', '########']);
+  const blocks = parseBlocks(t.files.get('test.bbl')!, newBlockSet('bbl').length);
+  Object.assign(blocks[KEY], { grav: 4, effect: 20, eamt: 1, touchBl: 0 });
+  const map = parseMap(t.files.get('test.map')!);
+  map.blocks[306] = KEY;
+  t.files.set('test.bbl', serializeBlocks(blocks));
+  t.files.set('test.map', serializeMap(map));
+  const required = { owed: new Map([[20, 1]]), wanted: new Set([20]), sources: [{ counter: 20, cell: 306 }] };
+  const result = await fetchKeys(t.game, t, 2, { start: { x: 1, y: 3 }, ci: startCharInfo(), clock: 1 }, required, {
+    goal: [306],
+    wanted: new Set([0]),
+    budgetMs: 1000,
+    now: () => 0,
+  });
+  expect(result.replay?.link).toBe(0);
+  expect(result.replay?.ci.meter[20]).toBe(2);
+  expect(result.diagnostics.cutoff).toBeNull();
+});

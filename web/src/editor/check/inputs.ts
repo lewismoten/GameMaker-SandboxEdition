@@ -77,14 +77,18 @@ export function keyRoles(chr: Character, gravity: boolean): KeyRoles {
   return roles;
 }
 
-/** The moves tried from every resting place. Keys are pressed in order, so the last one listed runs. */
-export function movesFor(roles: KeyRoles, gravity: boolean): Move[] {
+/** The moves tried from every resting place. `planning` adds sustained movement and jump turns. Keys are pressed in order, so the last one listed runs. */
+export function movesFor(roles: KeyRoles, gravity: boolean, planning = false): Move[] {
   const out: Move[] = [];
   const sideways = roles.move.filter((m) => m.dx !== 0 && m.dy === 0);
   for (const m of roles.move) {
     out.push({ name: `walk ${m.scan}`, steps: [{ keys: [m.scan], until: 'cell', max: 30 }] });
     // a short step lines a jump up; on a top-down map the walk does it all
-    if (gravity) out.push({ name: `step ${m.scan}`, steps: [{ keys: [m.scan], until: 'ticks', max: 2 }] });
+    if (gravity) {
+      out.push({ name: `step ${m.scan}`, steps: [{ keys: [m.scan], until: 'ticks', max: 2 }] });
+      if (planning && m.dx && !m.dy && !m.once)
+        for (const hold of [6, 18, 36]) out.push({ name: `walk ${m.scan} held ${hold}`, steps: [{ keys: [m.scan], until: 'ticks', max: hold }] });
+    }
     // a key that moves once a press is tapped again and again until the hero is in a new cell
     if (m.once)
       out.push({
@@ -94,8 +98,16 @@ export function movesFor(roles: KeyRoles, gravity: boolean): Move[] {
   }
   // a jump tapped or held a while, alone, steered from the start (running) or after it
   for (const j of roles.jump)
-    for (const press of j.hold ? [1, 6, 18] : [1, 6]) {
+    for (const press of j.hold ? (planning ? [1, 6, 12, 18] : [1, 6, 18]) : [1, 6]) {
       out.push({ name: `jump ${j.scan} ${press}`, steps: [{ keys: [j.scan], until: 'ticks', max: press }] });
+      for (const turn of planning ? roles.jump.filter((t) => t.dx && t.dx !== j.dx) : [])
+        out.push({
+          name: `jump ${j.scan} ${press} then jump ${turn.scan} to a ledge`,
+          steps: [
+            { keys: [j.scan], until: 'ticks', max: press },
+            { keys: [turn.scan], until: 'over', max: 40 },
+          ],
+        });
       if (j.dx === 0)
         for (const m of sideways) {
           out.push({
@@ -122,7 +134,7 @@ export function movesFor(roles: KeyRoles, gravity: boolean): Move[] {
       if (j.dx !== 0) out.push({ name: `jump ${j.scan} to a ledge`, steps: [{ keys: [j.scan], until: 'over', max: 40 }] });
       else
         for (const m of sideways)
-          for (const press of [1, 6])
+          for (const press of planning ? [1, 6, 12] : [1, 6])
             out.push({
               name: `jump ${j.scan} ${press} running ${m.scan} to a ledge`,
               steps: [
@@ -140,18 +152,19 @@ export function movesFor(roles: KeyRoles, gravity: boolean): Move[] {
  * The moves as a player with steady, unhurried hands plays them (the Level check's Slower hands):
  * one key at a time, and at least `minTicks` between any two key changes, so a key is held that
  * long, a change of keys lets go first and waits that long, and the next move waits too. Moves
- * that need two keys at once are left out.
+ * that need two keys at once are left out. With `steering`, normal key chords and direct
+ * direction changes are allowed, still holding every press at least `minTicks`.
  */
-export function steadyMoves(moves: Move[], minTicks: number): Move[] {
+export function steadyMoves(moves: Move[], minTicks: number, steering = false): Move[] {
   const out: Move[] = [];
   const seen = new Set<string>();
   for (const m of moves) {
-    if (m.steps.some((s) => s.keys.length > 1)) continue;
+    if (!steering && m.steps.some((s) => s.keys.length > 1)) continue;
     const steps: Step[] = [];
     for (const s of m.steps) {
       const last = steps[steps.length - 1];
       // a different key straight after another: let go first, and wait
-      if (last?.keys.length && s.keys.length && last.keys[0] !== s.keys[0]) steps.push({ keys: [], until: 'ticks', max: minTicks });
+      if (!steering && last?.keys.length && s.keys.length && last.keys[0] !== s.keys[0]) steps.push({ keys: [], until: 'ticks', max: minTicks });
       steps.push(s.until === 'ticks' ? { ...s, max: Math.max(s.max, minTicks) } : { ...s, max: Math.max(s.max, minTicks), min: minTicks });
     }
     const steady: Move = { ...m, name: `${m.name} steady`, steps, settle: minTicks };
