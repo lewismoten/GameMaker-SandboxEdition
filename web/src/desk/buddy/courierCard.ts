@@ -25,7 +25,7 @@ import {
   type Section,
 } from '../../courier/courierText';
 
-export interface CourierCard {
+interface CourierCard {
   el: HTMLElement;
   /** Draws the open section again from the store. */
   refresh(): void;

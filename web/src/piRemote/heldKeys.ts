@@ -2,7 +2,7 @@
 // keyboard, a latched modifier), so a key goes down once and up only when nothing holds it.
 
 /** What holds a key down. */
-export type Holder = 'screen' | 'physical' | 'latch';
+type Holder = 'screen' | 'physical' | 'latch';
 
 /** A KEY frame to send: the Linux code and its new state. */
 export interface KeyChange {

@@ -6,7 +6,7 @@ import { unlock } from '@lewismoten/gamemaker-sandbox-engine/audio/context';
 import { parseSoundLine, type SoundEvent } from './soundLine';
 import type { PiSound, SoundState } from './piSound';
 
-export interface SoundSwitch {
+interface SoundSwitch {
   /** The switch and its status line, for the page. */
   readonly button: HTMLButtonElement;
   readonly status: HTMLElement;

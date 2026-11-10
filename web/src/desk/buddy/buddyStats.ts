@@ -4,7 +4,7 @@
 import { loadAchievements } from '../../achievements/store';
 import type { Pose } from './buddyLines';
 
-export interface BuddySummary {
+interface BuddySummary {
   played: number;
   badges: number;
   playing?: string;

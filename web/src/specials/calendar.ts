@@ -6,9 +6,9 @@
 // long, as it is on the wall clock); nothing is fetched. No DOM.
 
 /** 0 Sunday … 6 Saturday, as Date.getDay. */
-export type Weekday = 0 | 1 | 2 | 3 | 4 | 5 | 6;
+type Weekday = 0 | 1 | 2 | 3 | 4 | 5 | 6;
 
-export type DayRule =
+type DayRule =
   /** The same date every year (month 1–12). */
   | { on: 'date'; month: number; day: number }
   /** The nth `weekday` of `month` (n 1–5; -1 the last), e.g. Thanksgiving is the 4th Thursday of November. */
@@ -37,7 +37,7 @@ export interface Window {
 }
 
 /** A stretch of local time: from `start` up to, not including, `end`. */
-export interface Span {
+interface Span {
   start: Date;
   end: Date;
 }

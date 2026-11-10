@@ -9,7 +9,7 @@ import { isOldSecret } from '../project/secretGames';
 import { isCeremony } from '../project/ceremonies';
 
 /** Played: the first scene was entered. Won: the Game Won scene showed. */
-export type StampEvent = 'played' | 'won';
+type StampEvent = 'played' | 'won';
 
 /** A catalog entry, as much as the rules need. */
 export interface Known {

@@ -11,7 +11,7 @@ export const PI_USB_FILTER = { usbVendorId: 0xcafe, usbProductId: 0x4011 } as co
 const MAX_KEY = 767;
 
 /** How a KEY frame changes a key. */
-export type KeyState = 'down' | 'up';
+type KeyState = 'down' | 'up';
 
 /** "KEY 103 down\n": press or release one key. */
 export function keyLine(code: number, state: KeyState): string {

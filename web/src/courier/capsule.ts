@@ -21,7 +21,7 @@
 import { TABLE_VERSION, WORLDS, type StampKind } from './tables';
 import { isCourierId } from './courierId';
 
-export const CAPSULE_VERSION = 1;
+const CAPSULE_VERSION = 1;
 export const CAPSULE_MAX = 512;
 const MAGIC = [0x53, 0x43, 0x54, 0x31]; // SCT1
 const MAX_POSTCARDS = 8;
@@ -30,7 +30,7 @@ const MAX_PACKAGES = 3;
 const KINDS: readonly StampKind[] = ['game', 'sample-cd', 'graduation', 'mystery'];
 
 /** A stamp in a capsule: a catalog game by id (hashed on the way), or a kind. */
-export interface TripStamp {
+interface TripStamp {
   kind: StampKind;
   game?: string;
 }

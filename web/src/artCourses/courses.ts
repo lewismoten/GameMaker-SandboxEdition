@@ -2,7 +2,7 @@
 // bullet lists and figures (real blocks drawn in code by scripts/artCourseFigures.ts, with alt text and a caption).
 export type Part = { p: string } | { ul: string[] } | { fig: string; alt: string; caption: string };
 
-export interface Lesson {
+interface Lesson {
   id: string;
   title: string;
   parts: Part[];
