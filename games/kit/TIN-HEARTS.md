@@ -15,6 +15,14 @@ he has popped out a few times (`web/src/tinHearts/deskHearts.ts`, `web/src/desk/
 It counts toward the set like the others. Someone who had every game's heart before it was added
 keeps the trophy and what it opens, and is shown the clock's as one more to find.
 
+The kit modules are `tinHeart.ts` (art, recognition and tick-tock sound),
+`tinHeartDisk.ts` (disk lookup and headless touch checks), `tinHearts.ts` (the manifest
+and CLI), `cameos.ts` (recolored guests), `carlCameo.ts` (Carl), `chez.ts` (THE CHEZ),
+`easterEgg.ts` (egg art) and `hiddenView.ts` (visibility checks). See the
+[kit file map](README.md) for their other uses. Commands run from `web/`.
+The touch checks use the web engine headless; DOS hardware behavior is hardware-untested
+by those checks.
+
 ## Placing a heart
 
 1. **Art.** Draw it with `kit/tinHeart.ts` in the game's own ramps, over the ground it sits on:
@@ -29,14 +37,14 @@ keeps the trophy and what it opens, and is shown the clock's as one more to find
    (0 and 2) are enough if the block set is full.
 2. **Block rules.** It's a background block. It gives points (100, or what the game's pickups give).
    Its **touch block is the ground under it**, so it disappears when touched; that change is what
-   the web listens for. It's not solid, not a pickup, and has no counter effect or hit points. Use
-   no sound slot, and **never a .VOC**: a sound would cut a voice clip. If the game has a free
-   PC-speaker slot, `TICK_TOCK` from `kit/tinHeart.ts` is the heart's sound.
+   the web listens for. It's not solid, not a pickup, and has no counter effect or hit points. Leave
+   the sound slot empty unless a PC-speaker slot is free, and **never use a .VOC**: it would cut a voice clip.
+   If a PC-speaker slot is free, `TICK_TOCK` from `kit/tinHeart.ts` is the heart's sound.
 3. **Where.** Put it off the critical path but findable: a corner, a dead end, behind the bar, by a
    landmark. Make it reachable without special moves, and in a level the player is sure to visit.
    Not in a room the bot must cross. Never on a link cell, a monster's path, or under a wall.
    Optionally, an NPC hints at it (`TIN_HEART_LINE`), as Will does in Quest for the Round Tuit.
-4. **Rebuild** (`npx vite-node ../games/<id>/build.ts`) and commit the disk with the source.
+4. **Rebuild** (`npx vite-node ../games/<id>/build.ts`). Commit the source and manifest changes; `disk/`, `walkPaths.json` and `games/.build-cache.json` are ignored build output.
 
 ## The manifest entry
 
@@ -72,7 +80,7 @@ level's layout had to change, regenerate the demo with the game's own `gendemo.t
 
 ```sh
 cd web
-npx vite-node ../games/<id>/build.ts                 # deterministic: rerun leaves git status clean
+npx vite-node ../games/<id>/build.ts                 # deterministic: repeated builds must produce identical disk bytes
 npx vite-node ../games/kit/tinHearts.ts check <id>   # "ok, <map> at x,y, found when touched"
 npx vite-node ../games/<id>/tools/check.ts           # the bot still wins
 npx vite-node ../games/kit/textfitCheck.ts <id>      # if you touched any text
@@ -102,19 +110,20 @@ Draw each with the kit, recolored into the host's palette by nearest color (`kit
 `hostPal` is the host's 768-byte palette; pass `{ use: [...] }` to keep a cameo to the host's
 sprite colors.
 
-| who | helper | notes |
-| --- | ------ | ----- |
-| Mystery Robot Joe | `joeCameo(hostPal, 'down' \| 'up' \| 'side', step)` | tin box robot, bulb, glasses, bow tie; a librarian, a counter of things |
-| Watt | `wattCameo(hostPal, 'down' \| 'up' \| 'side', step)` | repair robot on treads; likes fuse boxes, chargers, circuit boards |
+| who                              | helper                                                        | notes                                                                              |
+| -------------------------------- | ------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| Mystery Robot Joe                | `joeCameo(hostPal, 'down' \| 'up' \| 'side', step)`           | tin box robot, bulb, glasses, bow tie; a librarian, a counter of things            |
+| Watt                             | `wattCameo(hostPal, 'down' \| 'up' \| 'side', step)`          | repair robot on treads; likes fuse boxes, chargers, circuit boards                 |
 | Will (Shakespeare in Sweatpants) | `willCameo(hostPal, { face: 'front' \| 'side', arms, mood })` | bald, ruff, velvet doublet, gray sweatpants, fuzzy slippers; a playwright visiting |
-| Teenage Lewie (Snowbound) | `lewieCameo(hostPal, 'down0' \| 'side0' …)` | red knit hat, red coat, snow shovel; helping out |
-| Carl the fly | `carlPic(colors, pose)` in `kit/carlCameo.ts` | drawn straight in the host's ramps; "the bug" on any circuit board |
-| THE CHEZ | `kit/chez.ts` | the red CitiCar, two blocks, at a curb or in a lot |
+| Teenage Lewie (Snowbound)        | `lewieCameo(hostPal, 'down0' \| 'side0' …)`                   | red knit hat, red coat, snow shovel; helping out                                   |
+| Carl the fly                     | `carlPic(colors, pose)` in `kit/carlCameo.ts`                 | drawn straight in the host's ramps; "the bug" on any circuit board                 |
+| THE CHEZ                         | `kit/chez.ts`                                                 | the red CitiCar, two blocks, at a curb or in a lot                                 |
 
 A game that draws in its own style (as Quest for the Round Tuit draws its townsfolk) may redraw a
 character instead, keeping the look in the table.
 
 The rules (low risk, as for the heart):
+
 - Use free block slots only; never renumber blocks a map, monster or save already uses. Add new
   blocks at the end of a set.
 - A cameo is scenery: not solid unless it stands where a wall already was, with no touch effect and

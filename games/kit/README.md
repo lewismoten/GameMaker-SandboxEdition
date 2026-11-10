@@ -18,10 +18,11 @@ belong to [`web/packages/tools`](../../web/packages/tools/README.md). Its `kit/*
 and `textfit`, alongside the earlier music, sound, simulation and clip APIs.
 Import them through the package rather than copying implementations here.
 
+A name with no folder is a file here; `starter/`, `scans/`, `song/` and `cdDemos/` name subfolders.
 This folder keeps game artwork and repository policy: `disk.ts` reads `about.json`, honors
 `GAME_DISK_OUT` and reports build totals; `photo.ts` locates this repository's scans;
 `align.ts` selects a repository disk and prints its audit. The portable work is in the package.
-The descriptions below cover both package-owned helpers and the remaining repository tools.
+The descriptions below cover the remaining repository tools. Package helpers are named by their import paths.
 
 Nested developer-only diagnostics live under `testdisks/`, with their own build/check
 instructions. They are intentionally outside automatic game, Starter, download and
@@ -29,58 +30,58 @@ Pocket discovery; never add their output to a top-level game or the public tree.
 
 Making the files:
 
-- `pixels.ts` — an indexed-color canvas for 20x20 blocks and 320x200 screens, seeded randomness, dithering.
-- `palette.ts` — named color ramps for a 256-color VGA palette.
-- `palRamps.ts` — `Pal`, a built palette with its ramps looked up by name, and `wrap`, which makes one from a
+- `@lewismoten/gamemaker-sandbox-tools/kit/pixels` — an indexed-color canvas for 20x20 blocks and 320x200 screens, seeded randomness, dithering.
+- `@lewismoten/gamemaker-sandbox-tools/kit/palette` — named color ramps for a 256-color VGA palette.
+- `@lewismoten/gamemaker-sandbox-tools/kit/palRamps` — `Pal`, a built palette with its ramps looked up by name, and `wrap`, which makes one from a
   `PaletteBuilder`.
-- `coverPaint.ts` — painting covers and title pictures in true color before they are reduced: tileable value noise
+- `@lewismoten/gamemaker-sandbox-tools/kit/coverPaint` — painting covers and title pictures in true color before they are reduced: tileable value noise
   (`noise2`), `mixc`, `smooth` (smoothstep) and `clamp`.
-- `actors.ts` — filling in character and monster files: a sequence's frames and settings (`set`), a monster (`mon`), a
+- `@lewismoten/gamemaker-sandbox-tools/kit/actors` — filling in character and monster files: a sequence's frames and settings (`set`), a monster (`mon`), a
   path `corner`, and pacing back and forth (`pace`).
-- `screenText.ts` — a text screen's lines checked to fit PLAYGAME's 30 columns and 16 lines a page (`page`), and a
+- `@lewismoten/gamemaker-sandbox-tools/kit/screenText` — a text screen's lines checked to fit PLAYGAME's 30 columns and 16 lines a page (`page`), and a
   cartoon's named `sprite`.
-- `blit.ts` — sprites with 255 as the clear color (`CLEAR`): `over` another picture, `recolor`ed through a lookup,
+- `@lewismoten/gamemaker-sandbox-tools/kit/blit` — sprites with 255 as the clear color (`CLEAR`): `over` another picture, `recolor`ed through a lookup,
   scaled up (`scaleBlit`) or with a one-pixel `outline`.
-- `pcText.ts` — the PC's 8x8 font in a picture at any scale (`text`, `textWidth`), `outlined` with an optional drop
+- `@lewismoten/gamemaker-sandbox-tools/kit/pcText` — the PC's 8x8 font in a picture at any scale (`text`, `textWidth`), `outlined` with an optional drop
   shadow, or `centered`; its ink is reported to the text bounds audit.
-- `shading.ts` — shaded drawing in a palette ramp: an ordered-dithered shade (`shadeAt`), a vertical `gradient`, a lit
+- `@lewismoten/gamemaker-sandbox-tools/kit/shading` — shaded drawing in a palette ramp: an ordered-dithered shade (`shadeAt`), a vertical `gradient`, a lit
   lump (`blob`), a raised box (`bevel`) and `speckle`.
-- `music.ts` — FM instruments and note strings → Sound Blaster `.CMF` songs.
-- `tune.ts` — writing songs in those note strings: a voice (`v`), joining and repeating bars (`join`, `times`), counting
+- `@lewismoten/gamemaker-sandbox-tools/kit/music` — FM instruments and note strings → Sound Blaster `.CMF` songs.
+- `@lewismoten/gamemaker-sandbox-tools/kit/tune` — writing songs in those note strings: a voice (`v`), joining and repeating bars (`join`, `times`), counting
   beats (`beatsOf`) and `tune`, which writes the song after checking every voice lasts the same number of beats.
 - `teddyTheme.ts` — Teddy's Theme, the melody the Teddy games share (and the Cast page plays, from teddy's `title.cmf`).
-- `song.ts` — the Bard of Bizarre games' OPL2 arrangement writer: patches, drum grooves, and sections (a chord or two and a
+- `@lewismoten/gamemaker-sandbox-tools/kit/song` — the Bard of Bizarre games' OPL2 arrangement writer: patches, drum grooves, and sections (a chord or two and a
   bar of tune each) laid out as tune, second voice, bass, three comping voices and drums; `songPreview.ts` renders a game's
   songs on the web app's OPL2 and checks them. `song/analyze.py` (tempo, key, chords, sections, sung melody) and
   `song/cutclips.py` (VOC clips; slow cues and splices kept at a lower rate) read a recording that is not in the repo;
   each game's tools name the song.
-- `songFx.ts` — tricks for those arrangements that stay plain CMF events PLAYGAME and SBFMDRV play: swells and filter
+- `@lewismoten/gamemaker-sandbox-tools/kit/songFx` — tricks for those arrangements that stay plain CMF events PLAYGAME and SBFMDRV play: swells and filter
   sweeps under held chords by program changes through copies of a patch (more than 16 timbres: extra patches from 16 up),
   the rhythm section's bass drum tuned as a sub bass (a seventh melodic voice) and tuned toms, one-channel arpeggios and
   ringing harps, stepped glides (no pitch bend), a two-voice choir from vibrato twins, echoes, stutters, rolls and section
   markers (controller 0x66). Loaf #13's `src/sound/song.ts` uses all of them.
-- `sound.ts` — PC speaker sounds for `.SND` sets, and synthesized `.VOC` samples.
+- `@lewismoten/gamemaker-sandbox-tools/kit/sound` — PC speaker sounds for `.SND` sets, and synthesized `.VOC` samples.
 - `teddySounds.ts` — the sound effects the Teddy games share (woof, yelp, pop, boing, whoosh, crunch, chomp, giggle,
   honk, snore, scratch, slap, chime), synthesized as `.VOC` samples.
-- `synthParts.ts` — small pieces the games' synthesized sounds share: noise through a low-pass, a gate, an
+- `@lewismoten/gamemaker-sandbox-tools/kit/synthParts` — small pieces the games' synthesized sounds share: noise through a low-pass, a gate, an
   attack-and-decay envelope and a one-pole low-pass.
 - `disk.ts` — writes the files with DOS 8.3 names and DOS text.
 - `courseStamp.ts` — letters "COURSE 101" in the lower left of a Starter's `title.gif` (`Disk.write` calls it; no number for other games).
-- `menuVersion.ts` — the game's version ("v1.1", from about.json) lettered in the lower right of its menu picture,
+- `@lewismoten/gamemaker-sandbox-tools/kit/menuVersion` — the game's version ("v1.1", from about.json) lettered in the lower right of its menu picture,
   in the PC font with a dark outline in the picture's own lightest and darkest colors. `Disk.write()` does it for every
   game; a game whose menu has a line of its own there moves it (`disk.menuVersion = { y: 186 }`).
 - `license.ts` — `LICENSE.TXT` for every disk (what's real, what's story, the MIT License), in 30-column pages.
 - `sandlogo.ts` — the Sandbox Software logo sting every game's `title.lst` opens with (`SANDLOGO.FLI`): a sandbox with a
   sand castle, a red pail and a blue shovel that pats the sand, then -= S A N D B O X =- drops in, a letter at a time, in
-  THE SANDBOX BBS colors over chrome SOFTWARE. Ray traced with `raytrace.ts` (boxes, cones, discs, spheres, capsules and
-  triangles, Phong shading, hard shadows; only what moves is traced again each frame) and `sdftext.ts` (extruded, beveled
-  3D lettering), and reduced to 256 colors with `quantize.ts` (median cut, ordered dither).
+  THE SANDBOX BBS colors over bold yellow SOFTWARE outlined in black. Ray traced with `@lewismoten/gamemaker-sandbox-tools/kit/raytrace` (boxes, cones, discs, spheres, capsules and
+  triangles, Phong shading, hard shadows; only what moves is traced again each frame) and `@lewismoten/gamemaker-sandbox-tools/kit/sdftext` (extruded, beveled
+  3D lettering), and reduced to 256 colors with `@lewismoten/gamemaker-sandbox-tools/kit/quantize` (median cut, ordered dither).
 - `madewith.ts` — the "Made with Game-Maker: Sandbox Edition" sting the web editor offers new games (not a Sandbox game's):
   yellow GAME-MAKER letters drop onto a floor of the site's blue blocks between MADE WITH and SANDBOX EDITION, then fade.
   Ray traced like `sandlogo.ts`; run it once (`cd web && npx vite-node ../games/kit/madewith.ts`, `PREVIEW=<folder>` for
   frame PNGs) to write `web/public/opening/madewith.fli` and its still `madewith.gif`, which the app ships. The web app
   never imports it.
-- `madewithMore.ts` — three more of those openings, drawn flat as Reel cartoons (`reel.ts`) from `madewithArt.ts` (the
+- `madewithMore.ts` — three more of those openings, drawn flat as Reel cartoons (`@lewismoten/gamemaker-sandbox-tools/kit/reel`) from `madewithArt.ts` (the
   palette, the navy sky, the wall of blue blocks, GAME-MAKER built of little gold blocks from the 8x8 font, outlined 8x8
   lettering): `mwblocks.fli` (the letters stacked up block by block), `mwwipe.fli` (the wall of blue blocks turns over in
   a diagonal wave to show the card) and `mwtype.fli` (a DOS prompt runs GM and the card types in). Each ends with a fade
@@ -88,20 +89,20 @@ Making the files:
   write them to `web/public/opening/`.
 - `bard.ts` — The Bard of Bizarre's logo sting for his games' `title.lst` (`BARD.FLI`): stage curtains part on the logo,
   Doc Leo's photo pops in, a lute strums notes, the tagline types out, fade to black.
-- `reel.ts` — FLI cartoons drawn in code, frame by frame: each reel opens on black, fades by palette alone and stores
+- `@lewismoten/gamemaker-sandbox-tools/kit/reel` — FLI cartoons drawn in code, frame by frame: each reel opens on black, fades by palette alone and stores
   only what changed (run-coded line deltas), so a cartoon costs little more than its first picture. `irisOut` closes a round
   iris on a spot (a cartoon made of the title's own art ends on a view that isn't the title), then `fadeOut`.
-- `fadeOut.ts` — the fade to black an intro ends on before its title picture (PLAYGAME cuts an FLI's last frame
+- `@lewismoten/gamemaker-sandbox-tools/kit/fadeOut` — the fade to black an intro ends on before its title picture (PLAYGAME cuts an FLI's last frame
   straight to black): `encodeFliFadeOut` adds about half a second of palette-only frames to a plain frame list (a Reel
   has `fadeOut`).
-- `fliClips.ts` — a long intro cut into clips of about 4 seconds for its slide list (`fliClips`, `clipEntries`; `clipLists`
+- `@lewismoten/gamemaker-sandbox-tools/kit/fliClips` — a long intro cut into clips of about 4 seconds for its slide list (`fliClips`, `clipEntries`; `clipLists`
   does it on a whole disk, for every list that plays the cartoon; `clipEveryList` does it for every list on the disk, so the
   endings, game overs and cut scenes are cut too).
   PLAYGAME plays a whole FLI before it reads Esc, so a list of short clips lets the player skip within a few seconds.
   Cuts fall where the palette holds and least changes; the clips play exactly the frames of the whole one
   (`web/src/formats/fliClips.test.ts`). Opt-in `ClipOptions`: `noLoopFrame` drops each clip's ring frame
   (PLAYGAME plays only the header's frame count), `cheapCuts` cuts where opening on a whole frame adds the
-  fewest bytes (a scene change), in no more clips; `shrink` runs `fliShrink.ts` steps (e.g. `sparsePalettes`: a fade
+  fewest bytes (a scene change), in no more clips; `shrink` runs `@lewismoten/gamemaker-sandbox-tools/kit/fliShrink` steps (e.g. `sparsePalettes`: a fade
   sends only the colors a frame draws) on each FLI before it is cut.
 - `photo.ts` — real photos for the endings: the small scans in `scans/` (made once from the owner's photos by
   `scans/scan.ts`) resized for VGA's tall pixels, given a picture's unused palette entries and dithered in; polaroid frames.
@@ -123,36 +124,64 @@ Making the files:
   posts, put into any game's palette by nearest color. Each felt-egg game has exactly one, in the level after the egg's
   (about.json `"saveSign"`: `{ map, at, after }`); ordinary save reminders keep the game's own look. `putSaveSign` gives a
   game whose block set is full a copy of the set for that one map, with the sign in blocks the map never shows.
-- `starter/` — the kit every Starter game (about.json `"series": "starter"`: small games that each show one idea) is
-  built from, so they look alike and a person who copies one gets a matching set of parts. Copy `games/first-steps`
-  for a new one. `palette.ts` (the shared bright ramps, `skyOf`), `book.ts` (`Book`, a block set built one named
-  block at a time, with `SOLID`, `LEDGE` and `PULL`), `blocks.ts` (`addStarterBlocks`: sky, edge, cloud, grass, dirt,
-  brick, plank, bush, flower, ladder, exit door, entrance, coin, key, spikes, in that order), `sign.ts` (`addSign`:
-  words as a string on a 2 to 4 block board, in the PC's 8x8 letters, two posts under it), `hero.ts` and `heroChar.ts`
-  (the red-capped hero's blocks and character: walk, Space jump, ladder climb), `topHero.ts` (Kit seen from above: four facings, two strides each, and a character whose four arrows and WASD walk with no gravity; Gravity On, Gravity Off and Overhead use it), `monsters.ts` (gumdrop, buzzer and
-  shelly), `sparkle.ts` (the sparkle a monster leaves behind: a tapered four-point star and a smaller turned one with glints, never a plus of straight bars), `grid.ts` + `map.ts` (a level painted on a `Grid`, then `StarterMap` rows of text: what each letter means is
-  at its top; `.sign()` stamps a sign), `screens.ts` (title, menu, paper, cards, ending pictures; the title takes a `groupStyle`), `titleStyles.ts` (the group looks: meadow for The Basics, sunset (Moving and Pushing), breeze (Worlds That Push Back), dressing (Changing Your Hero), arena, circuit, stage, workbench, atlas (Bigger Worlds) and neon for the later groups in `web/src/project/starter.ts` STARTER_GROUPS) and `heroLook.ts` (Kit's skin, hair, beanie, hoodie and pants as five palette ramps, so `recolor`/`helperPalettes` make eight helpers of other skin tones, hair and colors, and three aliens, from the same character blocks; `nameBlock`/`nameBlockIds` spell a helper's name from two-letter sign blocks) and `heroFor.ts` (which hero leads a Starter: its about.json `hero`, written from the table in `web/src/project/starterHeroes.ts`; `buildStarterPalette(extra, gameId)` and `starterStingFli(gameId)` take that hero's ramps, and a Starter's text names the hero, not Kit) and `kitSlim.ts` (Kit slim, 12x19 in 20x20: four straight and four diagonal facings), `kitPoses.ts` (every side-view pose: idle, walk, jump, fall, drop, climb, hurt, dizzy, reach, duck, sneak, throw, cheer), `kitSizes.ts` (near, far and very far from one picture) and `kitSheet.ts` (`cd web && npx vite-node ../games/kit/starter/kitSheet.ts <out.png>` draws the design sheet) and `titleSamples.ts` (`cd web && npx vite-node ../games/kit/starter/titleSamples.ts <outDir>` renders a made-up title in each look), `sting.ts` (STARTER.FLI, the 3 second sting every Starter plays before its title: blocks stack into STARTER, Kit cheers on top), `songStyle.ts` (each Starter group's band: lead, bass line, comping, drums and tempo, for The Basics' march, Moving and Pushing's chip tune, a float, swing, a minor drive, a storybook, clockwork, puzzle jazz, calypso, a painted sky and showtime; `starterSong(group, tune)` plays a game's own A and B sections through it in a 32-bar form), `text.ts` (`wrap`
-  at its top; `.sign()` stamps a sign), `screens.ts` (title, menu, paper, cards, ending pictures; the title takes a `groupStyle`), `titleStyles.ts` (the group looks: meadow for The Basics, sunset (Moving and Pushing), breeze (Worlds That Push Back), dressing (Changing Your Hero), arena, circuit, stage, workbench, atlas (Bigger Worlds) and neon for the later groups in `web/src/project/starter.ts` STARTER_GROUPS) and `titleSamples.ts` (`cd web && npx vite-node ../games/kit/starter/titleSamples.ts <outDir>` renders a made-up title in each look), `sting.ts` (STARTER.FLI, the 3 second sting every Starter plays before its title: blocks stack into STARTER in 6x9-block letters, Kit hops in and cheers on top), `text.ts` (`wrap`
-  to 30 columns), `locks.ts` (`addLockBlocks`: a silver key, and one-block locked doors that spend a counter, for games about keys), `sounds.ts`, `ids.ts` (sequences, keys, monsters, sounds) and `bot.ts` (`StarterBot`: walk, jump,
-  climb with arrows and Space only). A game adds its songs, words, levels and route. `invisibleWalls.ts` (`assertNoInvisibleWalls`, run by each Starter's `tools/check.ts`: no solid block may be drawn as sky) and `mapShots.ts` (`vite-node mapShots.ts <outDir> [id]`: every Starter map with 9 blocks of its surroundings, as PNGs) look after the rule that nothing a player bumps into is invisible; the `edge` block is a hedge.
+  The `starter/` kit gives the Starters matching parts. Copy `games/first-steps` for a new one.
+  Commands below run from `web/`; a game adds its songs, words, levels and route.
+
+- `starter/blocks.ts` — the shared sky, ground, platforms, ladders, doors, pickups and spikes, in a fixed block order.
+- `starter/book.ts` — `Book`, a block set built one named block at a time, with `SOLID`, `LEDGE` and `PULL`.
+- `starter/bot.ts` — `StarterBot`, walking, jumping and climbing with arrows and Space.
+- `starter/framesSvg.ts` — inline SVG block frames and captions for a manual’s “How this level is made” figures.
+- `starter/grid.ts` — re-exports the tools package’s `Grid` for Starter maps.
+- `starter/hero.ts` — the side-view hero’s blocks: teal beanie, orange hoodie, gray pants and white sneakers, recolored for each helper.
+- `starter/heroChar.ts` — the hero’s character sequences for walking, Space jumping and ladder climbing, with WASD twins.
+- `starter/heroFor.ts` — picks the Starter’s hero from the shared table and reads its `about.json` hero.
+- `starter/heroFor.test.ts` — checks the hero table, each Starter’s manifest and Kit leading each group’s first game.
+- `starter/heroLook.ts` — Kit’s five palette ramps, helper and alien recolors, and two-letter name blocks.
+- `starter/heroLook.test.ts` — checks helper names and that recoloring changes only Kit’s palette ranges.
+- `starter/ids.ts` — shared sequence, key, monster and sound numbers.
+- `starter/invisibleWalls.ts` — `assertNoInvisibleWalls`, rejecting solid blocks drawn as open sky.
+- `starter/kitPoses.ts` — Kit’s side-view poses, from idle and walking to climbing, ducking and cheering.
+- `starter/kitSheet.ts` — draws the pose, helper and size design sheet: `npx vite-node ../games/kit/starter/kitSheet.ts <out.png>`.
+- `starter/kitSizes.ts` — near, far and very far poses from the same drawing and palette ramps.
+- `starter/kitSlim.ts` — slim one-block poses in four straight and four diagonal facings.
+- `starter/kitSlim.test.ts` — checks the slim poses’ proportions, crouching and recognizable far sizes.
+- `starter/locks.ts` — silver keys and counter-spending locked doors, added after the shared blocks.
+- `starter/map.ts` — `StarterMap`, levels painted as text rows, with signs and walls extended through sky.
+- `starter/mapShots.ts` — renders each Starter map with its surroundings: `npx vite-node ../games/kit/starter/mapShots.ts <outDir> [id]`.
+- `starter/monsters.ts` — the gumdrop, buzzer and shelly monsters and their two-frame pictures.
+- `starter/palette.ts` — shared bright color ramps, `skyOf` and a palette using the chosen hero’s ramps.
+- `starter/screens.ts` — title, menu, paper, cards and ending pictures, with the title’s group style.
+- `starter/shop.ts` — coin, price, purchase and sold blocks for Starter shops, using the DOS Money counter.
+- `starter/sign.ts` — short words on a wooden board, cut into blocks, with two posts.
+- `starter/songStyle.ts` — each group’s instruments, bass, comping, drums and tempo, arranged around a game’s A and B sections.
+- `starter/sounds.ts` — short PC-speaker effects using the shared sound numbers.
+- `starter/sparkle.ts` — the tapered four-point sparkle a monster leaves behind.
+- `starter/sting.ts` — the silent STARTER.FLI opening: blocks stack into STARTER and the chosen hero cheers on top.
+- `starter/stuck.ts` — the bot’s blocked-movement rule, including an optional check for jitter without progress.
+- `starter/stuck.test.ts` — checks unchanged-position and jitter detection, resets and movement toward either goal.
+- `starter/text.ts` — wraps text pages to 30 columns and 16 lines, preserving lines marked with `|`.
+- `starter/titleSamples.ts` — renders one sample title per group look: `npx vite-node ../games/kit/starter/titleSamples.ts <outDir>`.
+- `starter/titleStyles.ts` — each Starter group’s title sky, lettering colors and frame.
+- `starter/topHero.ts` — four top-down facings and two strides, with an arrow/WASD character and no gravity.
+
 - `starter/returnScenes.ts` — `addReturnScenes(game, levelScenes)`: PLAYGAME shows a scene's intro card on every entry, so a level the hero leaves for a talk, a picture or a room and comes back to would show its level card again. It appends a copy of each level scene without the card (same files and links) and points every return link into the level at that copy, so the card shows only on the first arrival. Entering the copy is an ordinary scene entry (the map and monsters load fresh, what the hero carries, the score and meters stay).
-- `starter/graduationArrive.ts`, `graduationArriveArt.ts`, `graduationNods.ts`, `graduationNodRoutes.ts` — a graduation's first level, the outside arrival (the second is the hall, `graduationLevel.ts`). `buildArrival(cfg, pal)` lays a campus path with trees, banner poles and the hall's front, with the stage's nods (`cfg.arrive.nods`, ids from the `NODS` catalog) in a row along it; each nod is a few blocks echoing one Starter (a ladder, a key before a gate, wind, a lever, twinkling stars ...), its sign names the course (`COURSE 211 WIND LIFTS YOU`), and nothing in it hurts or traps. The level has its own block set (`arrive.bbl`, so the diploma's full hall set is not crowded). `arrivalRoute(ids)` is the bot's way through and asserts each nod happened; `games/kit/graduationManual.ts` writes the arrival's pages and "How do I" questions into each graduation's manual.json.
-- Each graduation supplies its own `src/song.ts` through `Graduation.song`; `graduationBuild.ts` writes that score without changing the shared hall data. The scores use `starterSong` and their stage’s band; First Steps retains “Up the Aisle” as its A section.
-- `starter/graduationConfetti.ts` — the graduation monster set: the diploma's existing paper art on a clear background, falling four rows past the balcony and resetting at the top; other halls keep the ordinary Starter monsters. `graduationLevel.ts` shares the balcony's rail row; the halls seat everyone in two compact tiers beside the lectern, with a block of headroom in the standing camera. `graduationTools.ts` pauses the recorded ceremony for about five seconds before collecting the certificate. After rebuilding all seven disks, run `npx vitest run --dir ../games/kit/starter graduationLevel.test.ts`: it replays each actual walkthrough and checks every guest's full horizontal and vertical bounds on every final ceremony frame, including a sustained motionless pause. The separate `inViewCheck --standing 19` CLI checks the whole aisle route with alternative rectangles, not all guests simultaneously.
+- `starter/graduationArrive.ts`, `starter/graduationArriveArt.ts`, `starter/graduationNods.ts`, `starter/graduationNodRoutes.ts` — a graduation's first level, the outside arrival (the second is the hall, `starter/graduationLevel.ts`). `buildArrival(cfg, pal)` lays a campus path with trees, banner poles and the hall's front, with the stage's nods (`cfg.arrive.nods`, ids from the `NODS` catalog) in a row along it; each nod is a few blocks echoing one Starter (a ladder, a key before a gate, wind, a lever, twinkling stars ...), its sign names the course (`COURSE 211 WIND LIFTS YOU`), and nothing in it hurts or traps. The level has its own block set (`arrive.bbl`, so the diploma's full hall set is not crowded). `arrivalRoute(ids)` is the bot's way through and asserts each nod happened; `games/kit/graduationManual.ts` writes the arrival's pages and "How do I" questions into each graduation's manual.json.
+- `starter/graduationBuild.ts` — writes the shared graduation disk files from its configuration and levels. Each graduation supplies its own `src/song.ts` through `Graduation.song`; `starter/graduationBuild.ts` writes that score without changing the shared hall data. The scores use `starterSong` and their stage’s band; First Steps retains “Up the Aisle” as its A section.
+- `starter/graduationConfetti.ts` — the graduation monster set: the diploma's existing paper art on a clear background, falling four rows past the balcony and resetting at the top; other halls keep the ordinary Starter monsters. `starter/graduationLevel.ts` shares the balcony's rail row; the halls seat everyone in two compact tiers beside the lectern, with a block of headroom in the standing camera. `starter/graduationTools.ts` pauses the recorded ceremony for about five seconds before collecting the certificate. After rebuilding all seven disks, run `npx vitest run --dir ../games/kit/starter graduationLevel.test.ts`: it replays each actual walkthrough and checks every guest's full horizontal and vertical bounds on every final ceremony frame, including a sustained motionless pause. The separate `inViewCheck --standing 19` CLI checks the whole aisle route with alternative rectangles, not all guests simultaneously.
 - `carlCameo.ts` — Carl the fly (A Fly Named Carl) as a guest in another game, drawn in the host game's palette.
-- `road3d.ts` — a road that comes at you, the pseudo-3D one-screen scene of year2000's Cloud Lane and blaster's data
+- `@lewismoten/gamemaker-sandbox-tools/kit/road3d` — a road that comes at you, the pseudo-3D one-screen scene of year2000's Cloud Lane and blaster's data
   bus rides: the road's perspective (`roadView`), the spawner chains that turn a timetable into blocks giving birth once
   each (`spawnChains`), the traffic's leap onto the vanishing point and slide down its lane (`leapTo`, `laneSlide`,
   `roadCorners`), its sizes in step (`growPics`) and a full-size picture shrunk to them (`shrinkSprite`, `ROAD_SIZES`).
   Each game draws its own pictures and places its own blocks.
-- `saveSlots.ts` — where PLAYGAME writes the save names, marker and message on a game's load and save
+- `@lewismoten/gamemaker-sandbox-tools/kit/saveSlots` — where PLAYGAME writes the save names, marker and message on a game's load and save
   pictures, so a picture can leave dark and light strips under them.
 
 Checking the games:
 
 - `checkGames.ts` — `cd web && npm run check:games`: every game's checks and a table (builds one at a time, then `--jobs N` games checked at once, default half the CPUs; a lock in the temp folder makes a second run wait); exits 1 on
   any failure. Per game: two builds into temporary folders (`GAME_DISK_OUT`) that must match each other byte for
-  byte and cut off no text (`textBounds.ts`); unchanged working output is kept in place, `tools/check.ts`, `walkCheck.ts`, `textfitCheck.ts`, `hiddenView.ts`, `levelCheck.ts` and
+  byte and cut off no text (`@lewismoten/gamemaker-sandbox-tools/kit/textBounds`); unchanged working output is kept in place, `tools/check.ts`, `walkCheck.ts`, `textfitCheck.ts`, `hiddenView.ts`, `levelCheck.ts` and
   `playerCheck.ts` (when the game has a player.json), `controlsCheck.ts` (when it has a controls.json), `palCheck.ts`; then `tinHearts.ts check`,
   `saveSignCheck.ts`, `syncCheck.ts` and `versionCheck.ts` once. `--game <id>` (repeatable), `--quick` (no reproducibility rebuild), `--jobs N`, `--no-level`, `--verbose`, and `--play`
   (also lists each game's play findings from `levelCheck.ts --play`; slow, and never fails). Secret games are left
@@ -217,12 +246,12 @@ catalogPatches.ts`) and the DOS download writes it into XFERPLAY.EXE; it never g
   (`v1.2`, `Version 1.2`, `VER 1.2`) instead of reading `about.version`; a line naming another program's version
   goes in its `ALLOWED` list (now: the software box in Snowbound's scene art). Engine and format versions
   ("Game-Maker 3.0", "MS-DOS 5.0", CMF, VOC) don't match the pattern.
-- `sceneSim.ts` — a headless copy of PLAYGAME's main loop for one scene, built from the build's own data
+- `@lewismoten/gamemaker-sandbox-tools/kit/sceneSim` — a headless copy of PLAYGAME's main loop for one scene, built from the build's own data
   (no disk). The bots of teddy, teddy2, teddy3, logic and brief play on it.
-- `gameSim.ts` — a headless PLAYGAME that plays a built disk scene after scene (links, deaths, the ending),
+- `@lewismoten/gamemaker-sandbox-tools/kit/gameSim` — a headless PLAYGAME that plays a built disk scene after scene (links, deaths, the ending),
   keeps the keys per scene and can snapshot and restore. depth, realm, snowbound and the Bard's games play on it.
   `diskSim(new URL('../disk', import.meta.url))` is a game's whole `tools/sim.ts`.
-- `hopBot.ts` — the play-testing bot of the games whose hero hops (walk to a column hopping what blocks it, hop
+- `@lewismoten/gamemaker-sandbox-tools/kit/hopBot` — the play-testing bot of the games whose hero hops (walk to a column hopping what blocks it, hop
   and steer, land, hold a key, climb): reckoning, risi, loofah, sweats, mustard, needle and loaf extend it.
 - `levelRun.ts` — `playLevels()`, a game's `tools/play.ts` run: its levels' routes in a row, `BOT_LOG`, and the
   rule that a whole run wins without losing a life.
@@ -238,18 +267,18 @@ catalogPatches.ts`) and the DOS download writes it into XFERPLAY.EXE; it never g
   and skyway decks), snowbound (sidewalks, front walks, driveways), smirked (the foyer's runner);
   each bot's path search adds the cost (`keepTo`, or year2000's `paths` option). Side-view games and rooms floored
   wall to wall have none.
-- `textfit.ts` — the text-fit audit: every screen where PLAYGAME draws text over a game's own pictures must
+- `@lewismoten/gamemaker-sandbox-tools/kit/textfit` — the text-fit audit: every screen where PLAYGAME draws text over a game's own pictures must
   have the text on plain paper with enough contrast. `textfitCheck.ts` also fails any character 128-255 in the
   words the player draws in play (text pages, the menu's name, a shipped .his), which DOS draws as scribbles
   (the Level check's `dos-chars`). It also checks each level's card (the picture shown between levels, words
   baked in) and fails words that run past the edge of its parchment box (`cardOverflow`). Run it with
   `cd web && npx vite-node ../games/kit/textfitCheck.ts <id> [--png <dir>] [--all]`.
-- `textBounds.ts` — no text cut off at the edge of its picture: the games' text helpers (`text`, `micro`, a canvas's
+- `@lewismoten/gamemaker-sandbox-tools/kit/textBounds` — no text cut off at the edge of its picture: the games' text helpers (`text`, `micro`, a canvas's
   `text`) report each string's ink, and a build run with `TEXT_BOUNDS=<file>` writes every string that runs past its
   picture (or a clip area the helper was given) and is never shown whole there; a scroll or a drop-in shown whole in
   another frame is fine. Off, it changes no pixel. `cd web && npx vite-node ../games/kit/textBoundsCheck.ts [<id>...] [--moving]` builds into a temp folder and lists them; `checkGames.ts` reads it from its rebuild (the `bounds` column).
   A text helper in a new game should report its ink the same way (`textInk(p, s)`, `add`, `end`).
-- `clips.ts` — does every digitized clip play to the end? A walkthrough's run, with its sound written down, checked
+- `@lewismoten/gamemaker-sandbox-tools/kit/clips` — does every digitized clip play to the end? A walkthrough's run, with its sound written down, checked
   for a clip cut off by the scene ending or by the next sound; `walkthrough.ts` runs it on every
   walkthrough it writes (failing on a cut clip when the game asks), and `cd web && npx vite-node ../games/kit/clipCheck.ts <id>...` runs it alone.
 - `align.ts` — multi-block objects (trees, houses, cars, signs): every map puts their parts together, and the art
@@ -262,11 +291,15 @@ catalogPatches.ts`) and the DOS download writes it into XFERPLAY.EXE; it never g
 - `trinketPacks.ts` — packs the trinket files the site serves: each STL a `web/public/trinkets/<game>/manifest.json` lists becomes `<file>.pack` (`pack/meshPack`, raw-deflated; about an eighth of the size), each 3MF too (`pack/threeMfPack`, about half), and the manifest's `packed` names them; the site makes the real files back in the browser (an STL byte for byte, a 3MF with the same files inside) (`web/src/desk/boxes/trinketData.ts`). `build-games.mjs` runs it after the trinkets; a packed folder is skipped.
 - `scoreAudit.ts` — replays committed walkthroughs without rebuilding disks and prints each completed game's final score plus its score at every scene entrance. Use it to compare score curves before changing a game's point values: `cd web && npx vite-node ../games/kit/scoreAudit.ts [id...]`.
 - `dosStates.ts` — replays each CD game's `demo.rec` through the web engine and compares it with the DOS-recorded tables in `dosStates/` (see its README), printing the first differing line per game: `cd web && npx vite-node ../games/kit/dosStates.ts [game...]`. Local only (nebula and peach are long).
-- `png.ts` — a PNG writer and block sheets for design previews (used by the games' `tools/`, never on a disk).
+- `@lewismoten/gamemaker-sandbox-tools/kit/png` — a PNG writer and block sheets for design previews (used by the games' `tools/`, never on a disk).
 
-`cdDemos/` is apart from the Sandbox games: a curious bot (`bot.ts`, `probe.ts`) that plays any Game-Maker
-game on the real engine run headless (`headless.ts`), used by `make.ts` to record title demos for the CD
-games that shipped without one (`cd web && npx vite-node ../games/kit/cdDemos/make.ts [ids…]`).
+`cdDemos/` records title demos for CD games that shipped without one, apart from the Sandbox games:
+
+- `cdDemos/bot.ts` — explores with each character’s own keys, favoring new ground and pickups while avoiding harm.
+- `cdDemos/probe.ts` — copies and steps a level so the bot can try keys before pressing them.
+- `cdDemos/headless.ts` — runs the engine and recorder in Node with a virtual canvas and clock.
+- `cdDemos/demo.ts` — records bot demos and replays recordings to report movement, score and deaths, with screenshots.
+- `cdDemos/make.ts` — writes missing CD title demos: `npx vite-node ../games/kit/cdDemos/make.ts [ids…]` from `web/`.
 
 Recorded source clips use lossless PCM WAV for inline GitHub audio previews. The cutters in `song/cutclips.py` write that
 format with the nominal sample rate; game builders use
@@ -278,7 +311,7 @@ recordings or converting compressed sources such as Ogg. Keep `.wav` authoring s
 `versionDisks.ts` compares current build output to a Git revision. It reads legacy tracked disk blobs directly; for source-only revisions it extracts a temporary source snapshot, reuses installed third-party dependencies, resolves workspace packages from that snapshot, and builds the historical disk. `files(id)` returns a game's disk at the revision as name to bytes (used by `npm run disk:diff -- <id> --since`), and `lastPushToMaster(root)` picks the default revision. This stays local, outside CI.
 `moneyAudit.ts` replays the committed walkthroughs without rebuilding disks and reports each game's visible money counter at scene starts and its win.
 
-Laser wooden nickels for a Glowforge are made by `laserNickels.ts` (with `laserNickelDefs.ts` for each token's concept, art and words, `laserNickelParts.ts` for the shapes it draws with, and the builder in `web/packages/tools/src/kit/`: `laserSvg.ts` millimeter SVG layers, `laserPixels.ts` pixel text, arcs and tone-engraved figures, `laserClearance.ts` the spacing check, `laserPreview.ts` PNG previews). Each is a 1.5 inch (38.1 mm) wooden token that is the money of its game's own world, a 1994 collectible in a series of 26 (the order below, kept in the defs; secret games are not counted). Every coin has a reeded rim of engraved ticks inside its cut, a front (the game's name in an arc over the top, the token's art, a line in an arc along the bottom, sometimes a hole cut through) and a back ("GOOD FOR ..." in the game's words, `NO.nn/26`, the year, `SM` for Sandbox Mint, and one Sandscript letter, `games/kit/sandscript.ts`; in series order the 26 letters spell `BE KIND AND KEEP PLAYING FRIEND`, kept as `MESSAGE` in the defs). Figures are engraved by tone from their own colors: dark colors solid, mid colors (clothes, hair) as a checker or lines, skin and light colors left bare, with every outline kept, so a person never looks undressed.
+Laser wooden nickels for a Glowforge are made by `laserNickels.ts` (with `laserNickelDefs.ts` for each token's concept, art and words, `laserNickelParts.ts` for the shapes it draws with, and the builder in `web/packages/tools/src/kit/`: `@lewismoten/gamemaker-sandbox-tools/kit/laserSvg` millimeter SVG layers, `@lewismoten/gamemaker-sandbox-tools/kit/laserPixels` pixel text, arcs and tone-engraved figures, `@lewismoten/gamemaker-sandbox-tools/kit/laserClearance` the spacing check, `@lewismoten/gamemaker-sandbox-tools/kit/laserPreview` PNG previews). Each is a 1.5 inch (38.1 mm) wooden token that is the money of its game's own world, a 1994 collectible in a series of 26 (the order below, kept in the defs; secret games are not counted). Every coin has a reeded rim of engraved ticks inside its cut, a front (the game's name in an arc over the top, the token's art, a line in an arc along the bottom, sometimes a hole cut through) and a back ("GOOD FOR ..." in the game's words, `NO.nn/26`, the year, `SM` for Sandbox Mint, and one Sandscript letter, `games/kit/sandscript.ts`; in series order the 26 letters spell `BE KIND AND KEEP PLAYING FRIEND`, kept as `MESSAGE` in the defs). Figures are engraved by tone from their own colors: dark colors solid, mid colors (clothes, hair) as a checker or lines, skin and light colors left bare, with every outline kept, so a person never looks undressed.
 
 Colors, one per operation (the Glowforge app only groups steps by color: you pick Cut, Score or Engrave for each): **cut** red `#ff0000`, stroke only, fill none; **engrave** blue `#0000ff`, filled shapes with stroke none (the app takes a stroke as a cut); **score** magenta `#ff00ff`, strokes only, for paper kits (folds), and never on a coin. The coin's only cut is its outer circle (plus a hole, where the token has one); every engraved shape is inside it, and the rim ticks end 1 mm short of it. Letters are at least 2.5 mm tall, nothing is engraved past 15.1 mm from the center except the rim, holes leave 3 mm of wood to the rim, and the build **fails when any two elements** (each text line, arc, the figure or motif, the series number, the mint mark, the Sandscript letter, the rim, a hole) come within 0.6 mm of each other (1 mm to a hole), naming the pair.
 
@@ -328,3 +361,84 @@ Maximus has a machine-embroidery patch as a feelie (`games/maximus/patch/`: `des
 - `viewCheck.ts` (with `viewCheckCli.ts`) — `npx vite-node ../games/kit/viewCheckCli.ts [<id>...]` (logic in `viewCheck.ts`): view edge. Replays each game's walkthrough on the engine and lists monsters PLAYGAME doesn't draw (so they can't hurt) because their map cell is in the screen's left column or top row, or past the right or bottom bound (`ScrnLowBnd`/`onscrn`, PLAYGAME.C:294), while most of their pixels would be on screen for half a second or more at a stretch: scene, monster number, frames hidden, edge, first cell. A suggestion an author can dismiss: it can't tell a monster meant to hide, and sees only the walkthrough's route. `checkGames.ts` prints a count line (advisory, never fails).
 
 Colors That Work plays both lessons with a simulated scene palette (`alike.pal`); its cards still compare the original and simulated colors. Beat the Clock writes valid empty monster and monster-block sets because its maps place no monsters.
+
+- `starter/graduationLevel.ts` — builds the aisle level, with the hall, audience, stage and certificate.
+- `starter/graduationLevel.test.ts` — replays the graduation walkthroughs and checks every guest’s complete bounds during the ceremony pause.
+- `starter/graduationTools.ts` — shared arrival and aisle routes, play checks, demo recording and walkthrough writing.
+
+## Other kit files
+
+- `coolSign.ts` — draws and places the two-block cOoL plaque on a copy of a scene’s block set, without covering used cells.
+- `cdDemos/games.ts` — the CD games missing title demos, bot settings for each and reasons for skipping others.
+- `scans/blacklight.py` — makes the desk’s day and night black-light portraits from the maintainer’s private photo (`python3 games/kit/scans/blacklight.py` from the root; needs Pillow and NumPy).
+- `starter/graduationCameo.ts` — recolors the Cast’s existing sprites, Teddy, Gwinn and THE CHEZ into a graduation hall’s palette.
+- `starter/graduationCast.ts` — allocates and recolors the Starter helpers’ and Doc Leo’s hall blocks.
+- `starter/graduationConfig.ts` — the `Graduation` data shape for the stage, hall, arrival, text, song and guests.
+- `starter/graduationFriends.ts` — draws the Starter friends in their own colors, clapping in graduation robes.
+- `starter/graduationGame.ts` — builds the graduation’s title, ending and level scenes and their links.
+- `starter/graduationHall.ts` — draws hall blocks, the stage, balcony, drapes, lectern, certificate and guests.
+- `starter/graduationPreview.ts` — writes block, hero, monster, whole-map and disk-picture PNG previews for a game’s `tools/preview.ts`.
+- `starter/graduationScreens.ts` — draws the academic title and menu, with the stage’s colors, seal and borders.
+- `starter/graduationShots.ts` — writes title, menu, sting and walkthrough PNGs: `npx vite-node ../games/kit/starter/graduationShots.ts <game id> <outDir> [prefix] [walkEvery]`.
+- `starter/graduationSting.ts` — draws the silent GRADSTNG.FLI opening with curtains, gold lettering and tossed mortarboards.
+- `starter/graduationText.ts` — shared instructions, credits and lost pages; each graduation supplies its story and win pages.
+- `starter/graduationTheme.ts` — the hall theme’s optional block overrides and wall decorations.
+- `starter/graduationThemes.ts` — draws the later halls’ gym, castle, theater, lab and gallery themes in the shared ramps.
+
+- [README.md](README.md) — this kit’s file and command map.
+- [TIN-HEARTS.md](TIN-HEARTS.md) — placing and checking hearts, cameos and Easter eggs.
+- [dosStates/README.md](dosStates/README.md) — the source and fields of the DOS reference tables.
+- `dosStates/bcuda.txt` — recorded DOS demo states for `bcuda`, compared by `dosStates.ts`.
+- `dosStates/houses.txt` — recorded DOS demo states for `houses`, compared by `dosStates.ts`.
+- `dosStates/nebula.txt` — recorded DOS demo states for `nebula`, compared by `dosStates.ts`.
+- `dosStates/peach.txt` — recorded DOS demo states for `peach`, compared by `dosStates.ts`.
+- `dosStates/pipemare.txt` — recorded DOS demo states for `pipemare`, compared by `dosStates.ts`.
+- `dosStates/tutor.txt` — recorded DOS demo states for `tutor`, compared by `dosStates.ts`.
+- `dosStates/volume.txt` — recorded DOS demo states for `volume`, compared by `dosStates.ts`.
+- `dosStates/zark.txt` — recorded DOS demo states for `zark`, compared by `dosStates.ts`.
+- `scans/bardlogo.jpg` — repository photo scan used by game artwork.
+- `scans/chez.jpg` — repository photo scan used by game artwork.
+- `scans/colonial.jpg` — repository photo scan used by game artwork.
+- `scans/docleo.jpg` — repository photo scan used by game artwork.
+- `scans/gazebo.jpg` — repository photo scan used by game artwork.
+- `scans/goatcover.jpg` — repository photo scan used by game artwork.
+- `scans/gwinn.jpg` — repository photo scan used by game artwork.
+- `scans/leo.jpg` — repository photo scan used by game artwork.
+- `scans/library.jpg` — repository photo scan used by game artwork.
+- `scans/needle1.jpg` — repository photo scan used by game artwork.
+- `scans/needle10.jpg` — repository photo scan used by game artwork.
+- `scans/needle11.jpg` — repository photo scan used by game artwork.
+- `scans/needle12.jpg` — repository photo scan used by game artwork.
+- `scans/needle13.jpg` — repository photo scan used by game artwork.
+- `scans/needle14.jpg` — repository photo scan used by game artwork.
+- `scans/needle2.jpg` — repository photo scan used by game artwork.
+- `scans/needle3.jpg` — repository photo scan used by game artwork.
+- `scans/needle4.jpg` — repository photo scan used by game artwork.
+- `scans/needle5.jpg` — repository photo scan used by game artwork.
+- `scans/needle6.jpg` — repository photo scan used by game artwork.
+- `scans/needle7.jpg` — repository photo scan used by game artwork.
+- `scans/needle8.jpg` — repository photo scan used by game artwork.
+- `scans/needle9.jpg` — repository photo scan used by game artwork.
+- `scans/seed1.jpg` — repository photo scan used by game artwork.
+- `scans/seed2.jpg` — repository photo scan used by game artwork.
+- `scans/seed3.jpg` — repository photo scan used by game artwork.
+- `scans/seed4.jpg` — repository photo scan used by game artwork.
+- `scans/seed5.jpg` — repository photo scan used by game artwork.
+- `scans/seed6.jpg` — repository photo scan used by game artwork.
+- `scans/seed7.jpg` — repository photo scan used by game artwork.
+- `scans/teddy.jpg` — repository photo scan used by game artwork.
+- `scans/scan.ts` — makes the small repository scans from private source photos: `npx vite-node ../games/kit/scans/scan.ts` from `web/` (needs ffmpeg and cjpeg).
+
+## Sound-stress diagnostic
+
+[testdisks/sound-stress/README.md](testdisks/sound-stress/README.md) gives the build, check and floppy-image commands and the listening procedure. Physical PS/1 playback and audio timing are hardware-untested by these automated checks.
+
+- `testdisks/sound-stress/README.md` — the diagnostic’s build, emulator, listening and verification instructions.
+- `testdisks/sound-stress/audio.ts` — the deterministic nine-part CMF band and its instruments.
+- `testdisks/sound-stress/build.ts` — writes the private diagnostic disk (`npx vite-node ../games/kit/testdisks/sound-stress/build.ts [--out <directory>]`).
+- `testdisks/sound-stress/check.ts` — compares independent builds, walks both rooms and renders software OPL2 loops (`npx vite-node ../games/kit/testdisks/sound-stress/check.ts [--out <evidence directory>]`).
+- `testdisks/sound-stress/disk.ts` — assembles diagnostic game files, pictures, help, rooms, music and effects.
+- `testdisks/sound-stress/effects.ts` — four deterministic PCM effects, including the intentional 65,536-byte DOS boundary probe.
+- `testdisks/sound-stress/floppy.ts` — makes a nonbootable 1.44 MB FAT12 image with the DOS runtime and notices.
+- `testdisks/sound-stress/image.ts` — writes a new private floppy image and refuses replacement (`npx vite-node ../games/kit/testdisks/sound-stress/image.ts --out <new SOUNDTST.img>`).
+- `testdisks/sound-stress/rooms.ts` — two flat rooms with one-shot effect pads, score pads and doors that reset the course.
