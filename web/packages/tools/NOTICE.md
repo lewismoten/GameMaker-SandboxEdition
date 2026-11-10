@@ -18,6 +18,17 @@ The underlying web port and game-building tools were written with Anthropic Clau
 
 No game-specific artwork, palettes, characters, recordings, or complete games are included. Consumers supply and credit their own content.
 
+## ISO 9660 and Rock Ridge
+
+`src/iso9660.ts` implements the ISO 9660 disk layout described by ECMA-119, with
+System Use Sharing Protocol (SUSP, IEEE P1281) and Rock Ridge Interchange Protocol
+(RRIP, IEEE P1282) entries for long names, Unix modes and symbolic links.
+These are format references; no third-party implementation code is included.
+The writer was written for this project with Anthropic Claude Opus 5.5 under Lewis Moten's
+direction and is distributed under the project's MIT License. OpenAI Codex moved
+the writer and its tests into this package and added the fixed-image SHA-256
+regression check under his direction.
+
 ## Optional source audio conversion
 
 `audio-files` invokes an independently installed [FFmpeg](https://ffmpeg.org/) executable

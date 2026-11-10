@@ -20,6 +20,11 @@
     "NOTICE.md"
   ],
   "exports": {
+    "./iso9660": {
+      "types": "./dist/types/iso9660.d.ts",
+      "gamemaker-source": "./src/iso9660.ts",
+      "import": "./dist/iso9660.js"
+    },
     "./drawing": {
       "types": "./dist/types/drawing.d.ts",
       "browser": null,

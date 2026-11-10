@@ -30,7 +30,7 @@ F10 shows that About page and "Originally made with Game-Maker x.xx"; the DOS ex
 its bytes stay in the record only).
 
 - The native downloads wrap the single page in the prebuilt players: `macApp.ts` (with
-  `macSign.ts`, `macIcon.ts`, and `iso9660.ts`, `dsStore.ts` and `udif.ts` for the `.dmg`),
+  `macSign.ts`, `macIcon.ts`, `dsStore.ts` and `udif.ts`, plus `iso9660` in the tools package for the `.dmg`),
   `winApp.ts` (`peResources.ts`, `winIcon.ts`) and `linuxApp.ts` (`kit/tar` in the tools package).
 - What a download carries about itself: `notices.ts` (`THIRD-PARTY-NOTICES.txt`),
   `recordedAudio.ts` (a Bard of Bizarre game's non-commercial voice clips), `fiction.ts` (the note
