@@ -251,3 +251,33 @@ it('can turn in a one-cell top-down corridor before a long walk animation finish
   const r = await replayPath(t.game, t, 2, entry, ex.moves, pathTo(ex, ex.exits[0].via));
   expect(r?.link).toBe(0);
 });
+
+it('keeps short vertical steps aligned in a corridor when other terrain has gravity', async () => {
+  const t = testGame(['#####', '#S.c#', '#.###', '#.###', '#E###', '#####']);
+  const blocks = parseBlocks(t.get('test.bbl')!, BACKBL);
+  blocks[0].grav = 15; // Canceled pulls in the corridor, downward pull on the coin.
+  t.files.set('test.bbl', serializeBlocks(blocks));
+  const chr = parseCharacter(t.get('test.chr')!);
+  const down = chr.sequences[7];
+  down.key = 0x5000;
+  down.norepeat = 1;
+  for (let i = 0; i < 3; i++) Object.assign(down.frames[i], { x: 0, y: 1, pic1: 50, pic2: 0, pause: 1 });
+  chr.sequences[0].frames[0].pic1 = 50;
+  t.files.set('test.chr', serializeCharacter(chr));
+  const entry = { start: { x: 1, y: 1 }, ci: startCharInfo(), clock: 1 };
+  const ex = await explore(t.game, 2, t, entry, {
+    goal: [401],
+    steerAirborne: true,
+    alignTurns: true,
+    steadyTicks: 3,
+    steadySteering: true,
+    moveFilter: (move) => move.name.startsWith('walk 80'),
+    stopAt: () => true,
+    maxNodes: 500,
+    now: () => 0,
+  });
+  expect(ex.gravity).toBe(true);
+  expect(ex.exits).not.toHaveLength(0);
+  const replay = await replayPath(t.game, t, 2, entry, ex.moves, pathTo(ex, ex.exits[0].via));
+  expect(replay?.link).toBe(0);
+});

@@ -28,7 +28,7 @@ export interface ExploreOptions {
   maxNodes?: number;
   /** Keep active-key and flight checkpoints for continuous walkthrough steering. */
   steerAirborne?: boolean;
-  /** Preserve top-down alignment and mid-animation turns for a detailed maze search. */
+  /** Preserve corridor alignment and mid-animation turns, including in scenes that mix gravity modes. */
   alignTurns?: boolean;
   /** Key search: preserve combat/momentum transitions and favor less explored cells. */
   resourceSearch?: boolean;
@@ -201,7 +201,9 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
   const w = sim.w;
   const bg = w.bg;
   const gravity = opt.steerAirborne ? directionalGravity(w) : bg.some((b) => b.grav !== 0);
-  const turning = opt.steerAirborne && !gravity && opt.alignTurns;
+  // A scene can mix gravity-driven platforms with corridors where opposing
+  // pulls cancel. Those corridors still need precise turns on both axes.
+  const turning = opt.steerAirborne && opt.alignTurns;
   const sequencesByKey = new Map<number, number[]>();
   w.chr.sequences.forEach((sequence, index) => {
     const key = sequence.key >> 8;

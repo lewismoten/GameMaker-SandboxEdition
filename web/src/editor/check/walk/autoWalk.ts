@@ -321,7 +321,7 @@ export async function autoWalk(game: Game, files: FileSource, gameId: string, op
           steadyTicks: 3,
           steadySteering: true,
           steerAirborne: true,
-          alignTurns: st.id === 'search',
+          alignTurns: st.id === 'search' || st.id === 'walker',
           ...st.options(goal),
           ...more,
           exact,
