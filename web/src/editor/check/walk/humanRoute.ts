@@ -10,6 +10,8 @@ import { LASTMM, LASTMON, type CharInfo, type World } from '@lewismoten/gamemake
 import type { Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { explore, type Entry } from '../explore';
 import { SceneSim, type FileSource } from '../sim';
+import { BASIC_KEYS } from '../keyLimit';
+import type { Move } from '../inputs';
 import { pathTo, replayPath, type Replay } from './replayPath';
 
 /** How far from the hero (blocks across, down) a thing is still "in sight": about a screen. */
@@ -59,7 +61,9 @@ export async function humanRoute(
   let events: Replay['events'] = [];
   const t0 = performance.now();
   const left = () => budgetMs - (performance.now() - t0);
-  const moveFilter = (m: { name: string; waits?: boolean }) => !m.waits;
+  // Prefer arrows, Space and Enter for the person's route; fallback styles
+  // still try the character's extra keys when this route cannot get through.
+  const moveFilter = (m: Move) => !m.waits && m.steps.every((step) => step.keys.every((key) => BASIC_KEYS.has(key)));
   let at = { x: entry.start.x, y: entry.start.y };
   let base = have(start.ci);
   let misses = 0;
@@ -72,7 +76,9 @@ export async function humanRoute(
     targets = targets.filter((c) => c !== near.c);
     const ex = await explore(game, scene, files, entry, {
       goal: [near.c],
+      steerAirborne: true,
       steadyTicks: 3 + (leg % 2),
+      steadySteering: true,
       moveFilter,
       budgetMs: Math.min(left(), budgetMs / 6),
       start: from?.snap,
@@ -100,7 +106,9 @@ export async function humanRoute(
   // then the way on, with the same steady hands
   const ex = await explore(game, scene, files, entry, {
     goal,
+    steerAirborne: true,
     steadyTicks: 3,
+    steadySteering: true,
     moveFilter,
     budgetMs: Math.max(1000, left()),
     start: from?.snap,

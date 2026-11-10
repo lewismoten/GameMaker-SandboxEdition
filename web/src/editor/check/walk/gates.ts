@@ -152,7 +152,7 @@ export function sourcesOf(
 }
 
 /** Monsters on the go now that add to a counter when touched, or turn into one that does when they die. */
-function liveMonsterSources(w: World): Source[] {
+export function liveMonsterSources(w: World): Source[] {
   const out: Source[] = [];
   for (let l = 0; l < LASTMM; l++) {
     const mm = w.mm[l];

@@ -196,7 +196,14 @@ function budgetDiagnostic(kind: FetchKeysRoundDiagnostic['kind'], sources: Fetch
 }
 
 /** The route that fetches the keys and then reaches a way on (merged keys), with compact diagnostics. */
-export async function fetchKeys(game: Game, files: FileSource, scene: number, entry: Entry, locks: Locks, o: FetchOptions): Promise<FetchKeysResult> {
+export async function fetchKeys(
+  game: Game,
+  files: FileSource,
+  scene: number,
+  entry: Entry,
+  locks: Pick<Locks, 'owed' | 'wanted' | 'sources'>,
+  o: FetchOptions,
+): Promise<FetchKeysResult> {
   const rounds: FetchKeysRoundDiagnostic[] = [];
   if (!locks.wanted.size) return { diagnostics: { rounds, cutoff: 'no-reachable-state' } };
   const owed = locks.owed;
@@ -222,17 +229,44 @@ export async function fetchKeys(game: Game, files: FileSource, scene: number, en
     }
     const before = Array.from(meter);
     const gained = (w: World) => [...locks.wanted].some((c) => w.ci.meter[c] > before[c]);
+    let leavingPaid = false;
     const ex1 = await explore(game, scene, files, entry, {
       budgetMs: left,
       resourceSearch: true,
+      // Resource routes can depend on enemies that move into view during a long climb.
+      exact: true,
+      steadyTicks: 3,
+      steadySteering: true,
+      steerAirborne: true,
       goal: sources.map((source) => source.cell),
       stopWhen: (w) => paid(w.ci.meter) || gained(w),
-      ...(r1 ? { start: r1.snap, exact: true } : {}),
+      onTick: (w) => {
+        leavingPaid = paid(w.ci.meter);
+      },
+      stopAt: (link) => leavingPaid && o.wanted.has(link),
+      ...(r1 ? { start: r1.snap } : {}),
       progress: o.progress,
       now: o.now,
     });
     const diagnostic = roundDiagnostic('key', ex1, sources, sourceDistance, left);
     rounds.push(diagnostic);
+    // A pickup can occupy the exit itself; keep its real transition rather than
+    // requiring an intermediate resting place inside this scene.
+    for (const exit of ex1.exits.filter((e) => o.wanted.has(e.link) && paid(e.ci.meter)).sort((a, b) => a.tick - b.tick)) {
+      const r = await replayPath(
+        game,
+        files,
+        scene,
+        entry,
+        ex1.moves,
+        pathTo(ex1, exit.via),
+        seed,
+        r1?.snap ? { snap: r1.snap, ticks: r1.ticks } : undefined,
+        o.paths,
+      );
+      if (r && o.wanted.has(r.link) && paid(r.ci.meter))
+        return { replay: r1 ? { ...r, events: [...r1.events, ...r.events] } : r, diagnostics: { rounds, cutoff: null } };
+    }
     const at = ex1.reached === undefined ? undefined : ex1.places[ex1.reached]?.via;
     if (!at) {
       cutoff = ex1.complete ? 'no-reachable-state' : 'budget';
@@ -258,6 +292,9 @@ export async function fetchKeys(game: Game, files: FileSource, scene: number, en
   const ex2 = await explore(game, scene, files, entry, {
     goal: o.goal,
     resourceSearch: true,
+    steadyTicks: 3,
+    steadySteering: true,
+    steerAirborne: true,
     start: r1.snap,
     exact: true,
     budgetMs: o.budgetMs * 0.5,

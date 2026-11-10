@@ -10,6 +10,9 @@ Runs level checks against native game data and engine-backed exploration, return
 - [`worker.ts`](worker.ts): Reconstructs `GameFiles`, calls `runChecks`, and posts progress, live data, completion, or errors.
 - [`report.ts`](report.ts): Collects scene/game checks, optional exploration and comparison runs, then deduplicates and sorts findings into serializable summaries.
 - [`sim.ts`](sim.ts): `SceneSim` loads and ticks engine worlds with synthetic keys, seeded randomness, and compact snapshot/restore support.
+- [`terrainStates.ts`](terrainStates.ts): Follows touch and animation cycles to identify possible passages and footings for planning.
+- [`platformGoals.ts`](platformGoals.ts): Ranks platform routes between footings with relaxed jump arcs, including map wrapping, so falling past an exit does not replace a stair route. Actual moves and replay determine reachability.
+- [`goalDistances.ts`](goalDistances.ts): Ranks goals by wrapped distance around permanent walls, allowing blocks that can open through touch or animation. It guides search without claiming that a jump or gate is reachable.
 - [`explore.ts`](explore.ts): Searches bucketed scene states using generated moves, recording heat, exits, incidents, and graph edges, then confirms suspected stuck areas.
 
 ## Loading and development
