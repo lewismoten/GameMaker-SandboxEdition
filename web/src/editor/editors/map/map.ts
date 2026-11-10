@@ -1352,6 +1352,7 @@ registerEditor(['map'], (host, project, file) => {
     'button',
     {
       type: 'button',
+      class: 'mt-generate-btn',
       title: 'Draw a dungeon, forest, building, town, overworld or side view from the blocks marked with roles in the block editor',
       disabled: !bblName || !project.files.has(bblName),
       onclick: () =>
