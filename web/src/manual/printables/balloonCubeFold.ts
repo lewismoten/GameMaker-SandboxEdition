@@ -177,38 +177,57 @@ interface FoldStep {
   /** What folds, in plain words. */
   caption: string;
 }
-/** Step 0 is the flat square; each later step is one fold. */
+/** Step 0 is the flat square; each later step is one fold. The order follows the traditional paper balloon (a water bomb): crease the
+ * square, collapse it, fold the four corners to the top, tuck the flaps in, blow. The waterbomb is a traditional fold, not anyone's design. */
 export const STEPS: FoldStep[] = [
   {
     label: 'Flat square',
     caption:
-      'The cut-out square, printed side down. The middle diamond is the bottom, the four diamonds around it are the sides, the four paper corners are the lid, and the four gray triangles between the sides are the tucks.',
+      'The cut-out square, printed side up. The middle diamond is the bottom, the four diamonds around it are the sides, the four paper corners make the lid, and the four gray triangles on the edges are the tucks.',
+  },
+  {
+    label: 'Crease the square',
+    caption:
+      'Pre-crease: fold the square in half both ways and along both diagonals, creasing each one firmly, then open it flat again. Red dashes are valley folds (toward you), dark dash-dot lines are mountain folds (away from you).',
   },
   {
     label: 'Lift the sides',
-    caption: 'Lift all four sides from the middle diamond. Each gray tuck, joined to two sides, starts to buckle along its middle line.',
+    caption:
+      'Hold the middle diamond flat and start lifting the four sides. The creases collapse the square, and each gray tuck starts to buckle along its middle line.',
   },
   {
     label: 'Stand the sides up',
-    caption: 'Stand the sides upright. Each tuck folds in half along its middle line and lies flat inside the cube, between two sides.',
+    caption: 'Stand the four sides upright. Each gray tuck folds in half along its middle line and slides inside the cube, between two sides.',
   },
-  { label: 'First corner over the top', caption: 'Fold the first paper corner (a triangle on top of a side) over the top, along its edge.' },
-  { label: 'Second corner over the top', caption: 'Fold the second corner triangle over the top. Its tip meets the first at the middle of the lid.' },
-  { label: 'Third corner over the top', caption: 'Fold the third corner triangle over the top, to the same middle point.' },
+  { label: 'First corner over the top', caption: 'Fold the first paper corner (the triangle above a side) over the top, along its edge.' },
+  { label: 'Second corner over the top', caption: 'Fold the second corner over the top. Its right-angle tip meets the first at the middle of the lid.' },
+  { label: 'Third corner over the top', caption: 'Fold the third corner over the top, to the same middle point.' },
   {
     label: 'Fourth corner over the top',
-    caption: 'Fold the fourth corner triangle over the top. The four right angles meet at the middle, where the blow hole is.',
+    caption: 'Fold the fourth corner over the top. The four right angles meet at the middle, where the blow hole is.',
+  },
+  {
+    label: 'Tuck the flaps into the pockets',
+    caption:
+      'Close-up: lift each lid corner a little and slide the top edge of the gray tuck under it, into the pocket between the two sides. Press the corner down on it. The tucks are what hold the lid shut.',
   },
   { label: 'Blow it up', caption: 'Blow gently into the hole. The cube swells and the corners press out. The lid is the 0.' },
 ];
 
 const clamp01 = (x: number) => Math.min(1, Math.max(0, x));
-/** The fold state at a position along the steps (0 = flat, 7 = finished); fractions are partway through a step. */
+/** The fold state at a position along the steps (0 = flat, 9 = finished); fractions are partway through a step. */
 export function stateAt(pos: number): FoldState {
-  const wall = QUARTER * (0.5 * clamp01(pos) + 0.5 * clamp01(pos - 1));
-  const corner = [0, 1, 2, 3].map((i) => QUARTER * clamp01(pos - 2 - i)) as FoldState['corner'];
-  return { wall, corner, puff: clamp01(pos - 6) };
+  const wall = QUARTER * (0.5 * clamp01(pos - 1) + 0.5 * clamp01(pos - 2));
+  // the tuck step opens each corner a little and presses it back down on its tuck
+  const lift = Math.sin(Math.PI * clamp01(pos - 7)) * 0.35;
+  const corner = [0, 1, 2, 3].map((i) => QUARTER * (clamp01(pos - 3 - i) - (pos > 7 ? lift : 0))) as FoldState['corner'];
+  return { wall, corner, puff: clamp01(pos - 8) };
 }
+
+/** 0 to 1: how much of the pre-crease lines are drawn (step 1), then they fade as the sides lift. */
+export const creaseAt = (pos: number): number => clamp01(pos) * (1 - clamp01((pos - 1) * 3));
+/** 0 to 1: the tuck close-up's highlight (step 8). */
+export const tuckFocusAt = (pos: number): number => clamp01(pos - 7) * (1 - clamp01((pos - 8) * 3));
 
 export type View = { yaw: number; pitch: number };
 /** Turn the folded paper over (cube standing, lid up), then look at it from `view` (orthographic): [screen x, screen y (down), nearness]. */

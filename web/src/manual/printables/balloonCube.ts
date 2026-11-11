@@ -104,6 +104,22 @@ function sheetSvg(it: BalloonCubeItem, o: { plain?: boolean; arrows?: boolean; w
     (c) =>
       `<line x1="${px(c.a)[0]}" y1="${px(c.a)[1]}" x2="${px(c.b)[0]}" y2="${px(c.b)[1]}" stroke="${c.kind === 'mountain' ? INK : RED}" stroke-width="${o.plain ? 5 : 2.6}" stroke-dasharray="${dash[c.kind]}"/>`,
   ).join('');
+  // the pre-crease lines (step 2 of the instructions): both midlines (mountain) and both diagonals (valley), thinner than the cube's own creases
+  const pre = o.plain
+    ? ''
+    : (
+        [
+          [[-0.5, 0], [0.5, 0], 'mountain'],
+          [[0, -0.5], [0, 0.5], 'mountain'],
+          [[-0.5, -0.5], [0.5, 0.5], 'valley'],
+          [[-0.5, 0.5], [0.5, -0.5], 'valley'],
+        ] as [V2, V2, 'mountain' | 'valley'][]
+      )
+        .map(
+          ([a, b, kind]) =>
+            `<line x1="${px(a)[0]}" y1="${px(a)[1]}" x2="${px(b)[0]}" y2="${px(b)[1]}" stroke="${kind === 'mountain' ? INK : RED}" stroke-opacity="0.55" stroke-width="1.5" stroke-dasharray="${dash[kind]}"/>`,
+        )
+        .join('');
   const arrows = o.arrows
     ? TUCKS.map((t) => {
         const c = px([
@@ -116,7 +132,7 @@ function sheetSvg(it: BalloonCubeItem, o: { plain?: boolean; arrows?: boolean; w
   return (
     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="-12 -12 ${SHEET + 24} ${SHEET + 24}" role="img" aria-label="The square sheet with its fold lines and faces">` +
     `<defs>${clips}<pattern id="hatch${o.width}" width="14" height="14" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="14" height="14" fill="#ece8dc"/><line x1="0" y1="0" x2="0" y2="14" stroke="#9a948a" stroke-width="3"/></pattern></defs>` +
-    `<rect x="0" y="0" width="${SHEET}" height="${SHEET}" fill="#fff"/>${tucks}${faces}${lines}${arrows}` +
+    `<rect x="0" y="0" width="${SHEET}" height="${SHEET}" fill="#fff"/>${tucks}${faces}${pre}${lines}${arrows}` +
     `<rect x="0" y="0" width="${SHEET}" height="${SHEET}" fill="none" stroke="#000" stroke-width="3"/></svg>`
   );
 }
@@ -245,18 +261,26 @@ const legend = (): HTMLElement =>
       `<span><svg viewBox="0 0 24 8"><rect width="24" height="8" fill="#ece8dc"/><path d="M0,8L8,0M8,8L16,0M16,8L24,0" stroke="#9a948a" stroke-width="1.6"/></svg>tucks inside</span>`,
   );
 
-/** On screen only: a button that loads the 3D fold animation (its own chunk) in place. */
-function watchButton(it: BalloonCubeItem): HTMLElement {
-  const open = h('button', { type: 'button', class: 'bc-live-open' }, 'Watch it fold in 3D');
-  const box = h('div', { class: 'bc-live' }, open);
-  open.addEventListener('click', () => {
-    open.disabled = true;
-    open.textContent = 'Loading...';
-    void import('./balloonCubeFoldView').then(({ foldViewer }) => {
-      box.replaceChildren(foldViewer(it));
-    });
+/** The first thing on screen: the 3D fold animation (its own chunk, loaded when the item opens) with a labeled link to the printable sheets. */
+async function watchSheet(it: BalloonCubeItem): Promise<Sheet> {
+  const { foldViewer } = await import('./balloonCubeFoldView');
+  const toPrint = h('button', { type: 'button', class: 'bc-live-open' }, 'Printable sheet to cut out');
+  toPrint.addEventListener('click', () => {
+    const next = toPrint.closest('.pp-paper')?.nextElementSibling;
+    if (!(next instanceof HTMLElement)) return;
+    next.setAttribute('tabindex', '-1');
+    next.scrollIntoView({ block: 'start' });
+    next.focus({ preventScroll: true });
   });
-  return box;
+  return sheet(
+    8.5,
+    11,
+    'ballooncube balloonwatch',
+    h('h2', null, `${it.heading ?? it.title}: watch it fold`),
+    h('p', { class: 'bc-intro' }, 'Step through the folds one at a time, or press Play. The printable square and the picture steps are on the next pages.'),
+    h('div', { class: 'bc-live' }, foldViewer(it)),
+    h('div', { class: 'bc-live' }, toPrint),
+  );
 }
 
 /** The balloon cube's two letter sheets: the square to cut out and fold, then the steps. */
@@ -265,6 +289,7 @@ export async function balloonCubeSheets(it: BalloonCubeItem): Promise<Sheet[]> {
     h('li', { class: 'bc-step' }, html('div', 'bc-pic', svg), h('p', null, h('b', null, `${n}. `), text));
   const side = Math.round(L * 7.5 * 100) / 100;
   return [
+    await watchSheet(it),
     sheet(
       8.5,
       11,
@@ -290,7 +315,7 @@ export async function balloonCubeSheets(it: BalloonCubeItem): Promise<Sheet[]> {
         step(1, 'Cut out the square along its solid edge.', sheetSvg(it, { plain: true, width: 100 })),
         step(
           2,
-          'Crease every dashed and dash-dot line the way the legend says, then unfold. Keep the middle square flat and start lifting the four faces, as shown.',
+          'Pre-crease: fold the square in half both ways and along both diagonals (the thin lines), creasing each one firmly, then crease every dashed and dash-dot line the way the legend says and unfold. Keep the middle square flat and start lifting the four faces, as shown.',
           balloonCubeLiftSvg(),
         ),
         step(
@@ -303,10 +328,17 @@ export async function balloonCubeSheets(it: BalloonCubeItem): Promise<Sheet[]> {
           'Fold the four corner triangles over the top, along the dash-dot lines, so their right angles meet in the middle of the lid.',
           cubeSvg(it, 0.85, false),
         ),
-        step(5, 'The corners now meet at a small hole, with a seam to each corner of the lid. Blow gently into it.', cubeSvg(it, Math.PI / 2, false)),
-        step(6, 'Press out the corners. It is a die, and the lid is the 0. Roll it to pick a booth.', cubeSvg(it, Math.PI / 2, true)),
+        step(
+          5,
+          'The corners meet at a small hole, with a seam to each corner of the lid. Lift each corner a little, slide the top edge of the gray tuck under it and press the corner back down. The tucks are what hold the lid shut.',
+          cubeSvg(it, Math.PI / 2, false),
+        ),
+        step(
+          6,
+          'Blow gently into the hole and press out the corners. It is a die, and the lid is the 0. Roll it to pick a booth.',
+          cubeSvg(it, Math.PI / 2, true),
+        ),
       ),
-      watchButton(it),
       it.foot ? h('p', { class: 'bc-foot' }, it.foot) : null,
     ),
   ];

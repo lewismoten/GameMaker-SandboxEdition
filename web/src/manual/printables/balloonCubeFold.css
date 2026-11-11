@@ -106,3 +106,16 @@
   margin: 0;
   min-height: 5.4em;
 }
+
+.bcf-crease {
+  fill: none;
+  stroke-width: 2.4;
+}
+.bcf-valley {
+  stroke: #c4202c;
+  stroke-dasharray: 8 5;
+}
+.bcf-mountain {
+  stroke: #1c1630;
+  stroke-dasharray: 10 4 2 4;
+}

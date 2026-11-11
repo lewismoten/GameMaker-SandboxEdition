@@ -117,3 +117,15 @@
     display: none;
   }
 }
+
+/* the watch-it-fold page is for the screen: it is not printed, and it stacks its viewer and button */
+.pp-balloonwatch {
+  display: flex;
+  flex-direction: column;
+  gap: 2cqw;
+}
+@media print {
+  .pp-paper:has(> .pp-balloonwatch) {
+    display: none;
+  }
+}

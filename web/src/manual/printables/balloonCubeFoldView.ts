@@ -6,7 +6,7 @@ import { h } from '../../editor/core/ui';
 import { faceArt } from './balloonCube';
 import { L, PLACEMENTS, type V2, type V3 } from './balloonCubeModel';
 import type { BalloonCubeItem } from './balloonCubeTypes';
-import { PANELS, STEPS, apply, normalOf, pose, stateAt, toView, type Panel, type View } from './balloonCubeFold';
+import { PANELS, STEPS, apply, creaseAt, normalOf, pose, stateAt, toView, tuckFocusAt, type Panel, type View } from './balloonCubeFold';
 
 const NS = 'http://www.w3.org/2000/svg';
 const VIEW: View = { yaw: (38 * Math.PI) / 180, pitch: (57 * Math.PI) / 180 };
@@ -40,6 +40,20 @@ export function foldViewer(item: BalloonCubeItem): HTMLElement {
   svg.append(defs);
   const stage = el('g');
   svg.append(stage);
+  // the pre-crease lines (step 1), drawn over the flat sheet: both midlines and both diagonals
+  const creaseG = el('g', { class: 'bcf-creases', 'aria-hidden': 'true' });
+  const CREASE_LINES: { a: V2; b: V2; valley: boolean }[] = [
+    { a: [-0.5, 0], b: [0.5, 0], valley: false },
+    { a: [0, -0.5], b: [0, 0.5], valley: false },
+    { a: [-0.5, -0.5], b: [0.5, 0.5], valley: true },
+    { a: [-0.5, 0.5], b: [0.5, -0.5], valley: true },
+  ];
+  const creaseEls = CREASE_LINES.map((c) => {
+    const ln = el('line', { class: c.valley ? 'bcf-crease bcf-valley' : 'bcf-crease bcf-mountain' });
+    creaseG.append(ln);
+    return ln;
+  });
+  svg.append(creaseG);
 
   const drawn: Drawn[] = PANELS.map((panel) => {
     const g = el('g');
@@ -94,7 +108,9 @@ export function foldViewer(item: BalloonCubeItem): HTMLElement {
     const xs = raw.flatMap((r) => r.vs.map((v) => v[0]));
     const ys = raw.flatMap((r) => r.vs.map((v) => v[1]));
     const [x0, x1, y0, y1] = [Math.min(...xs), Math.max(...xs), Math.min(...ys), Math.max(...ys)];
-    const scale = Math.min(330, Math.min((W * 0.86) / (x1 - x0), (H * 0.78) / (y1 - y0))) * swell;
+    const focus = tuckFocusAt(pos);
+    const scale0 = Math.min(330, Math.min((W * 0.86) / (x1 - x0), (H * 0.78) / (y1 - y0))) * swell;
+    const scale = scale0 * (1 + 0.2 * focus);
     const cx = W / 2 - ((x0 + x1) / 2) * scale;
     const cy = H * 0.47 - ((y0 + y1) / 2) * scale;
     const items = raw.map(({ d, m }) => {
@@ -107,6 +123,15 @@ export function foldViewer(item: BalloonCubeItem): HTMLElement {
       return { d, vs, n, view, depth: vs.reduce((s, v) => s + v[2], 0) / vs.length };
     });
     items.sort((a, b) => a.depth - b.depth);
+    const cr = creaseAt(pos);
+    creaseG.setAttribute('opacity', f2(cr));
+    CREASE_LINES.forEach((c, i) => {
+      const q = [c.a, c.b].map((p) => toView(apply(pose(stateAt(0)).get('bottom')!, [p[0], p[1], 0]), VIEW));
+      creaseEls[i].setAttribute('x1', f2(cx + q[0][0] * scale));
+      creaseEls[i].setAttribute('y1', f2(cy + q[0][1] * scale));
+      creaseEls[i].setAttribute('x2', f2(cx + q[1][0] * scale));
+      creaseEls[i].setAttribute('y2', f2(cy + q[1][1] * scale));
+    });
     for (const { d, vs, n, view } of items) {
       stage.append(d.g); // moves it last: drawn on top
       const printed = d.panel.kind !== 'tuck' && n[2] > 0; // the printed side faces the viewer
@@ -117,6 +142,11 @@ export function foldViewer(item: BalloonCubeItem): HTMLElement {
       d.fill.setAttribute('class', d.panel.kind === 'tuck' ? 'bcf-paper bcf-tuck' : printed ? 'bcf-paper bcf-front' : 'bcf-paper bcf-back');
       if (d.panel.kind === 'tuck') d.fill.setAttribute('fill', `url(#${id}-hatch)`);
       else d.fill.removeAttribute('fill');
+      // the tuck close-up: the lid corners turn see-through so the gray tucks under them show, outlined in red
+      d.g.setAttribute('opacity', f2(d.panel.kind === 'corner' ? 1 - 0.55 * focus : 1));
+      const hot = d.panel.kind === 'tuck' && focus > 0;
+      d.fill.style.stroke = hot ? '#c4202c' : '';
+      d.fill.style.strokeWidth = hot ? '3' : '';
       const sign = n[2] > 0 ? 1 : -1;
       const lit = Math.max(0, sign * (n[0] * LIGHT[0] + n[1] * LIGHT[1] + n[2] * LIGHT[2]));
       d.shade.setAttribute('fill-opacity', f2(Math.min(0.2, (1 - Math.min(1, lit)) * 0.2)));
