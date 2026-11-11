@@ -164,6 +164,57 @@ describe('cryptex hollow and hidden engraving', () => {
     expect(kit.parts.HEAD.hidden[0].r1).toBeLessThan(HEAD_R);
     expect(kit.parts.LID.hidden[0].r0).toBeGreaterThan(LID.plug);
   });
+  it('fills all four quadrants of every hidden region with substantial artwork', () => {
+    for (const [key, m] of Object.entries(kit.parts)) {
+      for (const zone of m.hidden) {
+        const area = [0, 0, 0, 0];
+        const pad = (m.part.size.w - m.part.w) / 2;
+        for (const it of m.part.sheet.items.slice(zone.from, zone.to)) {
+          if (it.k !== 'poly') continue;
+          const cx = it.pts.reduce((a, p) => a + p[0], 0) / it.pts.length - zone.cx - pad;
+          const cy = it.pts.reduce((a, p) => a + p[1], 0) / it.pts.length - zone.cy - pad;
+          const ink =
+            Math.abs(
+              it.pts.reduce((a, p, i) => {
+                const q = it.pts[(i + 1) % it.pts.length];
+                return a + p[0] * q[1] - q[0] * p[1];
+              }, 0),
+            ) / 2;
+          area[(cx >= 0 ? 1 : 0) + (cy >= 0 ? 2 : 0)] += ink;
+        }
+        // Reject a return to one small icon, even if that icon still passes fabrication checks.
+        for (const a of area) expect(a, `${key}: ${zone.label}`).toBeGreaterThanOrEqual(2);
+      }
+    }
+  });
+  it('uses rectangular hidden-art pixels at least 0.5 mm wide, including the lettering', () => {
+    for (const [key, m] of Object.entries(kit.parts)) {
+      for (const z of m.hidden) {
+        for (const it of m.part.sheet.items.slice(z.from, z.to)) {
+          expect(it.k, key).toBe('poly');
+          if (it.k !== 'poly') continue;
+          expect(it.pts, key).toHaveLength(4);
+          const edges = it.pts.map((p, i) => {
+            const q = it.pts[(i + 1) % it.pts.length];
+            return [q[0] - p[0], q[1] - p[1]];
+          });
+          for (const e of edges) expect(Math.hypot(...e), key).toBeGreaterThanOrEqual(0.5 - 1e-6);
+          for (let i = 0; i < edges.length; i++) {
+            const a = edges[i],
+              b = edges[(i + 1) % edges.length];
+            expect(a[0] * b[0] + a[1] * b[1], key).toBeCloseTo(0, 6);
+          }
+        }
+      }
+    }
+  });
+  it('keeps the part IDs and the complete hidden messages as readable pixel text', () => {
+    const words = (key: string) => kit.parts[key].part.texts.map((t) => t.text);
+    expect(words('A1')).toContain('TELEPORT-A-PHONE');
+    expect(words('CORE0')).toContain('YOU FOUND IT. BZZZT!');
+    expect(words('HEAD')).toContain('2000');
+    for (const id of ['A1', 'A5R', 'A5C', 'B1', 'C1', 'D1', 'B2', 'C2', 'D2', 'G1', 'G2', 'G3', 'G4']) expect(words(id)).toContain(id);
+  });
   it('leaves every buried glue face blank, including the lower washer layers and core wall slices', () => {
     for (const key of ['A2R', 'A3R', 'A4R', 'A2C', 'A3C', 'A4C', 'G1B', 'G2B', 'G3B', 'G4B', 'CORER', 'COREC', 'LIDP']) {
       expect(

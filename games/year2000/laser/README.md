@@ -96,17 +96,17 @@ on wood. All art is on the face lying **up on the sheet**, engraved before cutti
 There is no second laser pass or registration flip. Some parts are turned over **during
 assembly** so their engraved faces point down. Their blank reverse faces take the glue.
 
-| Part       | Engraved face in assembly | Hidden design and glue exclusion                                                                                                                                           |
-| ---------- | ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| A1 floor   | Up                        | Phone booth and ID beneath the removable core; BZZZT, teleporter platform and star in the surrounding hollow. Both regions avoid the collar and outer rim glue footprints. |
-| A5R, A5C   | Up                        | ID and stars on the last base layer, beneath loose rings/washers.                                                                                                          |
-| B1, C1, D1 | Down                      | Phone booth and ID inside each ring; only the blank reverse glues to its digit slice.                                                                                      |
-| E1         | Down                      | Small star in the narrow ring; no ID squeezed into its 4 mm wall.                                                                                                          |
-| B2, C2, D2 | Up                        | Moon, star and ID under the next loose ring, inside the digit band.                                                                                                        |
-| G1–G4      | Up                        | Moon, star and ID on the upper washer. Glue blank G1B–G4B underneath, with notches aligned.                                                                                |
-| CORE0      | Up                        | BZZZT and star on the inside floor of the core; the entire wall glue annulus stays blank.                                                                                  |
-| HEAD       | Down                      | Moon, star and 2000 outside the core's glue annulus.                                                                                                                       |
-| LID        | Down                      | BZZZT and star around the central plug footprint; the lid top is blank.                                                                                                    |
+| Part       | Engraved face in assembly | Hidden design and glue exclusion |
+| ---------- | ------------------------- | -------------------------------- |
+| A1 floor   | Up                        | Large phone-booth teleporter, 32 radiating beams, pulse rings, stars and TELEPORT-A-PHONE in the hollow. Arrival booth and A1 beneath the removable core. Both regions avoid the collar and outer rim glue footprints. |
+| A5R, A5C   | Up                        | Circuit bands with nodes and stars on the last base layer, beneath loose rings/washers. The wide outer rim adds chip outlines, branches and parallel traces; the collar clears the ridge slot. |
+| B1, C1, D1 | Down                      | Full bands of teleporter booths and beams (B1), cratered moons (C1), and a suburb skyline with houses and stars (D1). IDs occupy a reserved gap; only the blank reverse glues to the digit slice. |
+| E1         | Down                      | A band of 32 pixel twinkles and comet trails in the narrow ring; no ID squeezed into its 4 mm wall. |
+| B2, C2, D2 | Up                        | Larger teleporter, lunar and suburb panoramas under the next loose ring, inside the unchanged digit band. |
+| G1–G4      | Up                        | Small circuit and star bands, IDs and clear notches on the upper washers. Glue blank G1B–G4B underneath, with notches aligned. |
+| CORE0      | Up                        | YOU FOUND IT. BZZZT! on the inside floor, with BZZZT! curved along the bottom. The entire wall glue annulus stays blank. |
+| HEAD       | Down                      | Cratered moon, pixel stars, a segmented medallion rim and 2000 outside the core's glue annulus. |
+| LID        | Down                      | Cratered moon and stars with a segmented medallion rim around the central plug footprint; the lid top is blank. |
 
 The A1 center picture is uncovered when the core is out; the other inner pictures appear
 as the unlocked kit is taken apart. CORE0 provides the core-slice picture. CORER and
@@ -117,6 +117,14 @@ edges and filled interiors, not just vertices. Cut-to-engraving gaps remain at l
 or 1.5 mm at holes. IDs are omitted where hidden unglued space is too narrow; the assembly
 legend lists these parts in parentheses. Keep each unmarked piece with its labeled sheet
 position until assembly.
+
+`cryptexArt.ts` draws these hidden scenes separately from the cut geometry in
+`cryptexParts.ts`. Art uses filled square pixels at least **0.5 mm** wide, merged into
+rectangles with the shared laser bitmap helper. Hidden IDs use the existing micro font
+at 0.5 mm per pixel (2.5 mm capitals). Whole pixels stay inside the safe region; no clipped
+slivers, strokes or fine outlined details are generated. The narrow starfield uses rotated
+rectangles to keep its pixels full width. The core message is one text block with 0.5 mm
+line gaps, like its letter gaps. There are no people or vehicles in the hidden pictures.
 
 ## Scrap trial and assembly
 

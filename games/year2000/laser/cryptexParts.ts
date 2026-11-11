@@ -1,7 +1,7 @@
 // "In The Year 2000!" cryptex: the cut shape and the engraving of every part, from the measurements in cryptexDims.ts.
 // Part coordinates are millimeters on the flat piece, y down, seen from the face that lies up on the sheet (one pass, no flip).
-// Every word is already in games/year2000 (the title, the Teleport-A-Phone, "bring a quarter", the teleporter's BZZZT).
-// No people are drawn. Convex phone booths, moons, stars and a teleporter platform stay off every glue footprint.
+// Words retain the game's title, Teleport-A-Phone and BZZZT, with the requested hidden "YOU FOUND IT. BZZZT!" message.
+// Hidden pixel panoramas stay off every glue footprint; no people or vehicles are drawn.
 import { Part } from '@lewismoten/gamemaker-sandbox-tools/kit/laserLayout';
 import { rectPoly } from '@lewismoten/gamemaker-sandbox-tools/kit/laserJoints';
 import type { Pt } from '@lewismoten/gamemaker-sandbox-tools/kit/laserSvg';
@@ -13,7 +13,6 @@ import {
   LID,
   COLLAR_R,
   PX,
-  PX_ID,
   RINGS,
   SLICE_HOLE,
   SOCKET_FIT,
@@ -25,6 +24,7 @@ import {
   pocketHole,
   washerHole,
 } from './cryptexDims';
+import { circuitBand, coreMessage, floorReveal, hollowTeleporter, medallion, ringScene, starfield } from './cryptexArt';
 
 export interface Made {
   part: Part;
@@ -68,27 +68,16 @@ export function makeParts(kerf: number): Parts {
     draw();
     parts[p.name].hidden.push({ label, from, to: p.sheet.items.length, cx, cy, r0, r1 });
   };
-  const star = (p: Part, x: number, y: number, r = 0.6) => p.engrave('hidden stars', [diamond(x, y, r)]);
-  const booth = (p: Part, x: number, y: number) =>
-    p.engrave('hidden phone booth', [
-      quad(x - 3, y - 3, x + 3, y - 2),
-      quad(x - 2.6, y - 1.5, x - 0.4, y + 1),
-      quad(x + 0.4, y - 1.5, x + 2.6, y + 1),
-      quad(x - 2.6, y + 1.8, x + 2.6, y + 3),
-    ]);
 
   // --- the base: a floor, with the reading mark, the title and a few pictures --------------------------------------
   const base = add('A1', BASE, BASE, 1, 'base stack A, layer 1: the floor (the core stands on it)');
   base.outline(rectPoly([0, 0, BASE, BASE]));
   const c = BASE / 2;
   hidden(base, 'floor beneath the removable core', c, c, 0, CORE.r - 1, () => {
-    base.text('A1', 'pc', c, c + 5, PX_ID);
-    booth(base, c, c - 2);
+    floorReveal(base, c);
   });
   hidden(base, 'teleporter in the base hollow', c, c, COLLAR_R + 1, SLICE_HOLE[3] - 1, () => {
-    base.text('BZZZT', 'pc', c, c - 29, PX_ID);
-    base.engrave('hidden teleporter', [quad(c - 6, c + 26, c + 6, c + 27), quad(c - 4, c + 29, c + 4, c + 30)]);
-    star(base, c - 28, c, 1.5);
+    hollowTeleporter(base, c, COLLAR_R, SLICE_HOLE[3]);
   });
   base.text('IN THE YEAR 2000!', 'pc', c, 4, PX);
   base.text('TELEPORT-A-PHONE', 'pc', c, BASE - 4, PX);
@@ -106,21 +95,18 @@ export function makeParts(kerf: number): Parts {
 
   // --- the pocket plates, each in two parts: an outer ring and a collar round the ridge slot ---------------------------------------
   // (the interior between them is empty, and the sheets nest small parts there). IDs: A2R..A5R (R: the ring), A2C..A5C (C: the collar), bottom to top.
-  const idAt = (p: Part, id: string, x: number, y: number) => p.text(id, 'pc', x, y, PX_ID);
   for (let n = 2; n <= 5; n++) {
     const o = disc(`A${n}R`, RINGS[3], 1, `base stack A, layer ${n}, outer ring (glue on the layer below, edges flush)`);
     o.holeRound('hollow', RINGS[3], RINGS[3], SLICE_HOLE[3]);
     if (n === 5)
       hidden(o, 'top of the base rim, under ring 4', RINGS[3], RINGS[3], SLICE_HOLE[3], RINGS[3], () => {
-        idAt(o, `A${n}R`, RINGS[3], RINGS[3] - (RINGS[3] + SLICE_HOLE[3]) / 2);
-        star(o, RINGS[3] + 43, RINGS[3], 1.3);
+        circuitBand(o, RINGS[3], SLICE_HOLE[3], RINGS[3], `A${n}R`, 0, false);
       });
     const i = disc(`A${n}C`, COLLAR_R, 1, `base stack A, layer ${n}, collar round the ridge slot (ridge slots lined up, on the marker side)`);
     i.hole('ridge slot', at(pocketHole(), COLLAR_R, COLLAR_R));
     if (n === 5)
       hidden(i, 'top of the collar, under the loose washers', COLLAR_R, COLLAR_R, 12.3, COLLAR_R, () => {
-        idAt(i, `A${n}C`, COLLAR_R, COLLAR_R - 15.6);
-        star(i, COLLAR_R - 15.6, COLLAR_R, 0.7);
+        circuitBand(i, COLLAR_R, 12.3, COLLAR_R, `A${n}C`);
       });
   }
 
@@ -144,20 +130,14 @@ export function makeParts(kerf: number): Parts {
         p.holeRound('hollow', R, R, SLICE_HOLE[k]);
         parts[id].face = 'down';
         hidden(p, 'inside of ring, downward face; glue only the blank reverse', R, R, SLICE_HOLE[k], R, () => {
-          const mid = (R + SLICE_HOLE[k]) / 2;
-          if (k === 0) star(p, R, R - mid, 0.45);
-          else {
-            idAt(p, id, R - mid, R);
-            booth(p, R, R - mid);
-          }
+          if (k === 0) starfield(p, R, SLICE_HOLE[k], R);
+          else ringScene(p, R, SLICE_HOLE[k], R, (['suburb', 'moon', 'teleporter'] as const)[k - 1], id);
         });
       } else {
         p.hole('washer socket', at(decagon(WASHER.apothem + SOCKET_FIT), R, R));
         if (k > 0)
           hidden(p, 'top face under the next loose ring', R, R, 20, RINGS[k - 1], () => {
-            idAt(p, id, R, R - 23.5);
-            p.engraveRound('hidden moon', R - 23.5, R, 1.3);
-            star(p, R, R + 23.5, 1);
+            ringScene(p, R, 20, RINGS[k - 1], (['suburb', 'moon', 'teleporter'] as const)[k - 1], id);
           });
         for (let j = 0; j < DIGITS; j++) {
           const a = (j * STEP * Math.PI) / 180;
@@ -183,9 +163,7 @@ export function makeParts(kerf: number): Parts {
       wash.hole('bore and notch', at(washerHole(), wr, wr));
       if (!bottom)
         hidden(wash, 'upper washer face; glue only the blank reverse', wr, wr, WASHER.bore, WASHER.apothem, () => {
-          idAt(wash, `G${n}`, wr, wr - 15.6);
-          wash.engraveRound('hidden moon', wr - 15.4, wr, 1.1);
-          star(wash, wr, wr + 15.5, 0.7);
+          circuitBand(wash, wr, WASHER.bore, WASHER.apothem, `G${n}`, n);
         });
     }
   }
@@ -195,8 +173,7 @@ export function makeParts(kerf: number): Parts {
   const core0 = add('CORE0', cw, cw, 1, 'core F, slice 1 (bottom, closed, with the ridge)');
   core0.outline(at(coreShape(), CORE.ridgeOut, CORE.ridgeOut));
   hidden(core0, 'floor inside the hollow core; keep the entire wall glue annulus blank', CORE.ridgeOut, CORE.ridgeOut, 0, CORE.bore - 0.5, () => {
-    core0.text('BZZZT', 'pc', CORE.ridgeOut, CORE.ridgeOut, PX_ID);
-    star(core0, CORE.ridgeOut, CORE.ridgeOut - 4, 0.8);
+    coreMessage(core0, CORE.ridgeOut);
   });
   const coreR = add('CORER', cw, cw, CORE.ridgeSlices - 1, 'core slices 2 and 3 (hollow, with the ridge; ridges all on one side)');
   coreR.outline(at(coreShape(), CORE.ridgeOut, CORE.ridgeOut));
@@ -207,15 +184,12 @@ export function makeParts(kerf: number): Parts {
   head.holeRound('bore', HEAD_R, HEAD_R, CORE.bore);
   parts.HEAD.face = 'down';
   hidden(head, 'underside of head, outside the core glue joint', HEAD_R, HEAD_R, CORE.r + 1, HEAD_R - 1, () => {
-    head.text('2000', 'pc', HEAD_R, HEAD_R - 16, PX_ID);
-    head.engraveRound('hidden moon', HEAD_R - 16, HEAD_R, 1.3);
-    star(head, HEAD_R + 16, HEAD_R, 1.1);
+    medallion(head, HEAD_R, CORE.r + 1, HEAD_R - 1.25, '2000');
   });
   const lid = disc('LID', LID.r, 1, 'lid (glue two plugs under it)');
   parts.LID.face = 'down';
   hidden(lid, 'underside of lid, outside the plug glue joint', LID.r, LID.r, LID.plug + 0.7, LID.r - 0.7, () => {
-    lid.text('BZZZT', 'micro', LID.r, LID.r - 10.8, 0.5);
-    star(lid, LID.r, LID.r + 10.7, 0.8);
+    medallion(lid, LID.r, LID.plug + 0.7, LID.r - 1.25);
   });
   disc('LIDP', LID.plug, 2, 'lid plug (press fit in the core)');
   return parts;
