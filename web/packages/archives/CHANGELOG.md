@@ -5,6 +5,14 @@ Changes to `@lewismoten/gamemaker-sandbox-archives`, released as `archives-v*` t
 
 ## [Unreleased]
 
+## [3.2.2] - 2026-11-11
+
+A stored ZIP entry whose declared size doesn't match its bytes is refused.
+
+### Fixed
+
+- A stored ZIP entry whose directory declares a different size than the bytes it holds is refused, so it can no longer return more than the size budget counted.
+
 ## [3.2.1] - 2026-11-09
 
 Security fix: zip reading now has safe default limits.
@@ -28,6 +36,7 @@ code. Imports check what FLI, GIF and VOC files really hold and keep the player'
 
 Full list: [changes/release/archives/3.2.0.md](https://github.com/lewismoten/GameMaker-SandboxEdition/blob/archives-v3.2.0/changes/release/archives/3.2.0.md)
 
-[Unreleased]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/archives-v3.2.1...HEAD
+[Unreleased]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/archives-v3.2.2...HEAD
+[3.2.2]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/archives-v3.2.1...archives-v3.2.2
 [3.2.1]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/archives-v3.2.0...archives-v3.2.1
 [3.2.0]: https://github.com/lewismoten/GameMaker-SandboxEdition/releases/tag/archives-v3.2.0
