@@ -6,22 +6,42 @@ and the drawer slides out. On the drawer's floor is a note from the game: "You m
 $89, but only until January."
 
 ```sh
-cd web && npx vite-node ../games/snowbound/laser/plowedStreet.ts [--kerf 0.2] [--out DIR] [--force]
+cd web && npx vite-node ../games/snowbound/laser/plowedStreet.ts [--sheet 12x12] [--kerf 0.2] [--out DIR] [--force]
 ```
 
-It writes `web/public/laser/snowbound/plowed-street/` (ignored by version control): `sheet-1-walls.svg`,
-`sheet-2-lid-base.svg`, `sheet-3-inside.svg`, `sheet-4-drawer.svg` (each with a `.png` preview), `assembly.svg` and
+It writes `web/public/laser/snowbound/plowed-street/` (ignored by version control): `sheet-1.svg`, `sheet-2.svg` by default (each with a `.png` preview), `assembly.svg` and
 `manifest.json` (`kind: "kit"`, which the desk's Feelies shelf lists next to the wooden nickel). `assembly.svg` has six
 ordered assembly cards drawn from the real cut outlines (`plowedSteps.ts`), the street map with the way marked, and the
 plate over the lug, locked and open. The tests are `web/test/laserPlowedStreet.test.ts`. The build exits 1 if the lock
 check, the spacing check or the engraving check fails.
+
+## Sheet sizes and fitting
+
+`--sheet` accepts `12x12` (default), `12x20`, `6x12` or `8x12`, in inches. Each SVG has the full stock size,
+with the long edge horizontal. Leave 6.5 mm (0.26 in) on each side and 12.9 mm (0.51 in) at the top and bottom:
+the 12-inch edge then stays inside the Glowforge's 279 mm (10.98 in) engraving height.
+
+Use Proofgrade plywood or MDF, nominally 3 mm (1/8 in), and measure its thickness before cutting.
+
+Parts may turn a quarter turn; small solid pieces nest in cut-out holes. The layout keeps at least 4 mm (0.16 in) between pieces, including nested pieces. Counts below use the supplied layout at the default 0.2 mm kerf; hand packing may differ.
+The manifest records `material.stock`, dimensions and margins in mm, the four-size `fitting` table, the selected `fit`,
+and each placed piece's position and quarter turn. Changing size refreshes the source key and removes obsolete sheet files.
+
+| Stock (in) | Full sheet (mm) | Usable area (mm, inches) | Sheets |
+| --- | --- | --- | --- |
+| 6 × 12 | 304.8 × 152.4 | 291.8 × 126.6 (11.49 × 4.98 in) | 3 |
+| 8 × 12 | 304.8 × 203.2 | 291.8 × 177.4 (11.49 × 6.98 in) | 2 |
+| 12 × 12 | 304.8 × 304.8 | 291.8 × 279 (11.49 × 10.98 in) | 2 |
+| 12 × 20 | 508 × 304.8 | 495 × 279 (19.49 × 10.98 in) | 1 |
+
+Outputs are numbered `sheet-1.svg`, `sheet-2.svg`, and so on, with matching PNG previews.
 
 ## Laser rules it follows
 
 - Red `#FF0000` cut strokes, no fill. Blue `#0000FF` engrave fills, no stroke. No score on wood. One pass: every
   engraving is on the face that lies up on the sheet, so there is no flip. Run engrave, then cut.
 - Every cut lies outside all engraving (at least 1 mm), and no two elements touch (the clearance tool runs on every part).
-- Four sheets, each inside the bed (495 x 279 mm usable). The biggest is 366 x 130 mm.
+- Selected Proofgrade stock with the cutter margins above; parts keep their original sizes and clearances.
 - No people are drawn, so nobody needs clothes. The shapes are a plow truck, a few diamond snowflakes and words that are
   already in `games/snowbound` (about.json: the title, the tagline, Fort Ashby, December 1992, the $89, LaVale Mall;
   the three street names: Jamie, Gale and Bowden).
@@ -55,7 +75,7 @@ Nothing here has been cut: friction between the plate and the shelf, and how the
 Slide the plow from HOME: right, right, down, down, right, right, up, up, right, down, down, right (12 streets). Dead ends
 along the way are the drifts. Pull the drawer out the front.
 
-## Parts (25 pieces, 4 sheets)
+## Parts (25 pieces)
 
 | Part               | Qty    | What                                                                     |
 | ------------------ | ------ | ------------------------------------------------------------------------ |
@@ -93,3 +113,5 @@ Make a scrap test first (a finger joint, a street with a stem in it, the lug in 
   for a 5 mm tab (5.2 cut). The plate's channel is 7.4 mm wide.
 - If the plow catches in a street, sand the stem; if the plate wanders, make the stems 0.1 mm bigger in the dims.
 - Not checked by a real cut yet.
+
+Proofgrade sheet selection, packing and fitting tables implemented with OpenAI Codex (GPT-6), directed by Lewis Moten.

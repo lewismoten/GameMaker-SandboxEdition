@@ -1,13 +1,14 @@
-// The paper THE CHEZ on one Glowforge sheet: cut (red) outlines and windows, score (magenta) folds, engrave (blue) stripes, roof,
+// The paper THE CHEZ on Glowforge stock sheets: cut (red) outlines and windows, score (magenta) folds, engrave (blue) stripes, roof,
 // tires and the charge port. Each piece is drawn on its own small sheet first so the spacing check can run on it.
-import { BED } from '@lewismoten/gamemaker-sandbox-tools/kit/laserLayout';
+import { Part, type StockSize } from '@lewismoten/gamemaker-sandbox-tools/kit/laserLayout';
+import { packKitStock, stockFitting, stockProblems } from '@lewismoten/gamemaker-sandbox-tools/kit/laserStock';
 import { tooClose, type Close, type Element } from '@lewismoten/gamemaker-sandbox-tools/kit/laserClearance';
 import { LaserSheet } from '@lewismoten/gamemaker-sandbox-tools/kit/laserSvg';
 import type { Piece } from './papercraftParts';
 
 const GAP = 5;
 
-function pieceSheet(p: Piece): { sheet: LaserSheet; problems: Close[] } {
+function pieceSheet(p: Piece, checks = true): { sheet: LaserSheet; problems: Close[]; elements: Element[] } {
   const sheet = new LaserSheet(p.w, p.h);
   const els: Element[] = [];
   const el = (name: string, add: () => void) => {
@@ -27,50 +28,32 @@ function pieceSheet(p: Piece): { sheet: LaserSheet; problems: Close[] } {
       e.rings?.forEach(([cx, cy, r0, r1]) => sheet.add({ op: 'engrave', k: 'ring', cx, cy, r0, r1 }));
     });
   for (const [a, b] of p.folds) sheet.add({ op: 'score', k: 'poly', pts: [a, b] });
-  return { sheet, problems: tooClose(sheet, els, 1, 1.5) };
+  return { sheet, problems: checks ? tooClose(sheet, els, 1, 1.5) : [], elements: els };
 }
 
-export interface LaserBuild {
-  sheet: LaserSheet;
-  placed: { name: string; x: number; y: number; w: number; h: number }[];
-  problems: string[];
-}
-
-/** Every piece (times its quantity) in rows on one bed-sized sheet. */
-export function buildLaser(pieces: Piece[]): LaserBuild {
-  const rows: Piece[][] = [[], [], []];
-  const byName = (n: string) => pieces.find((p) => p.name === n)!;
-  const times = (p: Piece) => Array.from({ length: p.qty }, () => p);
-  rows[0] = [byName('Underside strip'), byName('Top strip')];
-  rows[1] = [byName('Driver side panel'), byName('Passenger side panel'), ...times(byName('Wheel'))];
-  rows[2] = [...times(byName('Bumper'))];
+/** Preserve the paper net exactly: no kerf compensation or changes to the score lines. */
+function laserParts(pieces: Piece[], checks: boolean) {
   const problems: string[] = [];
-  const cache = new Map<string, LaserSheet>();
-  const placed: LaserBuild['placed'] = [];
-  const bits: [LaserSheet, number, number][] = [];
-  let y = GAP;
-  let maxW = 0;
-  for (const row of rows) {
-    let x = GAP;
-    let rh = 0;
-    for (const p of row) {
-      let s = cache.get(p.name);
-      if (!s) {
-        const made = pieceSheet(p);
-        s = made.sheet;
-        cache.set(p.name, s);
-        for (const c of made.problems) problems.push(`${p.name}: ${c.a} / ${c.b} ${c.mm} mm`);
-      }
-      bits.push([s, x, y]);
-      placed.push({ name: p.name, x, y, w: p.w, h: p.h });
-      x += p.w + GAP;
-      rh = Math.max(rh, p.h);
-    }
-    maxW = Math.max(maxW, x);
-    y += rh + GAP;
-  }
-  if (maxW > BED.w || y > BED.h) problems.push(`the sheet is ${maxW.toFixed(0)} x ${y.toFixed(0)} mm, over the ${BED.w} x ${BED.h} mm bed`);
-  const sheet = new LaserSheet(Math.ceil(maxW), Math.ceil(y));
-  for (const [s, x, yy] of bits) sheet.place(s, x, yy);
-  return { sheet, placed, problems };
+  const parts = pieces.flatMap((p) => {
+    const made = pieceSheet(p, checks);
+    if (checks) for (const c of made.problems) problems.push(`${p.name}: ${c.a} / ${c.b} ${c.mm} mm`);
+    const part = new Part(p.name, p.w, p.h, 0);
+    const pad = (part.size.w - p.w) / 2;
+    part.sheet.place(made.sheet, pad, pad);
+    part.elements.push(...made.elements);
+    return Array.from({ length: p.qty }, () => part);
+  });
+  return { parts, problems };
+}
+
+export function fittingTable(pieces: Piece[]) {
+  return stockFitting(laserParts(pieces, false).parts, GAP);
+}
+
+/** Every piece, at its original size, on selected-stock sheets. Printer layouts are independent. */
+export function buildLaser(pieces: Piece[], stock: StockSize = '12x12', checks = true) {
+  const { parts, problems } = laserParts(pieces, checks);
+  const sheets = packKitStock(parts, stock, GAP);
+  for (const s of sheets) problems.push(...stockProblems(s.sheet).map((p) => `${s.file}: ${p}`));
+  return { stock, sheets, problems };
 }

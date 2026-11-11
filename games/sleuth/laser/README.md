@@ -6,19 +6,39 @@ the back. On the drawer's floor is the line from the game's box: "The dagger was
 theater."
 
 ```sh
-cd web && npx vite-node ../games/sleuth/laser/stageBox.ts [--kerf 0.2] [--out DIR]
+cd web && npx vite-node ../games/sleuth/laser/stageBox.ts [--sheet 12x12] [--kerf 0.2] [--out DIR]
 ```
 
-It writes `web/public/laser/sleuth/stage-box/` (ignored by version control): `sheet-1-box.svg`, `sheet-2-inside.svg`,
-`sheet-3-drawer.svg` (each with a `.png` preview), `assembly.svg` and `manifest.json` (`kind: "kit"`, with the sheets,
+It writes `web/public/laser/sleuth/stage-box/` (ignored by version control): `sheet-1.svg`, `sheet-2.svg` by default (each with a `.png` preview), `assembly.svg` and `manifest.json` (`kind: "kit"`, with the sheets,
 previews, parts and checks). `assembly.svg` starts with six ordered assembly cards showing the actual named cut parts (`stageBoxSteps.ts`), followed by four below-floor plan views: all three locks engaged, then the dagger, front curtain and rear curtain released, using the actual skirt and comb dimensions (`stageBoxOperation.ts`). The tests are `web/test/laserStageBox.test.ts`.
+
+## Sheet sizes and fitting
+
+`--sheet` accepts `12x12` (default), `12x20`, `6x12` or `8x12`, in inches. Each SVG has the full stock size,
+with the long edge horizontal. Leave 6.5 mm (0.26 in) on each side and 12.9 mm (0.51 in) at the top and bottom:
+the 12-inch edge then stays inside the Glowforge's 279 mm (10.98 in) engraving height.
+
+Use Proofgrade plywood or MDF, nominally 3 mm (1/8 in), and measure its thickness before cutting.
+
+Parts may turn a quarter turn; small solid pieces nest in cut-out holes. The layout keeps at least 4 mm (0.16 in) between pieces, including nested pieces. Counts below use the supplied layout at the default 0.2 mm kerf; hand packing may differ.
+The manifest records `material.stock`, dimensions and margins in mm, the four-size `fitting` table, the selected `fit`,
+and each placed piece's position and quarter turn. Changing size refreshes the source key and removes obsolete sheet files.
+
+| Stock (in) | Full sheet (mm) | Usable area (mm, inches) | Sheets |
+| --- | --- | --- | --- |
+| 6 × 12 | 304.8 × 152.4 | 291.8 × 126.6 (11.49 × 4.98 in) | 4 |
+| 8 × 12 | 304.8 × 203.2 | 291.8 × 177.4 (11.49 × 6.98 in) | 4 |
+| 12 × 12 | 304.8 × 304.8 | 291.8 × 279 (11.49 × 10.98 in) | 2 |
+| 12 × 20 | 508 × 304.8 | 495 × 279 (19.49 × 10.98 in) | 2 |
+
+Outputs are numbered `sheet-1.svg`, `sheet-2.svg`, and so on, with matching PNG previews.
 
 ## Laser rules it follows
 
 - Red `#FF0000` cut strokes, no fill. Blue `#0000FF` engrave fills, no stroke. No score on wood. One pass: every
   engraving is on the face that lies up on the sheet, so there is no flip. Run engrave, then cut.
 - Every cut lies outside all engraving (at least 1 mm), and no two elements touch (the clearance tool runs on every part).
-- Three sheets, 480 x 236, 385 x 217 and 328 x 107 mm: each inside the bed (495 x 279 mm usable).
+- Selected Proofgrade stock with the cutter margins above; parts keep their original sizes and clearances.
 - No people are drawn, so nobody needs clothes. All the words are already in `games/sleuth` (about.json, the playbill in
   `src/blocks/backstage.ts`): the title, "opening night", "Port Ellery 1936", "Halloween night", the Paragon, the
   stage door, "one night, five parts, five suspects", the ghost light at 2 AM, the tagline.
@@ -50,7 +70,7 @@ I. **RAVEN**: swing the dagger on the right pillar from lower right to lower lef
 curtain's pull on the lid to the left. III. **MOON**: slide the rear curtain's pull to the left. Pull the drawer out
 the back. The playbill is engraved on the left wall (raven, rose, moon, left to right).
 
-## Parts (25 pieces, 3 sheets)
+## Parts (25 pieces)
 
 | Part | Qty | What |
 | --- | --- | --- |
@@ -98,3 +118,5 @@ Make a scrap test first (a floor slot with a plate skirt, a finger joint, the pi
 - Not checked by a real cut yet: friction between plates and floor, and how the lever feels.
 
 Assembly cards and lock diagrams revised with OpenAI Codex (GPT-6), directed by Lewis Moten. No physical cut or assembly is claimed.
+
+Proofgrade sheet selection, packing and fitting tables implemented with OpenAI Codex (GPT-6), directed by Lewis Moten.

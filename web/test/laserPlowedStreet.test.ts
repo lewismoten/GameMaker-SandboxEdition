@@ -2,9 +2,11 @@
 // score), every sheet inside the Glowforge bed, cuts outside all engraving, no two elements too close, the kerf a parameter, and
 // a lock that opens the drawer only when the plow stands at LaVale Mall (every reachable place is walked).
 import { describe, expect, it } from 'vitest';
-import { BED } from '@lewismoten/gamemaker-sandbox-tools/kit/laserLayout';
+import { STOCK, type StockSize } from '@lewismoten/gamemaker-sandbox-tools/kit/laserLayout';
+import { stockProblems } from '@lewismoten/gamemaker-sandbox-tools/kit/laserStock';
+import { checkStockCuts } from './laserStockAssertions';
 import { CUT, ENGRAVE } from '@lewismoten/gamemaker-sandbox-tools/kit/laserSvg';
-import { buildPlowedStreet } from '../../games/snowbound/laser/plowedBuild';
+import { buildPlowedStreet, fittingTable } from '../../games/snowbound/laser/plowedBuild';
 import { MALL, PITCH, STEM, STREET, STREETS, checkLock, plate } from '../../games/snowbound/laser/plowedDims';
 import { assemblySvg } from '../../games/snowbound/laser/plowedSteps';
 
@@ -12,14 +14,15 @@ const box = buildPlowedStreet();
 
 describe('Plowed Street box sheets', () => {
   it('uses only red cut strokes and blue engrave fills, one pass, inside the bed', () => {
-    expect(box.sheets).toHaveLength(4);
+    expect(box.stock).toBe('12x12');
     for (const s of box.sheets) {
       const svg = s.sheet.svg(s.title);
       const colors = new Set([...svg.matchAll(/(?:stroke|fill)="(#[0-9a-f]{6})"/gi)].map((m) => m[1].toLowerCase()));
       expect([...colors].every((c) => [CUT, ENGRAVE].includes(c))).toBe(true);
       expect(svg).not.toMatch(/<text|font-family|transform=|#ff00ff|id="score"/);
-      expect(s.sheet.w).toBeLessThanOrEqual(BED.w);
-      expect(s.sheet.h).toBeLessThanOrEqual(BED.h);
+      expect(s.sheet.w).toBe(STOCK[box.stock].w);
+      expect(s.sheet.h).toBe(STOCK[box.stock].h);
+      expect(stockProblems(s.sheet)).toEqual([]);
       const cut = svg.match(/<g id="cut"[^>]*>(.*?)<\/g>/s)![1];
       for (const p of cut.matchAll(/<path d="([^"]*)"/g)) expect(p[1].trim().endsWith('Z')).toBe(true);
     }
@@ -83,4 +86,18 @@ describe('Plowed Street lock', () => {
       expect(l.openCells).toEqual(['6,2']);
     }
   });
+});
+
+// Full stock sizes include unused margins; the geometry, rather than the SVG page, fits the usable bed.
+describe('Plowed Street library stock', () => {
+  const fitting = fittingTable();
+  for (const stock of Object.keys(STOCK) as StockSize[]) {
+    it(`packs every part with safe cut spacing on ${stock}`, () => {
+      for (const kerf of [0, 0.2, 0.4]) {
+        const b = buildPlowedStreet(kerf, false, stock);
+        expect(b.sheets).toHaveLength(fitting.find((f) => f.stock === stock)!.sheets);
+        checkStockCuts(b.sheets, stock, Object.values(b.parts));
+      }
+    });
+  }
 });

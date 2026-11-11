@@ -2,10 +2,12 @@
 // the laser sheet uses red cut, magenta score and blue engrave and fits the Glowforge bed, no two elements on a piece are too close,
 // and the print pages fit Letter and A4 and write a real PDF and PNG.
 import { describe, expect, it } from 'vitest';
-import { BED } from '@lewismoten/gamemaker-sandbox-tools/kit/laserLayout';
+import { Part, STOCK, type StockSize } from '@lewismoten/gamemaker-sandbox-tools/kit/laserLayout';
+import { checkStockCuts } from './laserStockAssertions';
+import { stockProblems } from '@lewismoten/gamemaker-sandbox-tools/kit/laserStock';
 import { CUT, ENGRAVE, SCORE } from '@lewismoten/gamemaker-sandbox-tools/kit/laserSvg';
 import { EDGES_COUNT, WIDTH, edgeLen } from '../../games/tuneup/laser/papercraftDims';
-import { buildLaser } from '../../games/tuneup/laser/papercraftLaser';
+import { buildLaser, fittingTable } from '../../games/tuneup/laser/papercraftLaser';
 import { COLOR, allPieces } from '../../games/tuneup/laser/papercraftParts';
 import { PAPER, layoutPages, pagePng, pageSvg, pdf } from '../../games/tuneup/laser/papercraftPrint';
 
@@ -41,11 +43,14 @@ describe('the net folds closed', () => {
 
 describe('the laser sheet', () => {
   const laser = buildLaser(pieces);
-  const svg = laser.sheet.svg('test');
+  const svg = laser.sheets.map((s) => s.sheet.svg('test')).join('');
   it('has no spacing problems and fits the bed', () => {
     expect(laser.problems).toEqual([]);
-    expect(laser.sheet.w).toBeLessThanOrEqual(BED.w);
-    expect(laser.sheet.h).toBeLessThanOrEqual(BED.h);
+    for (const s of laser.sheets) {
+      expect(s.sheet.w).toBe(STOCK[laser.stock].w);
+      expect(s.sheet.h).toBe(STOCK[laser.stock].h);
+      expect(stockProblems(s.sheet)).toEqual([]);
+    }
   });
   it('uses red cuts, magenta scores and blue engraving only, with no text or transforms', () => {
     const colors = new Set([...svg.matchAll(/(?:stroke|fill)="(#[0-9a-f]{6})"/gi)].map((m) => m[1].toLowerCase()));
@@ -107,4 +112,33 @@ describe('the print pages', () => {
     expect(doc.trimEnd().endsWith('%%EOF')).toBe(true);
     expect([...pagePng(pages[0], 30).slice(0, 4)]).toEqual([0x89, 0x50, 0x4e, 0x47]);
   });
+});
+
+describe('paper car library stock', () => {
+  const fitting = fittingTable(pieces);
+  const cutParts = pieces.map((p) => {
+    const part = new Part(p.name, p.w, p.h, 0);
+    part.outline(p.outline);
+    for (const h of p.holes) {
+      if (h.pts) part.hole(h.label, h.pts);
+      else part.holeRound(h.label, ...h.circle!);
+    }
+    return { part, qty: p.qty };
+  });
+  for (const stock of Object.keys(STOCK) as StockSize[]) {
+    it(`packs every piece with its original score lines on ${stock}`, () => {
+      const b = buildLaser(pieces, stock, false);
+      expect(b.problems).toEqual([]);
+      expect(b.sheets).toHaveLength(fitting.find((f) => f.stock === stock)!.sheets);
+      checkStockCuts(b.sheets, stock, cutParts, 5);
+      const placed = b.sheets.flatMap((s) => s.placed);
+      for (const p of pieces) expect(placed.filter((at) => at.name === p.name)).toHaveLength(p.qty);
+      for (const s of b.sheets) {
+        expect(s.sheet.w).toBe(STOCK[stock].w);
+        expect(s.sheet.h).toBe(STOCK[stock].h);
+        expect(stockProblems(s.sheet)).toEqual([]);
+      }
+      expect(b.sheets.reduce((n, s) => n + s.sheet.count('score'), 0)).toBe(pieces.reduce((n, p) => n + p.qty * p.folds.length, 0));
+    });
+  }
 });
