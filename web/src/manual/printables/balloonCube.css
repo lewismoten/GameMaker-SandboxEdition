@@ -67,15 +67,15 @@
   margin: 0;
   padding: 0;
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2cqw 3cqw;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 2cqw 2.4cqw;
 }
 
 .bc-step {
   display: flex;
   flex-direction: column;
   gap: 0.6cqw;
-  font-size: 1.9cqw;
+  font-size: 1.7cqw;
   line-height: 1.3;
 }
 
