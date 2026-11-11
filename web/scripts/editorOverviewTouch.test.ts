@@ -1,29 +1,33 @@
 // Browser regression for standalone editor links, measuring the actual rendered hit target.
-import { expect, it } from 'vitest';
+import { afterAll, beforeAll, expect, it, vi } from 'vitest';
+import type { Browser } from 'playwright-core';
 import { launch, target } from './perfLib';
 import { measureTargets } from './editorTouchAudit';
 
+vi.setConfig({ testTimeout: 60_000, hookTimeout: 60_000 }); // the second test starts a whole Vite server and loads the app
+let browser: Browser;
+beforeAll(async () => {
+  browser = await launch();
+});
+afterAll(async () => {
+  await browser?.close();
+});
+
 it('counts a pseudo-element hit area only when it really receives pointer hits', async () => {
-  const browser = await launch();
-  try {
-    const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
-    await page.setContent(
-      `<style>.handle { position:absolute;left:100px;top:100px;width:10px;height:200px }.handle::before { content:'';position:absolute;inset:0 -7px }</style><div class="handle" tabindex="0" role="separator" aria-label="Resize"></div>`,
-    );
-    expect((await page.evaluate(measureTargets, 390)).under24).toHaveLength(0);
-    await page.setViewportSize({ width: 844, height: 390 });
-    await page.addStyleTag({ content: '.handle { top:227px;height:672px }' });
-    expect((await page.evaluate(measureTargets, 844)).under24).toHaveLength(0);
-    await page.addStyleTag({ content: '.handle::before { pointer-events:none }' });
-    expect((await page.evaluate(measureTargets, 390)).under24).toHaveLength(1);
-  } finally {
-    await browser.close();
-  }
+  const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
+  await page.setContent(
+    `<style>.handle { position:absolute;left:100px;top:100px;width:10px;height:200px }.handle::before { content:'';position:absolute;inset:0 -7px }</style><div class="handle" tabindex="0" role="separator" aria-label="Resize"></div>`,
+  );
+  expect((await page.evaluate(measureTargets, 390)).under24).toHaveLength(0);
+  await page.setViewportSize({ width: 844, height: 390 });
+  await page.addStyleTag({ content: '.handle { top:227px;height:672px }' });
+  expect((await page.evaluate(measureTargets, 844)).under24).toHaveLength(0);
+  await page.addStyleTag({ content: '.handle::before { pointer-events:none }' });
+  expect((await page.evaluate(measureTargets, 390)).under24).toHaveLength(1);
 });
 
 it('gives standalone Overview links a 24px target without phone overflow', async () => {
   const server = await target(5397);
-  const browser = await launch();
   try {
     const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
     await page.goto(server.base);
@@ -42,7 +46,6 @@ it('gives standalone Overview links a 24px target without phone overflow', async
     expect(result.height).toBeGreaterThanOrEqual(24);
     expect(result.overflow).toBeLessThanOrEqual(0);
   } finally {
-    await browser.close();
     server.stop();
   }
-}, 60000);
+});

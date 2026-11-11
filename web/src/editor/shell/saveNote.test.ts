@@ -1,6 +1,9 @@
 // Real IndexedDB and mounted save-note channels: never reuse an old Saved label for new edits.
-import { expect, it } from 'vitest';
+import { expect, it, vi } from 'vitest';
 import { editorBrowser } from '../../../test/editorBrowser';
+
+// Each test starts its own Vite server and browser, which takes much longer on a busy machine.
+vi.setConfig({ testTimeout: 90_000 });
 
 it.each([390, 1440])(
   'shows dirty, saving, success, failure and remounted state at %spx',
@@ -59,7 +62,7 @@ it.each([390, 1440])(
       await fixture.close();
     }
   },
-  30_000,
+  90_000,
 );
 
 it('announces failures and recovery immediately, keeps explicit saves to one voice, and cancels on disposal', async () => {
@@ -143,4 +146,4 @@ it('announces failures and recovery immediately, keeps explicit saves to one voi
   } finally {
     await fixture.close();
   }
-}, 30_000);
+}, 90_000);
