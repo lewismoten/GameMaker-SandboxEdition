@@ -44,8 +44,20 @@ interface ExportJob {
   appDir?: string;
 }
 
+let exportQueue: Promise<void> = Promise.resolve();
+
+/** Serialize the complete global fetch override, including failure and restoration. */
+export function buildExport(job: ExportJob): Promise<{ name: string; data: Uint8Array; note: string }> {
+  const run = exportQueue.then(() => buildExportNow(job));
+  exportQueue = run.then(
+    () => undefined,
+    () => undefined,
+  );
+  return run;
+}
+
 /** Builds one download; returns its file name and bytes. */
-export async function buildExport(job: ExportJob): Promise<{ name: string; data: Uint8Array; note: string }> {
+async function buildExportNow(job: ExportJob): Promise<{ name: string; data: Uint8Array; note: string }> {
   const appDir = job.appDir ?? join(REPO, 'web', 'dist');
   if (!existsSync(join(appDir, 'standalone.html')) && job.format !== 'dos')
     throw new ToolError(

@@ -5,7 +5,7 @@ import { createZip } from '@lewismoten/gamemaker-sandbox-archives/zip';
 import { parseHighScoreTable, serializeHighScoreTable } from '../project/saveData/highScores';
 import { parseSlotNames, serializeSlotNames } from '../project/saveData/saveGame';
 import { FORMAT, FORMAT_VERSION, makeBackup, readBackup, snapshot } from './file';
-import { SECTION_IDS } from './sections';
+import { SECTION_IDS, sectionById } from './sections';
 import { planImport, projectClashes, type ImportChoices, type Mode } from './plan';
 import { BackupError } from './sections/types';
 import { emptyWorld, worldDiff, type World } from './world';
@@ -110,11 +110,26 @@ describe('backup file', () => {
   it('leaves the API key out unless asked, and keeps this browser’s key when the file has none', async () => {
     const b = await backupOf(seeded(), ['ai']);
     const here = emptyWorld();
-    here.local['gm-ai-settings'] = JSON.stringify({ provider: 'ollama', baseUrl: 'h', model: 'q', apiKey: 'mine' });
+    here.local['gm-ai-settings'] = JSON.stringify({ provider: 'openai', baseUrl: 'https://X:443/v1/', model: 'q', apiKey: 'mine' });
     const { next } = await planImport(here, b, { ...all('replace'), sections: { ai: 'replace' } });
     expect(JSON.parse(next.local['gm-ai-settings'])).toMatchObject({ provider: 'openai', apiKey: 'mine' });
     const none = await planImport(emptyWorld(), b, { ...all('replace'), sections: { ai: 'replace' } });
     expect(JSON.parse(none.next.local['gm-ai-settings']).apiKey).toBe('');
+  });
+  it('does not carry an omitted API key to a changed provider or endpoint', async () => {
+    const b = await backupOf(seeded(), ['ai']);
+    for (const setup of [
+      { provider: 'openai', baseUrl: 'https://other.invalid/v1' },
+      { provider: 'ollama', baseUrl: 'https://x/v1' },
+      { provider: 'openai', baseUrl: 'https://x/other' },
+    ]) {
+      const here = emptyWorld();
+      here.local['gm-ai-settings'] = JSON.stringify({ ...setup, apiKey: 'synthetic-key' });
+      for (const mode of ['replace', 'theirs'] as const) {
+        const { next } = await planImport(here, b, { ...all(mode), sections: { ai: mode } });
+        expect(JSON.parse(next.local['gm-ai-settings']).apiKey).toBe('');
+      }
+    }
   });
 });
 
@@ -307,4 +322,13 @@ describe('checkpoints in a backup', () => {
     const { bytes: zip } = await makeBackup(await snapshot(w, { shallow: true }), [...SECTION_IDS], new Date(2026, 9, 27));
     expect(row(await readBackup(zip)).checkpoints).toBeUndefined();
   });
+});
+
+it('rejects raw storage keys owned by another backup section', () => {
+  for (const id of ['prefs', 'ai', 'desk', 'eggs', 'hearts', 'trophies']) {
+    const section = sectionById(id)!;
+    const payload = { local: { 'gm-ai-settings': '{}', 'gm-assistant-read-only': '0' }, records: {}, inSaves: [], found: {}, files: {} };
+    if (id === 'ai') payload.local = { 'gm-theme': 'dark' } as unknown as typeof payload.local;
+    expect(() => section.validate(payload), id).toThrow(BackupError);
+  }
 });

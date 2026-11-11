@@ -8,12 +8,18 @@ import { filesNamedBy } from '../project/streamGame';
 import { normalize } from '../project/files';
 import { LinkError, MAX_FILES, MAX_FILE_BYTES, MAX_TOTAL_BYTES } from './protocol';
 
+function checkAbort(signal?: AbortSignal): void {
+  if (signal?.aborted) throw new LinkError('Canceled.', 'declined');
+}
+
 /** The bytes at `url`, at most `cap` of them; undefined for a 404 when `optional`. */
-async function fetchCapped(url: string, cap: number, optional = false): Promise<Uint8Array | undefined> {
+async function fetchCapped(url: string, cap: number, optional = false, signal?: AbortSignal): Promise<Uint8Array | undefined> {
+  checkAbort(signal);
   let res: Response;
   try {
-    res = await fetch(url, { credentials: 'omit', redirect: 'follow', mode: 'cors' });
+    res = await fetch(url, { credentials: 'omit', redirect: 'follow', mode: 'cors', signal });
   } catch {
+    checkAbort(signal);
     // A network error and a CORS refusal look the same to a page, on purpose.
     throw new LinkError(`The game at ${url} could not be fetched. Its server may not let other sites read its files, or it may be offline.`, 'cors');
   }
@@ -24,18 +30,35 @@ async function fetchCapped(url: string, cap: number, optional = false): Promise<
   const said = Number(res.headers.get('content-length') ?? 0);
   if (said > cap) throw new LinkError(`The file at ${url} is bigger than the limit allows.`, 'too-big');
   const reader = res.body?.getReader();
-  if (!reader) return new Uint8Array(await res.arrayBuffer());
+  if (!reader) {
+    const bytes = new Uint8Array(await res.arrayBuffer());
+    checkAbort(signal);
+    if (bytes.length > cap) throw new LinkError(`The file at ${url} is bigger than the limit allows.`, 'too-big');
+    return bytes;
+  }
   const parts: Uint8Array[] = [];
   let total = 0;
-  for (;;) {
-    const { done, value } = await reader.read();
-    if (done) break;
-    total += value.length;
-    if (total > cap) {
-      await reader.cancel();
-      throw new LinkError(`The file at ${url} is bigger than the limit allows.`, 'too-big');
+  const canceled = () => {
+    void reader.cancel().catch(() => undefined);
+  };
+  signal?.addEventListener('abort', canceled, { once: true });
+  try {
+    for (;;) {
+      checkAbort(signal);
+      const { done, value } = await reader.read();
+      checkAbort(signal);
+      if (done) break;
+      total += value.length;
+      if (total > cap) throw new LinkError(`The file at ${url} is bigger than the limit allows.`, 'too-big');
+      parts.push(value);
     }
-    parts.push(value);
+  } catch (error) {
+    checkAbort(signal);
+    throw error;
+  } finally {
+    signal?.removeEventListener('abort', canceled);
+    await reader.cancel().catch(() => undefined);
+    reader.releaseLock();
   }
   const out = new Uint8Array(total);
   let at = 0;
@@ -68,9 +91,9 @@ function gamNeeds(gamName: string, gam: Uint8Array): string[] {
  * The files at `url`: the one file (a whole game in a .zip, a pack or an exported page), or a
  * .gam and the files beside it that it names, each fetched from the same folder.
  */
-export async function fetchGame(url: string, onProgress?: (done: number, total: number) => void): Promise<[string, Uint8Array][]> {
+export async function fetchGame(url: string, onProgress?: (done: number, total: number) => void, signal?: AbortSignal): Promise<[string, Uint8Array][]> {
   const name = urlFileName(url);
-  const first = await fetchCapped(url, MAX_TOTAL_BYTES);
+  const first = await fetchCapped(url, MAX_TOTAL_BYTES, false, signal);
   if (!first) throw new LinkError(`Nothing is at ${url}.`, 'fetch');
   if (!/\.gam$/i.test(name)) return [[name, first]];
   let wanted: string[];
@@ -85,13 +108,14 @@ export async function fetchGame(url: string, onProgress?: (done: number, total: 
   const queue = wanted.filter((n) => !seen.has(n));
   let done = 0;
   while (queue.length) {
+    checkAbort(signal);
     const batch = queue.splice(0, 4);
     const got = await Promise.all(
       batch.map(async (n) => {
         seen.add(n);
         // the files sit beside the .gam; DOS names are case-blind, so try as named, then upper case
         const at = (file: string) => new URL(encodeURIComponent(file), url).href;
-        const bytes = (await fetchCapped(at(n), MAX_FILE_BYTES, true)) ?? (await fetchCapped(at(n.toUpperCase()), MAX_FILE_BYTES, true));
+        const bytes = (await fetchCapped(at(n), MAX_FILE_BYTES, true, signal)) ?? (await fetchCapped(at(n.toUpperCase()), MAX_FILE_BYTES, true, signal));
         return [n, bytes] as const;
       }),
     );

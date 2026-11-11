@@ -255,20 +255,29 @@ export const SAVES_CHANGED = 'gm-saves-changed';
 
 /**
  * Adds or replaces one save file by rewriting the game's whole save record (read, change,
- * put in separate transactions). Failures are logged, not thrown, so play goes on.
+ * put in one readwrite transaction). Failures are logged, not thrown, so play goes on.
  */
 export function writeSaveFile(gameId: string, name: string, bytes: Uint8Array, o: { quiet?: boolean } = {}): Promise<void> {
-  // one game's writes take turns: saving writes savnames.dat and gameN.sav back to back,
-  // and two overlapping read-change-puts would lose the first file (the slot's name)
-  const queued = (saveWrites.get(gameId) ?? Promise.resolve()).then(() => storeSaveFile(gameId, name, bytes, o.quiet));
-  saveWrites.set(gameId, queued);
-  void queued.then(() => {
-    if (saveWrites.get(gameId) === queued) saveWrites.delete(gameId);
-  });
-  return queued;
+  return storeSaveFile(gameId, name, bytes, o.quiet);
 }
 
-const saveWrites = new Map<string, Promise<void>>();
+/** IndexedDB serializes readwrite transactions across tabs; read and merge inside that lock. */
+async function changeSaveData(gameId: string, change: (current: Record<string, Uint8Array>) => Record<string, Uint8Array>): Promise<void> {
+  const d = await db();
+  await new Promise<void>((resolve, reject) => {
+    const tx = d.transaction(SAVES, 'readwrite');
+    const store = tx.objectStore(SAVES);
+    const get = store.get(gameId);
+    get.onsuccess = () => {
+      const next = change((get.result as Record<string, Uint8Array> | undefined) ?? {});
+      if (Object.keys(next).length) store.put(next, gameId);
+      else store.delete(gameId);
+    };
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject(tx.error);
+    tx.onabort = () => reject(tx.error);
+  });
+}
 
 // quiet: no SAVES_CHANGED (the achievements' record is no game's save; an open Saves & scores need not reload)
 async function storeSaveFile(gameId: string, name: string, bytes: Uint8Array, quiet = false): Promise<void> {
@@ -276,9 +285,7 @@ async function storeSaveFile(gameId: string, name: string, bytes: Uint8Array, qu
   // (including a browser without IndexedDB) still reach the warning below.
   if (typeof window === 'undefined' && typeof indexedDB === 'undefined') return;
   try {
-    const current = await loadSaveData(gameId);
-    current[name] = bytes;
-    await request(SAVES, 'readwrite', (s) => s.put(current, gameId));
+    await changeSaveData(gameId, (current) => ({ ...current, [name]: bytes }));
     if (!quiet && typeof window !== 'undefined') window.dispatchEvent(new Event(SAVES_CHANGED));
   } catch (e) {
     console.warn('Could not store save data', e);
@@ -290,8 +297,7 @@ async function storeSaveFile(gameId: string, name: string, bytes: Uint8Array, qu
  * are gone afterwards. Fires SAVES_CHANGED. Unlike writeSaveFile, failures are thrown.
  */
 export async function replaceSaveData(gameId: string, files: Record<string, Uint8Array>): Promise<void> {
-  if (Object.keys(files).length) await request(SAVES, 'readwrite', (s) => s.put({ ...files }, gameId));
-  else await request(SAVES, 'readwrite', (s) => s.delete(gameId));
+  await changeSaveData(gameId, () => ({ ...files }));
   if (typeof window !== 'undefined') window.dispatchEvent(new Event(SAVES_CHANGED));
 }
 

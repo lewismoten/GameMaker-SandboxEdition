@@ -54,6 +54,14 @@ function dosDateTime(d: Date): [number, number] {
 
 export async function createZip(entries: ZipEntry[], date = new Date()): Promise<Uint8Array> {
   const enc = new TextEncoder();
+  if (entries.length > 0xffff) throw new Error('Too many entries for a non-ZIP64 archive');
+  let maximumSize = 22;
+  for (const entry of entries) {
+    if (entry.name.length > 0xffff || enc.encode(entry.name).length > 0xffff) throw new Error('ZIP file name is too long');
+    if (!Number.isSafeInteger(entry.data.length) || entry.data.length < 0 || entry.data.length >= 0xffffffff) throw new Error('ZIP file is too large');
+    maximumSize += 76 + enc.encode(entry.name).length * 2 + entry.data.length;
+    if (maximumSize >= 0xffffffff) throw new Error('Archive is too large for non-ZIP64 offsets');
+  }
   const [time, day] = dosDateTime(date);
   const local: Uint8Array[] = [];
   const central: Uint8Array[] = [];
@@ -159,6 +167,7 @@ async function inflateCapped(data: Uint8Array, cap: number): Promise<Uint8Array>
     }
     parts.push(value);
   }
+  if (total !== cap) throw new Error('A file in the ZIP is shorter than its directory says');
   const out = new Uint8Array(total);
   let at = 0;
   for (const p of parts) {
@@ -203,11 +212,14 @@ export function listZip(bytes: Uint8Array, limits: ZipLimits = DEFAULT_ZIP_LIMIT
   const dirSize = v.getUint32(eocd + 12, true);
   const dirAt = v.getUint32(eocd + 16, true);
   const shift = Math.max(0, eocd - dirSize - dirAt);
-  let p = dirAt + shift;
+  const dirStart = dirAt + shift;
+  if (dirStart + dirSize !== eocd) throw new Error('Damaged ZIP directory extent');
+  let p = dirStart;
+  const headers: [number, number][] = [];
   const dec = new TextDecoder();
   const out: ZipListing[] = [];
   for (let i = 0; i < count; i++) {
-    if (p + 46 > bytes.length || v.getUint32(p, true) !== 0x02014b50) throw new Error('Damaged ZIP directory');
+    if (p + 46 > eocd || v.getUint32(p, true) !== 0x02014b50) throw new Error('Damaged ZIP directory');
     const method = v.getUint16(p + 10, true);
     const size = v.getUint32(p + 20, true);
     const unpacked = v.getUint32(p + 24, true);
@@ -215,19 +227,21 @@ export function listZip(bytes: Uint8Array, limits: ZipLimits = DEFAULT_ZIP_LIMIT
     const extraLen = v.getUint16(p + 30, true);
     const commentLen = v.getUint16(p + 32, true);
     const localOffset = v.getUint32(p + 42, true) + shift;
+    if (p + 46 + nameLen + extraLen + commentLen > eocd) throw new Error('Damaged ZIP directory entry');
     const name = dec.decode(bytes.subarray(p + 46, p + 46 + nameLen));
     p += 46 + nameLen + extraLen + commentLen;
     // Folder entries carry no data. Sizes come from the central directory because the
     // local header's may be 0 when the writer used a data descriptor; its name and extra
     // lengths can differ from the directory's, so they are read from the local header.
     // CRCs are not checked, and entries using other methods read as undefined.
+    if (localOffset + 30 > dirStart || v.getUint32(localOffset, true) !== 0x04034b50) throw new Error('Damaged ZIP local header');
+    const start = localOffset + 30 + v.getUint16(localOffset + 26, true) + v.getUint16(localOffset + 28, true);
+    if (start > dirStart || start + size > dirStart) throw new Error('Damaged ZIP entry extent');
+    headers.push([localOffset, start]);
     if (name.endsWith('/')) continue;
     if ((declared += unpacked) > limits.maxBytes) throw new Error(`The ZIP unpacks to more than ${limits.maxBytes} bytes`);
     const read = async (): Promise<Uint8Array | undefined> => {
-      if (localOffset + 30 > bytes.length) throw new Error('Damaged ZIP entry');
-      const lNameLen = v.getUint16(localOffset + 26, true);
-      const lExtraLen = v.getUint16(localOffset + 28, true);
-      const start = localOffset + 30 + lNameLen + lExtraLen;
+      if (headers.some(([a, b]) => a < start + size && b > start)) throw new Error('ZIP data overlaps a local header');
       const body = bytes.subarray(start, start + size);
       if (method === 0) {
         // A stored entry is copied as is, so a directory that declares a size other than the

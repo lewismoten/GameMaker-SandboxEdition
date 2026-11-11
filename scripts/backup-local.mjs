@@ -5,14 +5,14 @@
 // The passphrase comes from BACKUP_PASSPHRASE, or is asked for. AES-256-GCM, key from scrypt;
 // node:crypto and the system tar only. Keep the passphrase somewhere other than the backup.
 import { spawn } from 'node:child_process';
-import { createCipheriv, createDecipheriv, randomBytes, scryptSync } from 'node:crypto';
-import { createReadStream, createWriteStream, existsSync, mkdirSync, readdirSync, statSync } from 'node:fs';
-import { open } from 'node:fs/promises';
+import { createCipheriv, randomBytes, scryptSync } from 'node:crypto';
+import { createWriteStream, existsSync, mkdirSync, statSync } from 'node:fs';
 import { homedir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { createInterface } from 'node:readline/promises';
 import { pipeline } from 'node:stream/promises';
 import { root } from './game-build-inputs.mjs';
+import { restoreBackup } from './backup-restore.mjs';
 
 const MAGIC = Buffer.from('GMLBK1\0\0');
 const memory = join(homedir(), '.claude/projects/-Users-lewismoten-dev-GameMaker/memory');
@@ -60,27 +60,7 @@ async function backup(folder) {
 
 async function restore(file, folder) {
   const pass = await passphrase();
-  if (existsSync(folder) && readdirSync(folder).length) throw new Error(`${folder} is not empty.`);
-  mkdirSync(folder, { recursive: true });
-  const size = statSync(file).size;
-  const head = Buffer.alloc(MAGIC.length + 28);
-  const tail = Buffer.alloc(16);
-  const handle = await open(file);
-  await handle.read(head, 0, head.length, 0);
-  await handle.read(tail, 0, 16, size - 16);
-  await handle.close();
-  if (!head.subarray(0, MAGIC.length).equals(MAGIC)) throw new Error('Not a backup made by backup-local.mjs.');
-  const salt = head.subarray(MAGIC.length, MAGIC.length + 16);
-  const iv = head.subarray(MAGIC.length + 16);
-  const decipher = createDecipheriv('aes-256-gcm', scryptSync(pass, salt, 32), iv).setAuthTag(tail);
-  const tar = spawn('tar', ['-xzf', '-', '-C', folder], { stdio: ['pipe', 'inherit', 'inherit'] });
-  const done = new Promise((ok, fail) => tar.on('close', (code) => (code ? fail(new Error(`tar exited ${code}`)) : ok())));
-  // the tag is checked when the stream ends: a wrong passphrase or a damaged file fails there
-  try {
-    await Promise.all([pipeline(createReadStream(file, { start: head.length, end: size - 17 }), decipher, tar.stdin), done]);
-  } catch {
-    throw new Error('Could not restore: a wrong passphrase, or the backup file is damaged.');
-  }
+  await restoreBackup(file, folder, pass);
   console.log(`Restored into ${folder}.`);
 }
 

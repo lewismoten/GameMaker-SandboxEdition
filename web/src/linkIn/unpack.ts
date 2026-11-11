@@ -6,7 +6,7 @@
 import { GameFiles, IGNORED_FILE } from '../project/files';
 import { isZip, readZip } from '@lewismoten/gamemaker-sandbox-archives/zip';
 import { decodePack } from '@lewismoten/gamemaker-sandbox-archives/pack';
-import { fromBase64, readSinglePage, unpack, withExternal, type SinglePageGame } from '../export/singlePage';
+import { decodeGame, readSinglePage, type SinglePageGame } from '../export/singlePage';
 import { parseGame, gameTitle } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { takeCompanion, type Companion } from '../project/companion';
 import { takeFileIdDiz } from '../project/importDiz';
@@ -73,10 +73,8 @@ async function pageGame(bytes: Uint8Array): Promise<{ files: [string, Uint8Array
   if (list.length + ext.length > MAX_FILES || list.reduce((n, f) => n + f[1], 0) + ext.reduce((n, f) => n + f[2], 0) > MAX_TOTAL_BYTES)
     throw new LinkError('The game is bigger than the limit allows.', 'too-big');
   try {
-    const raw = fromBase64(game.data);
-    const blob = game.enc === 'gzip' ? await gunzip(raw) : raw;
     return {
-      files: withExternal(unpack(list, blob), ext, game.external),
+      files: await decodeGame(game, game.external, { maxFiles: MAX_FILES, maxBytes: MAX_TOTAL_BYTES }),
       title: typeof game.title === 'string' ? game.title : undefined,
       gam: typeof game.gam === 'string' ? game.gam : undefined,
     };

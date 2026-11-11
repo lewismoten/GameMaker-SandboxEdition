@@ -143,6 +143,7 @@ export class Machine {
    * game doesn't have, or that are in already, return at once.
    */
   async need(...names: (string | undefined)[]): Promise<void> {
+    this.checkAbort();
     const wait = this.files.stream?.need(names.filter((n): n is string => !!n));
     if (!wait) return;
     const cue = setTimeout(() => this.onLoading?.(true), 150);

@@ -30,12 +30,12 @@ npm run --silent mcp -- --root ~/GameMakerWork
 - A game folder inside a writable root is edited in place. Anything else is copied, on its
   first `save`, to the `workdir` you name (a new or empty folder) or a new folder in the first
   root.
-- Changes stay in memory until `save`. Every write tool takes `dry_run: true` to preview.
+- Game changes stay in memory until `save`. Every write tool takes `dry_run: true` to preview.
   `open_game` with `read_only: true` refuses all changes.
 - Its DOS player patches are saved in the folder as `<game>.GMX`, the editor's companion
   file, which the editor's import reads back.
 - A recorded walkthrough goes in the working folder's `assistant/` subfolder, never among the
-  game's files.
+  game's files. Recording writes that artifact immediately, before `save`; `dry_run` keeps no file.
 
 ## Tools
 
@@ -300,3 +300,5 @@ has a name, a short description, a flat JSON Schema and a handler that works on 
 | `vite.config.ts` | vite-node's settings: no plugins, no watching, no output. |
 | `server.test.ts` | An MCP client drives the server in-process and over stdio. |
 | `bridge.test.ts` | Pairing, origins, the lock-out, and calls going to a tab and back. |
+
+`safeFiles.ts` applies the root policy to child files and artifact targets, refuses symbolic links, opens files without following links, and checks the opened file identity before reading or truncating it.

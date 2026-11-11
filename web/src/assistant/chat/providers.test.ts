@@ -176,3 +176,27 @@ describe('calls', () => {
     expect(await listModels(defaultSettings('openai'), f)).toEqual(['gpt-4.1-mini', 'gpt-4o']);
   });
 });
+
+it('finalizes interleaved OpenAI tool arguments only after the stream is complete', () => {
+  const handed: unknown[] = [];
+  const s = new OpenAIStream((call) => handed.push(call));
+  const event = (tool_calls: unknown[]) => s.line(`data: ${JSON.stringify({ choices: [{ delta: { tool_calls } }] })}`);
+  event([
+    { index: 0, id: 'a', function: { name: 'get_map', arguments: '{"file":' } },
+    { index: 1, id: 'b', function: { name: 'get_text', arguments: '{"file":' } },
+  ]);
+  expect(handed).toEqual([]);
+  event([
+    { index: 1, function: { arguments: '"b.txt"}' } },
+    { index: 0, function: { arguments: '"a.map"}' } },
+  ]);
+  expect(handed).toEqual([]);
+  const reply = s.reply();
+  expect(reply.toolCalls).toEqual([
+    { id: 'a', name: 'get_map', args: { file: 'a.map' } },
+    { id: 'b', name: 'get_text', args: { file: 'b.txt' } },
+  ]);
+  expect(handed).toEqual(reply.toolCalls);
+  s.reply();
+  expect(handed).toHaveLength(2);
+});
