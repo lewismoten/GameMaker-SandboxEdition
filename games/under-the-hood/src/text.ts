@@ -22,7 +22,7 @@ export const HOWTO = wrap(`
 |SPACE         jump
 |UP, DOWN      climb a ladder
 
-Touch a bright byte to pick it up. A gate in a wall opens when you carry what it wants.
+Walk into a bright byte to pick it up. A gate in a wall opens when you carry what it wants.
 
 Walk into a word plate to try it in its slot.
 

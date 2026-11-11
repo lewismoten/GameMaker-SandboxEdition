@@ -146,7 +146,7 @@ export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
   const { book, signs } = buildBlocks(pal);
   const levels: Level[] = [
     { file: 'one', title: 'Hit Points', hint: 'F2 shows how many you have.', map: hitPoints(book, signs) },
-    { file: 'two', title: 'Hearts Heal', hint: 'Touch a heart to mend.', map: heartsHeal(book, signs) },
+    { file: 'two', title: 'Hearts Heal', hint: 'Walk into a heart to mend.', map: heartsHeal(book, signs) },
     { file: 'three', title: 'Lives', hint: 'Zero hit points costs a life.', map: lives(book, signs) },
   ];
   return { book, pal, levels };

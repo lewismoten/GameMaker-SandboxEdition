@@ -61,7 +61,7 @@ function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
     hatch: addSign(book, pal, 'hatch.sign', 'THIS NEST HATCHES A BIRD', 4, 4),
     wait: addSign(book, pal, 'wait.sign', 'WAIT AND WATCH THE NEST', 4, 4),
     loop: addSign(book, pal, 'loop.sign', 'IT HATCHES ONE AFTER ANOTHER', 4, 4),
-    stop: addSign(book, pal, 'stop.sign', 'TOUCH A NEST AND IT STOPS', 4, 4),
+    stop: addSign(book, pal, 'stop.sign', 'WALK INTO A NEST AND IT STOPS', 4, 4),
     exit: addSign(book, pal, 'exit.sign', 'EXIT →', 3),
   };
   return { book, signs };

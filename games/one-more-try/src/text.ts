@@ -23,7 +23,7 @@ export const HOWTO = wrap(`
 |UP, DOWN      climb a ladder
 |F2            lives, score
 
-Jump the pits, or fall in on purpose for the coins at the bottom. Touch the post to start a level over. Walk into the door at the end of each level.
+Jump the pits, or fall in on purpose for the coins at the bottom. Walk into the post to start a level over. Walk into the door at the end of each level.
 
 Nothing here can hurt you.
 

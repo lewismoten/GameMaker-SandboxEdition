@@ -23,7 +23,7 @@ const WORDS: Record<SignName, { text: string; w: number; h: number }> = {
   fly: { text: 'HOLD RIGHT, KEEP TAPPING, FLY ACROSS', w: 4, h: 3 },
   exit: { text: 'EXIT →', w: 3, h: 1 },
   two: { text: 'THESE BOOTS HOLD TWO JUMPS. EACH TAP USES ONE', w: 4, h: 3 },
-  third: { text: 'NO JUMPS LEFT? TOUCH A BLUE BUBBLE', w: 4, h: 3 },
+  third: { text: 'NO JUMPS LEFT? WALK INTO A BLUE BUBBLE', w: 4, h: 3 },
   step: { text: 'TOO TALL FOR ONE JUMP. TAP AGAIN', w: 4, h: 3 },
   gap: { text: 'TWO TAPS CROSS IT. FILL UP FIRST', w: 4, h: 3 },
 };

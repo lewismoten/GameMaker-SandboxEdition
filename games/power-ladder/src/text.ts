@@ -20,7 +20,7 @@ export const HOWTO = wrap(`
 |SPACE         jump
 |UP, DOWN      climb a ladder
 
-Touch a key and it is yours: your count goes up by what the key is worth.
+Walk into a key and it is yours: your count goes up by what the key is worth.
 
 Walk into a door. If your count can pay its price, the door opens and the price comes off your count. You keep the rest. If not, it stays shut.
 
