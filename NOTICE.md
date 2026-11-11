@@ -56,6 +56,8 @@ game folder opens in the browser unchanged.
 
 ## Credits
 
+- **Verified finding fixes (November 11, 2026)**: OpenAI Codex (GPT-6), directed by Lewis Moten, added input bounds, backup authentication and credential checks, MCP file-access and read-only checks, atomic save updates, download consent and cancellation, and regression tests. No new third-party material or game assets were added.
+
 - **Short landscape dialogs (November 10, 2026)**: OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, added landscape layouts for phone dialogs using the existing forms and previews. No new third-party assets or game content were added.
 
 - **Entry loading (November 10, 2026)**: OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, deferred home demo file inspection and playback, split optional title rendering, screenshot encoding, registration panels and gamepad controls, and separated FLAGS help from file-list metadata, with regression tests.

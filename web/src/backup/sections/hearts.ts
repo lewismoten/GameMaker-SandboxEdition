@@ -50,7 +50,7 @@ export const hearts: Section<HeartsPayload> = {
   validate(raw) {
     need(isRecord(raw) && isRecord(raw.found), 'tin hearts');
     for (const f of Object.values(raw.found)) need(f instanceof Uint8Array, 'tin hearts');
-    return { found: raw.found as Record<string, Uint8Array>, local: stringMap(raw.local, 'tin hearts') };
+    return { found: raw.found as Record<string, Uint8Array>, local: stringMap(raw.local, 'tin hearts', 'hearts') };
   },
   merge(mine, theirs, ctx) {
     const first = ctx.prefer === 'theirs';

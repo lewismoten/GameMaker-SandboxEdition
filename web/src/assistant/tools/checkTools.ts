@@ -1,6 +1,7 @@
 // Tools that test the game: the quick file check (project/health.ts), the editor's Level check
 // (editor/check, its findings as JSON) and the walkthrough bot (editor/check/walk), which plays
 // it and can keep what it played as a walkthrough.
+import { DRY_RUN } from './run';
 import { checkGame } from '../../project/health';
 import { parseGame, serializeGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { MLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
@@ -151,11 +152,16 @@ const botPlaytest: ToolDef = {
 
 const recordWalkthrough: ToolDef = {
   name: 'record_walkthrough',
+  writes: true,
   description: 'Like bot_playtest, and keeps the route as a walkthrough file beside the game (not among its files).',
-  inputSchema: { ...WALK_SCHEMA, properties: { ...WALK_SCHEMA.properties, name: { type: 'string', description: 'File name (default walkthrough.json).' } } },
+  inputSchema: {
+    ...WALK_SCHEMA,
+    properties: { ...WALK_SCHEMA.properties, dry_run: DRY_RUN, name: { type: 'string', description: 'File name (default walkthrough.json).' } },
+  },
   async run(a, ctx) {
     const { result, report } = await playReport(a, ctx);
     if (!result.walk) return json({ ...report, saved: null, note: 'The bot got through no scene, so there is no walkthrough.' });
+    if (a.dry_run) return json({ ...report, saved: null, dry_run: true });
     if (!ctx.saveArtifact) return json({ ...report, saved: null, note: 'This connection can’t keep files; the route is not saved.' });
     const name = typeof a.name === 'string' && /^[\w.-]{1,64}$/.test(a.name) ? a.name : 'walkthrough.json';
     const at = await ctx.saveArtifact(name, new TextEncoder().encode(JSON.stringify(result.walk)));

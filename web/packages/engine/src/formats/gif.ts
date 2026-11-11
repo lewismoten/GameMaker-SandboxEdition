@@ -74,6 +74,7 @@ export function decodeGif(bytes: Uint8Array): IndexedImage {
   // A local color table replaces the global one, as readcols() does in GIFC.C.
   if (flags & 0x80) readColors(2 << (flags & 7));
   const minCodeSize = bytes[p++];
+  checkCodeSize(minCodeSize);
   if (width * height > GIF_MAX_PIXELS) throw new Error(`GIF picture ${width} x ${height} is too large to show`);
 
   // Gather data sub-blocks.
@@ -111,7 +112,13 @@ export function decodeGif(bytes: Uint8Array): IndexedImage {
 // width; `clear + 1` ends the image. Each table entry is a prefix code plus one suffix
 // byte; `first` caches the first byte of an entry's string for the KwKwK case.
 // `done`, if given, gets how many pixels the data held (fewer when it was cut short).
+function checkCodeSize(size: number): void {
+  if (!Number.isInteger(size) || size < 2 || size > 8) throw new Error('Unsupported GIF LZW minimum code size');
+}
+
 export function lzwDecode(data: Uint8Array, minCodeSize: number, pixelCount: number, done?: { count: number }): Uint8Array {
+  checkCodeSize(minCodeSize);
+  if (!Number.isInteger(pixelCount) || pixelCount < 0 || pixelCount > GIF_MAX_PIXELS) throw new Error('GIF pixel count is too large');
   const out = new Uint8Array(pixelCount);
   const clear = 1 << minCodeSize;
   const eoi = clear + 1;
@@ -151,9 +158,10 @@ export function lzwDecode(data: Uint8Array, minCodeSize: number, pixelCount: num
       continue;
     }
     if (code === eoi) break;
+    if (code > next || (code === next && prev < 0) || (prev < 0 && code >= clear)) throw new Error('Invalid GIF LZW dictionary code');
     let c = code;
     let sp = 0;
-    if (prev >= 0 && code >= next) {
+    if (prev >= 0 && code === next) {
       // KwKwK case: the code is the one about to be defined, so its string is the
       // previous string plus that string's own first byte.
       stack[sp++] = first[prev];
