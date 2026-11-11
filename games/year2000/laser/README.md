@@ -9,9 +9,10 @@ combination can be changed (10,000 of them).
 cd web && npx vite-node ../games/year2000/laser/cryptex.ts [--kerf 0.2] [--out DIR] [--force]
 ```
 
-It writes `web/public/laser/year2000/cryptex/` (ignored by version control): `sheet-1-base.svg`, `sheet-2-rings.svg`,
-`sheet-3-core.svg` (each with a `.png` preview), `assembly.svg` (six assembly cards from the real outlines, the lock to
-scale and how to change the combination) and `manifest.json` (`kind: "kit"`, which the desk's Feelies shelf lists). The
+It writes `web/public/laser/year2000/cryptex/` (ignored by version control): `sheet-1-base.svg` and `sheet-2-rings.svg`
+(each with a `.png` preview), `assembly.svg` (the part ID legend, a card for each sub-assembly from the real outlines, the final
+assembly, setting your own code, and the lock to scale) and `manifest.json` (`kind: "kit"`, which the desk's Feelies shelf
+lists; it also carries the legend and the sheet areas). The
 tests are `web/test/laserCryptex.test.ts`. The build exits 1 if the lock check, the spacing check or the engraving check
 fails.
 
@@ -28,9 +29,31 @@ for the core, 12 mm for the pocket) add up.
 - Red `#FF0000` cut strokes, no fill. Blue `#0000FF` engrave fills, no stroke. No score on wood. One pass: every engraving
   is on the face that lies up on the sheet, so there is no flip. Run engrave, then cut.
 - Every cut lies outside all engraving (at least 1 mm), and no two elements touch (the clearance tool runs on every part).
-- Three sheets, each inside the bed (495 x 279 mm usable). The biggest is 472 x 202 mm.
+- Two sheets, each inside the bed (495 x 279 mm usable): 450 x 232 mm and 453 x 174 mm.
 - No people are drawn. The shapes are a phone booth, a moon and three stars. The words are already in `games/year2000`:
   the title, Teleport-A-Phone, and the teleporter's BZZZT; the digits are the rings'.
+
+## Hollow rings, nesting, IDs and sub-assemblies
+
+- **Rings, not solid discs.** The plain slice of each ring is a rim (a round hole inside it), and each base plate is two parts:
+  an outer ring and a collar round the ridge slot. The digit slices stay full (they carry the digits and the washer socket), and the
+  floor is solid. The narrowest wall left is **8 mm** (`RIM` in `cryptexDims.ts`): about 2.7 times the 3 mm plywood, which cuts,
+  handles and glues without snapping along the grain (laser-cut rings under about 5 mm break), and wide enough for an ID. Each hole
+  is under the rim of the next ring up (hole radius = that ring's outer radius minus the rim), so a load passes straight down the
+  rims to the base. The washers still lift out of the digit slice's socket and turn, so setting your own code works as before
+  (the lock check still frees the core for 2000 and no other of the 10,000 codes).
+- **Nesting.** `cryptexNest.ts` cuts the small parts out of the empty middles (first-fit circle packing, 2 mm of wood between cuts,
+  re-checked by the build). The kit went from 3 sheets (233,413 mm2 of bed) to 2 (183,000 mm2); the parts use about 72,000 mm2 of
+  wood instead of 82,000.
+- **IDs.** The letter is the sub-assembly (A base stack, B to E rings 4 to 1, F core, G1 to G4 washer pairs, H head, I lid); the
+  number counts layers from the bottom, with R (ring) and C (collar) for the two parts on a base layer (A2R, A2C). An ID is engraved
+  only on a face that ends up covered: the floor under the core, the glued face of a plain slice, a digit slice under the next ring up,
+  the glued face of a washer, a plate or a collar. The core slices, the plugs, ring 1's digit slice, the head and the lid have none
+  (too narrow, or bare on top). `cryptexGroups.ts` is the one list the assembly sheet and the desk's 3D view both read.
+- **Sub-assemblies**, built apart and glued where they cure, then put together: the base stack A (slowest, carries the rest; a dry
+  core lines up its collars), each ring B to E (glued to nothing else so it turns), the core F (it must be straight to slide), the
+  washer pairs G (loose, so they lift and turn) and the lid I. Only the head H is glued onto the finished stack.
+- **Set your own code** is its own run of steps in the 3D view: pull the core, lift ring 1, lift its washer G1, turn it, drop it back.
 
 ## The mechanism, and how it differs
 

@@ -10,7 +10,7 @@ import { fileURLToPath } from 'node:url';
 import { BED } from '@lewismoten/gamemaker-sandbox-tools/kit/laserLayout';
 import { pngFromRgb, renderPreview } from '@lewismoten/gamemaker-sandbox-tools/kit/laserPreview';
 import { COMBO } from './cryptexDims';
-import { assemblySvg } from './cryptexSteps';
+import { assemblySvg, legend } from './cryptexSteps';
 import { buildCryptex } from './cryptexBuild';
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -69,10 +69,13 @@ function main() {
         source,
         game: 'year2000',
         title,
-        blurb: 'A laser-cut cryptex with four rings of digits. Dial the year the game is named for and the core slides out, with room inside for a note.',
+        blurb:
+          'A laser-cut cryptex with four hollow rings of digits. Dial the year the game is named for and the core slides out, with room inside for a note.',
         material: { thickness: 3, kerf, bed: BED },
         sheets: files,
         assembly: 'assembly.svg',
+        legend: legend(kerf),
+        area: b.area,
         parts: list,
         lock: b.lock,
         clearance: b.clearance,
