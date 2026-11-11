@@ -15,9 +15,13 @@ export function kitAssemblyViewer(kit: LaserKit): { root: HTMLElement; close(): 
   const id = `kit-assembly-${serial++}`;
   const caption = h('p', { 'aria-live': 'polite', class: 'ka-caption' });
   const count = h('span');
-  const slider = h('input', { id, type: 'range', min: '0', max: String(model.parts.length), step: '1', value: '0' });
+  const slider = h('input', { id, type: 'range', min: '0', max: String(model.steps.length), step: '1', value: '0' });
   const back = h('button', { type: 'button' }, 'Back');
   const next = h('button', { type: 'button' }, 'Next');
+  // places to jump to: each sub-assembly built apart, putting them together, setting your own code
+  const jump = model.sections.length
+    ? h('select', { 'aria-label': 'Jump to a part of the assembly' }, ...model.sections.map((s) => h('option', { value: String(s.step) }, s.title)))
+    : undefined;
   const play = h('button', { type: 'button', 'aria-pressed': 'false' }, 'Play');
   let target = 0,
     raf = 0,
@@ -25,20 +29,21 @@ export function kitAssemblyViewer(kit: LaserKit): { root: HTMLElement; close(): 
     closed = false;
   const reduced = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
   const render = () => {
-    const p = model.parts[target - 1];
-    count.textContent = target ? `${target} of ${model.parts.length}: ${p.id}` : '0: Exploded parts';
+    const p = model.steps[target - 1];
+    count.textContent = target ? `${target} of ${model.steps.length}: ${p.label}` : '0: Exploded parts';
     caption.textContent =
       p?.caption ??
       'All parts are separated. Use Next to slide each part into place. Drag or use the arrow keys on the model to turn it. Escape returns to the box.';
     slider.value = String(target);
+    if (jump) jump.value = String(target ? ([...model.sections].reverse().find((s) => s.step <= target)?.step ?? 0) : 0);
     slider.setAttribute('aria-valuetext', count.textContent);
     table.canvas.setAttribute('aria-label', `${kit.title}. ${count.textContent}. Drag or use arrow keys to turn; Home resets the view.`);
     back.disabled = target === 0;
-    next.disabled = target === model.parts.length;
+    next.disabled = target === model.steps.length;
     view.draw();
   };
   const go = (step: number) => {
-    target = Math.max(0, Math.min(model.parts.length, step));
+    target = Math.max(0, Math.min(model.steps.length, step));
     cancelAnimationFrame(raf);
     const from = view.step,
       start = performance.now();
@@ -64,13 +69,13 @@ export function kitAssemblyViewer(kit: LaserKit): { root: HTMLElement; close(): 
     play.setAttribute('aria-pressed', 'false');
   }
   function advance() {
-    if (closed || !root.isConnected || target === model.parts.length) return stop();
+    if (closed || !root.isConnected || target === model.steps.length) return stop();
     go(target + 1);
     timer = window.setTimeout(advance, 1900);
   }
   play.onclick = () => {
     if (timer) return stop();
-    if (target === model.parts.length) {
+    if (target === model.steps.length) {
       view.step = 0;
       target = 0;
       render();
@@ -83,6 +88,11 @@ export function kitAssemblyViewer(kit: LaserKit): { root: HTMLElement; close(): 
     stop();
     go(Number(slider.value));
   };
+  if (jump)
+    jump.onchange = () => {
+      stop();
+      go(Number(jump.value));
+    };
   back.onclick = () => {
     stop();
     go(target - 1);
@@ -98,6 +108,7 @@ export function kitAssemblyViewer(kit: LaserKit): { root: HTMLElement; close(): 
     h('label', { for: id }, 'Assembly step'),
     slider,
     count,
+    jump,
     h('div', { class: 'ka-buttons' }, back, next, play),
     caption,
   );
