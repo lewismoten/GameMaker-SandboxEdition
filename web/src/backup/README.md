@@ -1,9 +1,11 @@
-# `backup/`: back up and restore everything this browser keeps
+# `backup/`: back up and restore what this site keeps in a browser
 
 Part of the [source map](../README.md).
 
 The ⚙ Settings menu's _Back up / restore…_ (`settingsMenu.ts` loads `openDataBackup.ts` when it is
 chosen). It saves what this site keeps in a browser to one file and brings it back, part by part.
+Imported games, recently deleted games, the web player page's own saves and caches are left out
+(`inventory.ts` lists each); keep the originals of imported games elsewhere.
 
 - `inventory.ts`: every gm-\* localStorage key and IndexedDB store, sorted into the ten sections
   (and what is left out, with why). `inventory.test.ts` fails when a new key or database appears in
