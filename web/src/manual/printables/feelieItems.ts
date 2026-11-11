@@ -66,6 +66,9 @@ export function phoneAttachments(): Attachment[] {
   ];
 }
 
+/** A link to an SVG drawing: it opens in the page's viewer (svgViewer.ts). */
+export const isSvgHref = (href: string): boolean => /\.svg(?:[?#].*)?$/i.test(href);
+
 /** The attachments as a list of download links, each with its size. */
 function attachmentList(list: Attachment[]): HTMLElement {
   return h(
@@ -75,6 +78,13 @@ function attachmentList(list: Attachment[]): HTMLElement {
       const size = h('span', { class: 'fe-size' }, a.bytes ? sizeText(a.bytes) : '');
       if (!a.bytes && !a.link) void fileSize(a.href).then((n) => (size.textContent = n ? sizeText(n) : ''));
       const link = h('a', { class: 'fe-dl', href: a.href, download: a.file }, a.label);
+      // a drawing opens large in the page (pan, zoom, Download there); the other files download as before
+      if (isSvgHref(a.href))
+        link.addEventListener('click', (e) => {
+          if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+          e.preventDefault();
+          void import('./svgViewer').then((m) => m.openSvgViewer(a.href, a.file, a.label, link));
+        });
       return h('li', null, a.link ? a.link(link) : link, size);
     }),
   );
