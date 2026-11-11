@@ -22,7 +22,7 @@ function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
   addStarterBlocks(book, pal);
   const signs = {
     plain: addSign(book, pal, 'plain.sign', 'PLAIN COINS JUST VANISH', 4, 3),
-    monster: addSign(book, pal, 'monster.sign', 'THESE COINS ARE MONSTERS. TOUCH ONE', 4, 4),
+    monster: addSign(book, pal, 'monster.sign', 'THESE COINS ARE MONSTERS. WALK INTO ONE', 4, 4),
     number: addSign(book, pal, 'number.sign', 'IT BECAME A NUMBER THAT RISES', 4, 4),
     picture: addSign(book, pal, 'picture.sign', 'EACH NUMBER IS ITS OWN PICTURE', 4, 4),
     stuck: addSign(book, pal, 'stuck.sign', 'THIS 100 NEVER GOES AWAY', 4, 3),

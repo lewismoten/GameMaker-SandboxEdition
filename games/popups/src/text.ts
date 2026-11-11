@@ -8,7 +8,7 @@ export const STORY = wrap(`
 
 When you score, a number rises and fades. It feels good, and it tells you what you got.
 
-A small explorer in a pink beanie crosses two short rooms full of coins that are really monsters. Touch one and it becomes a number.
+A small explorer in a pink beanie crosses two short rooms full of coins that are really monsters. Walk into one and it becomes a number.
 
 Read the signs. Then open this game in Game-Maker and make your own.
 `);
@@ -20,7 +20,7 @@ export const HOWTO = wrap(`
 |SPACE         jump
 |F2            lives, score
 
-Touch a spinning prize. It pays its points, then becomes a number that blinks, floats up and is gone.
+Walk into a spinning prize. It pays its points, then becomes a number that blinks, floats up and is gone.
 
 The number is only a picture of digits, and a number never adds to your score; the prize did that.
 
@@ -57,5 +57,5 @@ export const LOST = wrap(`
 
 The number got away.
 
-Try again: touch the prizes and watch the numbers rise.
+Try again: walk into the prizes and watch the numbers rise.
 `);

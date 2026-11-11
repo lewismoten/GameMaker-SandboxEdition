@@ -6,7 +6,7 @@
   "hero": "YANA",
   "year": 1994,
   "price": "Free",
-  "version": "1.2",
+  "version": "1.3",
   "blurb": "Two short levels about the numbers that rise when you score. A coin that is a monster pays 100 and becomes a blinking 100 that floats up and is gone; a gem and a box have numbers of their own, and one number never leaves. Signs in the levels say how. Play it, then open it in Game-Maker and make your own.",
   "exe": "POPUPS.EXE",
   "dosName": "POPUPS",

@@ -150,7 +150,7 @@ export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
     {
       file: 'one',
       title: 'A Post to Start Over',
-      hint: 'Fell in? Touch the post.',
+      hint: 'Fell in? Walk into the post.',
       map: aPostToStartOver(book, signs),
       posts: [[L1.post, GROUND + DEPTH - 1]],
     },

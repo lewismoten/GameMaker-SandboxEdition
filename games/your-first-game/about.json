@@ -6,7 +6,7 @@
   "hero": "NOVA",
   "year": 1994,
   "price": "Free",
-  "version": "1.1",
+  "version": "1.2",
   "blurb": "Three short levels that use a little of everything: walking and jumping, coins, a friendly gumdrop, spikes, and a key for a locked door. A small, whole game with a title, an ending and signs along the way, made to be copied and changed. Play it, then open it in Game-Maker and make it yours.",
   "exe": "FIRST.EXE",
   "dosName": "FIRSTGAM",

@@ -29,7 +29,7 @@ const SIGNS: Record<SignName, [string, number, number]> = {
   walk: ['ARROWS WALK. SPACE JUMPS.', 4, 3],
   jump: ['HOLD AN ARROW AND TAP SPACE TO JUMP THE WALL', 4, 4],
   coins: ['COINS ARE POINTS. F2 SHOWS YOUR SCORE.', 4, 3],
-  pop: ['A GUMDROP IS FRIENDLY. TOUCH IT TO POP IT.', 4, 4],
+  pop: ['A GUMDROP IS FRIENDLY. WALK INTO IT TO POP IT.', 4, 4],
   spikes: ['SPIKES HURT. JUMP OVER THEM.', 4, 3],
   ladder: ['CLIMB UP FOR THE KEY', 4, 2],
   locked: ['LOCKED. A KEY OPENS THE DOOR.', 4, 3],

@@ -144,7 +144,7 @@ export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
   const pal = buildStarterPalette(undefined, 'coins-and-score');
   const { book, signs } = buildBlocks(pal);
   const levels: Level[] = [
-    { file: 'one', title: 'Coins Add Points', hint: 'Touch a coin and the score goes up.', map: coinsAddPoints(book, signs) },
+    { file: 'one', title: 'Coins Add Points', hint: 'Walk into a coin and the score goes up.', map: coinsAddPoints(book, signs) },
     { file: 'two', title: 'Some Are Worth More', hint: 'A gem pays more. A rock costs.', map: worthMore(book, signs) },
     { file: 'three', title: 'Points Are Not Lives', hint: 'Only a heart adds a life.', map: heartsAddLives(book, signs) },
   ];

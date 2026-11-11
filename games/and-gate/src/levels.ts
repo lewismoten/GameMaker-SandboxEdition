@@ -28,7 +28,7 @@ function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
     wire: addSign(book, pal, 'wire.sign', 'A SPARK RUNS THE WIRE', 4, 2),
     dial: addSign(book, pal, 'dial.sign', 'JUMP TO BUMP A DIAL ON', 4, 2),
     both: addSign(book, pal, 'both.sign', 'ONE DIAL OFF STOPS THE SPARK', 4, 2),
-    light: addSign(book, pal, 'light.sign', 'THE LIGHT DROPS. TOUCH IT', 4, 2),
+    light: addSign(book, pal, 'light.sign', 'THE LIGHT DROPS. WALK INTO IT', 4, 2),
     gate: addSign(book, pal, 'gate.sign', 'THE LIGHT OPENS THIS GATE', 4, 2),
     three: addSign(book, pal, 'three.sign', 'ALL THREE MUST BE ON', 4, 2),
     climb: addSign(book, pal, 'climb.sign', 'THE WIRE CLIMBS. SO DOES LAMI', 4, 2),

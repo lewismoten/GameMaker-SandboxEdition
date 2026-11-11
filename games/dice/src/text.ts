@@ -8,7 +8,7 @@ export const STORY = wrap(`
 
 Leave a little to chance.
 
-A small explorer in a green beanie finds a die rolling on the ground. Touch it and it stops. Its face picks the door.
+A small explorer in a green beanie finds a die rolling on the ground. Walk into it and it stops. Its face picks the door.
 
 Watch it roll. Then touch it.
 
@@ -62,5 +62,5 @@ export const LOST = wrap(`
 
 Out of lives. Nothing in this game can cost a life, so this one is hard to do!
 
-Try again: touch the die, then pick the door.
+Try again: walk into the die, then pick the door.
 `);

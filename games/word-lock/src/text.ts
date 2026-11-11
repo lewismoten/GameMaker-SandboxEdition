@@ -22,7 +22,7 @@ export const HOWTO = wrap(`
 |SPACE         jump
 |UP, DOWN      climb a ladder
 
-Touch a bubble and the word is yours: your count goes up by one.
+Walk into a bubble and the word is yours: your count goes up by one.
 
 Walk into a lock. If your count can pay, the lock opens and takes its price. If not, it stays shut and you keep your words.
 

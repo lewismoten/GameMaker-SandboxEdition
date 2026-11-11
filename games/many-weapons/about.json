@@ -6,7 +6,7 @@
   "hero": "LENA",
   "year": 1994,
   "price": "Free",
-  "version": "1.0",
+  "version": "1.1",
   "blurb": "Two short levels about one key that throws different things. A pouch of stars and a pouch of flames fill counters, and Enter throws a flame if there is one, a star if there is not, and nothing when there is neither. A star pops a mint green gumdrop but cannot melt a frosty grump; a flame can. Each weapon is a sequence in the character file. Signs explain each idea, and every level has a page on how it is made.",
   "exe": "MANYWEAP.EXE",
   "dosName": "MANYWEAP",

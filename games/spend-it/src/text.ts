@@ -21,7 +21,7 @@ export const HOWTO = wrap(`
 |UP, DOWN      climb a ladder
 |F2            your Money
 
-Touch a coin and your Money goes up by one.
+Walk into a coin and your Money goes up by one.
 
 Walk into a stall with enough coins and it takes its price and gives you the item. With too few, nothing happens.
 

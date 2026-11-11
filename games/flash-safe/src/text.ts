@@ -20,7 +20,7 @@ export const HOWTO = wrap(`
 |SPACE         jump
 |F2            lives, score
 
-In level 1 a burr takes 5 hit points. Touch one and look and listen.
+In level 1 a burr takes 5 hit points. Walk into one and look and listen.
 
 In level 2 two lamps glow. Read the signs by them.
 
@@ -61,5 +61,5 @@ export const LOST = wrap(`
 
 Out of hit points. Ten burrs would do it, and there are only three!
 
-Try again: touch a burr once and look, then go.
+Try again: walk into a burr once and look, then go.
 `);

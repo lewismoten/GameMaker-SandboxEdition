@@ -23,7 +23,7 @@ export const HOWTO = wrap(`
 |UP, DOWN      climb a ladder
 |F2            lives, score
 
-Touch a part to take it. Walk into the socket with its shape and the part goes in.
+Walk into a part to take it. Walk into the socket with its shape and the part goes in.
 
 In the pasta ring, LEFT and RIGHT steer. The ring rolls up by itself.
 

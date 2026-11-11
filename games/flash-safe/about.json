@@ -6,7 +6,7 @@
   "hero": "LAMI",
   "year": 1994,
   "price": "Free",
-  "version": "1.0",
+  "version": "1.1",
   "blurb": "Three short levels about making a game that is easy on the eyes. Some players can get sick from fast flashing, and some people have seizures from flashing light, so a game should never rely on it. Level 1 shows a hit without a flash: a beep, an ouch face, a number that rises and fewer hit points. Level 2 blinks a small amber lamp once a second and pulses another in soft steps. Level 3 lifts a dark sky a little, holds it, and lets it settle. Signs and still pictures show the wrong way, and the simple rules: no more than 3 flashes in a second, no big red flashes, keep flashing small, and offer other cues. Play it, then open it in Game-Maker and change a time.",
   "exe": "FLASHSAF.EXE",
   "dosName": "FLASHSAF",
