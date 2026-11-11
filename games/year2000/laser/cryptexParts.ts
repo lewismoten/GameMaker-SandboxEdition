@@ -11,9 +11,11 @@ import {
   DIGITS,
   HEAD_R,
   LID,
+  COLLAR_R,
   PX,
-  POCKET,
+  PX_ID,
   RINGS,
+  SLICE_HOLE,
   SOCKET_FIT,
   STEP,
   WASHER,
@@ -59,9 +61,10 @@ export function makeParts(kerf: number): Parts {
   };
 
   // --- the base: a floor, with the reading mark, the title and a few pictures --------------------------------------
-  const base = add('BASE', BASE, BASE, 1, 'floor of the base (the core stands on it)');
+  const base = add('A1', BASE, BASE, 1, 'base stack A, layer 1: the floor (the core stands on it)');
   base.outline(rectPoly([0, 0, BASE, BASE]));
   const c = BASE / 2;
+  base.text('A1', 'pc', c, c, PX_ID); // under the core's closed bottom slice
   base.text('IN THE YEAR 2000!', 'pc', c, 4, PX);
   base.text('TELEPORT-A-PHONE', 'pc', c, BASE - 4, PX);
   base.engrave('reading mark', [
@@ -76,37 +79,60 @@ export function makeParts(kerf: number): Parts {
   base.engraveRound('moon', 11, 13, 5);
   base.engrave('stars', [diamond(94, 14, 2.6), diamond(102, 24, 2.2), diamond(88, 22, 1.8)]);
 
-  // --- the pocket plates: the base's walls round the core's ridge ---------------------------------------------------
-  const pk = disc('PK', RINGS[3], POCKET.plates, 'pocket plate (glue four on the floor, slots lined up)');
-  pk.hole('ridge slot', at(pocketHole(), RINGS[3], RINGS[3]));
+  // --- the pocket plates, each in two parts: an outer ring and a collar round the ridge slot ---------------------------------------
+  // (the interior between them is empty, and the sheets nest small parts there). IDs: A2R..A5R (R: the ring), A2C..A5C (C: the collar), bottom to top.
+  const idAt = (p: Part, id: string, x: number, y: number) => p.text(id, 'pc', x, y, PX_ID);
+  for (let n = 2; n <= 5; n++) {
+    const o = disc(`A${n}R`, RINGS[3], 1, `base stack A, layer ${n}, outer ring (glue on the layer below, edges flush)`);
+    o.holeRound('hollow', RINGS[3], RINGS[3], SLICE_HOLE[3]);
+    idAt(o, `A${n}R`, RINGS[3], RINGS[3] - (RINGS[3] + SLICE_HOLE[3]) / 2);
+    const i = disc(`A${n}C`, COLLAR_R, 1, `base stack A, layer ${n}, collar round the ridge slot (ridge slots lined up, on the marker side)`);
+    i.hole('ridge slot', at(pocketHole(), COLLAR_R, COLLAR_R));
+    idAt(i, `A${n}C`, COLLAR_R, COLLAR_R - 19);
+  }
 
-  // --- the rings: two slices each, the top slice carries the digits -------------------------------------------------
+  // --- the rings: a plain slice with a round hole (a rim) under a top slice with the digits ------------------------------------------
+  // Stack letters B (ring 4), C (ring 3), D (ring 2), E (ring 1); layer 1 is the plain slice, layer 2 the top slice. The IDs are on
+  // a face that ends up covered: the plain slice's glued face, and the top slice where the next ring up lies over it.
   RINGS.forEach((R, k) => {
-    for (const side of ['T', 'B']) {
+    const L = 'EDCB'[k];
+    for (const [layer, side] of [
+      [1, 'B'],
+      [2, 'T'],
+    ] as const) {
+      const id = `${L}${layer}`;
       const p = disc(
-        `R${k + 1}${side}`,
+        id,
         R,
         1,
-        side === 'T' ? `ring ${k + 1}, top slice with the digits` : `ring ${k + 1}, plain slice (glue under the top slice)`,
+        side === 'T' ? `ring ${k + 1} (stack ${L}), top slice with the digits` : `ring ${k + 1} (stack ${L}), plain slice: a rim under the top slice`,
       );
-      p.hole('washer socket', at(decagon(WASHER.apothem + SOCKET_FIT), R, R));
-      if (side === 'T')
+      if (side === 'B') {
+        p.holeRound('hollow', R, R, SLICE_HOLE[k]);
+        idAt(p, id, R, R - (R + SLICE_HOLE[k]) / 2);
+      } else {
+        p.hole('washer socket', at(decagon(WASHER.apothem + SOCKET_FIT), R, R));
+        if (k > 0) idAt(p, id, R, R - 23.5); // under the next ring up
         for (let j = 0; j < DIGITS; j++) {
           const a = (j * STEP * Math.PI) / 180;
           p.text(String(j), 'pc', R + digitRadius(k) * Math.cos(a), R + digitRadius(k) * Math.sin(a), PX);
         }
+      }
     }
   });
 
-  // --- the washers: where the notch is seated sets the digit ---------------------------------------------------------
+  // --- the washers: where the notch is seated sets the digit; G<n> is the pair for ring n ----------------------------------------------
   const wr = WASHER.apothem / Math.cos(Math.PI / DIGITS);
-  const wash = add('WASH', 2 * wr, 2 * wr, 8, 'washer (glue in pairs; the notch is the combination)');
-  wash.outline(at(decagon(WASHER.apothem), wr, wr));
-  wash.hole('bore and notch', at(washerHole(), wr, wr));
+  for (let n = 1; n <= 4; n++) {
+    const wash = add(`G${n}`, 2 * wr, 2 * wr, 2, `washer pair G${n}: two washers glued (6 mm); it sits loose in ring ${n}, notch set to the digit you want`);
+    wash.outline(at(decagon(WASHER.apothem), wr, wr));
+    wash.hole('bore and notch', at(washerHole(), wr, wr));
+    idAt(wash, `G${n}`, wr, wr - 15.6);
+  }
 
   // --- the core: a hollow tube, closed at the bottom, ridge near the bottom -----------------------------------------
   const cw = 2 * CORE.ridgeOut;
-  const core0 = add('CORE0', cw, cw, 1, 'core slice 1 (bottom, closed, with the ridge)');
+  const core0 = add('CORE0', cw, cw, 1, 'core F, slice 1 (bottom, closed, with the ridge)');
   core0.outline(at(coreShape(), CORE.ridgeOut, CORE.ridgeOut));
   const coreR = add('CORER', cw, cw, CORE.ridgeSlices - 1, 'core slices 2 and 3 (hollow, with the ridge; ridges all on one side)');
   coreR.outline(at(coreShape(), CORE.ridgeOut, CORE.ridgeOut));

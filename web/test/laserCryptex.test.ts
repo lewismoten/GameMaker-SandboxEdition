@@ -5,14 +5,14 @@ import { describe, expect, it } from 'vitest';
 import { BED } from '@lewismoten/gamemaker-sandbox-tools/kit/laserLayout';
 import { CUT, ENGRAVE } from '@lewismoten/gamemaker-sandbox-tools/kit/laserSvg';
 import { buildCryptex } from '../../games/year2000/laser/cryptexBuild';
-import { CORE, COMBO, POCKET, RINGS, SLICES_PER_RING, T, WASHER, checkLock } from '../../games/year2000/laser/cryptexDims';
-import { assemblySvg } from '../../games/year2000/laser/cryptexSteps';
+import { CORE, COMBO, POCKET, RIM, RINGS, SLICE_HOLE, SLICES_PER_RING, T, WASHER, checkLock } from '../../games/year2000/laser/cryptexDims';
+import { assemblySvg, legend } from '../../games/year2000/laser/cryptexSteps';
 
 const kit = buildCryptex();
 
 describe('cryptex sheets', () => {
   it('uses only red cut strokes and blue engrave fills, one pass, inside the bed', () => {
-    expect(kit.sheets).toHaveLength(3);
+    expect(kit.sheets).toHaveLength(2);
     for (const s of kit.sheets) {
       const svg = s.sheet.svg(s.title);
       const colors = new Set([...svg.matchAll(/(?:stroke|fill)="(#[0-9a-f]{6})"/gi)].map((m) => m[1].toLowerCase()));
@@ -34,7 +34,7 @@ describe('cryptex sheets', () => {
     const a = buildCryptex(0, false);
     const b = buildCryptex(0.4, false);
     const width = (k: typeof a) => {
-      const it = k.parts.BASE.part.sheet.items[0] as unknown as { pts: number[][] };
+      const it = k.parts.A1.part.sheet.items[0] as unknown as { pts: number[][] };
       const xs = it.pts.map((p) => p[0]);
       return Math.max(...xs) - Math.min(...xs);
     };
@@ -42,7 +42,32 @@ describe('cryptex sheets', () => {
   });
   it('writes an assembly sheet with every card', () => {
     const svg = assemblySvg();
-    for (const t of ['1. Base', '2. Core', '3. Washers', '4. Rings', '5. Stack', '6. Head and lid']) expect(svg).toContain(t);
+    for (const t of ['Stack A: the base', 'Stack F: the core', 'G1 to G4', 'Final assembly', 'Set your own code', 'Part IDs']) expect(svg).toContain(t);
+  });
+});
+
+describe('cryptex hollow rings, IDs and nesting', () => {
+  it('keeps at least the minimum wall on every hollowed slice and nests every part inside its host hole', () => {
+    SLICE_HOLE.forEach((h, k) => expect(RINGS[k] - h).toBeGreaterThanOrEqual(RIM));
+    expect(Math.min(...RINGS.map((r, k) => r - SLICE_HOLE[k]))).toBe(RIM);
+    expect(kit.problems).toEqual([]);
+  });
+  it('uses less wood and fewer sheets than the solid design (3 sheets, 233,413 mm2 of bed, 82,293 mm2 of wood)', () => {
+    expect(kit.sheets.length).toBeLessThan(3);
+    expect(kit.area.sheets).toBeLessThan(233413 * 0.85);
+    expect(kit.area.wood).toBeLessThan(82293 * 0.9);
+  });
+  it('engraves a part ID on every part that has a hidden face with room, and the legend lists the rest as unmarked', () => {
+    const marked = Object.keys(kit.parts).filter((k) => kit.parts[k].part.texts.some((t) => t.text === k));
+    expect(marked.sort()).toEqual(
+      ['A1', 'A2R', 'A3R', 'A4R', 'A5R', 'A2C', 'A3C', 'A4C', 'A5C', 'B1', 'B2', 'C1', 'C2', 'D1', 'D2', 'E1', 'G1', 'G2', 'G3', 'G4'].sort(),
+    );
+    const unmarked = legend(0.2).filter((r) => r.id.startsWith('('));
+    expect(unmarked.map((r) => r.id).sort()).toEqual(['(COREC)', '(CORE0)', '(CORER)', '(E2)', '(HEAD)', '(LID)', '(LIDP)'].sort());
+  });
+  it('puts a top slice ID only under the next ring up (the digit bands are never marked)', () => {
+    for (const k of ['B2', 'C2', 'D2']) expect(kit.parts[k].part.texts.map((t) => t.text)).toContain(k);
+    expect(kit.parts.E2.part.texts.map((t) => t.text)).not.toContain('E2');
   });
 });
 
