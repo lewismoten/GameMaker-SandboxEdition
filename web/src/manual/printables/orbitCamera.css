@@ -20,3 +20,37 @@
   outline: 3px solid #923900;
   outline-offset: 1px;
 }
+
+/* a kit view never grows past the area the shelf leaves it: its own scroll takes over (phones) */
+.trk-float:has(.ka),
+.trk-float:has(.bcf) {
+  grid-template-rows: minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr);
+}
+.trk-float > .ka,
+.trk-float > .bcf {
+  max-height: 100%;
+  overflow-y: auto;
+  justify-self: center;
+}
+.ka select {
+  min-height: 44px;
+  color: #251b16;
+  background: #fff;
+  border: 1px solid #694b2d;
+  border-radius: 4px;
+}
+@media (max-width: 600px) {
+  .ka-caption {
+    min-height: 3.6em;
+  }
+  .trk-float .bcf-svg {
+    height: clamp(120px, 20vh, 190px);
+  }
+  .trk-float .bcf-caption {
+    min-height: 3.6em;
+  }
+}
+.trk-float:has(.bcf) {
+  z-index: 4;
+}
