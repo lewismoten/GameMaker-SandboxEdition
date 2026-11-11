@@ -40,14 +40,18 @@ const isSecret = (id: string) => {
   }
 };
 
-/** A folder's files (not its subfolders). */
-function readFolder(dir: string, roots: Roots): GameFiles {
-  roots.readable(dir);
+/**
+ * A folder's files (not its subfolders). Symbolic links are refused everywhere. With `roots`
+ * (a user's folder) the root policy also applies; the repository's own games and CD samples
+ * are read without it, since they are not under the user's roots.
+ */
+function readFolder(dir: string, roots?: Roots): GameFiles {
+  roots?.readable(dir);
   const files = new GameFiles();
   for (const n of readdirSync(dir)) {
     const p = join(dir, n);
     if (lstatSync(p).isSymbolicLink()) throw new ToolError(`${p}: symbolic links are not allowed.`);
-    if (lstatSync(p).isFile()) files.put(n, readFile(roots, p));
+    if (lstatSync(p).isFile()) files.put(n, roots ? readFile(roots, p) : new Uint8Array(readFileSync(p)));
   }
   return files;
 }
@@ -74,7 +78,7 @@ export async function loadGame(source: string, roots: Roots, gam?: string): Prom
     if (m[1].toLowerCase() === 'sandbox') {
       const disk = join(GAMES_DIR, id, 'disk');
       if (!existsSync(disk) || isSecret(id)) throw new ToolError(`There is no game sandbox:${id}.`);
-      const files = readFolder(disk, roots);
+      const files = readFolder(disk);
       const g = pick(files, gam, source);
       const player = join(GAMES_DIR, id, 'player.json');
       const patches = existsSync(player) ? recordPatches(JSON.parse(readFileSync(player, 'utf8'))) : {};
@@ -82,7 +86,7 @@ export async function loadGame(source: string, roots: Roots, gam?: string): Prom
     }
     const dir = join(CD_GAMES_DIR, id);
     if (!existsSync(dir)) throw new ToolError(`There is no game cd:${id}.`);
-    const files = readFolder(dir, roots);
+    const files = readFolder(dir);
     return { files, gam: pick(files, gam, source), patches: {}, stem: id };
   }
   const path = roots.readable(source);
@@ -113,7 +117,7 @@ export function listGames(roots: Roots): Listed[] {
   const seen = new Set<string>();
   const folder = (dir: string, kind: Listed['kind'], source: string) => {
     try {
-      const files = readFolder(dir, roots);
+      const files = readFolder(dir, kind === 'folder' ? roots : undefined);
       const g = files.mainGame();
       if (g && !seen.has(dir)) {
         seen.add(dir);
