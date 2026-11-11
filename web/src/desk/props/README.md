@@ -2,7 +2,7 @@
 
 Part of [`desk/`](../README.md) and the [source map](../../README.md). Each prop is a small module: a click or a press does something (the watch beeps, the curtains tug, the window fogs, the basket is rummaged). They sit in the room drawn by [`room/`](../room/README.md).
 
-Entry point: `index.ts` installs every prop. `propKit.ts` is what all of them share (making a thing clickable, focus, labels); `propSound.ts` makes their sounds on the spot (no files).
+Entry point: `index.ts` installs every prop. `propKit.ts` is what all of them share (making a thing clickable, focus, labels); `propSound.ts` synthesizes their sounds on the spot, plays the tour's recorded Teddy and Gwinn barks (a synthesized woof when a clip is unavailable) and can load a game's VOC effect.
 
 - `clock.ts`, `clockHeart.ts`: the wall watch and the tin heart in it.
 - `curtains.ts`, `window.ts`, `moonPhase.ts`, `roomLight.ts`: the window's side of the room, the real moon, and the room after dark.
