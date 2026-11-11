@@ -1,175 +1,9 @@
-// The balloon cube's fold as motion, with no drawing: the same panels as balloonCubeModel.ts, joined by hinges the way the paper is,
-// and a list of fold steps (one fold each) that carry the flat square to the finished cube. Every pose is a rotation about a crease,
-// so the panels stay the shapes printed on the sheet. balloonCubeFold.test.ts checks that the last pose is balloonCubeModel's cube.
-// Flat pose: the sheet lies in z = 0, printed side toward +z. Faces fold toward -z (away from you), so the cube hangs below it;
-// `display` turns that over (a half turn about x) so the cube stands on the table with its lid up.
-import { PLACEMENTS, type V2, type V3 } from './balloonCubeModel';
-
-type Mat = number[]; // 3x4, row-major: the first three columns are the rotation, the last the shift
-const IDENTITY: Mat = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0];
-const mul = (a: Mat, b: Mat): Mat => {
-  const o: Mat = [];
-  for (let r = 0; r < 3; r++) {
-    for (let c = 0; c < 4; c++) o.push(a[r * 4] * b[c] + a[r * 4 + 1] * b[4 + c] + a[r * 4 + 2] * b[8 + c] + (c === 3 ? a[r * 4 + 3] : 0));
-  }
-  return o;
-};
-export const apply = (m: Mat, p: V3): V3 => [0, 1, 2].map((r) => m[r * 4] * p[0] + m[r * 4 + 1] * p[1] + m[r * 4 + 2] * p[2] + m[r * 4 + 3]) as V3;
-/** A panel's printed side faces this way (its sheet normal, turned by the pose). */
-export const normalOf = (m: Mat): V3 => [m[2], m[6], m[10]];
-
-/** Turn by `angle` about the sheet line a to b, in the direction that carries `toward` (a point of the moving panel) down to -z. */
-function hingeTurn(a: V2, b: V2, toward: V2, angle: number): Mat {
-  let dx = b[0] - a[0];
-  let dy = b[1] - a[1];
-  const len = Math.hypot(dx, dy);
-  dx /= len;
-  dy /= len;
-  if (dx * (toward[1] - a[1]) - dy * (toward[0] - a[0]) > 0) {
-    dx = -dx;
-    dy = -dy;
-  }
-  const c = Math.cos(angle);
-  const s = Math.sin(angle);
-  const k = 1 - c;
-  // Rodrigues, axis (dx, dy, 0)
-  const R = [c + dx * dx * k, dx * dy * k, dy * s, dx * dy * k, c + dy * dy * k, -dx * s, -dy * s, dx * s, c];
-  const t = [a[0] - (R[0] * a[0] + R[1] * a[1]), a[1] - (R[3] * a[0] + R[4] * a[1]), -(R[6] * a[0] + R[7] * a[1])];
-  return [R[0], R[1], R[2], t[0], R[3], R[4], R[5], t[1], R[6], R[7], R[8], t[2]];
-}
-
-type PanelKind = 'bottom' | 'side' | 'tuck' | 'corner';
-export interface Panel {
-  id: string;
-  kind: PanelKind;
-  /** Its outline on the flat sheet. */
-  poly: V2[];
-  /** Index into PLACEMENTS when it carries printed art. */
-  art?: number;
-  parent?: string;
-  /** The crease it turns on (two sheet points, shared with its parent). */
-  hinge?: [V2, V2];
-}
-
-const SIDES = ['ne', 'nw', 'sw', 'se'] as const;
-const centers: Record<(typeof SIDES)[number], V2> = { ne: [0.25, 0.25], nw: [-0.25, 0.25], sw: [-0.25, -0.25], se: [0.25, -0.25] };
-const diamondAt = ([cx, cy]: V2): V2[] => [
-  [cx + 0.25, cy],
-  [cx, cy + 0.25],
-  [cx - 0.25, cy],
-  [cx, cy - 0.25],
-];
-// Each side's two vertical-edge vertices (its lower inner corner, the tuck's right angle, and the tuck's top corner) and its top hinge
-const bottomHinge: Record<(typeof SIDES)[number], [V2, V2]> = {
-  ne: [
-    [0.25, 0],
-    [0, 0.25],
-  ],
-  nw: [
-    [0, 0.25],
-    [-0.25, 0],
-  ],
-  sw: [
-    [-0.25, 0],
-    [0, -0.25],
-  ],
-  se: [
-    [0, -0.25],
-    [0.25, 0],
-  ],
-};
-// The four tucks, as pairs of halves: [side, hinge on that side (right angle first), the far end of the middle crease]
-const TUCK_HALVES: { id: string; side: (typeof SIDES)[number]; tip: V2; top: V2; mid: V2 }[] = [
-  { id: 'tuckEast-ne', side: 'ne', tip: [0.25, 0], top: [0.5, 0.25], mid: [0.5, 0] },
-  { id: 'tuckEast-se', side: 'se', tip: [0.25, 0], top: [0.5, -0.25], mid: [0.5, 0] },
-  { id: 'tuckWest-nw', side: 'nw', tip: [-0.25, 0], top: [-0.5, 0.25], mid: [-0.5, 0] },
-  { id: 'tuckWest-sw', side: 'sw', tip: [-0.25, 0], top: [-0.5, -0.25], mid: [-0.5, 0] },
-  { id: 'tuckNorth-ne', side: 'ne', tip: [0, 0.25], top: [0.25, 0.5], mid: [0, 0.5] },
-  { id: 'tuckNorth-nw', side: 'nw', tip: [0, 0.25], top: [-0.25, 0.5], mid: [0, 0.5] },
-  { id: 'tuckSouth-sw', side: 'sw', tip: [0, -0.25], top: [-0.25, -0.5], mid: [0, -0.5] },
-  { id: 'tuckSouth-se', side: 'se', tip: [0, -0.25], top: [0.25, -0.5], mid: [0, -0.5] },
-];
-// the corner placements in PLACEMENTS order (after bottom and the four sides): their parent side
-const CORNER_PARENT = ['ne', 'se', 'sw', 'nw'] as const;
-
-export const PANELS: Panel[] = [
-  { id: 'bottom', kind: 'bottom', poly: diamondAt([0, 0]), art: 0 },
-  ...SIDES.map((s, i): Panel => ({ id: s, kind: 'side', poly: diamondAt(centers[s]), art: 1 + i, parent: 'bottom', hinge: bottomHinge[s] })),
-  ...TUCK_HALVES.map((t): Panel => ({ id: t.id, kind: 'tuck', poly: [t.tip, t.top, t.mid], parent: t.side, hinge: [t.tip, t.top] })),
-  ...CORNER_PARENT.map((s, i): Panel => {
-    const clip = PLACEMENTS[5 + i].clip;
-    return { id: `corner-${s}`, kind: 'corner', poly: clip, art: 5 + i, parent: s, hinge: [clip[1], clip[2]] };
-  }),
-];
-const byId = new Map(PANELS.map((p) => [p.id, p]));
-
-const QUARTER = Math.PI / 2;
-/** How far each fold has turned. `wall` is the sides' turn from flat (0 to a quarter turn). */
-interface FoldState {
-  wall: number;
-  /** Each corner triangle's turn over the top, in CORNER_PARENT order. */
-  corner: [number, number, number, number];
-  /** 0 to 1: the blown-up cube's slight swell. */
-  puff: number;
-}
-
-/** The turn of a tuck half, from the wall's turn: both halves of a tuck meet along their middle crease at every moment (it stays in the mirror plane between the two sides). */
-const tuckCache = new Map<string, number>();
-export function tuckAngle(wall: number): number {
-  const key = wall.toFixed(6);
-  if (wall >= Math.PI / 2 - 1e-9) return (3 * Math.PI) / 4; // upright: each tuck half lies in the plane that splits the corner
-  const hit = tuckCache.get(key);
-  if (hit !== undefined) return hit;
-  // the east tuck's ne half: the apex of its middle crease must lie in the plane y = 0
-  const t = TUCK_HALVES[0];
-  const side = byId.get('ne')!;
-  const sideM = mul(IDENTITY, hingeTurn(side.hinge![0], side.hinge![1], centers.ne, wall));
-  const apexY = (phi: number) => apply(mul(sideM, hingeTurn(t.tip, t.top, [0.5, 0], phi)), [t.mid[0], t.mid[1], 0])[1];
-  let lo = 0;
-  let hi = 0;
-  const step = Math.PI / 720;
-  let prev = apexY(0);
-  for (let phi = step; phi <= Math.PI; phi += step) {
-    const y = apexY(phi);
-    if (Math.abs(y) < 1e-12) {
-      tuckCache.set(key, phi);
-      return phi;
-    }
-    if (Math.sign(y) !== Math.sign(prev) && Math.abs(prev) > 1e-12) {
-      lo = phi - step;
-      hi = phi;
-      break;
-    }
-    prev = y;
-  }
-  if (wall < 1e-9) hi = lo = 0;
-  for (let i = 0; i < 50 && hi > lo; i++) {
-    const mid = (lo + hi) / 2;
-    if (Math.sign(apexY(mid)) === Math.sign(apexY(lo))) lo = mid;
-    else hi = mid;
-  }
-  const r = (lo + hi) / 2;
-  tuckCache.set(key, r);
-  return r;
-}
-
-/** Each panel's pose (a 3x4 matrix taking flat sheet coordinates to the folded paper), flat-sheet frame. */
-export function pose(state: FoldState): Map<string, Mat> {
-  const out = new Map<string, Mat>();
-  const phi = tuckAngle(state.wall);
-  for (const p of PANELS) {
-    const parent = p.parent ? out.get(p.parent)! : IDENTITY;
-    let m = parent;
-    if (p.hinge) {
-      const angle = p.kind === 'side' ? state.wall : p.kind === 'tuck' ? phi : state.corner[CORNER_PARENT.indexOf(p.parent as (typeof CORNER_PARENT)[number])];
-      const cx = p.poly.reduce((s, q) => s + q[0], 0) / p.poly.length;
-      const cy = p.poly.reduce((s, q) => s + q[1], 0) / p.poly.length;
-      m = mul(parent, hingeTurn(p.hinge[0], p.hinge[1], [cx, cy], angle));
-    }
-    out.set(p.id, m);
-  }
-  return out;
-}
+// The balloon cube's fold as motion, with no drawing: the steps of the traditional paper balloon (the waterbomb) and where every piece
+// of balloonCubeModel.ts is at any moment. Within a step each fold turns its pieces about the fold line (so they stay the shapes cut
+// on the sheet); the collapse into the base is the rigid motion of its six creases round the middle; blowing it up moves each piece
+// from the flat model to its place on the cube. balloonCubeFold.test.ts checks that every step ends where the model says.
+import { EIGHTHS, FACE_REGIONS, OPS, PIECES, inside, type FoldedPiece } from './balloonCubeModel';
+import { ap, centroid, type V2, type V3 } from './balloonCubeSim';
 
 interface FoldStep {
   /** Short label for the slider's spoken value. */
@@ -177,48 +11,205 @@ interface FoldStep {
   /** What folds, in plain words. */
   caption: string;
 }
-/** Step 0 is the flat square; each later step is one fold. */
+/** Step 0 is the flat square; each later step is one fold (or one move of the model). The waterbomb is a traditional fold, not anyone's design. */
 export const STEPS: FoldStep[] = [
   {
     label: 'Flat square',
     caption:
-      'The cut-out square, printed side down. The middle diamond is the bottom, the four diamonds around it are the sides, the four paper corners are the lid, and the four gray triangles between the sides are the tucks.',
+      'The cut-out square, printed side up. The middle row (a half face, a face, the middle face, a face, a half face) and the triangles above and below it end up outside; the gray corners tuck inside and the white paper is hidden.',
   },
   {
-    label: 'Lift the sides',
-    caption: 'Lift all four sides from the middle diamond. Each gray tuck, joined to two sides, starts to buckle along its middle line.',
+    label: 'Pre-crease',
+    caption:
+      'Printed side up, fold both diagonals away from you (mountain folds) and the line across the middle toward you (a valley fold). Crease each one hard, then open the square flat again.',
   },
   {
-    label: 'Stand the sides up',
-    caption: 'Stand the sides upright. Each tuck folds in half along its middle line and lies flat inside the cube, between two sides.',
+    label: 'Collapse into a triangle',
+    caption:
+      'Push the middle of the left and right edges in toward the center. The top half folds down behind and the square collapses into a triangle: two flaps on each side, its point at the middle of the sheet.',
   },
-  { label: 'First corner over the top', caption: 'Fold the first paper corner (a triangle on top of a side) over the top, along its edge.' },
-  { label: 'Second corner over the top', caption: 'Fold the second corner triangle over the top. Its tip meets the first at the middle of the lid.' },
-  { label: 'Third corner over the top', caption: 'Fold the third corner triangle over the top, to the same middle point.' },
   {
-    label: 'Fourth corner over the top',
-    caption: 'Fold the fourth corner triangle over the top. The four right angles meet at the middle, where the blow hole is.',
+    label: 'Front corners up',
+    caption: 'Fold both bottom corners of the front flaps up to the top point. The front is now a diamond.',
   },
-  { label: 'Blow it up', caption: 'Blow gently into the hole. The cube swells and the corners press out. The lid is the 0.' },
+  {
+    label: 'Front side points in',
+    caption: 'Fold the left and right points of the diamond in to meet at the center line.',
+  },
+  {
+    label: 'Front top flaps down',
+    caption: 'Two small loose flaps stick up at the top. Fold each one down along the top edges of the side triangles.',
+  },
+  {
+    label: 'Tuck them in (close-up)',
+    caption:
+      'Each side triangle has a pocket along its top edge. Slide each small flap all the way into the pocket next to it. This is the lock: the tucked flaps hold the folds shut.',
+  },
+  { label: 'Turn it over', caption: 'Turn the model over, keeping the point at the top.' },
+  { label: 'Back corners up', caption: 'Fold both bottom corners up to the top point, the same as on the front.' },
+  { label: 'Back side points in', caption: 'Fold the side points in to the center line.' },
+  {
+    label: 'Back flaps down and tucked',
+    caption: 'Fold the two small top flaps down and tuck them into their pockets. Both sides are locked.',
+  },
+  {
+    label: 'Blow it up',
+    caption: 'Blow hard into the small hole at the bottom point. The paper swells into a cube; press out the corners gently. The face with the hole is the 0.',
+  },
 ];
+export const LAST = STEPS.length - 1;
 
+const LAYER = 0.0003; // drawing thickness of one step of layer number (the numbers run to about 70, both stacks together)
+const H = 1 / 8;
 const clamp01 = (x: number) => Math.min(1, Math.max(0, x));
-/** The fold state at a position along the steps (0 = flat, 7 = finished); fractions are partway through a step. */
-export function stateAt(pos: number): FoldState {
-  const wall = QUARTER * (0.5 * clamp01(pos) + 0.5 * clamp01(pos - 1));
-  const corner = [0, 1, 2, 3].map((i) => QUARTER * clamp01(pos - 2 - i)) as FoldState['corner'];
-  return { wall, corner, puff: clamp01(pos - 6) };
+const smooth = (x: number) => x * x * (3 - 2 * x);
+
+/** Turn p about the axis through `o` along unit `d` by `a` radians (right-handed). */
+function turn(p: V3, o: V3, d: V3, a: number): V3 {
+  const v: V3 = [p[0] - o[0], p[1] - o[1], p[2] - o[2]];
+  const c = Math.cos(a);
+  const s = Math.sin(a);
+  const k = (d[0] * v[0] + d[1] * v[1] + d[2] * v[2]) * (1 - c);
+  const x: V3 = [d[1] * v[2] - d[2] * v[1], d[2] * v[0] - d[0] * v[2], d[0] * v[1] - d[1] * v[0]];
+  return [0, 1, 2].map((i) => o[i] + v[i] * c + x[i] * s + d[i] * k) as V3;
+}
+const unit = (x: number, y: number): V3 => {
+  const n = Math.hypot(x, y);
+  return [x / n, y / n, 0];
+};
+
+// ---- the collapse: the bottom quarter stays, the top quarter turns down behind about the midline, the side quarters fold in half ----
+/** How far a side quarter's halves turn about the diagonals when the top quarter has turned `theta`: tan(phi/2) = sqrt 2 tan(theta/2),
+ * which keeps the edge midpoint on the mirror plane between the two quarters (worked out from the geometry; the test checks the halves meet). */
+export const phiOf = (theta: number): number => (theta >= Math.PI - 1e-12 ? Math.PI : 2 * Math.atan(Math.SQRT2 * Math.tan(theta / 2)));
+const O3: V3 = [0, 0, 0];
+const AXES: Record<string, V3> = { 'E-': unit(1, -1), 'W-': unit(-1, -1), 'E+': unit(1, 1), 'W+': unit(-1, 1) };
+const MIDS: Record<string, V3> = { 'E-': [0.5, 0, 0], 'W-': [-0.5, 0, 0], 'E+': [0.5, 0, 0], 'W+': [-0.5, 0, 0] };
+/** The turn about a diagonal that sends the quarter's edge midpoint behind the sheet (toward -z). */
+const sideTurn = (e: string, phi: number) => {
+  const probe = turn(MIDS[e], O3, AXES[e], 0.1);
+  const a = probe[2] < 0 ? phi : -phi;
+  return (p: V3) => turn(p, O3, AXES[e], a);
+};
+const topTurn = (theta: number) => (p: V3) => turn(p, O3, [-1, 0, 0], theta); // +y goes toward -z
+/** A sheet point of an eighth, partway through the collapse. */
+export function collapsePoint(eighth: string, q: V2, theta: number): V3 {
+  const p: V3 = [q[0], q[1], 0];
+  const phi = phiOf(theta);
+  if (eighth.startsWith('S')) return p;
+  if (eighth.startsWith('N')) return topTurn(theta)(p);
+  if (eighth.endsWith('-')) return sideTurn(eighth, phi)(p);
+  return topTurn(theta)(sideTurn(eighth, phi)(p));
 }
 
+// ---- the poses ----
+/** Is this piece part of a face (on the outside of the finished cube)? */
+export const isFace = (p: FoldedPiece): boolean => FACE_REGIONS.some((r) => inside(r.clip, centroid(p.poly)));
+const eighthOf = (p: FoldedPiece) => EIGHTHS.find((e) => p.tags.has(e.id))!.id;
+const flat3 = (h: FoldedPiece['hist'][number], q: V2): V3 => {
+  const [x, y] = ap(h.m, q);
+  return [x, y, h.layer * LAYER];
+};
+const SHEET = { m: [1, 0, 0, 1, 0, 0] as FoldedPiece['hist'][number]['m'], layer: 0, moved: false };
+
+export interface Pose {
+  /** The piece's outline points in the model (x right, y up, z toward you; the finished cube's hole is down). */
+  pts: V3[];
+}
+
+/** Where the step and the part of it are at a position along the slider (0 = flat; fractions are partway through a step). */
+export function stepAt(pos: number): { step: number; t: number } {
+  if (pos <= 0) return { step: 0, t: 1 };
+  const step = Math.min(LAST, Math.ceil(pos - 1e-9));
+  return { step, t: clamp01(pos - (step - 1)) };
+}
+
+/** Every piece's pose (in PIECES order) at a position along the steps. */
+export function poseAt(pos: number): Pose[] {
+  const { step, t } = stepAt(pos);
+  const before = OPS.reduce((last, op, i) => (op.step < step ? i : last), -1);
+  const mine = OPS.map((op, i) => ({ op, i })).filter((o) => o.op.step === step);
+  return PIECES.map((p) => {
+    let cur = before >= 0 ? p.hist[before] : SHEET;
+    for (const { op, i } of mine) {
+      const u = clamp01((t - op.phase[0]) / (op.phase[1] - op.phase[0]));
+      if (u >= 1 && !op.fold && i > 0) return { pts: p.cube.map((c) => [c[0], c[1] - 2 * H, c[2]] as V3) }; // blown up
+      if (u >= 1) {
+        cur = p.hist[i];
+        continue;
+      }
+      if (!p.hist[i].moved) continue;
+      if (u <= 0) break;
+      const next = p.hist[i];
+      if (!op.fold) {
+        if (i === 0) {
+          const theta = u * Math.PI;
+          const k = smooth(u);
+          return { pts: p.poly.map((q) => collapsePoint(eighthOf(p), q, theta)).map((v) => [v[0], v[1], v[2] + k * next.layer * LAYER] as V3) };
+        }
+        // blowing it up: each point slides from the flat model to the cube (the cube's middle is 1/4 below the sheet's middle)
+        const k = smooth(u);
+        return {
+          pts: p.poly.map((q, j) => {
+            const a = flat3(cur, q);
+            const c = p.cube[j];
+            const b: V3 = [c[0], c[1] - 2 * H, c[2]];
+            return [0, 1, 2].map((n) => a[n] + (b[n] - a[n]) * k) as V3;
+          }),
+        };
+      }
+      // a fold: turn about the line, over the front or round the back, while the layer height slides from the old layer to the new
+      const [la, lb] = op.fold.line;
+      const o: V3 = [la[0], la[1], 0];
+      const d = unit(lb[0] - la[0], lb[1] - la[1]);
+      const probe = turn([op.fold.moving[0], op.fold.moving[1], 0], o, d, 0.1);
+      const a = probe[2] > 0 === (op.fold.to === 'front') ? Math.PI * u : -Math.PI * u;
+      const z = (cur.layer + (next.layer - cur.layer) * u) * LAYER;
+      return {
+        pts: p.poly.map((q) => {
+          const [x, y] = ap(cur.m, q);
+          const r = turn([x, y, 0], o, d, a);
+          return [r[0], r[1], r[2] + z] as V3;
+        }),
+      };
+    }
+    return { pts: p.poly.map((q) => flat3(cur, q)) };
+  });
+}
+
+/** The printed side's direction for a posed piece (the sheet's pieces are counterclockwise, printed side toward you). */
+export function normalOf(pose: Pose, poly: V2[]): V3 {
+  const [a, b, c] = pose.pts;
+  const u: V3 = [b[0] - a[0], b[1] - a[1], b[2] - a[2]];
+  const v: V3 = [c[0] - a[0], c[1] - a[1], c[2] - a[2]];
+  const n: V3 = [u[1] * v[2] - u[2] * v[1], u[2] * v[0] - u[0] * v[2], u[0] * v[1] - u[1] * v[0]];
+  const ccw = poly.reduce((s, p, i) => s + p[0] * poly[(i + 1) % poly.length][1] - poly[(i + 1) % poly.length][0] * p[1], 0) > 0 ? 1 : -1;
+  const len = Math.hypot(...n) || 1;
+  return [(ccw * n[0]) / len, (ccw * n[1]) / len, (ccw * n[2]) / len];
+}
+
+// ---- the camera ----
 export type View = { yaw: number; pitch: number };
-/** Turn the folded paper over (cube standing, lid up), then look at it from `view` (orthographic): [screen x, screen y (down), nearness]. */
+/** The camera at a position: a little from the right and above; turned round for the back; from below at the end, to show the hole. */
+export function viewAt(pos: number): View {
+  const turnOver = smooth(clamp01(pos - 6));
+  const end = smooth(clamp01(pos - 10));
+  return { yaw: 0.32 + Math.PI * turnOver + 0.5 * end, pitch: 0.3 - 0.95 * end };
+}
+/** A model point seen from `view` (orthographic): [screen x, screen y (down), nearness]. */
 export function toView(p: V3, view: View): V3 {
-  const x = p[0];
-  const y = -p[1];
-  const z = -p[2];
-  const x1 = x * Math.cos(view.yaw) - y * Math.sin(view.yaw);
-  const y1 = x * Math.sin(view.yaw) + y * Math.cos(view.yaw);
+  const cy = Math.cos(view.yaw);
+  const sy = Math.sin(view.yaw);
+  const x1 = p[0] * cy - p[2] * sy;
+  const z1 = p[0] * sy + p[2] * cy;
   const cp = Math.cos(view.pitch);
   const sp = Math.sin(view.pitch);
-  return [x1, -(z * cp + y1 * sp), -y1 * cp + z * sp];
+  return [x1, -(p[1] * cp - z1 * sp), z1 * cp + p[1] * sp];
 }
+
+/** 0 to 1: how much of the pre-crease lines are drawn (step 1); they fade as the square collapses. */
+export const creaseAt = (pos: number): number => clamp01(pos) * (1 - clamp01((pos - 1) * 3));
+/** 0 to 1: the tuck close-up (step 6): the view zooms in on the right-hand pocket. */
+export const tuckFocusAt = (pos: number): number => clamp01((pos - 5) * 2) * (1 - clamp01((pos - 6) * 2.5));
+/** The point the close-up zooms in on (the right-hand pocket of the front). */
+export const FOCUS: V3 = [0.07, -0.19, 0];

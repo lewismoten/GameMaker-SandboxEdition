@@ -67,15 +67,15 @@
   margin: 0;
   padding: 0;
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2cqw 3cqw;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 2cqw 2.4cqw;
 }
 
 .bc-step {
   display: flex;
   flex-direction: column;
   gap: 0.6cqw;
-  font-size: 1.9cqw;
+  font-size: 1.7cqw;
   line-height: 1.3;
 }
 
@@ -114,6 +114,18 @@
 
 @media print {
   .bc-live {
+    display: none;
+  }
+}
+
+/* the watch-it-fold page is for the screen: it is not printed, and it stacks its viewer and button */
+.pp-balloonwatch {
+  display: flex;
+  flex-direction: column;
+  gap: 2cqw;
+}
+@media print {
+  .pp-paper:has(> .pp-balloonwatch) {
     display: none;
   }
 }
