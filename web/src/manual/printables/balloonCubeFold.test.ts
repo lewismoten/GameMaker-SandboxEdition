@@ -1,118 +1,85 @@
+// The balloon cube's fold steps (balloonCubeFold.ts): each step of the animation ends exactly where the fold model puts the paper, the
+// motion in between never tears it, and the last step is the blown-up cube with every face region outside on its own face.
 import { describe, expect, it } from 'vitest';
-import { PLACEMENTS, toCube, type V3 } from './balloonCubeModel';
-import { PANELS, STEPS, apply, pose, stateAt, tuckAngle } from './balloonCubeFold';
+import { ap, type V2, type V3 } from './balloonCubeSim';
+import { FACE_FRAME, FACE_REGIONS, L, OPS, PIECES, inside } from './balloonCubeModel';
+import { LAST, STEPS, collapsePoint, isFace, normalOf, phiOf, poseAt, stepAt } from './balloonCubeFold';
 
+const near2 = (a: V3, b: V2, tol = 1e-9) => Math.hypot(a[0] - b[0], a[1] - b[1]) < tol;
 const dist = (a: V3, b: V3) => Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]);
-const deg = (r: number) => (r * 180) / Math.PI;
+const onSegment = (a: V2, b: V2, p: V2) => {
+  const cr = (b[0] - a[0]) * (p[1] - a[1]) - (b[1] - a[1]) * (p[0] - a[0]);
+  const d = (p[0] - a[0]) * (b[0] - a[0]) + (p[1] - a[1]) * (b[1] - a[1]);
+  return Math.abs(cr) < 1e-12 && d >= -1e-12 && d <= (b[0] - a[0]) ** 2 + (b[1] - a[1]) ** 2 + 1e-12;
+};
+/** For a pose, the farthest apart two pieces' copies of a shared sheet point are. */
+function worstTear(pos: number): number {
+  const poses = poseAt(pos);
+  let worst = 0;
+  PIECES.forEach((p, i) => {
+    p.poly.forEach((v, j) => {
+      PIECES.forEach((q, k) => {
+        if (k === i) return;
+        const e = q.poly.findIndex((a, n) => onSegment(a, q.poly[(n + 1) % q.poly.length], v));
+        if (e < 0) return;
+        // the same sheet point on q: interpolate along q's edge
+        const a = q.poly[e];
+        const b = q.poly[(e + 1) % q.poly.length];
+        const len = Math.hypot(b[0] - a[0], b[1] - a[1]);
+        const t = Math.hypot(v[0] - a[0], v[1] - a[1]) / len;
+        const pa = poses[k].pts[e];
+        const pb = poses[k].pts[(e + 1) % q.poly.length];
+        const there: V3 = [0, 1, 2].map((n) => pa[n] + (pb[n] - pa[n]) * t) as V3;
+        worst = Math.max(worst, dist(poses[i].pts[j], there));
+      });
+    });
+  });
+  return worst;
+}
 
 describe('balloon cube fold steps', () => {
-  it('has a flat start, one fold per step and a caption for each', () => {
-    expect(STEPS).toHaveLength(10);
+  it('has a flat start, one fold or move per step and a caption for each', () => {
+    expect(STEPS).toHaveLength(12);
+    expect(LAST).toBe(11);
     for (const s of STEPS) expect(s.caption.length).toBeGreaterThan(20);
+    for (const op of OPS) expect(op.step).toBeGreaterThan(1); // steps 0 and 1 are the flat square (the creases are only drawn)
+    expect(stepAt(0)).toEqual({ step: 0, t: 1 });
+    expect(stepAt(2.5)).toEqual({ step: 3, t: 0.5 });
   });
 
-  it('starts flat and folds the sides in two steps, then one corner per step', () => {
-    expect(stateAt(0)).toEqual({ wall: 0, corner: [0, 0, 0, 0], puff: 0 });
-    expect(stateAt(1)).toEqual({ wall: 0, corner: [0, 0, 0, 0], puff: 0 }); // the pre-crease step: still flat
-    expect(deg(stateAt(2).wall)).toBeCloseTo(45, 9);
-    expect(deg(stateAt(3).wall)).toBeCloseTo(90, 9);
-    expect(stateAt(3).corner).toEqual([0, 0, 0, 0]);
-    expect(deg(stateAt(4).corner[0])).toBeCloseTo(90, 9);
-    expect(stateAt(4).corner[1]).toBe(0);
-    expect(deg(stateAt(5.5).corner[2])).toBeCloseTo(45, 9);
-    expect(stateAt(7).corner.map(deg)).toEqual([90, 90, 90, 90]);
-    expect(stateAt(7.5).corner[0]).toBeLessThan(stateAt(7).corner[0]); // the tuck step lifts the corners a little...
-    expect(stateAt(8).corner.map(deg)).toEqual([90, 90, 90, 90]); // ...and presses them back down
-    expect(stateAt(8).puff).toBe(0);
-    expect(stateAt(9).puff).toBe(1);
-  });
-
-  it('folds each tuck in half, a 135 degree turn from the side, as the sides stand up', () => {
-    expect(tuckAngle(0)).toBe(0);
-    expect(deg(tuckAngle(Math.PI / 2))).toBeCloseTo(135, 3);
-    let last = 0;
-    for (let w = 0.1; w <= Math.PI / 2; w += 0.1) {
-      const a = tuckAngle(w);
-      expect(a).toBeGreaterThan(last);
-      last = a;
+  it('starts as the flat square and ends each step where the fold model puts every piece', () => {
+    for (const pos of [0, 1]) poseAt(pos).forEach((ps, i) => PIECES[i].poly.forEach((q, j) => expect(near2(ps.pts[j], q)).toBe(true)));
+    for (let step = 2; step < LAST; step++) {
+      const last = OPS.reduce((k, op, i) => (op.step <= step ? i : k), -1);
+      poseAt(step).forEach((ps, i) => PIECES[i].poly.forEach((q, j) => expect(near2(ps.pts[j], ap(PIECES[i].hist[last].m, q))).toBe(true)));
     }
   });
 
-  it('keeps the two halves of each tuck together on their middle crease at every step', () => {
-    for (const pos of [1.5, 2, 2.5, 3, 5, 8]) {
-      const poses = pose(stateAt(pos));
-      for (const [a, b, mid] of [
-        ['tuckEast-ne', 'tuckEast-se', [0.5, 0]],
-        ['tuckWest-nw', 'tuckWest-sw', [-0.5, 0]],
-        ['tuckNorth-ne', 'tuckNorth-nw', [0, 0.5]],
-        ['tuckSouth-sw', 'tuckSouth-se', [0, -0.5]],
-      ] as const) {
-        const p = apply(poses.get(a)!, [mid[0], mid[1], 0]);
-        const q = apply(poses.get(b)!, [mid[0], mid[1], 0]);
-        expect(dist(p, q)).toBeLessThan(1e-6);
-      }
-    }
-  });
-
-  it('ends as the cube balloonCubeModel describes, without stretching any panel', () => {
-    const poses = pose(stateAt(8));
-    const flat = (id: string, pt: [number, number]) => apply(poses.get(id)!, [pt[0], pt[1], 0]);
-    // every placed corner (bottom, sides, lid triangles) lands where toCube puts it, up to a move of the whole cube
-    const pairs: [V3, V3][] = [];
-    PANELS.filter((p) => p.art !== undefined).forEach((p) => {
-      const pl = PLACEMENTS[p.art!];
-      pl.clip.forEach((pt) => pairs.push([flat(p.id, pt), toCube(pl, pt)]));
+  it('ends on the blown-up cube, with every face region on the outside of its face', () => {
+    const end = poseAt(LAST);
+    PIECES.forEach((p, i) => p.cube.forEach((c, j) => expect(dist(end[i].pts[j], [c[0], c[1] - L, c[2]])).toBeLessThan(1e-9)));
+    PIECES.forEach((p, i) => {
+      if (!isFace(p)) return;
+      const r = FACE_REGIONS.find((f) => inside(f.clip, p.poly[0]) && inside(f.clip, p.poly[1]) && inside(f.clip, p.poly[2]))!;
+      const n = normalOf(end[i], p.poly);
+      expect(dist(n, FACE_FRAME[r.face].n)).toBeLessThan(1e-9);
     });
-    for (const [a, b] of pairs) for (const [c, d] of pairs) expect(dist(a, c)).toBeCloseTo(dist(b, d), 9);
-    // not a mirror image: the signed volume of four points matches
-    const vol = (q: V3[]) => {
-      const u = [1, 2, 3].map((i) => [q[i][0] - q[0][0], q[i][1] - q[0][1], q[i][2] - q[0][2]]);
-      return (
-        u[0][0] * (u[1][1] * u[2][2] - u[1][2] * u[2][1]) -
-        u[0][1] * (u[1][0] * u[2][2] - u[1][2] * u[2][0]) +
-        u[0][2] * (u[1][0] * u[2][1] - u[1][1] * u[2][0])
-      );
-    };
-    const pick = [0, 4, 8, 12].map((i) => pairs[i]);
-    expect(Math.sign(vol(pick.map((p) => p[0])))).toBe(Math.sign(vol(pick.map((p) => p[1]))));
   });
 
-  it('puts each tuck inside the finished cube', () => {
-    const poses = pose(stateAt(8));
-    const half = 0.5 / (2 * Math.SQRT2) + 1e-9;
-    for (const p of PANELS.filter((q) => q.kind === 'tuck')) {
-      const [, , mid] = p.poly;
-      const w = apply(poses.get(p.id)!, [mid[0], mid[1], 0]);
-      // cube spans x,y in [-L/2, L/2]; in the unflipped frame the cube hangs below the sheet
-      const c = toCube(PLACEMENTS[0], [0, 0]);
-      expect(c).toBeDefined();
-      expect(Math.abs(w[2])).toBeLessThan(half * 2);
-      expect(w[2]).toBeLessThan(0);
+  it('collapses with the side quarters meeting the top quarter all the way down', () => {
+    expect(phiOf(0)).toBe(0);
+    expect(phiOf(Math.PI)).toBe(Math.PI);
+    for (const theta of [0.3, 1, Math.PI / 2, 2.4, 3]) {
+      // the right edge midpoint is in two eighths: both copies of it agree
+      expect(dist(collapsePoint('E-', [0.5, 0], theta), collapsePoint('E+', [0.5, 0], theta))).toBeLessThan(1e-12);
+      expect(dist(collapsePoint('W-', [-0.5, 0], theta), collapsePoint('W+', [-0.5, 0], theta))).toBeLessThan(1e-12);
+      // a corner too
+      expect(dist(collapsePoint('E+', [0.5, 0.5], theta), collapsePoint('N+', [0.5, 0.5], theta))).toBeLessThan(1e-12);
     }
   });
 
-  it('shows every panel, whole, at every step: nothing shrinks away and the sheet area is kept', () => {
-    const area = (pts: [number, number, number][]) => {
-      let sum = [0, 0, 0];
-      for (let i = 1; i < pts.length - 1; i++) {
-        const b = [pts[i + 1][0] - pts[0][0], pts[i + 1][1] - pts[0][1], pts[i + 1][2] - pts[0][2]];
-        const c = [pts[i][0] - pts[0][0], pts[i][1] - pts[0][1], pts[i][2] - pts[0][2]];
-        const x = [c[1] * b[2] - c[2] * b[1], c[2] * b[0] - c[0] * b[2], c[0] * b[1] - c[1] * b[0]];
-        sum = sum.map((v, k) => v + x[k]);
-      }
-      return Math.hypot(sum[0], sum[1], sum[2]) / 2;
-    };
-    const flatTotal = PANELS.reduce((s, p) => s + area(p.poly.map(([x, y]) => [x, y, 0])), 0);
-    expect(flatTotal).toBeCloseTo(1, 9); // the panels tile the whole square, tips and tucks included
-    for (let pos = 0; pos <= STEPS.length - 1; pos += 0.25) {
-      const poses = pose(stateAt(pos));
-      let total = 0;
-      for (const p of PANELS) {
-        const a = area(p.poly.map(([x, y]) => apply(poses.get(p.id)!, [x, y, 0])));
-        expect(a).toBeGreaterThan(0.003);
-        total += a;
-      }
-      expect(total).toBeCloseTo(1, 6); // folding never stretches or drops paper
-    }
+  it('never tears the paper while folding: shared points stay together within the drawn paper thickness', () => {
+    for (let pos = 1.25; pos <= LAST; pos += 0.25) expect(worstTear(pos), `at ${pos}`).toBeLessThan(0.03);
+    for (let step = 2; step <= LAST; step++) expect(worstTear(step), `end of step ${step}`).toBeLessThan(1e-9 + 0.025);
   });
 });
