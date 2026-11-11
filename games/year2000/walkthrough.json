@@ -8,7 +8,7 @@
  "segments": [
   {
    "scene": 2,
-   "keys": "AU0MzQBLEMsAUAjQAEsEywBQDNAATQjNAFAI0ABNDM0AUBTQAEsEywBNEM0ASATIAEsMywBQDNAASwTLAFAM0ABLDMsASATIAE09zQBNCM0ASAjIAE0UzQBIBMgATQjNAFAE0ABNBM0AUAjQAE0czQBNIM0ASAjIAEsEywBIGMgASwjLAFAM0ABIDMgATQjNAEgUyABLFMsASATIAE0YzQBIFMgASwTLAEgYyABLFMsASAjIAEsMywBQHNAASxjLAEsMywBQDNAASwjLAEgIyABLBMsAUBTQAEsEywBNGM0AUAzQAEskywBIDMgASwTLAEgQyABNBM0ASATIAE0EzQBIGMgASxTLAFAY0ABLBMsAUAzQAEscywBIFMgATQzNAEgEyABNDM0ASAzIAEgMyABLEMsAUAjQAEsQywBQBNAASwTLAFAM0ABLCMsASATIAE0IzQBIFMgATQjNAFAU0ABNBM0AUBDQAE0IzQBQDNAATQjNAEg="
+   "keys": "AU0MzQBLEMsAUAjQAEsEywBQDNAATQjNAFAI0ABNDM0AUBTQAEsEywBNEM0ASATIAEsMywBQDNAASwTLAFAM0ABLDMsASATIAE09zQBNCM0ASAjIAE0UzQBIBMgATQjNAFAE0ABNBM0AUAjQAE0czQBNIM0ASAjIAEsEywBIGMgASwjLAFAM0ABIDMgATQjNAEgUyABLFMsASATIAE0YzQBIFMgASwTLAEgYyABLFMsASAjIAEsMywBQHNAASxjLAEsMywBQDNAASwjLAEgIyABLBMsAUBTQAEsEywBNGM0AUAzQAEskywBIDMgASwTLAEgQyABNBM0ASATIAE0EzQBIGMgASxTLAFAY0ABLBMsAUATQAEscywBIDMgATQzNAEgEyABNDM0ASAzIAEgMyABLEMsAUAjQAEsQywBQBNAASwTLAFAM0ABLCMsASATIAE0IzQBIFMgATQjNAFAU0ABNBM0AUBDQAE0IzQBQBNAATQjNAFA="
   },
   {
    "scene": 3,
@@ -87,51 +87,62 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 37640,
+  "frames": 37571,
   "chapters": [
    {
     "title": "Opening",
-    "frame": 0
+    "frame": 0,
+    "time": 0
    },
    {
     "title": "Story",
-    "frame": 1387
+    "frame": 1387,
+    "time": 23116.66666666692
    },
    {
     "title": "Level 1: Dome Sweet Dome",
-    "frame": 3747
+    "frame": 3747,
+    "time": 62449.99999999664
    },
    {
     "title": "Level 2: The Cloud Lane",
-    "frame": 8330
+    "frame": 8261,
+    "time": 137683.33333334475
    },
    {
     "title": "Level 3: Superhighway",
-    "frame": 12502
+    "frame": 12433,
+    "time": 207216.6666666376
    },
    {
     "title": "Level 4: Mega Mall 2000",
-    "frame": 16313
+    "frame": 16244,
+    "time": 270733.3333332823
    },
    {
     "title": "Level 5: Teleport Exchange",
-    "frame": 22305
+    "frame": 22236,
+    "time": 370600.00000006525
    },
    {
     "title": "Level 6: The Moon",
-    "frame": 26350
+    "frame": 26281,
+    "time": 438016.6666668104
    },
    {
     "title": "Level 7: Science Fair",
-    "frame": 30529
+    "frame": 30460,
+    "time": 507666.6666668915
    },
    {
     "title": "Ending",
-    "frame": 34077
+    "frame": 34008,
+    "time": 566800.0000001452
    },
    {
     "title": "Credits",
-    "frame": 36085
+    "frame": 36016,
+    "time": 600266.6666667339
    }
   ]
  }

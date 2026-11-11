@@ -2,7 +2,8 @@
 // mow the lawns and the newspaper is fired from a cannon. Sparky has scattered Dex's
 // report all over the neighborhood. Grandpa's key ring is lost in the hedge garden; its clicker
 // opens the garage gate to the backyard and the Zapper, and its keys open Grandpa's 1976½
-// CitiCar on its charger by the house (honk it for 1976 points). Step in, and it flies Dex to
+// CitiCar on its charger by the house (honk it for 1976 points). Its door also wants all seven
+// neighborhood pages and the Zapper. Step in, and it flies Dex to
 // the Skyway: that's the way out. The phone booths on the corner are all out of order today.
 import { LevelMap, type Legend } from './mapkit';
 import type { BlockSet } from '../blocks/book';

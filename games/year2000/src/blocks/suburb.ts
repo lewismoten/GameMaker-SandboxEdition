@@ -7,7 +7,7 @@ import { BlockSet, SOLID } from './book';
 import { blob, gradient, oval, shadeAt, speckle } from '../art/draw';
 import { FLOORS } from './floors';
 import { micro } from '../art/font';
-import { CTR, MON } from '../ids';
+import { CTR, DOME_PAGES, MON } from '../ids';
 import { C } from '../art/pal';
 import { billboard, domeHome } from '../art/bigart';
 import { addTicker } from './ticker';
@@ -202,7 +202,8 @@ export function suburbSet(): BlockSet {
   addItems(s, 'grass', ['page', 'quarter', 'pill', 'battery', 'zapper', 'cola', 'keys']);
   addItems(s, 'deck', ['page', 'quarter', 'pill', 'battery', 'cola']);
   addBooths(s, 'sidewalk');
-  addWalkways(s, 'tube');
+  // Only horizontal tubes occur in these maps; leave room for the car's DOS gate stages.
+  addWalkways(s, 'tube', ['right', 'left']);
   // Dome Sweet Dome.
   addBig(s, 'dome', domeHome(FLOORS.grass, 'pink'));
   addBig(s, 'domeB', domeHome(FLOORS.grass, 'teal'));
@@ -216,18 +217,21 @@ export function suburbSet(): BlockSet {
   // the backyard pool (the block set has no room to ripple it between two pictures)
   addBig(s, 'swim', poolBig());
   // The CitiCar on its charger: honk it (touch the front, on the left) and the headlights flash.
-  // Its door, at the back on the right, is locked: Grandpa's note on it asks for the keys. With
-  // the key ring it opens, and stepping in is Dome Sweet Dome's way out (to the Cloud Lane).
+  // Its door checks keys, all seven neighborhood pages, then the Zapper pickup receipt.
+  // Each solid touch-block stage names the next missing item; only the final stage opens.
   const parked = citicar(false);
-  const door = parked.crop(20, 20, 20, 20);
-  door.rect(0, 2, 20, 9, C('gold', 5)).frame(0, 2, 20, 9, C('gold', 3));
-  micro(door, 1, 4, 'KEYS?', C('red', 2));
-  parked.blit(door, 20, 20);
+  const door = (lines: string[]) => {
+    const p = parked.crop(20, 20, 20, 20);
+    p.rect(0, 0, 20, 19, C('gold', 5)).frame(0, 0, 20, 19, C('gold', 3));
+    lines.forEach((line, i) => micro(p, 1, 1 + i * 6, line, C('red', 2)));
+    return p;
+  };
+  parked.blit(door(['GET', 'KEYS!']), 20, 20);
   addBig(s, 'citi', parked, (col, row) =>
     col === 0 && row === 1
       ? { solid: SOLID, score: 1976, touch: 'citiLit' }
       : col === 1 && row === 1
-        ? { solid: SOLID, effect: CTR.keys, eamt: -1, touch: 'citiOpen' }
+        ? { solid: SOLID, effect: CTR.keys, eamt: -1, touch: 'citiPages' }
         : // the top row is only the sky above the roof (the car stands in the lower row): Dex can walk through it
           row === 0
           ? {}
@@ -278,6 +282,16 @@ export function suburbSet(): BlockSet {
   addBig(s, 'bbInfo', billboard(['INFORMATION', 'SUPERHIGHWAY', 'NEXT 9 EXITS'], 'denim', 'gold', FLOORS.deck));
   addBig(s, 'bbFax', billboard(['FAX-A-PIZZA!', 'HOT PIZZA BY', 'FAX IN 30 SEC'], 'red', 'gold', FLOORS.deck));
   addTicker(s, () => rail('h', 'deck'));
+
+  // PLAYGAME checks counters >=20 before accepting a touch (PLAYGAME.C DoBlockTouchChar).
+  // Refund the checked pages on the next solid stage: Dex still needs them at the fair.
+  s.add('citiPages', door(['GET', 'PAGES']), { solid: SOLID, effect: CTR.pages, eamt: -DOME_PAGES, touch: 'citiPagesBack' });
+  s.add('citiPagesBack', door(['GET', 'ZAP-', 'PER!']), { solid: SOLID, effect: CTR.pages, eamt: DOME_PAGES, touch: 'citiZapper' });
+  s.add('citiZapper', door(['GET', 'ZAP-', 'PER!']), { solid: SOLID, effect: CTR.zapperFound, eamt: -1, touch: 'citiOpen' });
+  // A pickup receipt is separate from ammunition: batteries cannot impersonate the Zapper,
+  // and spending every shot before boarding cannot lock Dex out. The next touch grants ammo.
+  Object.assign(s.def('zapper_grass'), { effect: CTR.zapperFound, eamt: 1, touch: 'zapperCharge' });
+  s.add('zapperCharge', s.pic('zapper_grass'), { effect: CTR.zap, eamt: 15, touch: 'grass' });
 
   addEgg(s, 'sidewalk');
   return s;
