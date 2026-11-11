@@ -13,6 +13,26 @@ function select<T extends string>(label: string, options: [T, string][], get: ()
   return h('label', { class: 'field' }, h('span', null, label), sel);
 }
 
+/**
+ * Keeps the three inputs showing the saved choices until the control leaves the page. It is its own function holding
+ * only weak references: the listener lives in a module-level set, and a closure sharing the control's scope would keep
+ * the whole editor the control sat in (thousands of elements) alive after the editor closed.
+ */
+function keepInStep(el: HTMLElement, names: HTMLInputElement, warn: HTMLSelectElement, preview: HTMLSelectElement): void {
+  const refs = [el, names, warn, preview].map((x) => new WeakRef(x));
+  const sync = () => {
+    const [e, n, w, p] = refs.map((r) => r.deref());
+    if (!e || (e.dataset.seen && !e.isConnected)) return off(); // gone from the page
+    if (e.isConnected) e.dataset.seen = '1';
+    const c = getColorHelp();
+    if (n) (n as HTMLInputElement).checked = c.names;
+    if (w) (w as HTMLSelectElement).value = c.warn;
+    if (p) (p as HTMLSelectElement).value = c.preview;
+  };
+  const off = onColorHelp(sync);
+  sync();
+}
+
 /** The control, kept in step with the saved choices for as long as it is on the page. */
 export function colorHelpControl(): HTMLElement {
   const names = h('input', { type: 'checkbox' });
@@ -61,15 +81,6 @@ export function colorHelpControl(): HTMLElement {
       h('p', { class: 'color-help-note' }, 'These are preferences. They are kept only in this browser and are never sent anywhere.'),
     ),
   );
-  const sync = () => {
-    if (el.dataset.seen && !el.isConnected) return off(); // gone from the page
-    if (el.isConnected) el.dataset.seen = '1';
-    const c = getColorHelp();
-    names.checked = c.names;
-    (warn.querySelector('select') as HTMLSelectElement).value = c.warn;
-    (preview.querySelector('select') as HTMLSelectElement).value = c.preview;
-  };
-  const off = onColorHelp(sync);
-  sync();
+  keepInStep(el, names, warn.querySelector('select')!, preview.querySelector('select')!);
   return el;
 }

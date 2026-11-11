@@ -23,6 +23,10 @@ player panel's Files tab gives them), and the Mac, Windows and Linux downloads
 `web/scripts/macDmg.ts`, `winExe.ts` and `linuxTar.ts`, which run the same code from the command
 line.
 
+The Mac disk image uses `createIso` from `@lewismoten/gamemaker-sandbox-tools/iso9660`
+for the generic ISO 9660 / Rock Ridge file system. App branding, icons, signing,
+Finder layout and UDIF compression stay here.
+
 `exportDos` also accepts supplied CD runtime bytes and a fixed ZIP date for reproducible website distributions without browser globals or network requests.
 
 ## Installing the DOS download
@@ -115,3 +119,11 @@ game's DOS files as `dos/<NAME>` entries (deflated), which Game-Maker OS on the 
 and the Pocket Player skips; `writeOsGmp` writes one with only those (no `game.txt`, so the board
 does not list it) for a game the packer leaves out. `scripts/pocketData.ts --gmp <card> --gmos`
 writes a card both players read.
+
+SD packs also include scene 0 slots 2, 7 and 8 as `card m` (menu), `card c`
+(credits) and `card b` (Top Ten backdrop). Menu and score backgrounds use a zero
+pause, as PLAYGAME does; credits retain the normal graphic/list pauses. These
+slots are omitted from LittleFS starter data. `pocketData.ts` reports their added
+stored card bytes per game, after deduplication and picture patches (excluding
+configuration lines). Firmware at `70ff7f4` already reads `m`; it needs to read
+`c` for credits and `b` before drawing Top Ten, including after game over.

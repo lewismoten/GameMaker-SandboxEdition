@@ -133,7 +133,7 @@ export function addLasers(set: BlockSet, floor: Floor, onTime: number, offTime: 
 }
 
 /** Moving walkways (gravity blocks), two animation frames each way. */
-export function addWalkways(set: BlockSet, style: 'walk' | 'tube'): void {
+export function addWalkways(set: BlockSet, style: 'walk' | 'tube', directions: (keyof typeof GRAV)[] = ['right', 'left', 'up', 'down']): void {
   const draw = (dir: keyof typeof GRAV, phase: number) => {
     const p = blank();
     const tube = style === 'tube';
@@ -159,7 +159,7 @@ export function addWalkways(set: BlockSet, style: 'walk' | 'tube'): void {
     }
     return p;
   };
-  for (const dir of ['right', 'left', 'up', 'down'] as const) {
+  for (const dir of directions) {
     set.add(`${style}_${dir}`, draw(dir, 0), { grav: GRAV[dir], next: `${style}_${dir}2`, ntime: 2 });
     set.add(`${style}_${dir}2`, draw(dir, 1), { grav: GRAV[dir], next: `${style}_${dir}`, ntime: 2 });
   }

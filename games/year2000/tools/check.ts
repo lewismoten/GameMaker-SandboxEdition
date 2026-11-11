@@ -2,9 +2,9 @@
 // doors, dials the right phone booths and walks out the exit, carrying its counters
 // from level to level like the real game does. The multi-block objects are checked first (tools/align.ts).
 //   cd web && npx vite-node ../games/year2000/tools/check.ts      (GOD=1 keeps the bot alive)
-import { newCharInfo } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
+import { mapBlock, newCharInfo } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
 import { buildCarCharacter, buildCharacter } from '../src/characters/character';
-import { CTR, MON, PAGES_NEEDED, SEQ } from '../src/ids';
+import { CTR, DOME_PAGES, MON, PAGES_NEEDED, SEQ } from '../src/ids';
 import { LEVELS, SETS } from '../src/levels/levels';
 import { DIALS } from '../src/levels/level4';
 import { buildMonsters } from '../src/characters/monsters';
@@ -145,22 +145,63 @@ async function spareCover(): Promise<void> {
   console.log(`spare cover: Sparky's cover lost, took the spare beside the copier, won in ${(sim.ticks / 18.2).toFixed(0)}s`);
 }
 
-/** Dome Sweet Dome's only way out is Grandpa's CitiCar: one key ring on the map, and its door holds shut without it. */
-function keysAndCar(): void {
+/** Try every combination at the real door: ammo alone is not the Zapper, and checked pages stay with Dex. */
+async function keysAndCar(): Promise<void> {
   const l = LEVELS[0];
   const set = SETS[l.set]();
   const lm = l.build(set);
   const rings = lm.count('keys_');
   if (rings !== 1) throw new Error(`year2000: ${rings} key rings in Dome Sweet Dome (want 1)`);
+  if (lm.count('page_') !== DOME_PAGES) throw new Error('year2000: the car must require every neighborhood page');
   const exit = lm.at('exit');
   if (lm.get(exit.x, exit.y) !== 'citi3') throw new Error(`year2000: the dome's exit is ${lm.get(exit.x, exit.y)}, not the CitiCar's door`);
   const door = set.def('citi3');
   if (!door.solid || door.effect !== CTR.keys || (door.eamt ?? 0) >= 0) throw new Error('year2000: the CitiCar door does not take the keys');
   const ring = set.def('keys_grass');
   if ((ring.eamt ?? 0) < 2) throw new Error('year2000: the key ring must open both the garage gate and the car');
-  console.log('keys and car: one key ring (worth 2), the CitiCar door takes one, locked without it');
+  const scene: SimScene = {
+    map: { ...lm.done(), monsters: lm.done().monsters.map((m) => ({ ...m, monnum: MON.none })) },
+    bbl: set.build(),
+    mbl,
+    mon: mons,
+    chr: chars[l.chr],
+    cbl,
+    links: [{ from: exit, to: { x: 0, y: 0 } }],
+  };
+  // Walk onto the Zapper, then away, just as a player does: both pickup stages must fire.
+  const pickup = new Sim(scene, { x: 4, y: 5 });
+  pickup.press(0x48);
+  for (let t = 0; t < 12; t++) await pickup.tick();
+  if (pickup.w.ci.meter[CTR.zapperFound] !== 2 || pickup.w.ci.meter[SEQ.zap] !== 15)
+    throw new Error('year2000: walking over the Zapper must record ownership and grant 15 shots');
+  for (let mask = 0; mask < 8; mask++) {
+    // Try from every walkable side: links check overlap, so no approach may bypass a solid stage.
+    for (const [dx, dy, key] of [
+      [0, 1, 0x48],
+      [0, -1, 0x50],
+      [1, 0, 0x4b],
+    ]) {
+      const sim = new Sim(scene, { x: exit.x + dx, y: exit.y + dy });
+      const meters = sim.w.ci.meter;
+      meters[CTR.keys] = mask & 1 ? 3 : 1;
+      meters[CTR.pages] = mask & 2 ? DOME_PAGES + 1 : DOME_PAGES;
+      meters[CTR.zapperFound] = mask & 4 ? 2 : 1;
+      // Batteries without the Zapper must fail; an empty Zapper must still pass.
+      meters[SEQ.zap] = mask & 4 ? 0 : 30;
+      const pages = meters[CTR.pages];
+      sim.press(key);
+      for (let t = 0; t < 80 && sim.link < 0; t++) await sim.tick();
+      if (sim.link >= 0 !== (mask === 7)) throw new Error(`year2000: car gate bypass/stall, items ${mask}, approach ${dx},${dy}`);
+      if (mask !== 7) {
+        const want = !(mask & 1) ? 'citi3' : !(mask & 2) ? 'citiPages' : 'citiZapper';
+        if (mapBlock(sim.w, exit.x, exit.y) !== set.id(want)) throw new Error(`year2000: missing-item hint should be ${want}`);
+      }
+      if (meters[CTR.pages] !== pages) throw new Error('year2000: the car kept the report pages');
+    }
+  }
+  console.log('keys and car: all 8 item combinations from all 3 walkable sides; pages kept, batteries cannot replace the Zapper, empty Zapper accepted');
 }
-keysAndCar();
+await keysAndCar();
 
 for (const [i, l] of LEVELS.entries()) {
   const set = SETS[l.set]();

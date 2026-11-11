@@ -8,7 +8,7 @@ import { crc32 } from '@lewismoten/gamemaker-sandbox-archives/zip';
 import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 
 /** The text that is hashed, so it can be looked at and tested: "name:crc" per line, sorted. */
-export function contentText(gam: Uint8Array, get: (name: string) => Uint8Array | undefined): string | undefined {
+function contentText(gam: Uint8Array, get: (name: string) => Uint8Array | undefined): string | undefined {
   let game;
   try {
     game = parseGame(gam);

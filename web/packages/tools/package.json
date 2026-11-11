@@ -1,6 +1,6 @@
 {
   "name": "@lewismoten/gamemaker-sandbox-tools",
-  "version": "3.4.0",
+  "version": "3.5.0",
   "description": "Development tools for building and checking games in RSD Game-Maker formats",
   "type": "module",
   "license": "MIT",
@@ -20,6 +20,11 @@
     "NOTICE.md"
   ],
   "exports": {
+    "./iso9660": {
+      "types": "./dist/types/iso9660.d.ts",
+      "gamemaker-source": "./src/iso9660.ts",
+      "import": "./dist/iso9660.js"
+    },
     "./drawing": {
       "types": "./dist/types/drawing.d.ts",
       "browser": null,
@@ -67,6 +72,31 @@
       "types": "./dist/types/kit/levelGen/index.d.ts",
       "gamemaker-source": "./src/kit/levelGen/index.ts",
       "import": "./dist/kit/levelGen.js"
+    },
+    "./kit/laserJoints": {
+      "types": "./dist/types/kit/laserJoints.d.ts",
+      "gamemaker-source": "./src/kit/laserJoints.ts",
+      "import": "./dist/kit/laserJoints.js"
+    },
+    "./kit/laserLayout": {
+      "types": "./dist/types/kit/laserLayout.d.ts",
+      "gamemaker-source": "./src/kit/laserLayout.ts",
+      "import": "./dist/kit/laserLayout.js"
+    },
+    "./kit/laserSvg": {
+      "types": "./dist/types/kit/laserSvg.d.ts",
+      "gamemaker-source": "./src/kit/laserSvg.ts",
+      "import": "./dist/kit/laserSvg.js"
+    },
+    "./kit/laserPixels": {
+      "types": "./dist/types/kit/laserPixels.d.ts",
+      "gamemaker-source": "./src/kit/laserPixels.ts",
+      "import": "./dist/kit/laserPixels.js"
+    },
+    "./kit/laserClearance": {
+      "types": "./dist/types/kit/laserClearance.d.ts",
+      "gamemaker-source": "./src/kit/laserClearance.ts",
+      "import": "./dist/kit/laserClearance.js"
     },
     "./kit/*": {
       "types": "./dist/types/kit/*.d.ts",
@@ -134,6 +164,11 @@
       "types": "./dist/types/delta.d.ts",
       "gamemaker-source": "./src/delta.ts",
       "import": "./dist/delta.js"
+    },
+    "./fli-check": {
+      "types": "./dist/types/fliCheck.d.ts",
+      "gamemaker-source": "./src/fliCheck.ts",
+      "import": "./dist/fli-check.js"
     },
     "./disk-diff": {
       "types": "./dist/types/diskDiff.d.ts",

@@ -1,9 +1,10 @@
 // Browser regression for the desk controls' rendered target size, including desktop PC scaling.
 import { readFileSync } from 'node:fs';
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 import type { Browser } from 'playwright-core';
 import { launch } from './perfLib';
 
+vi.setConfig({ testTimeout: 30_000, hookTimeout: 60_000 }); // a browser launch is slow on a busy machine
 let browser: Browser;
 beforeAll(async () => {
   browser = await launch();

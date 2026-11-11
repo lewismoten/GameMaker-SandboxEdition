@@ -135,8 +135,9 @@ export function buildCarCharacter(cb: BlockSet): Character {
     set(
       S[n],
       [0, 1, 2, 3].map(() => f(pic, 1, dx * 10, PUSH)),
-      // a key waits for the lane change to finish, so the car always ends up in a lane
-      { key, jstkMov: joy, jstkBut: 4, sound: SND.none, ground: 1 },
+      // a key waits for the lane change to finish, so the car always ends up in a lane; norepeat: one press is one lane, however long the key is held (a tap
+      // released mid-change is only seen at the end of it, which used to repeat the change)
+      { key, jstkMov: joy, jstkBut: 4, sound: SND.none, ground: 1, norepeat: 1 },
     );
   // the meters are Dex's (PLAYGAME keeps the first character's anyway)
   ch.meter.fill(INF_REPEAT);

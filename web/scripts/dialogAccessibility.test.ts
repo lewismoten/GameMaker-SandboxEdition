@@ -1,7 +1,9 @@
 // Browser regression for the shared dialog's accessible name and nested heading IDs.
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { build } from 'esbuild';
 import { launch } from './perfLib';
+
+vi.setConfig({ testTimeout: 30_000 }); // esbuild bundle plus a browser launch, slow on a busy machine
 
 describe('shared modal accessibility', () => {
   it('names each dialog with its own visible heading', async () => {

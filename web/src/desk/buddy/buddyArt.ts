@@ -56,7 +56,7 @@ const POSES: Record<Pose | 'blink', Record<number, string>> = {
 };
 
 /** The 16 rows of a pose. */
-export function poseRows(pose: Pose | 'blink'): string[] {
+function poseRows(pose: Pose | 'blink'): string[] {
   const p = POSES[pose];
   return BASE.map((row, i) => p[i] ?? row);
 }

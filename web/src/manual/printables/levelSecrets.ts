@@ -8,7 +8,7 @@ import { BACKBL, parseBlocks, type Block } from '@lewismoten/gamemaker-sandbox-e
 import { ADVTYPE, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { MLEN, parseMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import type { FileSource } from '../../gfx/levelPicture';
-import { SECRETS } from './levelMetadata';
+import { hasLoader, SECRET_FILES } from './levelMetadataLazy';
 
 /** The about.json fields that say where the secrets are. */
 export interface AboutForSecrets {
@@ -67,7 +67,8 @@ export function secretBlocksOf(game: Game, files: FileSource, about: AboutForSec
   return Object.fromEntries([...sets].sort(([a], [b]) => a.localeCompare(b)).map(([k, v]) => [k, [...v].sort((a, b) => a - b)]));
 }
 
-const LISTED = SECRETS;
+/** Whether a game may show Level Maps (its scan is listed): known from the file names, without loading any data. */
+export const hasSecrets = (id: string): boolean => hasLoader(SECRET_FILES, id);
 
 /** The secret blocks of a game that may show Level Maps, or undefined: then it shows none. */
-export const listedSecrets = (id: string): SecretBlocks | undefined => LISTED[id];
+export const loadSecrets = (id: string): Promise<SecretBlocks | undefined> => (hasSecrets(id) ? SECRET_FILES[id]() : Promise.resolve(undefined));

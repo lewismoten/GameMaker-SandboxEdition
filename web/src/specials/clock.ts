@@ -5,7 +5,7 @@
 const KEY = 'gm-specials-today';
 
 /** A test date written as YYYY-MM-DD or YYYY-MM-DDTHH:MM, read as local time; undefined when it isn't one. */
-export function parseToday(text: string | null | undefined): Date | undefined {
+function parseToday(text: string | null | undefined): Date | undefined {
   const m = /^(\d{4})-(\d{2})-(\d{2})(?:[T ](\d{1,2}):(\d{2}))?$/.exec(text?.trim() ?? '');
   if (!m) return undefined;
   const [y, mo, d] = [Number(m[1]), Number(m[2]), Number(m[3])];

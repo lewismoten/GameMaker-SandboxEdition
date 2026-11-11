@@ -166,9 +166,9 @@ export const EGG = page([
 Cream felt ruled with pale lines like a notebook page, blanket-stitched in gold. A green felt bookworm in red reading glasses curls around its middle, and a red ribbon bookmark hangs from the top.
 
 Finders, pocketers. If it is in your pocket (F2), it is yours.`,
-  `Tucked under the ribbon: a recipe card, filed under 641.5 (cookbooks), stained brown and still a little fizzy.
+  `Tucked under the ribbon: a library card, stained brown and still a little fizzy.
 
-"ROOT BEER. Serves a baker's dozen. For ingredient 13, see other side."
+"DUE BACK: yesterday. For renewals, see other side."
 
 The other side is overdue.`,
   `Felted by Lewis "Lewie" Moten III, who felted a Doc Leo clown egg first.

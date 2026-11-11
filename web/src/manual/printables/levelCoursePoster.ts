@@ -5,18 +5,18 @@
 import { el } from './worldMapArt';
 import { COLORS, loadLevels, markText } from './levelMaps';
 import { levelsOf } from './levelMapLayout';
-import { listedSecrets } from './levelSecrets';
-import { listedCourses } from './levelViews';
+import { loadSecrets } from './levelSecrets';
+import { loadViews } from './levelViews';
 import { listedRoomHints } from './levelRoomHints';
-import { GUTTER, PANEL_GAP, PANEL_HEAD, coursePanelUrls, wholeCourseSvg, wholeCourseSize } from './levelCourseSvg';
+import { GUTTER, PANEL_GAP, PANEL_HEAD, coursePanelUrls, dataUrl, wholeCourseSvg, wholeCourseSize } from './levelCourseSvg';
 import type { CatalogEntry } from '../../project/files';
 
 /** The course on `map` drawn to fit a `box` (paper units) without cutting the route, as an SVG. */
 export async function coursePosterSvg(entry: CatalogEntry, map: string, box: { w: number; h: number }): Promise<SVGElement | undefined> {
-  const secret = listedSecrets(entry.id);
+  const secret = await loadSecrets(entry.id);
   const x = secret && (await loadLevels(entry));
   if (!x) return undefined;
-  const levels = levelsOf(x.game, x.files, secret, {}, {}, listedRoomHints(entry.id), listedCourses(entry.id), {
+  const levels = levelsOf(x.game, x.files, secret, {}, {}, listedRoomHints(entry.id), (await loadViews(entry.id))?.courses ?? {}, {
     pageW: box.w,
     pageH: box.h,
     padW: 2 * GUTTER + PANEL_GAP,
@@ -28,7 +28,7 @@ export async function coursePosterSvg(entry: CatalogEntry, map: string, box: { w
   });
   const l = levels.find((v) => v.course && v.group.map === map.toLowerCase());
   if (!l?.course) return undefined;
-  const urls = await coursePanelUrls(x.game, x.files, l);
+  const urls = await coursePanelUrls(x.game, x.files, l, dataUrl);
   const size = wholeCourseSize(l.course);
   return el(
     'svg',

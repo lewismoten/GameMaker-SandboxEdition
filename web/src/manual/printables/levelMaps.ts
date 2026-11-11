@@ -18,8 +18,8 @@ import { sheet, type PrintContext, type Sheet } from './kit';
 import { tiles } from './worldMapLayout';
 import { el, SERIF } from './worldMapArt';
 import { fillerBlock, levelsOf, markLabel, packPages, type Level } from './levelMapLayout';
-import { listedSecrets } from './levelSecrets';
-import { listedCourses, listedUnrolled, listedViews } from './levelViews';
+import { hasSecrets, loadSecrets } from './levelSecrets';
+import { loadViews } from './levelViews';
 import { GUTTER, PANEL_GAP, PANEL_HEAD, wholeCourseSize, wholeCourseSvg, coursePanelUrls, type Mint } from './levelCourseSvg';
 import { listedRoomHints } from './levelRoomHints';
 import { mergeStates } from './levelStates';
@@ -691,16 +691,17 @@ export function levelMaps(ctx: PrintContext):
       preview(): Promise<Sheet | undefined>;
     }
   | undefined {
-  const secret = listedSecrets(ctx.entry.id);
-  if (!secret) return undefined;
+  if (!hasSecrets(ctx.entry.id)) return undefined;
   // the open viewer's pictures are blobs, revoked by release(); small pictures are data URLs, so closing the viewer leaves them be
   let blobs = new Set<string>();
   let loaded: Promise<Loaded | undefined> | undefined;
   let thumb: Promise<Loaded | undefined> | undefined;
   let source: ReturnType<typeof loadLevels> | undefined;
   const make = (keep?: Set<string>) =>
-    (source ??= loadLevels(ctx.entry)).then((x) => {
+    (source ??= loadLevels(ctx.entry)).then(async (x) => {
       if (!x) return undefined;
+      const [secret, views] = await Promise.all([loadSecrets(ctx.entry.id), loadViews(ctx.entry.id)]);
+      if (!secret) return undefined;
       // the states of one place (near and far planes) print as one map
       let laid = laidOut.get(x.game);
       if (!laid) {
@@ -708,10 +709,10 @@ export function levelMaps(ctx: PrintContext):
           x.game,
           x.files,
           secret,
-          listedViews(ctx.entry.id),
-          listedUnrolled(ctx.entry.id),
+          views?.maps,
+          views?.unrolled ?? {},
           listedRoomHints(ctx.entry.id),
-          listedCourses(ctx.entry.id),
+          views?.courses ?? {},
           // the biggest blocks that fit, up to twice full size, so a course's details read, on at most half as many pages again
           { pageW: COURSE_AREA.w, pageH: COURSE_AREA.h, padW: 2 * GUTTER + PANEL_GAP, padH: 2 * PANEL_HEAD + PANEL_GAP, most: 2, least: FULL, growth: 1.5 },
         );
@@ -736,7 +737,10 @@ export function levelMaps(ctx: PrintContext):
   return {
     /** Lets go of the viewer's blob pictures (when the box viewer closes); the next open paints them again. */
     release() {
-      for (const url of blobs) URL.revokeObjectURL(url);
+      const gone = blobs;
+      for (const url of gone) URL.revokeObjectURL(url);
+      // a picture still being painted for the closed viewer lands here later: let go of it as it arrives
+      gone.add = (url) => (URL.revokeObjectURL(url), gone);
       blobs = new Set();
       loaded = undefined;
     },

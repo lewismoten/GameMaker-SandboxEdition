@@ -43,6 +43,14 @@ describe('what adds to a door', () => {
     expect(lockedWhy(l)).toBe('The door at (10, 3) needs counter 20: nothing in this scene adds to it.');
   });
 
+  it('does not mistake a gate refund for its own key', () => {
+    const w = doorWorld();
+    w.bg[DOOR].touchBl = 4;
+    Object.assign(w.bg[4], { effect: 20, eamt: 1 });
+    expect(blockChainAdds(w.bg, DOOR).has(20)).toBe(false);
+    expect([...locksOf(w).missing]).toEqual([20]);
+  });
+
   it('a live monster that turns into a pickup when it dies', () => {
     const w = doorWorld();
     chainOf(w, 3);
@@ -106,6 +114,15 @@ describe('what adds to a door', () => {
     expect(l.owed.get(3)).toBe(500);
     expect([...l.wanted]).toEqual([20]);
     expect(l.missing.size).toBe(0);
+  });
+
+  it('counts the price of a solid shop gate once', () => {
+    const w = doorWorld();
+    Object.assign(w.bg[4], { effect: 20, eamt: 1 });
+    Object.assign(w.bg[8], { solid: 15, effect: 3, eamt: -500, touchBl: 4 });
+    w.map[3 * MLEN + 2] = 8;
+    w.ci.meter[3] = 501;
+    expect(locksOf(w).owed.get(3)).toBe(500);
   });
 
   it('a key the hero cannot afford, with nothing that adds money', () => {

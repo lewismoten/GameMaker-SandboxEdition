@@ -18,6 +18,17 @@ The underlying web port and game-building tools were written with Anthropic Clau
 
 No game-specific artwork, palettes, characters, recordings, or complete games are included. Consumers supply and credit their own content.
 
+## ISO 9660 and Rock Ridge
+
+`src/iso9660.ts` implements the ISO 9660 disk layout described by ECMA-119, with
+System Use Sharing Protocol (SUSP, IEEE P1281) and Rock Ridge Interchange Protocol
+(RRIP, IEEE P1282) entries for long names, Unix modes and symbolic links.
+These are format references; no third-party implementation code is included.
+The writer was written for this project with Anthropic Claude Opus 5.5 under Lewis Moten's
+direction and is distributed under the project's MIT License. OpenAI Codex moved
+the writer and its tests into this package and added the fixed-image SHA-256
+regression check under his direction.
+
 ## Optional source audio conversion
 
 `audio-files` invokes an independently installed [FFmpeg](https://ffmpeg.org/) executable
@@ -53,10 +64,10 @@ It is distributed under the project's MIT License, alongside the project-owned r
 quantization, synthesis and object-building code extracted from `games/kit`. OpenAI Codex
 consolidated these modules and their consumers under Lewis Moten's direction.
 
-Method references: Paul S. Heckbert, *Color Image Quantization for Frame Buffer Display*
+Method references: Paul S. Heckbert, _Color Image Quantization for Frame Buffer Display_
 ([author's publication list](https://www.cs.cmu.edu/~ph/)), for median-cut quantization;
-John C. Hart, *Sphere Tracing: A Geometric Method for the Antialiased Ray Tracing of
-Implicit Surfaces* ([paper](https://graphics.stanford.edu/courses/cs348b-20-spring-content/uploads/hart.pdf)),
+John C. Hart, _Sphere Tracing: A Geometric Method for the Antialiased Ray Tracing of
+Implicit Surfaces_ ([paper](https://graphics.stanford.edu/courses/cs348b-20-spring-content/uploads/hart.pdf)),
 for distance-based sphere tracing. The implementations and project font data here use
 the project's MIT License.
 
@@ -93,7 +104,7 @@ font, image, emulator or generator executable is bundled with these swatches.
   [permission and provenance](https://commons.wikimedia.org/wiki/File:C64_ntsc_cxa2025.bmp.png).
 
 The RGBI and SMS bit mappings are project-owned MIT implementations of hardware facts,
-referencing IBM's *Technical Reference: Options and Adapters*, volume 2, April 1984
+referencing IBM's _Technical Reference: Options and Adapters_, volume 2, April 1984
 ([manufacturer's manual](https://bitsavers.org/pdf/ibm/pc/cards/Technical_Reference_Options_and_Adapters_Volume_2_Apr84.pdf)),
 and Maxim / SMS Power contributors' [palette documentation](https://www.smspower.org/Development/Palette).
 Monochrome ramps, the EGA skin/hair additions and LCD-green approximations were designed
@@ -119,3 +130,6 @@ HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTIO
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ```
+
+OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, extracted the portable Level check
+animation findings and their tests using this project's existing engine decoders.

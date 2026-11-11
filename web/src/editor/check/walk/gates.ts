@@ -103,8 +103,8 @@ export function blockChainAdds(bg: Block[], start: number): Map<number, Price[]>
     if (!b) continue;
     const c = n === start ? undefined : addsTo(b);
     if (c !== undefined && !price.some((p) => p.counter === c) && (!out.has(c) || cost(out.get(c)!) > cost(price))) out.set(c, price);
-    // a touch that takes from a counter is paid on the way (a door already counts as owed: no second price)
-    const takes = (b.effect >= 20 || b.effect === 3) && b.eamt < 0 && !isGate(b, n) ? [{ counter: b.effect, takes: -b.eamt }] : [];
+    // a touch that takes from a counter is paid on the way (including a gate: its own refund is not a freely reachable key)
+    const takes = (b.effect >= 20 || b.effect === 3) && b.eamt < 0 ? [{ counter: b.effect, takes: -b.eamt }] : [];
     const next: [number, Price[]][] = [
       [b.touchBl, [...price, ...takes]],
       [b.ntime > 0 ? b.nextBl : n, price],
@@ -152,7 +152,7 @@ export function sourcesOf(
 }
 
 /** Monsters on the go now that add to a counter when touched, or turn into one that does when they die. */
-function liveMonsterSources(w: World): Source[] {
+export function liveMonsterSources(w: World): Source[] {
   const out: Source[] = [];
   for (let l = 0; l < LASTMM; l++) {
     const mm = w.mm[l];
@@ -214,7 +214,7 @@ export function locksOf(w: World): Locks {
       priced.add(c);
       const cheapest = mine.reduce((x, y) => (cost(y) < cost(x) ? y : x));
       for (const p of cheapest.price!) {
-        owe(p.counter, p.takes);
+        if (!gates.some((g) => g.counter === p.counter && g.cells.includes(cheapest.cell))) owe(p.counter, p.takes);
         if (!buys.has(p.counter)) buys.set(p.counter, c);
         more = true;
       }

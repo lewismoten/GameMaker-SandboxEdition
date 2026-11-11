@@ -10,12 +10,13 @@ export interface CubeFace {
   dead?: boolean;
 }
 
-/** A square of paper that folds into a cube and inflates (the water-bomb balloon). The lid is the face with the hole you blow into. */
+/** A square of paper that folds into a cube and inflates (the traditional waterbomb balloon). The lid is the face with the hole you blow into. */
 export interface BalloonCubeItem extends ItemBase {
   kind: 'ballooncube';
   heading?: string;
   intro?: string;
-  /** The six faces: `top` is the lid with the blow hole, `bottom` the center of the sheet, then the four sides around it (north-east, north-west, south-west, south-east on the printed sheet). */
+  /** The six faces: `top` is the lid with the blow hole, `bottom` the face opposite it (the middle of the sheet), then the four sides,
+   * in two opposite pairs: `ne` and `sw` (the squares beside the middle one on the sheet), `nw` and `se` (the back and front of the fold). */
   faces: Record<'top' | 'bottom' | 'ne' | 'nw' | 'sw' | 'se', CubeFace>;
   /** A line under the fold diagrams. */
   foot?: string;

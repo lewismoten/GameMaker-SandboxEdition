@@ -17,6 +17,16 @@ export const POCKET = { bore: 12.3, notchHw: 2.3, notchOut: 14.9, plates: 4 };
 export const SOCKET_FIT = 0.15; // the ring's socket is this much bigger than the washer, per side
 export const RINGS = [28, 35, 42, 49]; // outer radii, inner ring first (it sits on top)
 export const SLICES_PER_RING = 2;
+/**
+ * The narrowest wall left on a hollowed slice, millimeters. A ring of 3 mm plywood 8 mm wide cuts, handles and glues without
+ * breaking (about 2.7 times the thickness; below 5 mm laser-cut ply rings snap along the grain), and it is wide enough to engrave a part ID.
+ */
+export const RIM = 8;
+/** Radius of the round hole in each ring's plain (B) slice, index k = ring k+1: under the rim of the next ring up, so loads pass down the rims. */
+export const SLICE_HOLE = RINGS.map((_, k) => (k === 0 ? 20 : RINGS[k - 1] - RIM));
+/** The pocket plates are two parts: an outer ring (hole as the biggest ring's plain slice) and a collar round the ridge slot. */
+export const COLLAR_R = 26;
+export const PX_ID = 0.36; // millimeters per font pixel for part IDs: capitals 2.52 mm, the smallest the checks allow
 export const HEAD_R = 20;
 export const LID = { r: 14, plug: 7.35 };
 export const BASE = 114; // the square base

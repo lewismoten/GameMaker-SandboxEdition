@@ -16,6 +16,8 @@
 import { encodeKeys, keysAt, WALKTHROUGH_FPS, type Walkthrough } from '../../../walkthrough/format';
 import { fromCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 import type { Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { directionalGravity } from '../platformGoals';
+import { preferSuppliedBranches, suppliesForOtherScenes } from './scenePlan';
 import { bestAttempt } from './bestAttempt';
 import { MLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { explore, type Entry, type Exploration, type ExploreOptions } from '../explore';
@@ -74,7 +76,7 @@ export interface SceneOutcome {
   mine?: 'used' | 'broke';
   /** The scene has walking paths: the share of the route's walking on them, and whether a second search keeping to them gave the route. */
   paths?: { share: number; kept: boolean };
-  /** Why fetching keys for a still-locked way on failed. */
+  /** Diagnostics from fetching supplies needed here or in another scene. */
   keys?: FetchKeysDiagnostics;
 }
 
@@ -144,6 +146,12 @@ export async function autoWalk(game: Game, files: FileSource, gameId: string, op
   let entry: Entry = { start: first.to, ci: startCharInfo(), clock: 1 };
   const seen = new Set<number>([scene]);
   const taken = new Map<string, number>();
+  // A refused branch is retried only after carried resources change.
+  const refused = new Set<string>();
+  const refusedEntries = new Set<string>();
+  const resources = () => JSON.stringify([entry.ci.meter, entry.ci.inv]);
+  const arrivalKey = (scene: number, at: { x: number; y: number }) =>
+    `${scene}@${at.x},${at.y}:${JSON.stringify([entry.ci.meter, entry.ci.inv, entry.ci.seqon, entry.ci.hitpts])}`;
   /** Arrival points used, and the cells of each scene the bot's searches reached. */
   const arrived = new Set<string>([`${scene}@${first.to.x},${first.to.y}`]);
   const reached = new Map<number, Uint8Array>();
@@ -175,9 +183,18 @@ export async function autoWalk(game: Game, files: FileSource, gameId: string, op
     const level = (l: { toScene: number }) => l.toScene === 1 || (l.toScene > 1 && l.toScene < game.scenes.length);
     // a scene not played yet (or the won scene); else back the way a hub game goes (a side room
     // returns to the hub), each way taken at most twice so the bot can't go round for ever
-    let ways = s.links.filter((l) => level(l) && (l.toScene === 1 || !seen.has(l.toScene)));
+    let ways = s.links.filter(
+      (l) =>
+        level(l) &&
+        (l.toScene === 1 || !seen.has(l.toScene)) &&
+        !refused.has(`${scene}>${l.toScene}:${resources()}`) &&
+        !refusedEntries.has(arrivalKey(l.toScene, l.to)),
+    );
     const backOnly = !ways.length;
-    if (backOnly) ways = s.links.filter((l) => level(l) && l.toScene !== scene && (taken.get(`${scene}>${l.toScene}`) ?? 0) < 2);
+    if (backOnly)
+      ways = s.links.filter(
+        (l) => level(l) && l.toScene !== scene && !refusedEntries.has(arrivalKey(l.toScene, l.to)) && (taken.get(`${scene}>${l.toScene}`) ?? 0) < 2,
+      );
     const outcome: SceneOutcome = { scene, name, tried: [] };
     out.scenes.push(outcome);
     if (!ways.length) {
@@ -185,13 +202,18 @@ export async function autoWalk(game: Game, files: FileSource, gameId: string, op
       ending = endingOf(name, 'no-way', scene);
       break;
     }
-    const goal = ways.map((l) => l.from.y * MLEN + l.from.x);
+    const alternatives = ways;
+    const supplies = backOnly ? suppliesForOtherScenes(game, files, scene, entry) : undefined;
+    // A needed pickup can be on an exit to a familiar arrival. Keep every
+    // return available until its supplies are fetched, ahead of route novelty.
+    if (!supplies) ways = preferSuppliedBranches(game, files, scene, entry, ways);
     // back to a hub: a way that lands somewhere in it the bot hasn't been beats the way it came in
     if (backOnly) {
       const fresh = ways.filter((l) => !arrived.has(`${l.toScene}@${l.to.x},${l.to.y}`) && !reached.get(l.toScene)?.[(l.to.y % 100) * MLEN + (l.to.x % MLEN)]);
-      if (fresh.length) ways = fresh;
+      if (fresh.length && !supplies) ways = fresh;
     }
-    const wanted = new Set(ways.map((l) => s.links.indexOf(l)));
+    let goal = ways.map((l) => l.from.y * MLEN + l.from.x);
+    let wanted = new Set(ways.map((l) => s.links.indexOf(l)));
     let biggest: Exploration | undefined;
     let lockWhy: string | undefined;
     let found: { replay: Replay; strategy: Strategy } | undefined;
@@ -201,14 +223,42 @@ export async function autoWalk(game: Game, files: FileSource, gameId: string, op
      * room whose only way out is back (its prize is the point), and for a way on that opens only
      * for what the hero carries.
      */
-    const collect = async (): Promise<boolean> => {
+    const collect = async (exact = false): Promise<boolean> => {
+      if (backOnly && !exact) {
+        if (supplies) {
+          outcome.tried.push('keys');
+          const keys = await fetchKeys(game, files, scene, entry, supplies, {
+            goal,
+            wanted,
+            budgetMs: budget * 0.8,
+            seed,
+            progress: (places) => {
+              if (opt.progress?.(scene, 'Fetch the keys, then go on', places)) canceled = true;
+              return canceled;
+            },
+          });
+          if (keys.replay) {
+            found = { replay: keys.replay, strategy: STRATEGIES.find((s) => s.id === 'keys')! };
+            return true;
+          }
+          outcome.keys = keys.diagnostics;
+          if (canceled) return false;
+        }
+      }
       const st = STRATEGIES.find((x) => x.id === 'collector')!;
-      outcome.tried.push(st.id);
+      if (!exact) outcome.tried.push(st.id);
       const prog = (places: number) => {
         if (opt.progress?.(scene, st.name, places)) canceled = true;
         return canceled;
       };
-      const ex1 = await explore(game, scene, files, entry, { budgetMs: budget * 0.4, progress: prog });
+      const ex1 = await explore(game, scene, files, entry, {
+        exact,
+        budgetMs: budget * 0.4,
+        steadyTicks: 3,
+        steadySteering: true,
+        steerAirborne: true,
+        progress: prog,
+      });
       if (canceled) return false;
       if (!biggest || ex1.places.length > biggest.places.length) biggest = ex1;
       const startWorth = ex1.places[0]?.worth ?? 0;
@@ -216,7 +266,17 @@ export async function autoWalk(game: Game, files: FileSource, gameId: string, op
       if (!best) return false;
       const r1 = await replayPath(game, files, scene, entry, ex1.moves, pathTo(ex1, best.via!), seed);
       if (!r1 || r1.link >= 0 || !r1.snap) return false;
-      const ex2 = await explore(game, scene, files, entry, { goal, start: r1.snap, budgetMs: budget * 0.4, stopAt: (l) => wanted.has(l), progress: prog });
+      const ex2 = await explore(game, scene, files, entry, {
+        goal,
+        start: r1.snap,
+        steadyTicks: 3,
+        steadySteering: true,
+        steerAirborne: true,
+        exact,
+        budgetMs: budget * 0.4,
+        stopAt: (l) => wanted.has(l),
+        progress: prog,
+      });
       if (canceled) return false;
       for (const e of ex2.exits.filter((x) => wanted.has(x.link)).sort((a, b) => a.tick - b.tick)) {
         const r2 = await replayPath(game, files, scene, entry, ex2.moves, pathTo(ex2, e.via), seed, { snap: r1.snap, ticks: r1.ticks });
@@ -225,7 +285,7 @@ export async function autoWalk(game: Game, files: FileSource, gameId: string, op
           return true;
         }
       }
-      return false;
+      return !exact && ex2.exits.some((exit) => wanted.has(exit.link)) ? collect(true) : false;
     };
     // the author's own play, if it still gets out from here
     const myKeys = opt.mine?.[scene];
@@ -250,7 +310,7 @@ export async function autoWalk(game: Game, files: FileSource, gameId: string, op
     }
     // a side room with no new way on: what it holds is why the hero came
     if (backOnly && !found) await collect();
-    const gravity = new SceneSim(game, scene, files, entry.start, entry.ci, entry.clock, entry.prev).w.bg.some((b) => b.grav !== 0);
+    const gravity = directionalGravity(new SceneSim(game, scene, files, entry.start, entry.ci, entry.clock, entry.prev).w);
     const paths = scenePaths(opt.paths, s.files);
     /** One style's search for a way on (`more`: the walking paths to keep to); the first route that replays to a wanted link. */
     const tryStyle = async (st: Strategy, more: Partial<ExploreOptions> = {}): Promise<Replay | undefined> => {
@@ -258,6 +318,10 @@ export async function autoWalk(game: Game, files: FileSource, gameId: string, op
       // move is looked for again with every monster moving
       for (const exact of [false, true]) {
         const ex = await explore(game, scene, files, entry, {
+          steadyTicks: 3,
+          steadySteering: true,
+          steerAirborne: true,
+          alignTurns: st.id === 'search' || st.id === 'walker',
           ...st.options(goal),
           ...more,
           exact,
@@ -333,6 +397,29 @@ export async function autoWalk(game: Game, files: FileSource, gameId: string, op
       lockWhy = lockedWhy(locks, unreached, otherScenesAdding(game, files, scene, locks.missing), tripCap);
     }
     if (!found && !canceled && !backOnly) await collect();
+    // Static dependencies order attempts, but cannot prove that the preferred branch is reachable.
+    if (!found && !canceled && ways.length < alternatives.length) {
+      const deferred = alternatives.filter((l) => !ways.includes(l));
+      goal = deferred.map((l) => l.from.y * MLEN + l.from.x);
+      wanted = new Set(deferred.map((l) => s.links.indexOf(l)));
+      const st = STRATEGIES.find((x) => x.id === 'search')!;
+      const replay = await tryStyle(st);
+      if (replay) found = { replay, strategy: st };
+    }
+    // No style found the forward route: physically return, retaining carried resources.
+    // Do not rewind the recording or invent a scene transition.
+    if (!found && !canceled && !backOnly) {
+      refusedEntries.add(arrivalKey(scene, entry.start));
+      for (const l of ways) refused.add(`${scene}>${l.toScene}:${resources()}`);
+      const back = s.links.filter((l) => level(l) && l.toScene !== scene && seen.has(l.toScene) && (taken.get(`${scene}>${l.toScene}`) ?? 0) < 2);
+      if (back.length) {
+        goal = back.map((l) => l.from.y * MLEN + l.from.x);
+        wanted = new Set(back.map((l) => s.links.indexOf(l)));
+        const st = STRATEGIES.find((x) => x.id === 'search')!;
+        const replay = await tryStyle(st);
+        if (replay) found = { replay, strategy: st };
+      }
+    }
     if (canceled) {
       out.stopped = 'Stopped.';
       ending = endingOf(name, 'stopped', scene);

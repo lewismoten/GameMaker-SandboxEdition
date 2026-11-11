@@ -5,6 +5,7 @@
 // earthworms, rolling pebbles, the eagle, a certain goat, squirrels, nesting birds and a bee.
 // Every sprite is drawn from shapes and given a dark outline.
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
+import { outline as outlineSprite } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
 import { blob } from '../../../snowbound/src/art/draw';
 import { micro } from '../../../snowbound/src/art/font';
 import { makeBook, T } from '../../../snowbound/src/sprites/kidArt';
@@ -13,24 +14,9 @@ import { SOLBOT, SOLLEF, SOLRIG } from '@lewismoten/gamemaker-sandbox-engine/for
 
 export { T };
 
-/** Gives every drawn pixel's empty neighbors the outline color. */
+/** Keeps the sprite canvas and excludes existing ink when adding its outline. */
 export function outline(p: Pixels, ink: number): Pixels {
-  const src = p.px.slice();
-  for (let y = 0; y < p.h; y++)
-    for (let x = 0; x < p.w; x++) {
-      if (src[y * p.w + x] !== T) continue;
-      const near = [
-        [1, 0],
-        [-1, 0],
-        [0, 1],
-        [0, -1],
-      ].some(([dx, dy]) => {
-        const xx = x + dx;
-        const yy = y + dy;
-        return xx >= 0 && yy >= 0 && xx < p.w && yy < p.h && src[yy * p.w + xx] !== T && src[yy * p.w + xx] !== ink;
-      });
-      if (near) p.px[y * p.w + x] = ink;
-    }
+  p.px.set(outlineSprite(p, ink, { ignoreInk: true }).px);
   return p;
 }
 

@@ -66,3 +66,29 @@
   border: 1px solid var(--border);
   border-radius: 4px;
 }
+
+/* The shade square sits beside the sliders and color value in a short window. */
+@media (max-height: 480px) and (orientation: landscape) {
+  dialog.modal .pal-hsv {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 240px minmax(0, 1fr);
+    gap: 4px 16px;
+  }
+  .pal-hsv > p {
+    grid-column: 1 / -1;
+  }
+  .pal-hsv-controls {
+    grid-column: 1;
+    grid-row: 2 / span 3;
+    grid-template-columns: minmax(0, 1fr) 32px;
+    gap: 8px;
+    padding: 0;
+  }
+  .pal-hsv > :is(label, .row) {
+    grid-column: 2;
+  }
+  .pal-hsv > .toolbar {
+    grid-column: 1 / -1;
+  }
+}

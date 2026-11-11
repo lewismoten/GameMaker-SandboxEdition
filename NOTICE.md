@@ -56,6 +56,17 @@ game folder opens in the browser unchanged.
 
 ## Credits
 
+- **Short landscape dialogs (November 10, 2026)**: OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, added landscape layouts for phone dialogs using the existing forms and previews. No new third-party assets or game content were added.
+
+- **Entry loading (November 10, 2026)**: OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, deferred home demo file inspection and playback, split optional title rendering, screenshot encoding, registration panels and gamepad controls, and separated FLAGS help from file-list metadata, with regression tests.
+
+- **Source area documentation (November 10, 2026)**: OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, documented the Graphics Image Reader layers and completed the source README index.
+
+- **Keyboard walkthrough report** (`games/kit/keyAccess.ts`): OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, clarified press percentages, keypad-diagonal counts and recording limits, with regression tests. Game content and recordings are unchanged.
+- **Performance map measurement** (`web/scripts/perfTrace*.ts`): OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, added map-content readiness, cold-load cache isolation and regression tests. No third-party code or game assets were added.
+
+- **Walkthrough bot planning**: **OpenAI Codex (GPT-6)**, directed by Lewis Moten, revised gate dependency planning, jump discovery, search states, and regression tests.
+
 - **Pocket Player host hardening**: **Hermes Agent running OpenAI Codex GPT-6.1 Sol**, directed by Lewis Moten, added deterministic reader-failure probes, source-slice error-path regressions, and reproducible per-level host frame profiling. Host timings are not CYD measurements.
 - **Livestream follow-up tools and booklet contents**: **OpenAI Codex (GPT-6)**, directed by Lewis Moten, implemented measured Technical Reference contents, development refresh progress and admission control, update labels and regression checks. No new game assets or third-party material were added.
 
@@ -638,6 +649,8 @@ formats from their published descriptions and from Game-Maker's own source.
   one service under its successive names) and **DeepAI** are their owners' names for the
   tools used to make the Bard of Bizarre songs and art, and **ChatGPT** and **Gemini** for
   the tools Lewis reviews and brainstorms with (see Credits); none of their code is used.
+- **ChatGPT** (OpenAI) also wrote the YouTube description, chapters and title of the livestream
+  the Library shows ("RDS Game-Maker Sandbox Edition - Live"), from the video's transcript that Lewis gave it.
 - **MS-DOS** is a trademark of Microsoft Corporation; **IBM PC** of IBM; **DOSBox** is a
   separate GPL program and is not included. `npm run dosbox` (`web/scripts/dosbox.ts`) only lays
   out a folder of this repository's files for a DOSBox the developer installs, and opens it.
@@ -807,7 +820,9 @@ itself, under its window menu's "Third-party notices…"); the text is in
 - Zig itself is a build tool; beyond the runtime pieces above, the Windows and Linux
   players may contain a few of its compiler support routines (compiler_rt, MIT License,
   Copyright (c) Zig contributors). The `.dmg`, `.tar.gz` and `.zip` containers, the Mac code signature and the Windows
-  resources are written by this project's own code in `web/src/export/`.
+  resources are written by this project's own code in `web/src/export/`, with the generic
+  ISO 9660 / Rock Ridge writer in `web/packages/tools/src/iso9660.ts` (format references
+  and implementation credits in that package's `NOTICE.md`).
 
 ## Third-party code and acknowledgments in the original source
 
@@ -1040,6 +1055,27 @@ method of Michael Garland and Paul Heckbert's "Surface Simplification Using Quad
 algorithm, not licensed code. It was written with Anthropic Claude Sonnet 5.5 under Lewis Moten's
 direction.
 
+### New paper and laser kits, fold viewer and art courses
+
+Snowbound's Plowed Street puzzle box (`games/snowbound/laser/`), In The Year 2000!'s
+Teleport-A-Phone cryptex (`games/year2000/laser/`) and Tune-Up's paper THE CHEZ
+(`games/tuneup/laser/`) were designed and coded with **Claude Sonnet 5.5** (Anthropic),
+directed by Lewis Moten, under this project's MIT License. Their cut shapes, engraving,
+print artwork and assembly sheets are drawn in code, using the project's existing laser
+helpers and credited pixel fonts. Existing game artwork and words retain their credits.
+
+Wrong Number's die fold model and animated SVG viewer
+(`web/src/manual/printables/balloonCubeFold.ts`, `balloonCubeFoldView.ts`) were written
+with **Claude Sonnet 5.5** (Anthropic), directed by Lewis Moten, using the project's
+existing paper net and face art. The earlier intermediate folding diagram retains its
+OpenAI Codex credit below.
+
+The seven art courses (`web/src/artCourses/`) and their figure generators
+(`web/scripts/artCourseFigures*.ts`, `artCourseKit.ts`) were written and drawn with
+**Claude Sonnet 5.5** (Anthropic), directed by Lewis Moten, under this project's MIT
+License. Their figures use original code-drawn blocks and this project's existing game
+art; those games' credits remain.
+
 ### Tiny Shelf Classification
 
 The Library's call numbers (such as 614-MAH) use the **Tiny Shelf Classification**, dedicated to
@@ -1119,11 +1155,34 @@ maker "ZORP" is invented. The shell is untested: nothing has been printed.
 - **ymfm**, by Aaron Giles and contributors, **BSD-3-Clause** ([upstream](https://github.com/aaronsgiles/ymfm)), is the planned OPL2 backend documented in `hardware/pi-player/MUSIC.md`. No ymfm code or binary is included or linked yet.
 - **Player Patching Manual** (`web/src/programmersGuide/patching1994.md`, `web/src/manual/printables/patchingManual.ts`, `patchingPlates.ts`): original words, byte-layout figures, booklet integration and verification written with **OpenAI Codex (GPT-6)**, directed by Lewis Moten. References are this project's Programmer's Guide, player patch tables, Sandbox game metadata and the original RSD source and CD executables; the existing RSD MIT credit remains. No text from the printed RSD manual was copied.
 
-- **Livestream game follow-up (November 2026):** OpenAI Codex (GPT-6), directed by Lewis Moten, implemented Colors That Work’s playable palette lesson, removed unused Beat the Clock monster templates, drew the paper cube’s intermediate folding diagram, revised the Stage Box assembly and lock diagrams, and added the phone BOM’s numeric cost export and regressions. Existing game art, music, source data, and color-vision algorithm credits remain.
+- **Livestream game follow-up (November 2026):** OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, implemented Colors That Work’s playable palette lesson, removed unused Beat the Clock monster templates, drew the paper cube’s intermediate folding diagram, revised the Stage Box assembly and lock diagrams, and added the phone BOM’s numeric cost export and regressions. Existing game art, music, source data, and color-vision algorithm credits remain.
 
-- **Desk machine settings** (`web/src/desk/pc/machine*.ts`): OpenAI Codex (GPT-6), directed by Lewis Moten, implemented the hardware dialog, remembered CPU and disk timing, accessibility checks and regression tests using the existing engine estimates. No new third-party assets or game content were added.
-- **Livestream Desk, Editor, Site and Library follow-up**: OpenAI Codex (GPT-6), directed by Lewis Moten, implemented navigation, asset filtering, scene-panel layout, creation labels, download discoverability, cached-search scheduling, and regression checks. Existing game data and artwork retain their credits.
+- **Desk machine settings** (`web/src/desk/pc/machine*.ts`): OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, implemented the hardware dialog, remembered CPU and disk timing, accessibility checks and regression tests using the existing engine estimates. No new third-party assets or game content were added.
+- **Livestream Desk, Editor, Site and Library follow-up**: OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, implemented navigation, asset filtering, scene-panel layout, creation labels, download discoverability, cached-search scheduling, and regression checks. Existing game data and artwork retain their credits.
 
 - **Full-window player snapshots**: OpenAI Codex (GPT-6), directed by Lewis Moten, implemented the camera control, DOS crop metadata, PNG regressions and documentation using this project’s existing PNG encoder. Original game artwork retains its existing credits.
 - **CYD friendliness check** (`web/scripts/cyd*.ts`): OpenAI Codex (GPT-6), directed by Lewis Moten, implemented the recorded-route measurements, engine probes, scoring, tests, and documentation. No game content or third-party material was added.
 - **Try Again plank landing** (`games/one-more-try/`): OpenAI Codex (GPT-6), directed by Lewis Moten, widened the upper plank and added headless jump checks against the original PLAYGAME collision rules. Existing Starter art and music retain their credits.
+
+- **Game-Maker history source notes** (`docs/history.md`): OpenAI Codex (GPT-6.1 Sol), directed
+  by Lewis Moten, researched and wrote the dated summaries. The cited interviews by EJR
+  Tairne and accounts by Stacy Davidson and Cyborg Jeff remain their authors' work;
+  the history links to the originals and Wayback snapshots and paraphrases them without
+  reproducing their articles or artwork.
+- **Full-window player snapshots**: OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, implemented the camera control, DOS crop metadata, PNG regressions and documentation using this project’s existing PNG encoder. Original game artwork retains its existing credits.
+- **CYD friendliness check** (`web/scripts/cyd*.ts`): OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, implemented the recorded-route measurements, engine probes, scoring, tests, and documentation. No game content or third-party material was added.
+- **Try Again plank landing** (`games/one-more-try/`): OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, widened the upper plank and added headless jump checks against the original PLAYGAME collision rules. Existing Starter art and music retain their credits.
+
+- **SEO housekeeping (November 2026)**: OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, revised metadata and public download generators and added discoverability regression checks. No new third-party code or artwork was added.
+
+- **Portable animation Level check:** OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, extracted the animation findings and tests into the tools package using the existing engine decoders.
+- **Web editor tour review (November 10, 2026)** (`docs/editor.md`): OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, checked the tour against the editor source and revised its descriptions of controls and flows. Existing screenshots and their artwork retain their credits.
+- **Level generator ceiling landings** (`web/packages/tools/src/kit/levelGen/platformReach.ts`): OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, matched the reach model's ceiling collision snaps to PLAYGAME and added engine comparison regressions. The original RSD code remains the behavioral reference.
+
+- **Memory harness completion** (`web/scripts/perfMemory.ts`): OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, added explicit failure diagnostics, cleanup handling and browser-free regression tests.
+
+- **Pocket packs: menu picture, credits and Top Ten background (November 10, 2026)** (`web/src/export/pocketPack.ts`): OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, packed PLAYGAME scene 0 slots 2, 7 and 8 into SD-card Pocket packs, with tests.
+
+- **Landscape dialog layouts (November 10, 2026)** (web/src editor, desk and settings dialog CSS): OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, added short-landscape layouts so dialogs fit a phone held sideways; checked in a browser by Claude (Sonnet 5.5).
+
+- **In The Year 2000! CitiCar boarding checks and hints** (`games/year2000/`): the DOS counter gate, missing-item signs and regression checks were made with **OpenAI Codex (GPT-6)**, directed by Lewis Moten.

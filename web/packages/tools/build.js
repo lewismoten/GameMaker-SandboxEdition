@@ -7,10 +7,12 @@ import { createRequire } from 'node:module';
 import { execFileSync } from 'node:child_process';
 const here = dirname(fileURLToPath(import.meta.url));
 const sources = {
+  iso9660: 'iso9660',
   audio: 'audio',
   'audio-files': 'audioFiles',
   colors: 'colors',
   'disk-diff': 'diskDiff',
+  'fli-check': 'fliCheck',
   'look-alike': 'lookAlike',
   delta: 'delta',
   'color-reduce': 'colorReduce',
@@ -52,6 +54,11 @@ const sources = {
   'kit/clips': 'kit/clips',
   'kit/gameSim': 'kit/gameSim',
   'kit/levelGen': 'kit/levelGen/index',
+  'kit/laserClearance': 'kit/laserClearance',
+  'kit/laserJoints': 'kit/laserJoints',
+  'kit/laserLayout': 'kit/laserLayout',
+  'kit/laserPixels': 'kit/laserPixels',
+  'kit/laserSvg': 'kit/laserSvg',
   'kit/music': 'kit/music',
   'kit/palette': 'kit/palette',
   'kit/pcText': 'kit/pcText',

@@ -1,4 +1,5 @@
 // Whole-file 1.44 MB FAT12 layouts, not floppy images or sliced ZIP volumes.
+import { deepStrictEqual } from 'node:assert';
 import { expect, it } from 'vitest';
 import type { ZipEntry } from '@lewismoten/gamemaker-sandbox-archives/zip';
 import { splitDosFiles } from './dosFloppies';
@@ -11,22 +12,23 @@ it('packs complete files into FAT12 space and keeps the player, driver, setup an
   const files = [...base, ...dosInstallFiles('TEST'), entry('FIRST.VOC', 900000), entry('LAST.VOC', 900000)];
   const disks = splitDosFiles(files, 'TEST');
   expect(disks.length).toBe(2);
-  for (const f of base) expect(disks[0].find((e) => e.name === f.name)?.data).toEqual(f.data);
+  // Node compares byte views directly; Vitest's iterable equality enumerates every byte key.
+  for (const f of base) deepStrictEqual(disks[0].find((e) => e.name === f.name)?.data, f.data);
   for (const [i, disk] of disks.entries()) {
     expect(disk.length).toBeLessThanOrEqual(224);
     expect(disk.reduce((sum, e) => sum + Math.ceil(e.data.length / 512) * 512, 0)).toBeLessThanOrEqual(2847 * 512);
     expect(disk.some((e) => e.name === `DISK${i + 1}.ID`)).toBe(true);
     const bat = disk.find((e) => e.name === 'INSTALL.BAT')!.data;
-    expect(bat).toEqual(disks[0].find((e) => e.name === 'INSTALL.BAT')!.data);
+    deepStrictEqual(bat, disks[0].find((e) => e.name === 'INSTALL.BAT')!.data);
     expect(new TextDecoder().decode(bat)).toContain('Insert disk 2 of 2');
     expect(new TextDecoder().decode(bat)).toContain('IF EXIST DISK2.ID GOTO copy2');
   }
   for (const file of files.filter((e) => !/^INSTALL\./.test(e.name))) {
     const copies = disks.flat().filter((e) => e.name === file.name);
     expect(copies.length).toBe(1);
-    expect(copies[0].data).toEqual(file.data);
+    deepStrictEqual(copies[0].data, file.data);
   }
-  expect(splitDosFiles(files, 'TEST')).toEqual(disks);
+  deepStrictEqual(splitDosFiles(files, 'TEST'), disks);
 });
 
 it('counts directory slots as well as bytes, including empty files and installer overhead', () => {

@@ -20,7 +20,7 @@
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { GameFiles } from '../../web/src/project/files';
+import { GameFiles } from '@lewismoten/gamemaker-sandbox-engine/core/gameFiles';
 import { runChecks } from '../../web/src/editor/check/report';
 import { gameOf, levelScenes } from '../../web/src/editor/check/playtest';
 import { findingKey, splitAccepted } from '../../web/src/editor/check/accepted';

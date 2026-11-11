@@ -1,8 +1,8 @@
 // Reviewed challenge content and fresh-start contract; no catalog or player-state reads.
 export const BACKYARD = Object.freeze({
   game: 'teddy',
-  version: '1.3',
-  hash: '17ea01fcd9e974f9b8ed68b7aa95780b6b7da4f90f8046db2e80275e9af5d27b',
+  version: '1.4',
+  hash: '6cdab4a8284008ef4337ae6916b924d9c0bfc24c1e254cd0e627d797e87b60a4',
   scene: 2,
   start: 'backyard-fresh-v1',
   rules: 'relay-untimed-v1',

@@ -14,7 +14,7 @@ const KEY = COURIER_KEY;
 const BUDDY_KEY = 'gm-desk-buddy';
 export const COURIER_CHANGED = 'courier-changed';
 
-export interface MailItem {
+interface MailItem {
   id: string;
   /** The desk clock's day it came, YYYY-MM-DD. */
   day: string;
@@ -37,13 +37,13 @@ export interface Postcard {
 }
 
 /** This screen's home: a courier id (courierId.ts: UUID v4 in shape, random, derived from nothing), made once, and its world (rolled once from the curated names). */
-export interface Home {
+interface Home {
   id: string;
   world: number;
 }
 
 /** A courier from another screen staying here, collecting this screen's stamps on its postcard. */
-export interface Visitor {
+interface Visitor {
   trip: string;
   /** The visitor's own home id and world. */
   home: string;

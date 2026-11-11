@@ -296,3 +296,23 @@ dialog.modal:has(.pal-zero) {
     align-items: center;
   }
 }
+
+/* Copy forms use the available width instead of stacking every field in landscape. */
+@media (max-height: 480px) and (orientation: landscape) {
+  dialog.modal :is(.pal-copy, .pal-role-copy) {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 4px 12px;
+  }
+  .pal-copy > :is(p, .toolbar),
+  .pal-role-copy > :is(p, .toolbar, .stack),
+  .pal-role-copy > label:has(input[type='checkbox']) {
+    grid-column: 1 / -1;
+  }
+  dialog.modal .pal-role-copy label:has(input[type='checkbox']) {
+    flex-direction: row;
+    align-items: center;
+    min-height: 24px;
+    gap: 6px;
+  }
+}

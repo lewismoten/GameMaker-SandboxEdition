@@ -154,17 +154,17 @@ export function highestLevel(finished: ReadonlySet<string>, grades: Readonly<Gra
 }
 
 /** The courses (every Starter with a course number) whose grade is not yet `atLeast` ('B' or 'A'), given the grades and the finished game ids. */
-export const coursesBelow = (grades: Readonly<Grades>, finished: ReadonlySet<string>, atLeast: 'B' | 'A'): string[] => {
+const coursesBelow = (grades: Readonly<Grades>, finished: ReadonlySet<string>, atLeast: 'B' | 'A'): string[] => {
   const g = withFinished(grades, finished);
   return CEREMONIES.flatMap(stageGames).filter((id) => (atLeast === 'A' ? g[id] !== 'A' : !isB(g[id])));
 };
 
 /** Highest Honors: the diploma is earned and every course has a B or better. */
-export const highestHonors = (grades: Readonly<Grades>, finished: ReadonlySet<string>): boolean =>
+const highestHonors = (grades: Readonly<Grades>, finished: ReadonlySet<string>): boolean =>
   finished.has(DIPLOMA.id) && coursesBelow(grades, finished, 'B').length === 0;
 
 /** A perfect 4.0: the diploma is earned and every course is an A. */
-export const perfectFourPointO = (grades: Readonly<Grades>, finished: ReadonlySet<string>): boolean =>
+const perfectFourPointO = (grades: Readonly<Grades>, finished: ReadonlySet<string>): boolean =>
   finished.has(DIPLOMA.id) && coursesBelow(grades, finished, 'A').length === 0;
 
 /** How the diploma reads: plain, With Highest Honors, or With Highest Honors, Perfect 4.0. Undefined until it is earned. */

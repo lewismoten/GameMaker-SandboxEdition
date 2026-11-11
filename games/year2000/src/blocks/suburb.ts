@@ -7,7 +7,7 @@ import { BlockSet, SOLID } from './book';
 import { blob, gradient, oval, shadeAt, speckle } from '../art/draw';
 import { FLOORS } from './floors';
 import { micro } from '../art/font';
-import { CTR, MON } from '../ids';
+import { CTR, DOME_PAGES, MON } from '../ids';
 import { C } from '../art/pal';
 import { billboard, domeHome } from '../art/bigart';
 import { addTicker } from './ticker';
@@ -69,21 +69,6 @@ function mailbox(floor: Floor): Pixels {
   return p;
 }
 
-function dish(floor: Floor): Pixels {
-  const p = on(floor);
-  oval(p, 10, 17, 7, 2, C('gray', 1));
-  p.rect(9, 11, 2, 6, C('chrome', 2));
-  for (let y = 2; y < 13; y++)
-    for (let x = 2; x < 18; x++) {
-      const nx = (x - 10) / 8;
-      const ny = (y - 7) / 6;
-      if (nx * nx + ny * ny <= 1) p.set(x, y, shadeAt(R('chrome'), 3, 7, 0.5 - nx * 0.4 + ny * 0.3, x, y));
-    }
-  p.line(10, 7, 14, 2, C('chrome', 1));
-  p.disc(14, 2, 1, C('red', 4));
-  return p;
-}
-
 function doghouse(floor: Floor): Pixels {
   const p = on(floor);
   for (let y = 2; y < 9; y++) p.rect(10 - (y - 1) * 1.3, y, (y - 1) * 2.6, 1, C('chrome', 4 + (y % 2)));
@@ -96,10 +81,41 @@ function doghouse(floor: Floor): Pixels {
   return p;
 }
 
+/** The ocean's waves (the city's harbor): water to the edge, no deck around it. */
 export function pool(phase: number): Pixels {
   const p = blank();
   for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) p.set(x, y, shadeAt(R('sky'), 3, 6, 0.5 + 0.5 * Math.sin((x + y * 0.5 + phase * 3) / 3), x, y));
   for (let x = 0; x < 20; x += 5) p.set(x + phase, 6 + ((x / 5) % 2) * 7, C('gray', 7));
+  return p;
+}
+
+/**
+ * The backyard swimming pool, 2x2 blocks: a pale concrete deck, a blue rim of tiles, water with
+ * ripples, a steel ladder over the near corner, a diving board and a red-and-white float. It reads as a pool and not as an ice rink or a building, and Dex can't walk on water.
+ */
+function poolBig(): Pixels {
+  const p = new Pixels(40, 40);
+  // the deck, wider on the side the board stands on
+  p.rect(0, 0, 40, 40, C('paper', 1)).rect(0, 0, 40, 1, C('paper', 2));
+  for (let x = 3; x < 40; x += 8) p.rect(x, 0, 1, 40, C('paper', 0));
+  // the tile rim and the water
+  p.rect(3, 4, 34, 28, C('sky', 5)).rect(4, 5, 32, 26, C('sky', 2));
+  for (let y = 6; y < 30; y++) for (let x = 5; x < 35; x++) p.set(x, y, shadeAt(R('sky'), 3, 6, 0.5 + 0.5 * Math.sin((x + y * 0.7) / 2.6), x, y));
+  // ripples: short light dashes
+  for (let r = 0; r < 5; r++) p.rect(7 + r * 6, 10 + ((r * 5) % 17), 3, 1, C('sky', 7));
+  // a rubber duck floating: yellow body, round head, orange beak
+  oval(p, 12, 19, 5, 3, C('gold', 5));
+  p.rect(7, 18, 2, 2, C('gold', 6));
+  p.disc(16, 16, 2, C('gold', 5)).set(17, 15, C('night', 0));
+  p.rect(18, 16, 2, 1, C('orange', 4));
+  p.rect(8, 22, 8, 1, C('sky', 7));
+  // the steel ladder over the corner: two rails with rungs, going into the water
+  p.rect(29, 1, 2, 13, C('chrome', 2)).rect(34, 1, 2, 13, C('chrome', 2));
+  p.rect(29, 1, 1, 13, C('chrome', 7)).rect(34, 1, 1, 13, C('chrome', 7));
+  for (const y of [5, 8, 11]) p.rect(29, y, 7, 1, C('chrome', 6));
+  // the diving board: a long gold plank on a post at the bottom edge, reaching out over the water
+  p.rect(18, 32, 14, 3, C('gold', 5)).rect(18, 32, 14, 1, C('gold', 7));
+  p.rect(18, 35, 3, 4, C('chrome', 3)).rect(18, 35, 1, 4, C('chrome', 6));
   return p;
 }
 
@@ -184,10 +200,10 @@ export function suburbSet(): BlockSet {
   s.add('clouds', clouds(1), { solid: SOLID });
   s.add('clouds2', clouds(2), { solid: SOLID });
   addItems(s, 'grass', ['page', 'quarter', 'pill', 'battery', 'zapper', 'cola', 'keys']);
-  addItems(s, 'sidewalk', ['page', 'quarter']);
   addItems(s, 'deck', ['page', 'quarter', 'pill', 'battery', 'cola']);
   addBooths(s, 'sidewalk');
-  addWalkways(s, 'tube');
+  // Only horizontal tubes occur in these maps; leave room for the car's DOS gate stages.
+  addWalkways(s, 'tube', ['right', 'left']);
   // Dome Sweet Dome.
   addBig(s, 'dome', domeHome(FLOORS.grass, 'pink'));
   addBig(s, 'domeB', domeHome(FLOORS.grass, 'teal'));
@@ -197,24 +213,29 @@ export function suburbSet(): BlockSet {
   s.add('hedge', hedgeCube('grass'), { solid: SOLID });
   s.add('tree', chromeTree('grass'), { solid: SOLID });
   s.add('mailbox', mailbox('grass'), { solid: SOLID });
-  s.add('dish', dish('grass'), { solid: SOLID });
   s.add('doghouse', doghouse('grass'), { solid: SOLID });
-  s.add('pool', pool(0), { solid: SOLID, next: 'pool2', ntime: 6 });
-  s.add('pool2', pool(1), { solid: SOLID, next: 'pool', ntime: 6 });
+  // the backyard pool (the block set has no room to ripple it between two pictures)
+  addBig(s, 'swim', poolBig());
   // The CitiCar on its charger: honk it (touch the front, on the left) and the headlights flash.
-  // Its door, at the back on the right, is locked: Grandpa's note on it asks for the keys. With
-  // the key ring it opens, and stepping in is Dome Sweet Dome's way out (to the Cloud Lane).
+  // Its door checks keys, all seven neighborhood pages, then the Zapper pickup receipt.
+  // Each solid touch-block stage names the next missing item; only the final stage opens.
   const parked = citicar(false);
-  const door = parked.crop(20, 20, 20, 20);
-  door.rect(0, 2, 20, 9, C('gold', 5)).frame(0, 2, 20, 9, C('gold', 3));
-  micro(door, 1, 4, 'KEYS?', C('red', 2));
-  parked.blit(door, 20, 20);
+  const door = (lines: string[]) => {
+    const p = parked.crop(20, 20, 20, 20);
+    p.rect(0, 0, 20, 19, C('gold', 5)).frame(0, 0, 20, 19, C('gold', 3));
+    lines.forEach((line, i) => micro(p, 1, 1 + i * 6, line, C('red', 2)));
+    return p;
+  };
+  parked.blit(door(['GET', 'KEYS!']), 20, 20);
   addBig(s, 'citi', parked, (col, row) =>
     col === 0 && row === 1
       ? { solid: SOLID, score: 1976, touch: 'citiLit' }
       : col === 1 && row === 1
-        ? { solid: SOLID, effect: CTR.keys, eamt: -1, touch: 'citiOpen' }
-        : { solid: SOLID },
+        ? { solid: SOLID, effect: CTR.keys, eamt: -1, touch: 'citiPages' }
+        : // the top row is only the sky above the roof (the car stands in the lower row): Dex can walk through it
+          row === 0
+          ? {}
+          : { solid: SOLID },
   );
   const open = citicar(false).crop(20, 20, 20, 20);
   for (let y = 1; y < 14; y++) for (let x = 0; x < 7; x++) if (open.get(x, y) !== C('gray', 0)) open.set(x, y, y < 7 ? C('teal', 2) : C('night', 1));
@@ -222,9 +243,19 @@ export function suburbSet(): BlockSet {
   s.add('citiOpen', open);
   s.add('citiLit', citicar(true).crop(0, 20, 20, 20), { solid: SOLID, next: 'citiLit2', ntime: 4 });
   s.add('citiLit2', citicar(false).crop(0, 20, 20, 20), { solid: SOLID, next: 'citiLit', ntime: 4 });
+  // the charger's cord crosses the grass beside the car (one block of lawn with the cord in it)
+  const cord = on('grass');
+  cord.line(0, 11, 6, 13, C('gray', 0)).line(6, 13, 13, 13, C('gray', 0)).line(13, 13, 19, 11, C('gray', 0));
+  s.add('cord', cord);
+  // a red doormat in front of the car's door: it shows Dex where to step in (the door is one block wide)
+  const mat = on('grass');
+  mat.rect(3, 3, 14, 15, C('red', 2)).frame(3, 3, 14, 15, C('gold', 5));
+  // a white arrow pointing up at the door
+  for (let i = 0; i < 5; i++) mat.rect(9 - i, 6 + i, 2 + i * 2, 1, C('paper', 2));
+  mat.rect(8, 11, 4, 5, C('paper', 2));
+  s.add('doormat', mat);
   s.add('charger', chargerPost('1MI'), { solid: SOLID, next: 'charger2', ntime: 12 });
   s.add('charger2', chargerPost('/HR'), { solid: SOLID, next: 'charger', ntime: 12 });
-  s.add('mowdock', mowerDock('grass'), { solid: SOLID, birthMon: MON.mowerBox, birthTime: 260 });
   s.add('newscannon', paperCannon('sidewalk'), { solid: SOLID, birthMon: MON.paper, birthTime: 34 });
   s.add('garagedoor', staffDoor('keys', 'grass'), { solid: SOLID, effect: CTR.keys, eamt: -1, touch: 'concrete' });
   const gw = blank();
@@ -251,6 +282,16 @@ export function suburbSet(): BlockSet {
   addBig(s, 'bbInfo', billboard(['INFORMATION', 'SUPERHIGHWAY', 'NEXT 9 EXITS'], 'denim', 'gold', FLOORS.deck));
   addBig(s, 'bbFax', billboard(['FAX-A-PIZZA!', 'HOT PIZZA BY', 'FAX IN 30 SEC'], 'red', 'gold', FLOORS.deck));
   addTicker(s, () => rail('h', 'deck'));
+
+  // PLAYGAME checks counters >=20 before accepting a touch (PLAYGAME.C DoBlockTouchChar).
+  // Refund the checked pages on the next solid stage: Dex still needs them at the fair.
+  s.add('citiPages', door(['GET', 'PAGES']), { solid: SOLID, effect: CTR.pages, eamt: -DOME_PAGES, touch: 'citiPagesBack' });
+  s.add('citiPagesBack', door(['GET', 'ZAP-', 'PER!']), { solid: SOLID, effect: CTR.pages, eamt: DOME_PAGES, touch: 'citiZapper' });
+  s.add('citiZapper', door(['GET', 'ZAP-', 'PER!']), { solid: SOLID, effect: CTR.zapperFound, eamt: -1, touch: 'citiOpen' });
+  // A pickup receipt is separate from ammunition: batteries cannot impersonate the Zapper,
+  // and spending every shot before boarding cannot lock Dex out. The next touch grants ammo.
+  Object.assign(s.def('zapper_grass'), { effect: CTR.zapperFound, eamt: 1, touch: 'zapperCharge' });
+  s.add('zapperCharge', s.pic('zapper_grass'), { effect: CTR.zap, eamt: 15, touch: 'grass' });
 
   addEgg(s, 'sidewalk');
   return s;

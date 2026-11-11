@@ -35,7 +35,8 @@ export function assetMenu(anchor: HTMLElement, actions: AssetAction[], point?: {
           disabled: a.disabled,
           class: a.danger ? 'danger' : '',
           onclick: () => {
-            close(false);
+            // A dialog opened by the action returns to the anchor, since this item is removed.
+            close();
             a.run();
           },
         },

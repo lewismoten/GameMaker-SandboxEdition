@@ -191,3 +191,26 @@
   padding: 1px 2px;
   white-space: nowrap;
 }
+
+/* Keep both checkpoint renders on one row and leave room for their controls. */
+@media (max-height: 480px) and (orientation: landscape) {
+  .disk-compare {
+    display: grid;
+    gap: 4px;
+  }
+  .disk-compare-controls {
+    gap: 4px 8px;
+  }
+  .disk-compare-pics {
+    flex-wrap: nowrap;
+    gap: 8px;
+  }
+  .disk-compare-pic {
+    display: block;
+    max-height: 144px;
+    object-fit: contain;
+  }
+  .disk-compare details ul {
+    margin-block: 4px;
+  }
+}

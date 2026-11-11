@@ -6,11 +6,14 @@
 
 /** Keeps `--room` (px) on each element up to date while it is on the page. */
 export function fitToPane(...els: HTMLElement[]): void {
-  const first = els[0];
-  if (!first) return;
+  if (!els[0]) return;
+  // The observer lives as long as the pane it watches, and nothing tells it when the editor is closed, so its
+  // callback must not hold the editor: weak references let a closed editor (thousands of nodes) be collected.
+  const refs = els.map((el) => new WeakRef(el));
   let main: HTMLElement | null = null;
   const fit = () => {
-    if (!first.isConnected) {
+    const first = refs[0].deref();
+    if (!first?.isConnected) {
       watch.disconnect();
       return;
     }
@@ -18,7 +21,9 @@ export function fitToPane(...els: HTMLElement[]): void {
     if (!main) return;
     const box = main.getBoundingClientRect();
     const bottom = main.clientHeight - (parseFloat(getComputedStyle(main).paddingBottom) || 0) - 4;
-    for (const el of els) {
+    for (const ref of refs) {
+      const el = ref.deref();
+      if (!el) continue;
       const room = `${Math.round(bottom - (el.getBoundingClientRect().top - box.top + main.scrollTop))}px`;
       if (el.style.getPropertyValue('--room') !== room) el.style.setProperty('--room', room);
     }

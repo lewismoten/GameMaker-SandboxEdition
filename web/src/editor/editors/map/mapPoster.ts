@@ -47,13 +47,13 @@ export function findPlayersView(
   const key = stamp(project, scene.names);
   let cancel = () => undefined as void;
   const level = async (f: MapUnroll): Promise<{ level: Level; complete: boolean } | undefined> => {
-    const [{ levelsOf }, { listedSecrets }] = await Promise.all([
+    const [{ levelsOf }, { loadSecrets }] = await Promise.all([
       import('../../../manual/printables/levelMapLayout'),
       import('../../../manual/printables/levelSecrets'),
     ]);
     // a released game's tin heart and eggs stay hidden, as on its printed Level Maps
     const looked = lookedAt(project.id);
-    const secret = (looked && listedSecrets(looked)) || {};
+    const secret = (looked && (await loadSecrets(looked))) || {};
     const k = `${map}|${scene.bbl}`;
     const views = f.seen ? { [k]: f.seen } : {};
     const unrolled = f.unrolled ? { [k]: f.unrolled } : {};

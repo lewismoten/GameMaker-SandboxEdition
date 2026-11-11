@@ -745,3 +745,36 @@ dialog.modal .sv-inf {
     margin-left: 0;
   }
 }
+
+/* Include padding in the viewport height; restore the side navigation on a wide, short phone. */
+@media (max-height: 480px) and (orientation: landscape) {
+  dialog.modal.sv-dialog {
+    box-sizing: border-box;
+    max-height: calc(100dvh - 16px);
+    padding: 8px 12px;
+  }
+  dialog.modal.sv-dialog > .sv {
+    display: grid;
+    grid-template-columns: 170px minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr);
+    gap: 12px;
+  }
+  dialog.modal .sv-nav[data-list-area] {
+    flex-direction: column;
+    align-items: stretch;
+    overflow: auto;
+    border-bottom: 0;
+    border-right: 1px solid var(--border);
+  }
+  .sv-nav-empty {
+    white-space: normal;
+  }
+  .sv-main:has(> .sv-table-wrap) {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .sv-main:has(> .sv-table-wrap) > :not(.sv-table-wrap) {
+    flex-shrink: 0;
+  }
+}

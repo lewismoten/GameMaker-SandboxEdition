@@ -62,6 +62,44 @@ in a 1992 Usenet collection on Discmaster
 ([Stone](https://discmaster.textfiles.com/view/28245/NN_1992_27.iso/spool/rec/games/programm/4743),
 [Baum](https://discmaster.textfiles.com/view/28245/NN_1992_27.iso/spool/rec/games/programm/4778)).
 
+## Other published accounts
+
+These entries are dated by publication. Later recollections are attributed to their
+speakers rather than treated as contemporary release records. Each source has a checked
+Wayback snapshot; the snapshot dates below are in UTC.
+
+- **May 14, 2013 — The Exchange and the box pictures.** In EJR Tairne's interview
+  outtakes, Andy Stone says he kept user letters from the Game-Maker Exchange but no
+  submitted disks. He also explains that some scenes pictured on the packaging were
+  experiments, including an isometric maze that never became a Nebula level. This helps
+  distinguish evidence of user submissions and development experiments from surviving,
+  released games.
+  [Original: “Bonus Time with Andy Stone”](https://www.gamedeveloper.com/design/bonus-time-with-andy-stone);
+  [Wayback: June 5, 2025](https://web.archive.org/web/20250605234636/https://www.gamedeveloper.com/design/bonus-time-with-andy-stone).
+- **May 16, 2013 — Revised games and shareware catalogs.** In another Tairne interview,
+  Gary Acord describes revising older games around 2010 with his modified RSD Game-Maker
+  3.0, slowing enemies and expanding character movement. He names Big Byte, JCSM Public
+  Software Library and Mom And Pop's Software as distributors. His account documents a
+  route to players through shareware catalogs and explains why later copies should not
+  automatically be treated as the original builds.
+  [Original: “Inside the Mind of Gary Acord”](https://www.gamedeveloper.com/design/inside-the-mind-of-gary-acord);
+  [Wayback: June 5, 2025](https://web.archive.org/web/20250605234652/https://www.gamedeveloper.com/design/inside-the-mind-of-gary-acord).
+- **October 11, 2017 — A magazine reader becomes a game maker.** Stacy Davidson recalls
+  ordering the DOS Game-Maker after discovering it in a magazine, then using it to put
+  graphics and sound into a game world. This is an independent user's account of how
+  magazine exposure led to making games. It does not identify the issue, purchase date or
+  Game-Maker version.
+  [Original: “Learn or die”](https://www.gamedeveloper.com/business/learn-or-die);
+  [Wayback: August 7, 2024](https://web.archive.org/web/20240807004629/https://www.gamedeveloper.com/business/learn-or-die).
+- **April 16, 2019 — PPP Team's games and shared artwork.** In his French memoir,
+  Cyborg Jeff recalls discovering RSD Game-Maker in late 1994. He describes early projects,
+  including Pengo's Adventure, Panzer 1945 and Badman, using the supplied artwork before
+  PPP Team made more of its own scenery and monsters. This adds a participant's account
+  of how the bundled materials helped a game-making group get started; the 1994 date is
+  his recollection.
+  [Original: “Notre rêve : faire des jeux vidéo”](https://www.lesmondesdecyborgjeff.be/2019/04/16/notre-reve-faire-des-jeux-video/);
+  [Wayback: May 12, 2025](https://web.archive.org/web/20250512212945/https://www.lesmondesdecyborgjeff.be/2019/04/16/notre-reve-faire-des-jeux-video/).
+
 ## Later
 
 That sound editor kept coming back in my own projects:

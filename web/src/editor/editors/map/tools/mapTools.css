@@ -327,3 +327,12 @@
     min-height: 44px;
   }
 }
+
+/* a finger: the Blocks panel's "Show" filter and Generate button are 44px tall */
+@media (pointer: coarse) {
+  .mt-role-filter select,
+  .mt-generate-btn {
+    box-sizing: border-box;
+    min-height: 44px;
+  }
+}

@@ -170,12 +170,20 @@ function startModern(hash?: string): void {
 }
 
 // The header's ⋯ menu closes when something else is clicked or a choice is made.
-document.addEventListener('click', (e) => {
-  const open = document.querySelector<HTMLDetailsElement>('.topbar-more[open]');
-  const t = e.target as Element;
-  // Theme stays open, to show the theme it changed to
-  if (open && (!open.contains(t) || (t.closest('.topbar-menu') && !t.closest('.theme-item')))) open.open = false;
-});
+document.addEventListener(
+  'click',
+  (e) => {
+    const open = document.querySelector<HTMLDetailsElement>('.topbar-more[open]');
+    const t = e.target as Element;
+    // Theme stays open, to show the theme it changed to
+    if (open && (!open.contains(t) || (t.closest('.topbar-menu') && !t.closest('.theme-item')))) {
+      open.open = false;
+      // Before the item runs (capture), so a dialog it opens remembers the visible ⋯ button.
+      if (open.contains(t)) open.querySelector('summary')?.focus();
+    }
+  },
+  true,
+);
 
 /** The skip link moves focus to the page's main area without changing the route. */
 function skipToContent(e: Event): void {

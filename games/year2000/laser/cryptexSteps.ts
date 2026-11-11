@@ -4,63 +4,119 @@ import { CORE, COMBO, STEP, coreShape, washerHole, decagon, WASHER } from './cry
 import { rotate } from '@lewismoten/gamemaker-sandbox-tools/kit/laserJoints';
 import type { Pt } from '@lewismoten/gamemaker-sandbox-tools/kit/laserSvg';
 import { makeParts } from './cryptexParts';
+import { CODE_STEPS, FIT_ORDER, GROUPS } from './cryptexGroups';
 
-const cards = [
-  {
-    title: '1. Base',
-    parts: ['BASE', 'PK'],
-    lines: ['Glue the four PK plates on BASE, one on', 'another, their ridge slots lined up and', 'on the side of the marker (right).'],
-  },
-  {
-    title: '2. Core',
-    parts: ['CORE0', 'CORER', 'COREC'],
-    lines: ['Glue 12 slices: the closed one at the bottom,', 'then the two ridge slices (ridges lined up),', 'then nine round ones. No glue in the hole.'],
-  },
-  {
-    title: '3. Washers',
-    parts: ['WASH'],
-    lines: ['Glue the eight washers in pairs: four,', 'each 6 mm thick. Keep glue out of the bore', 'and the notch. They stay loose in the rings.'],
-  },
-  {
-    title: '4. Rings',
-    parts: ['R1T', 'R1B', 'R4T'],
-    lines: ['Glue each ring: the T slice (digits) over', 'its plain B slice, the holes lined up.', 'Ring 1 is the smallest. No glue on the washers.'],
-  },
-  {
-    title: '5. Stack',
-    parts: ['PK', 'R4T', 'R1T'],
-    lines: ['Stand the core in the base, ridge to the', 'marker. Slide on ring 4, then 3, 2, 1. For each,', 'seat its washer (next card), then the next ring.'],
-  },
-  {
-    title: '6. Head and lid',
-    parts: ['HEAD', 'LID', 'LIDP'],
-    lines: ['Glue the head on the core, on top of the', 'rings. Glue two plugs under the lid. Roll a note', 'and slip it in the core; press the lid in.'],
-  },
-];
+/** Words wrapped to `n` characters a line, as SVG text lines starting at y; returns the markup and the next y. */
+function wrap(text: string, x: number, y: number, n = 60, size = 11): [string, number] {
+  const lines: string[] = [];
+  let cur = '';
+  for (const w of text.split(' ')) {
+    if ((cur + ' ' + w).trim().length > n) {
+      lines.push(cur);
+      cur = w;
+    } else cur = (cur + ' ' + w).trim();
+  }
+  if (cur) lines.push(cur);
+  return [lines.map((l, i) => `<text x="${x}" y="${y + i * (size + 3)}" font-size="${size}">${l}</text>`).join(''), y + lines.length * (size + 3)];
+}
 
-function cardsSvg(kerf: number): string {
+/** A row of part outlines (from the real cut shapes) with each part's key under it. */
+function shapes(keys: string[], x: number, y: number, width: number, kerf: number): string {
   const parts = makeParts(kerf);
-  return cards
-    .map((c, i) => {
-      const x = 20 + (i % 2) * 375;
-      const y = 62 + Math.floor(i / 2) * 190;
-      const width = 330 / c.parts.length;
-      const shapes = c.parts
-        .map((name, j) => {
-          const p = parts[name].part;
-          const svg = p.sheet
-            .svg(name)
-            .replace(/<\?xml[^>]*>/g, '')
-            .replace(/#FF0000/gi, '#644321')
-            .replace(/stroke-width="0\.1"/g, 'stroke-width="1.2"')
-            .replace(/ id="[^"]*"/g, '')
-            .trim();
-          return `<svg x="${j * width}" y="12" width="${width - 5}" height="82" viewBox="0 0 ${p.sheet.w} ${p.sheet.h}" preserveAspectRatio="xMidYMid meet">${svg.replace(/^<svg[^>]*>|<\/svg>$/g, '')}</svg><text x="${(j + 0.5) * width}" y="110" text-anchor="middle" font-size="11">${name}</text>`;
-        })
-        .join('');
-      return `<g transform="translate(${x} ${y})"><text font-size="15" font-weight="bold">${c.title}</text>${shapes}${c.lines.map((l, j) => `<text y="${133 + j * 15}" font-size="11">${l}</text>`).join('')}</g>`;
+  const w = width / keys.length;
+  return keys
+    .map((name, j) => {
+      const p = parts[name].part;
+      const svg = p.sheet
+        .svg(name)
+        .replace(/<\?xml[^>]*>/g, '')
+        .replace(/#FF0000/gi, '#644321')
+        .replace(/stroke-width="0\.1"/g, 'stroke-width="1.2"')
+        .replace(/ id="[^"]*"/g, '')
+        .trim();
+      return `<svg x="${x + j * w}" y="${y}" width="${w - 5}" height="70" viewBox="0 0 ${p.sheet.w} ${p.sheet.h}" preserveAspectRatio="xMidYMid meet">${svg.replace(/^<svg[^>]*>|<\/svg>$/g, '')}</svg><text x="${x + (j + 0.5) * w}" y="${y + 84}" text-anchor="middle" font-size="11">${name}</text>`;
     })
     .join('');
+}
+
+/** What the legend says about each part family: the ID and the face it is on (or why there is none). */
+export function legend(kerf: number): { id: string; what: string; where: string; qty: number }[] {
+  const parts = makeParts(kerf);
+  const rows = Object.entries(parts).map(([key, m]) => {
+    const marked = m.part.texts.some((t) => t.text === key);
+    return {
+      id: marked ? key : `(${key})`,
+      what: m.note,
+      where: marked ? WHERE(key) : ['E2', 'HEAD', 'LID'].includes(key) ? 'unmarked: bare on top' : 'unmarked: too narrow for letters',
+      qty: m.qty,
+    };
+  });
+  return rows;
+}
+const WHERE = (key: string) =>
+  key === 'A1'
+    ? 'center of the floor, under the core'
+    : /^A\dR$/.test(key)
+      ? 'glued face, in the rim'
+      : /^A\dC$/.test(key)
+        ? 'glued face, in the collar'
+        : /^G/.test(key)
+          ? 'glued face, in the washer'
+          : key.endsWith('1')
+            ? 'glued face, in the rim'
+            : 'under the next ring up';
+
+interface Card {
+  title: string;
+  keys: string[];
+  text: string[];
+}
+const cardList = (): Card[] => {
+  const g = (id: string) => GROUPS.find((x) => x.id === id)!;
+  const ring = (id: string) => `${g(id).build} ${g(id).done}`;
+  return [
+    { title: 'Stack A: the base', keys: ['A1', 'A2R', 'A2C'], text: [g('A').build, g('A').why, g('A').done] },
+    { title: 'Stacks B, C, D, E: the four rings', keys: ['B1', 'B2', 'E1', 'E2'], text: [ring('B'), ring('C'), ring('D'), ring('E'), g('B').why] },
+    { title: 'Stack F: the core', keys: ['CORE0', 'CORER', 'COREC'], text: [g('F').build, g('F').why, g('F').done] },
+    { title: 'G1 to G4: the washer pairs', keys: ['G1', 'G2'], text: [1, 2, 3, 4].map((n) => `${g(`G${n}`).build} ${g(`G${n}`).done}`).concat(g('G1').why) },
+    { title: 'H the head and I the lid', keys: ['HEAD', 'LID', 'LIDP'], text: [g('H').build, g('H').done, g('H').why, g('I').build, g('I').done, g('I').why] },
+  ];
+};
+
+/** Two columns of cards; returns the markup and the y below them. */
+function cardsSvg(kerf: number, y0: number): [string, number] {
+  const cards = cardList().map((c) => {
+    let yy = 0;
+    let body = '';
+    for (const t of c.text) {
+      const [m, ny] = wrap(t, 0, 128 + yy, 62);
+      body += m;
+      yy = ny - 128 + 6;
+    }
+    return { c, body, h: 132 + yy };
+  });
+  let out = '';
+  let y = y0;
+  for (let i = 0; i < cards.length; i += 2) {
+    const row = cards.slice(i, i + 2);
+    row.forEach(({ c, body }, j) => {
+      out += `<g transform="translate(${20 + j * 435} ${y})"><text font-size="15" font-weight="bold">${c.title}</text>${shapes(c.keys, 0, 10, 400, kerf)}${body}</g>`;
+    });
+    y += Math.max(...row.map((r) => r.h)) + 12;
+  }
+  return [out, y];
+}
+
+/** One list of numbered lines (the final assembly, or setting a code), wrapped. */
+function listSvg(title: string, items: string[], x: number, y: number, n: number): [string, number] {
+  let out = `<text x="${x}" y="${y}" font-size="15" font-weight="bold">${title}</text>`;
+  let yy = y + 18;
+  items.forEach((t, i) => {
+    const [m, ny] = wrap(`${i + 1}. ${t}`, x, yy, n);
+    out += m;
+    yy = ny + 3;
+  });
+  return [out, yy];
 }
 
 const path = (pts: readonly Pt[], s: number, ox: number, oy: number) =>
@@ -79,26 +135,52 @@ function gateSvg(deg: number, label: string): string {
 
 export function assemblySvg(kerf = 0.2): string {
   const w = 900;
-  const h = 900;
   const code = COMBO.join('');
+  const g = (id: string) => GROUPS.find((x) => x.id === id)!;
+  let y = 60;
+  // the legend: every ID, the face it is engraved on, how many
+  let leg = `<text x="20" y="${y}" font-size="15" font-weight="bold">Part IDs (the letter is the sub-assembly, the number, R (ring) or C (collar) is the layer from the bottom)</text>`;
+  y += 16;
+  legend(kerf).forEach((r, i) => {
+    leg += `<text x="${20 + (i % 2) * 435}" y="${y + Math.floor(i / 2) * 14}" font-size="10"><tspan font-weight="bold">${r.id}</tspan> x${r.qty}: ${r.where}</text>`;
+  });
+  y += Math.ceil(legend(kerf).length / 2) * 14 + 8;
+  const [note, ny] = wrap(
+    'An ID is engraved only on a face that ends up covered, so it never shows. Unmarked parts are listed in (brackets): the core slices and the plugs are too narrow, the digit slice of ring 1, the head and the lid are bare on top.',
+    20,
+    y,
+    150,
+    10,
+  );
+  leg += note;
+  y = ny + 10;
+  const [cards, y2] = cardsSvg(kerf, y);
+  const [fit, y3] = listSvg(
+    'Final assembly: put the finished sub-assemblies together',
+    FIT_ORDER.map((id) => g(id).fit),
+    20,
+    y2 + 14,
+    62,
+  );
+  const [setCode, y4] = listSvg('Set your own code', CODE_STEPS, 450, y2 + 14, 62);
+  const lockY = Math.max(y3, y4) + 24;
+  const h = lockY + 275;
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" font-family="sans-serif" fill="#222" role="img" aria-label="Cryptex assembly steps and lock">
 <rect width="${w}" height="${h}" fill="#fff"/>
 <text x="20" y="24" font-size="18" font-weight="bold">In The Year 2000! cryptex: assembly and lock</text>
-<text x="20" y="42" font-size="11">Part outlines match the cut sheets. Glue only what the cards say; the rings, washers and core stay loose. Not cutting templates.</text>
-${cardsSvg(kerf)}
-<g transform="translate(20 640)"><text font-size="15" font-weight="bold">The lock: the ridge and a washer's notch (to scale)</text>
+<text x="20" y="42" font-size="11">Part outlines match the cut sheets. Build each sub-assembly apart, then put them together. Rings, washers and core stay loose. Not cutting templates.</text>
+${leg}${cards}${fit}${setCode}
+<g transform="translate(20 ${lockY})"><text font-size="15" font-weight="bold">The lock: the ridge and a washer's notch (to scale)</text>
 <text y="16" font-size="11">Red: the core's ridge, at the marker. The washer is a ring's inner part.</text>
 <g transform="translate(0 24)">${gateSvg(0, 'Notch at the marker: the ridge passes')}</g>
 <g transform="translate(200 24)">${gateSvg(STEP, 'One digit off: the washer stops it')}</g></g>
-<g transform="translate(430 640)"><text font-size="15" font-weight="bold">Setting and changing the combination</text>
+<g transform="translate(430 ${lockY})"><text font-size="15" font-weight="bold">Setting and changing the combination</text>
 <text y="18" font-size="11">Seat each washer so its notch lies under the ring's digit you want.</text>
 <text y="33" font-size="11">Ring 1 (the smallest, on top) is the first digit and ring 4 the last,</text>
 <text y="48" font-size="11">read outward along the marker. It is set to ${code}: ring 1 at 2, the rest at 0.</text>
-<text y="68" font-size="11">To change it: pull the core (dial ${code}), lift ring 1 off, lift the washer out of ring 2,</text>
-<text y="83" font-size="11">turn it to the new digit, drop it back; work down to ring 4. Put the rings back</text>
-<text y="98" font-size="11">in order. Each washer can sit ten ways, one per digit: 10,000 combinations.</text>
-<text y="122" font-size="11">The ridge is ${CORE.ridgeHw * 2} mm wide, the notch ${WASHER.notchHw * 2} mm: a ring only has to be near its digit</text>
-<text y="137" font-size="11">(about 5 degrees), not exact. There are no detents, so look at the marker.</text></g>
-<text x="20" y="${h - 14}" font-size="10">Stack height 36 mm: four pocket plates (12), four rings of two slices (24). The core is 12 slices; the head sits on top.</text>
+<text y="68" font-size="11">Each washer can sit ten ways, one per digit: 10,000 combinations.</text>
+<text y="92" font-size="11">The ridge is ${CORE.ridgeHw * 2} mm wide, the notch ${WASHER.notchHw * 2} mm: a ring only has to be near its digit</text>
+<text y="107" font-size="11">(about 5 degrees), not exact. There are no detents, so look at the marker.</text></g>
+<text x="20" y="${h - 14}" font-size="10">Stack height 36 mm: four base layers (12), four rings of two slices (24). The core is 12 slices; the head sits on top.</text>
 </svg>`;
 }

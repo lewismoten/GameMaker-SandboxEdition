@@ -229,7 +229,12 @@ export function listZip(bytes: Uint8Array, limits: ZipLimits = DEFAULT_ZIP_LIMIT
       const lExtraLen = v.getUint16(localOffset + 28, true);
       const start = localOffset + 30 + lNameLen + lExtraLen;
       const body = bytes.subarray(start, start + size);
-      if (method === 0) return body.slice();
+      if (method === 0) {
+        // A stored entry is copied as is, so a directory that declares a size other than the
+        // bytes it holds would slip past the size budget above.
+        if (size !== unpacked) throw new Error(`The ZIP entry ${name} is damaged (its stored size does not match its declared size)`);
+        return body.slice();
+      }
       if (method === 8) {
         // The stream's own errors are TypeErrors with little or no message; say what is wrong.
         try {

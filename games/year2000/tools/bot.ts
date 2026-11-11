@@ -71,9 +71,17 @@ export class Bot {
     // Always-hurting ground (tar pits): go around.
     if (!goal && b.chHitPt < 0 && (this.w.bg[b.nextBl]?.chHitPt ?? 0) < 0) return false;
     if (!b.solid) return true;
-    if (b.effect && b.eamt < 0 && !this.w.bg[b.touchBl]?.solid) {
-      const m = this.w.ci.meter[b.effect];
-      return m !== INF_REPEAT && m + b.eamt > 0;
+    // A DOS door may have several solid counter-check stages before its open block.
+    const meters = [...this.w.ci.meter];
+    const seen = new Set<number>();
+    let stage = b;
+    while (stage.solid && stage.effect && !seen.has(stage.touchBl)) {
+      seen.add(stage.touchBl);
+      const m = meters[stage.effect];
+      if (m === INF_REPEAT || m + stage.eamt <= 0) return false;
+      meters[stage.effect] += stage.eamt;
+      stage = this.w.bg[stage.touchBl];
+      if (!stage?.solid) return !!stage;
     }
     return false;
   }

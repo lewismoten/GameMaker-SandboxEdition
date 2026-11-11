@@ -29,7 +29,7 @@ export interface ChezMotor {
 
 /** The motor's fundamental at full speed (Hz): about 245 at cruise, 262 at the top of the climb. */
 export const CRUISE_HZ = 245;
-export const DEFAULT_LEVEL = 0.05;
+const DEFAULT_LEVEL = 0.05;
 /** A pass-by's Doppler shift, each way: about 25 mph is ±3%. */
 export const DOPPLER = 0.032;
 

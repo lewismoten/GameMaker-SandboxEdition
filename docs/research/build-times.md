@@ -18,7 +18,7 @@ The release workflows run on GitHub with a 5-minute budget per run. Which steps 
 | --- | --- | --- | --- |
 | Pages (on a tag) | checkout and setup | 12 s | |
 | | `npm ci` | 9 s | |
-| | build games (28 games, 4 workers) | 131 s (an earlier run: 79 s) | |
+| | build games (every game, 4 workers) | 131 s (an earlier run: 79 s) | |
 | | build site | 32 s (24 s) | |
 | | upload and deploy | 15 s | |
 | | **total** | **204 s** | 96 s |
@@ -26,13 +26,13 @@ The release workflows run on GitHub with a 5-minute budget per run. Which steps 
 | Package publishing | job | 147 s (one run) | 153 s |
 | Mac, Windows, Linux downloads | never run on GitHub | unmeasured | |
 
-The games build reported 128.7 s wall and 388.8 s of summed build time across 4 workers. The floor is the larger of 388.8 / 4 = 97 s and the slowest single game (114 s), so scheduling is within about 15 s of ideal. Packaging all 28 games locally took 13.0 s (Mac, dmg and zip), 11.2 s (Windows) and 7.5 s (Linux).
+The games build reported 128.7 s wall and 388.8 s of summed build time across 4 workers. The floor is the larger of 388.8 / 4 = 97 s and the slowest single game (114 s), so scheduling is within about 15 s of ideal. Packaging every game locally took 13.0 s (Mac, dmg and zip), 11.2 s (Windows) and 7.5 s (Linux).
 
 The download jobs had never run, so their cost is an estimate of about 3:00 to 3:50. They are the ones to watch. It is an estimate, not a measurement.
 
 ## Findings
 
-- **Compression is not the problem.** A plain deflate of every file on all 28 disks (85 MB) takes about 1.3 s in total. The only already-compressed type on a disk is `.gif`; 76 of 666 files do not shrink and are stored. The zip writer already stores any file that does not shrink. No zip bytes changed.
+- **Compression is not the problem.** A plain deflate of every file on every game disk (85 MB) takes about 1.3 s in total. The only already-compressed type on a disk is `.gif`; 76 of 666 files do not shrink and are stored. The zip writer already stores any file that does not shrink. No zip bytes changed.
 - **The games build is the biggest share**, in Pages and again inside every download job.
 - **The download jobs built things they never use.** `npm ci` runs the games build, which also makes site-only extras (plastic trinkets, pixel trinkets, laser nickels). The Mac, Windows and Linux builds need only the game disks.
 

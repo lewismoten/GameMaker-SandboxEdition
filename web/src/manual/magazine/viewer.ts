@@ -117,7 +117,7 @@ export function mountMagazine(host: HTMLElement, o: MagazineOptions): () => void
     ),
     h('nav', { 'aria-label': 'Contents' }, tocList),
   );
-  const printMenu = h('div', { class: 'mag-print-menu', hidden: true, role: 'menu' });
+  const printMenu = h('div', { class: 'mag-print-menu', hidden: true, role: 'menu', 'aria-label': 'Print' });
   const printBtn = h(
     'button',
     { type: 'button', 'aria-haspopup': 'menu', 'aria-expanded': 'false', 'aria-label': 'Print…', onclick: () => togglePrint() },

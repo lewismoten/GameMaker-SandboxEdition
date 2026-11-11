@@ -36,6 +36,8 @@ export const CTR = {
   moonpass: 24,
   /** The felt egg, counted when it is picked up: the launch pad closet's hatch wants it. */
   tomorrow: 25,
+  /** Picked up the Zapper, independently of its remaining charge. */
+  zapperFound: 26,
 } as const;
 
 /** The felt egg's block number, the same in every background set (the inventory keeps numbers). */
@@ -57,6 +59,9 @@ export const SND = {
   die: 11,
   none: 30,
 } as const;
+
+/** Pages scattered around Dome Sweet Dome, all needed before boarding the CitiCar. */
+export const DOME_PAGES = 7;
 
 /** How many pages the science fair judges need to see. */
 export const PAGES_NEEDED = 20;

@@ -10,6 +10,8 @@ import { LASTMM, LASTMON, type CharInfo, type World } from '@lewismoten/gamemake
 import type { Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { explore, type Entry } from '../explore';
 import { SceneSim, type FileSource } from '../sim';
+import { BASIC_KEYS } from '../keyLimit';
+import type { Move } from '../inputs';
 import { pathTo, replayPath, type Replay } from './replayPath';
 
 /** How far from the hero (blocks across, down) a thing is still "in sight": about a screen. */
@@ -17,14 +19,18 @@ const SIGHT = { x: 20, y: 12 };
 const MOST_LEGS = 14;
 const MOST_MISSES = 3;
 
-const have = (ci: CharInfo) => ci.inv.filter((b) => b < BACKBL).length * 1000 + Math.max(0, ci.score) + Math.max(0, ci.hitpts);
+const have = (ci: CharInfo) =>
+  ci.inv.filter((b) => b < BACKBL).length * 1000 +
+  ci.meter.slice(3).reduce((sum, n) => sum + Math.max(0, n), 0) +
+  Math.max(0, ci.score) +
+  Math.max(0, ci.hitpts);
 
 /** Cells holding what a player would walk to: pickups that score or heal, and foes worth points. */
 function wanted(w: World): number[] {
   const out: number[] = [];
   for (let c = 0; c < w.map.length; c++) {
     const b = w.bg[w.blkmap[w.map[c]]];
-    if (b && !b.solid && (b.scorePts > 0 || b.chHitPt > 0)) out.push(c);
+    if (b && !b.solid && (b.scorePts > 0 || b.chHitPt > 0 || (b.effect >= 3 && b.eamt > 0))) out.push(c);
   }
   for (let l = 0; l < LASTMM; l++) {
     const mm = w.mm[l];
@@ -55,9 +61,11 @@ export async function humanRoute(
   let events: Replay['events'] = [];
   const t0 = performance.now();
   const left = () => budgetMs - (performance.now() - t0);
-  const moveFilter = (m: { name: string; waits?: boolean }) => !m.waits;
+  // Prefer arrows, Space and Enter for the person's route; fallback styles
+  // still try the character's extra keys when this route cannot get through.
+  const moveFilter = (m: Move) => !m.waits && m.steps.every((step) => step.keys.every((key) => BASIC_KEYS.has(key)));
   let at = { x: entry.start.x, y: entry.start.y };
-  let base = have(entry.ci);
+  let base = have(start.ci);
   let misses = 0;
   for (let leg = 0; leg < MOST_LEGS && misses < MOST_MISSES && targets.length && left() > 0; leg++) {
     const near = targets
@@ -68,7 +76,9 @@ export async function humanRoute(
     targets = targets.filter((c) => c !== near.c);
     const ex = await explore(game, scene, files, entry, {
       goal: [near.c],
+      steerAirborne: true,
       steadyTicks: 3 + (leg % 2),
+      steadySteering: true,
       moveFilter,
       budgetMs: Math.min(left(), budgetMs / 6),
       start: from?.snap,
@@ -96,7 +106,9 @@ export async function humanRoute(
   // then the way on, with the same steady hands
   const ex = await explore(game, scene, files, entry, {
     goal,
+    steerAirborne: true,
     steadyTicks: 3,
+    steadySteering: true,
     moveFilter,
     budgetMs: Math.max(1000, left()),
     start: from?.snap,

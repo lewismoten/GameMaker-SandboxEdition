@@ -4,6 +4,8 @@
 import type { Feelie } from './feelies';
 import { stillThumb } from './feelies';
 import { viewMaker } from './feelieModels';
+// shared with feelies.ts and feelieItems.ts, so a dynamic import here would move nothing
+import { loadPhone } from './phone/phoneData';
 
 const SIZE = 160;
 const done = new Map<string, Promise<string | undefined>>();
@@ -22,13 +24,20 @@ function snap(canvas: HTMLCanvasElement, view: { fixed?: number; draw(): unknown
 async function draw(f: Feelie): Promise<string | undefined> {
   const canvas = document.createElement('canvas');
   if (f.kind === 'phone') {
-    const [{ loadPhone }, { createPhoneView }] = await Promise.all([import('./phone/phoneData'), import('./phone/phoneGl')]);
+    const { createPhoneView } = await import('./phone/phoneGl');
     const [mine, other] = await Promise.all([loadPhone('cheap'), loadPhone('deluxe').catch(() => undefined)]);
     const view = createPhoneView(canvas, mine.parts, other?.parts ?? []);
     if (!view) return undefined;
     view.snap = true;
     view.yaw = 0.45; // the front, with its dial and display
     view.pitch = -0.2;
+    return snap(canvas, view);
+  }
+  if (f.kind === 'kit' && f.kit.assembly) {
+    // a plywood kit shows itself assembled (a sheet picture is only a dark page of flat parts)
+    const [{ assemblyModel }, { assemblyView }] = await Promise.all([import('./kitAssemblyModel'), import('./kitAssemblyDraw')]);
+    const view = assemblyView(canvas, assemblyModel(f.kit.assembly));
+    view.yaw = 0.6;
     return snap(canvas, view);
   }
   const view = (await viewMaker(f))(canvas);

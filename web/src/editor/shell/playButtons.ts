@@ -87,7 +87,7 @@ export function playButtons(ctx: PlayButtonsContext): HTMLElement {
               'aria-checked': String(on),
               tabIndex: -1,
               onclick: () => {
-                close(false);
+                close();
                 ctx.playLevel(c);
               },
             },

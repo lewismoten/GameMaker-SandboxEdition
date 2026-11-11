@@ -1,16 +1,15 @@
-// The reach model against the real engine when the map above a generated side view is solid. The generator draws a
-// platform layout into a rectangle of the map (centered, capped in height), and the Generate dialog places it over
-// the map that is already there. On a high ledge near the rectangle's top row, the hero's jump carries his head above
-// the rectangle: the reach model (platformReach.ts) treats every cell above the area as open air, but PLAYGAME's
-// chkUps stops him at whatever the map holds there, so he falls early and lands short of where the model said.
-// With open air above the rectangle the same layouts are won (the control case). On develop at c355211b3 the solid
-// case lands 36, 36 and 20 px short (seed 15: 1384 px instead of 1420 px), the same drift the slice-7 dialog showed. No DOM.
+// The reach model against the real engine below solid ceilings. Originally seeds 15, 156 and 200
+// jumped above the generated rectangle into unknown map cells, landing 36, 36 and 20 px short.
+// Keep those boundary regressions and check exact landings at ceiling edges inside the known area.
 import { describe, expect, it } from 'vitest';
-import { CHARBL, newBlockSet, serializeBlocks, SOLTOP } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { BLEN, CHARBL, newBlockSet, serializeBlocks, SOLTOP } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { serializeCharacter } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
-import { MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { ADVTYPE, emptyScene, newGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { MLEN, MWID, newMap, serializeMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import type { RoleMap } from '@lewismoten/gamemaker-sandbox-tools/kit/blockRoles';
-import { generatePlatform } from '@lewismoten/gamemaker-sandbox-tools/kit/levelGen';
+import { generatePlatform, heroPhysics, reachFrom, type Step } from '@lewismoten/gamemaker-sandbox-tools/kit/levelGen';
+import { newArea, SKY, WALL } from '@lewismoten/gamemaker-sandbox-tools/kit/levelGen/grid';
+import { SceneSim } from '../src/editor/check/sim';
 import { botPlays } from '../src/editor/editors/map/generate/platformBot';
 import { place, WHOLE } from '../src/editor/editors/map/generate/place';
 import { starterHero } from './platformTestHero';
@@ -44,7 +43,7 @@ const ROLES: RoleMap = {
   9: { roles: ['decoration'] },
 };
 
-/** Seeds whose layout (the whole map asked for, difficulty 100) has a jump from a ledge on feet row 3 of the area. */
+/** Seeds that originally sent a jump above the generated rectangle. */
 const SEEDS = [15, 156, 200];
 
 /** The test hero two blocks high, as the Starter heroes are: every frame draws a top half, so PLAYGAME checks his head's cells. */
@@ -94,4 +93,57 @@ describe('the reach model at the top of a generated side view', () => {
     }
     expect(runs).toEqual(SEEDS.map((seed) => [seed, true, undefined]));
   }, 300000);
+});
+
+// Compare a planned jump with the engine, including the horizontal snap at a ceiling edge.
+it.each([1, -1])('matches exact landings below a ceiling edge when steering %i', async (dir) => {
+  const hero = tallHero();
+  const hp = heroPhysics(hero);
+  if (!hp.ok) throw new Error(hp.message);
+  const failures: unknown[] = [];
+  let jumps = 0;
+  const source = dir === 1 ? 4 : 15;
+  const a = newArea(20, 16, SKY);
+  for (let y = 9; y < a.h; y++) for (let x = 0; x < a.w; x++) if (x === source || ((dir === 1 ? x >= 8 : x <= 11) && y >= 14)) a.cells[y * a.w + x] = WALL;
+  for (let x = 0; x < a.w; x++) if (dir === 1 ? x <= source : x >= source) a.cells[4 * a.w + x] = WALL;
+  const reach = reachFrom(a, hp.physics, 8 * a.w + source, true, { route: true });
+  const steps = new Map<string, Step>();
+  for (let c = 0; c < a.cells.length; c++) for (const st of reach.routeTo(c) ?? []) if (st.kind === 'jump') steps.set(JSON.stringify(st), st);
+  // The edge snap adds four pixels to this jump: without it the model predicts 152 / 228 px.
+  expect([...steps.values()]).toContainEqual(
+    expect.objectContaining({
+      from: { X: source * BLEN, row: 8 },
+      steerTicks: 18,
+      to: { X: source * BLEN + dir * 76, row: 13 },
+    }),
+  );
+  for (const st of steps.values()) {
+    jumps++;
+    const map = newMap();
+    for (let y = 0; y < a.h; y++) for (let x = 0; x < a.w; x++) map.blocks[y * MLEN + x] = a.cells[y * a.w + x] === WALL ? 5 : 0;
+    const game = newGame('Ceiling');
+    const scene = emptyScene(ADVTYPE);
+    scene.files = ['', 'x.map', 'x.bbl', '', '', 'x.chr', 'x.cbl', ...new Array(13).fill('')];
+    game.scenes.push(scene);
+    const files = new Map([
+      ['x.map', serializeMap(map)],
+      ['x.bbl', serializeBlocks(starterBlocks())],
+      ['x.chr', serializeCharacter(hero)],
+      ['x.cbl', serializeBlocks(newBlockSet('cbl'))],
+    ]);
+    const sim = new SceneSim(game, 2, { get: (n) => files.get(n.toLowerCase()) }, { x: Math.floor(st.from.X / BLEN), y: st.from.row });
+    sim.w.chr.x[1] = st.from.X % BLEN;
+    for (let t = 0; t < 6; t++) await sim.tick();
+    const key = st.dir === 1 ? hp.physics.keys.right : hp.physics.keys.left!;
+    sim.hold(st.dir ? [key, hp.physics.keys.jump] : [hp.physics.keys.jump]);
+    for (let t = 0; t < 90; t++) {
+      await sim.tick();
+      sim.hold(st.dir && t + 1 <= st.steerTicks ? [key] : []);
+      if (t > 3 && sim.w.chr.y[0] === st.to.row && sim.w.chr.y[1] === 0 && sim.w.ci.gravy === 0) break;
+    }
+    const landed = { X: sim.w.chr.x[0] * BLEN + sim.w.chr.x[1], Y: sim.w.chr.y[0] * BLEN + sim.w.chr.y[1] };
+    if (landed.X !== st.to.X || landed.Y !== st.to.row * BLEN) failures.push({ dir, st, landed });
+  }
+  expect(jumps).toBeGreaterThan(0);
+  expect(failures).toEqual([]);
 });

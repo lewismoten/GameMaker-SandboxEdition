@@ -117,6 +117,9 @@ SDK implementation lives in the packages below; the app imports their declared e
 - [`../packages/tools/`](../packages/tools/README.md): the development-only npm toolkit for native formats, drawing, audio generation and headless checks.
 - [`audio/`](audio/README.md): OPL2 music, the CMF player, Web Audio output, PC speaker sounds, and
   making songs and sound effects.
+  Subareas:
+  - [`audio/chez/`](audio/chez/README.md): THE CHEZ's synthesized motor and pass-by sounds.
+  - [`audio/phone/`](audio/phone/README.md): phone scripts, voice casting, recorded clips and playback.
 - [`gfx/`](gfx/README.md): pictures drawn from a game's own maps: `levelPicture.ts`,
   `titlePicture.ts`, `titlePoster.ts` (the click-to-play title for projects and bundles), `gameShots.ts` and `sandboxShots.ts` (the Game-Maker box's and guide's), and
   screenshots that are a moment of play (`shotFrame.ts`, shown by `frameShot.ts`).
@@ -128,6 +131,8 @@ SDK implementation lives in the packages below; the app imports their declared e
   direction and which keys that leaves off the touch strip in `moveKeys.ts`), on-screen keys (`screenKeys.ts`) and a
   pointer that hides itself (`cursorHide.ts`). Used by `play.ts`, the editor's play test, the desk
   and exports.
+  Subarea:
+  - [`player/dosConfig/`](player/dosConfig/README.md): PLAYGAME's DOS Configure screen, hardware choices and setup loop.
 - [`media/`](media/README.md): demos (`.REC`), the attract mode, and saving the screen as MP4, GIF
   or WAV.
 - [`walkthrough/`](walkthrough/README.md): a Sandbox game's walkthrough: played on the real engine,
@@ -137,6 +142,8 @@ SDK implementation lives in the packages below; the app imports their declared e
 
 - [`project/`](project/README.md): a game's files, streaming and storing them, importing, the health
   check, saves and the companion file.
+  Subareas:
+  - [`project/saveData/`](project/saveData/README.md): save slots, high scores, level changes and save backups.
 - [`imported/`](imported/README.md): what this browser remembers about imported games: ratings,
   notes and fingerprints.
 - [`export/`](export/README.md): publishing a game: web app, single page, web player, DOS folder,
@@ -206,6 +213,8 @@ SDK implementation lives in the packages below; the app imports their declared e
   backups.
 - [`backup/`](backup/README.md): Settings › Back up / restore: everything this browser keeps in one
   `.gmbackup` file, and bringing it back part by part.
+  Subareas:
+  - [`backup/sections/`](backup/sections/README.md): validation and merge rules for each kind of backed-up data.
 - [`macHelp/`](macHelp/README.md), [`winHelp/`](winHelp/README.md), [`linuxHelp/`](linuxHelp/README.md): the `#/mac`,
   `#/windows` and `#/linux` pages for players: opening a downloaded game the first time, what it
   does, removing it.
@@ -239,6 +248,12 @@ SDK implementation lives in the packages below; the app imports their declared e
 - [`desk/`](desk/README.md): the 1994 desk: the room, the PC's case, keyboard and monitor, the
   boxes, disks and props.
   Sub-areas: [`pc/`](desk/pc/README.md), [`room/`](desk/room/README.md), [`props/`](desk/props/README.md), [`diploma/`](desk/diploma/README.md), [`disks/`](desk/disks/README.md), [`mug/`](desk/mug/README.md), [`boxes/`](desk/boxes/README.md).
+  Subareas:
+  - [`desk/buddy/`](desk/buddy/README.md): Scoot's desk toy, event responses, courier card and preferences.
+  - [`desk/boxes/covers/`](desk/boxes/covers/README.md): on-demand painted box-cover artwork.
+  - [`desk/boxes/phone/`](desk/boxes/phone/README.md): phone kit mesh data and interactive 3D views.
+  - [`desk/props/outside/`](desk/props/outside/README.md): scheduled scenes outside the window.
+  - [`desk/room/phone/`](desk/room/phone/README.md): wall-phone calls, keypad, captions and hint menu.
 - [`dosPage/`](dosPage/README.md): DOS Game-Maker (`dos.html`, `dosPage.ts`): the PC's page with its one-row
   bar and ⋯ menu (`moreMenu.ts`, with the modem speed, `lineSpeed.ts`), disk menu (`diskMenu.ts`),
   and one-row footer (`footer.ts`) with the on-screen keys (`keypad.ts`) and the status line.
@@ -246,6 +261,14 @@ SDK implementation lives in the packages below; the app imports their declared e
   registration, the utilities and the BBSes.
   Sub-areas: [`computer/`](retro/computer/README.md), [`dos/`](retro/dos/README.md), [`gmReg/`](retro/gmReg/README.md), [`hexedit/`](retro/hexedit/README.md), [`view/`](retro/view/README.md), [`text/`](retro/text/README.md), [`hacks/`](retro/hacks/README.md), [`bbs/`](retro/bbs/README.md).
 - [`vga/`](vga/README.md): Game-Maker's eight designers, ported from their C source.
+  Subareas:
+  - [`vga/blocedit/`](vga/blocedit/README.md): Block Designer layers.
+  - [`vga/charedit/`](vga/charedit/README.md): Character Maker layers.
+  - [`vga/grator/`](vga/grator/README.md): Integrator layers.
+  - [`vga/image/`](vga/image/README.md): Graphics Image Reader layout, GIF drawing and block capture screen.
+  - [`vga/mapmaker/`](vga/mapmaker/README.md): Map Maker layers.
+  - [`vga/monedit/`](vga/monedit/README.md): Monster Maker layers.
+  - [`vga/shared/`](vga/shared/README.md): indexed screen, input and common designer controls.
 - [`chicken/`](chicken/README.md): the rubber chicken's state (Sir Reginald or Lady Regina, following Tune-Up's story), its words and tiara, and the desk's restore utility.
 - [`eggs/`](eggs/README.md): the felt eggs hidden in the Sandbox games, their shadow box and
   EGG.EXE.
@@ -265,6 +288,7 @@ SDK implementation lives in the packages below; the app imports their declared e
   - [`manual/magazine/`](manual/magazine/README.md): TURBO BUTTON issue assembly and reading/rendering.
   - [`manual/magazine/sections/`](manual/magazine/sections/README.md): magazine article/ad section factories.
   - [`manual/magazine/sections/spring93/`](manual/magazine/sections/spring93/README.md): spring 1993 issue-specific sections.
+  - [`manual/printables/`](manual/printables/README.md): manuals, printable box extras and Level Maps metadata.
   - [`manual/ultimate/`](manual/ultimate/README.md): ultimate Owner's Guide chapter content and booklet flow.
   - [`manual/zine/`](manual/zine/README.md): NO CARRIER and Tiny Pockets Press paper items.
 

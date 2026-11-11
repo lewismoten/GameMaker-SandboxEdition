@@ -5,6 +5,14 @@ Changes to `@lewismoten/gamemaker-sandbox-engine`, released as `engine-v*` tags.
 
 ## [Unreleased]
 
+## [3.3.2] - 2026-11-11
+
+The GIF decoder checks the picture size before it gathers any data.
+
+### Fixed
+
+- `decodeGif` checks the picture size right after the image descriptor, before it gathers the compressed data.
+
 ## [3.3.1] - 2026-11-09
 
 Security fixes: file decoders and readers refuse inputs that would allocate gigabytes or read past their data.
@@ -47,7 +55,8 @@ for every Game-Maker file format, OPL2 and CMF audio, screen, input and fonts.
 
 - The engine, scoped as `@lewismoten/gamemaker-sandbox-engine` and published to GitHub Packages from version tags.
 
-[Unreleased]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/engine-v3.3.1...HEAD
+[Unreleased]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/engine-v3.3.2...HEAD
+[3.3.2]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/engine-v3.3.1...engine-v3.3.2
 [3.3.1]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/engine-v3.3.0...engine-v3.3.1
 [3.3.0]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/engine-v3.1.0...engine-v3.3.0
 [3.1.0]: https://github.com/lewismoten/GameMaker-SandboxEdition/releases/tag/engine-v3.1.0

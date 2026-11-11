@@ -1,7 +1,6 @@
 // The felt eggs hidden in the Sandbox games: one per game, each carrying a few names
-// (easter eggs began as authors' hidden credits) and one piece of a small mystery about a
-// family root beer recipe that keeps asking for one more than anybody has. However many there
-// are, the mystery's last egg is always the one more: it is never one of these.
+// (easter eggs began as authors' hidden credits) and one small joke or scene that fits its own
+// game. Each egg's text stands on its own.
 //
 // HOW AN EGG IS DETECTED (the convention every game follows)
 //   The egg is something the player's character CARRIES, so it ends up in the game's save:
@@ -57,7 +56,7 @@ export interface Egg {
   /** The felt egg itself, as the viewer describes it. */
   description: string;
   credits: string[];
-  /** Its piece of the mystery. */
+  /** Its small scene. */
   lore: string;
   look: EggLook;
   /** Set once the egg is in the game; see the top of this file. */
@@ -72,7 +71,7 @@ export const EGGS: readonly Egg[] = [
     description:
       'Charcoal felt crossed with lime-green circuit traces in backstitch, a little felt bug sewn on with six French-knot legs, and a ribbon of tiny white chip pins around the waist.',
     credits: ['The whole Sandbox crew: Claude Opus 5.5, Lewis "Lewie" Moten III, Teddy, Gwinn and Doc Leo'],
-    lore: 'Recovered from a bad sector: RECIPE.TXT, part 1 of 13. All that survives is "...stir counterclockwise, or the Redcoats win," a checksum error, and a faint smell of sassafras.',
+    lore: 'Recovered from a bad sector: README.TXT, mostly garbled. All that survives is "...turn it off and on again, or the virus wins," a checksum error, and a faint smell of warm circuit board.',
     look: { felt: '#2b2f36', band: '#7cd63a', patch: '#e8443a', thread: '#d8f5c0', pattern: 'circuit', motif: 'bug' },
     detect: { block: 149 },
   },
@@ -87,7 +86,7 @@ export const EGGS: readonly Egg[] = [
       'Shelved by Claude Opus 5.5',
       'Chewed (slightly) by Teddy, hidden by Gwinn, guarded by Doc Leo (facing the wrong way)',
     ],
-    lore: 'Tucked under the ribbon, filed under 641.5 (cookbooks): a recipe card, stained brown and still a little fizzy. "ROOT BEER. Serves a baker\'s dozen. For ingredient 13, see other side." The other side is overdue.',
+    lore: 'Tucked under the ribbon: a library card, stained brown and still a little fizzy. "DUE BACK: yesterday. For renewals, see other side." The other side is overdue.',
     look: { felt: '#f6efdc', band: '#d6a53a', patch: '#4f9a3a', thread: '#2a1408', pattern: 'ruled', motif: 'bookworm' },
     detect: { block: 149 },
   },
@@ -98,7 +97,7 @@ export const EGGS: readonly Egg[] = [
     description:
       'Glossy black felt laid with a vanishing checkerboard floor in silver chain stitch, a faceted felt cube in three shades of violet so it reads as solid, and a rainbow of floss where the light comes through.',
     credits: ['Rendered by Claude Opus 5.5, one ray at a time', 'Lit by Doc Leo, who insisted on a spotlight'],
-    lore: 'Left rendering all night at 320x200: a perfect kitchen, a pot on every burner, a carton of thirteen eggs. In the chrome kettle, one reflection too many. Nobody can find its egg.',
+    lore: 'Left rendering all night at 320x200: a perfect still life, a kettle on every shelf, a bowl of eggs. In the chrome kettle, one reflection too many. Nobody can find its egg.',
     look: { felt: '#15121f', band: '#b9c0d8', patch: '#7a4fd0', thread: '#e8e4ff', pattern: 'grid', motif: 'cube' },
     detect: { block: 149 },
   },
@@ -109,7 +108,7 @@ export const EGGS: readonly Egg[] = [
     description:
       'Copper-orange felt with a yellow lightning bolt appliquéd on each side, a zigzag of black running stitch like a resistor, and a tiny brass button for a terminal on top.',
     credits: ['Wired up by Claude Opus 5.5'],
-    lore: 'Taped inside the fuse box: "KITCHEN CIRCUIT. DO NOT TRIP DURING THE BOIL." Under it, in much older ink: "The stove was never the secret ingredient."',
+    lore: 'Taped inside the fuse box: "PANEL B. DO NOT TRIP DURING THE STORM." Under it, in much older ink: "The fuse was never the problem."',
     look: { felt: '#d9762b', band: '#2a1a10', patch: '#ffd23f', thread: '#fff1c4', pattern: 'zigzag', motif: 'bolt' },
     detect: { block: 149 },
   },
@@ -120,7 +119,7 @@ export const EGGS: readonly Egg[] = [
     description:
       'Midnight-blue felt scattered with silver star stitches, a ringed felt planet in plum and gold on its belly, and one long orbit of white chain stitch looping all the way around.',
     credits: ['Charted by Claude Opus 5.5', 'and Lewis "Lewie" Moten III'],
-    lore: 'Between worlds it hums a count: thirteen, thirteen, thirteen. Then one more beat, out of time, like somebody tapping a wooden spoon on the rim of a pot.',
+    lore: 'Between worlds it hums a count: four, four, four. Then one more beat, out of time, like a drummer who lost his place.',
     look: { felt: '#1b2350', band: '#c9d3ff', patch: '#8a4fb0', thread: '#ffffff', pattern: 'stars', motif: 'planet' },
     detect: { block: 129 },
   },
@@ -131,7 +130,7 @@ export const EGGS: readonly Egg[] = [
     description:
       "Forest-green felt quartered in gold diamonds like a herald's coat, a silver felt sword laid over a scrap of treasure map, and a road of brown backstitch winding all the way around the shell.",
     credits: ['Questmaster Gwinn (three quests, never once asked for directions)', 'Map inked by Lewis "Lewie" Moten III', 'Roads curved by Claude Opus 5.5'],
-    lore: 'The royal map ends at the edge of the kingdom with "Here Be Root Beer," and a line the cartographer was far too polite to finish: "Taken from the Redcoats, fair and square, on a Tuesday, by..."',
+    lore: 'The royal map ends at the edge of the kingdom with "Here Be Dragons," and a line the cartographer was far too polite to finish: "Very friendly, really, as long as nobody mentions Tuesday, when..."',
     look: { felt: '#2f5d3a', band: '#d8b04a', patch: '#c9ced6', thread: '#f4e7c0', pattern: 'diamonds', motif: 'sword' },
     detect: { block: 149 },
   },
@@ -142,7 +141,7 @@ export const EGGS: readonly Egg[] = [
     description:
       'Sandy tan felt with blue scalloped waves at its base, a turreted felt castle with a pink pennant, and a single brown paw print stitched by the moat. Gwinn swears she had nothing to do with it.',
     credits: ['Dug up by Gwinn', 'with help (and a nap) from Teddy'],
-    lore: 'Pressed into the wet sand: "ONCE," then a measuring cup, a ladle and thirteen little egg shapes in a row. One more sits apart, half dug, as if somebody got called in for supper.',
+    lore: 'Pressed into the wet sand: "ONCE," then a bucket, a shovel and a row of little egg shapes. One more sits apart, half dug, as if somebody got called in for supper.',
     look: { felt: '#e6c48a', band: '#3d8fd1', patch: '#c9573a', thread: '#fff6e0', pattern: 'scallops', motif: 'castle' },
     detect: { block: 146 },
   },
@@ -153,7 +152,7 @@ export const EGGS: readonly Egg[] = [
     description:
       'Deep theater-red felt with gold checkerboard trim, a black-and-white comedy mask appliquéd on the front, and a gold thread curtain-tie stitched around the middle.',
     credits: ['Performed by Doc Leo, hobo clown (standing backward in line, as usual)'],
-    lore: 'Case 13, never closed: one recipe card lifted in 1776, one root beer the family will not discuss, one kitchen door with flour on the knob. Last note, underlined twice: "Count the eggs again. A baker always does."',
+    lore: 'Case file, never closed: one missing pie, one suspect who will not discuss it, one back door with flour on the knob. Last note, underlined twice: "Count the eggs again. A detective always does."',
     look: { felt: '#8e1d2c', band: '#d6a53a', patch: '#f4f0e6', thread: '#f2cf6b', pattern: 'checks', motif: 'mask' },
     detect: { counter: 25, atLeast: 2 },
   },
@@ -164,7 +163,7 @@ export const EGGS: readonly Egg[] = [
     description:
       'Fluffy white felt with blue snowflakes in lazy-daisy stitch, a red mitten appliqué with a cuff of real yarn, and a scarf of red and green stripes wrapped around its middle.',
     credits: ['Shoveled out by Lewis "Lewie" Moten III, winter of 1992'],
-    lore: 'A note frozen to it: "Bring every egg to the kitchen before the root beer goes flat. All of them. Yes, even that one. ESPECIALLY that one."',
+    lore: 'A note frozen to it: "Bring every egg inside before the cocoa goes cold. All of them. Yes, even that one. ESPECIALLY that one."',
     look: { felt: '#f4f6fb', band: '#3a6fc4', patch: '#d23a2e', thread: '#2a4f9a', pattern: 'snowflakes', motif: 'mitten' },
     detect: { block: 137 },
   },
@@ -175,7 +174,7 @@ export const EGGS: readonly Egg[] = [
     description:
       "Felted like Doc Leo's own clown egg: cream felt with red big-top stripes, rainbow polka dots, a corgi-orange paw print on each side and a tiny red pom-pom nose on top.",
     credits: ['Starring Teddy, a corgi who knows left from right', 'and Doc Leo, PhD (Comedic Science)'],
-    lore: 'Teddy found it by the red door of The Dog House, at the end of a trail of sugar, vanilla and something fizzy. He followed it as far as the kitchen and was told, firmly, "Not yet."',
+    lore: 'Teddy found it by the red door of The Dog House, at the end of a trail of popcorn, peanut shells and something fizzy. He followed it as far as the snack counter and was told, firmly, "Not yet."',
     look: { felt: '#fff3dc', band: '#d9381e', patch: '#e88a2c', thread: '#1d5fb8', pattern: 'dots', motif: 'paw' },
     detect: { block: 149 },
   },
@@ -186,7 +185,7 @@ export const EGGS: readonly Egg[] = [
     description:
       'Butterscotch felt walked all over with little brown paw prints, a white felt bone appliquéd on each side with a red bow tied round it, and a collar of blue rickrack with a tiny brass tag that reads "2".',
     credits: ['Starring Teddy, a little bigger this time', 'Stunts by Gwinn, uncredited at her own request'],
-    lore: 'Buried with the bone: a wooden spoon, well gnawed and still sticky. Teddy will not say where he got it, but he keeps looking toward the kitchen and licking his nose.',
+    lore: 'Buried with the bone: a stick, well gnawed and still sticky. Teddy will not say where he got it, but he keeps looking toward the picnic table and licking his nose.',
     look: { felt: '#e3a857', band: '#3a6fc4', patch: '#fbf6ea', thread: '#5a3216', pattern: 'pawprints', motif: 'bone' },
     detect: { block: 149 },
   },
@@ -197,7 +196,7 @@ export const EGGS: readonly Egg[] = [
     description:
       'Lilac felt sprinkled with confetti knots in every color, a pink felt birthday cake appliquéd on each side with three yarn candles, and a collar of gold rickrack with a tiny brass tag that reads "3".',
     credits: ['Starring Teddy, the biggest he has ever been', 'Party planned by Gwinn and Doc Leo, who never once said so', 'Stitched by Claude Opus 5.5'],
-    lore: 'Tucked in with the lost party hats in the hedge: a place card in Doc Leo\'s hand. "ONE MORE CHAIR AT THE TABLE. Keep it for whoever is still coming." Teddy sat in it anyway.',
+    lore: 'Tucked in with the lost party hats in the hedge: a place card in Doc Leo\'s hand. "RESERVED FOR THE GUEST OF HONOR. Please do not sit in it." Teddy sat in it anyway.',
     look: { felt: '#b48ce0', band: '#ffd23f', patch: '#f59ac0', thread: '#ffffff', pattern: 'confetti', motif: 'cake' },
     detect: { block: 149 },
   },
@@ -208,7 +207,7 @@ export const EGGS: readonly Egg[] = [
     description:
       'Hot-pink felt sewn to look like a glossy rubber egg, with an orange band stitched round its waist, a white felt shine, and a little sewn-in tag that reads "100% NATURAL RUBBER*" and, underneath, "*felt".',
     credits: ['Laid by Lady Regina Cluckington III (*corrected)', 'Arranged by Claude Opus 5.5', 'for Lewis "Lewie" Moten III, Teddy, Gwinn and Doc Leo'],
-    lore: 'Doc Leo read the tag twice. High tensile strength, great elasticity, tear resistant, and not one bit of rubber in it. Folded under the tag, a page of the parade tune in his hand: "Twelve good things in the family mug, and one more nobody names. Pour it for whoever comes in late."',
+    lore: 'Doc Leo read the tag twice. High tensile strength, great elasticity, tear resistant, and not one bit of rubber in it. Folded under the tag, a page of the parade tune in his hand: "Hold the beat, mind the curb, and wave at whoever comes in late."',
     look: { felt: '#e8609c', band: '#ffb03a', patch: '#ffffff', thread: '#ffffff', pattern: 'dots', motif: 'note' },
     detect: { block: 149 },
   },
@@ -219,7 +218,7 @@ export const EGGS: readonly Egg[] = [
     description:
       'Shiny teal felt with silver wave stitching, a red felt rocket with a flame of orange yarn, and a band of chrome sequins around the middle like a 1950s idea of the future.',
     credits: ['Sent from the future by Lewis "Lewie" Moten III', 'and Claude Opus 5.5'],
-    lore: 'A postcard from the future: "The grandkids still argue over the family root beer. The recipe calls for thirteen of something. Thirteen eggs, it turns out, are not it."',
+    lore: 'A postcard from the future: "The grandkids still argue over whose turn it is to drive the hover car. The robot butler keeps the schedule, and nobody trusts it."',
     look: { felt: '#1f9a9a', band: '#c8d4dc', patch: '#e2412f', thread: '#eaf6f6', pattern: 'waves', motif: 'rocket' },
     detect: { block: 149 },
   },

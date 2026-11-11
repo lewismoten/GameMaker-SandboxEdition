@@ -78,7 +78,7 @@ export const SPOTLIGHT: MagSection = {
             star(
               ctx,
               'gwinn',
-              'Teddy’s big sister: chocolate-brown, amber-eyed, pink collar, and the reason most of these games have a plot. She scattered the costume, flattened the sandcastles and ate a recipe card. Her one trick is zoomies. She is not allowed in the library. She is in the library.',
+              'Teddy’s big sister: chocolate-brown, amber-eyed, pink collar, and the reason most of these games have a plot. She scattered the costume, flattened the sandcastles and chewed a slipper. Her one trick is zoomies. She is not allowed in the library. She is in the library.',
               3,
             ),
           ],

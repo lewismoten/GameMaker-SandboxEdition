@@ -6,6 +6,49 @@ changelog: [engine](web/packages/engine/CHANGELOG.md), [archives](web/packages/a
 
 ## [Unreleased]
 
+## [3.5.0] - 2026-11-11
+
+The wrong-number die, the cryptex and the Snowbound puzzle box assemble in 3D on the desk, In The Year 2000! reaches 1.8, the map editor and home get finger-sized controls, dialogs fit small and sideways phones, and the DOS page, Library and home download less.
+
+### Added
+
+- Added dated Game-Maker history notes on user-made games, shareware catalogs and magazine discovery, with original sources and Wayback snapshots.
+- Watch the Plowed Street puzzle box and Teleport-A-Phone cryptex assemble one cut part at a time on the desk’s Feelies shelf, with step captions and kit thumbnails.
+- The Wrong-Number die's instructions have a "Watch it fold in 3D" button: a slider steps the paper from the flat square to the finished die, one fold per step, showing the sides standing up, the gray tucks folding in between them and the four corner triangles closing the lid.
+
+### Changed
+
+- The In The Year 2000! cryptex laser kit now has hollow rings with small parts cut from their middles (two sheets instead of three), an ID on a hidden face of each part, and a 3D assembly that builds each sub-assembly apart, shows it finished, puts them together and shows how to set your own code.
+- The DOS page no longer downloads the whole games catalog and every game's file list just to start its PC and list its disks; it loads the short list and fetches a game's files when you open that game.
+- The wrong-number die now opens on its animated folding steps, with the printable sheet one labeled button away; the steps gain a crease step and a tuck close-up, and the printed square shows the pre-crease lines.
+- On a touch screen, the map editor's "Show" blocks filter and Generate button and the Color help summary are 44 px tall.
+- On touch screens the map editor's Level check panel has finger-sized controls: Make, the time and key-delay fields, checkboxes and its buttons are 44 px tall.
+- Home shows a game's title picture before loading its demo and waits for a click on data-saving connections; optional player, DOS and desk code loads when needed.
+- The Library opens with less to download: each game's Level Maps data is fetched when that game's maps are drawn, instead of all of it up front.
+- The felt eggs' notes, the Realm innkeeper, Gwinn's bio and the root beer entry in the Cast now read as small jokes that stand on their own in each game.
+
+### Fixed
+
+- Fill in credits for the new paper and laser kits, die fold viewer, art courses, generated artwork and Library text and transcripts.
+- The Make an edge set and Sound effect maker dialogs now fit a 360 by 740 phone: the edge set form no longer scrolls, and Listen sits in the footer beside Cancel and Save.
+- Use side-by-side fields and previews with tighter spacing to keep dialogs and their actions in view on phones held sideways.
+- Leaving the block editor (and other editors with the Color help panel) now frees what it drew, instead of keeping about 4 MB of pictures and thousands of page elements for every visit.
+- On a touch screen the home page's Keys and Manual buttons over a game's picture, the "More" and "AI setup" links and the Getting started links are bigger, and no link there is under 24 px tall in a phone held sideways.
+- Closing dialogs returns the keyboard to their controls, Escape stays with the top dialog, and ending a guided tour releases its temporary focus listeners.
+- Updated the community game's ZIP download link to its current location.
+- Named the keyboard map, shareware notice and magazine print menu for screen readers, and returned focus through menu controls when opening dialogs from their items.
+- Include each game's DOS menu picture, credits and Top Ten backdrop in Pocket Player SD packs, keeping the starter flash image small.
+- The course poster in a game's box no longer keeps about 5 MB of pictures in memory each time the box is opened.
+- Shorten search and social descriptions, add player canonical URLs, and keep public downloads limited to the public game catalog.
+- The Library's livestream video now says its description, chapters and title were written with ChatGPT from the video's transcript.
+- Closing the Level Maps viewer while a piece is still loading no longer leaves a resize listener and picture links behind.
+- The walkthrough bot keeps precise corridor turns in scenes that also have gravity and when trying the Maze walker style.
+- The walkthrough bot prefers supplied branches before unpaid gates, can return from a branch it did not get through, and recognizes jumps that also fire and visible ability refills. Searches account for walls, footings, and finite jumps, and can turn during flight with steady key timing.
+- The walkthrough bot can steer through narrow maze turns, distinguishes safe movement from gravity on lethal terrain, and updates key targets after collecting supplies, and tries other pickup routes when it cannot fetch the remaining keys.
+- Closing a walkthrough player now releases its Sound picker and timers, so opening and closing it many times no longer piles up memory.
+- In the Year 2000: Dex no longer snags on empty lawn above the CitiCar, the car's door is easy to walk into, the Cloud Lane car moves one lane per key press, and the backyard pool now looks like a pool.
+- In The Year 2000! now requires the Zapper, neighborhood pages and Grandpa's keys before boarding the CitiCar, with door signs naming the next missing item.
+
 ## [3.4.0] - 2026-11-09
 
 Three new laser and paper kits on the box shelf (the Snowbound puzzle box, the In The Year 2000! cryptex and a paper THE CHEZ), Pocket Player opens a game's Details first, Rain on the Path 1.2, and better search descriptions.
@@ -110,7 +153,8 @@ for every Game-Maker file type; the web player; and the set of new games built i
 - Exports to a web page, a DOS ZIP and native players, and opening a game another site links to.
 - Achievements, a guided tour with voice clips, and offline use as an installable app.
 
-[Unreleased]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/pages-v3.4.0...HEAD
+[Unreleased]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/pages-v3.5.0...HEAD
+[3.5.0]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/pages-v3.4.0...pages-v3.5.0
 [3.4.0]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/pages-v3.3.0...pages-v3.4.0
 [3.3.0]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/pages-v3.2.0...pages-v3.3.0
 [3.2.0]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/pages-v3.1.0...pages-v3.2.0
