@@ -54,8 +54,7 @@ export const STEPS: FoldStep[] = [
   },
   {
     label: 'Blow it up',
-    caption:
-      'Blow hard into the small hole at the bottom point. The paper swells into a cube; press out the corners gently. The face with the hole is the 0.',
+    caption: 'Blow hard into the small hole at the bottom point. The paper swells into a cube; press out the corners gently. The face with the hole is the 0.',
   },
 ];
 export const LAST = STEPS.length - 1;

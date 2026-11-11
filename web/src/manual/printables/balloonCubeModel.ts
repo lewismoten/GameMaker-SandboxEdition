@@ -11,7 +11,7 @@
 //   - the four paper corners are the tucks (kites, hidden in the pockets) and everything else ends up inside, unseen.
 // `FACE_REGIONS` (data) says which sheet region shows which face; their art frames come from the folded pieces, and
 // balloonCubeModel.test.ts folds the sheet and checks every region is the outer layer of its face, printing outward.
-import { ID, ap, area, centroid, crease, fold, type Aff, type Fold, type Piece, type V2, type V3 } from './balloonCubeSim';
+import { ID, ap, centroid, crease, fold, type Aff, type Fold, type Piece, type V2, type V3 } from './balloonCubeSim';
 
 export type { V2, V3 } from './balloonCubeSim';
 export type FaceId = 'top' | 'bottom' | 'ne' | 'nw' | 'sw' | 'se';
@@ -76,25 +76,62 @@ function flapFolds(flap: 'fr' | 'fl' | 'br' | 'bl', steps: [number, number, numb
       step: steps[0],
       phase: [0, 1],
       name: `${where} corner up to the point`,
-      fold: { line: [[0, -0.5], [k * 0.25, -0.25]], moving: [k * 0.5, -0.5], select: has(flap), to, tag: 'F' },
+      fold: {
+        line: [
+          [0, -0.5],
+          [k * 0.25, -0.25],
+        ],
+        moving: [k * 0.5, -0.5],
+        select: has(flap),
+        to,
+        tag: 'F',
+      },
     },
     {
       step: steps[1],
       phase: [0, 1],
       name: `${where} point to the center line`,
-      fold: { line: [[k * H, 0], [k * H, -1]], moving: [k, -0.25], select: has(flap), to, tag: 'R' },
+      fold: {
+        line: [
+          [k * H, 0],
+          [k * H, -1],
+        ],
+        moving: [k, -0.25],
+        select: has(flap),
+        to,
+        tag: 'R',
+      },
     },
     {
       step: steps[2],
       phase: c1,
       name: `${where} top flap down`,
-      fold: { line: [[-1, -H], [1, -H]], moving: [0, 0], select: has(flap, 'F', '!R'), to, tag: 'T' },
+      fold: {
+        line: [
+          [-1, -H],
+          [1, -H],
+        ],
+        moving: [0, 0],
+        select: has(flap, 'F', '!R'),
+        to,
+        tag: 'T',
+      },
     },
     {
       step: steps[3],
       phase: c2,
       name: `${where} flap tucked into the pocket`,
-      fold: { line: [[0, -2 * H], [k * H, -H]], moving: [0, -H], select: has(flap, 'F', '!R'), to, pocket: pocketOf(flap), tag: 'T' },
+      fold: {
+        line: [
+          [0, -2 * H],
+          [k * H, -H],
+        ],
+        moving: [0, -H],
+        select: has(flap, 'F', '!R'),
+        to,
+        pocket: pocketOf(flap),
+        tag: 'T',
+      },
     },
   ];
 }
@@ -226,11 +263,11 @@ export const FACE_REGIONS: { face: FaceId; clip: V2[] }[] = [
   { face: 'sw', clip: sq(-3 * H, -H, -H, H) },
   { face: 'top', clip: sq(3 * H, -H, 0.5, H) },
   { face: 'top', clip: sq(-0.5, -H, -3 * H, H) },
-  ...FRONT_PIECES.map((clip) => ({ face: 'se' as FaceId, clip })),
-  ...FRONT_PIECES.map((clip) => ({ face: 'nw' as FaceId, clip: flipV(clip) })),
+  ...FRONT_PIECES.map((clip): { face: FaceId; clip: V2[] } => ({ face: 'se', clip })),
+  ...FRONT_PIECES.map((clip): { face: FaceId; clip: V2[] } => ({ face: 'nw', clip: flipV(clip) })),
 ];
 
-/** The four tucks: kites at the paper corners, folded into the pockets. */
+/** The four tucks: the paper corners (right triangles with legs 1/4), folded into the pockets. */
 export const TUCKS: V2[][] = [
   [1, 1],
   [-1, 1],
@@ -239,7 +276,6 @@ export const TUCKS: V2[][] = [
 ].map(([sx, sy]) => [
   [sx / 2, sy / 2],
   [sx / 4, sy / 2],
-  [(3 * sx) / 8, (3 * sy) / 8],
   [sx / 2, sy / 4],
 ]);
 
@@ -313,7 +349,7 @@ function placement(face: FaceId, clip: V2[]): Placement {
   const f = FACE_FRAME[face];
   const probe: V2 = [0, 1].map((i) => clip[0][i] * 0.6 + clip[1][i] * 0.3 + clip[2][i] * 0.1) as V2;
   const piece = pieceAt(probe);
-  if (!piece) throw new Error(`no paper at ${probe.join(",")}`);
+  if (!piece) throw new Error(`no paper at ${probe.join(',')}`);
   const { a1, a2, q0, c0 } = cubeMap(piece);
   const o3: V3 = [f.n[0] * H, f.n[1] * H, f.n[2] * H];
   const rel: V3 = [o3[0] - c0[0], o3[1] - c0[1], o3[2] - c0[2]];

@@ -7,7 +7,7 @@ import { h } from '../../editor/core/ui';
 import { html, sheet, type Sheet } from './kit';
 import { INK, RED, faceArt } from './balloonCubeArt';
 import { L, PLACEMENTS, PRECREASES, TUCKS, type Frame2, type V2 } from './balloonCubeModel';
-import { sceneSvg } from './balloonCubeScene';
+import { sceneSvg, type SceneSize } from './balloonCubeScene';
 import type { BalloonCubeItem } from './balloonCubeTypes';
 
 const SHEET = 600; // the sheet in svg units
@@ -34,13 +34,21 @@ const TUCK_DASH = '6 4';
 /** The square to cut out: the face regions with their art, the four tucks (plain: they end up hidden), the pre-creases, the cut line. */
 function sheetSvg(it: BalloonCubeItem): string {
   const clips = PLACEMENTS.map((p, i) => `<clipPath id="bc${i}"><polygon points="${pts(p.clip)}"/></clipPath>`).join('');
-  const faces = PLACEMENTS.map((p, i) => `<g clip-path="url(#bc${i})"><g transform="${sheetMatrix(p.sheet)}">${faceArt(it.faces[p.face], p.face === 'top')}</g></g>`).join('');
+  const faces = PLACEMENTS.map(
+    (p, i) => `<g clip-path="url(#bc${i})"><g transform="${sheetMatrix(p.sheet)}">${faceArt(it.faces[p.face], p.face === 'top')}</g></g>`,
+  ).join('');
   const tucks = TUCKS.map((t) => {
-    const c = px([(t[0][0] + t[2][0]) / 2, (t[0][1] + t[2][1]) / 2]);
-    const turn = Math.sign(t[0][0]) === Math.sign(t[0][1]) ? -45 : 45;
+    // the word along the long edge, upright, beside the diagonal crease that runs through the corner
+    const [k, e1, e2] = t;
+    const m: V2 = [k[0] * 0.45 + ((e1[0] + e2[0]) / 2) * 0.55, k[1] * 0.45 + ((e1[1] + e2[1]) / 2) * 0.55];
+    const along = Math.hypot(e1[0] - e2[0], e1[1] - e2[1]);
+    const c = px([m[0] + ((e1[0] - e2[0]) / along) * 0.05, m[1] + ((e1[1] - e2[1]) / along) * 0.05]);
+    let turn = (Math.atan2(-(e1[1] - e2[1]), e1[0] - e2[0]) * 180) / Math.PI;
+    if (turn > 90) turn -= 180;
+    if (turn <= -90) turn += 180;
     return (
       `<polygon points="${pts(t)}" fill="none" stroke="#8b857b" stroke-width="1.6" stroke-dasharray="${TUCK_DASH}"/>` +
-      `<text transform="translate(${c[0].toFixed(1)},${(c[1] + 4).toFixed(1)}) rotate(${turn})" font-size="11" font-weight="700" text-anchor="middle" fill="#8b857b" font-family="Arial,sans-serif">TUCK</text>`
+      `<text transform="translate(${c[0].toFixed(1)},${c[1].toFixed(1)}) rotate(${turn})" dy="4" font-size="13" font-weight="700" text-anchor="middle" fill="#8b857b" font-family="Arial,sans-serif">TUCK</text>`
     );
   }).join('');
   const lines = PRECREASES.map(
@@ -86,22 +94,20 @@ async function watchSheet(it: BalloonCubeItem): Promise<Sheet> {
   );
 }
 
-/** The fold steps as printed pictures: [position along the animation, words]. */
-const PRINTED_STEPS: [number, string][] = [
-  [0, 'Cut out the square along its solid edge.'],
+/** The fold steps as printed pictures: the moment drawn, how to draw it (arrows for the next step's folds, the pocket close-up, the art), the words. */
+const PRINTED_STEPS: [number, Partial<SceneSize>, string][] = [
+  [0, {}, 'Cut out the square along its solid edge.'],
+  [1, {}, 'Printing up, fold each diagonal away from you (dash-dot, mountain) and the middle line toward you (red dashes, valley). Crease hard and open flat.'],
+  [2, {}, 'Push the middles of the left and right edges in. The top half folds down behind and the square collapses into a triangle.'],
+  [2, { arrows: 3 }, 'Fold the bottom corners of the front flaps up to the top point. The front becomes a diamond.'],
+  [3, { arrows: 4 }, 'Fold the diamond’s left and right points in to the center line.'],
   [
-    1,
-    'Printing up, fold each diagonal away from you (dash-dot, mountain) and the middle line toward you (red dashes, valley). Crease hard and open flat.',
+    5,
+    { arrows: 6, focus: 1 },
+    'Fold the two small top flaps down (outlined), then slide each one into the pocket along the top edge of the side triangle next to it. This tuck is the lock.',
   ],
-  [2, 'Push the middles of the left and right edges in. The top half folds down behind and the square collapses into a triangle.'],
-  [2.55, 'Fold the bottom corners of the front flaps up to the top point. The front becomes a diamond.'],
-  [3.55, 'Fold the diamond’s left and right points in to the center line.'],
-  [
-    6,
-    'Fold the two small top flaps down, then slide each one into the pocket along the top edge of the side triangle next to it. This tuck is the lock.',
-  ],
-  [10, 'Turn it over and do the same on the back: corners up, points in, flaps down and tucked.'],
-  [11, 'Blow hard into the small hole at the bottom point and press out the corners. The face with the hole is the 0.'],
+  [10, {}, 'Turn it over and do the same on the back: corners up, points in, flaps down and tucked.'],
+  [11, { art: true }, 'Blow hard into the small hole at the bottom point and press out the corners. The face with the hole is the 0.'],
 ];
 
 /** The balloon cube's sheets: watch it fold, the square to cut out, then the steps. */
@@ -133,7 +139,7 @@ export async function balloonCubeSheets(it: BalloonCubeItem): Promise<Sheet[]> {
       h(
         'ol',
         { class: 'bc-steps' },
-        ...PRINTED_STEPS.map(([pos, text], i) => step(i + 1, text, sceneSvg(null, pos, `bcp${i}`, { w: 300, h: 250, art: false }, text))),
+        ...PRINTED_STEPS.map(([pos, o, text], i) => step(i + 1, text, sceneSvg(o.art ? it : null, pos, `bcp${i}`, { w: 300, h: 250, art: false, ...o }, text))),
       ),
       it.foot ? h('p', { class: 'bc-foot' }, it.foot) : null,
     ),

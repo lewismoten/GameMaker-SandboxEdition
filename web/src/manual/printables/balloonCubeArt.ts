@@ -66,4 +66,3 @@ export function faceArt(f: CubeFace, lid: boolean): string {
   }
   return out + `<rect x="-49" y="-49" width="98" height="98" fill="none" stroke="${INK}" stroke-width="1.2"/>`;
 }
-

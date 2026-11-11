@@ -65,7 +65,14 @@ const faceCoords = (f: FaceId, c: V3): V2 => [dot(c, FACE_FRAME[f].right), dot(c
 const outness = (p: FoldedPiece) => p.hist[p.hist.length - 1].layer * p.stack;
 /** The pieces that cover a point of a face, outermost first. */
 const stackAt = (f: FaceId, c: V3): FoldedPiece[] =>
-  PIECES.filter((p) => faceOf(p) === f && strictly(p.cube.map((q) => faceCoords(f, q)), faceCoords(f, c))).sort((a, b) => outness(b) - outness(a));
+  PIECES.filter(
+    (p) =>
+      faceOf(p) === f &&
+      strictly(
+        p.cube.map((q) => faceCoords(f, q)),
+        faceCoords(f, c),
+      ),
+  ).sort((a, b) => outness(b) - outness(a));
 
 // sample points on a face, kept off the cube's diagonals and the creases through its middle
 const SAMPLES: V2[] = [];
@@ -188,7 +195,10 @@ describe('balloon cube: the waterbomb fold', () => {
 
   it('ends each tuck inside its pocket: within the side triangle, under its outer layers and over its inner ones', () => {
     const tucked = PIECES.filter((p) => p.tags.has('T'));
-    expect(tucked.reduce((s, p) => s + area(p.poly), 0)).toBeCloseTo(TUCKS.reduce((s, t) => s + area(t), 0), 12);
+    expect(tucked.reduce((s, p) => s + area(p.poly), 0)).toBeCloseTo(
+      TUCKS.reduce((s, t) => s + area(t), 0),
+      12,
+    );
     for (const p of tucked) {
       expect(TUCKS.some((t) => inside(t, centroid(p.poly)))).toBe(true);
       const f = faceOf(p)!;
@@ -243,8 +253,8 @@ describe('balloon cube: the waterbomb fold', () => {
 
   it('pairs opposite faces', () => {
     for (const [a, b] of Object.entries(OPPOSITE)) {
-      expect(OPPOSITE[b as FaceId]).toBe(a);
-      expect(dot(FACE_FRAME[a as FaceId].n, FACE_FRAME[b as FaceId].n)).toBe(-1);
+      expect(OPPOSITE[b]).toBe(a);
+      expect(dot(FACE_FRAME[a as FaceId].n, FACE_FRAME[b].n)).toBe(-1);
     }
   });
 });

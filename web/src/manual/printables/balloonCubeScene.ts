@@ -2,8 +2,8 @@
 // nearest last, with the face art on the pieces that carry it, folded edges outlined and soft shading. The fold viewer redraws the
 // body each frame; the printable's step pictures and the progress shots use the same markup.
 import { FACE, INK, RED, faceArt } from './balloonCubeArt';
-import { L, PIECES, PLACEMENTS, PRECREASES, TUCKS, inside } from './balloonCubeModel';
-import { centroid, type V2, type V3 } from './balloonCubeSim';
+import { L, OPS, PIECES, PLACEMENTS, PRECREASES, TUCKS, inside } from './balloonCubeModel';
+import { ap, centroid, reflectOver, type V2, type V3 } from './balloonCubeSim';
 import { FOCUS, LAST, creaseAt, isFace, normalOf, poseAt, stepAt, toView, tuckFocusAt, viewAt } from './balloonCubeFold';
 import type { BalloonCubeItem } from './balloonCubeTypes';
 
@@ -20,7 +20,9 @@ const grownPts = PIECES.map((p) => {
   return p.poly
     .map((q) => {
       const d = Math.hypot(q[0] - c[0], q[1] - c[1]);
-      return S([q[0] + ((q[0] - c[0]) / d) * 0.003, q[1] + ((q[1] - c[1]) / d) * 0.003]).map(f2).join(',');
+      return S([q[0] + ((q[0] - c[0]) / d) * 0.003, q[1] + ((q[1] - c[1]) / d) * 0.003])
+        .map(f2)
+        .join(',');
     })
     .join(' ');
 });
@@ -28,7 +30,13 @@ const grownPts = PIECES.map((p) => {
 const shadeColor = (hex: string, k: number) => {
   const c = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16));
   const ink = [1, 3, 5].map((i) => parseInt(INK.slice(i, i + 2), 16));
-  return `#${c.map((v, i) => Math.round(v + (ink[i] - v) * k).toString(16).padStart(2, '0')).join('')}`;
+  return `#${c
+    .map((v, i) =>
+      Math.round(v + (ink[i] - v) * k)
+        .toString(16)
+        .padStart(2, '0'),
+    )
+    .join('')}`;
 };
 const artOf = PIECES.map((p) => (isFace(p) ? PLACEMENTS.findIndex((pl) => inside(pl.clip, centroid(p.poly))) : -1));
 const tuck = PIECES.map((p) => TUCKS.some((t) => inside(t, centroid(p.poly))));
@@ -74,13 +82,17 @@ export interface SceneSize {
   art: boolean;
   /** Override the camera's zoom (1 = fit). */
   zoom?: number;
+  /** Force the pocket close-up (0 to 1) instead of the animation's own. */
+  focus?: number;
+  /** Draw an arrow for each fold of this step (the picture shows the paper before it). */
+  arrows?: number;
 }
 
 /** The scene's body at a position along the steps: one group per piece, then the pre-crease lines while they show. */
 export function sceneBody(pos: number, id: string, size: SceneSize): string {
   const poses = poseAt(pos);
   const view = viewAt(pos);
-  const focus = tuckFocusAt(pos);
+  const focus = size.focus ?? tuckFocusAt(pos);
   const blowing = stepAt(pos).step === LAST && pos > LAST - 1;
   // fit: the paper's 3D extent, which a turn of the camera does not change; the close-up zooms in on a pocket
   const all = poses.flatMap((p) => p.pts);
@@ -141,7 +153,13 @@ export function sceneBody(pos: number, id: string, size: SceneSize): string {
     if (tuck[k] && printed) {
       // the tuck's own outline (not the cuts between its pieces), dashed
       const t = poly
-        .map((a, j) => (neighbors[k][j] >= 0 && tuck[neighbors[k][j]] ? '' : `M${S(a).map(f2).join(' ')}L${S(poly[(j + 1) % poly.length]).map(f2).join(' ')}`))
+        .map((a, j) =>
+          neighbors[k][j] >= 0 && tuck[neighbors[k][j]]
+            ? ''
+            : `M${S(a).map(f2).join(' ')}L${S(poly[(j + 1) % poly.length])
+                .map(f2)
+                .join(' ')}`,
+        )
         .join('');
       if (t) g += `<path d="${t}" fill="none" stroke="#a9a294" stroke-width="0.8" stroke-dasharray="3 2" ${ns}/>`;
     }
@@ -159,6 +177,7 @@ export function sceneBody(pos: number, id: string, size: SceneSize): string {
     if (hot) g += `<polygon points="${staticPts[k]}" fill="none" stroke="${RED}" stroke-width="2.4" stroke-linejoin="round" ${ns}/>`;
     out += g + '</g>';
   }
+  if (size.arrows !== undefined) out += foldArrows(size.arrows, scr);
   const cr = creaseAt(pos);
   if (cr > 0) {
     out += `<g opacity="${cr.toFixed(2)}" fill="none" stroke-width="2.2">`;
@@ -171,6 +190,42 @@ export function sceneBody(pos: number, id: string, size: SceneSize): string {
   return out;
 }
 
+/** Curved red arrows from the far point of each fold's moving paper to where it lands, for the printed pictures. */
+function foldArrows(step: number, scr: (p: V3) => V3): string {
+  let out = '';
+  OPS.forEach((op, i) => {
+    if (op.step !== step || !op.fold) return;
+    const [a, b] = op.fold.line;
+    const len = Math.hypot(b[0] - a[0], b[1] - a[1]);
+    let from: V2 | undefined;
+    let far = 0;
+    for (const p of PIECES) {
+      if (!p.hist[i].moved) continue;
+      for (const q of p.poly) {
+        const v = ap(p.hist[i - 1].m, q);
+        const d = Math.abs((b[0] - a[0]) * (v[1] - a[1]) - (b[1] - a[1]) * (v[0] - a[0])) / len;
+        if (d > far + 1e-9) [far, from] = [d, v];
+      }
+    }
+    if (!from) return;
+    const to = ap(reflectOver(a, b), from);
+    const [p, q] = [scr([from[0], from[1], 0.05]), scr([to[0], to[1], 0.05])];
+    const [dx, dy] = [q[0] - p[0], q[1] - p[1]];
+    const c: V2 = [(p[0] + q[0]) / 2 + dy * 0.35, (p[1] + q[1]) / 2 - dx * 0.35];
+    const [hx, hy] = [q[0] - c[0], q[1] - c[1]];
+    const hl = Math.hypot(hx, hy) || 1;
+    const [ux, uy] = [hx / hl, hy / hl];
+    const head = [
+      [q[0], q[1]],
+      [q[0] - ux * 9 - uy * 5, q[1] - uy * 9 + ux * 5],
+      [q[0] - ux * 9 + uy * 5, q[1] - uy * 9 - ux * 5],
+    ];
+    out += `<path d="M${f2(p[0])} ${f2(p[1])}Q${f2(c[0])} ${f2(c[1])} ${f2(q[0])} ${f2(q[1])}" fill="none" stroke="${RED}" stroke-width="2.4" stroke-linecap="round"/>`;
+    out += `<polygon points="${head.map((h) => h.map(f2).join(',')).join(' ')}" fill="${RED}"/>`;
+  });
+  return out;
+}
+
 /** A whole svg of one moment (the printable's step pictures, progress shots). */
 export function sceneSvg(item: BalloonCubeItem | null, pos: number, id: string, size: SceneSize, label: string): string {
   return (
@@ -178,4 +233,3 @@ export function sceneSvg(item: BalloonCubeItem | null, pos: number, id: string, 
     `<defs>${sceneDefs(item, id)}</defs><rect width="${size.w}" height="${size.h}" fill="#fff"/>${sceneBody(pos, id, size)}</svg>`
   );
 }
-
