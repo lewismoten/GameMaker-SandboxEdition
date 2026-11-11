@@ -225,5 +225,6 @@ once per browser session:
 > use DOSBox.
 
 If your page describes the game as a DOS game, say the same. Game-Maker's file formats are
-kept byte for byte, so the same files can be opened in DOS Game-Maker under
-[DOSBox](https://www.dosbox.com/). Behavior may still differ between the two.
+kept byte for byte, so a game that plays here also plays in DOS Game-Maker under
+[DOSBox](https://www.dosbox.com/). The reverse holds unless the game leans on something only
+real DOS does.
