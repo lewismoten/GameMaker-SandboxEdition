@@ -78,6 +78,9 @@ Game design, pictures, music
 and robot dog: Claude
 for SANDBOX SOFTWARE
 
+Car door checks and hints:
+OpenAI Codex (GPT-6)
+
 Made with GAME-MAKER 2.0 by
 Recreational Software Designs.
 

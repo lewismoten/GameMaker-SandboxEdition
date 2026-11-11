@@ -1184,3 +1184,5 @@ maker "ZORP" is invented. The shell is untested: nothing has been printed.
 - **Pocket packs: menu picture, credits and Top Ten background (November 10, 2026)** (`web/src/export/pocketPack.ts`): OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, packed PLAYGAME scene 0 slots 2, 7 and 8 into SD-card Pocket packs, with tests.
 
 - **Landscape dialog layouts (November 10, 2026)** (web/src editor, desk and settings dialog CSS): OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, added short-landscape layouts so dialogs fit a phone held sideways; checked in a browser by Claude (Sonnet 5.5).
+
+- **In The Year 2000! CitiCar boarding checks and hints** (`games/year2000/`): the DOS counter gate, missing-item signs and regression checks were made with **OpenAI Codex (GPT-6)**, directed by Lewis Moten.
