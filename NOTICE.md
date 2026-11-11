@@ -1064,6 +1064,10 @@ directed by Lewis Moten, under this project's MIT License. Their cut shapes, eng
 print artwork and assembly sheets are drawn in code, using the project's existing laser
 helpers and credited pixel fonts. Existing game artwork and words retain their credits.
 
+The cryptex's larger cavities, hidden code-drawn pictures, library-stock packing, fabrication
+checks and build notes were revised with **OpenAI Codex (GPT-6)**, directed by Lewis Moten.
+No new third-party artwork, code or fonts were added.
+
 Wrong Number's die fold model and animated SVG viewer
 (`web/src/manual/printables/balloonCubeFold.ts`, `balloonCubeFoldView.ts`) were written
 with **Claude Sonnet 5.5** (Anthropic), directed by Lewis Moten, using the project's

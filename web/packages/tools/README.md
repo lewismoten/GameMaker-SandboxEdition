@@ -94,10 +94,16 @@ Laser helpers use millimeters and take caller-supplied designs:
 
 - `kit/laserJoints`: `jointOutline`, `outlineFromRects`, `offsetPoly`, rectangle and rotation helpers.
 - `kit/laserLayout`: kerf-adjusted `Part`, `BED`, `PART_GAP`, `packRows`; packing throws
-  when rows exceed the sheet. Call `Part.close()` to check spacing.
+  when rows exceed the sheet. `STOCK`, `STOCK_MARGIN`, `packStock` and `placePart` support
+  library stock sizes, actual compensated outline bounds and quarter-turn packing.
+  `packStock` tries deterministic rectangle orders; callers supply hole nesting.
+  Call `Part.close()` to check spacing.
 - `kit/laserSvg`: `LaserSheet`, operation colors and shape types; `.svg(title)` writes SVG.
 - `kit/laserPixels`: pixel engraving, straight/arc text, bitmap toning and ink bounds.
-- `kit/laserClearance`: `tooClose` reports element pairs below supplied gaps.
+- `kit/laserClearance`: `tooClose` reports element pairs below supplied gaps;
+  `cutSpacingProblems` measures whole-sheet cut paths analytically without large raster
+  allocations. `engravingRegionProblems` checks entire convex shapes against caller-supplied
+  circular or annular regions, including filled interiors crossing glue footprints.
 - `kit/laserPreview`: Node raster previews and PNG output.
 
 ## Other subpaths

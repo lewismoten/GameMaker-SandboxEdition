@@ -1,105 +1,146 @@
-// "In The Year 2000!" cryptex: builds the parts, the sheets and the checks in memory (the test and cryptex.ts use it).
-// Rings and plates are hollow; small parts are nested in their empty middles (cryptexNest.ts), so the sheets are fewer and smaller.
-import { packRows, type Part, type Placed } from '@lewismoten/gamemaker-sandbox-tools/kit/laserLayout';
+// Build the cryptex and validate its lock, unglued hidden engraving, hole nesting and selected library stock.
+import { packStock, placePart, STOCK, STOCK_MARGIN, type Part, type Placed, type StockSize } from '@lewismoten/gamemaker-sandbox-tools/kit/laserLayout';
+import { cutSpacingProblems, engravingRegionProblems } from '@lewismoten/gamemaker-sandbox-tools/kit/laserClearance';
 import type { LaserSheet } from '@lewismoten/gamemaker-sandbox-tools/kit/laserSvg';
 import { engravingProblems } from '../../sleuth/laser/stageBoxBuild';
-import { RINGS, SLICE_HOLE, WASHER, SOCKET_FIT, checkLock } from './cryptexDims';
-import { boundingRadius, nest, nestProblems, type Guest, type Hole } from './cryptexNest';
+import { COLLAR_R, POCKET, RINGS, SLICE_HOLE, WASHER, SOCKET_FIT, checkLock } from './cryptexDims';
+import { NEST_GAP, boundingRadius, nest, nestProblems, type Guest, type Hole } from './cryptexNest';
 import { makeParts, type Parts } from './cryptexParts';
 
 export interface Built {
   kerf: number;
+  stock: StockSize;
   parts: Parts;
   sheets: { file: string; title: string; sheet: LaserSheet; placed: Placed[] }[];
   lock: ReturnType<typeof checkLock>;
   clearance: Record<string, { a: string; b: string; mm: number }[]>;
   problems: string[];
-  /** square millimeters: the sheets' bounding boxes, and the wood the parts themselves use */
-  area: { sheets: number; wood: number };
+  /** mm²: purchased stock, occupied bounding rectangles, retained kerf-compensated wood. */
+  area: { sheets: number; occupied: number; wood: number };
 }
 
-/** Hosts in sheet order, with the hole each offers. */
+/** Hosts may themselves nest inside a larger host. All hosts have quantity one. */
 const HOSTS: [string, Hole][] = [
   ...['A2R', 'A3R', 'A4R', 'A5R'].map((k): [string, Hole] => [k, { cx: RINGS[3], cy: RINGS[3], r: SLICE_HOLE[3] }]),
-  ['B1', { cx: RINGS[3], cy: RINGS[3], r: SLICE_HOLE[3] }],
-  ['C1', { cx: RINGS[2], cy: RINGS[2], r: SLICE_HOLE[2] }],
-  ['B2', { cx: RINGS[3], cy: RINGS[3], r: WASHER.apothem + SOCKET_FIT }],
-  ['C2', { cx: RINGS[2], cy: RINGS[2], r: WASHER.apothem + SOCKET_FIT }],
-  ['D1', { cx: RINGS[1], cy: RINGS[1], r: SLICE_HOLE[1] }],
-  ['E1', { cx: RINGS[0], cy: RINGS[0], r: SLICE_HOLE[0] }],
-  ['D2', { cx: RINGS[1], cy: RINGS[1], r: WASHER.apothem + SOCKET_FIT }],
-  ['E2', { cx: RINGS[0], cy: RINGS[0], r: WASHER.apothem + SOCKET_FIT }],
-];
-/** Parts cut as guests (everything the hosts can hold); the rest of the sheet's parts are laid out as hosts or loose. */
-const GUESTS = ['A2C', 'A3C', 'A4C', 'A5C', 'G1', 'G2', 'G3', 'G4', 'HEAD', 'LID', 'CORE0', 'CORER', 'COREC', 'LIDP'];
-/** The sheets' rows of host parts (loose parts the hosts could not hold go in the last row of the last sheet). */
-const ROWS: [string, string, string[][]][] = [
-  [
-    'sheet-1-base',
-    'Sheet 1: the base stack and rings 4 and 1',
-    [
-      ['A1', 'A2R', 'A3R', 'A4R'],
-      ['A5R', 'B1', 'B2', 'E1', 'E2'],
-    ],
-  ],
-  ['sheet-2-rings', 'Sheet 2: rings 3 and 2, the core and the washers', [['C1', 'C2', 'D1', 'D2']]],
+  ...RINGS.flatMap((r, k): [string, Hole][] => [
+    [`${'EDCB'[k]}1`, { cx: r, cy: r, r: SLICE_HOLE[k] }],
+    [`${'EDCB'[k]}2`, { cx: r, cy: r, r: WASHER.apothem + SOCKET_FIT }],
+  ]),
+  ...[2, 3, 4, 5].map((n): [string, Hole] => [`A${n}C`, { cx: COLLAR_R, cy: COLLAR_R, r: POCKET.bore }]),
+  ...[1, 2, 3, 4].flatMap((n): [string, Hole][] =>
+    ['', 'B'].map((suffix) => [
+      `G${n}${suffix}`,
+      {
+        cx: WASHER.apothem / Math.cos(Math.PI / 10),
+        cy: WASHER.apothem / Math.cos(Math.PI / 10),
+        r: WASHER.bore,
+      },
+    ]),
+  ),
 ];
 
-export function buildCryptex(kerf = 0.2, checks = true): Built {
-  const parts = makeParts(kerf);
-  const guests: Guest[] = GUESTS.flatMap((k) =>
-    Array.from({ length: parts[k].qty }, () => ({ key: k, part: parts[k].part, rb: boundingRadius(parts[k].part) })),
-  );
-  const holes = HOSTS.map(([, h]) => h);
+/** Pack without expensive per-part raster checks; reused for the four-size fitting table. */
+function layout(parts: Parts, kerf: number, stock: StockSize) {
+  const guests: Guest[] = Object.entries(parts)
+    .filter(([k]) => k !== 'A1')
+    .flatMap(([key, m]) => Array.from({ length: m.qty }, () => ({ key, part: m.part, rb: boundingRadius(m.part) })));
+  // Larger holes first gives the tightest nesting; later hosts can already be children of earlier hosts.
+  const hosts = [...HOSTS].sort((a, b) => b[1].r - a[1].r);
+  const holes = hosts.map(([, h]) => h);
   const { placed: nested, left } = nest(holes, guests, kerf);
-  const problems: string[] = nestProblems(holes, nested, kerf);
-  const sheets = ROWS.map(([file, title, rows], si) => {
-    const grid = rows.map((r) => r.map((k) => parts[k].part));
-    if (si === ROWS.length - 1) {
-      // what no hole could take, in rows that fit the bed
-      let row: Part[] = [];
-      let used = 0;
-      for (const g of left) {
-        if (used + g.part.size.w + 4 > 470) {
-          grid.push(row);
-          row = [];
-          used = 0;
-        }
-        row.push(g.part);
-        used += g.part.size.w + 4;
+  const problems = nestProblems(holes, nested, kerf);
+  const packed = packStock([parts.A1.part, ...left.map((g) => g.part)], stock);
+  const sheets = packed.map((s, si) => {
+    const roots = [...s.placed];
+    const children = (key: string, parent: Placed) => {
+      for (const n of nested.filter((n) => hosts[n.host][0] === key)) {
+        const hole = hosts[n.host][1];
+        const p = n.guest.part;
+        const x = hole.cx + n.dx - p.w / 2;
+        const y = hole.cy + n.dy - p.h / 2;
+        const host = parts[key].part;
+        const at: Placed = {
+          name: n.guest.key,
+          x: parent.x + (parent.turn === 90 ? host.h - y - p.h : x),
+          y: parent.y + (parent.turn === 90 ? x : y),
+          w: parent.turn === 90 ? p.h : p.w,
+          h: parent.turn === 90 ? p.w : p.h,
+          turn: parent.turn,
+        };
+        placePart(s.sheet, p, at);
+        s.placed.push(at);
+        children(n.guest.key, at);
       }
-      if (row.length) grid.push(row);
-    }
-    const packed = packRows(title, grid);
-    const mine = new Set(rows.flat());
-    nested.forEach((n) => {
-      const hostKey = HOSTS[n.host][0];
-      if (!mine.has(hostKey)) return;
-      const at = packed.placed.find((p) => p.name === hostKey)!;
-      const pad = (n.guest.part.size.w - n.guest.part.w) / 2;
-      packed.sheet.place(
-        n.guest.part.sheet,
-        at.x + HOSTS[n.host][1].cx + n.dx - n.guest.part.w / 2 - pad,
-        at.y + HOSTS[n.host][1].cy + n.dy - n.guest.part.h / 2 - pad,
-      );
-      packed.placed.push({
-        name: n.guest.key,
-        x: at.x + HOSTS[n.host][1].cx + n.dx - n.guest.part.w / 2,
-        y: at.y + HOSTS[n.host][1].cy + n.dy - n.guest.part.h / 2,
-        w: n.guest.part.w,
-        h: n.guest.part.h,
-      });
-    });
-    return { file, title, sheet: packed.sheet, placed: packed.placed };
+    };
+    roots.forEach((p) => children(p.name, p));
+    return { file: `sheet-${si + 1}`, title: `Sheet ${si + 1}: ${stock} inch stock`, ...s };
   });
+  return { sheets, problems };
+}
+
+export function fittingTable(kerf = 0.2) {
+  const parts = makeParts(kerf);
+  return (Object.keys(STOCK) as StockSize[]).map((stock) => {
+    const { sheets } = layout(parts, kerf, stock);
+    const materialMm2 = sheets.length * STOCK[stock].w * STOCK[stock].h;
+    return {
+      stock,
+      sheets: sheets.length,
+      materialMm2,
+      materialIn2: materialMm2 / 25.4 ** 2,
+      label: `fits ${sheets.length} ${sheets.length === 1 ? 'sheet' : 'sheets'} of ${stock}`,
+    };
+  });
+}
+
+export function buildCryptex(kerf = 0.2, checks = true, stock: StockSize = '12x12'): Built {
+  if (!Number.isFinite(kerf) || kerf < 0 || kerf > 0.4) throw new Error('Kerf must be between 0 and 0.4 mm');
+  const parts = makeParts(kerf);
+  const { sheets, problems } = layout(parts, kerf, stock);
   const clearance: Built['clearance'] = {};
-  for (const { part } of Object.values(parts)) {
+  for (const m of Object.values(parts)) {
+    const { part } = m;
     clearance[part.name] = checks ? part.close() : [];
     problems.push(...engravingProblems(part));
+    for (const zone of m.hidden) {
+      const pad = (part.size.w - part.w) / 2;
+      problems.push(...engravingRegionProblems(part.sheet, { ...zone, cx: zone.cx + pad, cy: zone.cy + pad }).map((p) => `${part.name}: ${p}`));
+    }
     for (const x of part.texts) if (x.capMm < 2.45) problems.push(`${part.name}: letters under 2.45 mm: ${x.text}`);
   }
+  for (const s of sheets) {
+    problems.push(...cutSpacingProblems(s.sheet, NEST_GAP).map((p) => `${s.file}: ${p.a} / ${p.b}: ${p.mm.toFixed(3)} mm apart`));
+    for (const it of s.sheet.items) {
+      const pts =
+        it.k === 'poly'
+          ? it.pts
+          : [
+              [it.cx - (it.k === 'ring' ? it.r1 : it.r), it.cy - (it.k === 'ring' ? it.r1 : it.r)],
+              [it.cx + (it.k === 'ring' ? it.r1 : it.r), it.cy + (it.k === 'ring' ? it.r1 : it.r)],
+            ];
+      if (
+        pts.some(
+          ([x, y]) => x < STOCK_MARGIN.x - 1e-6 || x > s.sheet.w - STOCK_MARGIN.x + 1e-6 || y < STOCK_MARGIN.y - 1e-6 || y > s.sheet.h - STOCK_MARGIN.y + 1e-6,
+        )
+      )
+        problems.push(`${s.file}: geometry outside cutter margins: ${JSON.stringify(pts)}`);
+    }
+  }
   const wood = Object.values(parts).reduce((a, m) => a + woodArea(m.part) * m.qty, 0);
-  return { kerf, parts, sheets, lock: checkLock(kerf), clearance, problems, area: { sheets: sheets.reduce((a, s) => a + s.sheet.w * s.sheet.h, 0), wood } };
+  const occupied = sheets.reduce(
+    (a, s) => a + (Math.max(...s.placed.map((p) => p.x + p.w)) + STOCK_MARGIN.x) * (Math.max(...s.placed.map((p) => p.y + p.h)) + STOCK_MARGIN.y),
+    0,
+  );
+  return {
+    kerf,
+    stock,
+    parts,
+    sheets,
+    lock: checkLock(kerf),
+    clearance,
+    problems,
+    area: { sheets: sheets.length * STOCK[stock].w * STOCK[stock].h, occupied, wood },
+  };
 }
 
 /** A part's outline minus its holes, square millimeters. */

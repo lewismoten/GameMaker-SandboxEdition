@@ -1,8 +1,8 @@
 // "In The Year 2000!" cryptex: the sub-assemblies. One list drives the assembly card sheet (cryptexSteps.ts) and the desk's
 // 3D assembly view (web/src/desk/boxes/kitAssemblyModel.ts), so they use the same IDs and words.
-// Stack letters follow the build order; layers are numbered from the bottom. A1, A2R... are engraved on a face that ends up
-// covered (the legend on the assembly sheet says which); the core slices and the plugs have no room for letters and are unmarked.
-import { COMBO, STEP } from './cryptexDims';
+// Stack letters follow the build order; layers are numbered from the bottom. Art uses unglued hidden faces; the legend
+// and part metadata identify downward assembly faces. All engraving is done sheet face up in one pass.
+import { COMBO, STEP, T } from './cryptexDims';
 
 export interface Piece {
   /** the part (cryptexParts.ts key) */
@@ -25,7 +25,7 @@ export interface Group {
   fit: string;
 }
 
-const layer = (n: number) => 3 * n;
+const layer = (n: number) => T * n;
 const slices = (key: string, from: number, count: number): Piece[] => Array.from({ length: count }, (_, i) => ({ key, z: layer(from + i) }));
 
 export const GROUPS: Group[] = [
@@ -48,10 +48,10 @@ export const GROUPS: Group[] = [
     fit: 'The base stack A stays where it is. Everything else goes on it.',
   },
   ...[
-    ['B', 4, 15, 'it is the biggest'],
-    ['C', 3, 21, ''],
-    ['D', 2, 27, ''],
-    ['E', 1, 33, ''],
+    ['B', 4, layer(5), 'it is the biggest'],
+    ['C', 3, layer(7), ''],
+    ['D', 2, layer(9), ''],
+    ['E', 1, layer(11), ''],
   ].map(([id, ring, z]): Group => {
     const n = ring as number;
     const L = id as string;
@@ -60,11 +60,11 @@ export const GROUPS: Group[] = [
       title: `${L}: ring ${n}`,
       pieces: [
         { key: `${L}1`, z: z as number },
-        { key: `${L}2`, z: (z as number) + 3 },
+        { key: `${L}2`, z: (z as number) + T },
       ],
       at: [[50, 170, 270, 350][4 - n], 190],
       spin: n === 1 ? -COMBO[0] * STEP : 0,
-      build: `Glue ring ${n} (stack ${L}): the top slice ${L}2 with the digits over the plain slice ${L}1, outer edges flush. Keep glue off the socket.`,
+      build: `Glue ring ${n} (stack ${L}): ${L}2 digits up over ${L}1 artwork down, outer edges flush. Glue only blank mating faces; keep glue off the socket.`,
       why: 'A ring must turn freely on the core, so it is glued to nothing else. Rings are made apart and cure at the same time.',
       done: `Sub-assembly ${L} is one solid: ring ${n}, a rim under the digit slice.`,
       fit: `Slide ring ${n} (stack ${L}) down over the core, digits up. It must turn freely.`,
@@ -73,24 +73,27 @@ export const GROUPS: Group[] = [
   {
     id: 'F',
     title: 'F: the core',
-    pieces: [{ key: 'CORE0', z: 3 }, ...slices('CORER', 2, 2), ...slices('COREC', 4, 9)],
+    pieces: [{ key: 'CORE0', z: layer(1) }, ...slices('CORER', 2, 2), ...slices('COREC', 4, 9)],
     at: [200, 57],
     spin: 0,
     build:
-      'Glue the 12 core slices in a stack: the closed one (CORE0) at the bottom, two with the ridge (CORER, ridges lined up), then nine round ones (COREC). No glue in the hole.',
+      'Glue the 12 core slices: CORE0 artwork up at the bottom, two CORER ridges lined up, then nine COREC. Glue only the blank wall annuli. Alternate plywood grain; no glue in the bore or over the floor picture.',
     why: 'It is the one part that must stay straight and slide out of the rings, so it is glued as a stack on a rolled tube that lines up the holes.',
     done: 'Sub-assembly F is one solid: a tube closed at the bottom, a ridge near it.',
     fit: 'Stand core F in base stack A, its ridge to the marker. Do not glue it.',
   },
   ...[4, 3, 2, 1].map((n): Group => {
-    const z = 15 + (4 - n) * 6;
+    const z = layer(5 + (4 - n) * 2);
     return {
       id: `G${n}`,
       title: `G${n}: washer pair`,
-      pieces: slices(`G${n}`, z / 3, 2),
+      pieces: [
+        { key: `G${n}B`, z },
+        { key: `G${n}`, z: z + T },
+      ],
       at: [[230, 170, 110, 50][n - 1], 270],
       spin: 0,
-      build: `Glue the two washers G${n} flat together, notches lined up (6 mm). Keep glue out of the bore and the notch.`,
+      build: `Glue blank G${n}B below engraved G${n}, artwork up and notches aligned (${(2 * T).toFixed(2)} mm). Glue only blank mating faces; keep bore and notch clean.`,
       why: 'Two washers make a part as thick as its ring, and the pair stays loose so it can be lifted out and turned.',
       done: `Sub-assembly G${n} is one solid washer for ring ${n}.`,
       fit: `Drop washer pair G${n} into the socket of ring ${n}, notch to the marker. Do not glue it.`,
@@ -99,25 +102,26 @@ export const GROUPS: Group[] = [
   {
     id: 'H',
     title: 'H: the head',
-    pieces: [{ key: 'HEAD', z: 39 }],
+    pieces: [{ key: 'HEAD', z: layer(13) }],
     at: [260, 57],
     spin: 0,
     build: 'The head H is one slice. It has no sub-assembly.',
     why: 'Only the head is glued on the core, and it goes on last, above the rings, so the rings stay on.',
     done: 'The head H is ready.',
-    fit: 'Glue head H on the top of the core, over ring 1. Keep glue off the rings.',
+    fit: 'Glue head H artwork down on the core, over ring 1. Glue only the blank core wall annulus; keep glue off the rings and artwork.',
   },
   {
     id: 'I',
     title: 'I: the lid',
     pieces: [
-      { key: 'LIDP', z: 36 },
-      { key: 'LIDP', z: 39 },
-      { key: 'LID', z: 42 },
+      { key: 'LIDP', z: layer(12) },
+      { key: 'LIDP', z: layer(13) },
+      { key: 'LID', z: layer(14) },
     ],
     at: [305, 57],
     spin: 0,
-    build: 'Glue the two plugs under the lid, one on the other.',
+    build:
+      'Glue the two plugs under the lid, one on the other, on the engraved side. Glue only the blank central plug footprint; keep the surrounding BZZZT and stars clear.',
     why: 'The plugs press into the core and hold the lid, so they are glued together first.',
     done: 'Sub-assembly I is one solid: the lid with its plug.',
     fit: 'Roll a note and slip it in the core; press lid I in.',

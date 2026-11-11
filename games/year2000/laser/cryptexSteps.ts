@@ -1,6 +1,6 @@
 // "In The Year 2000!" cryptex assembly sheet: ordered cards drawn from the real cut outlines, then the lock itself (the
 // ridge in a washer's notch, aligned and turned) and how to change the combination. Not a cutting template.
-import { CORE, COMBO, STEP, coreShape, washerHole, decagon, WASHER } from './cryptexDims';
+import { CORE, COMBO, STEP, T, coreShape, washerHole, decagon, WASHER } from './cryptexDims';
 import { rotate } from '@lewismoten/gamemaker-sandbox-tools/kit/laserJoints';
 import type { Pt } from '@lewismoten/gamemaker-sandbox-tools/kit/laserSvg';
 import { makeParts } from './cryptexParts';
@@ -47,7 +47,7 @@ export function legend(kerf: number): { id: string; what: string; where: string;
     return {
       id: marked ? key : `(${key})`,
       what: m.note,
-      where: marked ? WHERE(key) : ['E2', 'HEAD', 'LID'].includes(key) ? 'unmarked: bare on top' : 'unmarked: too narrow for letters',
+      where: marked ? WHERE(key) : m.hidden.length ? `${m.face} face: hidden artwork, no ID` : 'unmarked: glue face or no hidden space for an ID',
       qty: m.qty,
     };
   });
@@ -57,13 +57,13 @@ const WHERE = (key: string) =>
   key === 'A1'
     ? 'center of the floor, under the core'
     : /^A\dR$/.test(key)
-      ? 'glued face, in the rim'
+      ? 'top of the rim, under the loose ring'
       : /^A\dC$/.test(key)
-        ? 'glued face, in the collar'
+        ? 'top of the collar, under the loose washers'
         : /^G/.test(key)
-          ? 'glued face, in the washer'
+          ? 'top of the upper washer; blank reverse takes glue'
           : key.endsWith('1')
-            ? 'glued face, in the rim'
+            ? 'underside of the rim; blank reverse takes glue'
             : 'under the next ring up';
 
 interface Card {
@@ -146,7 +146,7 @@ export function assemblySvg(kerf = 0.2): string {
   });
   y += Math.ceil(legend(kerf).length / 2) * 14 + 8;
   const [note, ny] = wrap(
-    'An ID is engraved only on a face that ends up covered, so it never shows. Unmarked parts are listed in (brackets): the core slices and the plugs are too narrow, the digit slice of ring 1, the head and the lid are bare on top.',
+    'IDs and hidden pictures use only unglued faces. Cut and engrave face up in one pass. During assembly orient ring bottoms, head and lid artwork down; other art faces up. Unmarked parts are in (brackets). Leave glue faces blank.',
     20,
     y,
     150,
@@ -181,6 +181,6 @@ ${leg}${cards}${fit}${setCode}
 <text y="68" font-size="11">Each washer can sit ten ways, one per digit: 10,000 combinations.</text>
 <text y="92" font-size="11">The ridge is ${CORE.ridgeHw * 2} mm wide, the notch ${WASHER.notchHw * 2} mm: a ring only has to be near its digit</text>
 <text y="107" font-size="11">(about 5 degrees), not exact. There are no detents, so look at the marker.</text></g>
-<text x="20" y="${h - 14}" font-size="10">Stack height 36 mm: four base layers (12), four rings of two slices (24). The core is 12 slices; the head sits on top.</text>
+<text x="20" y="${h - 14}" font-size="10">Stack height ${(12 * T).toFixed(2)} mm: four pocket layers (${(4 * T).toFixed(2)}), eight ring slices (${(8 * T).toFixed(2)}). Stock ${T} mm; the head sits on top.</text>
 </svg>`;
 }

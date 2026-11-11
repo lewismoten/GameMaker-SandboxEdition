@@ -1,4 +1,4 @@
-// "In The Year 2000!" cryptex: the measurements (millimeters, 3 mm plywood) and the lock check. The kit stands on its end:
+// "In The Year 2000!" cryptex: the measurements (millimeters, 3.18 mm plywood/MDF) and the lock check. The kit stands on its end:
 // a square base with four pocket plates, four rings that step up like a pyramid (the biggest at the bottom, so every ring
 // shows its own band of digits), and a hollow core that goes down the middle. The core's lower end carries a ridge that
 // waits in the base's pocket, just under the stack. To pull the core out, the ridge has to pass up through a notch in each
@@ -6,11 +6,11 @@
 import { offsetPoly, rotate } from '@lewismoten/gamemaker-sandbox-tools/kit/laserJoints';
 import type { Pt } from '@lewismoten/gamemaker-sandbox-tools/kit/laserSvg';
 
-export const T = 3; // plywood thickness
+export const T = 3.18; // Proofgrade 1/8 in plywood or MDF; every stack uses the same stock
 export const DIGITS = 10;
 export const STEP = 360 / DIGITS; // degrees between digits
 export const COMBO = [2, 0, 0, 0]; // the year the game is named for, read from the inner ring out
-export const CORE = { r: 12, ridgeHw: 2, ridgeOut: 14.5, bore: 7.5, ridgeSlices: 3, roundSlices: 9 };
+export const CORE = { r: 12, ridgeHw: 2, ridgeOut: 14.5, bore: 8, ridgeSlices: 3, roundSlices: 9 };
 /** The washer's hole: a round bore with one notch. The pocket hole in the base is the same with a snugger notch. */
 export const WASHER = { bore: 12.3, notchHw: 3.5, notchOut: 14.9, apothem: 18 };
 export const POCKET = { bore: 12.3, notchHw: 2.3, notchOut: 14.9, plates: 4 };
@@ -18,17 +18,18 @@ export const SOCKET_FIT = 0.15; // the ring's socket is this much bigger than th
 export const RINGS = [28, 35, 42, 49]; // outer radii, inner ring first (it sits on top)
 export const SLICES_PER_RING = 2;
 /**
- * The narrowest wall left on a hollowed slice, millimeters. A ring of 3 mm plywood 8 mm wide cuts, handles and glues without
- * breaking (about 2.7 times the thickness; below 5 mm laser-cut ply rings snap along the grain), and it is wide enough to engrave a part ID.
+ * Minimum continuous laminated wall, mm (1.26 stock thicknesses). Keep the full face clean for glue, alternate ply grain,
+ * and handle on the waste carrier until glued. The core's 4 mm annulus and the 4 mm bearing overlaps set the limit.
+ * This is a fabrication allowance, not a measured strength rating; validate a scrap ring in the actual plywood/MDF.
  */
-export const RIM = 8;
+export const RIM = 4;
 /** Radius of the round hole in each ring's plain (B) slice, index k = ring k+1: under the rim of the next ring up, so loads pass down the rims. */
-export const SLICE_HOLE = RINGS.map((_, k) => (k === 0 ? 20 : RINGS[k - 1] - RIM));
+export const SLICE_HOLE = RINGS.map((r, k) => (k === 0 ? r : RINGS[k - 1]) - RIM);
 /** The pocket plates are two parts: an outer ring (hole as the biggest ring's plain slice) and a collar round the ridge slot. */
-export const COLLAR_R = 26;
+export const COLLAR_R = Math.hypot(POCKET.notchOut, POCKET.notchHw) + RIM; // include the notch's corners
 export const PX_ID = 0.36; // millimeters per font pixel for part IDs: capitals 2.52 mm, the smallest the checks allow
 export const HEAD_R = 20;
-export const LID = { r: 14, plug: 7.35 };
+export const LID = { r: 14, plug: CORE.bore - 0.15 };
 export const BASE = 114; // the square base
 export const PX = 0.5; // millimeters per font pixel for the digits (3.5 mm capitals)
 

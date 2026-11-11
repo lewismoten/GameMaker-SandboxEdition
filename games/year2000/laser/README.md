@@ -1,83 +1,158 @@
 # In The Year 2000!: the Teleport-A-Phone cryptex (laser kit)
 
-A combination lock for a Glowforge, cut from 3 mm (1/8 in) plywood or MDF. Four stepped rings of digits stand on a square
-base. Dial the year the game is named for, 2 0 0 0, and a hollow core slides up out of the middle, with room inside for a
-rolled note. The lid of the core says BZZZT, the teleporter's sound in the game. Every washer can be reseated, so the
-combination can be changed (10,000 of them).
+A combination lock cut from **Proofgrade 1/8 in (3.18 mm) plywood or MDF**. Four stepped
+rings stand on a square base. Dial **2 0 0 0**, inner ring first, and the hollow core slides
+out. Its 16 mm bore holds a rolled note. Lift and reseat the washers to change the code.
 
 ```sh
-cd web && npx vite-node ../games/year2000/laser/cryptex.ts [--kerf 0.2] [--out DIR] [--force]
+cd web
+npx vite-node ../games/year2000/laser/cryptex.ts --out /tmp/cryptex-out
+npx vite-node ../games/year2000/laser/cryptex.ts --sheet 12x20 --out /tmp/cryptex-out-12x20
+# Optional: --kerf 0.15, --sheet 6x12 or 8x12, --force
 ```
 
-It writes `web/public/laser/year2000/cryptex/` (ignored by version control): `sheet-1-base.svg` and `sheet-2-rings.svg`
-(each with a `.png` preview), `assembly.svg` (the part ID legend, a card for each sub-assembly from the real outlines, the final
-assembly, setting your own code, and the lock to scale) and `manifest.json` (`kind: "kit"`, which the desk's Feelies shelf
-lists; it also carries the legend and the sheet areas). The
-tests are `web/test/laserCryptex.test.ts`. The build exits 1 if the lock check, the spacing check or the engraving check
-fails.
+The default is `--sheet 12x12`, kerf 0.2 mm. Without `--out`, output goes to the ignored
+`web/public/laser/year2000/cryptex/` directory. Each numbered `sheet-N.svg` has a PNG
+preview. `assembly.svg` has the part legend, assembly cards, final assembly and code
+setting; `manifest.json` includes the chosen stock, margins, fitting table, part quantities,
+assembly face directions, hidden engraving regions, lock results and material areas.
+The source cache includes sheet size and kerf. The build exits 1 for failed lock, cut
+spacing, engraving containment or hidden-region checks.
 
-## Scrap test first
+## Sheet sizes and material
 
-Before the real sheets, cut one ring pair and one washer from scrap of the same plywood: glue the pair, drop the washer
-into the ring (it should drop in with a little play and not rock), and slide a core slice (a COREC disc) through the
-washer's bore (it should turn freely). If the washer is tight, lower the kerf you give the build (`--kerf 0.15`); if it
-rocks, raise it. Measure your sheet with calipers too: ply sold as 3 mm is often 2.6 to 3.2 mm, and the stack heights (36 mm
-for the core, 12 mm for the pocket) add up.
+Dimensions below are **purchased stock**, long edge horizontal. Leave **6.5 mm on each
+short end and 12.9 mm on each long edge**. This keeps a 12 in edge within the 279 mm
+engraving height and a 20 in edge within the 495 mm bed width. The SVG is the full stock
+size; its margins are empty. Align it to the matching stock without resizing. The usable
+rectangle for 12x12 is 291.8 x 279 mm; for 12x20 it is 495 x 279 mm.
 
-## Laser rules it follows
+At the default 0.2 mm kerf:
 
-- Red `#FF0000` cut strokes, no fill. Blue `#0000FF` engrave fills, no stroke. No score on wood. One pass: every engraving
-  is on the face that lies up on the sheet, so there is no flip. Run engrave, then cut.
-- Every cut lies outside all engraving (at least 1 mm), and no two elements touch (the clearance tool runs on every part).
-- Two sheets, each inside the bed (495 x 279 mm usable): 450 x 232 mm and 453 x 174 mm.
-- No people are drawn. The shapes are a phone booth, a moon and three stars. The words are already in `games/year2000`:
-  the title, Teleport-A-Phone, and the teleporter's BZZZT; the digits are the rings'.
+| Stock (inches) | Sheets | Purchased material (in²) | Purchased material (mm²) |
+| -------------- | ------ | ------------------------ | ------------------------ |
+| 6x12           | 4      | 288                      | 185,806                  |
+| 8x12           | 4      | 384                      | 247,741                  |
+| **12x12**      | **2**  | **288**                  | **185,806**              |
+| **12x20**      | **1**  | **240**                  | **154,838**              |
 
-## Hollow rings, nesting, IDs and sub-assemblies
+The library's 12x20 size uses 16.7% less purchased material than two 12x12 sheets. Retained
+wood is about **61,757 mm²**, down from **72,275 mm²** (14.6%). The old 183,222 mm² figure
+was cropped layout area, not purchased stock; the manifest now distinguishes purchased
+`area.sheets`, occupied bounding rectangles `area.occupied`, and retained compensated
+part area `area.wood`. Reclaimed hole waste is not counted twice. The machine-readable
+`fitting` array includes a label such as `fits 2 sheets of 12x12`; `fit` is the selected label.
 
-- **Rings, not solid discs.** The plain slice of each ring is a rim (a round hole inside it), and each base plate is two parts:
-  an outer ring and a collar round the ridge slot. The digit slices stay full (they carry the digits and the washer socket), and the
-  floor is solid. The narrowest wall left is **8 mm** (`RIM` in `cryptexDims.ts`): about 2.7 times the 3 mm plywood, which cuts,
-  handles and glues without snapping along the grain (laser-cut rings under about 5 mm break), and wide enough for an ID. Each hole
-  is under the rim of the next ring up (hole radius = that ring's outer radius minus the rim), so a load passes straight down the
-  rims to the base. The washers still lift out of the digit slice's socket and turn, so setting your own code works as before
-  (the lock check still frees the core for 2000 and no other of the 10,000 codes).
-- **Nesting.** `cryptexNest.ts` cuts the small parts out of the empty middles (first-fit circle packing, 2 mm of wood between cuts,
-  re-checked by the build). The kit went from 3 sheets (233,413 mm2 of bed) to 2 (183,000 mm2); the parts use about 72,000 mm2 of
-  wood instead of 82,000.
-- **IDs.** The letter is the sub-assembly (A base stack, B to E rings 4 to 1, F core, G1 to G4 washer pairs, H head, I lid); the
-  number counts layers from the bottom, with R (ring) and C (collar) for the two parts on a base layer (A2R, A2C). An ID is engraved
-  only on a face that ends up covered: the floor under the core, the glued face of a plain slice, a digit slice under the next ring up,
-  the glued face of a washer, a plate or a collar. The core slices, the plugs, ring 1's digit slice, the head and the lid have none
-  (too narrow, or bare on top). `cryptexGroups.ts` is the one list the assembly sheet and the desk's 3D view both read.
-- **Sub-assemblies**, built apart and glued where they cure, then put together: the base stack A (slowest, carries the rest; a dry
-  core lines up its collars), each ring B to E (glued to nothing else so it turns), the core F (it must be straight to slide), the
-  washer pairs G (loose, so they lift and turn) and the lid I. Only the head H is glued onto the finished stack.
-- **Set your own code** is its own run of steps in the 3D view: pull the core, lift ring 1, lift its washer G1, turn it, drop it back.
+`cryptexNest.ts` nests smaller rings and parts recursively inside larger holes, including
+plugs inside collar/washer bores. The stock packer tries eight deterministic rectangle
+orders/scoring choices with quarter turns, keeping the fewest sheets and then the least
+occupied area. It uses the actual kerf-compensated outline bounds, including mitered
+corners and the cut hairline. Nesting keeps at least **2 mm between compensated cut
+paths**; the build independently measures every pair of cut paths on each finished sheet.
+This is heuristic packing, not a proof of a global nesting optimum.
 
-## The mechanism, and how it differs
+## Larger hollow, continuous glue lands
 
-**Inspired by (generic families):** the cryptex (a stack of lettered rings), pin-tumbler and wafer locks, and the keyed
-shaft that only slides out through aligned notches.
+The new minimum `RIM` is **4 mm**, down from 8 mm. This applies to the core wall, the
+collar at the ridge-slot corners, the narrowest plain ring, and the bearing overlaps
+between stepped rings. Most plain-ring walls and the outer base rims are actually
+11 mm wide; their holes stop 4 mm inside the next ring's outer edge to carry the load.
+The digit slices retain their full faces around the unchanged washer sockets.
 
-**This one:** the stack stands on its end and steps up like a pyramid, so each ring shows its own band of digits from
-above, which flat plywood needs (a laser cannot engrave a ring's rim). The core is a stack of 12 glued slices; its lower
-three have a ridge. At rest the ridge waits in the base's pocket, just under the rings. Each ring has an inner **washer**
-with one notch, seated in a ten-sided socket in the ring, so there are ten ways to seat it, one per digit. Pulling the core
-up pushes the ridge through ring 4 (the biggest, at the bottom), then ring 3, 2 and 1, and it passes only if every notch
-is under the marker (the triangle on the base, at three o'clock). A ring turned to the wrong digit is 36 degrees off and
-blocks the ridge. A ring may be about 5 degrees off its digit and still pass, since the notch is 7 mm wide and the ridge 4 mm.
-Rings turn freely on the round part of the core, with no ridge in their layer until the pull.
+The choice is a fabrication allowance: 4 mm is 1.26 times the 3.18 mm stock thickness,
+with continuous closed loops rather than unsupported tongues. Each core wall joint has
+about 251 mm² of uninterrupted annular glue area. The core's 12-layer tube, paired ring
+slices, and four-layer base support the thin individual slices once cured. Alternate
+plywood grain between layers, support the loose pieces on their waste carrier, and glue
+on a flat surface under a weight. MDF needs that support too. No hidden decoration
+removes material from these glue lands. The washer's existing 3.1 mm notch ligament is
+unchanged and supported by its two-layer laminate.
 
-**Changing the combination:** pull the core, lift off ring 1, lift each washer out of its ring, turn it (the notch moves
-to the digit you want) and drop it back. Read it from the inner ring out along the marker.
+This is a design rationale, **not a measured breaking load or a guarantee for every sheet**.
+A scrap-cut and glue trial in the actual plywood/MDF must confirm handling strength;
+reject chipped, delaminated or char-weakened pieces. Going thinner would sacrifice the
+4 mm core wall and bearing overlap. Use shallow engraving, not deep relief.
 
-**What it doesn't have:** detents. A click for each digit needs a flexing tongue, which 3 mm plywood does not give reliably,
-so the 5 degree window stands in for them. The head and the lid are friction fits, so a drop of wax on the plugs helps.
+| Cavity measurement                | Before              | Now                      |
+| --------------------------------- | ------------------- | ------------------------ |
+| Core bore diameter                | 15 mm               | 16 mm                    |
+| Core wall                         | 4.5 mm              | 4 mm                     |
+| Usable note depth, below lid plug | 30 mm at 3 mm stock | 31.8 mm at 3.18 mm stock |
+| Usable cylindrical volume         | 5.30 cm³            | 6.39 cm³ (+20.6%)        |
+| Base hollow inner radius (collar) | 26 mm               | 19.08 mm                 |
+| Base hollow outer radius          | 34 mm               | 38 mm                    |
+| Base hollow annular area          | 1,508 mm²           | 3,393 mm² (+125.0%)      |
+| Base hollow volume                | 18.10 cm³           | 43.16 cm³ (+138.5%)      |
 
-## The lock check
+The central ridge-slot pocket and all lock contact dimensions are unchanged. The collar
+radius includes the diagonal distance to the slot corners, so even there the wall is
+4 mm. Core and ring heights both scale with stock thickness: the core spans 12 layers
+(38.16 mm), matching four pocket layers plus eight ring layers. Nothing changes the DOS game.
 
-`checkLock` in `cryptexDims.ts` uses the real cut shapes. It tries every one of the 10,000 combinations, with each ring set
-exactly on its digit, and only 2000 frees the core. The ridge is tested against the washer's bore and notch (outline
-points and a grid) and against the base's pocket. It repeats at the laser's kerf of 0.1 and 0.3 mm when the files were made
-for 0.2 mm; the parts then come out 0.05 mm bigger or smaller per side, and the washer still fits its socket.
+## Hidden pictures and one-pass engraving
+
+Red `#FF0000` is cut stroke only. Blue `#0000FF` is engrave fill only; there is no score
+on wood. All art is on the face lying **up on the sheet**, engraved before cutting.
+There is no second laser pass or registration flip. Some parts are turned over **during
+assembly** so their engraved faces point down. Their blank reverse faces take the glue.
+
+| Part       | Engraved face in assembly | Hidden design and glue exclusion                                                                                                                                           |
+| ---------- | ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| A1 floor   | Up                        | Phone booth and ID beneath the removable core; BZZZT, teleporter platform and star in the surrounding hollow. Both regions avoid the collar and outer rim glue footprints. |
+| A5R, A5C   | Up                        | ID and stars on the last base layer, beneath loose rings/washers.                                                                                                          |
+| B1, C1, D1 | Down                      | Phone booth and ID inside each ring; only the blank reverse glues to its digit slice.                                                                                      |
+| E1         | Down                      | Small star in the narrow ring; no ID squeezed into its 4 mm wall.                                                                                                          |
+| B2, C2, D2 | Up                        | Moon, star and ID under the next loose ring, inside the digit band.                                                                                                        |
+| G1–G4      | Up                        | Moon, star and ID on the upper washer. Glue blank G1B–G4B underneath, with notches aligned.                                                                                |
+| CORE0      | Up                        | BZZZT and star on the inside floor of the core; the entire wall glue annulus stays blank.                                                                                  |
+| HEAD       | Down                      | Moon, star and 2000 outside the core's glue annulus.                                                                                                                       |
+| LID        | Down                      | BZZZT and star around the central plug footprint; the lid top is blank.                                                                                                    |
+
+The A1 center picture is uncovered when the core is out; the other inner pictures appear
+as the unlocked kit is taken apart. CORE0 provides the core-slice picture. CORER and
+COREC wall slices, intermediate base layers and lower washer slices stay blank because
+their flat faces are glue joints. There is no engraving on a laser-inaccessible vertical
+bore wall. Shapes are checked in their entirety against explicit unglued regions, including
+edges and filled interiors, not just vertices. Cut-to-engraving gaps remain at least 1 mm,
+or 1.5 mm at holes. IDs are omitted where hidden unglued space is too narrow; the assembly
+legend lists these parts in parentheses. Keep each unmarked piece with its labeled sheet
+position until assembly.
+
+## Scrap trial and assembly
+
+First cut one plain/digit ring pair, its two washer layers, and a core slice from the same
+stock. Glue the ring with its plain-slice art down, and the washer with its art up, keeping
+the bore, notch and socket clean. The washer should drop in with a little play; a core
+slice should turn freely. Lower declared kerf if the washer is tight; raise it if it rocks.
+Measure stock thickness with calipers: all layers must use the same thickness. The 3.18 mm
+assembly dimensions scale together if the stock measures closer to 3 mm.
+
+Build the base from A1 and four ring/collar layers, slots aligned to the reading marker.
+Glue only blank mating faces; keep the floor pictures clear. Build the four two-slice
+rings, washer pairs, core and lid separately. CORE0 art faces into the bore. With the
+sub-assemblies dry, put core F in the base, slide rings and their loose washers down over
+it, largest first, and glue the head last, artwork down. Glue plugs only to the blank
+center of the lid's engraved underside. Roll a note into the core and press the lid in.
+The assembly SVG has the full sequence and part quantities.
+
+## Lock and verification
+
+The lower three core slices carry a ridge. It waits in the base pocket until the pull,
+then must pass through each washer's notch. Each washer sits ten ways in a decagonal
+socket; only the four aligned notches free the core. There are no detents: use the marker.
+To change the code, dial 2000, pull the core, lift a ring and reseat its washer with the
+notch under the desired digit. Read the code from the inner ring outward.
+
+`checkLock` tests all 10,000 codes against the real cut shapes: only 2000 opens the core.
+Tests also cover actual kerfs of 0.1 and 0.3 mm for files drawn at 0.2 mm, the pocket fit,
+wrong-digit blocking, a few degrees of dial play, and a reseated code (7391).
+
+```sh
+cd web
+npx vitest run test/laserCryptex.test.ts
+npx tsc --noEmit -p .
+```
+
+Original kit: Claude Sonnet 5.5 (Anthropic), directed by Lewis Moten. Cavity revisions,
+hidden artwork, stock packing, checks and documentation: OpenAI Codex (GPT-6), directed
+by Lewis Moten. Artwork is drawn in code; existing pixel-font credits remain in NOTICE.md.
