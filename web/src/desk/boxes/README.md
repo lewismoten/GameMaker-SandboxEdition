@@ -28,3 +28,5 @@ kinds: a part slides into its group, the finished group is shown as one solid wi
 view fits it), and a whole group moves (into the kit, then out and back for "Set your own code": a washer lifted, turned and
 dropped back). `poseAt` gives a part's offset and spin; a "Jump to" list in the viewer goes to each group, the final assembly and
 setting a code. Each slab is painted whole, from the bottom up, so hollow rings stack correctly.
+
+The kit views (kitAssemblyViewer.ts and the die's balloonCubeFoldView.ts) share manual/printables/orbitCamera.ts (drag, wheel, pinch, keys, and the Zoom in, Zoom out and Reset view buttons); a kit's SVG downloads open in manual/printables/svgViewer.ts. `withInches` in laserKits.ts adds the inch size after a thickness in a kit's summary.

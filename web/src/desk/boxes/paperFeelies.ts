@@ -10,7 +10,7 @@ const TILE = 70; // the picture's box, in pixels
 const LAYOUT = 432; // the sheet is laid out this wide, then shrunk
 
 /** One tile for each piece; the pictures come in one at a time as they are drawn. */
-export function paperFeelieTiles(items: BoxItem[], open: () => void): HTMLElement[] {
+export function paperFeelieTiles(items: BoxItem[], open: () => void, fold: (item: BoxItem, tile: HTMLElement) => void = () => {}): HTMLElement[] {
   let shown = false;
   return items.map((item, i) => {
     const pic = h('span', { class: 'fl-paper', 'aria-hidden': 'true' });
@@ -18,7 +18,12 @@ export function paperFeelieTiles(items: BoxItem[], open: () => void): HTMLElemen
     const name = h('span', { class: 'fl-name' }, item.title);
     const button = h(
       'button',
-      { class: 'feelie paper', type: 'button', title: `${item.title}: look at it in the box`, onclick: () => showInBox(open, item.id) },
+      {
+        class: 'feelie paper',
+        type: 'button',
+        title: item.fold ? `${item.title}: watch it fold in 3D` : `${item.title}: look at it in the box`,
+        onclick: (e: Event) => (item.fold ? fold(item, e.currentTarget as HTMLElement) : showInBox(open, item.id)),
+      },
       pic,
       name,
     );

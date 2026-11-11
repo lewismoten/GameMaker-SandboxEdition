@@ -62,6 +62,7 @@ export function boxItems(ctx: PrintContext): BoxItem[] {
           : it.kind === 'postcardgrille'
             ? () => Promise.resolve(postcardGrilleLive(it))
             : undefined,
+    fold: it.kind === 'ballooncube' ? () => import('./balloonCubeFoldView').then((m) => m.foldViewer(it)) : undefined,
     redFilm: it.kind === 'hintbook',
     glass: it.kind === 'spyglass' || it.kind === 'prints',
     epub:

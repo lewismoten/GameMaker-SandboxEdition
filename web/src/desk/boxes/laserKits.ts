@@ -56,6 +56,14 @@ export interface LaserKit {
   base: string;
 }
 
+/** A material thickness in millimeters followed by its inch size ("3 mm plywood" becomes "3 mm (1/8 in) plywood"), since many sites list inches. */
+export function withInches(text: string): string {
+  const FRACTIONS: Record<string, string> = { '1.5': '1/16', '2': '3/32', '2.4': '3/32', '3': '1/8', '4': '5/32', '5': '3/16', '6': '1/4' };
+  return text.replace(/\b(\d+(?:\.\d+)?) mm(?= (?:plywood|MDF|wood|birch|basswood|draftboard|acrylic|material))/g, (m, n: string) =>
+    FRACTIONS[n] ? `${n} mm (${FRACTIONS[n]} in)` : m,
+  );
+}
+
 /** Where game `id`'s laser files are served. */
 const laserBase = (id: string): string => `./laser/${id}/`;
 
@@ -90,7 +98,7 @@ export function kitOf(manifest: unknown, base: string): LaserKit | null {
       title: kit.title,
       thickness: typeof material === 'number' ? material : undefined,
       sheets: sheets.length ? sheets : undefined,
-      summary: kit.summary,
+      summary: withInches(kit.summary),
       previews,
       downloads,
       base,
