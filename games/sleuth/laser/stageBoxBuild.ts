@@ -1,5 +1,6 @@
-// Final Curtain's Stage Box: builds the parts, the three sheets and the checks in memory (the test and stageBox.ts use it).
-import { packRows, type Part } from '@lewismoten/gamemaker-sandbox-tools/kit/laserLayout';
+// Final Curtain's Stage Box: builds the parts, the stock sheets and the checks in memory (the test and stageBox.ts use it).
+import { type Part, type Placed, type StockSize } from '@lewismoten/gamemaker-sandbox-tools/kit/laserLayout';
+import { packKitStock, stockFitting, stockProblems } from '@lewismoten/gamemaker-sandbox-tools/kit/laserStock';
 import type { LaserSheet, Pt } from '@lewismoten/gamemaker-sandbox-tools/kit/laserSvg';
 import { checkMechanism, dims } from './stageBoxDims';
 import { addArt } from './stageBoxArt';
@@ -49,46 +50,25 @@ export function engravingProblems(part: Part): string[] {
 
 export interface Built {
   kerf: number;
+  stock: StockSize;
   parts: Parts;
-  sheets: { file: string; title: string; sheet: LaserSheet; placed: ReturnType<typeof packRows>['placed'] }[];
+  sheets: { file: string; title: string; sheet: LaserSheet; placed: Placed[] }[];
   mechanism: ReturnType<typeof checkMechanism>;
   clearance: Record<string, { a: string; b: string; mm: number }[]>;
   problems: string[];
 }
 
-export function buildStageBox(kerf = 0.2, t = 3, checks = true): Built {
+const pieces = (parts: Parts) => Object.values(parts).flatMap(({ part, qty }) => Array.from({ length: qty }, () => part));
+
+export function fittingTable(kerf = 0.2, t = 3) {
+  return stockFitting(pieces(makeParts(dims(t), kerf)));
+}
+
+export function buildStageBox(kerf = 0.2, t = 3, checks = true, stock: StockSize = '12x12'): Built {
   const d = dims(t);
   const parts = makeParts(d, kerf);
   addArt(parts, d);
-  const one = (n: string) => [parts[n].part];
-  const many = (n: string) => Array.from({ length: parts[n].qty }, () => parts[n].part);
-  const layout: [string, string, Part[][]][] = [
-    [
-      'sheet-1-box',
-      'Sheet 1: the outer box',
-      [
-        [...one('P'), ...one('K'), ...one('L'), ...one('R')],
-        [...one('T'), ...one('B')],
-      ],
-    ],
-    [
-      'sheet-2-inside',
-      'Sheet 2: the stage and the mechanism',
-      [
-        [...one('FLOOR'), ...one('W')],
-        [...one('D1'), ...one('D2'), ...one('C'), ...one('COMB'), ...one('DAGGER'), ...one('ARM'), ...one('PIN'), ...one('POST'), ...many('PEG')],
-      ],
-    ],
-    [
-      'sheet-3-drawer',
-      'Sheet 3: the trap-room drawer',
-      [
-        [...one('DB'), ...one('DF'), ...one('DK')],
-        [...one('DL'), ...one('DR')],
-      ],
-    ],
-  ];
-  const sheets = layout.map(([file, title, rows]) => ({ file, title, ...packRows(title, rows) }));
+  const sheets = packKitStock(pieces(parts), stock);
   const clearance: Built['clearance'] = {};
   const problems: string[] = [];
   for (const { part } of Object.values(parts)) {
@@ -96,5 +76,6 @@ export function buildStageBox(kerf = 0.2, t = 3, checks = true): Built {
     problems.push(...engravingProblems(part));
     for (const x of part.texts) if (x.capMm < 2.45) problems.push(`${part.name}: letters under 2.45 mm: ${x.text}`);
   }
-  return { kerf, parts, sheets, mechanism: checkMechanism(d), clearance, problems };
+  for (const s of sheets) problems.push(...stockProblems(s.sheet).map((p) => `${s.file}: ${p}`));
+  return { kerf, stock, parts, sheets, mechanism: checkMechanism(d), clearance, problems };
 }

@@ -93,11 +93,19 @@ const iso = createIso([
 Laser helpers use millimeters and take caller-supplied designs:
 
 - `kit/laserJoints`: `jointOutline`, `outlineFromRects`, `offsetPoly`, rectangle and rotation helpers.
-- `kit/laserLayout`: kerf-adjusted `Part`, `BED`, `PART_GAP`, `packRows`; packing throws
-  when rows exceed the sheet. Call `Part.close()` to check spacing.
+- `kit/laserLayout`: kerf-adjusted `Part` with compensated `cutBounds`, `BED`, `PART_GAP`, `packRows`,
+  and `STOCK`/`STOCK_MARGIN` for Proofgrade 6 × 12, 8 × 12, 12 × 12 and 12 × 20 inch sheets.
+  `packStock` packs with quarter turns inside the cutter margins; `placePart` copies a placement without SVG transforms.
+  Packing throws when a part cannot fit. Call `Part.close()` to check spacing.
+- `kit/laserStock`: `packKitStock` nests small solid pieces in polygonal or round cut-out holes before
+  stock packing; `stockFitting` returns sheet counts for all four sizes using the same layout;
+  `stockProblems` checks every operation and its hairline against cutter margins. Hole nesting uses
+  unturned bounding rectangles with one level of guests; root pieces and their guests may turn together.
+  Layouts are deterministic heuristics, not guaranteed minimum sheet counts.
 - `kit/laserSvg`: `LaserSheet`, operation colors and shape types; `.svg(title)` writes SVG.
 - `kit/laserPixels`: pixel engraving, straight/arc text, bitmap toning and ink bounds.
-- `kit/laserClearance`: `tooClose` reports element pairs below supplied gaps.
+- `kit/laserClearance`: `tooClose` reports element pairs below supplied gaps; `cutSpacingProblems` checks exact compensated
+  cut-path distances, and `engravingRegionProblems` checks convex engraving in circular or annular regions.
 - `kit/laserPreview`: Node raster previews and PNG output.
 
 ## Other subpaths

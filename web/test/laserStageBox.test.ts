@@ -4,10 +4,12 @@
 // only releases the drawer when the dagger, the front curtain and the rear curtain are worked in that order.
 import { describe, expect, it } from 'vitest';
 import { notchSpans, offsetPoly, outlineFromRects } from '@lewismoten/gamemaker-sandbox-tools/kit/laserJoints';
-import { BED } from '@lewismoten/gamemaker-sandbox-tools/kit/laserLayout';
+import { STOCK, type StockSize } from '@lewismoten/gamemaker-sandbox-tools/kit/laserLayout';
+import { stockProblems } from '@lewismoten/gamemaker-sandbox-tools/kit/laserStock';
+import { checkStockCuts } from './laserStockAssertions';
 import { CUT, ENGRAVE } from '@lewismoten/gamemaker-sandbox-tools/kit/laserSvg';
 import { checkMechanism, dims } from '../../games/sleuth/laser/stageBoxDims';
-import { buildStageBox } from '../../games/sleuth/laser/stageBoxBuild';
+import { buildStageBox, fittingTable } from '../../games/sleuth/laser/stageBoxBuild';
 
 describe('laser joint helpers', () => {
   it('traces the outline of rectangles with a notch', () => {
@@ -60,8 +62,9 @@ describe('Stage Box sheets', () => {
       expect([...colors].every((c) => [CUT, ENGRAVE].includes(c))).toBe(true);
       expect(svg).not.toMatch(/<text|font-family|transform=|#ff00ff|id="score"/);
       expect(svg).toMatch(/width="[\d.]+mm" height="[\d.]+mm"/);
-      expect(s.sheet.w).toBeLessThanOrEqual(BED.w);
-      expect(s.sheet.h).toBeLessThanOrEqual(BED.h);
+      expect(s.sheet.w).toBe(STOCK[stage.stock].w);
+      expect(s.sheet.h).toBe(STOCK[stage.stock].h);
+      expect(stockProblems(s.sheet)).toEqual([]);
       const cut = svg.match(/<g id="cut"[^>]*>(.*?)<\/g>/s)![1];
       for (const p of cut.matchAll(/<path d="([^"]*)"/g)) expect(p[1].trim().endsWith('Z')).toBe(true);
       expect(s.sheet.items.every((i) => (i.op === 'cut' ? true : i.op === 'engrave'))).toBe(true);
@@ -117,4 +120,17 @@ describe('Stage Box mechanism', () => {
     expect(d.pegZ[1] + d.play).toBeLessThan(d.window.z0); // pegs and their slots sit behind the apron
     expect(d.pegZ2[1] + d.play).toBeLessThan(d.window.z0);
   });
+});
+
+describe('Stage Box library stock', () => {
+  const fitting = fittingTable();
+  for (const stock of Object.keys(STOCK) as StockSize[]) {
+    it(`packs every part with safe cut spacing on ${stock}`, () => {
+      for (const kerf of [0, 0.2, 0.4]) {
+        const b = buildStageBox(kerf, 3, false, stock);
+        expect(b.sheets).toHaveLength(fitting.find((f) => f.stock === stock)!.sheets);
+        checkStockCuts(b.sheets, stock, Object.values(b.parts));
+      }
+    });
+  }
 });
