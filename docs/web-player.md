@@ -2,8 +2,8 @@
 
 The web player is one `.html` file that plays Game-Maker games in the browser. Put it on any
 web host, next to folders of Game-Maker games as they were on a DOS disk, and it plays them.
-It needs nothing else: the engine, music and styles are inside the file. The only other file it
-reads is an optional `games.json` that lists the folders.
+The engine, music and styles are inside the file. It fetches each game's files from its
+folder; `games.json`, which lists the folders, is optional.
 
 Try it with this project's games at
 <https://lewismoten.github.io/GameMaker-SandboxEdition/player/>, and download it from
@@ -28,8 +28,8 @@ my-site/
 ```
 
 1. Copy each game's folder to the host as it is: its `.GAM` file and every file it uses (maps,
-   blocks, characters, monsters, palettes, sounds, music, pictures, text screens). Upper,
-   lower or mixed case all work.
+   blocks, characters, monsters, palettes, sounds, music, pictures, text screens). Use all lower case or all
+   upper case file names: arbitrary mixed case is not found on case-sensitive hosts.
 2. Put the web player beside the folders.
 3. Add `games.json` beside it to show a list of games to choose from.
 
@@ -53,7 +53,7 @@ A plain array of games (without `"title"`) works too. For each game:
 
 | Field      | Needed | What it is                                                                                                                      |
 | ---------- | ------ | ------------------------------------------------------------------------------------------------------------------------------- |
-| `"folder"` | yes    | The game's folder, relative to `games.json` (or a full `https://` address).                                                     |
+| `"folder"` | yes    | The game's folder, relative to `games.json` (or a full `https://` address; a folder on another origin must allow CORS). |
 | `"gam"`    | no     | The game file in the folder. Without it, the player tries the folder's name (`castle/` → `castle.gam`, then `CASTLE.GAM`).      |
 | `"title"`  | no     | The name shown in the list. The folder's name otherwise.                                                                        |
 | `"id"`     | no     | What `?game=` calls it, and what its saves are kept under. The folder's name otherwise (lower case, letters, digits, `-`, `_`). |
