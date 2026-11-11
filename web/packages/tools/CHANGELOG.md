@@ -5,6 +5,20 @@ Changes to `@lewismoten/gamemaker-sandbox-tools`, released as `tools-v*` tags. T
 
 ## [Unreleased]
 
+## [3.5.0] - 2026-11-11
+
+A browser-safe ISO 9660 writer, exports for the laser-kit helpers and the Level check's animation check, and a level-generator jump fix.
+
+### Added
+
+- Added a browser-safe ISO 9660 / Rock Ridge writer with long names, Unix modes and symbolic links.
+- Exports for the laser-cut kit helpers: `./kit/laserJoints`, `./kit/laserLayout`, `./kit/laserSvg`, `./kit/laserPixels` and `./kit/laserClearance`.
+- Exported the Level check’s animation compatibility check for native game files in browsers and Node.
+
+### Fixed
+
+- The level generator's jump math follows the hero's sideways movement when a jump hits the edge of a solid ceiling, so predicted landings match the player.
+
 ## [3.4.0] - 2026-11-07
 
 Most of the game-building kit moves into the package: a seeded level generator for dungeons, forests, towns, castles
@@ -39,6 +53,7 @@ The first release of the development tools as an npm package: drawing, palettes,
 - CP437 and micro text drawn as indexed game pixels, with documented font, text-effect and lighting APIs.
 - Reusable color ramps and time-of-day VGA lighting.
 
-[Unreleased]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/tools-v3.4.0...HEAD
+[Unreleased]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/tools-v3.5.0...HEAD
+[3.5.0]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/tools-v3.4.0...tools-v3.5.0
 [3.4.0]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/tools-v3.1.0...tools-v3.4.0
 [3.1.0]: https://github.com/lewismoten/GameMaker-SandboxEdition/releases/tag/tools-v3.1.0
