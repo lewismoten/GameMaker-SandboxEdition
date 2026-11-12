@@ -7,7 +7,7 @@ import { skyOf, type Pal } from '../../kit/starter/palette';
 import type { StarterMap } from '../../kit/starter/map';
 import { TWINK, SHOOT } from './monsters';
 
-const VARIANTS = 6;
+const VARIANTS = 4;
 
 /** A small seeded integer hash (no Math.random: the same sky every build). */
 function hash(a: number, b: number, c: number): number {
@@ -23,8 +23,8 @@ export function addNightBlocks(book: Book, pal: Pal): void {
   const sky = () => new Pixels(20, 20, skyOf(pal));
   const w = pal.c('white', 3);
   const dim = pal.c('white', 1);
-  // six starfield blocks with different dot layouts (one nearly empty), drawn from a seeded hash so a rebuild is byte for byte the same
-  const DOTS = [1, 2, 3, 4, 5, 2];
+  // four starfield blocks with different dot layouts (one nearly empty), drawn from a seeded hash so a rebuild is byte for byte the same
+  const DOTS = [1, 3, 5, 2];
   for (let v = 0; v < DOTS.length; v++) {
     const p = sky();
     for (let i = 0; i < DOTS[v]; i++) {

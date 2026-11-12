@@ -8,11 +8,11 @@ export const STORY = wrap(`
 
 Repo Row is a street of little houses, and each one is somebody's project.
 
-They sit dark until a stranger stops by and leaves a star.
+They sit dark until a stranger stops by and leaves a star. A star can say thanks. Some are bookmarks for later.
 
-Stick Man has no stars. So he climbs the hill at night and picks them out of the sky, one at a time. The town gate will not open for less than five.
+Stick Man has no stars. So he climbs the hill at night and picks them out of the sky, one at a time. The path to town is dark, and it lights when he shares five.
 
-Then he carries them to town, and tosses them at the houses.
+Then he walks into town and tosses them at the houses, one thank-you each.
 
 Light the street.
 `);
@@ -25,11 +25,11 @@ export const HOWTO = wrap(`
 |SPACE         throw a star
 |F2            lives, score
 
-On the hill, jump up to pick bright stars out of the sky. The town gate takes five of them.
+On the hill, jump up to pick bright stars out of the sky. Share five to light the path to town.
 
 In town, walk toward a house and press Space. A star flies the way you last walked, and only so far.
 
-A lit house throws confetti. A shy one wanders, so wait for it. A shed in a tunnel stays shut until a star lights it. A spam bot bumps: pop it from a distance.
+A lit house throws confetti. A shy one wanders, so wait for it. A sleepy shed in a tunnel wakes when a star says thanks. A spam bot bumps and hands out fake stars: pop it from a distance and its star fades.
 `);
 
 export const CREDITS = withCreditPage(
@@ -48,11 +48,11 @@ A Special from Sandbox Software. Every repo house on the street is made up.
 export const WON = wrap(`
 |THE STREET GLOWS
 
-Every house on Repo Row has a gold star on its flag and a light in its window, and the spam bots have rolled off to bother somebody else.
+Every house on Repo Row has a gold star on its flag and a light in its window, and the spam bots have rolled off with their fading fake stars.
 
-A star costs a stranger a second. It can light up a whole afternoon for the person who made the thing.
+The brightest houses have a sign out front that says what they are. Nobody had to be asked.
 
-If you like a project, tell it so. Leave a star.
+Found something useful? A star says thanks. Some stars are bookmarks for later. Both are fine.
 `);
 
 export const LOST = wrap(`

@@ -20,7 +20,7 @@ import { paintNight } from './nightSky';
 import { paletteFor, type Mood } from './moods';
 
 /** The signs the levels use, by name. */
-export type SignName = 'gaze' | 'gate' | 'how' | 'far' | 'shed' | 'shy' | 'bots' | 'three' | 'thanks' | 'exit';
+export type SignName = 'thx' | 'readme' | 'fake' | 'gaze' | 'gate' | 'how' | 'far' | 'shed' | 'shy' | 'bots' | 'three' | 'thanks' | 'exit';
 /** Repo names that go over a house's door (six letters fit). */
 const NAMES = ['SOCKS', 'SOUP', 'TEAPOT', 'MOTHS', 'NAPS', 'PUNS', 'PIE', 'KEYS'] as const;
 type Name = (typeof NAMES)[number];
@@ -34,14 +34,17 @@ function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign>; nam
   addNightBlocks(book, pal);
   const signs = {
     gaze: addSign(book, pal, 'gaze', 'PICK STARS: JUMP WITH UP', 4, 2),
-    gate: addSign(book, pal, 'gate', 'THE TOWN GATE WANTS 5 STARS', 4, 2),
+    gate: addSign(book, pal, 'gate', 'SHARE 5 STARS TO LIGHT THE PATH', 4, 2),
     how: addSign(book, pal, 'how', 'SPACE THROWS A STAR', 4, 2),
     far: addSign(book, pal, 'far', 'A STAR FLIES ONLY SO FAR', 4, 2),
-    shed: addSign(book, pal, 'shed', 'A SHY SHED BLOCKS THE WAY', 4, 2),
+    shed: addSign(book, pal, 'shed', 'A SLEEPY SHED NAPS IN THE WAY', 4, 2),
     shy: addSign(book, pal, 'shy', 'SHY ONES WANDER', 4, 2),
     bots: addSign(book, pal, 'bots', 'SPAM BOTS BUMP. POP THEM', 4, 2),
-    three: addSign(book, pal, 'three', 'THE BIG REPO WANTS 3 STARS', 4, 2),
+    three: addSign(book, pal, 'three', 'THREE LANTERNS: ONE THANK YOU EACH', 4, 2),
     thanks: addSign(book, pal, 'thanks', 'THANK YOU STAR GAZERS', 4, 2),
+    thx: addSign(book, pal, 'thx', 'A STAR SAYS THANKS', 3, 2),
+    readme: addSign(book, pal, 'readme', 'SAYS WHAT IT IS', 3, 2),
+    fake: addSign(book, pal, 'fake', 'FAKE STARS FADE', 3, 2),
     exit: addSign(book, pal, 'exit', 'EXIT →', 3),
   };
   const names = {} as Record<Name, Sign>;
@@ -124,7 +127,9 @@ function mainStreet(w: World): StarterMap {
   scenery(g, [8, 22, 36, 50], [14, 30, 44, 58], [11, 26, 38, 52]);
   const m = new StarterMap(w.book, g.rows());
   signAt(m, w, 5, 'how');
+  signAt(m, w, 13, 'thx');
   signAt(m, w, 22, 'far');
+  signAt(m, w, 29, 'readme');
   signAt(m, w, 37, 'shed');
   signAt(m, w, 56, 'exit');
   named(m, w, COTTAGE, L1.cottages[0], 'SOCKS');
@@ -160,6 +165,7 @@ function starCount(w: World): StarterMap {
   scenery(g, [6, 16, 28, 40, 52, 62], [12, 22, 36, 49, 60], [8, 16, 27, 44, 64]);
   const m = new StarterMap(w.book, g.rows());
   signAt(m, w, 5, 'bots');
+  signAt(m, w, 29, 'fake');
   signAt(m, w, 48, 'three');
   signAt(m, w, 60, 'thanks');
   named(m, w, COTTAGE, L4.cottages[0], 'KEYS');
@@ -188,7 +194,7 @@ export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
     level('one', 'Stargazing Hill', 'Pick the bright stars.', 'night', stargazingHill(w)),
     level('two', 'Main Street', 'Space throws a star.', 'dawn', mainStreet(w)),
     level('three', 'Shy Street', 'Houses wander. Wait and aim.', 'day', shyStreet(w)),
-    level('four', 'Spam Row', 'Pop the bots. Light the Big Repo.', 'dusk', starCount(w)),
+    level('four', 'Spam Row', 'Pop the bots. Light three lanterns.', 'dusk', starCount(w)),
   ];
   return { book: w.book, pal, levels };
 }
