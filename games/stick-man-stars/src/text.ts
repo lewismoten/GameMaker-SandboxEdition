@@ -46,6 +46,8 @@ Design, pixels, beeps, music and levels by Claude Sonnet 5.5, an AI model made b
 Made with GAME-MAKER 3.0 from Recreational Software Designs.
 
 A Special from Sandbox Software. Every repo house on the street is made up.
+
+Thanks to st1ckman67, the first stargazer.
 `),
 );
 
