@@ -21,8 +21,8 @@ import { buildThrower } from './src/hero';
 import { buildStickBlocks } from './src/stick';
 import { cardPicture, endPicture, gif, menuPicture, paper, scoresPicture, slotsPicture } from '../kit/starter/screens';
 import { skyOf } from '../kit/starter/palette';
-import { skyFli, type SunMove } from './src/skyFli';
-import { throwSounds } from './src/sounds';
+import { endingFli, skyFli, type SunMove } from './src/skyFli';
+import { houseLitVoc, throwSounds } from './src/sounds';
 import { demoRecording } from './src/demo';
 import { TITLE, buildGame } from './src/game';
 import { buildLevels } from './src/levels';
@@ -54,6 +54,7 @@ heroChar.meter[KEYS] = 1; // the star counter (the kit's key counter): it shows 
 heroChar.meter[0] = HERO_HIT_POINTS; // nothing here takes any
 disk.put('hero.chr', serializeCharacter(heroChar));
 disk.put('stars.snd', serializeSoundSet(throwSounds()));
+disk.put('houselit.voc', houseLitVoc());
 disk.put('stars.cmf', song());
 
 // each level's map and its card
@@ -97,7 +98,8 @@ text('credits', 'CREDITS', CREDITS);
 disk.put('wonpic.gif', gif(endPicture(pal, book, cheer, 'ALL LIT UP!', 'THANK YOU, STARGAZERS', 'won'), pal));
 disk.put('won.gif', gif(paper(pal, book, 'THE STREET GLOWS'), pal));
 disk.put('won.txt', WON);
-disk.put('won.lst', serializeSlideList([{ name: 'wonpic.gif', pause: 6 }, { name: 'won.gif', pause: 0 }, { name: 'won.txt' }]));
+disk.put('won.fli', endingFli(pal, book, monsterBlocks, cheer));
+disk.put('won.lst', serializeSlideList([{ name: 'won.fli', pause: 0 }, { name: 'wonpic.gif', pause: 6 }, { name: 'won.gif', pause: 0 }, { name: 'won.txt' }]));
 disk.put('lostpic.gif', gif(endPicture(pal, book, heroPicture(heroBlocks, 'hurt.top', 'hurt'), 'OOF! SPAM!', 'PICK UP YOUR STARS', 'lost'), pal));
 disk.put('lost.gif', gif(paper(pal, book, 'TRY AGAIN'), pal));
 disk.put('lost.txt', LOST);

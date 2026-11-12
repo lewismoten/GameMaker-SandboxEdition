@@ -155,6 +155,11 @@ export async function shyStreet(bot: StarterBot): Promise<void> {
   await must(bot, bot.walk(L2.tunnel[0] - 1, 'the shed'), 'to the shed');
   await throwAt(bot, [SHED], 'at the shed');
   await must(bot, bot.wait(30), 'the party');
+  await must(bot, bot.walk((L2.rest[0] + L2.rest[1]) / 2, 'the quiet garden'), 'to the quiet garden');
+  const hp = bot.sim.ci.hitpts;
+  const score = bot.sim.ci.score;
+  await must(bot, bot.wait(45), 'a quiet moment before Spam Row');
+  if (bot.sim.ci.hitpts !== hp || bot.sim.ci.score !== score) throw new Error('the rest pocket should be safe and ask for nothing');
   await must(bot, bot.walk(L2.exit - 2, 'the door'), 'to the door');
   totals(bot, start, coins, 1, 5, 0, 'shy street');
   await leave(bot, bot.walk(L2.exit + 1, 'the exit'), 'the exit');
