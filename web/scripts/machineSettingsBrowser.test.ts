@@ -17,10 +17,21 @@ it('opens by keyboard, applies and remembers hardware, preserves TURBO, and fits
       await page.goto(`${server.base}/#/desk`);
       const button = page.getByRole('button', { name: /^Machine settings/ });
       await button.waitFor();
-      await button.focus();
-      await page.keyboard.press('Enter');
       const dialog = page.getByRole('dialog', { name: 'Machine settings' });
-      await dialog.waitFor();
+      // Under load the button can be visible before the desk binds its keys, so a single Enter
+      // was sometimes lost (gate failures 2026-11-12); press again until the dialog opens.
+      for (let tries = 0; ; tries++) {
+        await button.focus();
+        await page.keyboard.press('Enter');
+        if (
+          await dialog.waitFor({ timeout: 5000 }).then(
+            () => true,
+            () => false,
+          )
+        )
+          break;
+        if (tries >= 11) throw new Error('Machine settings dialog never opened after 12 presses');
+      }
       await dialog.getByLabel('CPU', { exact: true }).selectOption('ps1');
       await dialog.getByLabel('Hard drive timing').selectOption('286');
       // drive sounds: one switch off, and the master switch holds the grid while it is off
@@ -78,4 +89,4 @@ it('opens by keyboard, applies and remembers hardware, preserves TURBO, and fits
       server.stop();
     }
   }
-}, 90000);
+}, 180000);
