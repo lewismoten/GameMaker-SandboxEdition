@@ -1,12 +1,12 @@
-// Pictures of the lessons (never on the disk), for the progress shots: Kit before the first gumdrop,
-// mid-throw with the star in the air, the pop, the far gumdrop with the star falling short, and
-// the grump in its tunnel before and after.
-//   cd web && npx vite-node ../games/throw-it/tools/shots.ts <outDir>
+// Pictures for the progress shots (never on the disk): the night hill, a throw, a pop with confetti,
+// a lit house, a spam bot and the Big Repo, each in its level's sky.
+//   cd web && npx vite-node ../games/stick-man-stars/tools/shots.ts <outDir>
 import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { writePng } from '@lewismoten/gamemaker-sandbox-tools/kit/png';
 import { renderRegion } from '@lewismoten/gamemaker-sandbox-tools/kit/levelPicture';
-import { buildHeroBlocks, heroPicture } from '../../kit/starter/hero';
+import { heroPicture } from '../../kit/starter/hero';
+import { buildStickBlocks } from '../src/stick';
 import { ORIGIN } from '../../kit/starter/map';
 import { finishMonsterPictures, monsterPictures, monsterSet } from '../src/monsters';
 import { GROUND, buildLevels } from '../src/levels';
@@ -19,15 +19,15 @@ const bbl = book.finish();
 const mb = monsterPictures(pal);
 const mbl = finishMonsterPictures(mb);
 const set = monsterSet(mb);
-const hero = buildHeroBlocks(pal);
+const hero = buildStickBlocks(pal);
 
 type Sprite = { pixels: Uint8Array; x: number; y: number };
-/** Kit standing in column `col` (in the level) in `pose`, as two sprites for renderRegion. */
-const kit = (pose: [string, string], col: number): Sprite[] => {
+/** Stick Man standing in column `col` (in the level), `lift` blocks off the ground, in `pose`, as two sprites for renderRegion. */
+const man = (pose: [string, string], col: number, lift = 0): Sprite[] => {
   const h = heroPicture(hero, pose[0], pose[1]);
   return [
-    { pixels: Uint8Array.from(h.px.subarray(0, 400)), x: ORIGIN + col, y: ORIGIN + GROUND - 2 },
-    { pixels: Uint8Array.from(h.px.subarray(400)), x: ORIGIN + col, y: ORIGIN + GROUND - 1 },
+    { pixels: Uint8Array.from(h.px.subarray(0, 400)), x: ORIGIN + col, y: ORIGIN + GROUND - 2 - lift },
+    { pixels: Uint8Array.from(h.px.subarray(400)), x: ORIGIN + col, y: ORIGIN + GROUND - 1 - lift },
   ];
 };
 /** A monster picture standing in column `col`, on the ground. */
@@ -38,14 +38,14 @@ const empty = (level: number) => {
   m.monsters = [];
   return m;
 };
-const region = (map: ReturnType<typeof empty>, col: number, w: number, extra: Sprite[]) =>
-  renderRegion(map, bbl, mbl, set, ORIGIN + col, ORIGIN + 4, w, 8, extra);
-const save = (name: string, pic: ReturnType<typeof region>) => writePng(join(out, name), pic, pal.pal, 3);
+const save = (name: string, level: number, col: number, extra: Sprite[]) =>
+  writePng(join(out, name), renderRegion(empty(level), bbl, mbl, set, ORIGIN + col, ORIGIN + 2, 16, 10, extra), levels[level].pal.pal, 3);
 
-save('1-before.png', region(empty(0), 4, 14, [...kit(['stand.top', 'stand'], 10), thing('target0', 15)]));
-save('2-throw.png', region(empty(0), 4, 14, [...kit(['cheer.top', 'throw1'], 10), thing('star0', 12), thing('target0', 15)]));
-save('3-pop.png', region(empty(0), 4, 14, [...kit(['stand.top', 'throw2'], 10), thing('twinkle0', 15)]));
-save('4-too-far.png', region(empty(0), 18, 18, [...kit(['stand.top', 'throw2'], 22), thing('twinkle1', 27), thing('target0', 34)]));
-save('5-grump.png', region(empty(1), 14, 18, [...kit(['stand.top', 'stand'], 18), thing('guard0', 26)]));
-save('6-way-open.png', region(empty(1), 14, 18, [...kit(['stand.top', 'throw2'], 21), thing('twinkle0', 26)]));
+save('1-hill-night.png', 0, 10, man(['up.top', 'jumpup'], 17, 1));
+save('2-throw.png', 1, 8, [...man(['cheer.top', 'throw1'], 12), thing('star0', 14), thing('cottage0', 17)]);
+save('3-confetti.png', 1, 8, [...man(['stand.top', 'throw2'], 12), thing('confetti0', 17)]);
+save('4-lit.png', 1, 8, [...man(['cheer2.top', 'cheer'], 12), thing('litcottage0', 17)]);
+save('5-shy-tower.png', 2, 15, [...man(['cheer.top', 'throw1'], 19), thing('star1', 21), thing('tower0', 24)]);
+save('6-spam-bot.png', 3, 26, [...man(['cheer.top', 'throw1'], 28), thing('star0', 30), thing('bot0', 33)]);
+save('7-big-repo.png', 3, 46, [...man(['stand.top', 'throw2'], 50), thing('big20', 56)]);
 console.log(`shots in ${out}`);

@@ -9,16 +9,12 @@
       "long": "Walk right."
     },
     "57": {
-      "short": "Jump",
-      "long": "Jump. Steer with Left and Right while you are in the air."
+      "short": "Throw a star",
+      "long": "Throw a star the way you last walked. It flies only so far."
     },
     "72": {
-      "short": "Climb up",
-      "long": "Climb up a ladder."
-    },
-    "80": {
-      "short": "Climb down",
-      "long": "Climb down a ladder."
+      "short": "Jump",
+      "long": "Jump, to pick a high star out of the night sky. Steer with Left and Right while you are in the air."
     },
     "30": {
       "short": "Walk left",
@@ -27,18 +23,6 @@
     "32": {
       "short": "Walk right",
       "long": "Same as the Right arrow."
-    },
-    "17": {
-      "short": "Climb up",
-      "long": "Same as the Up arrow."
-    },
-    "31": {
-      "short": "Climb down",
-      "long": "Same as the Down arrow."
-    },
-    "28": {
-      "short": "Throw a star",
-      "long": "Throw a star the way you last walked. It flies only so far."
     }
   },
   "joystick": {
@@ -53,8 +37,8 @@
   },
   "sounds": {
     "9": "The jump",
-    "10": "Getting hurt (nothing here does)",
-    "11": "Falling over (nothing here does)",
+    "10": "Bumped by a spam bot",
+    "11": "Bumped over by spam bots",
     "13": "The throw"
   },
   "counters": {

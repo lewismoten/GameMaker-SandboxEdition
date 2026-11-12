@@ -7,7 +7,7 @@ type RGB = [number, number, number];
 
 /** [sky dark, sky light, sky middle, grass scale]. */
 const SKIES: Record<Exclude<Mood, 'day'>, [RGB, RGB, RGB, number]> = {
-  dusk: [[70, 40, 120], [255, 190, 130], [210, 100, 130], 0.75],
+  dusk: [[36, 28, 96], [255, 170, 110], [130, 56, 140], 0.75],
   night: [[6, 8, 36], [70, 80, 150], [24, 30, 84], 0.45],
   dawn: [[130, 150, 235], [255, 226, 236], [250, 170, 190], 0.95],
 };

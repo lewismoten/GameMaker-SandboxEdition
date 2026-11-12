@@ -1,13 +1,15 @@
-// Writes games/throw-it/walkthrough.json: the bot plays the whole game on the built disk
+// Writes games/stick-man-stars/walkthrough.json: the bot plays the whole game on the built disk
 // (one key segment a level), and games/kit/walkthrough.ts checks the run on the real engine
-// (title, both levels, the ending).
-//   cd web && npx vite-node ../games/throw-it/tools/walkthrough.ts
+// (title, all four levels, the ending).
+//   cd web && npx vite-node ../games/stick-man-stars/tools/walkthrough.ts
 import { writeSimWalkthrough } from '../../kit/walkthrough';
 import { SEED, play } from './play';
 
 const { sim } = await play(SEED);
 const titles: Record<number, string> = {
-  2: 'Level 1: Throw a Star',
-  3: 'Level 2: The Narrow Way',
+  2: 'Level 1: Stargazing Hill',
+  3: 'Level 2: Main Street',
+  4: 'Level 3: Shy Street',
+  5: 'Level 4: Spam Row',
 };
-await writeSimWalkthrough('throw-it', sim, SEED, titles);
+await writeSimWalkthrough('stick-man-stars', sim, SEED, titles);
