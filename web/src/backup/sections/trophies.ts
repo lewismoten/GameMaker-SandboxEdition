@@ -40,7 +40,7 @@ export const trophies: Section<TrophiesPayload> = {
   count: (p) => Math.max(Object.keys(parseScores(p.files[FILE]).best).length, Object.keys(parseMoney(p.files[MONEY_FILE])).length),
   validate(raw) {
     need(isRecord(raw), 'score trophies');
-    return { files: fileMap(raw.files, 'score trophies'), local: stringMap(raw.local ?? {}, 'score trophies') };
+    return { files: fileMap(raw.files, 'score trophies'), local: stringMap(raw.local ?? {}, 'score trophies', 'trophies') };
   },
   merge(mine, theirs, ctx) {
     const local = fillGaps(mine.local, theirs.local, ctx.prefer);

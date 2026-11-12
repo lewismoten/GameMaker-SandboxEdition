@@ -2,8 +2,8 @@
 // mow the lawns and the newspaper is fired from a cannon. Sparky has scattered Dex's
 // report all over the neighborhood. Grandpa's key ring is lost in the hedge garden; its clicker
 // opens the garage gate to the backyard and the Zapper, and its keys open Grandpa's 1976½
-// CitiCar on its charger by the house (honk it for 1976 points). Its door also wants all seven
-// neighborhood pages and the Zapper. Step in, and it flies Dex to
+// CitiCar on its charger by the house (honk it for 1976 points). Three gates in a fenced lane
+// lead to it, in order: all seven neighborhood pages, the Zapper, the keys. Step in, and it flies Dex to
 // the Skyway: that's the way out. The phone booths on the corner are all out of order today.
 import { LevelMap, type Legend } from './mapkit';
 import type { BlockSet } from '../blocks/book';
@@ -37,6 +37,9 @@ const LEGEND: Legend = {
   z: 'zapper_grass',
   L: 'cola_grass',
   R: 'keys_grass',
+  Y: 'gatePages',
+  Z: 'gateZap',
+  W: 'gateKeys',
   D: { big: 'dome', w: 4, h: 3 },
   E: { big: 'domeB', w: 4, h: 3 },
   C: { big: 'citi', w: 2, h: 2 },
@@ -68,11 +71,11 @@ const ROWS = [
   'I..p.....a...I||..2.......T.....||:.....hh..3..I', // 7
   'I............I||.....hhhh.......||:............I', // 8
   'ggggggGggggggo||.....h..h...q...||:.....5......I', // 9
-  'I.DDDD...K...:||..p..h.Lh.......||:...T....q...I', // 10
-  'I.DDDD...CC..:||.....h..h...6...||N.........,,.I', // 11
-  'I.DDDD...CCkc:||..EEEE.........,||:..1.........I', // 12
-  'I...@..q..m..:||..EEEE...1......||:......B..B..I', // 13
-  'I.M.....,....:||..EEEE..........||:......x..r..I', // 14
+  'I.DDDD.I.K...I||..p..h.Lh.......||:...T....q...I', // 10
+  'I.DDDD.I.CC..I||.....h..h...6...||N.........,,.I', // 11
+  'I.DDDD.IFCCkcI||..EEEE.........,||:..1.........I', // 12
+  'I...@..YqZW..I||..EEEE...1......||:......B..B..I', // 13
+  'I.M....FFFFFFo||..EEEE..........||:......x..r..I', // 14
   'I............:||.....q.......3..||:..*.........I', // 15
   'I.,,.....T...:||.T..............||:.......q...BI', // 16
   'I..........3.:||.....2......T...||:...T.......xI', // 17

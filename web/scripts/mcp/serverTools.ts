@@ -61,6 +61,8 @@ const openGameTool: ServerTool = {
   },
   async run(a, s) {
     if (a.source === 'editor') {
+      if (a.read_only === true)
+        return fail('read_only with source editor is not supported here; enable the Assistant’s read-only switch in the editor before connecting.');
       if (!s.bridge?.paired) return fail('No editor tab is paired: start the bridge with editor_bridge, then pair from the editor’s Assistant button.');
       s.target = 'editor';
       const state = await s.bridge.call('editor_state', {});

@@ -23,7 +23,7 @@ export const HOWTO = wrap(`
 |ENTER         throw
 |F2            lives, score
 
-Touch a pouch to fill it. Enter throws a flame if you have one, then a star, and shrugs when you have neither.
+Walk into a pouch to fill it. Enter throws a flame if you have one, then a star, and shrugs when you have neither.
 
 A mint green gumdrop pops with either. A frosty grump needs a flame.
 
@@ -60,5 +60,5 @@ export const LOST = wrap(`
 
 Out of lives. That is not meant to happen here.
 
-Try again: touch a pouch, then press Enter.
+Try again: walk into a pouch, then press Enter.
 `);

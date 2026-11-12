@@ -2,7 +2,7 @@
 // repository's own games (games/<id>, read from its built disk/, the secret ones left out) and
 // the CD's sample games (cd/gameware/<id>). Loading one gives its files, its .gam and its DOS
 // player patches (a folder's or zip's <game>.GMX companion, or a game's player.json).
-import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync, statSync, lstatSync } from 'node:fs';
 import { gameTitle } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { basename, join } from 'node:path';
 import { GameFiles } from '../../src/project/files';
@@ -13,6 +13,7 @@ import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import type { PlayerPatches } from '@lewismoten/gamemaker-sandbox-engine/player/patchRules';
 import { ToolError } from '../../src/assistant/tools/types';
 import { CD_GAMES_DIR, GAMES_DIR, type Roots } from './roots';
+import { readFile } from './safeFiles';
 
 export interface Loaded {
   files: GameFiles;
@@ -39,12 +40,18 @@ const isSecret = (id: string) => {
   }
 };
 
-/** A folder's files (not its subfolders). */
-function readFolder(dir: string): GameFiles {
+/**
+ * A folder's files (not its subfolders). Symbolic links are refused everywhere. With `roots`
+ * (a user's folder) the root policy also applies; the repository's own games and CD samples
+ * are read without it, since they are not under the user's roots.
+ */
+function readFolder(dir: string, roots?: Roots): GameFiles {
+  roots?.readable(dir);
   const files = new GameFiles();
   for (const n of readdirSync(dir)) {
     const p = join(dir, n);
-    if (statSync(p).isFile()) files.put(n, new Uint8Array(readFileSync(p)));
+    if (lstatSync(p).isSymbolicLink()) throw new ToolError(`${p}: symbolic links are not allowed.`);
+    if (lstatSync(p).isFile()) files.put(n, roots ? readFile(roots, p) : new Uint8Array(readFileSync(p)));
   }
   return files;
 }
@@ -85,13 +92,13 @@ export async function loadGame(source: string, roots: Roots, gam?: string): Prom
   const path = roots.readable(source);
   if (!existsSync(path)) throw new ToolError(`${source} does not exist.`);
   if (statSync(path).isDirectory()) {
-    const files = readFolder(path);
+    const files = readFolder(path, roots);
     const companion = takeCompanion(files);
     const g = pick(files, gam, source);
     return { files, gam: g, patches: companionPatches(companion, g), folder: roots.isWritable(path) ? path : undefined, stem: basename(path) };
   }
   if (!/\.zip$/i.test(path)) throw new ToolError(`${source} is not a folder or a .zip.`);
-  const entries = await readZip(new Uint8Array(readFileSync(path)), { maxEntries: 2000, maxBytes: 200 << 20 });
+  const entries = await readZip(readFile(roots, path), { maxEntries: 2000, maxBytes: 200 << 20 });
   const files = new GameFiles();
   // the files beside the chosen .gam (a zip may hold a folder, or several games)
   const gams = entries.filter((e) => /\.gam$/i.test(e.name) && !e.name.endsWith('/'));
@@ -110,7 +117,7 @@ export function listGames(roots: Roots): Listed[] {
   const seen = new Set<string>();
   const folder = (dir: string, kind: Listed['kind'], source: string) => {
     try {
-      const files = readFolder(dir);
+      const files = readFolder(dir, kind === 'folder' ? roots : undefined);
       const g = files.mainGame();
       if (g && !seen.has(dir)) {
         seen.add(dir);

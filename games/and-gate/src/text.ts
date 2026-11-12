@@ -25,7 +25,7 @@ export const HOWTO = wrap(`
 
 Jump under a dial to turn it on. A spark runs the wire. If a dial is off, the spark stops there.
 
-When every dial is on, the spark lights the lamp. Touch the light that slides down. The gate takes it.
+When every dial is on, the spark lights the lamp. Walk into the light that slides down. The gate takes it.
 
 Nothing in this game hurts.
 

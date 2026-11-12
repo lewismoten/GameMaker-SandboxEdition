@@ -23,7 +23,7 @@ export const HOWTO = wrap(`
 |UP, DOWN      climb a ladder
 |F2            lives, score
 
-Coins add to your score. Touch a gumdrop to pop it.
+Coins add to your score. Walk into a gumdrop to pop it.
 
 Spikes hurt a little: jump over them.
 

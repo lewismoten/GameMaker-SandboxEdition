@@ -217,7 +217,7 @@ interface Usage {
   completion: number;
 }
 
-/** Builds a reply from Chat Completions stream events (the JSON after each "data: "). A tool call is handed on once the next one starts, or the stream ends. */
+/** Builds a reply from Chat Completions stream events (the JSON after each "data: "). Tool calls are handed on when the stream ends; indices may interleave. */
 export class OpenAIStream {
   private text = '';
   private calls: { id: string; name: string; args: string }[] = [];
@@ -261,7 +261,6 @@ export class OpenAIStream {
     if (!d) return undefined;
     for (const c of d.tool_calls ?? []) {
       const i = c.index ?? this.calls.length;
-      this.handOn(i);
       const at = (this.calls[i] ??= { id: '', name: '', args: '' });
       if (c.id) at.id = c.id;
       if (c.function?.name) at.name += c.function.name;

@@ -84,6 +84,9 @@ export interface SceneSize {
   zoom?: number;
   /** Force the pocket close-up (0 to 1) instead of the animation's own. */
   focus?: number;
+  /** The viewer's own turn of the camera, added to the animation's (radians): drag to look round. */
+  yaw?: number;
+  pitch?: number;
   /** Draw an arrow for each fold of this step (the picture shows the paper before it). */
   arrows?: number;
 }
@@ -91,7 +94,8 @@ export interface SceneSize {
 /** The scene's body at a position along the steps: one group per piece, then the pre-crease lines while they show. */
 export function sceneBody(pos: number, id: string, size: SceneSize): string {
   const poses = poseAt(pos);
-  const view = viewAt(pos);
+  const base = viewAt(pos);
+  const view = { yaw: base.yaw + (size.yaw ?? 0), pitch: base.pitch + (size.pitch ?? 0) };
   const focus = size.focus ?? tuckFocusAt(pos);
   const blowing = stepAt(pos).step === LAST && pos > LAST - 1;
   // fit: the paper's 3D extent, which a turn of the camera does not change; the close-up zooms in on a pocket

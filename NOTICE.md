@@ -56,6 +56,8 @@ game folder opens in the browser unchanged.
 
 ## Credits
 
+- **Verified finding fixes (November 11, 2026)**: OpenAI Codex (GPT-6), directed by Lewis Moten, added input bounds, backup authentication and credential checks, MCP file-access and read-only checks, atomic save updates, download consent and cancellation, and regression tests. No new third-party material or game assets were added.
+
 - **Short landscape dialogs (November 10, 2026)**: OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, added landscape layouts for phone dialogs using the existing forms and previews. No new third-party assets or game content were added.
 
 - **Entry loading (November 10, 2026)**: OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, deferred home demo file inspection and playback, split optional title rendering, screenshot encoding, registration panels and gamepad controls, and separated FLAGS help from file-list metadata, with regression tests.
@@ -1190,3 +1192,5 @@ maker "ZORP" is invented. The shell is untested: nothing has been printed.
 - **Landscape dialog layouts (November 10, 2026)** (web/src editor, desk and settings dialog CSS): OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, added short-landscape layouts so dialogs fit a phone held sideways; checked in a browser by Claude (Sonnet 5.5).
 
 - **In The Year 2000! CitiCar boarding checks and hints** (`games/year2000/`): the DOS counter gate, missing-item signs and regression checks were made with **OpenAI Codex (GPT-6)**, directed by Lewis Moten.
+
+- **Library stock for laser kits (November 11, 2026):** OpenAI Codex (GPT-6), directed by Lewis Moten, adapted this project’s Proofgrade sheet helpers for the Plowed Street box, Stage Box and paper THE CHEZ, implemented hole nesting, fitting tables and regression checks, and wrote the build notes. Existing kit designs and artwork retain their credits; no new third-party material was added.

@@ -20,7 +20,7 @@ export const HOWTO = wrap(`
 |SPACE         jump
 |UP, DOWN      climb a ladder
 
-Touch a token and it is yours: your count goes up by one.
+Walk into a token and it is yours: your count goes up by one.
 
 Walk into a gate. If your count can pay its price, the gate opens and the price comes off your count. If not, it stays shut and you keep your tokens.
 

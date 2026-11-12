@@ -198,6 +198,7 @@ HINTS
 * In the Teleport-A-Phone Exchange, booth number 4 is out of order. Try another number - you'll get there eventually.
 * Read the teletype in the exchange hall. It knows a thing or two.
 * Grandpa lost his key ring in the hedge garden. His CitiCar won't open without it.
+* Three gates guard the CitiCar: all seven pages, then the Zapper, then the keys. Walk into each one.
 * Grandpa's CitiCar likes a honk.
 * In the Cloud Lane, traffic starts as a dot on the horizon. Pick a clear lane early, and keep right when the sign nears 0 MI.
 * The judges want 20 pages. There are lots more than that.

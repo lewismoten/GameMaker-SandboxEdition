@@ -20,7 +20,7 @@ export type SignName = 'empty' | 'pouch' | 'out' | 'frost' | 'flame' | 'order' |
 /** The signs' words and sizes. */
 const WORDS: Record<SignName, { text: string; w: number; h: number }> = {
   empty: { text: 'NOTHING TO THROW YET. ENTER JUST SHRUGS', w: 4, h: 4 },
-  pouch: { text: 'TOUCH THE POUCH FOR TWO STARS. ENTER THROWS ONE', w: 4, h: 4 },
+  pouch: { text: 'WALK INTO THE POUCH FOR TWO STARS. ENTER THROWS ONE', w: 4, h: 4 },
   out: { text: 'OUT OF STARS? ENTER SHRUGS AGAIN. THE POUCH FILLS UP', w: 4, h: 4 },
   frost: { text: "A STAR CAN'T MELT FROST. TAKE STARS AND TRY", w: 4, h: 4 },
   flame: { text: 'A FLAME CAN. JUMP UP TO THE FLAME POUCH', w: 4, h: 4 },
@@ -161,7 +161,7 @@ export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
   const pal = buildStarterPalette(undefined, 'many-weapons');
   const { book, signs } = buildBlocks(pal);
   const levels: Level[] = [
-    { file: 'one', title: 'Empty Hands', hint: 'Touch a pouch for stars.', map: emptyHands(book, signs) },
+    { file: 'one', title: 'Empty Hands', hint: 'Walk into a pouch for stars.', map: emptyHands(book, signs) },
     { file: 'two', title: 'Star or Flame', hint: 'Flames first, then stars.', map: starOrFlame(book, signs) },
   ];
   return { book, pal, levels };

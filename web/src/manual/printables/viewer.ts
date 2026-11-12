@@ -33,6 +33,8 @@ export interface BoxItem {
   release?(): void;
   /** A special on-screen presentation (e.g. a fold-out that unfolds). */
   screen?(sheets: Sheet[]): HTMLElement;
+  /** A 3D fold view of its own (the die): the Feelies strip shows it above the shelf, as it does a kit's assembly. */
+  fold?(): Promise<HTMLElement>;
   /** Its own on-screen view, built without rendering every sheet (`render` is then only for printing). */
   live?(): Promise<HTMLElement>;
   /** Like `live`, a view of its own that reads a page at a time or scrolled (readView.ts), in `root`. */

@@ -77,7 +77,41 @@ export function withExternal(
   return out;
 }
 
+interface DecodeLimits {
+  maxFiles: number;
+  maxBytes: number;
+}
+const DECODE_LIMITS: DecodeLimits = { maxFiles: 2000, maxBytes: 200 * 1024 * 1024 };
+
+function manifestSize(files: [string, number][], ext: External[] = [], limits = DECODE_LIMITS): number {
+  if (!Array.isArray(files) || !Array.isArray(ext) || files.length + ext.length > limits.maxFiles) throw new Error('Too many files in the page');
+  let total = 0;
+  for (const entry of files) {
+    if (!Array.isArray(entry) || entry.length !== 2 || typeof entry[0] !== 'string' || !Number.isSafeInteger(entry[1]) || entry[1] < 0)
+      throw new Error('Invalid page file length');
+    total += entry[1];
+    if (total > limits.maxBytes) throw new Error('The page game is too large');
+  }
+  let all = total;
+  for (const entry of ext) {
+    if (
+      !Array.isArray(entry) ||
+      entry.length !== 3 ||
+      typeof entry[0] !== 'string' ||
+      typeof entry[1] !== 'string' ||
+      !Number.isSafeInteger(entry[2]) ||
+      entry[2] < 0
+    )
+      throw new Error('Invalid external file length');
+    all += entry[2];
+    if (all > limits.maxBytes) throw new Error('The page game is too large');
+  }
+  return total;
+}
+
 export function unpack(files: [string, number][], blob: Uint8Array): [string, Uint8Array][] {
+  const expected = manifestSize(files);
+  if (blob.length > expected) throw new Error('The page game has trailing data.');
   const out: [string, Uint8Array][] = [];
   let at = 0;
   for (const [name, length] of files) {
@@ -101,9 +135,29 @@ export function fromBase64(text: string): Uint8Array {
   return out;
 }
 
-async function transform(data: Uint8Array, stream: CompressionStream | DecompressionStream): Promise<Uint8Array> {
-  const piped = new Blob([data as BlobPart]).stream().pipeThrough(stream);
-  return new Uint8Array(await new Response(piped).arrayBuffer());
+async function transform(data: Uint8Array, stream: CompressionStream | DecompressionStream, maxBytes = Infinity): Promise<Uint8Array> {
+  const reader = new Blob([data as BlobPart]).stream().pipeThrough(stream).getReader();
+  const chunks: Uint8Array[] = [];
+  let total = 0;
+  try {
+    for (;;) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      total += value.length;
+      if (total > maxBytes) throw new Error('The page game expands beyond its declared size.');
+      chunks.push(value);
+    }
+  } finally {
+    await reader.cancel().catch(() => undefined);
+    reader.releaseLock();
+  }
+  const out = new Uint8Array(total);
+  let at = 0;
+  for (const chunk of chunks) {
+    out.set(chunk, at);
+    at += chunk.length;
+  }
+  return out;
 }
 
 export async function encodeGame(
@@ -128,11 +182,18 @@ export async function encodeGame(
   };
 }
 
-export async function decodeGame(game: SinglePageGame, external: Map<string, Uint8Array> | undefined = game.external): Promise<[string, Uint8Array][]> {
+export async function decodeGame(
+  game: SinglePageGame,
+  external: Map<string, Uint8Array> | undefined = game.external,
+  limits = DECODE_LIMITS,
+): Promise<[string, Uint8Array][]> {
+  const expected = manifestSize(game.files, game.ext, limits);
+  if (game.enc !== 'raw' && game.enc !== 'gzip') throw new Error('Unsupported page encoding');
+  if (typeof game.data !== 'string' || game.data.length > Math.ceil((limits.maxBytes + 1024 * 1024) / 3) * 4) throw new Error('The page data is too large');
   let blob = fromBase64(game.data);
   if (game.enc === 'gzip') {
     if (typeof DecompressionStream === 'undefined') throw new Error('This browser is too old to open the game (no DecompressionStream).');
-    blob = await transform(blob, new DecompressionStream('gzip'));
+    blob = await transform(blob, new DecompressionStream('gzip'), expected);
   }
   return withExternal(unpack(game.files, blob), game.ext, external);
 }
@@ -185,6 +246,7 @@ export function readSinglePage(html: string): SinglePageGame | undefined {
   }
   if (!game || (game.v !== 1 && game.v !== 2) || !Array.isArray(game.files) || typeof game.data !== 'string')
     throw new Error('This web page holds a game in a format this version cannot read.');
+  manifestSize(game.files, game.ext);
   if (game.ext) game.external = readExternalHtml(html);
   return game;
 }

@@ -28,7 +28,7 @@ function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
     picture: addSign(book, pal, 'picture.sign', 'THIS ONE IS ONLY A PICTURE. WALK IN', 4, 3),
     setting: addSign(book, pal, 'setting.sign', 'SOLID IS A BLOCK SETTING, NOT A LOOK', 4, 3),
     bump: addSign(book, pal, 'bump.sign', 'BUMP IT AND IT CRACKS', 4, 3),
-    twice: addSign(book, pal, 'twice.sign', 'THE CRACK IS A BLOCK TOO. TOUCH IT AGAIN', 4, 3),
+    twice: addSign(book, pal, 'twice.sign', 'THE CRACK IS A BLOCK TOO. WALK INTO IT AGAIN', 4, 3),
     own: addSign(book, pal, 'own.sign', 'EACH BLOCK CHANGES ON ITS OWN', 4, 3),
     window: addSign(book, pal, 'window.sign', 'COINS SHOWING IN A WALL? WALK IN', 4, 3),
     fair: addSign(book, pal, 'fair.sign', 'A FAIR SECRET GETS A HINT', 4, 3),
