@@ -2,7 +2,7 @@
    and the "not a true DOS environment" note (notice.ts). Self-contained, since the note also
    shows on dos.html, which has none of the editor's styles. */
 .gm-link {
-  --gl-bg: #f6f7fa;
+  --gl-bg: #e9ecf2;
   --gl-text: #1a1d29;
   --gl-muted: #4f566a;
   --gl-border: #9aa2b8;
