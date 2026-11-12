@@ -94,9 +94,18 @@ function scenery(g: Grid, clouds: number[], bushes: number[], flowers: number[])
 type World = { book: Book; signs: Record<SignName, Sign>; names: Record<Name, Sign> };
 
 /** Stamps sign `s` at block x, standing on the ground. */
-const signAt = (m: StarterMap, w: World, x: number, which: SignName) => m.sign(x, onGround(GROUND, w.signs[which]), w.signs[which]);
+/** Where each level's signs stand, for tools/layoutCheck.ts: block rectangles (the board and its legs row). */
+export const PLACED = new WeakMap<StarterMap, { what: string; x: number; y: number; w: number; h: number }[]>();
+function note(m: StarterMap, what: string, x: number, y: number, s: Sign): void {
+  PLACED.set(m, [...(PLACED.get(m) ?? []), { what, x, y, w: s.board[0].length, h: s.board.length + 1 }]);
+}
+const signAt = (m: StarterMap, w: World, x: number, which: SignName) => {
+  note(m, which, x, onGround(GROUND, w.signs[which]), w.signs[which]);
+  return m.sign(x, onGround(GROUND, w.signs[which]), w.signs[which]);
+};
 /** A house with its name over the door (the name board is three wide, the house in the middle). */
 function named(m: StarterMap, w: World, kind: number, x: number, name: Name): void {
+  note(m, `name ${name}`, x - 1, STAND - 1, w.names[name]);
   m.sign(x - 1, STAND - 1, w.names[name]);
   m.mon(kind, x, STAND);
 }
@@ -131,7 +140,7 @@ function mainStreet(w: World): StarterMap {
   signAt(m, w, 22, 'far');
   signAt(m, w, 29, 'readme');
   signAt(m, w, 37, 'shed');
-  signAt(m, w, 56, 'exit');
+  signAt(m, w, 57, 'exit');
   named(m, w, COTTAGE, L1.cottages[0], 'SOCKS');
   named(m, w, COTTAGE, L1.cottages[1], 'SOUP');
   named(m, w, COTTAGE, L1.cottages[2], 'TEAPOT');
