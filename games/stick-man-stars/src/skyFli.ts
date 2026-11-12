@@ -85,6 +85,8 @@ export function endingFli(pal: Pal, book: Book, mb: Book, hero: Pixels): Uint8Ar
   ] as const)
     scaleBlit(picture, mb.pics.get(name)!, x, 120, 2);
   const heading = 'ALL LIT UP!';
+  // A dark caption plate separates the white heading from the clouds behind it.
+  picture.rect(56, 8, 208, 34, pal.c('ink', 0)).rect(58, 10, 204, 30, pal.c('sky', 0));
   outlined(picture, Math.round((320 - textWidth(heading, 2)) / 2), 18, heading, pal.c('white', 3), pal.c('ink', 0), 2);
   const sky = new Set(pal.r('sky'));
   const star = pal.c('gold', 5);

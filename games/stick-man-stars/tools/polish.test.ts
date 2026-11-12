@@ -3,13 +3,22 @@ import { Buffer } from 'node:buffer';
 import { describe, expect, it } from 'vitest';
 import { buildLevels, L2 } from '../src/levels';
 import { monsterPictures, monsterSet, CONF_COT, CONF_TOW, CONF_SHED, LIT_COT, LIT_TOW, LIT_SHED } from '../src/monsters';
-import { throwSounds } from '../src/sounds';
+import { houseLitVoc, throwSounds } from '../src/sounds';
+import { decodeVoc } from '@lewismoten/gamemaker-sandbox-engine/formats/voc';
 import * as cartoons from '../src/skyFli';
 import { applyFliFrame, newFliCanvas, parseFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
 import { heroPicture } from '../../kit/starter/hero';
 import { buildStickBlocks } from '../src/stick';
 
 describe('house lighting cue', () => {
+  it('releases the first note before the next attack instead of clicking at the join', () => {
+    const bytes = houseLitVoc();
+    const { samples, sampleRate } = decodeVoc(bytes);
+    const join = Math.round((samples.length * 0.09) / 0.24);
+    expect(Math.max(...samples.slice(join - 4, join).map(Math.abs))).toBeLessThan(0.05);
+    expect(samples.length / sampleRate).toBeLessThan(0.3);
+    expect(Buffer.compare(houseLitVoc(), bytes)).toBe(0);
+  });
   it('uses a synthesized digital cue on the native weapon-impact sound slot', () => {
     const snd = throwSounds();
     expect(snd.digital[1]).toBe('HOUSELIT');
@@ -61,6 +70,8 @@ describe('ending cartoon', () => {
     applyFliFrame(anim, 0, canvas);
     const first = canvas.palette.slice();
     const picture = canvas.pixels.slice();
+    // Clouds must not compete with the large white ending heading.
+    expect([...picture.subarray(12 * 320 + 60, 12 * 320 + 260)].every((c) => c === pal.c('sky', 0))).toBe(true);
     let hold: Uint8Array | undefined;
     for (let i = 1; i < anim.frameCount; i++) {
       applyFliFrame(anim, i, canvas);

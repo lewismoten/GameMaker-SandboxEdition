@@ -13,8 +13,9 @@ export function houseLitVoc(): Uint8Array {
     (t) => {
       const note = t < 0.09 ? 784 : 1047;
       const local = t < 0.09 ? t : t - 0.09;
-      const attack = Math.min(1, local / 0.004);
-      return (attack * (Math.sin(2 * Math.PI * note * local) + 0.2 * Math.sin(4 * Math.PI * note * local))) / 1.2;
+      const length = t < 0.09 ? 0.09 : 0.15;
+      const envelope = Math.min(1, local / 0.004, (length - local) / 0.008);
+      return (envelope * (Math.sin(2 * Math.PI * note * local) + 0.2 * Math.sin(4 * Math.PI * note * local))) / 1.2;
     },
     { gain: 0.65 },
   );

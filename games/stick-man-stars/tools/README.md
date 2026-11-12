@@ -6,6 +6,6 @@
 - `shots.ts`: pictures of the lessons for the progress shots.
 - `skyFli.ts` (src): the between-level cartoons and the won street at nightfall (`won.fli`, a finite palette animation).
 - `sounds.ts` (src): the short code-synthesized `HOUSELIT.VOC` and its PC-speaker fallback. DOS has one weapon-impact slot: the cue also acknowledges bot pops and the Big Repo’s intermediate lanterns, never already-lit scenery. Houses light under the confetti on the impact frame.
-- `polish.test.ts`: cue wiring and lighting-frame, ending-palette and quiet-pocket contracts. Run from `web/` with `npx vitest run --dir ../games/stick-man-stars`.
+- `polish.test.ts`, `polishRuntime.test.ts`: cue synthesis and lighting-frame timing, ending-palette and quiet-pocket contracts, repeated playthroughs and fresh-game reset. Run after building the disk, from `web/`, with `npx vitest run --dir ../games/stick-man-stars`. The runtime checks include an untimed 600-tick garden pause and walking straight onward.
 - Shy Street ends with a safe garden at blocks 71–80. The route pauses there briefly, then walks on to Spam Row; the player is never timed or required to wait.
 - `layoutCheck.ts`: no sign over another sign, a house, a door, a brick tunnel or a wall.
