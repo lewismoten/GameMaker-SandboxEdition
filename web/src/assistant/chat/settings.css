@@ -212,6 +212,16 @@ dialog.modal .ai-provider {
   .ai-setup > .ai-help-slot {
     grid-column: 2;
   }
+  /* Inline labels save two text rows without shrinking text or controls. */
+  .ai-setup > .ai-field:not([hidden]) {
+    display: grid;
+    grid-template-columns: max-content minmax(0, 1fr);
+    align-items: center;
+    gap: 4px 8px;
+  }
+  .ai-setup > .ai-field > .ai-row {
+    min-width: 0;
+  }
   .ai-setup .ai-field :is(input, select) {
     min-width: 0;
     max-width: 100%;
