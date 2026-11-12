@@ -29,6 +29,9 @@ F10 shows that About page and "Originally made with Game-Maker x.xx"; the DOS ex
 3.00 player's kept bytes back byte for byte (`keptParts`; an older build's offsets differ, so
 its bytes stay in the record only).
 
+The neighboring [`export/`](../export/README.md) area owns the download wrappers and notices
+below; these filenames are relative to that area.
+
 - The native downloads wrap the single page in the prebuilt players: `macApp.ts` (with
   `macSign.ts`, `macIcon.ts`, `dsStore.ts` and `udif.ts`, plus `iso9660` in the tools package for the `.dmg`),
   `winApp.ts` (`peResources.ts`, `winIcon.ts`) and `linuxApp.ts` (`kit/tar` in the tools package).

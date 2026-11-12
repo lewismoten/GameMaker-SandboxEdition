@@ -56,6 +56,8 @@ game folder opens in the browser unchanged.
 
 ## Credits
 
+- **Source README ownership clarification (November 12, 2026)**: **Hermes Agent running OpenAI Codex GPT-6.1 Sol**, directed by Lewis Moten, clarified the owning source areas for native download wrappers, notices and the EPUB ZIP writer. No implementation or third-party material changed.
+
 - **Verified finding fixes (November 11, 2026)**: OpenAI Codex (GPT-6), directed by Lewis Moten, added input bounds, backup authentication and credential checks, MCP file-access and read-only checks, atomic save updates, download consent and cancellation, and regression tests. No new third-party material or game assets were added.
 
 - **Short landscape dialogs (November 10, 2026)**: OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, added landscape layouts for phone dialogs using the existing forms and previews. No new third-party assets or game content were added.
