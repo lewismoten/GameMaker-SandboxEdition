@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#000080" />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="icon" href="./icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
+    <title>Credits and license · Guide · Game-Maker: Sandbox Edition</title>
+    <script>
+      // Before the first paint: the readable text in #app is for crawlers and browsers
+      // without JavaScript, so keep it out of sight while the app starts, on the
+      // background of the interface about to open (the same choice main.ts makes).
+      (function (d, h) {
+        var ui = 'desk';
+        try {
+          ui = /^#\/?(\?|$)|^#\/(p|game|help|cast|credits|privacy|achievements|mac|windows|linux|magazine|library|programmers-guide|art-courses|pi-remote)(\/|\?|$)/.test(h) || (!/^#\/desk(\?|$)/.test(h) && localStorage.getItem('gm-ui') === 'modern') ? 'modern' : 'desk';
+        } catch (e) {}
+        var t = 'dark';
+        try {
+          t = /^(dark|light|auto)$/.test(localStorage.getItem('gm-theme')) ? localStorage.getItem('gm-theme') : 'dark';
+        } catch (e) {}
+        d.setAttribute('data-theme', t);
+        d.className += ' js';
+        d.setAttribute('data-ui', ui);
+      })(document.documentElement, location.hash);
+    </script>
+    <style>
+      html.js .seo-static { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+      html.js body { margin: 0; }
+      html[data-ui='desk'] body { background: #465063; }
+      html[data-ui='modern'] body { background: #d5d9e2; }
+      html[data-ui='modern'][data-theme='dark'] body { background: #11131a; }
+      @media (prefers-color-scheme: dark) { html[data-ui='modern'][data-theme='auto'] body { background: #11131a; } }
+    </style>
+    <!--seo:head--><meta name="description" content="RSD Game-Maker was made from 1991 to 1995 by Recreational Software Designs: G. Andrew Stone, G. Oliver Stone, Oliver Stone Jr. and Joan Stone. In 2014…" />
+    <link rel="canonical" href="https://lewismoten.github.io/GameMaker-SandboxEdition/help-credits.html" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Game-Maker: Sandbox Edition" />
+    <meta property="og:title" content="Credits and license · Guide · Game-Maker: Sandbox Edition" />
+    <meta property="og:description" content="RSD Game-Maker was made from 1991 to 1995 by Recreational Software Designs: G. Andrew Stone, G. Oliver Stone, Oliver Stone Jr. and Joan Stone. In 2014…" />
+    <meta property="og:url" content="https://lewismoten.github.io/GameMaker-SandboxEdition/help-credits.html" />
+    <meta property="og:image" content="https://lewismoten.github.io/GameMaker-SandboxEdition/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="A mid-90s computer desk with Game-Maker: Sandbox Edition on the monitor, game boxes on the shelf and a disk box." />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Credits and license · Guide · Game-Maker: Sandbox Edition" />
+    <meta name="twitter:description" content="RSD Game-Maker was made from 1991 to 1995 by Recreational Software Designs: G. Andrew Stone, G. Oliver Stone, Oliver Stone Jr. and Joan Stone. In 2014…" />
+    <meta name="twitter:image" content="https://lewismoten.github.io/GameMaker-SandboxEdition/og-image.png" />
+    <meta name="twitter:image:alt" content="A mid-90s computer desk with Game-Maker: Sandbox Edition on the monitor, game boxes on the shelf and a disk box." />
+    <script>if(!location.hash)history.replaceState(null,'',"#/help/credits")</script>
+    <style>
+      .seo-static { box-sizing: border-box; min-height: 100vh; margin: 0; padding: 24px max(16px, calc((100% - 46rem) / 2)) 48px; background: #12122a; font: 16px/1.5 system-ui, sans-serif; color: #e8e8f0; }
+      .seo-static a { color: #9cf; }
+      .seo-static h1 { font: bold 1.8rem monospace; letter-spacing: 2px; color: #ff5; margin: 0 0 4px; }
+      .seo-static h2 { font: bold 1.15rem monospace; color: #5f5; margin: 24px 0 4px; }
+      .seo-static small { color: #aab; }
+      .seo-static ul { padding-left: 1.2rem; }
+      .seo-static .seo-note { color: #aab; font-size: 0.9rem; }
+    </style><!--/seo:head-->
+    <script type="module" crossorigin src="./assets/main-BB4EUk5_.js"></script>
+    <link rel="modulepreload" crossorigin href="./assets/modulepreload-polyfill-B5Qt9EMX.js">
+    <link rel="modulepreload" crossorigin href="./assets/watch-Ci1HG5Rl.js">
+    <link rel="modulepreload" crossorigin href="./assets/tourButton-DXjuNPQS.js">
+    <link rel="stylesheet" crossorigin href="./assets/tourButton-CEpNth5l.css">
+    <link rel="stylesheet" crossorigin href="./assets/main-BcVD1vCS.css">
+  </head>
+  <body>
+    <div id="app">
+      <!--seo:body--><main class="seo-static">
+      <p><a href="./#/help">Game-Maker: Sandbox Edition Guide</a></p>
+      <h1>Credits and license</h1>
+      <p>RSD Game-Maker was made from 1991 to 1995 by Recreational Software Designs: G. Andrew
+    Stone, G. Oliver Stone, Oliver Stone Jr. and Joan Stone. In 2014 Andy Stone released its
+    source code under the <b>MIT License</b>, saying that “porting Game-Maker to modern OSes
+    is the first step” to preserving the games people made with it.</p>
+    <p>This version is a modified fork of that code by Lewis Moten, who bought Game-Maker in
+    1992 with snow-shoveling money. Running in a browser is the simplest way to reach every
+    modern computer, and everything here reads and writes the original file formats, so
+    games made today still play in DOS and DOSBox. The web port, both the 1994 desk and
+    today’s web editor, was written with <b>Claude Opus 5.5</b>: AI assistance did most of the
+    porting and code generation. It is MIT licensed too.</p>
+    <p>Who made each part of the original, every game’s authors, the people, the AI tools and
+    what each one made (the Sandbox games and The Bard of Bizarre’s game by game), and the
+    software and fonts used are on the <a href="#/credits">Credits page</a>.</p>
+    <h3>The 1994 license and today</h3>
+    <p>When Game-Maker was sold, its license let you install it on one computer at a time and
+    give a game you made, free, to no more than ten people. Wider sharing needed RSD’s
+    permission: for shareware, its manual granted every owner a license as long as the game
+    asked a registration fee of at least $5 and the author paid RSD 10% of the fees each
+    quarter, and selling games meant a commercial license with royalties per copy. The
+    shareware disks sold in stores for a few dollars paid for the disk, not the game; the
+    registration fee went to the author.</p>
+    <p>None of that applies to this edition. Under the MIT License you may use, copy, change,
+    share and sell Game-Maker and the games you make with it, with no limit on people, fees
+    or royalties; just keep the copyright and license notice with the program. The
+    registration fees, order forms and Sandbox Software’s address in the Sandbox games are part
+    of their 1990s story: the games are free. The Sandbox and Bard of Bizarre games were all
+    made in 2026 for Game-Maker: Sandbox Edition; each is presented as a fictional release
+    from the 1990s year it gives. The Bard games’ voice clips are the exception to the MIT
+    License: they are for personal, non-commercial use only. The CD’s shareware games are still
+    their authors’ own, and really are from the 1990s, which is why they are play-only here.</p>
+    <h3>The desk’s hacking tools</h3>
+    <p>The desk’s PC has 1990s-style tools for cracking, hacking and editing (GMCRACK and its
+    KEYGEN, SAVEHACK, HEXEDIT and more). They are mainly for debugging: switching a game between
+    shareware and registered to test both, editing and backing up saved games, and looking inside
+    Game-Maker’s files. They act only on the pretend PC and this site’s own data. Nothing here
+    cracks or generates keys for any real product: GMCRACK’s key is worked out the way
+    Game-Maker’s own code, now MIT licensed, checks it, and the “warez” are this project’s own
+    free files. They are here to show what that era felt like, not to encourage software piracy.
+    Please support the authors of the software you use.</p>
+    <p>GIF is a service mark of CompuServe; FLI is Autodesk Animator’s format; Sound
+    Blaster, CMF and VOC belong to Creative Technology; the OPL2 chip is Yamaha’s. The CD’s
+    sample and shareware games belong to their authors. PKUNZIP was PKWARE’s and VPIC Bob
+    Montgomery’s; the ones on the desk are look-alikes. Sandbox Software, its BBS and the
+    desk’s hardware brands are made up.</p>
+    <p>The full notices and license are in
+    <a href="https://github.com/lewismoten/GameMaker-SandboxEdition/blob/master/NOTICE.md" target="_blank" rel="noopener">NOTICE.md</a>
+    and <a href="https://github.com/lewismoten/GameMaker-SandboxEdition/blob/master/LICENSE" target="_blank" rel="noopener">LICENSE</a>.</p>
+      <p class="seo-note"><a href="./#/help/credits">Open this in the Guide</a> · <a href="./">Game-Maker: Sandbox Edition</a></p>
+    </main><!--/seo:body-->
+    </div>
+  </body>
+</html>

@@ -1,0 +1,141 @@
+{
+ "key": "d99ddc407b0dd6ae",
+ "game": "snowbound",
+ "items": [
+  {
+   "id": "shovel",
+   "title": "The $89 shovel",
+   "blurb": "A dollar a scoop, and every scoop is on the blade. The D grip takes a key ring.",
+   "file": "shovel.stl",
+   "triangles": 2928,
+   "bytes": 146484,
+   "mm": [
+    27.2,
+    93.2,
+    5
+   ],
+   "thinSpecks": 0,
+   "colors": {
+    "file": "shovel.3mf",
+    "bytes": 135482,
+    "palette": [
+     [
+      186,
+      134,
+      82
+     ],
+     [
+      176,
+      188,
+      206
+     ],
+     [
+      36,
+      40,
+      76
+     ],
+     [
+      244,
+      72,
+      60
+     ]
+    ],
+    "meanColorError": 0
+   },
+   "overhangMm2": 0,
+   "overhangShare": 0,
+   "supports": null
+  },
+  {
+   "id": "sled",
+   "title": "The Jamie Street sled",
+   "blurb": "Red deck, gold slats, steel runners curled up at the front and a coil of rope. Hold on.",
+   "file": "sled.stl",
+   "triangles": 3404,
+   "bytes": 170284,
+   "mm": [
+    33.8,
+    64,
+    16.5
+   ],
+   "thinSpecks": 0,
+   "colors": {
+    "file": "sled.3mf",
+    "bytes": 266987,
+    "palette": [
+     [
+      244,
+      72,
+      60
+     ],
+     [
+      244,
+      196,
+      64
+     ],
+     [
+      176,
+      188,
+      206
+     ],
+     [
+      196,
+      142,
+      88
+     ]
+    ],
+    "meanColorError": 0
+   },
+   "overhangMm2": 5,
+   "overhangShare": 0.001,
+   "supports": null
+  },
+  {
+   "id": "scoop-coin",
+   "title": "Snow-to-Software coin",
+   "blurb": "Good for one scoop at Moten Snow-to-Software Operations. One dollar, every driveway.",
+   "file": "scoop-coin.stl",
+   "triangles": 5512,
+   "bytes": 275684,
+   "mm": [
+    40,
+    40,
+    3.8
+   ],
+   "thinSpecks": 0,
+   "colors": {
+    "file": "scoop-coin.3mf",
+    "bytes": 514277,
+    "palette": [
+     [
+      232,
+      240,
+      252
+     ],
+     [
+      29,
+      79,
+      145
+     ],
+     [
+      255,
+      120,
+      180
+     ]
+    ],
+    "meanColorError": 0
+   },
+   "overhangMm2": 1,
+   "overhangShare": 0,
+   "supports": null
+  }
+ ],
+ "packed": [
+  "shovel.stl",
+  "shovel.3mf",
+  "sled.stl",
+  "sled.3mf",
+  "scoop-coin.stl",
+  "scoop-coin.3mf"
+ ]
+}

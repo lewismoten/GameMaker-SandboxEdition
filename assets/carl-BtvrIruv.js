@@ -1,0 +1,1 @@
+const a="85bff570c89cb3fe",b={"aux.map|house.bbl":[0,0,58,18],"bed.map|house.bbl":[0,0,68,18],"couch.map|house.bbl":[0,0,71,20],"walls.map|house.bbl":[0,0,63,20],"wild.map|yard.bbl":[0,0,84,21],"window.map|yard.bbl":[0,0,84,19]},l={hash:a,maps:b};export{l as default,a as hash,b as maps};

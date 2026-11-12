@@ -1,0 +1,141 @@
+{
+ "key": "d73fbe1d0da3a311",
+ "game": "maximus",
+ "items": [
+  {
+   "id": "sapphire-shard",
+   "title": "Sapphire star-shard",
+   "blurb": "One of the ten shards of the dead Core, cut as an eight-sided gem. It opens a gate in the Deep Black.",
+   "file": "sapphire-shard.stl",
+   "triangles": 2816,
+   "bytes": 140884,
+   "mm": [
+    30.5,
+    30.5,
+    22.2
+   ],
+   "thinSpecks": 0,
+   "colors": {
+    "file": "sapphire-shard.3mf",
+    "bytes": 126761,
+    "palette": [
+     [
+      40,
+      72,
+      206
+     ],
+     [
+      90,
+      140,
+      255
+     ],
+     [
+      170,
+      206,
+      255
+     ],
+     [
+      236,
+      246,
+      255
+     ]
+    ],
+    "meanColorError": 0
+   },
+   "overhangMm2": 7,
+   "overhangShare": 0.003,
+   "supports": null
+  },
+  {
+   "id": "worlds-coin",
+   "title": "Hundred Worlds coin",
+   "blurb": "A courier fare for any of the Hundred Worlds, a jade planet and its pearl ring in the middle.",
+   "file": "worlds-coin.stl",
+   "triangles": 6170,
+   "bytes": 308584,
+   "mm": [
+    40,
+    40,
+    3.8
+   ],
+   "thinSpecks": 0,
+   "colors": {
+    "file": "worlds-coin.3mf",
+    "bytes": 578129,
+    "palette": [
+     [
+      14,
+      22,
+      70
+     ],
+     [
+      250,
+      200,
+      40
+     ],
+     [
+      20,
+      180,
+      120
+     ],
+     [
+      236,
+      232,
+      246
+     ]
+    ],
+    "meanColorError": 0
+   },
+   "overhangMm2": 0,
+   "overhangShare": 0,
+   "supports": null
+  },
+  {
+   "id": "courier-pin",
+   "title": "Courier Max pin",
+   "blurb": "A star over MAX on a teal hexagon. Couriers deliver. A pocket in the back takes a pin.",
+   "file": "courier-pin.stl",
+   "triangles": 4600,
+   "bytes": 230084,
+   "mm": [
+    41.9,
+    36.4,
+    3.8
+   ],
+   "thinSpecks": 0,
+   "colors": {
+    "file": "courier-pin.3mf",
+    "bytes": 417496,
+    "palette": [
+     [
+      30,
+      140,
+      170
+     ],
+     [
+      240,
+      120,
+      20
+     ],
+     [
+      244,
+      250,
+      252
+     ]
+    ],
+    "meanColorError": 0
+   },
+   "overhangMm2": 1,
+   "overhangShare": 0,
+   "supports": null
+  }
+ ],
+ "packed": [
+  "sapphire-shard.stl",
+  "sapphire-shard.3mf",
+  "worlds-coin.stl",
+  "worlds-coin.3mf",
+  "courier-pin.stl",
+  "courier-pin.3mf"
+ ]
+}

@@ -1,0 +1,126 @@
+{
+ "key": "3e5b7c7e0912f99d",
+ "game": "realm",
+ "items": [
+  {
+   "id": "round-tuit",
+   "title": "The Royal Round Tuit",
+   "blurb": "The oak disc ringed in brass, TUIT carved round it: whole again, and pocket-sized, for when you get around to it.",
+   "file": "round-tuit.stl",
+   "triangles": 6758,
+   "bytes": 337984,
+   "mm": [
+    40,
+    40,
+    5
+   ],
+   "thinSpecks": 0,
+   "colors": {
+    "file": "round-tuit.3mf",
+    "bytes": 319224,
+    "palette": [
+     [
+      178,
+      120,
+      66
+     ],
+     [
+      228,
+      186,
+      58
+     ],
+     [
+      70,
+      40,
+      24
+     ],
+     [
+      120,
+      80,
+      36
+     ]
+    ],
+    "meanColorError": 0
+   },
+   "overhangMm2": 0,
+   "overhangShare": 0,
+   "supports": null
+  },
+  {
+   "id": "crown-coin",
+   "title": "Coin of the realm",
+   "blurb": "King Dillydally IX's crown over his numeral. Good anywhere in Procrastia, eventually.",
+   "file": "crown-coin.stl",
+   "triangles": 4340,
+   "bytes": 217084,
+   "mm": [
+    38,
+    38,
+    3.8
+   ],
+   "thinSpecks": 0,
+   "colors": {
+    "file": "crown-coin.3mf",
+    "bytes": 199042,
+    "palette": [
+     [
+      236,
+      190,
+      62
+     ],
+     [
+      140,
+      84,
+      30
+     ]
+    ],
+    "meanColorError": 0
+   },
+   "overhangMm2": 0,
+   "overhangShare": 0,
+   "supports": null
+  },
+  {
+   "id": "key-tag",
+   "title": "Pip's key tag",
+   "blurb": "Do it today. A key-chain tag with a hole for the ring.",
+   "file": "key-tag.stl",
+   "triangles": 4232,
+   "bytes": 211684,
+   "mm": [
+    30,
+    52,
+    3.8
+   ],
+   "thinSpecks": 0,
+   "colors": {
+    "file": "key-tag.3mf",
+    "bytes": 439503,
+    "palette": [
+     [
+      44,
+      118,
+      82
+     ],
+     [
+      244,
+      232,
+      196
+     ]
+    ],
+    "meanColorError": 0
+   },
+   "overhangMm2": 0,
+   "overhangShare": 0,
+   "supports": null
+  }
+ ],
+ "packed": [
+  "round-tuit.stl",
+  "round-tuit.3mf",
+  "crown-coin.stl",
+  "crown-coin.3mf",
+  "key-tag.stl",
+  "key-tag.3mf"
+ ]
+}

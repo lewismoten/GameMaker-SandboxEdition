@@ -1,0 +1,54 @@
+{
+ "key": "663930cc7d2a38a0",
+ "game": "reckoning",
+ "items": [
+  {
+   "id": "cheesecake",
+   "title": "The slice of cheesecake",
+   "blurb": "A slice of New York cheesecake on its porcelain plate: graham crust, cream cheese, a berry glaze and one berry on top. It is 3:17 a.m. Think of the celery.",
+   "file": "cheesecake.stl",
+   "triangles": 7274,
+   "bytes": 363784,
+   "mm": [
+    58,
+    58,
+    21
+   ],
+   "thinSpecks": 0,
+   "colors": {
+    "file": "cheesecake.3mf",
+    "bytes": 290327,
+    "palette": [
+     [
+      238,
+      240,
+      236
+     ],
+     [
+      150,
+      92,
+      44
+     ],
+     [
+      255,
+      238,
+      168
+     ],
+     [
+      196,
+      34,
+      78
+     ]
+    ],
+    "meanColorError": 0
+   },
+   "overhangMm2": 0,
+   "overhangShare": 0,
+   "supports": null
+  }
+ ],
+ "packed": [
+  "cheesecake.stl",
+  "cheesecake.3mf"
+ ]
+}

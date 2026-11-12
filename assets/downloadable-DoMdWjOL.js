@@ -1,0 +1,1 @@
+import{a3 as r}from"./shared-desk-web-play-dos-DOS3LiN4.js";const t="Recreational Software Designs";function n(a){return!a.gam||r(a)?!1:a.original?!0:a.kind==="gameware"&&a.company===t}export{t as R,n as c};

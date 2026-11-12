@@ -1,0 +1,424 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#000080" />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="icon" href="./icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
+    <title>How do I…? · Guide · Game-Maker: Sandbox Edition</title>
+    <script>
+      // Before the first paint: the readable text in #app is for crawlers and browsers
+      // without JavaScript, so keep it out of sight while the app starts, on the
+      // background of the interface about to open (the same choice main.ts makes).
+      (function (d, h) {
+        var ui = 'desk';
+        try {
+          ui = /^#\/?(\?|$)|^#\/(p|game|help|cast|credits|privacy|achievements|mac|windows|linux|magazine|library|programmers-guide|art-courses|pi-remote)(\/|\?|$)/.test(h) || (!/^#\/desk(\?|$)/.test(h) && localStorage.getItem('gm-ui') === 'modern') ? 'modern' : 'desk';
+        } catch (e) {}
+        var t = 'dark';
+        try {
+          t = /^(dark|light|auto)$/.test(localStorage.getItem('gm-theme')) ? localStorage.getItem('gm-theme') : 'dark';
+        } catch (e) {}
+        d.setAttribute('data-theme', t);
+        d.className += ' js';
+        d.setAttribute('data-ui', ui);
+      })(document.documentElement, location.hash);
+    </script>
+    <style>
+      html.js .seo-static { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+      html.js body { margin: 0; }
+      html[data-ui='desk'] body { background: #465063; }
+      html[data-ui='modern'] body { background: #d5d9e2; }
+      html[data-ui='modern'][data-theme='dark'] body { background: #11131a; }
+      @media (prefers-color-scheme: dark) { html[data-ui='modern'][data-theme='auto'] body { background: #11131a; } }
+    </style>
+    <!--seo:head--><meta name="description" content="The Starters are small games that each show one idea: walking and jumping, keys and doors, monsters, and rooms joined by doors. Each question below is…" />
+    <link rel="canonical" href="https://lewismoten.github.io/GameMaker-SandboxEdition/help-how-do-i.html" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Game-Maker: Sandbox Edition" />
+    <meta property="og:title" content="How do I…? · Guide · Game-Maker: Sandbox Edition" />
+    <meta property="og:description" content="The Starters are small games that each show one idea: walking and jumping, keys and doors, monsters, and rooms joined by doors. Each question below is…" />
+    <meta property="og:url" content="https://lewismoten.github.io/GameMaker-SandboxEdition/help-how-do-i.html" />
+    <meta property="og:image" content="https://lewismoten.github.io/GameMaker-SandboxEdition/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="A mid-90s computer desk with Game-Maker: Sandbox Edition on the monitor, game boxes on the shelf and a disk box." />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="How do I…? · Guide · Game-Maker: Sandbox Edition" />
+    <meta name="twitter:description" content="The Starters are small games that each show one idea: walking and jumping, keys and doors, monsters, and rooms joined by doors. Each question below is…" />
+    <meta name="twitter:image" content="https://lewismoten.github.io/GameMaker-SandboxEdition/og-image.png" />
+    <meta name="twitter:image:alt" content="A mid-90s computer desk with Game-Maker: Sandbox Edition on the monitor, game boxes on the shelf and a disk box." />
+    <script>if(!location.hash)history.replaceState(null,'',"#/help/how-do-i")</script>
+    <style>
+      .seo-static { box-sizing: border-box; min-height: 100vh; margin: 0; padding: 24px max(16px, calc((100% - 46rem) / 2)) 48px; background: #12122a; font: 16px/1.5 system-ui, sans-serif; color: #e8e8f0; }
+      .seo-static a { color: #9cf; }
+      .seo-static h1 { font: bold 1.8rem monospace; letter-spacing: 2px; color: #ff5; margin: 0 0 4px; }
+      .seo-static h2 { font: bold 1.15rem monospace; color: #5f5; margin: 24px 0 4px; }
+      .seo-static small { color: #aab; }
+      .seo-static ul { padding-left: 1.2rem; }
+      .seo-static .seo-note { color: #aab; font-size: 0.9rem; }
+    </style><!--/seo:head-->
+    <script type="module" crossorigin src="./assets/main-BB4EUk5_.js"></script>
+    <link rel="modulepreload" crossorigin href="./assets/modulepreload-polyfill-B5Qt9EMX.js">
+    <link rel="modulepreload" crossorigin href="./assets/watch-Ci1HG5Rl.js">
+    <link rel="modulepreload" crossorigin href="./assets/tourButton-DXjuNPQS.js">
+    <link rel="stylesheet" crossorigin href="./assets/tourButton-CEpNth5l.css">
+    <link rel="stylesheet" crossorigin href="./assets/main-BcVD1vCS.css">
+  </head>
+  <body>
+    <div id="app">
+      <!--seo:body--><main class="seo-static">
+      <p><a href="./#/help">Game-Maker: Sandbox Edition Guide</a></p>
+      <h1>How do I…?</h1>
+      <p>The Starters are small games that each show one idea: walking and jumping, keys and doors,
+    monsters, and rooms joined by doors. Each question below is answered by one level. <b>Play this
+    level</b> starts the game at it. <b>See how it’s made</b> opens its map at the spot, to look at
+    only, with a <b>How this level is made</b> button for the manual’s page about it. To change
+    something, choose <b>Edit a copy</b> on the bar above the map.</p>
+    <div class="guide-how-do-i"><h3>The Basics</h3>
+<h4><a href="./play-first-steps.html">First Steps</a></h4>
+<ul><li>How do I make a wall my hero has to jump over?</li><li>How do I make my hero fall off an edge?</li><li>How do I make a coin that gives points?</li><li>How do I join one level to the next with a door?</li><li>How do I make a ladder my hero can climb?</li></ul>
+<h4><a href="./play-keys-and-doors.html">Keys and Doors</a></h4>
+<ul><li>How do I make a key my hero picks up and carries?</li><li>How do I make a door that needs a key?</li><li>How do I make a door that needs two keys?</li><li>How do I make two kinds of key, each with its own door?</li></ul>
+<h4><a href="./play-meet-the-monsters.html">Meet the Monsters</a></h4>
+<ul><li>How do I make a monster walk a path?</li><li>How do I make a monster that hurts when touched?</li><li>How do I make a monster my hero can pop?</li><li>How do I make a monster that can only be reached from above?</li></ul>
+<h4><a href="./play-room-to-room.html">Room to Room</a></h4>
+<ul><li>How do I send my hero through a door to another room?</li><li>How do I make a way out of a room that is not a door, like an archway?</li><li>How do I make a door that leads back to the room before?</li><li>How do I keep a key from one room to the next?</li><li>How do I give a room two exits?</li></ul>
+<h4><a href="./play-coins-and-score.html">Coins and Score</a></h4>
+<ul><li>How do I make a coin that gives points?</li><li>How do I make a pickup worth more points?</li><li>How do I make something take points away?</li><li>How do I give the player an extra life?</li></ul>
+<h4><a href="./play-breakable-walls.html">Smash It</a></h4>
+<ul><li>How do I make a block my hero can break?</li><li>How do I leave something behind when a block breaks?</li><li>How do I break a block from any side?</li><li>How do I make a coin that pays only once?</li><li>How do I stop a coin paying again and again?</li><li>How do I make a block that spins and still goes when touched?</li></ul>
+<h4><a href="./play-walk-the-ground.html">Dig It</a></h4>
+<ul><li>How do I make a block the hero can dig through?</li><li>How do I pay points for digging something up?</li><li>How do I make a block that will not dig?</li><li>How do I make ground that gives way under the hero?</li><li>How do I show the hole a dig leaves behind?</li><li>How do I climb out of a dug tunnel?</li></ul>
+<h4><a href="./play-watch-your-step.html">Watch Your Step</a></h4>
+<ul><li>How do I make a block that hurts when touched?</li><li>How do I make a hazard hurt only once?</li><li>How do I make a pool or a pit that costs a life?</li><li>How do I choose where my hero starts again after they fall?</li><li>How do I give my hero a safe path over a hazard?</li><li>How do I put a bridge over a pool?</li></ul>
+<h4><a href="./play-things-that-grow.html">Seeds and Nests</a></h4>
+<ul><li>How do I make a block hatch a monster?</li><li>How do I choose how often a block hatches?</li><li>How do I make a hatched monster fly away after a while?</li><li>How do I make a nest stop hatching when it is touched?</li><li>How do I make two nests hatch different monsters?</li></ul>
+<h3>Moving and Pushing</h3>
+<h4><a href="./play-power-up.html">Power Up</a></h4>
+<ul><li>How do I make a block that gives my hero a power?</li><li>How do I make my hero jump higher?</li><li>How do I put the exit where only a power can reach?</li><li>How do I make a power that runs out?</li><li>How do I make my hero walk faster?</li><li>How do I make a gap that needs a power to cross?</li></ul>
+<h4><a href="./play-throw-it.html">Throw It</a></h4>
+<ul><li>How do I let my hero throw something?</li><li>How do I make a thrown star pop a monster?</li><li>How do I make a thrown star fly only so far?</li><li>How do I choose which way a thrown star flies?</li><li>How do I make a monster that blocks the way until it is popped?</li></ul>
+<h4><a href="./play-many-weapons.html">Many Weapons</a></h4>
+<ul><li>How do I make a key do nothing when there is nothing to throw?</li><li>How do I give the hero something to throw with a pouch?</li><li>How do I make a pouch fill up again?</li><li>How do I make one key throw different things?</li><li>How do I make one weapon beat what another cannot?</li><li>How do I make a weapon run out, and the next one take over?</li></ul>
+<h4><a href="./play-inventory.html">Pick It Up</a></h4>
+<ul><li>How do I make something the hero can pick up?</li><li>How do I let the player put a thing down again?</li><li>How do I make a carried thing a step to stand on?</li><li>How do I make a sequence work only while the hero carries something?</li><li>How do I choose which of two carried things to throw?</li><li>How do I make one weapon reach farther than another?</li></ul>
+<h4><a href="./play-health-and-hearts.html">Health and Hearts</a></h4>
+<ul><li>How do I choose how many hit points my hero starts with?</li><li>How do I make a block that takes hit points?</li><li>How do I make a pickup that gives hit points back?</li><li>How do I keep my hero&#39;s hit points from one level to the next?</li><li>How do I make my hero lose a life when their hit points run out?</li><li>How do I give my hero an extra life?</li></ul>
+<h4><a href="./play-momentum.html">Slide and Drift</a></h4>
+<ul><li>How do I make the hero glide on after a key is let go?</li><li>How do I make the hero speed up while a key is held?</li><li>How do I make the hero turn around after a run?</li><li>How do I make a hop carry the hero forward?</li><li>How do I size a gap for a hop made at speed?</li></ul>
+<h4><a href="./play-jump-boots.html">Boots and Jet Pack</a></h4>
+<ul><li>How do I make a jump that works again in the air?</li><li>How do I make a jump that never runs out, like a jet pack?</li><li>How do I limit how many times a jump can be used?</li><li>How do I make a pickup that gives the hero another jump?</li><li>How do I give a later level its own jump limit?</li></ul>
+<h3>Worlds That Push Back</h3>
+<h4><a href="./play-slippery-and-bouncy.html">Slippery and Bouncy</a></h4>
+<ul><li>How do I make ice that my hero slides on?</li><li>How do I change which way a block pulls my hero?</li><li>How do I make a ledge my hero can jump up through?</li><li>How do I make a floor that carries my hero along?</li><li>How do I make a block that blows my hero up into the air?</li><li>How do I make a spring pad that bounces my hero?</li></ul>
+<h4><a href="./play-gravity-on-gravity-off.html">Gravity On, Gravity Off</a></h4>
+<ul><li>How do I make my hero fall down?</li><li>How do I let my hero jump and come back down?</li><li>How do I make a wall my hero has to jump over?</li><li>How do I turn gravity off?</li><li>How do I let my hero walk up and down as well as sideways?</li><li>How do I make a level that looks down from above?</li></ul>
+<h4><a href="./play-swim.html">Under the Surface</a></h4>
+<ul><li>How do I make water that pulls the hero sideways?</li><li>How do I make water the hero can fall into without being hurt?</li><li>How do I make a stepping stone in the water?</li><li>How do I make the hero float?</li><li>How do I make the hero settle at the top of the water?</li><li>How do I lift the hero up to a ledge?</li></ul>
+<h4><a href="./play-gusts.html">Gusts</a></h4>
+<ul><li>How do I warn the player before the wind blows?</li><li>How do I make wind that blows for a while and then stops?</li><li>How do I lift the player up to a high ledge?</li><li>How do I show the wind with a windsock?</li><li>How do I make wind that pushes sideways?</li><li>How do I make a place the wind does not reach?</li></ul>
+<h4><a href="./play-drop-down.html">Drop Down</a></h4>
+<ul><li>How do I make a monster fall when the block under it breaks?</li><li>How do I give a monster gravity?</li><li>How do I make a monster the hero cannot walk through?</li><li>How do I make a block break only when the hero hits it, cracking first?</li><li>How do I make a monster fall slowly?</li><li>How do I make a monster the hero can walk through?</li></ul>
+<h4><a href="./play-quicksand.html">Quicksand</a></h4>
+<ul><li>How do I make ground that sinks when you stand on it?</li><li>How do I make a block change each time it is touched?</li><li>How do I let the player drop through a block?</li><li>How do I make a safe place to rest?</li><li>How do I make one patch sink faster than another?</li></ul>
+<h3>Changing Your Hero</h3>
+<h4><a href="./play-kit-moves.html">Kit&#39;s Moves</a></h4>
+<ul><li>How do I make a key hop only once, however long it is held?</li><li>How do I make a key keep going while it is held down?</li><li>How do I let the hero rise above a tall cliff?</li><li>How do I make the hero dash?</li><li>How do I make a dash happen once for each press?</li><li>How do I size a gap so it needs a certain number of dashes?</li></ul>
+<h4><a href="./play-home-keys.html">Home Keys</a></h4>
+<ul><li>How do I tell the player which keys the game uses?</li><li>How do I put a jump on the Space key?</li><li>How do I make Enter throw a star?</li><li>How do I get across a gap without a diagonal key?</li><li>How do I add a key that leaps up and sideways?</li><li>How do I use the number pad&#39;s diagonal keys?</li></ul>
+<h4><a href="./play-duck.html">Kit Ducks</a></h4>
+<ul><li>How do I make the hero duck?</li><li>How do I make a flying monster miss the hero?</li><li>How do I put a monster at the height of the hero’s head?</li><li>How do I make a monster the hero can only hop over?</li><li>How do I ask for a duck and then a hop?</li></ul>
+<h4><a href="./play-choose-hero.html">Who Do You Want to Be?</a></h4>
+<ul><li>How do I make a door that picks the hero?</li><li>How do I send two doors to two different scenes?</li><li>How do I make a scene load a different character file?</li><li>How do I make one hero walk faster than another?</li><li>How do I make one hero jump higher than another?</li><li>How do I keep the hero I picked in a later scene?</li></ul>
+<h4><a href="./play-take-the-wheel.html">Take the Wheel</a></h4>
+<ul><li>How do I give a level a different character?</li><li>How do I make a character that cannot jump?</li><li>How do I make a key honk a horn?</li><li>How do I make a monster fly away when something hits it?</li><li>How do I make a monster that blocks the way?</li><li>How do I change characters in the middle of a game?</li></ul>
+<h3>Foes and Bosses</h3>
+<h4><a href="./play-boss-hits.html">Big Bug</a></h4>
+<ul><li>How do I make a boss that takes several hits?</li><li>How do I make a monster turn into another when it is hit?</li><li>How do I make a monster that blocks a narrow way?</li><li>How do I make a monster that hurts my hero when they touch it?</li><li>How do I show how many hits a boss has left?</li><li>How do I make a monster leave a puff when it is beaten?</li></ul>
+<h4><a href="./play-boss-phases.html">Three Phases</a></h4>
+<ul><li>How do I make a boss that changes as it is hurt?</li><li>How do I make a boss that gets faster at half health?</li><li>How do I make a monster walk back and forth?</li><li>How do I make a monster that blocks a narrow way?</li><li>How do I give a boss a new look for its last hit?</li><li>How do I make a monster leave a puff when it is beaten?</li></ul>
+<h4><a href="./play-giant.html">The Giant</a></h4>
+<ul><li>How do I make a boss that is bigger than one block?</li><li>How do I make a boss that guards the way to the door?</li><li>How do I make a star hit a monster that stands higher up?</li><li>How do I make a monster blink red when it is hit?</li><li>How do I make a monster that cannot be hurt for a moment?</li><li>How do I change how a monster looks after the first hit?</li></ul>
+<h4><a href="./play-who-wins.html">Who Wins?</a></h4>
+<ul><li>How do I make one monster stronger than another?</li><li>How do I make a monster pop another one by touching it?</li><li>How do I make a monster the hero cannot walk through?</li><li>How do I choose how strong a thrown star is?</li><li>How do I make a monster that a thrown star cannot pop?</li></ul>
+<h4><a href="./play-short-lived.html">Here Today</a></h4>
+<ul><li>How do I make a monster go away by itself after a while?</li><li>How do I leave a sparkle where a monster was?</li><li>How do I make a monster that Mia cannot walk through?</li><li>How do I make one monster turn into another after a while?</li><li>How do I make a monster stop blocking the way when it changes?</li><li>How do I make the new monster walk about?</li></ul>
+<h4><a href="./play-follower.html">Follow Me</a></h4>
+<ul><li>How do I make a monster follow the hero?</li><li>How do I make a follower slower or faster than the hero?</li><li>How do I make a follower that does not hurt?</li><li>How do I make a follower stop at a wall?</li><li>How do I keep a follower from flying through a ledge?</li><li>How do I make a monster run away from the hero?</li></ul>
+<h4><a href="./play-searchlight.html">Don&#39;t Get Seen</a></h4>
+<ul><li>How do I make a light that sweeps back and forth?</li><li>How do I make a monster that is taller than one block?</li><li>How do I make something that takes hit points when you touch it, but does not block you?</li><li>How do I make a place a monster never goes?</li><li>How do I make two lights that walk at different speeds?</li><li>How do I draw the rail a monster hangs from?</li></ul>
+<h4><a href="./play-flock.html">Birds of a Feather</a></h4>
+<ul><li>How do I make a flock of birds that stay in formation?</li><li>How do I keep a group of monsters in a V or other shape?</li><li>How do I make monsters fly a path and turn back?</li><li>How do I make flying monsters that do not hurt?</li><li>How do I make one monster in a group fly faster?</li><li>How do I make a group where some monsters are a different kind?</li></ul>
+<h3>Telling a Story</h3>
+<h4><a href="./play-say-something.html">Say Something</a></h4>
+<ul><li>How do I put words on a sign?</li><li>How do I show that a character will talk?</li><li>How do I make a character talk when my hero walks into them?</li><li>How do I fit more words on a sign?</li><li>How do I make a talk that runs to more than one page?</li></ul>
+<h4><a href="./play-pictures-and-cartoons.html">Pictures and Cartoons</a></h4>
+<ul><li>How do I show a picture before a level?</li><li>How do I show a picture after a level?</li><li>How do I play a cartoon between two levels?</li><li>How do I show several pictures one after another?</li><li>How do I keep a cartoon from running too long?</li></ul>
+<h4><a href="./play-sounds-and-music.html">Sounds and Music</a></h4>
+<ul><li>How do I make a room play a song?</li><li>How do I give the next room a different song?</li><li>How do I make a room with no music?</li><li>How do I make a pickup play a sound?</li><li>How do I play a sound when my hero is hurt?</li><li>How do I play a sound when my hero jumps?</li></ul>
+<h4><a href="./play-sound-board.html">Sound Board</a></h4>
+<ul><li>How do I make a block play a sound?</li><li>How do I choose which sound a block plays?</li><li>How do I make a sound that is silent?</li><li>How do I put the blocks back the way they were?</li><li>How do I make a gate creak when it opens?</li><li>How do I make a &#34;no&#34; sound for a wrong way?</li></ul>
+<h4><a href="./play-day-night.html">Day and Night</a></h4>
+<ul><li>How do I show the same place by day and by night?</li><li>How do I make a window or a lamp that only lights at night?</li><li>How do I hide a star until it is night?</li><li>How do I change the palette when the player walks somewhere?</li><li>How do I make a sunset in steps?</li><li>How do I fade from one look to another?</li></ul>
+<h4><a href="./play-same-house.html">The Same House</a></h4>
+<ul><li>How do I use the same map in many places?</li><li>How do I give each copy its own carpet, wallpaper and roof?</li><li>How do I make houses that look alike on a street?</li><li>How do I send the player back outside after a room?</li><li>How do I use one room for different places, like wood, ice and lava?</li><li>How do I make a lamp glow a different color in each place?</li></ul>
+<h4><a href="./play-voice.html">Out Loud</a></h4>
+<ul><li>How do I make a key play a sound?</li><li>How do I make my hero say a line out loud?</li><li>How do I make a block talk when it is touched?</li><li>How do I get two blocks to say different things?</li><li>How do I keep a voice from being cut off at the door?</li><li>How do I use a recording of my own voice?</li></ul>
+<h4><a href="./play-cutscenes.html">Cutscenes</a></h4>
+<ul><li>How do I show a picture and some words before a level?</li><li>How do I make a scene end by itself?</li><li>How do I send the player on when they land?</li><li>How do I make a menu out of a room?</li><li>How do I make a door that goes to a scene I pick?</li><li>How do I send the player back to the menu?</li></ul>
+<h4><a href="./play-title-demo.html">Make a Title</a></h4>
+<ul><li>How do I give my game a menu picture?</li><li>How do I leave room for the menu&#39;s words?</li><li>How do I see exactly where the game writes on my menu picture?</li><li>How do I record a demo?</li><li>How do I make the demo play on the title screen?</li><li>How do I find out how long a demo can be?</li></ul>
+<h4><a href="./play-colors.html">Colors That Work</a></h4>
+<ul><li>How do I check that my colors work for players who see colors differently?</li><li>How do I make danger and safety look different by more than color?</li><li>How do I mark a safe path so it stands out?</li></ul>
+<h3>Putting It Together</h3>
+<h4><a href="./play-beat-the-clock.html">Beat the Clock</a></h4>
+<ul><li>How do I make something change after a few seconds?</li><li>How do I show how much time is left?</li><li>How do I make a gate that shuts when time runs out?</li><li>How do I let the player start the clock again?</li><li>How do I make a clock that starts over by itself?</li></ul>
+<h4><a href="./play-countdown.html">Countdown</a></h4>
+<ul><li>How do I show a number that counts down?</li><li>How do I open a door when the time is up?</li><li>How do I let the player choose when to leave?</li><li>How do I count down from 99?</li><li>How do I make the player leave when time runs out?</li><li>How do I send the player on when they land?</li></ul>
+<h4><a href="./play-warning-first.html">Warning First</a></h4>
+<ul><li>How do I warn the player before something happens?</li><li>How do I make something happen again and again?</li><li>How do I make something hurt only once?</li><li>How do I make several things take turns?</li><li>How do I make a floor that vanishes and comes back?</li><li>How do I let the player fall without losing a life?</li></ul>
+<h4><a href="./play-flash-safe.html">Flash Safe</a></h4>
+<ul><li>How do I show a hit without a flash, with a number that rises?</li><li>How do I make a warning light that blinks slowly?</li><li>How do I make a light that glows softly instead of blinking?</li><li>How do I fade between scenes instead of flashing?</li><li>How do I change the sky a little and hold it?</li><li>How do I check that my game does not flash too fast?</li></ul>
+<h4><a href="./play-one-more-try.html">Try Again</a></h4>
+<ul><li>How do I let the player start a level over?</li><li>How do I make a pit too deep to climb out of?</li><li>How do I give the player a ladder out of a pit?</li><li>How do I make steps the player can jump up through?</li><li>How do I make steps out of solid blocks?</li><li>How do I put the player back at the way in?</li></ul>
+<h4><a href="./play-teach-test-twist.html">Teach, Test, Twist</a></h4>
+<ul><li>How do I teach a new idea without frightening anyone?</li><li>How do I add a little danger to something I already taught?</li><li>How do I use the same idea in a way nobody expects?</li></ul>
+<h4><a href="./play-block-brains.html">Block Brains</a></h4>
+<ul><li>How do I make something change again and again?</li><li>How do I make gates take turns?</li><li>How do I make a lamp that shows whose turn it is?</li><li>How do I make a gate open for a short while?</li><li>How do I make two rings run out of step?</li><li>How do I make several gates open at the same moment?</li></ul>
+<h4><a href="./play-puzzle-room.html">Wired Room</a></h4>
+<ul><li>How do I make a lever my hero can pull?</li><li>How do I make two levers add up to one bridge?</li><li>How do I send my hero back to the start without hurting them?</li><li>How do I make a trap door that opens when a lever is pulled?</li><li>How do I make a lever that is not for the bridge?</li><li>How do I wire a whole small puzzle out of counters?</li></ul>
+<h4><a href="./play-spend-it.html">Spend It</a></h4>
+<ul><li>How do I make a stall that sells something for coins?</li><li>How do I make a block that does nothing until the player has enough coins?</li><li>How do I make coins the player can spend?</li><li>How do I make coins left over come to the next level?</li></ul>
+<h4><a href="./play-kits-shop.html">Kit&#39;s Shop</a></h4>
+<ul><li>How do I make a shop with things for sale, each with a price?</li><li>How do I make something that can be bought only once?</li><li>How do I make an exit that needs something bought?</li><li>How do I make things that cost different amounts?</li></ul>
+<h4><a href="./play-your-first-game.html">Your First Game</a></h4>
+<ul><li>How do I let my hero jump over a wall?</li><li>How do I add coins and a score?</li><li>How do I put a friendly monster in my game?</li><li>How do I make something that hurts a little?</li><li>How do I make a door that needs a key?</li><li>How do I join my levels into one game?</li></ul>
+<h3>Wiring and Puzzles</h3>
+<h4><a href="./play-switches.html">Switches</a></h4>
+<ul><li>How do I make a lever my hero can pull?</li><li>How do I count something that is not a key?</li><li>How do I make a bridge that is only there once a lever is pulled?</li><li>How do I make two levers that do not mix?</li><li>How do I make a lever my hero has to climb to?</li><li>How do I make a bridge that wants one particular lever?</li></ul>
+<h4><a href="./play-three-tokens.html">Three Tokens</a></h4>
+<ul><li>How do I make a pickup that adds to a count?</li><li>How do I make a gate that needs three tokens?</li><li>How do I make the count start at zero?</li><li>How do I stop the hero jumping over a gate?</li><li>How do I make a gate the level&#39;s exit?</li><li>How do I make a gate take exactly as many tokens as the level holds?</li></ul>
+<h4><a href="./play-and-gate.html">Both Together</a></h4>
+<ul><li>How do I make an AND, so two things must both happen before something opens?</li><li>How do I make one monster stop another?</li><li>How do I make a monster turn into another when Lami touches it?</li><li>How do I make a block that sends out a monster every few seconds?</li><li>How do I make a monster add to a counter when Lami touches it?</li><li>How do I make a puzzle where three things must all be on?</li></ul>
+<h4><a href="./play-secret-doors.html">Looks Like a Wall</a></h4>
+<ul><li>How do I make a wall my hero can walk through?</li><li>How do I make a wall that looks just like a secret one but stops them?</li><li>How do I make a block that turns into one block, and then another?</li><li>How do I show a wall cracking before it falls?</li><li>How do I hint at a secret without giving it away?</li><li>How do I keep a secret room from being found from above?</li></ul>
+<h4><a href="./play-show-the-count.html">Show the Count</a></h4>
+<ul><li>How do I show a count to the player?</li><li>How do I make a pickup that changes into another picture?</li><li>How do I make a gate that needs the whole meter?</li><li>How do I make the count start at zero?</li><li>How do I make a gate the level&#39;s exit?</li><li>How do I make a meter with more steps?</li></ul>
+<h4><a href="./play-dice.html">Roll the Dice</a></h4>
+<ul><li>How do I make a die that rolls?</li><li>How do I make something change again and again?</li><li>How do I stop it with a touch?</li><li>How do I leave something to chance?</li><li>How do I make a roll pick the door?</li></ul>
+<h4><a href="./play-word-lock.html">Say the Word</a></h4>
+<ul><li>How do I make a pickup that adds a word to a count?</li><li>How do I make a lock that takes three words?</li><li>How do I give back what a lock took?</li><li>How do I make sure the player always gets the refund?</li><li>How do I make a lock keep what it takes?</li><li>How do I make a lock the level&#39;s exit?</li></ul>
+<h4><a href="./play-power-ladder.html">Stronger Keys</a></h4>
+<ul><li>How do I make a key that is worth more than one?</li><li>How do I make a door that costs more?</li><li>How do I let the player keep what a door does not take?</li><li>How do I make a stronger key open every weaker door?</li><li>How do I make small keys add up to a big one?</li></ul>
+<h4><a href="./play-special-counters.html">Not That Key</a></h4>
+<ul><li>How do I make a key my hero carries on to the next level?</li><li>How do I make a door that a key from another level will not open?</li><li>How do I copy a key and its door onto a counter of their own?</li></ul>
+<h3>Bigger Worlds</h3>
+<h4><a href="./play-scroll.html">Scroll or Stay</a></h4>
+<ul><li>How do I make a level that never scrolls?</li><li>How do I make a room that fills the screen exactly?</li><li>How do I choose which part of the map the screen starts on?</li><li>How do I make a level that scrolls to follow my hero?</li><li>How do I make a level longer than the screen?</li><li>How do I stop a scrolling level showing what is past its end?</li></ul>
+<h4><a href="./play-many-rooms.html">Rooms on One Map</a></h4>
+<ul><li>How do I put several rooms on one map?</li><li>How do I keep the screen on one room?</li><li>How do I make a door that lands somewhere else on the map?</li><li>How do I link to a room that is not next door?</li><li>How do I make a door that goes back?</li><li>How do I make every door into a room land on the same cell?</li></ul>
+<h4><a href="./play-overhead.html">Overhead</a></h4>
+<ul><li>How do I make a room that is seen from above?</li><li>How do I make my hero face the way they walk?</li><li>How do I make walls and furniture that stop my hero?</li><li>How do I make a road that runs off the edge into the next area?</li><li>How do I choose where my hero lands in the next area?</li><li>How do I put a door into a building on an outdoor map?</li></ul>
+<h4><a href="./play-diagonal-wrap.html">Diagonal Wrap</a></h4>
+<ul><li>How do I make the map wrap, so my hero comes in at the top when they walk off the bottom?</li><li>How do I show the player where the edge of the map is?</li><li>How do I lay a road straight down the whole map?</li><li>How do I tilt a road so it wraps more than once?</li><li>How do I work out how far a tilted road goes?</li><li>How do I let a road leave the right edge and come back on the left?</li></ul>
+<h4><a href="./play-blocks-budget.html">150 Blocks</a></h4>
+<ul><li>How do I draw a picture bigger than one block?</li><li>How do I make scenery Lena can walk through?</li><li>How do I use one block in many places?</li><li>How do I make a wall Lena cannot walk through?</li><li>How do I see how many blocks a game has used?</li></ul>
+<h4><a href="./play-near-far.html">Near and Far</a></h4>
+<ul><li>How do I make a level with a near plane and a far plane?</li><li>How do I draw the far plane smaller?</li><li>How do I make the far plane paler?</li><li>How do I let the hero step into the distance?</li><li>How do I get past a wall by going through the far plane?</li><li>How do I land the hero on the other side of a wall?</li></ul>
+<h4><a href="./play-very-far.html">Walking Very Far</a></h4>
+<ul><li>How do I draw a figure that looks far away?</li><li>How do I make a far figure walk slowly?</li><li>How do I make a far figure jump smaller?</li><li>How do I make the hills paler than the figure?</li><li>How do I draw hills that go on and on?</li><li>How do I make something look farther away with big things in front?</li></ul>
+<h4><a href="./play-town-links.html">Maps Within Maps</a></h4>
+<ul><li>How do I make a map where one block is a whole town?</li><li>How do I give one scene its own, smaller picture of my hero?</li><li>How do I make a link that drops my hero on the cell I choose?</li><li>How do I make the way back land my hero where they came from?</li><li>How do I make a locked gate that needs a key from another scene?</li><li>How do I put a door in a house and land outside it on the way out?</li></ul>
+<h3>Drawing with Blocks</h3>
+<h4><a href="./play-road-tiles.html">Road Tiles</a></h4>
+<ul><li>How do I draw a round corner on a road?</li><li>How do I make a road that goes diagonally?</li><li>How do I stop a diagonal road pinching where its blocks meet?</li><li>How do I make a road run from one kind of ground into another?</li><li>How do I make a crossroads or a T?</li><li>How do I put a road over water?</li></ul>
+<h4><a href="./play-shore.html">Waves on the Shore</a></h4>
+<ul><li>How do I make water that moves, by turning a block into the next one round and round?</li><li>How do I make one animated block move a whole sea?</li><li>How do I make ripples roll, instead of the whole sea turning at once?</li><li>How do I make waves run up the sand and back?</li><li>How do I make round shore corners?</li><li>How do I make the waves roll along a beach?</li></ul>
+<h4><a href="./play-twinkle.html">Twinkle, Twinkle</a></h4>
+<ul><li>How do I make a star that blinks by itself?</li><li>How do I stop all my stars blinking at the same time?</li><li>How do I make a sky that twinkles at random?</li><li>How do I keep two stars near each other from blinking together?</li><li>How do I draw a moon that is bigger than one block?</li></ul>
+<h4><a href="./play-flicker.html">Flicker and Flow</a></h4>
+<ul><li>How do I make a torch flame that flickers?</li><li>How do I stop a row of torches flickering in step?</li><li>How do I make a flag wave on a pole?</li><li>How do I make a waterfall that falls?</li><li>How do I make a waterfall wider than one block?</li><li>How do I make sparks that rise from a fire?</li></ul>
+<h4><a href="./play-lights-out.html">Lights Out</a></h4>
+<ul><li>How do I make light and shade with blocks?</li><li>How do I make light fade away from a lamp?</li><li>How do I make a light that follows my hero?</li><li>How do I light a block when my hero touches it?</li><li>How do I leave a trail of light behind my hero?</li><li>How do I light a whole room at once?</li></ul>
+<h4><a href="./play-color-doors.html">Color Doors</a></h4>
+<ul><li>How do I show one map in different colors?</li><li>How do I give a scene its own palette?</li><li>How do I make a door that goes to a scene and back to the door it came from?</li><li>How do I make a name that stays easy to read in every color?</li><li>How do I make a palette that shows how some people see?</li></ul>
+<h4><a href="./play-shadows.html">Little Shadows</a></h4>
+<ul><li>How do I put a shadow under a character?</li><li>How do I make a shadow that lets the ground show through?</li><li>How do I use one map with two sets of pictures?</li><li>How do I make a shadow that shrinks when something hops?</li><li>How do I make a monster hover above its own shadow?</li></ul>
+<h4><a href="./play-beams.html">Beams and Fog</a></h4>
+<ul><li>How do I paint a beam of light over a wall?</li><li>How do I let the wall show through a beam?</li><li>How do I make a beam fade at its edges?</li><li>How do I make fog that hides far hills a little more than near ones?</li><li>How do I make fog that drifts?</li><li>How do I give a moving light a glow?</li></ul>
+<h4><a href="./play-lightning-bugs.html">Lightning Bugs</a></h4>
+<ul><li>How do I make a firefly that blinks by itself?</li><li>How do I stop copies of one monster blinking at the same time?</li><li>How do I draw a soft glow around a monster?</li><li>How do I make a monster drift on a wandering loop?</li><li>How do I keep fireflies near each other from blinking together?</li></ul>
+<h4><a href="./play-fireworks.html">Fireworks Night</a></h4>
+<ul><li>How do I make a block that launches rockets by itself?</li><li>How do I make a rocket burst at the top of its flight?</li><li>How do I keep two launchers from firing at the same time?</li><li>How do I let my hero launch a firework with a key?</li><li>How do I make a burst bigger than one block?</li><li>How do I make a firework that goes off again and again?</li></ul>
+<h4><a href="./play-leaves.html">Leaves in the Wind</a></h4>
+<ul><li>How do I make a leaf that turns over as it falls?</li><li>How do I make a leaf float down instead of dropping?</li><li>How do I make a tree drop leaves by itself?</li><li>How do I make a gust that bends every tree at once?</li><li>How do I make a leaf lie on the grass after it lands?</li></ul>
+<h3>Weather</h3>
+<h4><a href="./play-heat-waves.html">Heat Waves</a></h4>
+<ul><li>How do I make far scenery wobble in the heat?</li><li>How do I start a loop of blocks on a different picture?</li><li>How do I make something vanish when the hero comes near?</li><li>How do I make a level scroll only one way?</li><li>How do I make the same pictures look cooler or warmer?</li></ul>
+<h4><a href="./play-lightning.html">Lightning</a></h4>
+<ul><li>How do I make the sky flash for a moment?</li><li>How do I draw a bolt of lightning that comes and goes?</li><li>How do I play thunder after the lightning?</li><li>How do I make stones on the ground light up with the flash?</li></ul>
+<h4><a href="./play-rain.html">Rain on the Path</a></h4>
+<ul><li>How do I draw falling rain with animated blocks?</li><li>How do I stop rain falling in matching rows?</li><li>How do I draw landing splashes and rippling puddles?</li><li>How do I make a puddle splash when the hero steps in it?</li><li>How do I make rain hit a roof and pour from a spout?</li><li>How do I give the same rainy map a darker palette?</li></ul>
+<h4><a href="./play-snow.html">Snow Trails</a></h4>
+<ul><li>How do I make snowflakes sway as they fall?</li><li>How do I leave footprints only where the hero walks?</li><li>How do I make a snow drift grow and then stop?</li><li>How do I leave prints that face the way I walk and fade away?</li></ul>
+<h3>Showcase Tricks</h3>
+<h4><a href="./play-dialog.html">Everybody Talks</a></h4>
+<ul><li>How do I put two speakers in one talk?</li><li>How do I put each speaker&#39;s name in their bubble?</li><li>How do I keep the words inside their bubbles?</li><li>How do I fit three or more speakers in one picture?</li><li>How do I make a talk longer than one card?</li><li>How do I start a talk by touching one of a group?</li></ul>
+<h4><a href="./play-popups.html">Score Popups</a></h4>
+<ul><li>How do I make a monster pay points when Yana touches it?</li><li>How do I make a touched monster turn into a number?</li><li>How do I make a number float up and go away?</li><li>How do I make a number blink?</li><li>How do I draw a number like 200 or 500?</li><li>How do I stop a number from staying on the screen?</li></ul>
+<h4><a href="./play-scripted.html">The Show</a></h4>
+<ul><li>How do I make an actor that walks in, says hello and walks off?</li><li>How do I make one act turn into the next?</li><li>How do I make a speech bubble that shows for a while and goes?</li><li>How do I make a monster that waits, then starts?</li><li>How do I make a friend who says hello once and is gone?</li><li>How do I make a door that plays the scene again?</li></ul>
+<h4><a href="./play-parallax.html">Parallax</a></h4>
+<ul><li>How do I make a layer of scenery slide on a screen that does not scroll?</li><li>How do I make far things go slower than near things?</li><li>How do I make a slide that comes round with no seam?</li><li>How do I make clouds drift across the sky?</li><li>How do I make a picture change after a time?</li><li>How do I keep a door shut until something happens?</li></ul>
+<h4><a href="./play-horizon.html">To the Horizon</a></h4>
+<ul><li>How do I draw a road that runs away to the horizon?</li><li>How do I make things come over a hill and grow as they come?</li><li>How do I make a monster appear from a block nobody can see?</li><li>How do I make a screen that does not scroll?</li><li>How do I make a picture that grows as time goes by?</li><li>How do I keep a door shut until something happens?</li></ul>
+<h4><a href="./play-beltway.html">Round and Round</a></h4>
+<ul><li>How do I make scenery that slides past forever?</li><li>How do I make near things slide faster than far ones?</li><li>How do I make a monster go round and round?</li><li>How do I turn a monster&#39;s picture as it goes?</li><li>How do I count laps?</li><li>How do I keep a door shut until something happens?</li></ul>
+<h4><a href="./play-corner-view.html">Corner View</a></h4>
+<ul><li>How do I draw a room that looks as if it is seen from a corner?</li><li>How do I make a cube that has a top and two sides?</li><li>How do I make a wall that runs on a slant?</li><li>How do I draw a tower that is taller than one block?</li><li>How do I make steps that look as if they climb?</li><li>How do I make an arrow key walk on a slant?</li></ul>
+<h4><a href="./play-slow-computers.html">Slow Computers</a></h4>
+<ul><li>How do I see what a long sound costs on a slow computer?</li><li>How do I play a sound when the hero steps on something?</li><li>How do I put a crowd of monsters in a level, and what does it cost?</li><li>How do I animate a whole sky, and what does it cost?</li><li>Why does Escape restart the level?</li></ul>
+<h4><a href="./play-under-the-hood.html">Under the Hood</a></h4>
+<ul><li>How do I make a pickup that adds one to a count?</li><li>How do I make a gate that wants all four?</li><li>How do I fill a room with a background pattern?</li><li>How do I make a block that changes when you bump it?</li><li>How do I make a door that opens when you bump it?</li><li>How do I make a gate that needs one thing first?</li></ul>
+<h4><a href="./play-around-the-room.html">Around the Room</a></h4>
+<ul><li>How do I make the hero fall toward a wall on the left?</li><li>How do I make a ceiling the hero can walk on?</li><li>How do I make the arrows walk the hero along a wall?</li><li>How do I draw a hero on his side or upside down?</li><li>How do I make a jump that pushes away from a wall?</li><li>How do I make a trench the hero can safely fall into?</li></ul>
+<h4><a href="./play-ride-along.html">Ride Along</a></h4>
+<ul><li>How do I let the player climb into a vehicle?</li><li>How do I give a level a different character?</li><li>How do I make a vehicle that keeps moving when no key is held?</li><li>How do I make Up speed it up and Down slow it?</li><li>How do I make a river that flows by itself?</li><li>How do I make a key give a burst of speed?</li></ul>
+<h3>More Starters</h3>
+<h4><a href="./play-graduation-blocks.html">Graduation: Blocks and Showcase</a></h4>
+<ul><li>How do I make water that moves?</li><li>How do I make stars that twinkle?</li><li>How do I make a score that pops up?</li><li>How do I make people who cheer, each out of step with the others?</li><li>How do I make several different people from one drawing?</li><li>How do I make a pickup that ends the level?</li></ul>
+<h4><a href="./play-graduation-basics.html">Graduation: First Steps</a></h4>
+<ul><li>How do I make a ladder to climb?</li><li>How do I make a gate that needs the key lying just before it?</li><li>How do I make coins that add to the score?</li><li>How do I make people who cheer, each out of step with the others?</li><li>How do I make several different people from one drawing?</li><li>How do I make a pickup that ends the level?</li></ul>
+<h4><a href="./play-graduation-heroes.html">Graduation: Heroes and Foes</a></h4>
+<ul><li>How do I make a low wall to hop over?</li><li>How do I draw something bigger than one block?</li><li>How do I make birds that flap?</li><li>How do I make people who cheer, each out of step with the others?</li><li>How do I make several different people from one drawing?</li><li>How do I make a pickup that ends the level?</li></ul>
+<h4><a href="./play-graduation-moving.html">Graduation: Moving and Pushing</a></h4>
+<ul><li>How do I give the hero an extra life?</li><li>How do I make ice that slides?</li><li>How do I make wind that lifts the hero?</li><li>How do I make people who cheer, each out of step with the others?</li><li>How do I make several different people from one drawing?</li><li>How do I make a pickup that ends the level?</li></ul>
+<h4><a href="./play-graduation-story.html">Graduation: Story and Finish</a></h4>
+<ul><li>How do I put a speech bubble over a friend?</li><li>How do I make a pad that lights up when stepped on?</li><li>How do I make a number that counts down and opens a gate?</li><li>How do I make people who cheer, each out of step with the others?</li><li>How do I make several different people from one drawing?</li><li>How do I make a pickup that ends the level?</li></ul>
+<h4><a href="./play-graduation-wiring.html">Graduation: Wiring and Worlds</a></h4>
+<ul><li>How do I make a lever that opens a gate?</li><li>How do I make a gate that wants three tokens?</li><li>How do I make a wall you can walk through?</li><li>How do I make people who cheer, each out of step with the others?</li><li>How do I make several different people from one drawing?</li><li>How do I make a pickup that ends the level?</li></ul>
+<h4><a href="./play-graduation-diploma.html">The Sandbox Diploma</a></h4>
+<ul><li>How do I make a ladder to climb?</li><li>How do I make wind that lifts the hero?</li><li>How do I make a low wall to hop over?</li><li>How do I make people who cheer, each out of step with the others?</li><li>How do I make several different people from one drawing?</li><li>How do I make a pickup that ends the level?</li></ul></div>
+    <h3>Moving and jumping</h3>
+    <p>The hero walks with the arrow keys and jumps with Space. A wall two blocks high is too tall to
+    walk through, so the level asks for a jump.</p>
+    <aside class="try-it" data-try="first-steps/walls"><strong>Try it:</strong> First Steps, level 1.</aside>
+    <h3>Gravity</h3>
+    <p>A block can pull the hero down. Walk off an edge and the pull of the sky block does the rest.</p>
+    <aside class="try-it" data-try="first-steps/gravity"><strong>Try it:</strong> First Steps, level 1.</aside>
+    <h3>Ladders</h3>
+    <p>A ladder is a block with no pull and no solid side, so Up lifts the hero.</p>
+    <aside class="try-it" data-try="first-steps/ladder"><strong>Try it:</strong> First Steps, level 2.</aside>
+    <h3>Keys and doors</h3>
+    <p>A key adds one to a counter, and a locked door spends one from it.</p>
+    <aside class="try-it" data-try="keys-and-doors/key keys-and-doors/locked-door"><strong>Try it:</strong> Keys and Doors, level 1.</aside>
+    <h3>Counters</h3>
+    <p>A door can cost two keys, and a second counter gives a second kind of key.</p>
+    <aside class="try-it" data-try="keys-and-doors/two-keys keys-and-doors/two-counters"><strong>Try it:</strong> Keys and Doors, levels 2 and 3.</aside>
+    <h3>Monsters</h3>
+    <p>A monster walks a short path of corners, back and forth.</p>
+    <aside class="try-it" data-try="meet-the-monsters/path"><strong>Try it:</strong> Meet the Monsters, level 1.</aside>
+    <h3>Hurting</h3>
+    <p>A monster’s picture can take hit points away. Another can be popped by touching it.</p>
+    <aside class="try-it" data-try="meet-the-monsters/hurts meet-the-monsters/pop"><strong>Try it:</strong> Meet the Monsters, levels 1 and 2.</aside>
+    <h3>Scene links and exits</h3>
+    <p>A door, or an open archway in a room's wall, is a link to another scene.</p>
+    <aside class="try-it" data-try="room-to-room/door-link room-to-room/open-archway room-to-room/two-exits"><strong>Try it:</strong> Room to Room, levels 1 and 3.</aside>
+    <h3>Treasure and score</h3>
+    <p>A coin block adds points to the score, one can be worth more, and a hazard can take points away.</p>
+    <aside class="try-it" data-try="coins-and-score/coin coins-and-score/worth-more"><strong>Try it:</strong> Coins and Score.</aside>
+    <h3>Hit points and lives</h3>
+    <p>The hero starts with hit points, a heart gives some back, and running out costs a life.</p>
+    <aside class="try-it" data-try="health-and-hearts/hit-points health-and-hearts/lose-life"><strong>Try it:</strong> Health and Hearts.</aside>
+    <h3>Hazards</h3>
+    <p>A block can hurt every time or only once, and a pool can cost a life.</p>
+    <aside class="try-it" data-try="watch-your-step/spikes watch-your-step/pool"><strong>Try it:</strong> Watch Your Step.</aside>
+    <h3>Warning before it happens</h3>
+    <p>A hazard that blinks first gives the player a fair chance, and can ring again and again.</p>
+    <aside class="try-it" data-try="warning-first/warn warning-first/ring"><strong>Try it:</strong> Warning First.</aside>
+    <h3>Powers that run out</h3>
+    <p>A block gives a power: a higher jump or quicker feet, for a while.</p>
+    <aside class="try-it" data-try="power-up/power-block power-up/runs-out"><strong>Try it:</strong> Power Up.</aside>
+    <h3>Throwing and weapons</h3>
+    <p>A key throws a star that flies a set distance; a pouch can hold other things to throw.</p>
+    <aside class="try-it" data-try="throw-it/throw many-weapons/pouch"><strong>Try it:</strong> Throw It and Many Weapons.</aside>
+    <h3>Who beats whom</h3>
+    <p>One monster can be stronger than another, and one can pop another by touching it.</p>
+    <aside class="try-it" data-try="who-wins/power"><strong>Try it:</strong> Who Wins?</aside>
+    <h3>Bosses</h3>
+    <p>A boss takes several hits, and can change its look and speed as it is hurt.</p>
+    <aside class="try-it" data-try="boss-hits/boss-hits boss-phases/faster"><strong>Try it:</strong> Big Bug and Three Phases.</aside>
+    <h3>Following, flocking and watching</h3>
+    <p>A monster can follow the hero, fly in formation, or sweep a light back and forth.</p>
+    <aside class="try-it" data-try="follower/follow flock/flock searchlight/light"><strong>Try it:</strong> Follow Me, Birds of a Feather and Don’t Get Seen.</aside>
+    <h3>Monsters that come and go</h3>
+    <p>A block can hatch a monster, and a monster can vanish or change after a while.</p>
+    <aside class="try-it" data-try="things-that-grow/hatch short-lived/vanish"><strong>Try it:</strong> Seeds and Nests, and Here Today.</aside>
+    <h3>Popping numbers</h3>
+    <p>A touched monster can turn into a number that floats up and goes away.</p>
+    <aside class="try-it" data-try="popups/becomes"><strong>Try it:</strong> Score Popups.</aside>
+    <h3>Wind, ice and springs</h3>
+    <p>Blocks can slide, carry or lift the hero, and wind can warn before it blows.</p>
+    <aside class="try-it" data-try="slippery-and-bouncy/ice gusts/warn"><strong>Try it:</strong> Slippery and Bouncy and Gusts.</aside>
+    <h3>Speed and dashes</h3>
+    <p>The hero can pick up speed while a key is held, glide on, or dash once for each press.</p>
+    <aside class="try-it" data-try="momentum/faster kit-moves/dash"><strong>Try it:</strong> Slide and Drift and Kit’s Moves.</aside>
+    <h3>Water</h3>
+    <p>Water can pull the hero sideways without hurting, and the hero can float.</p>
+    <aside class="try-it" data-try="swim/nohurt swim/float"><strong>Try it:</strong> Under the Surface.</aside>
+    <h3>Looking down and gravity off</h3>
+    <p>Turn the pull off for a level that looks down from above.</p>
+    <aside class="try-it" data-try="gravity-on-gravity-off/from-above"><strong>Try it:</strong> Gravity On, Gravity Off, level 2.</aside>
+    <h3>Digging and breaking</h3>
+    <p>Some blocks can be dug through or broken from any side, and leave something behind.</p>
+    <aside class="try-it" data-try="walk-the-ground/soil breakable-walls/crate"><strong>Try it:</strong> Dig It and Smash It.</aside>
+    <h3>Levers, gates and puzzles</h3>
+    <p>A lever can make a bridge, a gate can need three tokens, and a puzzle can need two things at once.</p>
+    <aside class="try-it" data-try="switches/lever three-tokens/gate and-gate/and"><strong>Try it:</strong> Switches, Three Tokens and Both Together.</aside>
+    <h3>Secret walls</h3>
+    <p>A wall can look solid and let the hero through, or look secret and stay solid.</p>
+    <aside class="try-it" data-try="secret-doors/fake"><strong>Try it:</strong> Looks Like a Wall.</aside>
+    <h3>Clocks and countdowns</h3>
+    <p>A bar can show time running out, and a number can count down to a door.</p>
+    <aside class="try-it" data-try="beat-the-clock/bar countdown/digit"><strong>Try it:</strong> Beat the Clock and Countdown.</aside>
+    <h3>Signs and talk</h3>
+    <p>A sign shows words, and a character talks when the hero walks into them.</p>
+    <aside class="try-it" data-try="say-something/sign dialog/two-voices"><strong>Try it:</strong> Say Something and Everybody Talks.</aside>
+    <h3>Acting scenes</h3>
+    <p>An actor can walk in, say hello and walk out, one act turning into the next.</p>
+    <aside class="try-it" data-try="scripted/actor"><strong>Try it:</strong> The Show.</aside>
+    <h3>Pictures and cartoons</h3>
+    <p>A picture or cartoon can play before or after a level.</p>
+    <aside class="try-it" data-try="pictures-and-cartoons/before"><strong>Try it:</strong> Pictures and Cartoons.</aside>
+    <h3>Songs and sounds</h3>
+    <p>A room can play its own song, and a pickup can play its own sound.</p>
+    <aside class="try-it" data-try="sounds-and-music/room-song sounds-and-music/pickup-sound"><strong>Try it:</strong> Sounds and Music.</aside>
+    <h3>Day and night</h3>
+    <p>The palette can change when the player walks somewhere, to make a sunset in steps.</p>
+    <aside class="try-it" data-try="day-night/gate day-night/sunset"><strong>Try it:</strong> Day and Night.</aside>
+    <h3>Choosing a hero and driving</h3>
+    <p>A door can pick the hero, and a level can give the hero another character, a car, say.</p>
+    <aside class="try-it" data-try="choose-hero/door take-the-wheel/character"><strong>Try it:</strong> Who Do You Want to Be? and Take the Wheel.</aside>
+    <h3>Scrolling</h3>
+    <p>A level can stay on one screen or scroll to follow the hero.</p>
+    <aside class="try-it" data-try="scroll/stay scroll/follow"><strong>Try it:</strong> Scroll or Stay.</aside>
+    <h3>Rooms on one map</h3>
+    <p>Several rooms can share a map, with doors that land in another room.</p>
+    <aside class="try-it" data-try="many-rooms/rooms-one-map"><strong>Try it:</strong> Rooms on One Map.</aside>
+    <h3>Bigger pictures</h3>
+    <p>One picture can span several blocks, and a road can run away to the horizon.</p>
+    <aside class="try-it" data-try="blocks-budget/big-picture horizon/road"><strong>Try it:</strong> 150 Blocks and To the Horizon.</aside>
+    <h3>Near and far</h3>
+    <p>A level can have a near scene and a far one, drawn smaller and paler, with a trail between them.</p>
+    <aside class="try-it" data-try="near-far/two-planes"><strong>Try it:</strong> Near and Far.</aside>
+    <h3>Putting a game together</h3>
+    <p>Levels join into one game with doors, coins, a hazard and a key.</p>
+    <aside class="try-it" data-try="your-first-game/join"><strong>Try it:</strong> Your First Game.</aside>
+      <p class="seo-note"><a href="./#/help/how-do-i">Open this in the Guide</a> · <a href="./">Game-Maker: Sandbox Edition</a></p>
+    </main><!--/seo:body-->
+    </div>
+  </body>
+</html>

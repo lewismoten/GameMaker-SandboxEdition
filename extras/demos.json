@@ -1,0 +1,257 @@
+{
+  "note": "Demo recordings added for Game-Maker: Sandbox Edition, for CD games that shipped without one. They are not part of the original games.",
+  "demos": [
+    {
+      "id": "donut",
+      "file": "donut.rec",
+      "gam": "donut.gam",
+      "gamCrc": 4081036087,
+      "ticks": 831,
+      "made": "Recorded for Game-Maker: Sandbox Edition by a bot playing the game in the web engine (games/kit/cdDemos); the original game has no demo.",
+      "date": "2026-10-21",
+      "recCrc": 641746771
+    },
+    {
+      "id": "glub",
+      "file": "glub.rec",
+      "gam": "glub.gam",
+      "gamCrc": 439406779,
+      "ticks": 831,
+      "made": "Recorded for Game-Maker: Sandbox Edition by a bot playing the game in the web engine (games/kit/cdDemos); the original game has no demo.",
+      "date": "2026-10-21",
+      "recCrc": 87491293
+    },
+    {
+      "id": "heart",
+      "file": "heart.rec",
+      "gam": "heart.gam",
+      "gamCrc": 3195272213,
+      "ticks": 831,
+      "made": "Recorded for Game-Maker: Sandbox Edition by a bot playing the game in the web engine (games/kit/cdDemos); the original game has no demo.",
+      "date": "2026-10-21",
+      "recCrc": 1594642438
+    },
+    {
+      "id": "peach",
+      "file": "demo.rec",
+      "inGame": true,
+      "gam": "peach.gam",
+      "gamCrc": 2495432776,
+      "ticks": 51889,
+      "made": "The game’s own recording, which its title screen never plays (it names no demo, or a file the game does not have); listed here so it can be watched.",
+      "date": "2026-10-21",
+      "recCrc": 3185604571
+    },
+    {
+      "id": "outerlim",
+      "file": "outerlim.rec",
+      "gam": "outerg.gam",
+      "gamCrc": 128777098,
+      "ticks": 831,
+      "made": "Recorded for Game-Maker: Sandbox Edition by a bot playing the game in the web engine (games/kit/cdDemos); the original game has no demo.",
+      "date": "2026-10-21",
+      "recCrc": 283609260
+    },
+    {
+      "id": "penguin",
+      "file": "penguin.rec",
+      "gam": "penguin.gam",
+      "gamCrc": 193042469,
+      "ticks": 831,
+      "made": "Recorded for Game-Maker: Sandbox Edition by a bot playing the game in the web engine (games/kit/cdDemos); the original game has no demo.",
+      "date": "2026-10-21",
+      "recCrc": 4060761485
+    },
+    {
+      "id": "rings5",
+      "file": "rings5.rec",
+      "gam": "quest.gam",
+      "gamCrc": 3861397589,
+      "ticks": 831,
+      "made": "Recorded for Game-Maker: Sandbox Edition by a bot playing the game in the web engine (games/kit/cdDemos); the original game has no demo.",
+      "date": "2026-10-21",
+      "recCrc": 2576332402
+    },
+    {
+      "id": "sample",
+      "file": "sample.rec",
+      "gam": "sample.gam",
+      "gamCrc": 1154843224,
+      "ticks": 831,
+      "made": "Recorded for Game-Maker: Sandbox Edition by a bot playing the game in the web engine (games/kit/cdDemos); the original game has no demo.",
+      "date": "2026-10-21",
+      "recCrc": 230949803
+    },
+    {
+      "id": "terrain",
+      "file": "terrain.rec",
+      "gam": "terrain.gam",
+      "gamCrc": 2509007457,
+      "ticks": 831,
+      "made": "Recorded for Game-Maker: Sandbox Edition by a bot playing the game in the web engine (games/kit/cdDemos); the original game has no demo.",
+      "date": "2026-10-21",
+      "recCrc": 3774982677
+    },
+    {
+      "id": "warrior",
+      "file": "warrior.rec",
+      "gam": "warrior.gam",
+      "gamCrc": 147880650,
+      "ticks": 1011,
+      "made": "Recorded for Game-Maker: Sandbox Edition by a bot playing the game in the web engine (games/kit/cdDemos); the original game has no demo.",
+      "date": "2026-10-21",
+      "recCrc": 3488171699
+    },
+    {
+      "id": "houses",
+      "file": "houses.rec",
+      "inGame": true,
+      "gam": "houses.gam",
+      "gamCrc": 2620926277,
+      "ticks": 1049,
+      "made": "The game’s own recording, which its title screen never plays (it names no demo, or a file the game does not have); listed here so it can be watched.",
+      "date": "2026-10-21",
+      "recCrc": 717132542
+    },
+    {
+      "id": "ajqst2",
+      "file": "ajqst2.rec",
+      "gam": "demo.gam",
+      "gamCrc": 3351903132,
+      "ticks": 1011,
+      "made": "Recorded for Game-Maker: Sandbox Edition by a bot playing the game in the web engine (games/kit/cdDemos); the original game has no demo.",
+      "date": "2026-10-21",
+      "recCrc": 3950137910
+    },
+    {
+      "id": "ajquest",
+      "file": "ajquest.rec",
+      "gam": "a_j.gam",
+      "gamCrc": 1793393617,
+      "ticks": 831,
+      "made": "Recorded for Game-Maker: Sandbox Edition by a bot playing the game in the web engine (games/kit/cdDemos); the original game has no demo.",
+      "date": "2026-10-21",
+      "recCrc": 1605705757
+    },
+    {
+      "id": "bounerm",
+      "file": "bounerm.rec",
+      "gam": "bounerim.gam",
+      "gamCrc": 4030024679,
+      "ticks": 1011,
+      "made": "Recorded for Game-Maker: Sandbox Edition by a bot playing the game in the web engine (games/kit/cdDemos); the original game has no demo.",
+      "date": "2026-10-21",
+      "recCrc": 2448463427
+    },
+    {
+      "id": "congress",
+      "file": "congress.rec",
+      "gam": "congress.gam",
+      "gamCrc": 3324266084,
+      "ticks": 831,
+      "made": "Recorded for Game-Maker: Sandbox Edition by a bot playing the game in the web engine (games/kit/cdDemos); the original game has no demo.",
+      "date": "2026-10-21",
+      "recCrc": 2894490234
+    },
+    {
+      "id": "fluffyr",
+      "file": "fluffyr.rec",
+      "gam": "ralph.gam",
+      "gamCrc": 1688924452,
+      "ticks": 831,
+      "made": "Recorded for Game-Maker: Sandbox Edition by a bot playing the game in the web engine (games/kit/cdDemos); the original game has no demo.",
+      "date": "2026-10-21",
+      "recCrc": 1351863327
+    },
+    {
+      "id": "gridlin",
+      "file": "gridlin.rec",
+      "gam": "gridline.gam",
+      "gamCrc": 1418456811,
+      "ticks": 1011,
+      "made": "Recorded for Game-Maker: Sandbox Edition by a bot playing the game in the web engine (games/kit/cdDemos); the original game has no demo.",
+      "date": "2026-10-21",
+      "recCrc": 835492844
+    },
+    {
+      "id": "njlnflx",
+      "file": "njlnflx.rec",
+      "gam": "nejilian.gam",
+      "gamCrc": 2051842489,
+      "ticks": 831,
+      "made": "Recorded for Game-Maker: Sandbox Edition by a bot playing the game in the web engine (games/kit/cdDemos); the original game has no demo.",
+      "date": "2026-10-21",
+      "recCrc": 131987662
+    },
+    {
+      "id": "octolrs",
+      "file": "octolrs.rec",
+      "gam": "octolris.gam",
+      "gamCrc": 2421421340,
+      "ticks": 831,
+      "made": "Recorded for Game-Maker: Sandbox Edition by a bot playing the game in the web engine (games/kit/cdDemos); the original game has no demo.",
+      "date": "2026-10-21",
+      "recCrc": 1899589541
+    },
+    {
+      "id": "orb",
+      "file": "orb.rec",
+      "gam": "orb.gam",
+      "gamCrc": 1962902720,
+      "ticks": 1011,
+      "made": "Recorded for Game-Maker: Sandbox Edition by a bot playing the game in the web engine (games/kit/cdDemos); the original game has no demo.",
+      "date": "2026-10-21",
+      "recCrc": 1012318645
+    },
+    {
+      "id": "pac",
+      "file": "pac.rec",
+      "gam": "pac.gam",
+      "gamCrc": 3957180877,
+      "ticks": 511,
+      "made": "Recorded for Game-Maker: Sandbox Edition by a bot playing the game in the web engine (games/kit/cdDemos); the original game has no demo.",
+      "date": "2026-10-21",
+      "recCrc": 4184862134
+    },
+    {
+      "id": "paperair",
+      "file": "paperair.rec",
+      "gam": "spap.gam",
+      "gamCrc": 877177705,
+      "ticks": 1011,
+      "made": "Recorded for Game-Maker: Sandbox Edition by a bot playing the game in the web engine (games/kit/cdDemos); the original game has no demo.",
+      "date": "2026-10-21",
+      "recCrc": 2929208263
+    },
+    {
+      "id": "parsec3d",
+      "file": "parsec3d.rec",
+      "gam": "parsec3d.gam",
+      "gamCrc": 2057408819,
+      "ticks": 831,
+      "made": "Recorded for Game-Maker: Sandbox Edition by a bot playing the game in the web engine (games/kit/cdDemos); the original game has no demo.",
+      "date": "2026-10-21",
+      "recCrc": 1538033961
+    },
+    {
+      "id": "signhdg",
+      "file": "signhdg.rec",
+      "gam": "sign.gam",
+      "gamCrc": 3232811933,
+      "ticks": 1111,
+      "made": "Recorded for Game-Maker: Sandbox Edition by a bot playing the game in the web engine (games/kit/cdDemos); the original game has no demo.",
+      "date": "2026-10-21",
+      "recCrc": 375109873
+    },
+    {
+      "id": "zoom",
+      "file": "zoom.rec",
+      "gam": "zoom_.gam",
+      "gamCrc": 4009495921,
+      "ticks": 1811,
+      "made": "Recorded for Game-Maker: Sandbox Edition by a bot playing the game in the web engine (games/kit/cdDemos); the original game has no demo.",
+      "date": "2026-10-21",
+      "recCrc": 2040780941
+    }
+  ]
+}

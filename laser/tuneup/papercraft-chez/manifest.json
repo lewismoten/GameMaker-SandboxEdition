@@ -1,0 +1,245 @@
+{
+  "kind": "kit",
+  "id": "papercraft-chez",
+  "source": "64fb4df017e75e4707242ca3ba9d948db0539585",
+  "game": "tuneup",
+  "title": "Tune-Up: paper THE CHEZ",
+  "material": {
+    "description": "Cardstock, using Proofgrade sheet dimensions",
+    "bed": {
+      "w": 495,
+      "h": 279
+    },
+    "stock": "12x12",
+    "size": {
+      "w": 304.8,
+      "h": 304.8
+    },
+    "margin": {
+      "x": 6.5,
+      "y": 12.9
+    }
+  },
+  "fitting": [
+    {
+      "stock": "6x12",
+      "sheets": 3,
+      "materialMm2": 139354.56000000003,
+      "materialIn2": 216.00000000000006,
+      "label": "fits 3 sheets of 6x12"
+    },
+    {
+      "stock": "8x12",
+      "sheets": 2,
+      "materialMm2": 123870.72,
+      "materialIn2": 192,
+      "label": "fits 2 sheets of 8x12"
+    },
+    {
+      "stock": "12x12",
+      "sheets": 2,
+      "materialMm2": 185806.08000000002,
+      "materialIn2": 288.00000000000006,
+      "label": "fits 2 sheets of 12x12"
+    },
+    {
+      "stock": "12x20",
+      "sheets": 1,
+      "materialMm2": 154838.4,
+      "materialIn2": 240,
+      "label": "fits 1 sheet of 12x20"
+    }
+  ],
+  "fit": "fits 2 sheets of 12x12",
+  "sheets": [
+    {
+      "svg": "sheet-1.svg",
+      "preview": "sheet-1.png",
+      "title": "Sheet 1: 12x12 inch stock",
+      "w": 304.8,
+      "h": 304.8,
+      "parts": [
+        {
+          "name": "Underside strip",
+          "x": 6.55,
+          "y": 12.950000000000001,
+          "w": 232.08907708214173,
+          "h": 94,
+          "turn": 0
+        },
+        {
+          "name": "Top strip",
+          "x": 6.55,
+          "y": 112.05,
+          "w": 161.87668952113629,
+          "h": 94,
+          "turn": 0
+        },
+        {
+          "name": "Wheel",
+          "x": 70.64999999999999,
+          "y": 131.15,
+          "w": 29.25,
+          "h": 29.25,
+          "turn": 0
+        },
+        {
+          "name": "Driver side panel",
+          "x": 173.5266895211363,
+          "y": 112.05,
+          "w": 75.60000000000001,
+          "h": 138.6,
+          "turn": 90
+        },
+        {
+          "name": "Passenger side panel",
+          "x": 6.55,
+          "y": 211.15,
+          "w": 138.6,
+          "h": 75.60000000000001,
+          "turn": 0
+        },
+        {
+          "name": "Wheel",
+          "x": 243.73907708214176,
+          "y": 12.950000000000001,
+          "w": 29.25,
+          "h": 29.25,
+          "turn": 0
+        },
+        {
+          "name": "Wheel",
+          "x": 243.73907708214176,
+          "y": 47.3,
+          "w": 29.25,
+          "h": 29.25,
+          "turn": 0
+        },
+        {
+          "name": "Wheel",
+          "x": 150.25000000000003,
+          "y": 255.75000000000003,
+          "w": 29.25,
+          "h": 29.25,
+          "turn": 0
+        },
+        {
+          "name": "Bumper",
+          "x": 254.22668952113634,
+          "y": 81.65,
+          "w": 26.1,
+          "h": 192,
+          "turn": 90
+        }
+      ]
+    },
+    {
+      "svg": "sheet-2.svg",
+      "preview": "sheet-2.png",
+      "title": "Sheet 2: 12x12 inch stock",
+      "w": 304.8,
+      "h": 304.8,
+      "parts": [
+        {
+          "name": "Bumper",
+          "x": 6.55,
+          "y": 12.950000000000001,
+          "w": 192,
+          "h": 26.1,
+          "turn": 0
+        }
+      ]
+    }
+  ],
+  "pages": {
+    "letter": 3,
+    "a4": 3
+  },
+  "pieces": [
+    {
+      "name": "Underside strip",
+      "qty": 1,
+      "w": 232,
+      "h": 94
+    },
+    {
+      "name": "Top strip",
+      "qty": 1,
+      "w": 162,
+      "h": 94
+    },
+    {
+      "name": "Driver side panel",
+      "qty": 1,
+      "w": 139,
+      "h": 76
+    },
+    {
+      "name": "Passenger side panel",
+      "qty": 1,
+      "w": 139,
+      "h": 76
+    },
+    {
+      "name": "Wheel",
+      "qty": 4,
+      "w": 29,
+      "h": 29
+    },
+    {
+      "name": "Bumper",
+      "qty": 2,
+      "w": 192,
+      "h": 26
+    }
+  ],
+  "readme": "README.md",
+  "kit": {
+    "title": "Tune-Up: paper THE CHEZ",
+    "summary": "A fold-up paper model of THE CHEZ, 180 mm (7.09 in) long: cut it on a Glowforge from cardstock (score folds, cut windows and headlights, engrave the stripes), or print it in color on Letter or A4 and cut it by hand. Fits 2 sheets of 12x12 in.",
+    "previews": [
+      {
+        "file": "sheet-1.png",
+        "alt": "Sheet 1: 12x12 inch stock"
+      },
+      {
+        "file": "sheet-2.png",
+        "alt": "Sheet 2: 12x12 inch stock"
+      },
+      {
+        "file": "print-letter-1.png",
+        "alt": "Printable page 1 of 3, color with cut and fold lines"
+      },
+      {
+        "file": "print-letter-2.png",
+        "alt": "Printable page 2 of 3, color with cut and fold lines"
+      },
+      {
+        "file": "print-letter-3.png",
+        "alt": "Printable page 3 of 3, color with cut and fold lines"
+      }
+    ],
+    "downloads": [
+      {
+        "file": "sheet-1.svg",
+        "label": "Sheet 1: 12x12 inch stock (SVG)"
+      },
+      {
+        "file": "sheet-2.svg",
+        "label": "Sheet 2: 12x12 inch stock (SVG)"
+      },
+      {
+        "file": "print-letter.pdf",
+        "label": "Color pattern for a home printer, Letter (PDF)"
+      },
+      {
+        "file": "print-a4.pdf",
+        "label": "Color pattern for a home printer, A4 (PDF)"
+      },
+      {
+        "file": "README.md",
+        "label": "Build notes"
+      }
+    ]
+  }
+}

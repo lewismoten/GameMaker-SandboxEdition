@@ -1,0 +1,64 @@
+{
+ "version": 1,
+ "game": "title-demo",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "AU0KzT9NQc01TR7NNU0="
+  },
+  {
+   "scene": 3,
+   "keys": "AU0KzTVNUM0/TSPNP00="
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: A Menu Picture"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: A Demo That Plays Itself"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 11432,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 913,
+    "time": 15216.666666666471
+   },
+   {
+    "title": "Level 1: A Menu Picture",
+    "frame": 2142,
+    "time": 35700.00000000053
+   },
+   {
+    "title": "Level 2: A Demo That Plays Itself",
+    "frame": 5589,
+    "time": 93150.00000000422
+   },
+   {
+    "title": "Ending",
+    "frame": 8146,
+    "time": 135766.6666666792
+   },
+   {
+    "title": "Credits",
+    "frame": 10358,
+    "time": 172633.3333333244
+   }
+  ]
+ }
+}

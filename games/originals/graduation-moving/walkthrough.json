@@ -1,0 +1,64 @@
+{
+ "version": 1,
+ "game": "graduation-moving",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "AU08zRtNBc0DOQK5AE0KzQ5ND80DTRnNG0sAywNNCs0oOQK5AEsZywNNG80DTQ/NG00KzXlNDc0DTQrNDk0PzQNN"
+  },
+  {
+   "scene": 3,
+   "keys": "AU0ezQNNKM0DTTzNA00yzV1N"
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "The Green"
+  },
+  {
+   "scene": 3,
+   "title": "The Court"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 7881,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 922,
+    "time": 15366.666666666466
+   },
+   {
+    "title": "The Green",
+    "frame": 1670,
+    "time": 27833.33333333393
+   },
+   {
+    "title": "The Court",
+    "frame": 3785,
+    "time": 63083.33333332988
+   },
+   {
+    "title": "Ending",
+    "frame": 5082,
+    "time": 84700.00000000176
+   },
+   {
+    "title": "Credits",
+    "frame": 6809,
+    "time": 113483.33333334347
+   }
+  ]
+ }
+}

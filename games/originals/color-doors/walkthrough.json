@@ -1,0 +1,151 @@
+{
+ "version": 1,
+ "game": "color-doors",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "KU0="
+  },
+  {
+   "scene": 3,
+   "keys": "KU25Ac0XTQ=="
+  },
+  {
+   "scene": 8,
+   "keys": "FU0="
+  },
+  {
+   "scene": 4,
+   "keys": "KU25Ac0XTQ=="
+  },
+  {
+   "scene": 8,
+   "keys": "FU0="
+  },
+  {
+   "scene": 5,
+   "keys": "KU25Ac0XTQ=="
+  },
+  {
+   "scene": 8,
+   "keys": "FU0="
+  },
+  {
+   "scene": 6,
+   "keys": "KU25Ac0XTQ=="
+  },
+  {
+   "scene": 8,
+   "keys": "FU0="
+  },
+  {
+   "scene": 7,
+   "keys": "KU25Ac0XTQ=="
+  },
+  {
+   "scene": 8,
+   "keys": "FU0="
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "The hall"
+  },
+  {
+   "scene": 3,
+   "title": "As you see it"
+  },
+  {
+   "scene": 8
+  },
+  {
+   "scene": 4,
+   "title": "Red-green, one kind"
+  },
+  {
+   "scene": 8
+  },
+  {
+   "scene": 5,
+   "title": "Red-green, the other"
+  },
+  {
+   "scene": 8
+  },
+  {
+   "scene": 6,
+   "title": "Blue-yellow"
+  },
+  {
+   "scene": 8
+  },
+  {
+   "scene": 7,
+   "title": "No color"
+  },
+  {
+   "scene": 8
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 16620,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 913,
+    "time": 15216.666666666471
+   },
+   {
+    "title": "The hall",
+    "frame": 1661,
+    "time": 27683.333333333918
+   },
+   {
+    "title": "As you see it",
+    "frame": 2293,
+    "time": 38216.66666666683
+   },
+   {
+    "title": "Red-green, one kind",
+    "frame": 4502,
+    "time": 75033.33333333228
+   },
+   {
+    "title": "Red-green, the other",
+    "frame": 6710,
+    "time": 111833.33333334299
+   },
+   {
+    "title": "Blue-yellow",
+    "frame": 8918,
+    "time": 148633.33333333838
+   },
+   {
+    "title": "No color",
+    "frame": 11127,
+    "time": 185449.9999999836
+   },
+   {
+    "title": "Ending",
+    "frame": 13336,
+    "time": 222266.66666662885
+   },
+   {
+    "title": "Credits",
+    "frame": 15548,
+    "time": 259133.33333327406
+   }
+  ]
+ }
+}

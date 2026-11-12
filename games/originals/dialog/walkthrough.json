@@ -1,0 +1,92 @@
+{
+ "version": 1,
+ "game": "dialog",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "AU1fzQNN"
+  },
+  {
+   "scene": 4,
+   "keys": ""
+  },
+  {
+   "scene": 6,
+   "keys": "BE0ozQNN"
+  },
+  {
+   "scene": 3,
+   "keys": "AU1fzQNN"
+  },
+  {
+   "scene": 5,
+   "keys": ""
+  },
+  {
+   "scene": 7,
+   "keys": "BE0jzQNN"
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: Two Voices"
+  },
+  {
+   "scene": 4
+  },
+  {
+   "scene": 6
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: A Crowd"
+  },
+  {
+   "scene": 5
+  },
+  {
+   "scene": 7
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 9350,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 913,
+    "time": 15216.666666666471
+   },
+   {
+    "title": "Level 1: Two Voices",
+    "frame": 2142,
+    "time": 35700.00000000053
+   },
+   {
+    "title": "Level 2: A Crowd",
+    "frame": 3854,
+    "time": 64233.33333332971
+   },
+   {
+    "title": "Ending",
+    "frame": 6067,
+    "time": 101116.6666666732
+   },
+   {
+    "title": "Credits",
+    "frame": 8276,
+    "time": 137933.3333333446
+   }
+  ]
+ }
+}

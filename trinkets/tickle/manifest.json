@@ -1,0 +1,131 @@
+{
+ "key": "4a411cc56e5a1d05",
+ "game": "tickle",
+ "items": [
+  {
+   "id": "lab-rat",
+   "title": "The tickled rat",
+   "blurb": "A white lab rat on its belly, pink ears up and tail curled, in the middle of a good laugh. No rats were harmed.",
+   "file": "lab-rat.stl",
+   "triangles": 3080,
+   "bytes": 154084,
+   "mm": [
+    26.3,
+    52.5,
+    8.6
+   ],
+   "thinSpecks": 0,
+   "colors": {
+    "file": "lab-rat.3mf",
+    "bytes": 118607,
+    "palette": [
+     [
+      244,
+      242,
+      240
+     ],
+     [
+      250,
+      150,
+      172
+     ],
+     [
+      30,
+      22,
+      34
+     ]
+    ],
+    "meanColorError": 0
+   },
+   "overhangMm2": 1,
+   "overhangShare": 0.001,
+   "supports": null
+  },
+  {
+   "id": "tickler-medal",
+   "title": "Certified Rat Tickler medal",
+   "blurb": "Doc Leo, PhD (Comedic Science), has the certificate. This is the feather that earned it.",
+   "file": "tickler-medal.stl",
+   "triangles": 6364,
+   "bytes": 318284,
+   "mm": [
+    40,
+    40,
+    3.8
+   ],
+   "thinSpecks": 0,
+   "colors": {
+    "file": "tickler-medal.3mf",
+    "bytes": 580337,
+    "palette": [
+     [
+      246,
+      200,
+      70
+     ],
+     [
+      140,
+      90,
+      0
+     ],
+     [
+      40,
+      26,
+      10
+     ],
+     [
+      255,
+      252,
+      244
+     ]
+    ],
+    "meanColorError": 0
+   },
+   "overhangMm2": 0,
+   "overhangShare": 0,
+   "supports": null
+  },
+  {
+   "id": "chirp-tag",
+   "title": "50 kHz key tag",
+   "blurb": "The pitch of a rat laughing, too high for people to hear. A ring tab for the keys.",
+   "file": "chirp-tag.stl",
+   "triangles": 4982,
+   "bytes": 249184,
+   "mm": [
+    30,
+    55.4,
+    3.8
+   ],
+   "thinSpecks": 0,
+   "colors": {
+    "file": "chirp-tag.3mf",
+    "bytes": 420879,
+    "palette": [
+     [
+      92,
+      36,
+      120
+     ],
+     [
+      255,
+      232,
+      110
+     ]
+    ],
+    "meanColorError": 0
+   },
+   "overhangMm2": 0,
+   "overhangShare": 0,
+   "supports": null
+  }
+ ],
+ "packed": [
+  "lab-rat.stl",
+  "lab-rat.3mf",
+  "tickler-medal.stl",
+  "tickler-medal.3mf",
+  "chirp-tag.stl",
+  "chirp-tag.3mf"
+ ]
+}

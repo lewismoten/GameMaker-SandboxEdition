@@ -1,0 +1,757 @@
+{
+  "kind": "kit",
+  "id": "cryptex",
+  "source": "9ccb9c2e968ca655f14f015aa64f2d18c6375d58",
+  "game": "year2000",
+  "title": "In The Year 2000!: Teleport-A-Phone Cryptex",
+  "blurb": "A laser-cut cryptex with four hollow rings of digits. Dial the year the game is named for and the core slides out, with room inside for a note.",
+  "material": {
+    "thickness": 3,
+    "kerf": 0.2,
+    "bed": {
+      "w": 495,
+      "h": 279
+    }
+  },
+  "sheets": [
+    {
+      "svg": "sheet-1-base.svg",
+      "preview": "sheet-1-base.png",
+      "title": "Sheet 1: the base stack and rings 4 and 1",
+      "w": 450,
+      "h": 232,
+      "parts": [
+        {
+          "name": "A1",
+          "x": 6,
+          "y": 6,
+          "w": 114,
+          "h": 114
+        },
+        {
+          "name": "A2R",
+          "x": 128,
+          "y": 6,
+          "w": 98,
+          "h": 98
+        },
+        {
+          "name": "A3R",
+          "x": 234,
+          "y": 6,
+          "w": 98,
+          "h": 98
+        },
+        {
+          "name": "A4R",
+          "x": 340,
+          "y": 6,
+          "w": 98,
+          "h": 98
+        },
+        {
+          "name": "A5R",
+          "x": 6,
+          "y": 128,
+          "w": 98,
+          "h": 98
+        },
+        {
+          "name": "B1",
+          "x": 112,
+          "y": 128,
+          "w": 98,
+          "h": 98
+        },
+        {
+          "name": "B2",
+          "x": 218,
+          "y": 128,
+          "w": 98,
+          "h": 98
+        },
+        {
+          "name": "E1",
+          "x": 324,
+          "y": 128,
+          "w": 56,
+          "h": 56
+        },
+        {
+          "name": "E2",
+          "x": 388,
+          "y": 128,
+          "w": 56,
+          "h": 56
+        },
+        {
+          "name": "A2C",
+          "x": 151,
+          "y": 29,
+          "w": 52,
+          "h": 52
+        },
+        {
+          "name": "A3C",
+          "x": 257,
+          "y": 29,
+          "w": 52,
+          "h": 52
+        },
+        {
+          "name": "A4C",
+          "x": 363,
+          "y": 29,
+          "w": 52,
+          "h": 52
+        },
+        {
+          "name": "A5C",
+          "x": 29,
+          "y": 151,
+          "w": 52,
+          "h": 52
+        },
+        {
+          "name": "HEAD",
+          "x": 141,
+          "y": 157,
+          "w": 40,
+          "h": 40
+        },
+        {
+          "name": "CORE0",
+          "x": 252.5,
+          "y": 162.5,
+          "w": 29,
+          "h": 29
+        },
+        {
+          "name": "LID",
+          "x": 338,
+          "y": 142,
+          "w": 28,
+          "h": 28
+        },
+        {
+          "name": "COREC",
+          "x": 404,
+          "y": 144,
+          "w": 24,
+          "h": 24
+        }
+      ]
+    },
+    {
+      "svg": "sheet-2-rings.svg",
+      "preview": "sheet-2-rings.png",
+      "title": "Sheet 2: rings 3 and 2, the core and the washers",
+      "w": 453,
+      "h": 174,
+      "parts": [
+        {
+          "name": "C1",
+          "x": 6,
+          "y": 6,
+          "w": 84,
+          "h": 84
+        },
+        {
+          "name": "C2",
+          "x": 98,
+          "y": 6,
+          "w": 84,
+          "h": 84
+        },
+        {
+          "name": "D1",
+          "x": 190,
+          "y": 6,
+          "w": 70,
+          "h": 70
+        },
+        {
+          "name": "D2",
+          "x": 268,
+          "y": 6,
+          "w": 70,
+          "h": 70
+        },
+        {
+          "name": "G1",
+          "x": 6,
+          "y": 98,
+          "w": 37.85264007257762,
+          "h": 37.85264007257762
+        },
+        {
+          "name": "G2",
+          "x": 51.85264007257762,
+          "y": 98,
+          "w": 37.85264007257762,
+          "h": 37.85264007257762
+        },
+        {
+          "name": "G2",
+          "x": 97.70528014515524,
+          "y": 98,
+          "w": 37.85264007257762,
+          "h": 37.85264007257762
+        },
+        {
+          "name": "G3",
+          "x": 143.55792021773286,
+          "y": 98,
+          "w": 37.85264007257762,
+          "h": 37.85264007257762
+        },
+        {
+          "name": "G3",
+          "x": 189.41056029031049,
+          "y": 98,
+          "w": 37.85264007257762,
+          "h": 37.85264007257762
+        },
+        {
+          "name": "G4",
+          "x": 235.2632003628881,
+          "y": 98,
+          "w": 37.85264007257762,
+          "h": 37.85264007257762
+        },
+        {
+          "name": "G4",
+          "x": 281.1158404354657,
+          "y": 98,
+          "w": 37.85264007257762,
+          "h": 37.85264007257762
+        },
+        {
+          "name": "COREC",
+          "x": 326.96848050804334,
+          "y": 98,
+          "w": 24,
+          "h": 24
+        },
+        {
+          "name": "COREC",
+          "x": 358.96848050804334,
+          "y": 98,
+          "w": 24,
+          "h": 24
+        },
+        {
+          "name": "COREC",
+          "x": 390.96848050804334,
+          "y": 98,
+          "w": 24,
+          "h": 24
+        },
+        {
+          "name": "COREC",
+          "x": 422.96848050804334,
+          "y": 98,
+          "w": 24,
+          "h": 24
+        },
+        {
+          "name": "COREC",
+          "x": 6,
+          "y": 143.85264007257763,
+          "w": 24,
+          "h": 24
+        },
+        {
+          "name": "COREC",
+          "x": 38,
+          "y": 143.85264007257763,
+          "w": 24,
+          "h": 24
+        },
+        {
+          "name": "COREC",
+          "x": 70,
+          "y": 143.85264007257763,
+          "w": 24,
+          "h": 24
+        },
+        {
+          "name": "LIDP",
+          "x": 102,
+          "y": 143.85264007257763,
+          "w": 14.7,
+          "h": 14.7
+        },
+        {
+          "name": "LIDP",
+          "x": 124.7,
+          "y": 143.85264007257763,
+          "w": 14.7,
+          "h": 14.7
+        },
+        {
+          "name": "G1",
+          "x": 29.07367996371119,
+          "y": 29.07367996371119,
+          "w": 37.85264007257762,
+          "h": 37.85264007257762
+        },
+        {
+          "name": "CORER",
+          "x": 125.5,
+          "y": 33.5,
+          "w": 29,
+          "h": 29
+        },
+        {
+          "name": "CORER",
+          "x": 210.5,
+          "y": 26.5,
+          "w": 29,
+          "h": 29
+        },
+        {
+          "name": "COREC",
+          "x": 291,
+          "y": 29,
+          "w": 24,
+          "h": 24
+        }
+      ]
+    }
+  ],
+  "assembly": "assembly.svg",
+  "legend": [
+    {
+      "id": "A1",
+      "what": "base stack A, layer 1: the floor (the core stands on it)",
+      "where": "center of the floor, under the core",
+      "qty": 1
+    },
+    {
+      "id": "A2R",
+      "what": "base stack A, layer 2, outer ring (glue on the layer below, edges flush)",
+      "where": "glued face, in the rim",
+      "qty": 1
+    },
+    {
+      "id": "A2C",
+      "what": "base stack A, layer 2, collar round the ridge slot (ridge slots lined up, on the marker side)",
+      "where": "glued face, in the collar",
+      "qty": 1
+    },
+    {
+      "id": "A3R",
+      "what": "base stack A, layer 3, outer ring (glue on the layer below, edges flush)",
+      "where": "glued face, in the rim",
+      "qty": 1
+    },
+    {
+      "id": "A3C",
+      "what": "base stack A, layer 3, collar round the ridge slot (ridge slots lined up, on the marker side)",
+      "where": "glued face, in the collar",
+      "qty": 1
+    },
+    {
+      "id": "A4R",
+      "what": "base stack A, layer 4, outer ring (glue on the layer below, edges flush)",
+      "where": "glued face, in the rim",
+      "qty": 1
+    },
+    {
+      "id": "A4C",
+      "what": "base stack A, layer 4, collar round the ridge slot (ridge slots lined up, on the marker side)",
+      "where": "glued face, in the collar",
+      "qty": 1
+    },
+    {
+      "id": "A5R",
+      "what": "base stack A, layer 5, outer ring (glue on the layer below, edges flush)",
+      "where": "glued face, in the rim",
+      "qty": 1
+    },
+    {
+      "id": "A5C",
+      "what": "base stack A, layer 5, collar round the ridge slot (ridge slots lined up, on the marker side)",
+      "where": "glued face, in the collar",
+      "qty": 1
+    },
+    {
+      "id": "E1",
+      "what": "ring 1 (stack E), plain slice: a rim under the top slice",
+      "where": "glued face, in the rim",
+      "qty": 1
+    },
+    {
+      "id": "(E2)",
+      "what": "ring 1 (stack E), top slice with the digits",
+      "where": "unmarked: bare on top",
+      "qty": 1
+    },
+    {
+      "id": "D1",
+      "what": "ring 2 (stack D), plain slice: a rim under the top slice",
+      "where": "glued face, in the rim",
+      "qty": 1
+    },
+    {
+      "id": "D2",
+      "what": "ring 2 (stack D), top slice with the digits",
+      "where": "under the next ring up",
+      "qty": 1
+    },
+    {
+      "id": "C1",
+      "what": "ring 3 (stack C), plain slice: a rim under the top slice",
+      "where": "glued face, in the rim",
+      "qty": 1
+    },
+    {
+      "id": "C2",
+      "what": "ring 3 (stack C), top slice with the digits",
+      "where": "under the next ring up",
+      "qty": 1
+    },
+    {
+      "id": "B1",
+      "what": "ring 4 (stack B), plain slice: a rim under the top slice",
+      "where": "glued face, in the rim",
+      "qty": 1
+    },
+    {
+      "id": "B2",
+      "what": "ring 4 (stack B), top slice with the digits",
+      "where": "under the next ring up",
+      "qty": 1
+    },
+    {
+      "id": "G1",
+      "what": "washer pair G1: two washers glued (6 mm); it sits loose in ring 1, notch set to the digit you want",
+      "where": "glued face, in the washer",
+      "qty": 2
+    },
+    {
+      "id": "G2",
+      "what": "washer pair G2: two washers glued (6 mm); it sits loose in ring 2, notch set to the digit you want",
+      "where": "glued face, in the washer",
+      "qty": 2
+    },
+    {
+      "id": "G3",
+      "what": "washer pair G3: two washers glued (6 mm); it sits loose in ring 3, notch set to the digit you want",
+      "where": "glued face, in the washer",
+      "qty": 2
+    },
+    {
+      "id": "G4",
+      "what": "washer pair G4: two washers glued (6 mm); it sits loose in ring 4, notch set to the digit you want",
+      "where": "glued face, in the washer",
+      "qty": 2
+    },
+    {
+      "id": "(CORE0)",
+      "what": "core F, slice 1 (bottom, closed, with the ridge)",
+      "where": "unmarked: too narrow for letters",
+      "qty": 1
+    },
+    {
+      "id": "(CORER)",
+      "what": "core slices 2 and 3 (hollow, with the ridge; ridges all on one side)",
+      "where": "unmarked: too narrow for letters",
+      "qty": 2
+    },
+    {
+      "id": "(COREC)",
+      "what": "core slices 4 to 12 (hollow, round)",
+      "where": "unmarked: too narrow for letters",
+      "qty": 9
+    },
+    {
+      "id": "(HEAD)",
+      "what": "head (glue on the core last, above the rings)",
+      "where": "unmarked: bare on top",
+      "qty": 1
+    },
+    {
+      "id": "(LID)",
+      "what": "lid (glue two plugs under it)",
+      "where": "unmarked: bare on top",
+      "qty": 1
+    },
+    {
+      "id": "(LIDP)",
+      "what": "lid plug (press fit in the core)",
+      "where": "unmarked: too narrow for letters",
+      "qty": 2
+    }
+  ],
+  "area": {
+    "sheets": 183222,
+    "wood": 72274.93243598082
+  },
+  "parts": [
+    {
+      "name": "A1",
+      "qty": 1,
+      "note": "base stack A, layer 1: the floor (the core stands on it)",
+      "w": 114,
+      "h": 114
+    },
+    {
+      "name": "A2R",
+      "qty": 1,
+      "note": "base stack A, layer 2, outer ring (glue on the layer below, edges flush)",
+      "w": 98,
+      "h": 98
+    },
+    {
+      "name": "A2C",
+      "qty": 1,
+      "note": "base stack A, layer 2, collar round the ridge slot (ridge slots lined up, on the marker side)",
+      "w": 52,
+      "h": 52
+    },
+    {
+      "name": "A3R",
+      "qty": 1,
+      "note": "base stack A, layer 3, outer ring (glue on the layer below, edges flush)",
+      "w": 98,
+      "h": 98
+    },
+    {
+      "name": "A3C",
+      "qty": 1,
+      "note": "base stack A, layer 3, collar round the ridge slot (ridge slots lined up, on the marker side)",
+      "w": 52,
+      "h": 52
+    },
+    {
+      "name": "A4R",
+      "qty": 1,
+      "note": "base stack A, layer 4, outer ring (glue on the layer below, edges flush)",
+      "w": 98,
+      "h": 98
+    },
+    {
+      "name": "A4C",
+      "qty": 1,
+      "note": "base stack A, layer 4, collar round the ridge slot (ridge slots lined up, on the marker side)",
+      "w": 52,
+      "h": 52
+    },
+    {
+      "name": "A5R",
+      "qty": 1,
+      "note": "base stack A, layer 5, outer ring (glue on the layer below, edges flush)",
+      "w": 98,
+      "h": 98
+    },
+    {
+      "name": "A5C",
+      "qty": 1,
+      "note": "base stack A, layer 5, collar round the ridge slot (ridge slots lined up, on the marker side)",
+      "w": 52,
+      "h": 52
+    },
+    {
+      "name": "E1",
+      "qty": 1,
+      "note": "ring 1 (stack E), plain slice: a rim under the top slice",
+      "w": 56,
+      "h": 56
+    },
+    {
+      "name": "E2",
+      "qty": 1,
+      "note": "ring 1 (stack E), top slice with the digits",
+      "w": 56,
+      "h": 56
+    },
+    {
+      "name": "D1",
+      "qty": 1,
+      "note": "ring 2 (stack D), plain slice: a rim under the top slice",
+      "w": 70,
+      "h": 70
+    },
+    {
+      "name": "D2",
+      "qty": 1,
+      "note": "ring 2 (stack D), top slice with the digits",
+      "w": 70,
+      "h": 70
+    },
+    {
+      "name": "C1",
+      "qty": 1,
+      "note": "ring 3 (stack C), plain slice: a rim under the top slice",
+      "w": 84,
+      "h": 84
+    },
+    {
+      "name": "C2",
+      "qty": 1,
+      "note": "ring 3 (stack C), top slice with the digits",
+      "w": 84,
+      "h": 84
+    },
+    {
+      "name": "B1",
+      "qty": 1,
+      "note": "ring 4 (stack B), plain slice: a rim under the top slice",
+      "w": 98,
+      "h": 98
+    },
+    {
+      "name": "B2",
+      "qty": 1,
+      "note": "ring 4 (stack B), top slice with the digits",
+      "w": 98,
+      "h": 98
+    },
+    {
+      "name": "G1",
+      "qty": 2,
+      "note": "washer pair G1: two washers glued (6 mm); it sits loose in ring 1, notch set to the digit you want",
+      "w": 37.85264007257762,
+      "h": 37.85264007257762
+    },
+    {
+      "name": "G2",
+      "qty": 2,
+      "note": "washer pair G2: two washers glued (6 mm); it sits loose in ring 2, notch set to the digit you want",
+      "w": 37.85264007257762,
+      "h": 37.85264007257762
+    },
+    {
+      "name": "G3",
+      "qty": 2,
+      "note": "washer pair G3: two washers glued (6 mm); it sits loose in ring 3, notch set to the digit you want",
+      "w": 37.85264007257762,
+      "h": 37.85264007257762
+    },
+    {
+      "name": "G4",
+      "qty": 2,
+      "note": "washer pair G4: two washers glued (6 mm); it sits loose in ring 4, notch set to the digit you want",
+      "w": 37.85264007257762,
+      "h": 37.85264007257762
+    },
+    {
+      "name": "CORE0",
+      "qty": 1,
+      "note": "core F, slice 1 (bottom, closed, with the ridge)",
+      "w": 29,
+      "h": 29
+    },
+    {
+      "name": "CORER",
+      "qty": 2,
+      "note": "core slices 2 and 3 (hollow, with the ridge; ridges all on one side)",
+      "w": 29,
+      "h": 29
+    },
+    {
+      "name": "COREC",
+      "qty": 9,
+      "note": "core slices 4 to 12 (hollow, round)",
+      "w": 24,
+      "h": 24
+    },
+    {
+      "name": "HEAD",
+      "qty": 1,
+      "note": "head (glue on the core last, above the rings)",
+      "w": 40,
+      "h": 40
+    },
+    {
+      "name": "LID",
+      "qty": 1,
+      "note": "lid (glue two plugs under it)",
+      "w": 28,
+      "h": 28
+    },
+    {
+      "name": "LIDP",
+      "qty": 2,
+      "note": "lid plug (press fit in the core)",
+      "w": 14.7,
+      "h": 14.7
+    }
+  ],
+  "lock": {
+    "opens": [
+      "2000"
+    ],
+    "pocketFits": true,
+    "windowDeg": 5.5,
+    "fits": {
+      "washerInSocket": 0.15,
+      "coreInBore": 0.29999999999999893
+    },
+    "wrongDigitBlocked": true
+  },
+  "clearance": {
+    "A1": [],
+    "A2R": [],
+    "A2C": [],
+    "A3R": [],
+    "A3C": [],
+    "A4R": [],
+    "A4C": [],
+    "A5R": [],
+    "A5C": [],
+    "E1": [],
+    "E2": [],
+    "D1": [],
+    "D2": [],
+    "C1": [],
+    "C2": [],
+    "B1": [],
+    "B2": [],
+    "G1": [],
+    "G2": [],
+    "G3": [],
+    "G4": [],
+    "CORE0": [],
+    "CORER": [],
+    "COREC": [],
+    "HEAD": [],
+    "LID": [],
+    "LIDP": []
+  },
+  "readme": "README.md",
+  "kit": {
+    "title": "In The Year 2000!: Teleport-A-Phone Cryptex",
+    "summary": "A laser-cut cryptex for a Glowforge, 3 mm plywood or MDF. Four stepped rings of digits; dial the year and the hollow core slides out. The combination can be changed.",
+    "previews": [
+      {
+        "file": "sheet-1-base.png",
+        "alt": "Sheet 1: the base stack and rings 4 and 1"
+      },
+      {
+        "file": "sheet-2-rings.png",
+        "alt": "Sheet 2: rings 3 and 2, the core and the washers"
+      }
+    ],
+    "downloads": [
+      {
+        "file": "sheet-1-base.svg",
+        "label": "Sheet 1: the base stack and rings 4 and 1 (SVG)"
+      },
+      {
+        "file": "sheet-2-rings.svg",
+        "label": "Sheet 2: rings 3 and 2, the core and the washers (SVG)"
+      },
+      {
+        "file": "assembly.svg",
+        "label": "Assembly diagram (SVG)"
+      },
+      {
+        "file": "README.md",
+        "label": "Build notes"
+      }
+    ]
+  }
+}

@@ -1,0 +1,112 @@
+{
+ "key": "laser-nickel",
+ "game": "year2000",
+ "title": "In The Year 2000!",
+ "concept": "A Teleport-A-Phone token: a hole through the middle like a subway token, \"25 CENT\".",
+ "source": "722fb426d8712a37",
+ "mm": {
+  "coin": 38.1,
+  "sheet": [
+   270,
+   150
+  ],
+  "jigHole": 38,
+  "jigAt": [
+   235,
+   75
+  ],
+  "pitch": 44,
+  "wood": 3
+ },
+ "colors": {
+  "cut": "#ff0000",
+  "score": "#ff00ff",
+  "engrave": "#0000ff"
+ },
+ "series": {
+  "no": 26,
+  "of": 26,
+  "letter": "D",
+  "message": "BEKINDANDKEEPPLAYINGFRIEND"
+ },
+ "holes": [
+  {
+   "x": 0,
+   "y": 0,
+   "r": 3.4
+  }
+ ],
+ "clearance": {
+  "front": [],
+  "back": []
+ },
+ "reach": {
+  "front": 15.07,
+  "back": 15.07
+ },
+ "texts": {
+  "front": [
+   {
+    "text": "IN THE YEAR",
+    "capMm": 2.52
+   },
+   {
+    "text": "2000!",
+    "capMm": 2.52
+   },
+   {
+    "text": "25 CENT",
+    "capMm": 2.5
+   },
+   {
+    "text": "TELEPORT",
+    "capMm": 2.5
+   }
+  ],
+  "back": [
+   {
+    "text": "GOOD FOR",
+    "capMm": 2.52
+   },
+   {
+    "text": "SANDBOX SOFTWARE",
+    "capMm": 2.5
+   },
+   {
+    "text": "ONE FREE",
+    "capMm": 2.52
+   },
+   {
+    "text": "TELEPORT",
+    "capMm": 2.52
+   },
+   {
+    "text": "NO.26/26",
+    "capMm": 2.5
+   },
+   {
+    "text": "1993 SM",
+    "capMm": 2.5
+   },
+   {
+    "text": "sandscript D",
+    "capMm": 2.52
+   }
+  ]
+ },
+ "paths": {
+  "front": 246,
+  "back": 399,
+  "sheet": 2954
+ },
+ "files": [
+  "front.svg",
+  "back.svg",
+  "sheet.svg",
+  "sheet-back.svg",
+  "front.png",
+  "back.png",
+  "sheet.png",
+  "manifest.json"
+ ]
+}

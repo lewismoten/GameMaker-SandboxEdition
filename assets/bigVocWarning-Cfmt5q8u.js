@@ -1,0 +1,1 @@
+import{t as i}from"./watch-Ci1HG5Rl.js";import{v as r,a as s}from"./vocLimit-BrIw7mOr.js";function f(e){for(const[t,o]of e)/\.voc$/i.test(t)&&r(o.length)&&i(`${s(t.toUpperCase(),o.length)} Open it in the sample editor and use Cut to fit.`,"error")}export{f as warnBigVocs};

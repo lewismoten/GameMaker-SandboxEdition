@@ -1,0 +1,1 @@
+import{s as a}from"./facing-DwanTUqz.js";const i="sameEverySide",n=e=>e.extras(e.gam,i,[]);function m(e){if(e.check==="facing")return e.where.monster?a(e.where.monster.file,e.where.monster.n):e.where.file?a(e.where.file):void 0}function o(e,s){const r=n(e);r.includes(s)||e.setExtras(e.gam,i,[...r,s].sort())}export{m as a,o as m,n as s};

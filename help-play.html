@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#000080" />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="icon" href="./icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
+    <title>Playing · Guide · Game-Maker: Sandbox Edition</title>
+    <script>
+      // Before the first paint: the readable text in #app is for crawlers and browsers
+      // without JavaScript, so keep it out of sight while the app starts, on the
+      // background of the interface about to open (the same choice main.ts makes).
+      (function (d, h) {
+        var ui = 'desk';
+        try {
+          ui = /^#\/?(\?|$)|^#\/(p|game|help|cast|credits|privacy|achievements|mac|windows|linux|magazine|library|programmers-guide|art-courses|pi-remote)(\/|\?|$)/.test(h) || (!/^#\/desk(\?|$)/.test(h) && localStorage.getItem('gm-ui') === 'modern') ? 'modern' : 'desk';
+        } catch (e) {}
+        var t = 'dark';
+        try {
+          t = /^(dark|light|auto)$/.test(localStorage.getItem('gm-theme')) ? localStorage.getItem('gm-theme') : 'dark';
+        } catch (e) {}
+        d.setAttribute('data-theme', t);
+        d.className += ' js';
+        d.setAttribute('data-ui', ui);
+      })(document.documentElement, location.hash);
+    </script>
+    <style>
+      html.js .seo-static { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+      html.js body { margin: 0; }
+      html[data-ui='desk'] body { background: #465063; }
+      html[data-ui='modern'] body { background: #d5d9e2; }
+      html[data-ui='modern'][data-theme='dark'] body { background: #11131a; }
+      @media (prefers-color-scheme: dark) { html[data-ui='modern'][data-theme='auto'] body { background: #11131a; } }
+    </style>
+    <!--seo:head--><meta name="description" content="Each game sets its own keys, usually the arrow keys and a few others; Keys on its page shows them. These keys work in every game:" />
+    <link rel="canonical" href="https://lewismoten.github.io/GameMaker-SandboxEdition/help-play.html" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Game-Maker: Sandbox Edition" />
+    <meta property="og:title" content="Playing · Guide · Game-Maker: Sandbox Edition" />
+    <meta property="og:description" content="Each game sets its own keys, usually the arrow keys and a few others; Keys on its page shows them. These keys work in every game:" />
+    <meta property="og:url" content="https://lewismoten.github.io/GameMaker-SandboxEdition/help-play.html" />
+    <meta property="og:image" content="https://lewismoten.github.io/GameMaker-SandboxEdition/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="A mid-90s computer desk with Game-Maker: Sandbox Edition on the monitor, game boxes on the shelf and a disk box." />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Playing · Guide · Game-Maker: Sandbox Edition" />
+    <meta name="twitter:description" content="Each game sets its own keys, usually the arrow keys and a few others; Keys on its page shows them. These keys work in every game:" />
+    <meta name="twitter:image" content="https://lewismoten.github.io/GameMaker-SandboxEdition/og-image.png" />
+    <meta name="twitter:image:alt" content="A mid-90s computer desk with Game-Maker: Sandbox Edition on the monitor, game boxes on the shelf and a disk box." />
+    <script>if(!location.hash)history.replaceState(null,'',"#/help/play")</script>
+    <style>
+      .seo-static { box-sizing: border-box; min-height: 100vh; margin: 0; padding: 24px max(16px, calc((100% - 46rem) / 2)) 48px; background: #12122a; font: 16px/1.5 system-ui, sans-serif; color: #e8e8f0; }
+      .seo-static a { color: #9cf; }
+      .seo-static h1 { font: bold 1.8rem monospace; letter-spacing: 2px; color: #ff5; margin: 0 0 4px; }
+      .seo-static h2 { font: bold 1.15rem monospace; color: #5f5; margin: 24px 0 4px; }
+      .seo-static small { color: #aab; }
+      .seo-static ul { padding-left: 1.2rem; }
+      .seo-static .seo-note { color: #aab; font-size: 0.9rem; }
+    </style><!--/seo:head-->
+    <script type="module" crossorigin src="./assets/main-BB4EUk5_.js"></script>
+    <link rel="modulepreload" crossorigin href="./assets/modulepreload-polyfill-B5Qt9EMX.js">
+    <link rel="modulepreload" crossorigin href="./assets/watch-Ci1HG5Rl.js">
+    <link rel="modulepreload" crossorigin href="./assets/tourButton-DXjuNPQS.js">
+    <link rel="stylesheet" crossorigin href="./assets/tourButton-CEpNth5l.css">
+    <link rel="stylesheet" crossorigin href="./assets/main-BcVD1vCS.css">
+  </head>
+  <body>
+    <div id="app">
+      <!--seo:body--><main class="seo-static">
+      <p><a href="./#/help">Game-Maker: Sandbox Edition Guide</a></p>
+      <h1>Playing</h1>
+      <p>Each game sets its own keys, usually the arrow keys and a few others; <b>Keys</b> on its
+    page shows them. These keys work in every game:</p>
+    <table>
+      <tr><td><kbd>Esc</kbd></td><td>Leave a level or a screen</td></tr>
+      <tr><td><kbd>F1</kbd></td><td>The game’s instructions</td></tr>
+      <tr><td><kbd>F2</kbd></td><td>Status and inventory</td></tr>
+      <tr><td><kbd>F3</kbd> / <kbd>F4</kbd></td><td>Music / sound on or off</td></tr>
+      <tr><td><kbd>F5</kbd> / <kbd>F6</kbd></td><td>Save / restore the game</td></tr>
+    </table>
+    <p>Game pads work as joysticks. On a touch screen, buttons appear for the directions
+    and for every key the character uses. Saved games and high scores stay in this browser;
+    <b>Saves &amp; scores</b> on the game’s page shows them.</p>
+      <p class="seo-note"><a href="./#/help/play">Open this in the Guide</a> · <a href="./">Game-Maker: Sandbox Edition</a></p>
+    </main><!--/seo:body-->
+    </div>
+  </body>
+</html>

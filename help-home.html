@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#000080" />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="icon" href="./icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
+    <title>The home page · Guide · Game-Maker: Sandbox Edition</title>
+    <script>
+      // Before the first paint: the readable text in #app is for crawlers and browsers
+      // without JavaScript, so keep it out of sight while the app starts, on the
+      // background of the interface about to open (the same choice main.ts makes).
+      (function (d, h) {
+        var ui = 'desk';
+        try {
+          ui = /^#\/?(\?|$)|^#\/(p|game|help|cast|credits|privacy|achievements|mac|windows|linux|magazine|library|programmers-guide|art-courses|pi-remote)(\/|\?|$)/.test(h) || (!/^#\/desk(\?|$)/.test(h) && localStorage.getItem('gm-ui') === 'modern') ? 'modern' : 'desk';
+        } catch (e) {}
+        var t = 'dark';
+        try {
+          t = /^(dark|light|auto)$/.test(localStorage.getItem('gm-theme')) ? localStorage.getItem('gm-theme') : 'dark';
+        } catch (e) {}
+        d.setAttribute('data-theme', t);
+        d.className += ' js';
+        d.setAttribute('data-ui', ui);
+      })(document.documentElement, location.hash);
+    </script>
+    <style>
+      html.js .seo-static { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+      html.js body { margin: 0; }
+      html[data-ui='desk'] body { background: #465063; }
+      html[data-ui='modern'] body { background: #d5d9e2; }
+      html[data-ui='modern'][data-theme='dark'] body { background: #11131a; }
+      @media (prefers-color-scheme: dark) { html[data-ui='modern'][data-theme='auto'] body { background: #11131a; } }
+    </style>
+    <!--seo:head--><meta name="description" content="The Games page shows one game at the top with everything you can do with it: Play , Look inside (its files in the editor, as released), Keys (what each…" />
+    <link rel="canonical" href="https://lewismoten.github.io/GameMaker-SandboxEdition/help-home.html" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Game-Maker: Sandbox Edition" />
+    <meta property="og:title" content="The home page · Guide · Game-Maker: Sandbox Edition" />
+    <meta property="og:description" content="The Games page shows one game at the top with everything you can do with it: Play , Look inside (its files in the editor, as released), Keys (what each…" />
+    <meta property="og:url" content="https://lewismoten.github.io/GameMaker-SandboxEdition/help-home.html" />
+    <meta property="og:image" content="https://lewismoten.github.io/GameMaker-SandboxEdition/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="A mid-90s computer desk with Game-Maker: Sandbox Edition on the monitor, game boxes on the shelf and a disk box." />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="The home page · Guide · Game-Maker: Sandbox Edition" />
+    <meta name="twitter:description" content="The Games page shows one game at the top with everything you can do with it: Play , Look inside (its files in the editor, as released), Keys (what each…" />
+    <meta name="twitter:image" content="https://lewismoten.github.io/GameMaker-SandboxEdition/og-image.png" />
+    <meta name="twitter:image:alt" content="A mid-90s computer desk with Game-Maker: Sandbox Edition on the monitor, game boxes on the shelf and a disk box." />
+    <script>if(!location.hash)history.replaceState(null,'',"#/help/home")</script>
+    <style>
+      .seo-static { box-sizing: border-box; min-height: 100vh; margin: 0; padding: 24px max(16px, calc((100% - 46rem) / 2)) 48px; background: #12122a; font: 16px/1.5 system-ui, sans-serif; color: #e8e8f0; }
+      .seo-static a { color: #9cf; }
+      .seo-static h1 { font: bold 1.8rem monospace; letter-spacing: 2px; color: #ff5; margin: 0 0 4px; }
+      .seo-static h2 { font: bold 1.15rem monospace; color: #5f5; margin: 24px 0 4px; }
+      .seo-static small { color: #aab; }
+      .seo-static ul { padding-left: 1.2rem; }
+      .seo-static .seo-note { color: #aab; font-size: 0.9rem; }
+    </style><!--/seo:head-->
+    <script type="module" crossorigin src="./assets/main-BB4EUk5_.js"></script>
+    <link rel="modulepreload" crossorigin href="./assets/modulepreload-polyfill-B5Qt9EMX.js">
+    <link rel="modulepreload" crossorigin href="./assets/watch-Ci1HG5Rl.js">
+    <link rel="modulepreload" crossorigin href="./assets/tourButton-DXjuNPQS.js">
+    <link rel="stylesheet" crossorigin href="./assets/tourButton-CEpNth5l.css">
+    <link rel="stylesheet" crossorigin href="./assets/main-BcVD1vCS.css">
+  </head>
+  <body>
+    <div id="app">
+      <!--seo:body--><main class="seo-static">
+      <p><a href="./#/help">Game-Maker: Sandbox Edition Guide</a></p>
+      <h1>The home page</h1>
+      <p>The <b>Games</b> page shows one game at the top with everything you can do with it:
+    <b>Play</b>, <b>Look inside</b> (its files in the editor, as released), <b>Keys</b> (what each key
+    does), and, where the game has them, <b>Manual</b> or <b>Maps</b>, <b>Walkthrough</b>,
+    <b>Notice</b>, <b>Saves &amp; scores</b>, <b>Download</b> and <b>Demo video</b>. <b>Copy link</b>
+    copies a link that opens the page on that game, and <b>Another</b> shows another.</p>
+    <p>Below it are the collections, in tabs: <b>My games</b>, <b>Imported</b>, <b>Sandbox</b>,
+    <b>Bizarre</b>, <b>Gameware</b> and <b>Shareware</b>. <b>Find a game…</b> searches them, and
+    <b>How it works</b> sums it all up.</p>
+    <h3>Making a new game</h3>
+    <p><b>+ New game</b> asks for a title and how to start: <b>Ready to play</b> gives you a
+    first level with scenery, monsters, a hero and sounds borrowed from the CD library, to change
+    as you like; <b>Empty</b> gives you just a title and an ending; <b>Describe it to your AI…</b>
+    has your own AI build a first level from what you describe (see
+    <a href="#/help/workspace">Working on a game</a>).</p>
+    <p>It also asks how the game opens, before your title screen. Four “Made with Game-Maker:
+    Sandbox Edition” animations of about four and a half seconds each: <b>Falling letters</b> (the
+    usual), <b>Block by block</b>, <b>Wipe</b> and <b>Typewriter</b>. <b>Classic RSD</b> plays the
+    CD’s own RSD logo animation, the one its sample games show before their story screens;
+    <b>Still picture</b> shows the falling letters’ card as one picture for four seconds; <b>None</b>
+    leaves it out. Press ▶ beside one to watch it first. Type <b>your name or studio</b> and a
+    “YOUR NAME PRESENTS” card follows it, drawn to fit the screen. They are your game’s own files
+    (<code>MADEWITH.FLI</code> or <code>RSDTBOX.FLI</code>, <code>PRESENTS.FLI</code> and the title
+    slide show <code>TITLE.LST</code>), so they play in DOS and in every copy you download. To swap
+    or remove them later, or to add them to a game made before, open the start scene in the
+    <code>.GAM</code> and choose <b>🎬 Opening sting…</b>.</p>
+    <h3>My games and Imported</h3>
+    <p>Games you make or copy are under <b>My games</b>; games you bring in are under
+    <b>Imported</b>. <b>Open</b> opens one in the editor, and <b>⋯ More</b> renames, duplicates,
+    moves it to the other list or deletes it.</p>
+    <p>To bring a game in, drop it on the import tile (or anywhere on the page), click the tile to
+    choose files, or choose <b>or open a game folder…</b>. It takes a game’s files with its
+    <code>.GAM</code>, a <code>.zip</code> (even zips inside zips), a self-extracting
+    <code>.EXE</code> archive (only read, never run), a folder of several games or zips, or a
+    one-page <code>.html</code> export. When it finds more than one game, it lists them to tick.</p>
+    <p>Give each imported game 1 to 5 stars and a note (<b>Your rating and note</b> beside it, or
+    <b>Rating and note…</b> under ⋯ More), then show only some ratings or sort by rating. Your notes
+    are in the Library too. <b>Remove all imported…</b> removes them all, only some ratings, or
+    one import’s games, and <b>Recently deleted…</b> brings them back for 7 days.</p>
+    <h3>Sandbox</h3>
+    <p>New games made for this edition in the original formats, so they also play in DOS. Each
+    has a <b>Manual</b> to read or print, and <b>Walkthrough</b> plays the whole game from start
+    to finish, with chapters to jump to and an MP4 to download.</p>
+    <h3>Bizarre</h3>
+    <p>Games made from the songs of <a href="#/help/bard">The Bard of Bizarre</a>. They are this
+    project’s own and free to change (MIT, except their voice clips, which are for personal,
+    non-commercial use only): <b>Look inside</b> and <b>Edit a copy</b> work as they do for the
+    Sandbox games, and <b>Notice</b> tells the song behind each one.</p>
+    <h3>Gameware</h3>
+    <p>The free “gameware” from the Game-Maker CD. <b>Look inside</b> opens its files as
+    released, and <b>Edit a copy</b> there adds a copy to your games. <b>Demo video</b> shows a
+    game’s demo with its music and sound, and can save it as a video.</p>
+    <h3>Shareware</h3>
+    <p>Games other people made and shared as shareware. They are play-only here, in their
+    shareware form: you can look inside them but not copy them. <b>Notice</b> shows the author’s
+    terms. If you enjoy one, register it with its author.</p>
+    <h3>Saves &amp; scores</h3>
+    <p>A game’s saved games, each with a map of where it was saved, and its high scores. You can
+    change a saved game, start a new one in its slot, or save it as a <code>.SAV</code> file and
+    bring one back.</p>
+      <p class="seo-note"><a href="./#/help/home">Open this in the Guide</a> · <a href="./">Game-Maker: Sandbox Edition</a></p>
+    </main><!--/seo:body-->
+    </div>
+  </body>
+</html>

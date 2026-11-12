@@ -1,0 +1,103 @@
+{
+ "key": "pixel",
+ "game": "teddy2",
+ "source": "9f2ece5d0cda229a",
+ "items": [
+  {
+   "id": "teddy",
+   "title": "Teddy",
+   "blurb": "Sniffing out Gwinn’s trail.",
+   "file": "teddy.stl",
+   "preview": "teddy.view.stl",
+   "triangles": 956,
+   "bytes": 47884,
+   "mm": [
+    25.5,
+    9,
+    27
+   ],
+   "thinSpecks": 0,
+   "colors": {
+    "file": "teddy.3mf",
+    "bytes": 23615,
+    "palette": [
+     [
+      20,
+      12,
+      16
+     ],
+     [
+      255,
+      255,
+      247
+     ],
+     [
+      219,
+      142,
+      73
+     ],
+     [
+      113,
+      45,
+      8
+     ]
+    ],
+    "meanColorError": 0
+   },
+   "overhangMm2": 45,
+   "overhangShare": 0.022
+  },
+  {
+   "id": "hen",
+   "title": "Hen",
+   "blurb": "A hen at the farm.",
+   "file": "hen.stl",
+   "preview": "hen.view.stl",
+   "triangles": 712,
+   "bytes": 35684,
+   "mm": [
+    21,
+    9,
+    19.5
+   ],
+   "thinSpecks": 0,
+   "colors": {
+    "file": "hen.3mf",
+    "bytes": 10723,
+    "palette": [
+     [
+      20,
+      12,
+      16
+     ],
+     [
+      255,
+      255,
+      247
+     ],
+     [
+      223,
+      194,
+      65
+     ],
+     [
+      210,
+      57,
+      61
+     ]
+    ],
+    "meanColorError": 0
+   },
+   "overhangMm2": 72,
+   "overhangShare": 0.054
+  }
+ ],
+ "packed": [
+  "teddy.stl",
+  "teddy.view.stl",
+  "teddy.3mf",
+  "hen.stl",
+  "hen.view.stl",
+  "hen.3mf"
+ ]
+}

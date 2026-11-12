@@ -1,0 +1,77 @@
+{
+ "version": 1,
+ "game": "slow-computers",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "AU0PzT9NHs0/TRnNG00KzRtNCs0bTQrNG00UzT9NGc0rTQrNK00KzStNCs0rTRnNP00="
+  },
+  {
+   "scene": 3,
+   "keys": "AU0PzUlNLc1TTUbNSU0="
+  },
+  {
+   "scene": 4,
+   "keys": "AU0PzVNNI81TTSjNSU0="
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: Short and Long"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: A Crowd"
+  },
+  {
+   "scene": 4,
+   "title": "Level 3: Busy Sky"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 11876,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 913,
+    "time": 15216.666666666471
+   },
+   {
+    "title": "Level 1: Short and Long",
+    "frame": 2142,
+    "time": 35700.00000000053
+   },
+   {
+    "title": "Level 2: A Crowd",
+    "frame": 5006,
+    "time": 83433.33333333473
+   },
+   {
+    "title": "Level 3: Busy Sky",
+    "frame": 6574,
+    "time": 109566.66666667566
+   },
+   {
+    "title": "Ending",
+    "frame": 8109,
+    "time": 135150.0000000129
+   },
+   {
+    "title": "Credits",
+    "frame": 10321,
+    "time": 172016.6666666581
+   }
+  ]
+ }
+}

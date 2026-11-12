@@ -1,0 +1,77 @@
+{
+ "version": 1,
+ "game": "lights-out",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "FU0ZzStNGc0DTSjNK00jzQNNDTkCuSHNK00="
+  },
+  {
+   "scene": 3,
+   "keys": "FU0ZzStNKM0DOQK5FU0ezStNQc0rTQ=="
+  },
+  {
+   "scene": 4,
+   "keys": "0QFNGc0DTUHNK00IOQK5"
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: The Lantern Cave"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: Light Your Way"
+  },
+  {
+   "scene": 4,
+   "title": "Level 3: The Lights Come On"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 10306,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 913,
+    "time": 15216.666666666471
+   },
+   {
+    "title": "Level 1: The Lantern Cave",
+    "frame": 2142,
+    "time": 35700.00000000053
+   },
+   {
+    "title": "Level 2: Light Your Way",
+    "frame": 3707,
+    "time": 61783.33333333007
+   },
+   {
+    "title": "Level 3: The Lights Come On",
+    "frame": 5263,
+    "time": 87716.6666666693
+   },
+   {
+    "title": "Ending",
+    "frame": 7022,
+    "time": 117033.3333333445
+   },
+   {
+    "title": "Credits",
+    "frame": 9232,
+    "time": 153866.66666666867
+   }
+  ]
+ }
+}

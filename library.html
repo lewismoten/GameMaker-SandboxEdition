@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#000080" />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="icon" href="./icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
+    <title>Library · Game-Maker: Sandbox Edition</title>
+    <script>
+      // Before the first paint: the readable text in #app is for crawlers and browsers
+      // without JavaScript, so keep it out of sight while the app starts, on the
+      // background of the interface about to open (the same choice main.ts makes).
+      (function (d, h) {
+        var ui = 'desk';
+        try {
+          ui = /^#\/?(\?|$)|^#\/(p|game|help|cast|credits|privacy|achievements|mac|windows|linux|magazine|library|programmers-guide|art-courses|pi-remote)(\/|\?|$)/.test(h) || (!/^#\/desk(\?|$)/.test(h) && localStorage.getItem('gm-ui') === 'modern') ? 'modern' : 'desk';
+        } catch (e) {}
+        var t = 'dark';
+        try {
+          t = /^(dark|light|auto)$/.test(localStorage.getItem('gm-theme')) ? localStorage.getItem('gm-theme') : 'dark';
+        } catch (e) {}
+        d.setAttribute('data-theme', t);
+        d.className += ' js';
+        d.setAttribute('data-ui', ui);
+      })(document.documentElement, location.hash);
+    </script>
+    <style>
+      html.js .seo-static { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+      html.js body { margin: 0; }
+      html[data-ui='desk'] body { background: #465063; }
+      html[data-ui='modern'] body { background: #d5d9e2; }
+      html[data-ui='modern'][data-theme='dark'] body { background: #11131a; }
+      @media (prefers-color-scheme: dark) { html[data-ui='modern'][data-theme='auto'] body { background: #11131a; } }
+    </style>
+    <!--seo:head--><meta name="description" content="Everything to read and print in one place: each game’s manual, hint book, maps, newsletter, sticker sheet and cards, the Game-Maker box’s paper, TURBO BUTTON…" />
+    <link rel="canonical" href="https://lewismoten.github.io/GameMaker-SandboxEdition/library.html" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Game-Maker: Sandbox Edition" />
+    <meta property="og:title" content="Library · Game-Maker: Sandbox Edition" />
+    <meta property="og:description" content="Everything to read and print in one place: each game’s manual, hint book, maps, newsletter, sticker sheet and cards, the Game-Maker box’s paper, TURBO BUTTON…" />
+    <meta property="og:url" content="https://lewismoten.github.io/GameMaker-SandboxEdition/library.html" />
+    <meta property="og:image" content="https://lewismoten.github.io/GameMaker-SandboxEdition/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="A mid-90s computer desk with Game-Maker: Sandbox Edition on the monitor, game boxes on the shelf and a disk box." />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Library · Game-Maker: Sandbox Edition" />
+    <meta name="twitter:description" content="Everything to read and print in one place: each game’s manual, hint book, maps, newsletter, sticker sheet and cards, the Game-Maker box’s paper, TURBO BUTTON…" />
+    <meta name="twitter:image" content="https://lewismoten.github.io/GameMaker-SandboxEdition/og-image.png" />
+    <meta name="twitter:image:alt" content="A mid-90s computer desk with Game-Maker: Sandbox Edition on the monitor, game boxes on the shelf and a disk box." />
+    <script>if(!location.hash)history.replaceState(null,'',"#/library")</script>
+    <style>
+      .seo-static { box-sizing: border-box; min-height: 100vh; margin: 0; padding: 24px max(16px, calc((100% - 46rem) / 2)) 48px; background: #12122a; font: 16px/1.5 system-ui, sans-serif; color: #e8e8f0; }
+      .seo-static a { color: #9cf; }
+      .seo-static h1 { font: bold 1.8rem monospace; letter-spacing: 2px; color: #ff5; margin: 0 0 4px; }
+      .seo-static h2 { font: bold 1.15rem monospace; color: #5f5; margin: 24px 0 4px; }
+      .seo-static small { color: #aab; }
+      .seo-static ul { padding-left: 1.2rem; }
+      .seo-static .seo-note { color: #aab; font-size: 0.9rem; }
+    </style><!--/seo:head-->
+    <script type="module" crossorigin src="./assets/main-BB4EUk5_.js"></script>
+    <link rel="modulepreload" crossorigin href="./assets/modulepreload-polyfill-B5Qt9EMX.js">
+    <link rel="modulepreload" crossorigin href="./assets/watch-Ci1HG5Rl.js">
+    <link rel="modulepreload" crossorigin href="./assets/tourButton-DXjuNPQS.js">
+    <link rel="stylesheet" crossorigin href="./assets/tourButton-CEpNth5l.css">
+    <link rel="stylesheet" crossorigin href="./assets/main-BcVD1vCS.css">
+  </head>
+  <body>
+    <div id="app">
+      <!--seo:body--><main class="seo-static">
+      <h1>Library</h1>
+      <p>The Library gathers everything to read and print in one place. Browse it by game or by type; each piece opens to read page by page or to print.</p>
+      <h2>What is on the shelves</h2>
+      <ul>
+        <li>A manual for each game, and a hint book where a game has one</li>
+        <li>Maps of the levels</li>
+        <li>The Sandbox Scoop, the newsletter, and sticker sheets and cards</li>
+        <li>The Game-Maker box's own paper, with the Owner's Guide</li>
+        <li><a href="./#/magazine">TURBO BUTTON</a>, the shareware gamer's magazine</li>
+        <li><a href="./#/help">The Guide</a> to the web editor</li>
+      </ul>
+      <h2>Games with a shelf</h2>
+      <ul><li><a href="./play-blaster.html">Virus Blaster</a></li><li><a href="./play-brief.html">KEEP IT BRIEF! The Tiny Pockets Library</a></li><li><a href="./play-carl.html">A Fly Named Carl</a></li><li><a href="./play-depth.html">Depth Perception</a></li><li><a href="./play-goat.html">Third Goat from the Left</a></li><li><a href="./play-loaf.html">Loaf #13 (Left in the Basket)</a></li><li><a href="./play-logic.html">Ohm Sweet Ohm</a></li><li><a href="./play-loofah.html">Cleanse Me, O Loofah, But Leave My Soul</a></li><li><a href="./play-maximus.html">Maximus: The Hundred Worlds</a></li><li><a href="./play-mustard.html">Mustard Seed Hustle</a></li><li><a href="./play-needle.html">Thread the Needle, Brother Camel</a></li><li><a href="./play-realm.html">Quest for the Round Tuit</a></li><li><a href="./play-reckoning.html">The Great Dairy Reckoning of 3:17 A.M.</a></li><li><a href="./play-remote.html">Where&#39;s the Remote?!</a></li><li><a href="./play-risi.html">Veni, Vidi, Risi!</a></li><li><a href="./play-sandcast.html">Sandcastle Knight</a></li><li><a href="./play-sleuth.html">Final Curtain</a></li><li><a href="./play-smirked.html">I Screamed, She Smirked</a></li><li><a href="./play-snowbound.html">Snowbound: The $89 Shovel</a></li><li><a href="./play-sweats.html">Shakespeare in Sweatpants</a></li><li><a href="./play-teddy.html">Teddy&#39;s Little Big Adventure</a></li><li><a href="./play-teddy2.html">Teddy&#39;s Little Bigger Adventure</a></li><li><a href="./play-teddy3.html">Teddy&#39;s Little Biggest Adventure</a></li><li><a href="./play-tickle.html">Certified Rat Tickler</a></li><li><a href="./play-tuneup.html">Tune-Up</a></li><li><a href="./play-year2000.html">In The Year 2000!</a></li></ul>
+      <p class="seo-note"><a href="./#/library">Open this in the app</a> · <a href="./">Game-Maker: Sandbox Edition</a></p>
+    </main><!--/seo:body-->
+    </div>
+  </body>
+</html>

@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#000080" />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="icon" href="./icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
+    <title>Finding your way · Guide · Game-Maker: Sandbox Edition</title>
+    <script>
+      // Before the first paint: the readable text in #app is for crawlers and browsers
+      // without JavaScript, so keep it out of sight while the app starts, on the
+      // background of the interface about to open (the same choice main.ts makes).
+      (function (d, h) {
+        var ui = 'desk';
+        try {
+          ui = /^#\/?(\?|$)|^#\/(p|game|help|cast|credits|privacy|achievements|mac|windows|linux|magazine|library|programmers-guide|art-courses|pi-remote)(\/|\?|$)/.test(h) || (!/^#\/desk(\?|$)/.test(h) && localStorage.getItem('gm-ui') === 'modern') ? 'modern' : 'desk';
+        } catch (e) {}
+        var t = 'dark';
+        try {
+          t = /^(dark|light|auto)$/.test(localStorage.getItem('gm-theme')) ? localStorage.getItem('gm-theme') : 'dark';
+        } catch (e) {}
+        d.setAttribute('data-theme', t);
+        d.className += ' js';
+        d.setAttribute('data-ui', ui);
+      })(document.documentElement, location.hash);
+    </script>
+    <style>
+      html.js .seo-static { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+      html.js body { margin: 0; }
+      html[data-ui='desk'] body { background: #465063; }
+      html[data-ui='modern'] body { background: #d5d9e2; }
+      html[data-ui='modern'][data-theme='dark'] body { background: #11131a; }
+      @media (prefers-color-scheme: dark) { html[data-ui='modern'][data-theme='auto'] body { background: #11131a; } }
+    </style>
+    <!--seo:head--><meta name="description" content="The bar at the top of the page leads everywhere: On a phone or tablet, the pages the bar has no room for and the settings are in its ⋯ menu." />
+    <link rel="canonical" href="https://lewismoten.github.io/GameMaker-SandboxEdition/help-site.html" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Game-Maker: Sandbox Edition" />
+    <meta property="og:title" content="Finding your way · Guide · Game-Maker: Sandbox Edition" />
+    <meta property="og:description" content="The bar at the top of the page leads everywhere: On a phone or tablet, the pages the bar has no room for and the settings are in its ⋯ menu." />
+    <meta property="og:url" content="https://lewismoten.github.io/GameMaker-SandboxEdition/help-site.html" />
+    <meta property="og:image" content="https://lewismoten.github.io/GameMaker-SandboxEdition/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="A mid-90s computer desk with Game-Maker: Sandbox Edition on the monitor, game boxes on the shelf and a disk box." />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Finding your way · Guide · Game-Maker: Sandbox Edition" />
+    <meta name="twitter:description" content="The bar at the top of the page leads everywhere: On a phone or tablet, the pages the bar has no room for and the settings are in its ⋯ menu." />
+    <meta name="twitter:image" content="https://lewismoten.github.io/GameMaker-SandboxEdition/og-image.png" />
+    <meta name="twitter:image:alt" content="A mid-90s computer desk with Game-Maker: Sandbox Edition on the monitor, game boxes on the shelf and a disk box." />
+    <script>if(!location.hash)history.replaceState(null,'',"#/help/site")</script>
+    <style>
+      .seo-static { box-sizing: border-box; min-height: 100vh; margin: 0; padding: 24px max(16px, calc((100% - 46rem) / 2)) 48px; background: #12122a; font: 16px/1.5 system-ui, sans-serif; color: #e8e8f0; }
+      .seo-static a { color: #9cf; }
+      .seo-static h1 { font: bold 1.8rem monospace; letter-spacing: 2px; color: #ff5; margin: 0 0 4px; }
+      .seo-static h2 { font: bold 1.15rem monospace; color: #5f5; margin: 24px 0 4px; }
+      .seo-static small { color: #aab; }
+      .seo-static ul { padding-left: 1.2rem; }
+      .seo-static .seo-note { color: #aab; font-size: 0.9rem; }
+    </style><!--/seo:head-->
+    <script type="module" crossorigin src="./assets/main-BB4EUk5_.js"></script>
+    <link rel="modulepreload" crossorigin href="./assets/modulepreload-polyfill-B5Qt9EMX.js">
+    <link rel="modulepreload" crossorigin href="./assets/watch-Ci1HG5Rl.js">
+    <link rel="modulepreload" crossorigin href="./assets/tourButton-DXjuNPQS.js">
+    <link rel="stylesheet" crossorigin href="./assets/tourButton-CEpNth5l.css">
+    <link rel="stylesheet" crossorigin href="./assets/main-BcVD1vCS.css">
+  </head>
+  <body>
+    <div id="app">
+      <!--seo:body--><main class="seo-static">
+      <p><a href="./#/help">Game-Maker: Sandbox Edition Guide</a></p>
+      <h1>Finding your way</h1>
+      <p>The bar at the top of the page leads everywhere:</p>
+    <ul>
+      <li><b>Games</b>: every game, to play, look inside or make your own (see the next part).</li>
+      <li><b>Guide</b>: this guide.</li>
+      <li><b>Library</b>: everything to read and print, by game or by type: manuals, hint books, maps,
+      the papers in each game’s box, <a href="#/magazine">TURBO BUTTON</a>, the Owner’s Guides, your
+      notes on imported games, each game’s walkthrough, and videos about the site. Its print shop
+      makes disk labels, CD labels and retail boxes.</li>
+      <li><b>Achievements</b>: what you’ve done, here and on the 1994 desk, kept in this browser.</li>
+      <li><b>Cast</b>: the regulars of the new games on a stage, and the games each one is in.</li>
+      <li><b>Desk | DOS | Web</b>: the 1994 desk, DOS Game-Maker on its own, or this web version
+      (see <a href="#/help/desk">The 1994 desk</a>).</li>
+      <li><b>?</b> (Guides): <b>Show me around this page</b>; <b>Guides wait on this page</b>, so two
+      of the cast stand in its corner, ready to show you around; and <b>Watch the whole tour</b> of
+      the site, or <b>Record the whole tour</b> as videos.</li>
+      <li><b>⚙ Settings</b>: <b>Play offline</b>, <b>Source on GitHub</b>, <b>Credits</b>,
+      <b>Theme</b> (dark, light or the system’s), <b>Guided tour</b>, <b>AI setup…</b> and
+      <b>Back up / restore…</b> (see <a href="#/help/offline">Offline, installing and
+      backups</a>).</li>
+    </ul>
+    <p>On a phone or tablet, the pages the bar has no room for and the settings are in its
+    <b>⋯</b> menu.</p>
+    <h3>ePub downloads</h3>
+    <p>Every manual, hint book and magazine in the Library has a <b>⤓ ePub</b> button beside Print.
+    It saves the piece as an e-book that reads offline in any e-book app. A hint book’s answers
+    wait at the back, each one a link away from its question.</p>
+      <p class="seo-note"><a href="./#/help/site">Open this in the Guide</a> · <a href="./">Game-Maker: Sandbox Edition</a></p>
+    </main><!--/seo:body-->
+    </div>
+  </body>
+</html>

@@ -1,0 +1,64 @@
+{
+ "version": 1,
+ "game": "many-weapons",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "AU0KzSscA5w8TSjNA00PzSscA5w8TSPNAxwDnDxNHs0rHAOcPEtBywNLFMsDTVXNAxwDnDxNLc0DTQ=="
+  },
+  {
+   "scene": 3,
+   "keys": "AU0KzStNHs0DTTLNAxwDnDxLKMsrTQrNAzkCuQBNCs0KTRLNKxwDnDxNCs0DHAOcPE03zQMcA5w8TSjNA00="
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: Empty Hands"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: Star or Flame"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 11144,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 913,
+    "time": 15216.666666666471
+   },
+   {
+    "title": "Level 1: Empty Hands",
+    "frame": 2142,
+    "time": 35700.00000000053
+   },
+   {
+    "title": "Level 2: Star or Flame",
+    "frame": 5203,
+    "time": 86716.66666666901
+   },
+   {
+    "title": "Ending",
+    "frame": 7858,
+    "time": 130966.6666666819
+   },
+   {
+    "title": "Credits",
+    "frame": 10070,
+    "time": 167833.3333333272
+   }
+  ]
+ }
+}

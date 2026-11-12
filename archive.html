@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex" />
+    <title>Archive helper · Game-Maker: Sandbox Edition</title>
+    <style>
+      :root { color-scheme: light dark; }
+      body { font: 16px/1.5 system-ui, sans-serif; max-width: 36rem; margin: 0 auto; padding: 24px 16px; }
+      progress { width: 100%; height: 1.5rem; }
+      #done { font-weight: bold; }
+      .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+    </style>
+    <script type="module" crossorigin src="./assets/archive-ClKrP2ig.js"></script>
+    <link rel="modulepreload" crossorigin href="./assets/modulepreload-polyfill-B5Qt9EMX.js">
+    <link rel="modulepreload" crossorigin href="./assets/progressAnnouncements-C0oWWKod.js">
+  </head>
+  <body>
+    <main>
+      <h1>Fetching the site</h1>
+      <p>This page asks for every file of the site, a few at a time, so a web archive can save them. Leave it open until it says Done.</p>
+      <p id="part"></p>
+      <progress id="bar" value="0" max="1" aria-label="Files fetched"></progress>
+      <p id="counts" aria-live="off">Starting.</p>
+      <p id="status" class="sr-only" role="status" aria-live="polite"></p>
+      <p id="done" hidden></p>
+    </main>
+  </body>
+</html>

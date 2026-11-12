@@ -1,0 +1,1 @@
+import{r as e}from"./media-6TaHC1V3.js";const c=600,i=1200;async function p(t,o){if(!t)return;const a=Number(t.el.dataset.layout)||c,r=await e(t.el,{width:a,height:Math.round(a*t.h/t.w),type:"image/jpeg",scale:i/a});return r&&{path:"images/cover.jpg",type:r.type,data:r.data,alt:o}}export{p as c};

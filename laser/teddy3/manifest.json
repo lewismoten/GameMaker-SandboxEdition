@@ -1,0 +1,106 @@
+{
+ "key": "laser-nickel",
+ "game": "teddy3",
+ "title": "Teddy's Little Biggest Adventure",
+ "concept": "A birthday token: a party hat and \"BIG DAY\".",
+ "source": "243fd39f5f4a1223",
+ "mm": {
+  "coin": 38.1,
+  "sheet": [
+   270,
+   150
+  ],
+  "jigHole": 38,
+  "jigAt": [
+   235,
+   75
+  ],
+  "pitch": 44,
+  "wood": 3
+ },
+ "colors": {
+  "cut": "#ff0000",
+  "score": "#ff00ff",
+  "engrave": "#0000ff"
+ },
+ "series": {
+  "no": 23,
+  "of": 26,
+  "letter": "I",
+  "message": "BEKINDANDKEEPPLAYINGFRIEND"
+ },
+ "holes": [],
+ "clearance": {
+  "front": [],
+  "back": []
+ },
+ "reach": {
+  "front": 15.07,
+  "back": 15.07
+ },
+ "texts": {
+  "front": [
+   {
+    "text": "TEDDY",
+    "capMm": 2.52
+   },
+   {
+    "text": "LITTLE BIGGEST",
+    "capMm": 2.5
+   },
+   {
+    "text": "BIG DAY",
+    "capMm": 2.5
+   }
+  ],
+  "back": [
+   {
+    "text": "GOOD FOR",
+    "capMm": 2.52
+   },
+   {
+    "text": "SANDBOX SOFTWARE",
+    "capMm": 2.5
+   },
+   {
+    "text": "ONE BIG",
+    "capMm": 2.52
+   },
+   {
+    "text": "BIRTHDAY",
+    "capMm": 2.52
+   },
+   {
+    "text": "SURPRISE",
+    "capMm": 2.52
+   },
+   {
+    "text": "NO.23/26",
+    "capMm": 2.5
+   },
+   {
+    "text": "1994 SM",
+    "capMm": 2.5
+   },
+   {
+    "text": "sandscript I",
+    "capMm": 2.52
+   }
+  ]
+ },
+ "paths": {
+  "front": 198,
+  "back": 431,
+  "sheet": 2378
+ },
+ "files": [
+  "front.svg",
+  "back.svg",
+  "sheet.svg",
+  "sheet-back.svg",
+  "front.png",
+  "back.png",
+  "sheet.png",
+  "manifest.json"
+ ]
+}

@@ -1,0 +1,59 @@
+{
+ "key": "15354dd0a73a6dde",
+ "game": "goat",
+ "items": [
+  {
+   "id": "third-goat-at-manger",
+   "title": "The third goat at the manger",
+   "blurb": "The gray-and-white goat nobody painted, with broad horns and beard, standing with the others at a low hay-lined manger.",
+   "file": "third-goat-at-manger.stl",
+   "triangles": 9932,
+   "bytes": 496684,
+   "mm": [
+    67.7,
+    23.1,
+    46.7
+   ],
+   "thinSpecks": 0,
+   "colors": {
+    "file": "third-goat-at-manger.3mf",
+    "bytes": 235618,
+    "palette": [
+     [
+      137,
+      94,
+      58
+     ],
+     [
+      246,
+      244,
+      236
+     ],
+     [
+      148,
+      146,
+      148
+     ],
+     [
+      220,
+      183,
+      92
+     ]
+    ],
+    "meanColorError": 14
+   },
+   "overhangMm2": 431,
+   "overhangShare": 0.058,
+   "supports": {
+    "file": "third-goat-at-manger-supports.stl",
+    "triangles": 3318,
+    "bytes": 165984
+   }
+  }
+ ],
+ "packed": [
+  "third-goat-at-manger.stl",
+  "third-goat-at-manger-supports.stl",
+  "third-goat-at-manger.3mf"
+ ]
+}

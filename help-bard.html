@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#000080" />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="icon" href="./icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
+    <title>The Bard of Bizarre · Guide · Game-Maker: Sandbox Edition</title>
+    <script>
+      // Before the first paint: the readable text in #app is for crawlers and browsers
+      // without JavaScript, so keep it out of sight while the app starts, on the
+      // background of the interface about to open (the same choice main.ts makes).
+      (function (d, h) {
+        var ui = 'desk';
+        try {
+          ui = /^#\/?(\?|$)|^#\/(p|game|help|cast|credits|privacy|achievements|mac|windows|linux|magazine|library|programmers-guide|art-courses|pi-remote)(\/|\?|$)/.test(h) || (!/^#\/desk(\?|$)/.test(h) && localStorage.getItem('gm-ui') === 'modern') ? 'modern' : 'desk';
+        } catch (e) {}
+        var t = 'dark';
+        try {
+          t = /^(dark|light|auto)$/.test(localStorage.getItem('gm-theme')) ? localStorage.getItem('gm-theme') : 'dark';
+        } catch (e) {}
+        d.setAttribute('data-theme', t);
+        d.className += ' js';
+        d.setAttribute('data-ui', ui);
+      })(document.documentElement, location.hash);
+    </script>
+    <style>
+      html.js .seo-static { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+      html.js body { margin: 0; }
+      html[data-ui='desk'] body { background: #465063; }
+      html[data-ui='modern'] body { background: #d5d9e2; }
+      html[data-ui='modern'][data-theme='dark'] body { background: #11131a; }
+      @media (prefers-color-scheme: dark) { html[data-ui='modern'][data-theme='auto'] body { background: #11131a; } }
+    </style>
+    <!--seo:head--><meta name="description" content="The Bard of Bizarre is Lewis “Lewie” Moten III’s song project, and his hobo clown, Doc Leo, PhD (Comedic Science), is its face. The Bard has one rule:…" />
+    <link rel="canonical" href="https://lewismoten.github.io/GameMaker-SandboxEdition/help-bard.html" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Game-Maker: Sandbox Edition" />
+    <meta property="og:title" content="The Bard of Bizarre · Guide · Game-Maker: Sandbox Edition" />
+    <meta property="og:description" content="The Bard of Bizarre is Lewis “Lewie” Moten III’s song project, and his hobo clown, Doc Leo, PhD (Comedic Science), is its face. The Bard has one rule:…" />
+    <meta property="og:url" content="https://lewismoten.github.io/GameMaker-SandboxEdition/help-bard.html" />
+    <meta property="og:image" content="https://lewismoten.github.io/GameMaker-SandboxEdition/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="A mid-90s computer desk with Game-Maker: Sandbox Edition on the monitor, game boxes on the shelf and a disk box." />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="The Bard of Bizarre · Guide · Game-Maker: Sandbox Edition" />
+    <meta name="twitter:description" content="The Bard of Bizarre is Lewis “Lewie” Moten III’s song project, and his hobo clown, Doc Leo, PhD (Comedic Science), is its face. The Bard has one rule:…" />
+    <meta name="twitter:image" content="https://lewismoten.github.io/GameMaker-SandboxEdition/og-image.png" />
+    <meta name="twitter:image:alt" content="A mid-90s computer desk with Game-Maker: Sandbox Edition on the monitor, game boxes on the shelf and a disk box." />
+    <script>if(!location.hash)history.replaceState(null,'',"#/help/bard")</script>
+    <style>
+      .seo-static { box-sizing: border-box; min-height: 100vh; margin: 0; padding: 24px max(16px, calc((100% - 46rem) / 2)) 48px; background: #12122a; font: 16px/1.5 system-ui, sans-serif; color: #e8e8f0; }
+      .seo-static a { color: #9cf; }
+      .seo-static h1 { font: bold 1.8rem monospace; letter-spacing: 2px; color: #ff5; margin: 0 0 4px; }
+      .seo-static h2 { font: bold 1.15rem monospace; color: #5f5; margin: 24px 0 4px; }
+      .seo-static small { color: #aab; }
+      .seo-static ul { padding-left: 1.2rem; }
+      .seo-static .seo-note { color: #aab; font-size: 0.9rem; }
+    </style><!--/seo:head-->
+    <script type="module" crossorigin src="./assets/main-BB4EUk5_.js"></script>
+    <link rel="modulepreload" crossorigin href="./assets/modulepreload-polyfill-B5Qt9EMX.js">
+    <link rel="modulepreload" crossorigin href="./assets/watch-Ci1HG5Rl.js">
+    <link rel="modulepreload" crossorigin href="./assets/tourButton-DXjuNPQS.js">
+    <link rel="stylesheet" crossorigin href="./assets/tourButton-CEpNth5l.css">
+    <link rel="stylesheet" crossorigin href="./assets/main-BcVD1vCS.css">
+  </head>
+  <body>
+    <div id="app">
+      <!--seo:body--><main class="seo-static">
+      <p><a href="./#/help">Game-Maker: Sandbox Edition Guide</a></p>
+      <h1>The Bard of Bizarre</h1>
+      <p>The Bard of Bizarre is Lewis “Lewie” Moten III’s song project, and his hobo clown, Doc
+    Leo, PhD (Comedic Science), is its face. The Bard has one rule: the smaller and more
+    overlooked the thing, the bigger the song it deserves. So the goat at the edge of the
+    manger, the loaf left in the basket, the fly in the room and the remote lost in the couch
+    each get the full treatment (a gospel choir, a goth anthem, an opera, a trembling
+    monologue), sung with a straight face and a lot of love. The songs are silly but never
+    mean, and fine for the whole family. It began with Christian songs and grew from there;
+    so far the songs fall into five collections:</p>
+    <ul>
+      <li><b>Bizarre gospels</b>: the wrong detail of a Bible story, taken very seriously. The
+      goat nobody painted in <b>Third Goat from the Left</b>, the smallest seed with the biggest
+      dreams in <b>Mustard Seed Hustle</b>, the camel left holding the rich man’s gold in
+      <b>Thread the Needle, Brother Camel</b>, and the bread nobody picked when the five
+      thousand were fed in <b>Loaf #13 (Left in the Basket)</b>. They sort of make sense, and
+      that’s the trouble.</li>
+      <li><b>Mundane epics</b>: tiny everyday disasters sung like the end of the world. <b>A Fly
+      Named Carl</b>, <b>Where’s the Remote?!</b>, a slice of cheesecake in <b>The Great Dairy
+      Reckoning of 3:17 A.M.</b>, a borrowed pink loofah in <b>Cleanse Me, O Loofah, But Leave
+      My Soul</b>, and a haunted house with an eight-year-old who isn’t scared in <b>I Screamed, She
+      Smirked</b>.</li>
+      <li><b>Villain anthems</b>: evil plans on a very small scale, with maniacal laughter. In
+      <b>Certified Rat Tickler</b>, Doc Leo turns mad scientist with a real certificate in rat
+      tickling (Lewis earned one) and plots to raise a legion of giggling rats.</li>
+      <li><b>Shakespeare in Sweatpants</b>: seventeen spoken monologues by a man in a starched
+      ruff and gray sweatpants about the most dramatic things that ever happened to him, like a
+      lost pen, a dead ficus named Gerald and the self-checkout. The game puts him on stage at
+      open-mic night.</li>
+      <li><b>Veni, Vidi, Risi!</b>: six songs in Latin, as grand as Rome, about a dog who breaks
+      wind at a senators’ dinner, a coward who wins every battle with his feet, a tongue
+      twister, a cat after the cheese, a golden fish who sings in the baths, and a Latin song so
+      clever that nobody laughs.</li>
+    </ul>
+    <p>Lewis dreams up each song and prompts AI tools to shape and record it. Some of the songs
+    have become games, shareware “uploaded” to The Sofa BBS in the story, under <b>Bizarre</b> on
+    the home page. Which tool or person made each part of each game is in the
+    <a href="#/credits">Credits page</a>’s table.</p>
+      <p class="seo-note"><a href="./#/help/bard">Open this in the Guide</a> · <a href="./">Game-Maker: Sandbox Edition</a></p>
+    </main><!--/seo:body-->
+    </div>
+  </body>
+</html>

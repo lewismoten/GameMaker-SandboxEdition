@@ -1,0 +1,161 @@
+{
+ "version": 1,
+ "game": "room-to-room",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "AU0tzQNN"
+  },
+  {
+   "scene": 3,
+   "keys": "AU1BzQNN"
+  },
+  {
+   "scene": 4,
+   "keys": "AU0ZzQNIMcgDTTLNA00ezQBLLcsDSwPLA1Ax0ANL"
+  },
+  {
+   "scene": 5,
+   "keys": "AU1LzQNL"
+  },
+  {
+   "scene": 4,
+   "keys": "AU0="
+  },
+  {
+   "scene": 6,
+   "keys": "AUtVywNN"
+  },
+  {
+   "scene": 4,
+   "keys": "AU0="
+  },
+  {
+   "scene": 6,
+   "keys": "AU0FzQNN"
+  },
+  {
+   "scene": 4,
+   "keys": "AUsZywNIMcgDTTLNA00KzQNN"
+  },
+  {
+   "scene": 7,
+   "keys": "AU0="
+  },
+  {
+   "scene": 9,
+   "keys": "AU0ozQM5ArkATQXNC00SzQ5NBc0DTRnNA00="
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: Out the Door (the first room)"
+  },
+  {
+   "scene": 3,
+   "title": "Level 1: Out the Door (the second room)"
+  },
+  {
+   "scene": 4,
+   "title": "Level 2: There and Back (the hall)"
+  },
+  {
+   "scene": 5,
+   "title": "Level 2: There and Back (the kitchen)"
+  },
+  {
+   "scene": 4,
+   "title": "Level 2: There and Back (the hall)"
+  },
+  {
+   "scene": 6,
+   "title": "Level 2: There and Back (the bedroom)"
+  },
+  {
+   "scene": 4,
+   "title": "Level 2: There and Back (the hall)"
+  },
+  {
+   "scene": 6,
+   "title": "Level 2: There and Back (the bedroom)"
+  },
+  {
+   "scene": 4,
+   "title": "Level 2: There and Back (the hall)"
+  },
+  {
+   "scene": 7,
+   "title": "Level 3: Two Doors (the fork)"
+  },
+  {
+   "scene": 9,
+   "title": "Level 3: Two Doors (the attic)"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 10860,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 913,
+    "time": 15216.666666666471
+   },
+   {
+    "title": "Level 1: Out the Door (the first room)",
+    "frame": 1661,
+    "time": 27683.333333333918
+   },
+   {
+    "title": "Level 1: Out the Door (the second room)",
+    "frame": 2270,
+    "time": 37833.333333333554
+   },
+   {
+    "title": "Level 2: There and Back (the hall)",
+    "frame": 2995,
+    "time": 49916.66666666513
+   },
+   {
+    "title": "Level 2: There and Back (the kitchen)",
+    "frame": 4261,
+    "time": 71016.66666666445
+   },
+   {
+    "title": "Level 2: There and Back (the bedroom)",
+    "frame": 5326,
+    "time": 88766.66666666961
+   },
+   {
+    "title": "Level 3: Two Doors (the fork)",
+    "frame": 6965,
+    "time": 116083.33333334423
+   },
+   {
+    "title": "Level 3: Two Doors (the attic)",
+    "frame": 7498,
+    "time": 124966.66666668015
+   },
+   {
+    "title": "Ending",
+    "frame": 8055,
+    "time": 134250.00000001342
+   },
+   {
+    "title": "Credits",
+    "frame": 9786,
+    "time": 163099.99999999662
+   }
+  ]
+ }
+}

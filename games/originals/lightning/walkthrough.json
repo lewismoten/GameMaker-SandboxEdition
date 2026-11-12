@@ -1,0 +1,64 @@
+{
+ "version": 1,
+ "game": "lightning",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "FU0UzW5NKM1QTTLNRk0="
+  },
+  {
+   "scene": 3,
+   "keys": "FU0UzSFNGc0hTRLNB0sDOQK5CstFOQK5AE0SzQ45ArkATRTNDDkCuQBNFM0MOQK5AE0WzQNN"
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: Flash and Rumble"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: Light the Way"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 9058,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 913,
+    "time": 15216.666666666471
+   },
+   {
+    "title": "Level 1: Flash and Rumble",
+    "frame": 2142,
+    "time": 35700.00000000053
+   },
+   {
+    "title": "Level 2: Light the Way",
+    "frame": 4011,
+    "time": 66849.99999999657
+   },
+   {
+    "title": "Ending",
+    "frame": 5776,
+    "time": 96266.6666666718
+   },
+   {
+    "title": "Credits",
+    "frame": 7984,
+    "time": 133066.66666668077
+   }
+  ]
+ }
+}

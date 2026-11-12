@@ -1,0 +1,1 @@
+const l="2504a62974ff2e4d",a={"hall.map|hall.bbl":[0,12,60,10],"lanterns.map|lanterns.bbl":[0,12,68,10],"tunnel.map|tunnel.bbl":[0,12,64,10]},n={hash:l,maps:a};export{n as default,l as hash,a as maps};

@@ -1,0 +1,54 @@
+{
+ "key": "d87add815e08db8c",
+ "game": "teddy3",
+ "items": [
+  {
+   "id": "birthday-cake",
+   "title": "The biggest cake",
+   "blurb": "Three tiers, pink frosting, cherries and the bakery’s candles: the BIGGEST cake in the Tri-County area, for a corgi who didn’t know.",
+   "file": "birthday-cake.stl",
+   "triangles": 10780,
+   "bytes": 539084,
+   "mm": [
+    41.4,
+    40.1,
+    33.1
+   ],
+   "thinSpecks": 0,
+   "colors": {
+    "file": "birthday-cake.3mf",
+    "bytes": 1083910,
+    "palette": [
+     [
+      250,
+      236,
+      196
+     ],
+     [
+      240,
+      120,
+      160
+     ],
+     [
+      214,
+      36,
+      40
+     ],
+     [
+      255,
+      214,
+      60
+     ]
+    ],
+    "meanColorError": 0
+   },
+   "overhangMm2": 8,
+   "overhangShare": 0.002,
+   "supports": null
+  }
+ ],
+ "packed": [
+  "birthday-cake.stl",
+  "birthday-cake.3mf"
+ ]
+}

@@ -1,0 +1,103 @@
+{
+ "key": "pixel",
+ "game": "brief",
+ "source": "d008d4754d0825b3",
+ "items": [
+  {
+   "id": "robot",
+   "title": "Mystery Robot",
+   "blurb": "The little robot who has to put every word back.",
+   "file": "robot.stl",
+   "preview": "robot.view.stl",
+   "triangles": 1036,
+   "bytes": 51884,
+   "mm": [
+    27,
+    9,
+    33
+   ],
+   "thinSpecks": 0,
+   "colors": {
+    "file": "robot.3mf",
+    "bytes": 22040,
+    "palette": [
+     [
+      8,
+      8,
+      12
+     ],
+     [
+      215,
+      162,
+      40
+     ],
+     [
+      198,
+      206,
+      219
+     ],
+     [
+      186,
+      28,
+      24
+     ]
+    ],
+    "meanColorError": 0
+   },
+   "overhangMm2": 198,
+   "overhangShare": 0.083
+  },
+  {
+   "id": "ghost",
+   "title": "Library ghost",
+   "blurb": "A gray ghost with yellow glasses, haunting the stacks.",
+   "file": "ghost.stl",
+   "preview": "ghost.view.stl",
+   "triangles": 892,
+   "bytes": 44684,
+   "mm": [
+    21,
+    9,
+    31.5
+   ],
+   "thinSpecks": 0,
+   "colors": {
+    "file": "ghost.3mf",
+    "bytes": 12933,
+    "palette": [
+     [
+      8,
+      8,
+      12
+     ],
+     [
+      190,
+      190,
+      190
+     ],
+     [
+      235,
+      202,
+      93
+     ],
+     [
+      109,
+      109,
+      109
+     ]
+    ],
+    "meanColorError": 0
+   },
+   "overhangMm2": 36,
+   "overhangShare": 0.019
+  }
+ ],
+ "packed": [
+  "robot.stl",
+  "robot.view.stl",
+  "robot.3mf",
+  "ghost.stl",
+  "ghost.view.stl",
+  "ghost.3mf"
+ ]
+}

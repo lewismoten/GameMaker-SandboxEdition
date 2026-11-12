@@ -1,0 +1,88 @@
+{
+  "id": "embroidery-patch",
+  "key": "embroidery-patch",
+  "material": {
+    "thickness": 2.4
+  },
+  "diameter": 88,
+  "pictureMm": 92,
+  "stitches": 10571,
+  "threads": [
+    {
+      "name": "midnight navy",
+      "rgb": [
+        11,
+        16,
+        48
+      ]
+    },
+    {
+      "name": "amber gold",
+      "rgb": [
+        240,
+        160,
+        32
+      ]
+    },
+    {
+      "name": "bright cyan",
+      "rgb": [
+        40,
+        200,
+        240
+      ]
+    },
+    {
+      "name": "white",
+      "rgb": [
+        255,
+        255,
+        255
+      ]
+    },
+    {
+      "name": "ruby red",
+      "rgb": [
+        235,
+        30,
+        50
+      ]
+    }
+  ],
+  "kit": {
+    "title": "Embroidered patch",
+    "summary": "A machine-embroidered Courier patch, 88 mm (3.46 in) across, in 5 thread colors and 10,571 stitches. For a 4 x 4 in hoop. Written for DST (most machines), EXP (Melco, Bernina) and PES (Brother, Baby Lock); not yet sewn on a real machine.",
+    "previews": [
+      {
+        "file": "preview.png",
+        "alt": "Stitch simulation of the Maximus patch: a ten-point amber star on midnight navy with COURIER and MAXIMUS round the rim"
+      }
+    ],
+    "downloads": [
+      {
+        "file": "maximus-patch.dst",
+        "label": "Stitch file for most machines (DST, Tajima)"
+      },
+      {
+        "file": "maximus-patch.exp",
+        "label": "Stitch file for Melco and Bernina (EXP)"
+      },
+      {
+        "file": "maximus-patch.pes",
+        "label": "Stitch file for Brother and Baby Lock (PES)"
+      },
+      {
+        "file": "threads.txt",
+        "label": "Thread list, in sewing order (text)"
+      },
+      {
+        "file": "design.svg",
+        "label": "The design as a vector drawing (SVG)"
+      },
+      {
+        "file": "preview.png",
+        "label": "Stitch simulation (PNG)"
+      }
+    ]
+  }
+}

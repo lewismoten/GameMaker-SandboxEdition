@@ -1,0 +1,64 @@
+{
+ "version": 1,
+ "game": "first-steps",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "AU14zQNNHs0DTQM5ArkczQNNCDkCuSvNA00SzQZN"
+  },
+  {
+   "scene": 3,
+   "keys": "AU03zQNIRcgDTUvNA00rzQNNF80GTQ=="
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: Walk, Jump, Fall"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: Climb and Fall"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 7557,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 913,
+    "time": 15216.666666666471
+   },
+   {
+    "title": "Level 1: Walk, Jump, Fall",
+    "frame": 2142,
+    "time": 35700.00000000053
+   },
+   {
+    "title": "Level 2: Climb and Fall",
+    "frame": 3440,
+    "time": 57333.33333333072
+   },
+   {
+    "title": "Ending",
+    "frame": 4758,
+    "time": 79300.00000000019
+   },
+   {
+    "title": "Credits",
+    "frame": 6485,
+    "time": 108083.3333333419
+   }
+  ]
+ }
+}

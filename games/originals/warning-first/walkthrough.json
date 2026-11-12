@@ -1,0 +1,64 @@
+{
+ "version": 1,
+ "game": "warning-first",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "AU0PzTBNGc0wTRTNXk0KzVhNCs0DTRTNnQFNGc0DTQrNDE0ZzQNN"
+  },
+  {
+   "scene": 3,
+   "keys": "AU0UzTBNBc19TQ/NqQFLCssDOQK5AEsFy8ABTSPNA00FzWVNI80DTSPNA00="
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: Rumble, Then Puff"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: Flicker, Then Gone"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 10862,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 913,
+    "time": 15216.666666666471
+   },
+   {
+    "title": "Level 1: Rumble, Then Puff",
+    "frame": 2142,
+    "time": 35700.00000000053
+   },
+   {
+    "title": "Level 2: Flicker, Then Gone",
+    "frame": 4525,
+    "time": 75416.66666666573
+   },
+   {
+    "title": "Ending",
+    "frame": 7576,
+    "time": 126266.66666668052
+   },
+   {
+    "title": "Credits",
+    "frame": 9788,
+    "time": 163133.33333332994
+   }
+  ]
+ }
+}

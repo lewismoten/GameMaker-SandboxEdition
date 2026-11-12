@@ -1,0 +1,103 @@
+{
+ "key": "pixel",
+ "game": "carl",
+ "source": "5cec05d58606a585",
+ "items": [
+  {
+   "id": "carl",
+   "title": "Carl",
+   "blurb": "The fly in the room, and he is winning.",
+   "file": "carl.stl",
+   "preview": "carl.view.stl",
+   "triangles": 1256,
+   "bytes": 62884,
+   "mm": [
+    33,
+    9,
+    31.5
+   ],
+   "thinSpecks": 0,
+   "colors": {
+    "file": "carl.3mf",
+    "bytes": 28776,
+    "palette": [
+     [
+      20,
+      12,
+      28
+     ],
+     [
+      235,
+      77,
+      61
+     ],
+     [
+      247,
+      251,
+      255
+     ],
+     [
+      93,
+      130,
+      142
+     ]
+    ],
+    "meanColorError": 0
+   },
+   "overhangMm2": 207,
+   "overhangShare": 0.071
+  },
+  {
+   "id": "frog",
+   "title": "Frog",
+   "blurb": "A frog who shares the room with Carl.",
+   "file": "frog.stl",
+   "preview": "frog.view.stl",
+   "triangles": 844,
+   "bytes": 42284,
+   "mm": [
+    30,
+    9,
+    27
+   ],
+   "thinSpecks": 0,
+   "colors": {
+    "file": "frog.3mf",
+    "bytes": 26271,
+    "palette": [
+     [
+      20,
+      12,
+      28
+     ],
+     [
+      255,
+      251,
+      198
+     ],
+     [
+      77,
+      101,
+      65
+     ],
+     [
+      53,
+      73,
+      49
+     ]
+    ],
+    "meanColorError": 0
+   },
+   "overhangMm2": 36,
+   "overhangShare": 0.015
+  }
+ ],
+ "packed": [
+  "carl.stl",
+  "carl.view.stl",
+  "carl.3mf",
+  "frog.stl",
+  "frog.view.stl",
+  "frog.3mf"
+ ]
+}

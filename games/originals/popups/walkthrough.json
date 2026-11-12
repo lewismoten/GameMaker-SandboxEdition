@@ -1,0 +1,64 @@
+{
+ "version": 1,
+ "game": "popups",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "AU0ZzStNFM0DTQ/NK00UzSRND80DTQ/NA00UzStN"
+  },
+  {
+   "scene": 3,
+   "keys": "AU0ZzStNFM0DTQ/NIU0UzStNHs3LAU0ZzStNFM0kTQ=="
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: A Number Appears"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: Its Own Picture"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 8803,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 913,
+    "time": 15216.666666666471
+   },
+   {
+    "title": "Level 1: A Number Appears",
+    "frame": 1661,
+    "time": 27683.333333333918
+   },
+   {
+    "title": "Level 2: Its Own Picture",
+    "frame": 3212,
+    "time": 53533.33333333127
+   },
+   {
+    "title": "Ending",
+    "frame": 5522,
+    "time": 92033.33333333723
+   },
+   {
+    "title": "Credits",
+    "frame": 7729,
+    "time": 128816.66666668127
+   }
+  ]
+ }
+}

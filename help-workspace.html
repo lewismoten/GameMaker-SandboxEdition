@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#000080" />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="icon" href="./icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
+    <title>Working on a game · Guide · Game-Maker: Sandbox Edition</title>
+    <script>
+      // Before the first paint: the readable text in #app is for crawlers and browsers
+      // without JavaScript, so keep it out of sight while the app starts, on the
+      // background of the interface about to open (the same choice main.ts makes).
+      (function (d, h) {
+        var ui = 'desk';
+        try {
+          ui = /^#\/?(\?|$)|^#\/(p|game|help|cast|credits|privacy|achievements|mac|windows|linux|magazine|library|programmers-guide|art-courses|pi-remote)(\/|\?|$)/.test(h) || (!/^#\/desk(\?|$)/.test(h) && localStorage.getItem('gm-ui') === 'modern') ? 'modern' : 'desk';
+        } catch (e) {}
+        var t = 'dark';
+        try {
+          t = /^(dark|light|auto)$/.test(localStorage.getItem('gm-theme')) ? localStorage.getItem('gm-theme') : 'dark';
+        } catch (e) {}
+        d.setAttribute('data-theme', t);
+        d.className += ' js';
+        d.setAttribute('data-ui', ui);
+      })(document.documentElement, location.hash);
+    </script>
+    <style>
+      html.js .seo-static { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+      html.js body { margin: 0; }
+      html[data-ui='desk'] body { background: #465063; }
+      html[data-ui='modern'] body { background: #d5d9e2; }
+      html[data-ui='modern'][data-theme='dark'] body { background: #11131a; }
+      @media (prefers-color-scheme: dark) { html[data-ui='modern'][data-theme='auto'] body { background: #11131a; } }
+    </style>
+    <!--seo:head--><meta name="description" content="Opening a game lists every kind of file on the left, even the ones you have none of yet, and shows the selected file’s editor on the right. Changes are…" />
+    <link rel="canonical" href="https://lewismoten.github.io/GameMaker-SandboxEdition/help-workspace.html" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Game-Maker: Sandbox Edition" />
+    <meta property="og:title" content="Working on a game · Guide · Game-Maker: Sandbox Edition" />
+    <meta property="og:description" content="Opening a game lists every kind of file on the left, even the ones you have none of yet, and shows the selected file’s editor on the right. Changes are…" />
+    <meta property="og:url" content="https://lewismoten.github.io/GameMaker-SandboxEdition/help-workspace.html" />
+    <meta property="og:image" content="https://lewismoten.github.io/GameMaker-SandboxEdition/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="A mid-90s computer desk with Game-Maker: Sandbox Edition on the monitor, game boxes on the shelf and a disk box." />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Working on a game · Guide · Game-Maker: Sandbox Edition" />
+    <meta name="twitter:description" content="Opening a game lists every kind of file on the left, even the ones you have none of yet, and shows the selected file’s editor on the right. Changes are…" />
+    <meta name="twitter:image" content="https://lewismoten.github.io/GameMaker-SandboxEdition/og-image.png" />
+    <meta name="twitter:image:alt" content="A mid-90s computer desk with Game-Maker: Sandbox Edition on the monitor, game boxes on the shelf and a disk box." />
+    <script>if(!location.hash)history.replaceState(null,'',"#/help/workspace")</script>
+    <style>
+      .seo-static { box-sizing: border-box; min-height: 100vh; margin: 0; padding: 24px max(16px, calc((100% - 46rem) / 2)) 48px; background: #12122a; font: 16px/1.5 system-ui, sans-serif; color: #e8e8f0; }
+      .seo-static a { color: #9cf; }
+      .seo-static h1 { font: bold 1.8rem monospace; letter-spacing: 2px; color: #ff5; margin: 0 0 4px; }
+      .seo-static h2 { font: bold 1.15rem monospace; color: #5f5; margin: 24px 0 4px; }
+      .seo-static small { color: #aab; }
+      .seo-static ul { padding-left: 1.2rem; }
+      .seo-static .seo-note { color: #aab; font-size: 0.9rem; }
+    </style><!--/seo:head-->
+    <script type="module" crossorigin src="./assets/main-BB4EUk5_.js"></script>
+    <link rel="modulepreload" crossorigin href="./assets/modulepreload-polyfill-B5Qt9EMX.js">
+    <link rel="modulepreload" crossorigin href="./assets/watch-Ci1HG5Rl.js">
+    <link rel="modulepreload" crossorigin href="./assets/tourButton-DXjuNPQS.js">
+    <link rel="stylesheet" crossorigin href="./assets/tourButton-CEpNth5l.css">
+    <link rel="stylesheet" crossorigin href="./assets/main-BcVD1vCS.css">
+  </head>
+  <body>
+    <div id="app">
+      <!--seo:body--><main class="seo-static">
+      <p><a href="./#/help">Game-Maker: Sandbox Edition Guide</a></p>
+      <h1>Working on a game</h1>
+      <p>Opening a game lists every kind of file on the left, even the ones you have none of
+    yet, and shows the selected file’s editor on the right. Changes are saved as you go
+    (<kbd>Ctrl</kbd>+<kbd>S</kbd> saves at once). A game opened with <b>Look inside</b> is
+    read-only: <b>✎ Edit a copy</b> above the editor makes a copy you can change.</p>
+    <ul>
+      <li><b>▶ Play Game</b> plays the game from its title screen. <b>▶ Play Level</b> plays
+    from a level instead: its <b>▾</b> lists every way the game’s links bring the player into a
+    level (“Level 2 at 40,12, from Level 1’s exit”), and the button plays the last one you
+    picked, or the level whose map is open. It starts right in the level; the title and menu
+    come after play ends.</li>
+    <li>A map shows its links as markers: cyan ways in, where the hero arrives (a star for
+    where the game starts), and gold exits, where touching a block leads on (a flag for Game
+    won). Drag one or nudge it with the arrow keys to move it; click it to see the map or
+    screen at its other end and change or delete it. <b>＋ Exit</b> adds one.</li>
+      <li>The <b>+</b> beside a kind adds one: a new file, one from the <b>library</b> (the free
+      sample games on the CD, shown as pictures), one from your computer, or one made by a tool
+      (see <a href="#/help/tools">Making pictures, sounds and music</a>). <b>+ Add a file…</b>
+      shows every kind as a grid of cards.</li>
+      <li>✎ edits a file; the red 🗑 deletes it. The <code>.GAM</code> file can’t be deleted.</li>
+      <li>Wherever a file is chosen (a scene’s map, a sound’s sample, a palette to view with),
+      you see its picture; click it to choose another, or ✎ to edit it.</li>
+      <li><b>+ Add level scene</b> starts a level with the last level’s palette, blocks,
+      monsters and hero, on a fresh map of its own.</li>
+      <li><b>↶ Undo</b> and <b>↷ Redo</b> (<kbd>Ctrl</kbd>+<kbd>Z</kbd> and
+      <kbd>Ctrl</kbd>+<kbd>Y</kbd>) take back changes in the editor you are in. <kbd>?</kbd> lists
+      the keys the open editor knows, and <kbd>Ctrl</kbd>+<kbd>P</kbd> finds a file or scene by
+      name.</li>
+      <li><b>Download</b> saves the whole game to play elsewhere (see
+      <a href="#/help/export">Sharing your game</a>).</li>
+      <li>A game started as <b>▶ Ready to play</b> has <b>🎓 First steps</b> beside Play Game: ten
+      small jobs that make the starter your own (a color, a block, the level, the hero, a monster, a
+      sound, a way to win…). Each ticks itself when you do it, and opens the file to do it in.</li>
+    </ul>
+    <h3>Checking a level</h3>
+    <p>In a map, <b>🩺</b> opens the <b>Level check</b>: a bot plays the scene, tries every move from
+    every place it can stand, and shows where it went and what players would mind (traps, dead
+    ends, prizes in view but out of reach, and more), each with why it matters and the part of The
+    Ultimate Owner’s Guide about it. Many have a one-click ✨ fix. <b>▶ Play and record</b> adds your own play to
+    the picture. On the start scene of the <code>.GAM</code>, <b>☑ Before you upload…</b> is a
+    checklist that ticks itself where the check can tell, and <b>🤖 Make a walkthrough…</b> has
+    the bot play the whole game, to watch or save as an MP4.</p>
+    <h3>Walkthrough</h3>
+    <p>Every game’s panel on the Games page has a <b>Walkthrough</b> button. If the game comes with
+    a walkthrough, watch it there. You can also make your own: the bot plays each scene on the real
+    engine, and if it gets stuck the walkthrough still plays as far as it got, ending with a card
+    that says where it stopped. Press <b>🎮 Play it myself</b> on any scene to play it and keep
+    your play, choose <b>Mine</b> or <b>Bot</b> for that scene, and press <b>🤖 Make it again</b>
+    to go on from there. Watch it to save it as an MP4. For a game from the CD, what you make is
+    kept in this browser, never in the game’s files; <b>Edit a copy</b> to keep it with a game of
+    yours.</p>
+    <h3>The DOS player and cards</h3>
+    <p>The <code>.GAM</code> also has <b>▤ DOS player</b>, to change the stand-alone DOS player’s
+    own words, colors, frames and timings screen by screen (drag them on its preview to move them)
+    and the extensions of its files, as 1990s authors did with a hex editor. <b>📝 Instruction
+    card…</b> and <b>🪧 Level card…</b> write the game’s instructions, or a level’s name, goal and
+    hint, from a few lines of yours and the game’s own keys.</p>
+    <h3>Your own AI</h3>
+    <p><b>✦</b>, beside the open file’s name, opens the <b>Assistant</b>: an AI you set up yourself
+    (<b>⚙ Settings → AI setup…</b>, with Ollama on your computer or an OpenAI key) that can look
+    at the game, change it, run the Level check and suggest what to do next. Every change can be
+    undone, and you can have it ask first or only look. An AI app on your computer that speaks
+    MCP can do the same: choose <b>Use an AI tool on this computer instead (MCP)…</b> in the
+    Assistant.</p>
+      <p class="seo-note"><a href="./#/help/workspace">Open this in the Guide</a> · <a href="./">Game-Maker: Sandbox Edition</a></p>
+    </main><!--/seo:body-->
+    </div>
+  </body>
+</html>

@@ -1,0 +1,136 @@
+{
+ "key": "69c692c8538abd0e",
+ "game": "tuneup",
+ "items": [
+  {
+   "id": "rubber-chicken",
+   "title": "Sir Reginald III",
+   "blurb": "The rubber chicken who does the fiddly bits, limp on his belly with his legs trailing and his beak open mid-squawk.",
+   "file": "rubber-chicken.stl",
+   "triangles": 4438,
+   "bytes": 221984,
+   "mm": [
+    26.4,
+    63.7,
+    25.1
+   ],
+   "thinSpecks": 0,
+   "colors": {
+    "file": "rubber-chicken.3mf",
+    "bytes": 93382,
+    "palette": [
+     [
+      250,
+      232,
+      112
+     ],
+     [
+      250,
+      140,
+      30
+     ],
+     [
+      226,
+      36,
+      48
+     ],
+     [
+      30,
+      24,
+      30
+     ]
+    ],
+    "meanColorError": 0
+   },
+   "overhangMm2": 7,
+   "overhangShare": 0.003,
+   "supports": null
+  },
+  {
+   "id": "chez-plate",
+   "title": "THE CHEZ plate",
+   "blurb": "A license plate for the keys: THE CHEZ in tomato red, ready to lead the parade.",
+   "file": "chez-plate.stl",
+   "triangles": 4744,
+   "bytes": 237284,
+   "mm": [
+    60.6,
+    22,
+    3.6
+   ],
+   "thinSpecks": 0,
+   "colors": {
+    "file": "chez-plate.3mf",
+    "bytes": 227251,
+    "palette": [
+     [
+      246,
+      244,
+      234
+     ],
+     [
+      48,
+      48,
+      56
+     ],
+     [
+      226,
+      60,
+      40
+     ]
+    ],
+    "meanColorError": 0
+   },
+   "overhangMm2": 0,
+   "overhangShare": 0,
+   "supports": null
+  },
+  {
+   "id": "club-pin",
+   "title": "Clown Club pin",
+   "blurb": "The Clown Club badge, the O of CLOWN a red rubber nose. A pocket in the back takes a pin.",
+   "file": "club-pin.stl",
+   "triangles": 5996,
+   "bytes": 299884,
+   "mm": [
+    40,
+    40,
+    3.8
+   ],
+   "thinSpecks": 0,
+   "colors": {
+    "file": "club-pin.3mf",
+    "bytes": 415619,
+    "palette": [
+     [
+      255,
+      246,
+      224
+     ],
+     [
+      26,
+      16,
+      48
+     ],
+     [
+      214,
+      40,
+      42
+     ]
+    ],
+    "meanColorError": 0
+   },
+   "overhangMm2": 1,
+   "overhangShare": 0,
+   "supports": null
+  }
+ ],
+ "packed": [
+  "rubber-chicken.stl",
+  "rubber-chicken.3mf",
+  "chez-plate.stl",
+  "chez-plate.3mf",
+  "club-pin.stl",
+  "club-pin.3mf"
+ ]
+}

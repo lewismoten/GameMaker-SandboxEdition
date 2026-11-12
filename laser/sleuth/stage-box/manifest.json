@@ -1,0 +1,510 @@
+{
+  "kind": "kit",
+  "id": "stage-box",
+  "source": "a3744d8e4ee2ccff66cffe492fe2d38f5b121361",
+  "game": "sleuth",
+  "title": "Final Curtain: Stage Box",
+  "blurb": "A laser-cut puzzle box with an etched proscenium front. A prop dagger and two curtains, worked in the playbill order (raven, rose, moon), release the trap-room drawer.",
+  "material": {
+    "thickness": 3,
+    "description": "Proofgrade plywood or MDF, 3 mm (1/8 in)",
+    "kerf": 0.2,
+    "bed": {
+      "w": 495,
+      "h": 279
+    },
+    "stock": "12x12",
+    "size": {
+      "w": 304.8,
+      "h": 304.8
+    },
+    "margin": {
+      "x": 6.5,
+      "y": 12.9
+    }
+  },
+  "fitting": [
+    {
+      "stock": "6x12",
+      "sheets": 4,
+      "materialMm2": 185806.08000000002,
+      "materialIn2": 288.00000000000006,
+      "label": "fits 4 sheets of 6x12"
+    },
+    {
+      "stock": "8x12",
+      "sheets": 4,
+      "materialMm2": 247741.44,
+      "materialIn2": 384,
+      "label": "fits 4 sheets of 8x12"
+    },
+    {
+      "stock": "12x12",
+      "sheets": 2,
+      "materialMm2": 185806.08000000002,
+      "materialIn2": 288.00000000000006,
+      "label": "fits 2 sheets of 12x12"
+    },
+    {
+      "stock": "12x20",
+      "sheets": 2,
+      "materialMm2": 309676.8,
+      "materialIn2": 480,
+      "label": "fits 2 sheets of 12x20"
+    }
+  ],
+  "fit": "fits 2 sheets of 12x12",
+  "sheets": [
+    {
+      "svg": "sheet-1.svg",
+      "preview": "sheet-1.png",
+      "title": "Sheet 1: 12x12 inch stock",
+      "w": 304.8,
+      "h": 304.8,
+      "parts": [
+        {
+          "name": "P",
+          "x": 6.65,
+          "y": 13.05,
+          "w": 126,
+          "h": 120,
+          "turn": 0
+        },
+        {
+          "name": "COMB",
+          "x": 57.949999999999996,
+          "y": 34.350190911103255,
+          "w": 22,
+          "h": 31,
+          "turn": 0
+        },
+        {
+          "name": "PEG",
+          "x": 84.95000000000002,
+          "y": 42.350190911103255,
+          "w": 6,
+          "h": 5,
+          "turn": 0
+        },
+        {
+          "name": "PEG",
+          "x": 84.95000000000002,
+          "y": 52.350190911103255,
+          "w": 6,
+          "h": 5,
+          "turn": 0
+        },
+        {
+          "name": "PEG",
+          "x": 84.95000000000002,
+          "y": 62.350190911103255,
+          "w": 6,
+          "h": 5,
+          "turn": 0
+        },
+        {
+          "name": "POST",
+          "x": 48.949999999999996,
+          "y": 41.350190911103255,
+          "w": 4,
+          "h": 4,
+          "turn": 0
+        },
+        {
+          "name": "K",
+          "x": 136.95000000000002,
+          "y": 13.05,
+          "w": 126,
+          "h": 120,
+          "turn": 0
+        },
+        {
+          "name": "T",
+          "x": 6.65,
+          "y": 137.35,
+          "w": 126,
+          "h": 96,
+          "turn": 0
+        },
+        {
+          "name": "B",
+          "x": 136.95000000000002,
+          "y": 137.35,
+          "w": 126,
+          "h": 96,
+          "turn": 0
+        },
+        {
+          "name": "DF",
+          "x": 267.25,
+          "y": 13.05,
+          "w": 22,
+          "h": 100,
+          "turn": 90
+        },
+        {
+          "name": "DK",
+          "x": 267.25,
+          "y": 117.35000000000001,
+          "w": 22,
+          "h": 100,
+          "turn": 90
+        },
+        {
+          "name": "C",
+          "x": 6.65,
+          "y": 237.65,
+          "w": 48,
+          "h": 38,
+          "turn": 0
+        },
+        {
+          "name": "DL",
+          "x": 267.25,
+          "y": 221.65,
+          "w": 22,
+          "h": 65,
+          "turn": 90
+        },
+        {
+          "name": "DR",
+          "x": 58.949999999999996,
+          "y": 237.65,
+          "w": 65,
+          "h": 22,
+          "turn": 0
+        },
+        {
+          "name": "ARM",
+          "x": 128.28660254037842,
+          "y": 237.68660254037843,
+          "w": 29.392304845413264,
+          "h": 38.908965343808674,
+          "turn": 0
+        },
+        {
+          "name": "DAGGER",
+          "x": 58.97945755775256,
+          "y": 263.96336172830286,
+          "w": 39.605117766515306,
+          "h": 27.593266739736602,
+          "turn": 90
+        },
+        {
+          "name": "PIN",
+          "x": 102.88631664653292,
+          "y": 263.95,
+          "w": 10,
+          "h": 10,
+          "turn": 0
+        },
+        {
+          "name": "PEG",
+          "x": 117.18631664653292,
+          "y": 263.95,
+          "w": 6,
+          "h": 5,
+          "turn": 0
+        }
+      ]
+    },
+    {
+      "svg": "sheet-2.svg",
+      "preview": "sheet-2.png",
+      "title": "Sheet 2: 12x12 inch stock",
+      "w": 304.8,
+      "h": 304.8,
+      "parts": [
+        {
+          "name": "L",
+          "x": 6.65,
+          "y": 13.05,
+          "w": 96,
+          "h": 120,
+          "turn": 0
+        },
+        {
+          "name": "R",
+          "x": 6.65,
+          "y": 137.35,
+          "w": 96,
+          "h": 120,
+          "turn": 0
+        },
+        {
+          "name": "FLOOR",
+          "x": 106.95,
+          "y": 13.05,
+          "w": 126,
+          "h": 90,
+          "turn": 0
+        },
+        {
+          "name": "W",
+          "x": 106.95,
+          "y": 107.35000000000001,
+          "w": 126,
+          "h": 84,
+          "turn": 0
+        },
+        {
+          "name": "DB",
+          "x": 106.95,
+          "y": 195.65,
+          "w": 100,
+          "h": 65,
+          "turn": 0
+        },
+        {
+          "name": "D1",
+          "x": 237.25000000000003,
+          "y": 13.05,
+          "w": 60,
+          "h": 107,
+          "turn": 0
+        },
+        {
+          "name": "D2",
+          "x": 237.25000000000003,
+          "y": 124.35000000000001,
+          "w": 60,
+          "h": 107,
+          "turn": 0
+        }
+      ]
+    }
+  ],
+  "assembly": "assembly.svg",
+  "parts": [
+    {
+      "name": "P",
+      "qty": 1,
+      "note": "front: proscenium arch, apron, dagger pivot hole",
+      "w": 126,
+      "h": 120
+    },
+    {
+      "name": "K",
+      "qty": 1,
+      "note": "back: drawer opening (open to the base), backstage engraving",
+      "w": 126,
+      "h": 120
+    },
+    {
+      "name": "L",
+      "qty": 1,
+      "note": "left wall: slots for the floor, ceiling and backdrop tabs",
+      "w": 96,
+      "h": 120
+    },
+    {
+      "name": "R",
+      "qty": 1,
+      "note": "right wall: slots for the floor, ceiling and backdrop tabs",
+      "w": 96,
+      "h": 120
+    },
+    {
+      "name": "T",
+      "qty": 1,
+      "note": "lid: two slots for the curtain pulls",
+      "w": 126,
+      "h": 96
+    },
+    {
+      "name": "B",
+      "qty": 1,
+      "note": "base",
+      "w": 126,
+      "h": 96
+    },
+    {
+      "name": "FLOOR",
+      "qty": 1,
+      "note": "stage floor: three skirt slots",
+      "w": 126,
+      "h": 90
+    },
+    {
+      "name": "W",
+      "qty": 1,
+      "note": "backdrop behind the curtains",
+      "w": 126,
+      "h": 84
+    },
+    {
+      "name": "D1",
+      "qty": 1,
+      "note": "front curtain",
+      "w": 60,
+      "h": 107
+    },
+    {
+      "name": "D2",
+      "qty": 1,
+      "note": "rear curtain",
+      "w": 60,
+      "h": 107
+    },
+    {
+      "name": "C",
+      "qty": 1,
+      "note": "dagger bar (the dagger's post rides in its slot)",
+      "w": 48,
+      "h": 38
+    },
+    {
+      "name": "PEG",
+      "qty": 4,
+      "note": "peg blocks: glue two on top of each other (6 mm) to make each of the two pegs",
+      "w": 6,
+      "h": 5
+    },
+    {
+      "name": "PIN",
+      "qty": 1,
+      "note": "pivot pin: sits in the front panel hole, dagger glued to its front, arm to its back",
+      "w": 10,
+      "h": 10
+    },
+    {
+      "name": "POST",
+      "qty": 1,
+      "note": "round post at the arm tip, riding in the slot in C",
+      "w": 4,
+      "h": 4
+    },
+    {
+      "name": "COMB",
+      "qty": 1,
+      "note": "the drawer's comb: three fingers lie in the gaps in front of the three skirts",
+      "w": 22,
+      "h": 31
+    },
+    {
+      "name": "DAGGER",
+      "qty": 1,
+      "note": "prop dagger lever (outside the front panel, glued to the pin)",
+      "w": 27.593266739736602,
+      "h": 39.605117766515306
+    },
+    {
+      "name": "ARM",
+      "qty": 1,
+      "note": "lever arm (inside, behind the front panel, glued to the pin)",
+      "w": 29.392304845413264,
+      "h": 38.908965343808674
+    },
+    {
+      "name": "DF",
+      "qty": 1,
+      "note": "drawer front wall (the comb sits in its notch)",
+      "w": 100,
+      "h": 22
+    },
+    {
+      "name": "DK",
+      "qty": 1,
+      "note": "drawer back: the trap-room pull",
+      "w": 100,
+      "h": 22
+    },
+    {
+      "name": "DL",
+      "qty": 1,
+      "note": "drawer side wall",
+      "w": 65,
+      "h": 22
+    },
+    {
+      "name": "DR",
+      "qty": 1,
+      "note": "drawer side wall",
+      "w": 65,
+      "h": 22
+    },
+    {
+      "name": "DB",
+      "qty": 1,
+      "note": "drawer floor",
+      "w": 100,
+      "h": 65
+    }
+  ],
+  "mechanism": {
+    "reach": 26.3,
+    "clear": 3.2,
+    "overlap": 3,
+    "unlockedReachable": true,
+    "unlockedAt": [
+      3.25,
+      3.25,
+      3.25
+    ],
+    "orderBroken": false,
+    "leverTravel": 25.999999999999996,
+    "leverEnough": true,
+    "postSlot": {
+      "w": 4.4,
+      "h": 7.883339501604594
+    },
+    "states": 204156
+  },
+  "clearance": {
+    "P": [],
+    "K": [],
+    "L": [],
+    "R": [],
+    "T": [],
+    "B": [],
+    "FLOOR": [],
+    "W": [],
+    "D1": [],
+    "D2": [],
+    "C": [],
+    "PEG": [],
+    "PIN": [],
+    "POST": [],
+    "COMB": [],
+    "DAGGER": [],
+    "ARM": [],
+    "DF": [],
+    "DK": [],
+    "DL": [],
+    "DR": [],
+    "DB": []
+  },
+  "readme": "README.md",
+  "kit": {
+    "title": "Final Curtain: Stage Box",
+    "summary": "A laser-cut puzzle box for a Glowforge, 3 mm (1/8 in) plywood or MDF. Cut the sheets, glue it up, and work the dagger and curtains in the playbill order. Fits 2 sheets of 12x12 in.",
+    "previews": [
+      {
+        "file": "sheet-1.png",
+        "alt": "Sheet 1: 12x12 inch stock"
+      },
+      {
+        "file": "sheet-2.png",
+        "alt": "Sheet 2: 12x12 inch stock"
+      }
+    ],
+    "downloads": [
+      {
+        "file": "sheet-1.svg",
+        "label": "Sheet 1: 12x12 inch stock (SVG)"
+      },
+      {
+        "file": "sheet-2.svg",
+        "label": "Sheet 2: 12x12 inch stock (SVG)"
+      },
+      {
+        "file": "assembly.svg",
+        "label": "Assembly diagram (SVG)"
+      },
+      {
+        "file": "README.md",
+        "label": "Build notes"
+      }
+    ]
+  }
+}

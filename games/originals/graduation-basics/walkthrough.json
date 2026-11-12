@@ -1,0 +1,64 @@
+{
+ "version": 1,
+ "game": "graduation-basics",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "AU08zRtNBc0DSCfIA00SzQNQJ9ADTQrNA00UzRtNFM0DTQ/NA00UzRtLAMsDTQ3NAzkCuQBNCM0QTQnNA00ZzRtNGc0DTQrNA00PzQNN"
+  },
+  {
+   "scene": 3,
+   "keys": "AU0ezQNNKM0DTTzNA00yzV1N"
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "The Front Walk"
+  },
+  {
+   "scene": 3,
+   "title": "The Aisle"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 7819,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 922,
+    "time": 15366.666666666466
+   },
+   {
+    "title": "The Front Walk",
+    "frame": 1670,
+    "time": 27833.33333333393
+   },
+   {
+    "title": "The Aisle",
+    "frame": 3722,
+    "time": 62033.33333333003
+   },
+   {
+    "title": "Ending",
+    "frame": 5020,
+    "time": 83666.66666666813
+   },
+   {
+    "title": "Credits",
+    "frame": 6747,
+    "time": 112450.00000000984
+   }
+  ]
+ }
+}

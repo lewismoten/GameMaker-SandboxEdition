@@ -1,0 +1,103 @@
+{
+ "key": "pixel",
+ "game": "risi",
+ "source": "04a9160b15ca40eb",
+ "items": [
+  {
+   "id": "marcus",
+   "title": "Marcus Iocundus",
+   "blurb": "The comic poet of Rome.",
+   "file": "marcus.stl",
+   "preview": "marcus.view.stl",
+   "triangles": 1088,
+   "bytes": 54484,
+   "mm": [
+    27,
+    9,
+    33
+   ],
+   "thinSpecks": 0,
+   "colors": {
+    "file": "marcus.3mf",
+    "bytes": 26485,
+    "palette": [
+     [
+      28,
+      12,
+      4
+     ],
+     [
+      255,
+      231,
+      182
+     ],
+     [
+      170,
+      93,
+      53
+     ],
+     [
+      134,
+      40,
+      89
+     ]
+    ],
+    "meanColorError": 0
+   },
+   "overhangMm2": 81,
+   "overhangShare": 0.034
+  },
+  {
+   "id": "rufus",
+   "title": "Rufus",
+   "blurb": "Marcus’s dog.",
+   "file": "rufus.stl",
+   "preview": "rufus.view.stl",
+   "triangles": 1174,
+   "bytes": 58784,
+   "mm": [
+    31.5,
+    9,
+    30
+   ],
+   "thinSpecks": 0,
+   "colors": {
+    "file": "rufus.3mf",
+    "bytes": 22114,
+    "palette": [
+     [
+      28,
+      12,
+      4
+     ],
+     [
+      166,
+      85,
+      49
+     ],
+     [
+      223,
+      198,
+      109
+     ],
+     [
+      69,
+      32,
+      12
+     ]
+    ],
+    "meanColorError": 0
+   },
+   "overhangMm2": 72,
+   "overhangShare": 0.031
+  }
+ ],
+ "packed": [
+  "marcus.stl",
+  "marcus.view.stl",
+  "marcus.3mf",
+  "rufus.stl",
+  "rufus.view.stl",
+  "rufus.3mf"
+ ]
+}

@@ -1,0 +1,1 @@
+const e=/[\u0000-\u0008\u000b\u000c\u000e-\u001f￾￿]|[\ud800-\udbff](?![\udc00-\udfff])|(?<![\ud800-\udbff])[\udc00-\udfff]/g;function f(u){return u.replace(e,"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}function t(u){return f(u).replace(/"/g,"&quot;")}export{t as a,f as x};

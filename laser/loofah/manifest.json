@@ -1,0 +1,102 @@
+{
+ "key": "laser-nickel",
+ "game": "loofah",
+ "title": "Cleanse Me, O Loofah, But Leave My Soul",
+ "concept": "A scrub token: the loofah beside the friendly bath monster, \"CLEANSE ME\".",
+ "source": "963069d667fc41fd",
+ "mm": {
+  "coin": 38.1,
+  "sheet": [
+   270,
+   150
+  ],
+  "jigHole": 38,
+  "jigAt": [
+   235,
+   75
+  ],
+  "pitch": 44,
+  "wood": 3
+ },
+ "colors": {
+  "cut": "#ff0000",
+  "score": "#ff00ff",
+  "engrave": "#0000ff"
+ },
+ "series": {
+  "no": 8,
+  "of": 26,
+  "letter": "N",
+  "message": "BEKINDANDKEEPPLAYINGFRIEND"
+ },
+ "holes": [],
+ "clearance": {
+  "front": [],
+  "back": []
+ },
+ "reach": {
+  "front": 15.07,
+  "back": 15.07
+ },
+ "texts": {
+  "front": [
+   {
+    "text": "CLEANSE ME",
+    "capMm": 2.52
+   },
+   {
+    "text": "O LOOFAH",
+    "capMm": 2.52
+   }
+  ],
+  "back": [
+   {
+    "text": "GOOD FOR",
+    "capMm": 2.52
+   },
+   {
+    "text": "SANDBOX SOFTWARE",
+    "capMm": 2.5
+   },
+   {
+    "text": "ONE SCRUB",
+    "capMm": 2.52
+   },
+   {
+    "text": "LEAVING",
+    "capMm": 2.52
+   },
+   {
+    "text": "MY SOUL",
+    "capMm": 2.52
+   },
+   {
+    "text": "NO.08/26",
+    "capMm": 2.5
+   },
+   {
+    "text": "1994 SM",
+    "capMm": 2.5
+   },
+   {
+    "text": "sandscript N",
+    "capMm": 2.52
+   }
+  ]
+ },
+ "paths": {
+  "front": 341,
+  "back": 429,
+  "sheet": 4094
+ },
+ "files": [
+  "front.svg",
+  "back.svg",
+  "sheet.svg",
+  "sheet-back.svg",
+  "front.png",
+  "back.png",
+  "sheet.png",
+  "manifest.json"
+ ]
+}

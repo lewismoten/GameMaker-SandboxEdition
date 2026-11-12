@@ -1,0 +1,103 @@
+{
+ "key": "pixel",
+ "game": "sweats",
+ "source": "9a735a0ce27d4d11",
+ "items": [
+  {
+   "id": "will",
+   "title": "Will",
+   "blurb": "Open-mic poet in a starched ruff.",
+   "file": "will.stl",
+   "preview": "will.view.stl",
+   "triangles": 906,
+   "bytes": 45384,
+   "mm": [
+    28.5,
+    9,
+    33
+   ],
+   "thinSpecks": 0,
+   "colors": {
+    "file": "will.3mf",
+    "bytes": 26867,
+    "palette": [
+     [
+      16,
+      8,
+      28
+     ],
+     [
+      182,
+      174,
+      223
+     ],
+     [
+      109,
+      28,
+      109
+     ],
+     [
+      154,
+      97,
+      101
+     ]
+    ],
+    "meanColorError": 0
+   },
+   "overhangMm2": 54,
+   "overhangShare": 0.022
+  },
+  {
+   "id": "goose",
+   "title": "Goose",
+   "blurb": "A goose out on errands.",
+   "file": "goose.stl",
+   "preview": "goose.view.stl",
+   "triangles": 1148,
+   "bytes": 57484,
+   "mm": [
+    33,
+    9,
+    31.5
+   ],
+   "thinSpecks": 0,
+   "colors": {
+    "file": "goose.3mf",
+    "bytes": 25205,
+    "palette": [
+     [
+      16,
+      8,
+      28
+     ],
+     [
+      255,
+      251,
+      235
+     ],
+     [
+      158,
+      146,
+      194
+     ],
+     [
+      77,
+      28,
+      45
+     ]
+    ],
+    "meanColorError": 0
+   },
+   "overhangMm2": 99,
+   "overhangShare": 0.04
+  }
+ ],
+ "packed": [
+  "will.stl",
+  "will.view.stl",
+  "will.3mf",
+  "goose.stl",
+  "goose.view.stl",
+  "goose.3mf"
+ ]
+}

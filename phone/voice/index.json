@@ -1,0 +1,3618 @@
+{
+  "dad-1-1": {
+    "chapter": "dad",
+    "where": "Dad calls back after the page",
+    "text": "Hello?",
+    "seconds": 1.58,
+    "hash": "0da72197e898",
+    "voice": "24a011153f36"
+  },
+  "dad-1-2": {
+    "chapter": "dad",
+    "where": "Dad calls back after the page",
+    "text": "Did somebody page me?",
+    "seconds": 2.51,
+    "hash": "f482074e2753",
+    "voice": "24a011153f36"
+  },
+  "dad-1-3": {
+    "chapter": "dad",
+    "where": "Dad calls back after the page",
+    "text": "I was up to my elbows in a busted boiler across town, and I had to go find a pay phone!",
+    "seconds": 8.58,
+    "hash": "597977aeb3fb",
+    "voice": "24a011153f36"
+  },
+  "dad-1-4": {
+    "chapter": "dad",
+    "where": "Dad calls back after the page",
+    "text": "Is anybody bleeding?",
+    "seconds": 2.65,
+    "hash": "92bfc19a2896",
+    "voice": "24a011153f36"
+  },
+  "dad-1-5": {
+    "chapter": "dad",
+    "where": "Dad calls back after the page",
+    "text": "Is the house on fire?",
+    "seconds": 2.73,
+    "hash": "1461a93224c1",
+    "voice": "24a011153f36"
+  },
+  "dad-2-1": {
+    "chapter": "dad",
+    "where": "Dad calls back after the page",
+    "text": "No?",
+    "seconds": 0.65,
+    "hash": "2b5f13fb5e90",
+    "voice": "24a011153f36"
+  },
+  "dad-2-2": {
+    "chapter": "dad",
+    "where": "Dad calls back after the page",
+    "text": "Then why are you paging me?",
+    "seconds": 3.65,
+    "hash": "2442d8ddcbcf",
+    "voice": "24a011153f36"
+  },
+  "dad-2-3": {
+    "chapter": "dad",
+    "where": "Dad calls back after the page",
+    "text": "The pager is for EMERGENCIES ONLY.",
+    "seconds": 4.15,
+    "hash": "9f35200f4318",
+    "voice": "24a011153f36"
+  },
+  "dad-2-4": {
+    "chapter": "dad",
+    "where": "Dad calls back after the page",
+    "text": "We are going to have a long talk when I get home.",
+    "seconds": 4.37,
+    "hash": "c45799357b60",
+    "voice": "24a011153f36"
+  },
+  "dad-2-5": {
+    "chapter": "dad",
+    "where": "Dad calls back after the page",
+    "text": "Now go do your homework!",
+    "seconds": 3.51,
+    "hash": "361c246814f9",
+    "voice": "24a011153f36"
+  },
+  "giant-away-1": {
+    "chapter": "giant",
+    "where": "Hint line: no live counselors",
+    "text": "Our live game counselors are not available at this time.",
+    "seconds": 4.01,
+    "hash": "d8d9354bc79c",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-away-2": {
+    "chapter": "giant",
+    "where": "Hint line: no live counselors",
+    "text": "Please use our automated hint system, which is open all day and all night.",
+    "seconds": 5.17,
+    "hash": "8ea49ebeefa2",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-bad-key-1": {
+    "chapter": "giant",
+    "where": "Hint line: a wrong key",
+    "text": "I do not know that button yet.",
+    "seconds": 3.3,
+    "hash": "339faca02620",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-bad-key-2": {
+    "chapter": "giant",
+    "where": "Hint line: a wrong key",
+    "text": "Please try again.",
+    "seconds": 1.88,
+    "hash": "eea4fb33efd3",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-bill-tail-1": {
+    "chapter": "giant",
+    "where": "Hint line: press pound",
+    "text": "Gwinn has offered to pay in lint.",
+    "seconds": 2.41,
+    "hash": "c99a6fa305cb",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-bill-tail-2": {
+    "chapter": "giant",
+    "where": "Hint line: press pound",
+    "text": "The telephone company is considering it.",
+    "seconds": 3.39,
+    "hash": "6b62c85f1c67",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-blaster-1-1": {
+    "chapter": "giant",
+    "where": "Hint line: Virus Blaster, hint 1",
+    "text": "You are always shooting.",
+    "seconds": 2.15,
+    "hash": "974639fc7062",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-blaster-1-2": {
+    "chapter": "giant",
+    "where": "Hint line: Virus Blaster, hint 1",
+    "text": "The twin guns fire whenever the Blaster moves, so just steer under the virus.",
+    "seconds": 6.5,
+    "hash": "12f1a642493f",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-blaster-2-1": {
+    "chapter": "giant",
+    "where": "Hint line: Virus Blaster, hint 2",
+    "text": "The screen never scrolls backward.",
+    "seconds": 2.68,
+    "hash": "5813999db4c4",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-blaster-2-2": {
+    "chapter": "giant",
+    "where": "Hint line: Virus Blaster, hint 2",
+    "text": "The arrow pointing back only brakes, so dodge sideways.",
+    "seconds": 3.66,
+    "hash": "be850d47ecb0",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-blaster-3-1": {
+    "chapter": "giant",
+    "where": "Hint line: Virus Blaster, hint 3",
+    "text": "Save the Nova Bombs for bosses, and fire from right under the target.",
+    "seconds": 5.35,
+    "hash": "2c1bb3385231",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-blaster-3-2": {
+    "chapter": "giant",
+    "where": "Hint line: Virus Blaster, hint 3",
+    "text": "Press F2 to see your energy.",
+    "seconds": 2.77,
+    "hash": "d97c3fc41ea4",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-blaster-intro": {
+    "chapter": "giant",
+    "where": "Hint line: Virus Blaster, welcome",
+    "text": "Hints for Virus Blaster.",
+    "seconds": 2.32,
+    "hash": "0eb26963df73",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-brief-1-1": {
+    "chapter": "giant",
+    "where": "Hint line: Keep It Brief, hint 1",
+    "text": "If THE END will not open, press F2.",
+    "seconds": 4.46,
+    "hash": "3b25cfacef1e",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-brief-1-2": {
+    "chapter": "giant",
+    "where": "Hint line: Keep It Brief, hint 1",
+    "text": "It counts the words you carry, and every book has exactly one hundred.",
+    "seconds": 5.52,
+    "hash": "92006992e7eb",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-brief-2-1": {
+    "chapter": "giant",
+    "where": "Hint line: Keep It Brief, hint 2",
+    "text": "THE END opened, but nothing happened?",
+    "seconds": 3.66,
+    "hash": "be0e49960d8d",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-brief-2-2": {
+    "chapter": "giant",
+    "where": "Hint line: Keep It Brief, hint 2",
+    "text": "Walk onto the open page, then onto the gold bookmark right behind it.",
+    "seconds": 7.48,
+    "hash": "8ab2abaa8d9d",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-brief-3-1": {
+    "chapter": "giant",
+    "where": "Hint line: Keep It Brief, hint 3",
+    "text": "Brass bars on a door mean that wing belongs to a later chapter.",
+    "seconds": 5.43,
+    "hash": "e4367c1b1723",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-brief-3-2": {
+    "chapter": "giant",
+    "where": "Hint line: Keep It Brief, hint 3",
+    "text": "Finish your chapter first, then visit the Reserve Stacks.",
+    "seconds": 4.46,
+    "hash": "0fb1c459ba26",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-brief-intro": {
+    "chapter": "giant",
+    "where": "Hint line: Keep It Brief, welcome",
+    "text": "Hints for Keep It Brief.",
+    "seconds": 1.97,
+    "hash": "cd79dae3e0f7",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-bye-1": {
+    "chapter": "giant",
+    "where": "Hint line: press 0 at the game menu",
+    "text": "Thank you for calling.",
+    "seconds": 1.7,
+    "hash": "bb095489251f",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-bye-2": {
+    "chapter": "giant",
+    "where": "Hint line: press 0 at the game menu",
+    "text": "Come back when you are stuck again.",
+    "seconds": 2.15,
+    "hash": "b1d21ab64f6b",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-bye-3": {
+    "chapter": "giant",
+    "where": "Hint line: press 0 at the game menu",
+    "text": "Goodbye!",
+    "seconds": 0.9,
+    "hash": "1cb7b221b7ad",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-depth-1-1": {
+    "chapter": "giant",
+    "where": "Hint line: Depth Perception, hint 1",
+    "text": "Amber blocks are the near plane.",
+    "seconds": 2.77,
+    "hash": "83e4ca2803b4",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-depth-1-2": {
+    "chapter": "giant",
+    "where": "Hint line: Depth Perception, hint 1",
+    "text": "Roll onto a focus ring with a cyan lens, and the far plane comes into focus.",
+    "seconds": 9.43,
+    "hash": "f92397b92e31",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-depth-2-1": {
+    "chapter": "giant",
+    "where": "Hint line: Depth Perception, hint 2",
+    "text": "Stuck after pulling focus?",
+    "seconds": 2.5,
+    "hash": "0213c4747d8c",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-depth-2-2": {
+    "chapter": "giant",
+    "where": "Hint line: Depth Perception, hint 2",
+    "text": "Every focus ring works both ways.",
+    "seconds": 3.48,
+    "hash": "41ccec559a37",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-depth-2-3": {
+    "chapter": "giant",
+    "where": "Hint line: Depth Perception, hint 2",
+    "text": "Step off it and back on to pull focus again.",
+    "seconds": 4.01,
+    "hash": "2496bffb8f16",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-depth-3-1": {
+    "chapter": "giant",
+    "where": "Hint line: Depth Perception, hint 3",
+    "text": "Pulling focus puts the scene back the way it was.",
+    "seconds": 3.48,
+    "hash": "e33938416f1e",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-depth-3-2": {
+    "chapter": "giant",
+    "where": "Hint line: Depth Perception, hint 3",
+    "text": "Photons and bulbs come back, but your lenses stay in your pocket.",
+    "seconds": 5.79,
+    "hash": "7e3c29b712c7",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-depth-intro": {
+    "chapter": "giant",
+    "where": "Hint line: Depth Perception, welcome",
+    "text": "Hints for Depth Perception.",
+    "seconds": 3.03,
+    "hash": "ffca73fab8d0",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-hello-1": {
+    "chapter": "giant",
+    "where": "Hint line: answers",
+    "text": "Hello, and thank you for calling Teddy’s Hint Kennel!",
+    "seconds": 4.46,
+    "hash": "b0bf7ee3c22b",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-hello-2": {
+    "chapter": "giant",
+    "where": "Hint line: answers",
+    "text": "I am the Hint Giant, and I talk nice and slow so nobody misses a thing.",
+    "seconds": 6.32,
+    "hash": "59f5f91dd743",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-last-1": {
+    "chapter": "giant",
+    "where": "Hint line: after the last hint",
+    "text": "That was the last hint.",
+    "seconds": 1.61,
+    "hash": "b294b65a6e84",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-last-2": {
+    "chapter": "giant",
+    "where": "Hint line: after the last hint",
+    "text": "Press 2 for the game menu, or 0 to hear it again.",
+    "seconds": 4.55,
+    "hash": "e7acb069b2ad",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-logic-1-1": {
+    "chapter": "giant",
+    "where": "Hint line: Ohm Sweet Ohm, hint 1",
+    "text": "Bump a switch from below to turn it on.",
+    "seconds": 3.03,
+    "hash": "3f99fb2a12d6",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-logic-1-2": {
+    "chapter": "giant",
+    "where": "Hint line: Ohm Sweet Ohm, hint 1",
+    "text": "Current runs along the wire to the gate, so keep off the wire while it glows.",
+    "seconds": 5.08,
+    "hash": "bf78f82bff54",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-logic-2-1": {
+    "chapter": "giant",
+    "where": "Hint line: Ohm Sweet Ohm, hint 2",
+    "text": "A gate stays open once current has reached it.",
+    "seconds": 3.66,
+    "hash": "9c25ae02d398",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-logic-2-2": {
+    "chapter": "giant",
+    "where": "Hint line: Ohm Sweet Ohm, hint 2",
+    "text": "Turn the power off again, wait for the last spark to drain away, then walk through.",
+    "seconds": 7.48,
+    "hash": "a528846f8c6a",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-logic-3-1": {
+    "chapter": "giant",
+    "where": "Hint line: Ohm Sweet Ohm, hint 3",
+    "text": "An arrow is a diode, and you can only go through it the way it points.",
+    "seconds": 5.61,
+    "hash": "c24bd9ab594e",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-logic-3-2": {
+    "chapter": "giant",
+    "where": "Hint line: Ohm Sweet Ohm, hint 3",
+    "text": "Turn the switch on, wait for the gate to open, then turn the switch off again before you roll through.",
+    "seconds": 8.19,
+    "hash": "dbe520fbc93b",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-logic-intro": {
+    "chapter": "giant",
+    "where": "Hint line: Ohm Sweet Ohm, welcome",
+    "text": "Hints for Ohm Sweet Ohm.",
+    "seconds": 3.48,
+    "hash": "87facb88595c",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-long-break-1": {
+    "chapter": "giant",
+    "where": "Hint line: nobody pressed anything",
+    "text": "Are you still there?",
+    "seconds": 2.41,
+    "hash": "69b81bb4dec2",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-long-break-2": {
+    "chapter": "giant",
+    "where": "Hint line: nobody pressed anything",
+    "text": "I will hang up now.",
+    "seconds": 1.79,
+    "hash": "4fb13d0abc9b",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-maximus-1-1": {
+    "chapter": "giant",
+    "where": "Hint line: Maximus, the Hundred Worlds, hint 1",
+    "text": "To leave the training deck, pay the credit door, ride the lift, and get through the clearance gate in the pod bay.",
+    "seconds": 7.83,
+    "hash": "7d6a66ea70a4",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-maximus-1-2": {
+    "chapter": "giant",
+    "where": "Hint line: Maximus, the Hundred Worlds, hint 1",
+    "text": "Then walk into the airlock.",
+    "seconds": 2.06,
+    "hash": "91d0919f467b",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-maximus-2": {
+    "chapter": "giant",
+    "where": "Hint line: Maximus, the Hundred Worlds, hint 2",
+    "text": "To land on a planet, fly the pod into the middle of the planet on the sector chart.",
+    "seconds": 8.28,
+    "hash": "3b6a13eb619f",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-maximus-3-1": {
+    "chapter": "giant",
+    "where": "Hint line: Maximus, the Hundred Worlds, hint 3",
+    "text": "To get back to space, walk into the uplink beacon behind you where you landed.",
+    "seconds": 6.06,
+    "hash": "51c5b0ab04f7",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-maximus-3-2": {
+    "chapter": "giant",
+    "where": "Hint line: Maximus, the Hundred Worlds, hint 3",
+    "text": "On sea worlds, surface at the buoy.",
+    "seconds": 3.3,
+    "hash": "29ee8af48b0f",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-maximus-intro": {
+    "chapter": "giant",
+    "where": "Hint line: Maximus, the Hundred Worlds, welcome",
+    "text": "Hints for Maximus, the Hundred Worlds.",
+    "seconds": 2.86,
+    "hash": "a2941a3af838",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-menu-1-1": {
+    "chapter": "giant",
+    "where": "Hint line: game menu, page 1",
+    "text": "For Depth Perception, press 1.",
+    "seconds": 2.41,
+    "hash": "dea262343f32",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-menu-1-10": {
+    "chapter": "giant",
+    "where": "Hint line: game menu, page 1",
+    "text": "For my pretend phone bill, press pound.",
+    "seconds": 3.66,
+    "hash": "37c770dc8265",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-menu-1-11": {
+    "chapter": "giant",
+    "where": "Hint line: game menu, page 1",
+    "text": "To hang up, press 0.",
+    "seconds": 3.12,
+    "hash": "0bd2478c342b",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-menu-1-2": {
+    "chapter": "giant",
+    "where": "Hint line: game menu, page 1",
+    "text": "For Final Curtain, press 2.",
+    "seconds": 2.5,
+    "hash": "c07e2f1503f6",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-menu-1-3": {
+    "chapter": "giant",
+    "where": "Hint line: game menu, page 1",
+    "text": "For Keep It Brief, press 3.",
+    "seconds": 3.83,
+    "hash": "7fcab2e019ce",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-menu-1-4": {
+    "chapter": "giant",
+    "where": "Hint line: game menu, page 1",
+    "text": "For Maximus, the Hundred Worlds, press 4.",
+    "seconds": 4.19,
+    "hash": "7d67503f3f53",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-menu-1-5": {
+    "chapter": "giant",
+    "where": "Hint line: game menu, page 1",
+    "text": "For Ohm Sweet Ohm, press 5.",
+    "seconds": 3.21,
+    "hash": "675c0a0987cd",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-menu-1-6": {
+    "chapter": "giant",
+    "where": "Hint line: game menu, page 1",
+    "text": "For Quest for the Round Tuit, press 6.",
+    "seconds": 3.3,
+    "hash": "6f2acd3d16ab",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-menu-1-7": {
+    "chapter": "giant",
+    "where": "Hint line: game menu, page 1",
+    "text": "For Sandcastle Knight, press 7.",
+    "seconds": 2.77,
+    "hash": "a2bc26e85fe0",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-menu-1-8": {
+    "chapter": "giant",
+    "where": "Hint line: game menu, page 1",
+    "text": "For Snowbound, press 8.",
+    "seconds": 2.77,
+    "hash": "6b674c0ec2b5",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-menu-1-9": {
+    "chapter": "giant",
+    "where": "Hint line: game menu, page 1",
+    "text": "For more games, press 9.",
+    "seconds": 2.32,
+    "hash": "cc5f1198ea0d",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-menu-2-1": {
+    "chapter": "giant",
+    "where": "Hint line: game menu, page 2",
+    "text": "For Teddy’s Little Big Adventure, press 1.",
+    "seconds": 3.57,
+    "hash": "29bd7ef69c46",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-menu-2-2": {
+    "chapter": "giant",
+    "where": "Hint line: game menu, page 2",
+    "text": "For Teddy’s Little Bigger Adventure, press 2.",
+    "seconds": 3.21,
+    "hash": "60151d8798ab",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-menu-2-3": {
+    "chapter": "giant",
+    "where": "Hint line: game menu, page 2",
+    "text": "For Teddy’s Little Biggest Adventure, press 3.",
+    "seconds": 3.92,
+    "hash": "8dc8ec46fdd3",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-menu-2-4": {
+    "chapter": "giant",
+    "where": "Hint line: game menu, page 2",
+    "text": "For Tune-Up, press 4.",
+    "seconds": 3.3,
+    "hash": "7f13ff187b96",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-menu-2-5": {
+    "chapter": "giant",
+    "where": "Hint line: game menu, page 2",
+    "text": "For Virus Blaster, press 5.",
+    "seconds": 2.59,
+    "hash": "52a9eab62374",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-menu-2-6": {
+    "chapter": "giant",
+    "where": "Hint line: game menu, page 2",
+    "text": "For In the Year 2000, press 6.",
+    "seconds": 3.12,
+    "hash": "44cc526c59e3",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-menu-2-7": {
+    "chapter": "giant",
+    "where": "Hint line: game menu, page 2",
+    "text": "To go back to the first games, press 9.",
+    "seconds": 3.3,
+    "hash": "53de099c9511",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-next": {
+    "chapter": "giant",
+    "where": "Hint line: after each hint",
+    "text": "Press 1 for the next hint, 2 for the game menu, or 0 to hear it again.",
+    "seconds": 4.99,
+    "hash": "0685eb473c81",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-rate-1": {
+    "chapter": "giant",
+    "where": "Hint line: the rate",
+    "text": "This game charges a fictional $1.99 per minute, never real money.",
+    "seconds": 8.63,
+    "hash": "c7f7dba7c08c",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-rate-2": {
+    "chapter": "giant",
+    "where": "Hint line: the rate",
+    "text": "Each minute is billed in full the moment it begins.",
+    "seconds": 4.81,
+    "hash": "fba2a9a1a212",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-rate-3": {
+    "chapter": "giant",
+    "where": "Hint line: the rate",
+    "text": "Press 1 to start the meter, or 0 to leave free.",
+    "seconds": 4.81,
+    "hash": "bfd4c2f8094f",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-realm-1-1": {
+    "chapter": "giant",
+    "where": "Hint line: Quest for the Round Tuit, hint 1",
+    "text": "Go first north up the road from Nowish to Laterburg.",
+    "seconds": 3.75,
+    "hash": "f202f000a538",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-realm-1-2": {
+    "chapter": "giant",
+    "where": "Hint line: Quest for the Round Tuit, hint 1",
+    "text": "Walk into the King on his throne to get the Royal Writ.",
+    "seconds": 4.63,
+    "hash": "3f9e10c3ea52",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-realm-2-1": {
+    "chapter": "giant",
+    "where": "Hint line: Quest for the Round Tuit, hint 2",
+    "text": "To talk to people, walk into them.",
+    "seconds": 2.59,
+    "hash": "4afeb7351f23",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-realm-2-2": {
+    "chapter": "giant",
+    "where": "Hint line: Quest for the Round Tuit, hint 2",
+    "text": "To buy things, walk into the counter once to pay, and again to take it.",
+    "seconds": 6.59,
+    "hash": "d4a6786d8262",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-realm-3-1": {
+    "chapter": "giant",
+    "where": "Hint line: Quest for the Round Tuit, hint 3",
+    "text": "Out of gold?",
+    "seconds": 1.52,
+    "hash": "1d3d3edc61d6",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-realm-3-2": {
+    "chapter": "giant",
+    "where": "Hint line: Quest for the Round Tuit, hint 3",
+    "text": "Foes drop gems, and the dungeons have chests.",
+    "seconds": 4.28,
+    "hash": "dcafb86aa1ea",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-realm-intro": {
+    "chapter": "giant",
+    "where": "Hint line: Quest for the Round Tuit, welcome",
+    "text": "Hints for Quest for the Round Tuit.",
+    "seconds": 3.57,
+    "hash": "a9a1301d5765",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-sandcast-1-1": {
+    "chapter": "giant",
+    "where": "Hint line: Sandcastle Knight, hint 1",
+    "text": "The shovel is beside Teddy’s toy chest in the southwest corner.",
+    "seconds": 5.35,
+    "hash": "fcfb5a0ed239",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-sandcast-1-2": {
+    "chapter": "giant",
+    "where": "Hint line: Sandcastle Knight, hint 1",
+    "text": "Press G to pick it up.",
+    "seconds": 2.15,
+    "hash": "64eace04aa44",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-sandcast-2-1": {
+    "chapter": "giant",
+    "where": "Hint line: Sandcastle Knight, hint 2",
+    "text": "To get into Anthill Keep, dig through the ring of dunes with the shovel.",
+    "seconds": 5.79,
+    "hash": "c87310f1a4e4",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-sandcast-2-2": {
+    "chapter": "giant",
+    "where": "Hint line: Sandcastle Knight, hint 2",
+    "text": "Two bites and a dune is gone.",
+    "seconds": 2.59,
+    "hash": "367cd1059e5b",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-sandcast-3-1": {
+    "chapter": "giant",
+    "where": "Hint line: Sandcastle Knight, hint 3",
+    "text": "Gwinn will move for the tennis ball.",
+    "seconds": 4.1,
+    "hash": "7b6754872676",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-sandcast-3-2": {
+    "chapter": "giant",
+    "where": "Hint line: Sandcastle Knight, hint 3",
+    "text": "Walk toward her and press F, and she trots off happy to bury it.",
+    "seconds": 6.5,
+    "hash": "cf5869915fe1",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-sandcast-intro": {
+    "chapter": "giant",
+    "where": "Hint line: Sandcastle Knight, welcome",
+    "text": "Hints for Sandcastle Knight.",
+    "seconds": 2.59,
+    "hash": "0241eba1bd79",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-sleuth-1-1": {
+    "chapter": "giant",
+    "where": "Hint line: Final Curtain, hint 1",
+    "text": "Start at the box office, off the west side of the lobby.",
+    "seconds": 4.63,
+    "hash": "26a3d39a0417",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-sleuth-1-2": {
+    "chapter": "giant",
+    "where": "Hint line: Final Curtain, hint 1",
+    "text": "There is a key on the floor and a seating chart on the desk.",
+    "seconds": 4.63,
+    "hash": "ac3d8ebaacc9",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-sleuth-2-1": {
+    "chapter": "giant",
+    "where": "Hint line: Final Curtain, hint 2",
+    "text": "Victor’s office is locked.",
+    "seconds": 2.95,
+    "hash": "f68e3e6ee76e",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-sleuth-2-2": {
+    "chapter": "giant",
+    "where": "Hint line: Final Curtain, hint 2",
+    "text": "The key from the box office opens it, so walk into the door.",
+    "seconds": 4.01,
+    "hash": "e2308e98558b",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-sleuth-3-1": {
+    "chapter": "giant",
+    "where": "Hint line: Final Curtain, hint 3",
+    "text": "To get backstage, take the west aisle to the front.",
+    "seconds": 4.55,
+    "hash": "01443bf5abcc",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-sleuth-3-2": {
+    "chapter": "giant",
+    "where": "Hint line: Final Curtain, hint 3",
+    "text": "Then go up through the pass door at stage left.",
+    "seconds": 3.57,
+    "hash": "32f800adaf3e",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-sleuth-intro": {
+    "chapter": "giant",
+    "where": "Hint line: Final Curtain, welcome",
+    "text": "Hints for Final Curtain.",
+    "seconds": 2.86,
+    "hash": "a583946dd236",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-snowbound-1": {
+    "chapter": "giant",
+    "where": "Hint line: Snowbound, hint 1",
+    "text": "Press F2 to tip out the coffee can and see how much money you have.",
+    "seconds": 5.79,
+    "hash": "f406eb19d2b2",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-snowbound-2-1": {
+    "chapter": "giant",
+    "where": "Hint line: Snowbound, hint 2",
+    "text": "Short at the register?",
+    "seconds": 2.95,
+    "hash": "8ddab79c0cfb",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-snowbound-2-2": {
+    "chapter": "giant",
+    "where": "Hint line: Snowbound, hint 2",
+    "text": "Go back out to the mall lot.",
+    "seconds": 2.59,
+    "hash": "887db0d80caa",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-snowbound-2-3": {
+    "chapter": "giant",
+    "where": "Hint line: Snowbound, hint 2",
+    "text": "A squall buries it again every twenty seconds or so, and that means more scoops and more dollars.",
+    "seconds": 7.92,
+    "hash": "b88c64b9463d",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-snowbound-3-1": {
+    "chapter": "giant",
+    "where": "Hint line: Snowbound, hint 3",
+    "text": "There is a five dollar tip in an envelope beside Mrs.",
+    "seconds": 4.55,
+    "hash": "cede8170ce41",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-snowbound-3-2": {
+    "chapter": "giant",
+    "where": "Hint line: Snowbound, hint 3",
+    "text": "Haines’ porch on Gale Street.",
+    "seconds": 2.5,
+    "hash": "4adfbe8a7c14",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-snowbound-intro": {
+    "chapter": "giant",
+    "where": "Hint line: Snowbound, welcome",
+    "text": "Hints for Snowbound.",
+    "seconds": 1.88,
+    "hash": "c7a66daf8ea8",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-teddy-1-1": {
+    "chapter": "giant",
+    "where": "Hint line: Teddy’s Little Big Adventure, hint 1",
+    "text": "Found the costume piece?",
+    "seconds": 2.15,
+    "hash": "0813a0114ef4",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-teddy-1-2": {
+    "chapter": "giant",
+    "where": "Hint line: Teddy’s Little Big Adventure, hint 1",
+    "text": "Bring it to Pockets at Doc Leo’s little red car at the end of the stop.",
+    "seconds": 4.9,
+    "hash": "bcd73e48bcc5",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-teddy-1-3": {
+    "chapter": "giant",
+    "where": "Hint line: Teddy’s Little Big Adventure, hint 1",
+    "text": "The door pops open.",
+    "seconds": 1.79,
+    "hash": "0c5bffdb7102",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-teddy-2-1": {
+    "chapter": "giant",
+    "where": "Hint line: Teddy’s Little Big Adventure, hint 2",
+    "text": "The floating balloon dogs are up high and never on the way.",
+    "seconds": 3.21,
+    "hash": "ca6261cd6caa",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-teddy-2-2": {
+    "chapter": "giant",
+    "where": "Hint line: Teddy’s Little Big Adventure, hint 2",
+    "text": "There are three in every stop, so take the detour.",
+    "seconds": 3.48,
+    "hash": "1b1424eb0ec0",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-teddy-3-1": {
+    "chapter": "giant",
+    "where": "Hint line: Teddy’s Little Big Adventure, hint 3",
+    "text": "Gwinn running laps with a green ball?",
+    "seconds": 2.5,
+    "hash": "f2af3bfb73b2",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-teddy-3-2": {
+    "chapter": "giant",
+    "where": "Hint line: Teddy’s Little Big Adventure, hint 3",
+    "text": "Face her and press Space as she zooms by.",
+    "seconds": 4.46,
+    "hash": "5c03f3b68644",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-teddy-intro": {
+    "chapter": "giant",
+    "where": "Hint line: Teddy’s Little Big Adventure, welcome",
+    "text": "Hints for Teddy’s Little Big Adventure.",
+    "seconds": 2.77,
+    "hash": "38a241549d4f",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-teddy2-1-1": {
+    "chapter": "giant",
+    "where": "Hint line: Teddy’s Little Bigger Adventure, hint 1",
+    "text": "That faint wispy thing in the air is a scent.",
+    "seconds": 4.19,
+    "hash": "85bb651e7c70",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-teddy2-1-2": {
+    "chapter": "giant",
+    "where": "Hint line: Teddy’s Little Bigger Adventure, hint 1",
+    "text": "Stand next to it and press S to sniff.",
+    "seconds": 4.1,
+    "hash": "0b54d88d3fe1",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-teddy2-2-1": {
+    "chapter": "giant",
+    "where": "Hint line: Teddy’s Little Bigger Adventure, hint 2",
+    "text": "Found the thing Gwinn dropped?",
+    "seconds": 2.15,
+    "hash": "1a02e1934114",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-teddy2-2-2": {
+    "chapter": "giant",
+    "where": "Hint line: Teddy’s Little Bigger Adventure, hint 2",
+    "text": "Bring it to Doc Leo at THE CHEZ at the end of the stop.",
+    "seconds": 3.92,
+    "hash": "d53d0430a8da",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-teddy2-2-3": {
+    "chapter": "giant",
+    "where": "Hint line: Teddy’s Little Bigger Adventure, hint 2",
+    "text": "Its door opens for it.",
+    "seconds": 2.5,
+    "hash": "5b6deadc684b",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-teddy2-3-1": {
+    "chapter": "giant",
+    "where": "Hint line: Teddy’s Little Bigger Adventure, hint 3",
+    "text": "Gwinn’s collar went down the laundry chute.",
+    "seconds": 2.59,
+    "hash": "86100b02debc",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-teddy2-3-2": {
+    "chapter": "giant",
+    "where": "Hint line: Teddy’s Little Bigger Adventure, hint 3",
+    "text": "Drop through the hole in the laundry room floor, then sniff in the basement.",
+    "seconds": 5.97,
+    "hash": "90c8621e0bb4",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-teddy2-intro": {
+    "chapter": "giant",
+    "where": "Hint line: Teddy’s Little Bigger Adventure, welcome",
+    "text": "Hints for Teddy’s Little Bigger Adventure.",
+    "seconds": 3.75,
+    "hash": "e31ac0340f52",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-teddy3-1-1": {
+    "chapter": "giant",
+    "where": "Hint line: Teddy’s Little Biggest Adventure, hint 1",
+    "text": "The card before each stop says who you are playing.",
+    "seconds": 3.48,
+    "hash": "5a5fac57e8e2",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-teddy3-1-2": {
+    "chapter": "giant",
+    "where": "Hint line: Teddy’s Little Biggest Adventure, hint 1",
+    "text": "Teddy runs the errands, and on the road you drive THE CHEZ.",
+    "seconds": 4.81,
+    "hash": "d94fbce85966",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-teddy3-2-1": {
+    "chapter": "giant",
+    "where": "Hint line: Teddy’s Little Biggest Adventure, hint 2",
+    "text": "If a button does nothing, high five it from just beside it, facing it.",
+    "seconds": 7.12,
+    "hash": "1d3490acd3ad",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-teddy3-2-2": {
+    "chapter": "giant",
+    "where": "Hint line: Teddy’s Little Biggest Adventure, hint 2",
+    "text": "Then watch the spark run down the wire.",
+    "seconds": 2.68,
+    "hash": "41cd52cc4349",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-teddy3-3-1": {
+    "chapter": "giant",
+    "where": "Hint line: Teddy’s Little Biggest Adventure, hint 3",
+    "text": "The keys are in the blue cabinet on the workbench.",
+    "seconds": 3.03,
+    "hash": "605699236b76",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-teddy3-3-2": {
+    "chapter": "giant",
+    "where": "Hint line: Teddy’s Little Biggest Adventure, hint 3",
+    "text": "Hop onto the bench and high five the button on the wall above it.",
+    "seconds": 4.9,
+    "hash": "14a715766820",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-teddy3-intro": {
+    "chapter": "giant",
+    "where": "Hint line: Teddy’s Little Biggest Adventure, welcome",
+    "text": "Hints for Teddy’s Little Biggest Adventure.",
+    "seconds": 4.28,
+    "hash": "926592723e72",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-tuneup-1-1": {
+    "chapter": "giant",
+    "where": "Hint line: Tune-Up, hint 1",
+    "text": "Each door waits for something: a clamp, a pluck, enough notes, or every oiled Squeak.",
+    "seconds": 5.97,
+    "hash": "18ca9b1697c1",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-tuneup-1-2": {
+    "chapter": "giant",
+    "where": "Hint line: Tune-Up, hint 1",
+    "text": "Press F2 to see what you have.",
+    "seconds": 2.95,
+    "hash": "216bc512b5cf",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-tuneup-2-1": {
+    "chapter": "giant",
+    "where": "Hint line: Tune-Up, hint 2",
+    "text": "To skip a cartoon, press a key.",
+    "seconds": 3.83,
+    "hash": "d02692d27150",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-tuneup-2-2": {
+    "chapter": "giant",
+    "where": "Hint line: Tune-Up, hint 2",
+    "text": "The next key gets you to the level.",
+    "seconds": 2.23,
+    "hash": "001cfedd78d1",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-tuneup-3-1": {
+    "chapter": "giant",
+    "where": "Hint line: Tune-Up, hint 3",
+    "text": "If the crank will not turn, stand right under it and hold Space.",
+    "seconds": 6.95,
+    "hash": "44f391a58c52",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-tuneup-3-2": {
+    "chapter": "giant",
+    "where": "Hint line: Tune-Up, hint 3",
+    "text": "Eight notches fill the gauge.",
+    "seconds": 2.23,
+    "hash": "458231641d64",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-tuneup-intro": {
+    "chapter": "giant",
+    "where": "Hint line: Tune-Up, welcome",
+    "text": "Hints for Tune-Up.",
+    "seconds": 1.88,
+    "hash": "8c5931dd3294",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-year2000-1-1": {
+    "chapter": "giant",
+    "where": "Hint line: In the Year 2000, hint 1",
+    "text": "The Laser-Tag Zapper is in your own backyard, north of the garage wall.",
+    "seconds": 6.23,
+    "hash": "7fde92ef7500",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-year2000-1-2": {
+    "chapter": "giant",
+    "where": "Hint line: In the Year 2000, hint 1",
+    "text": "The clicker on Grandpa’s key ring opens the gate first.",
+    "seconds": 4.1,
+    "hash": "a2ffdd208147",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-year2000-2-1": {
+    "chapter": "giant",
+    "where": "Hint line: In the Year 2000, hint 2",
+    "text": "Grandpa’s keys are in the hedge garden at the bottom left of the neighborhood.",
+    "seconds": 5.97,
+    "hash": "2fc5e73e1fdf",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-year2000-2-2": {
+    "chapter": "giant",
+    "where": "Hint line: In the Year 2000, hint 2",
+    "text": "A robo-mower guards them.",
+    "seconds": 2.5,
+    "hash": "e129f9c31930",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-year2000-3-1": {
+    "chapter": "giant",
+    "where": "Hint line: In the Year 2000, hint 3",
+    "text": "The hoverboard kids zoom up and down the roads.",
+    "seconds": 4.28,
+    "hash": "5a2bfc283538",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-year2000-3-2": {
+    "chapter": "giant",
+    "where": "Hint line: In the Year 2000, hint 3",
+    "text": "Look both ways, and cross behind them.",
+    "seconds": 2.77,
+    "hash": "fc5c10c81e70",
+    "voice": "aa1b97eeb811"
+  },
+  "giant-year2000-intro": {
+    "chapter": "giant",
+    "where": "Hint line: In the Year 2000, welcome",
+    "text": "Hints for In the Year 2000.",
+    "seconds": 2.23,
+    "hash": "f828bfa9d937",
+    "voice": "aa1b97eeb811"
+  },
+  "grandma-1-1": {
+    "chapter": "grandma",
+    "where": "Grandma: picks up",
+    "text": "Hello? …",
+    "seconds": 2.16,
+    "hash": "47ea373d186a",
+    "voice": "3c25b62de6ac"
+  },
+  "grandma-1-2": {
+    "chapter": "grandma",
+    "where": "Grandma: picks up",
+    "text": "Hello?",
+    "seconds": 1.92,
+    "hash": "0da72197e898",
+    "voice": "3c25b62de6ac"
+  },
+  "grandma-1-3": {
+    "chapter": "grandma",
+    "where": "Grandma: picks up",
+    "text": "Who is this? …",
+    "seconds": 2.31,
+    "hash": "d706d216004d",
+    "voice": "3c25b62de6ac"
+  },
+  "grandma-1-4": {
+    "chapter": "grandma",
+    "where": "Grandma: picks up",
+    "text": "Oh!",
+    "seconds": 1.76,
+    "hash": "56723edcd935",
+    "voice": "3c25b62de6ac"
+  },
+  "grandma-1-5": {
+    "chapter": "grandma",
+    "where": "Grandma: picks up",
+    "text": "Is that you, sweetie?",
+    "seconds": 2.65,
+    "hash": "d1e27bfb20ab",
+    "voice": "3c25b62de6ac"
+  },
+  "grandma-1-6": {
+    "chapter": "grandma",
+    "where": "Grandma: picks up",
+    "text": "Grandma was out filling the bird feeder, I nearly didn’t hear it ring!",
+    "seconds": 5.7,
+    "hash": "f9600044c25f",
+    "voice": "3c25b62de6ac"
+  },
+  "grandma-2-1": {
+    "chapter": "grandma",
+    "where": "Grandma: chats",
+    "text": "Have you eaten anything today?",
+    "seconds": 3.2,
+    "hash": "a99b907c5504",
+    "voice": "3c25b62de6ac"
+  },
+  "grandma-2-2": {
+    "chapter": "grandma",
+    "where": "Grandma: chats",
+    "text": "You sound skinny.",
+    "seconds": 2.47,
+    "hash": "52c348680da5",
+    "voice": "3c25b62de6ac"
+  },
+  "grandma-2-3": {
+    "chapter": "grandma",
+    "where": "Grandma: chats",
+    "text": "Mister Whiskers says hello.",
+    "seconds": 3.08,
+    "hash": "b79344f1472d",
+    "voice": "3c25b62de6ac"
+  },
+  "grandma-2-4": {
+    "chapter": "grandma",
+    "where": "Grandma: chats",
+    "text": "He knocked the African violet off the windowsill again.",
+    "seconds": 4.79,
+    "hash": "09a9d1f9cacc",
+    "voice": "3c25b62de6ac"
+  },
+  "grandma-2-5": {
+    "chapter": "grandma",
+    "where": "Grandma: chats",
+    "text": "Okay, bye-bye now, I love you!",
+    "seconds": 3.38,
+    "hash": "1b038a4ae0d7",
+    "voice": "3c25b62de6ac"
+  },
+  "gus-1": {
+    "chapter": "shop",
+    "where": "Dad’s work: the maintenance shop",
+    "text": "Maintenance, this is Gus.",
+    "seconds": 2.81,
+    "hash": "c7d64172a1cf",
+    "voice": "9ab2894f4828"
+  },
+  "gus-2": {
+    "chapter": "shop",
+    "where": "Dad’s work: the maintenance shop",
+    "text": "Dave?",
+    "seconds": 1.15,
+    "hash": "7a480ba0e1c5",
+    "voice": "9ab2894f4828"
+  },
+  "gus-3": {
+    "chapter": "shop",
+    "where": "Dad’s work: the maintenance shop",
+    "text": "Nah, he’s out on a job across town, fixing somebody’s boiler.",
+    "seconds": 4.72,
+    "hash": "b3330babaf61",
+    "voice": "9ab2894f4828"
+  },
+  "gus-4": {
+    "chapter": "shop",
+    "where": "Dad’s work: the maintenance shop",
+    "text": "Try his pager, kiddo.",
+    "seconds": 2.69,
+    "hash": "324f73d8d286",
+    "voice": "9ab2894f4828"
+  },
+  "jenny-1": {
+    "chapter": "jenny",
+    "where": "Jenny (867-5309): when not busy",
+    "text": "Hello?",
+    "seconds": 1.17,
+    "hash": "0da72197e898",
+    "voice": "37f01238e2d9"
+  },
+  "jenny-2": {
+    "chapter": "jenny",
+    "where": "Jenny (867-5309): when not busy",
+    "text": "Oh, hey!",
+    "seconds": 1.3,
+    "hash": "58c7da6da2f7",
+    "voice": "37f01238e2d9"
+  },
+  "jenny-3": {
+    "chapter": "jenny",
+    "where": "Jenny (867-5309): when not busy",
+    "text": "I can’t talk, I’m on the other line.",
+    "seconds": 2.44,
+    "hash": "156fce3a324f",
+    "voice": "37f01238e2d9"
+  },
+  "jenny-4": {
+    "chapter": "jenny",
+    "where": "Jenny (867-5309): when not busy",
+    "text": "Is your mom paying me Friday?",
+    "seconds": 2.34,
+    "hash": "9296e58f1848",
+    "voice": "37f01238e2d9"
+  },
+  "jenny-5": {
+    "chapter": "jenny",
+    "where": "Jenny (867-5309): when not busy",
+    "text": "Okay, call me later.",
+    "seconds": 2.03,
+    "hash": "44c090d9114e",
+    "voice": "37f01238e2d9"
+  },
+  "jenny-6": {
+    "chapter": "jenny",
+    "where": "Jenny (867-5309): when not busy",
+    "text": "Bye!",
+    "seconds": 1.09,
+    "hash": "c330978d1165",
+    "voice": "37f01238e2d9"
+  },
+  "linda-1": {
+    "chapter": "receptionist",
+    "where": "Mom’s work: Linda answers",
+    "text": "Good afternoon, Three Rivers Insurance, this is Linda.",
+    "seconds": 4.05,
+    "hash": "0a94a50b5239",
+    "voice": "e015f27505c3"
+  },
+  "linda-2": {
+    "chapter": "receptionist",
+    "where": "Mom’s work: Linda answers",
+    "text": "How may I direct your call? …",
+    "seconds": 2.66,
+    "hash": "aa65a2d73e96",
+    "voice": "e015f27505c3"
+  },
+  "linda-3": {
+    "chapter": "receptionist",
+    "where": "Mom’s work: Linda answers",
+    "text": "One moment, please.",
+    "seconds": 2.43,
+    "hash": "3b665e919adb",
+    "voice": "e015f27505c3"
+  },
+  "machine-henderson-1": {
+    "chapter": "henderson",
+    "where": "An answering machine (by number)",
+    "text": "Hello, you have reached the Hendersons.",
+    "seconds": 3.08,
+    "hash": "318fb424c1cb",
+    "voice": "95a54cef465b"
+  },
+  "machine-henderson-2": {
+    "chapter": "henderson",
+    "where": "An answering machine (by number)",
+    "text": "Please leave your name, number, and the time you called, and we will get back to you.",
+    "seconds": 5.23,
+    "hash": "ec4d7fb041b9",
+    "voice": "95a54cef465b"
+  },
+  "machine-kowalski-1": {
+    "chapter": "kowalski",
+    "where": "An answering machine (by number)",
+    "text": "Hi!",
+    "seconds": 1.46,
+    "hash": "ca51ce1fb15a",
+    "voice": "dd700bb69c87"
+  },
+  "machine-kowalski-2": {
+    "chapter": "kowalski",
+    "where": "An answering machine (by number)",
+    "text": "You’ve reached the Kowalskis.",
+    "seconds": 2.5,
+    "hash": "cb65f01de62e",
+    "voice": "dd700bb69c87"
+  },
+  "machine-kowalski-3": {
+    "chapter": "kowalski",
+    "where": "An answering machine (by number)",
+    "text": "We can’t come to the phone right now, so leave a message after the beep!",
+    "seconds": 4.07,
+    "hash": "575bfd096e3e",
+    "voice": "dd700bb69c87"
+  },
+  "machine-rick-1": {
+    "chapter": "rick",
+    "where": "An answering machine (by number)",
+    "text": "Yo, this is Rick.",
+    "seconds": 1.9,
+    "hash": "972d32f73576",
+    "voice": "d53ce247b77a"
+  },
+  "machine-rick-2": {
+    "chapter": "rick",
+    "where": "An answering machine (by number)",
+    "text": "I’m not here, or maybe I am and I’m screening.",
+    "seconds": 3.29,
+    "hash": "ff1a8c881176",
+    "voice": "d53ce247b77a"
+  },
+  "machine-rick-3": {
+    "chapter": "rick",
+    "where": "An answering machine (by number)",
+    "text": "Leave a message.",
+    "seconds": 1.74,
+    "hash": "c98e1680421c",
+    "voice": "d53ce247b77a"
+  },
+  "mom-work-1": {
+    "chapter": "mom",
+    "where": "Mom’s work: Mom, after the hold music",
+    "text": "Hi honey, is everything okay?",
+    "seconds": 2.69,
+    "hash": "3d0214aef3d8",
+    "voice": "b4caa961aa41"
+  },
+  "mom-work-2": {
+    "chapter": "mom",
+    "where": "Mom’s work: Mom, after the hold music",
+    "text": "Is anybody hurt?",
+    "seconds": 2.08,
+    "hash": "bf7ed90ecc4a",
+    "voice": "b4caa961aa41"
+  },
+  "mom-work-3": {
+    "chapter": "mom",
+    "where": "Mom’s work: Mom, after the hold music",
+    "text": "No?",
+    "seconds": 1.58,
+    "hash": "2b5f13fb5e90",
+    "voice": "b4caa961aa41"
+  },
+  "mom-work-4": {
+    "chapter": "mom",
+    "where": "Mom’s work: Mom, after the hold music",
+    "text": "Then why are you calling me at work?",
+    "seconds": 2.55,
+    "hash": "d4c0352a7e98",
+    "voice": "b4caa961aa41"
+  },
+  "mom-work-5": {
+    "chapter": "mom",
+    "where": "Mom’s work: Mom, after the hold music",
+    "text": "Do your homework, and don’t touch the stove.",
+    "seconds": 2.96,
+    "hash": "5f0da085a571",
+    "voice": "b4caa961aa41"
+  },
+  "mom-work-6": {
+    "chapter": "mom",
+    "where": "Mom’s work: Mom, after the hold music",
+    "text": "Love you, bye!",
+    "seconds": 1.88,
+    "hash": "06c8d73345d3",
+    "voice": "b4caa961aa41"
+  },
+  "movies-1-1": {
+    "chapter": "movies",
+    "where": "Movie line: press 1",
+    "text": "The Santa Clause.",
+    "seconds": 1.99,
+    "hash": "1dd82648f675",
+    "voice": "be765e07dd29"
+  },
+  "movies-1-2": {
+    "chapter": "movies",
+    "where": "Movie line: press 1",
+    "text": "Rated PG.",
+    "seconds": 2.75,
+    "hash": "90b4e973e1dd",
+    "voice": "be765e07dd29"
+  },
+  "movies-1-3": {
+    "chapter": "movies",
+    "where": "Movie line: press 1",
+    "text": "Today’s showtimes: 1:10, 3:20, 5:30, 7:40, and 9:50.",
+    "seconds": 9.68,
+    "hash": "3538f144b77e",
+    "voice": "be765e07dd29"
+  },
+  "movies-2-1": {
+    "chapter": "movies",
+    "where": "Movie line: press 2",
+    "text": "Star Trek Generations.",
+    "seconds": 3.89,
+    "hash": "dc7604511c2a",
+    "voice": "be765e07dd29"
+  },
+  "movies-2-3": {
+    "chapter": "movies",
+    "where": "Movie line: press 2",
+    "text": "Today’s showtimes: 1:30, 4:15, 7:00, and 9:35.",
+    "seconds": 7.86,
+    "hash": "9da7544325af",
+    "voice": "be765e07dd29"
+  },
+  "movies-3-1": {
+    "chapter": "movies",
+    "where": "Movie line: press 3",
+    "text": "The Lion King.",
+    "seconds": 2.68,
+    "hash": "4105853454f5",
+    "voice": "be765e07dd29"
+  },
+  "movies-3-2": {
+    "chapter": "movies",
+    "where": "Movie line: press 3",
+    "text": "Rated G.",
+    "seconds": 2.29,
+    "hash": "cfbea2f4c078",
+    "voice": "be765e07dd29"
+  },
+  "movies-3-3": {
+    "chapter": "movies",
+    "where": "Movie line: press 3",
+    "text": "Today’s showtimes: 12:45, 2:50, 4:55, and 7:00.",
+    "seconds": 6.41,
+    "hash": "891aa11fbaf0",
+    "voice": "be765e07dd29"
+  },
+  "movies-4-1": {
+    "chapter": "movies",
+    "where": "Movie line: press 4",
+    "text": "Dumb and Dumber.",
+    "seconds": 2.9,
+    "hash": "c7087b6c928a",
+    "voice": "be765e07dd29"
+  },
+  "movies-4-2": {
+    "chapter": "movies",
+    "where": "Movie line: press 4",
+    "text": "Rated PG-13.",
+    "seconds": 3.82,
+    "hash": "dbe609400179",
+    "voice": "be765e07dd29"
+  },
+  "movies-4-3": {
+    "chapter": "movies",
+    "where": "Movie line: press 4",
+    "text": "Today’s showtimes: 2:00, 4:30, 7:15, and 9:40.",
+    "seconds": 10.14,
+    "hash": "a140c5d6ad1b",
+    "voice": "be765e07dd29"
+  },
+  "movies-bye": {
+    "chapter": "movies",
+    "where": "Movie line: hangs up",
+    "text": "Thank you for calling the Movie Line!",
+    "seconds": 3.59,
+    "hash": "5ed600b794e1",
+    "voice": "be765e07dd29"
+  },
+  "movies-hello-1": {
+    "chapter": "movies",
+    "where": "Movie line: answers",
+    "text": "Hello!",
+    "seconds": 1,
+    "hash": "334d016f755c",
+    "voice": "be765e07dd29"
+  },
+  "movies-hello-2": {
+    "chapter": "movies",
+    "where": "Movie line: answers",
+    "text": "And welcome to the Movie Line!",
+    "seconds": 2.75,
+    "hash": "c5b51aec7c49",
+    "voice": "be765e07dd29"
+  },
+  "movies-hello-3": {
+    "chapter": "movies",
+    "where": "Movie line: answers",
+    "text": "Now showing at the Starlite Cinema 8.",
+    "seconds": 4.28,
+    "hash": "0379fab10c10",
+    "voice": "be765e07dd29"
+  },
+  "movies-menu-1": {
+    "chapter": "movies",
+    "where": "Movie line: the menu",
+    "text": "For The Santa Clause, press 1.",
+    "seconds": 3.82,
+    "hash": "5e8ff9abff29",
+    "voice": "be765e07dd29"
+  },
+  "movies-menu-2": {
+    "chapter": "movies",
+    "where": "Movie line: the menu",
+    "text": "For Star Trek Generations, press 2.",
+    "seconds": 4.88,
+    "hash": "ee0310f60aaf",
+    "voice": "be765e07dd29"
+  },
+  "movies-menu-3": {
+    "chapter": "movies",
+    "where": "Movie line: the menu",
+    "text": "For The Lion King, press 3.",
+    "seconds": 3.97,
+    "hash": "33f6415a17fd",
+    "voice": "be765e07dd29"
+  },
+  "movies-menu-4": {
+    "chapter": "movies",
+    "where": "Movie line: the menu",
+    "text": "For Dumb and Dumber, press 4.",
+    "seconds": 5.19,
+    "hash": "545b189a33ff",
+    "voice": "be765e07dd29"
+  },
+  "movies-menu-5": {
+    "chapter": "movies",
+    "where": "Movie line: the menu",
+    "text": "To hear this again, press 0.",
+    "seconds": 3.89,
+    "hash": "7ac35ac2591e",
+    "voice": "be765e07dd29"
+  },
+  "movies-what": {
+    "chapter": "movies",
+    "where": "Movie line: no key pressed",
+    "text": "Why don’t you just tell me the name of the movie you’ve selected?",
+    "seconds": 3.06,
+    "hash": "fbd46d633b82",
+    "voice": "be765e07dd29"
+  },
+  "nine-one-one": {
+    "chapter": "dispatcher",
+    "where": "911: answers",
+    "text": "Nine one one, what is your emergency?",
+    "seconds": 3.04,
+    "hash": "5aed4a9a381e",
+    "voice": "696d9fee4a81"
+  },
+  "nine-one-one-again-1": {
+    "chapter": "dispatcher",
+    "where": "911: you freeze up",
+    "text": "Hello?",
+    "seconds": 1.37,
+    "hash": "0da72197e898",
+    "voice": "696d9fee4a81"
+  },
+  "nine-one-one-again-2": {
+    "chapter": "dispatcher",
+    "where": "911: you freeze up",
+    "text": "Are you there?",
+    "seconds": 1.72,
+    "hash": "9d83ff719dde",
+    "voice": "696d9fee4a81"
+  },
+  "nine-one-one-fire-1": {
+    "chapter": "dispatcher",
+    "where": "911: the house fire",
+    "text": "Hold on.",
+    "seconds": 1.6,
+    "hash": "357fd513128b",
+    "voice": "696d9fee4a81"
+  },
+  "nine-one-one-fire-2": {
+    "chapter": "dispatcher",
+    "where": "911: the house fire",
+    "text": "We’re getting calls about a house fire on your street right now.",
+    "seconds": 3.78,
+    "hash": "4f0245e71abb",
+    "voice": "696d9fee4a81"
+  },
+  "nine-one-one-fire-3": {
+    "chapter": "dispatcher",
+    "where": "911: the house fire",
+    "text": "A truck is on the way.",
+    "seconds": 2.32,
+    "hash": "323806ccb65b",
+    "voice": "696d9fee4a81"
+  },
+  "nine-one-one-fire-4": {
+    "chapter": "dispatcher",
+    "where": "911: the house fire",
+    "text": "Stay inside, and please, only call nine one one for a real emergency.",
+    "seconds": 4.7,
+    "hash": "aa17838ca916",
+    "voice": "696d9fee4a81"
+  },
+  "not-in-service-1": {
+    "chapter": "recording",
+    "where": "Any unassigned number",
+    "text": "We’re sorry.",
+    "seconds": 1.82,
+    "hash": "13890686f3a9",
+    "voice": "d60aea1b9096"
+  },
+  "not-in-service-2": {
+    "chapter": "recording",
+    "where": "Any unassigned number",
+    "text": "The number you have reached is not in service.",
+    "seconds": 3.61,
+    "hash": "45190ca5d5a0",
+    "voice": "d60aea1b9096"
+  },
+  "not-in-service-3": {
+    "chapter": "recording",
+    "where": "Any unassigned number",
+    "text": "Please check the number and dial again.",
+    "seconds": 3.24,
+    "hash": "51398d22cc37",
+    "voice": "d60aea1b9096"
+  },
+  "off-hook": {
+    "chapter": "recording",
+    "where": "Off the hook too long",
+    "text": "If you’d like to make a call, please hang up and try again.",
+    "seconds": 4.27,
+    "hash": "c3334f3b8e2d",
+    "voice": "d60aea1b9096"
+  },
+  "ratings-1-1": {
+    "chapter": "robot",
+    "where": "Ratings council: answers",
+    "text": "Thank you for calling the Home Software Rating Council.",
+    "seconds": 3.98,
+    "hash": "a9c211447e35",
+    "voice": "c4de1ea499e6"
+  },
+  "ratings-1-2": {
+    "chapter": "robot",
+    "where": "Ratings council: answers",
+    "text": "Your call is important to us.",
+    "seconds": 2.73,
+    "hash": "7dea23df4e73",
+    "voice": "c4de1ea499e6"
+  },
+  "ratings-1-3": {
+    "chapter": "robot",
+    "where": "Ratings council: answers",
+    "text": "Please hold for the next available rating specialist.",
+    "seconds": 4.3,
+    "hash": "3d9a4a5df78a",
+    "voice": "c4de1ea499e6"
+  },
+  "ratings-hold-2": {
+    "chapter": "robot",
+    "where": "Ratings council: after each hold",
+    "text": "Please continue to hold.",
+    "seconds": 2.51,
+    "hash": "dd7e5410ef0d",
+    "voice": "c4de1ea499e6"
+  },
+  "tb-and": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "and",
+    "seconds": 1.08,
+    "hash": "6201111b83a0",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-cent": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "cent",
+    "seconds": 1.26,
+    "hash": "c388fa9a5270",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-cents": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "cents",
+    "seconds": 0.81,
+    "hash": "92ca7d1adfaa",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-dollar": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "dollar",
+    "seconds": 1.08,
+    "hash": "588d2c1d1f23",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-dollars": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "dollars",
+    "seconds": 1.17,
+    "hash": "d444019213e4",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-lead": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "Your parents' pretend phone bill is",
+    "seconds": 2.68,
+    "hash": "a1639ff7272f",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n0": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "zero",
+    "seconds": 0.99,
+    "hash": "f9194e73f9e9",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n1": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "one",
+    "seconds": 0.99,
+    "hash": "7692c3ad3540",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n10": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "ten",
+    "seconds": 0.81,
+    "hash": "e4432baa9081",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n11": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "eleven",
+    "seconds": 1.17,
+    "hash": "e979074ebd56",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n12": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "twelve",
+    "seconds": 1.08,
+    "hash": "d1a749ad879b",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n13": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "thirteen",
+    "seconds": 1.26,
+    "hash": "9ecc81f0a4b6",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n14": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "fourteen",
+    "seconds": 1.17,
+    "hash": "fef8f41cdcd2",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n15": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "fifteen",
+    "seconds": 1.17,
+    "hash": "c463967e5708",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n16": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "sixteen",
+    "seconds": 1.43,
+    "hash": "f2ce341fdaa6",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n17": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "seventeen",
+    "seconds": 1.26,
+    "hash": "2c5abdef2a0e",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n18": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "eighteen",
+    "seconds": 1.26,
+    "hash": "34357b18abdd",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n19": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "nineteen",
+    "seconds": 1.35,
+    "hash": "cde4e100efd2",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n2": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "two",
+    "seconds": 0.99,
+    "hash": "3fc4ccfe7458",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n20": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "twenty",
+    "seconds": 0.99,
+    "hash": "7c2c4df740f7",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n21": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "twenty-one",
+    "seconds": 1.17,
+    "hash": "a69edb489f4e",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n22": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "twenty-two",
+    "seconds": 1.08,
+    "hash": "2a8daa7aac7a",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n23": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "twenty-three",
+    "seconds": 1.26,
+    "hash": "328e51fcaeaf",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n24": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "twenty-four",
+    "seconds": 1.08,
+    "hash": "1bcbce780ddd",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n25": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "twenty-five",
+    "seconds": 1.08,
+    "hash": "ac3164d59c69",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n26": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "twenty-six",
+    "seconds": 1.17,
+    "hash": "60b7d1f7ad42",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n27": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "twenty-seven",
+    "seconds": 1.35,
+    "hash": "412866d80035",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n28": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "twenty-eight",
+    "seconds": 0.99,
+    "hash": "96c2a8346189",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n29": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "twenty-nine",
+    "seconds": 1.17,
+    "hash": "a0d9676cc598",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n3": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "three",
+    "seconds": 0.99,
+    "hash": "8b5b9db0c13d",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n30": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "thirty",
+    "seconds": 0.99,
+    "hash": "aca5fb59db69",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n31": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "thirty-one",
+    "seconds": 1.17,
+    "hash": "dfa5c4c47fb2",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n32": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "thirty-two",
+    "seconds": 1.08,
+    "hash": "7a78c7548928",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n33": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "thirty-three",
+    "seconds": 1.17,
+    "hash": "3c218b98f1bf",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n34": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "thirty-four",
+    "seconds": 1.08,
+    "hash": "ee9764b6b133",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n35": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "thirty-five",
+    "seconds": 1.17,
+    "hash": "49fa6fb4bad9",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n36": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "thirty-six",
+    "seconds": 1.08,
+    "hash": "56d89c668162",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n37": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "thirty-seven",
+    "seconds": 1.26,
+    "hash": "ee0d8e38580a",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n38": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "thirty-eight",
+    "seconds": 1.17,
+    "hash": "518ce854e4d7",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n39": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "thirty-nine",
+    "seconds": 1.08,
+    "hash": "c19e6b18f754",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n4": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "four",
+    "seconds": 0.99,
+    "hash": "04efaf080f5a",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n40": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "forty",
+    "seconds": 0.99,
+    "hash": "9cee2304bd63",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n41": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "forty-one",
+    "seconds": 1.17,
+    "hash": "074ec9ddfe44",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n42": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "forty-two",
+    "seconds": 1.08,
+    "hash": "5cc47001f7c1",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n43": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "forty-three",
+    "seconds": 1.26,
+    "hash": "fbcb14038f6b",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n44": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "forty-four",
+    "seconds": 1.08,
+    "hash": "9a56bd594d93",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n45": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "forty-five",
+    "seconds": 1.08,
+    "hash": "ce8cdef089ac",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n46": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "forty-six",
+    "seconds": 1.08,
+    "hash": "17b42cc951ba",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n47": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "forty-seven",
+    "seconds": 1.26,
+    "hash": "11d5b531ae2c",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n48": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "forty-eight",
+    "seconds": 1.08,
+    "hash": "2b8de4d500dd",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n49": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "forty-nine",
+    "seconds": 1.35,
+    "hash": "0f09c0097e47",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n5": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "five",
+    "seconds": 1.17,
+    "hash": "222b0bd51fce",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n50": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "fifty",
+    "seconds": 0.99,
+    "hash": "f8d807ee15e9",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n51": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "fifty-one",
+    "seconds": 1.17,
+    "hash": "76bcec87152d",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n52": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "fifty-two",
+    "seconds": 0.9,
+    "hash": "7236b63e2db5",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n53": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "fifty-three",
+    "seconds": 1.26,
+    "hash": "6382cd3f5ae1",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n54": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "fifty-four",
+    "seconds": 1.08,
+    "hash": "7da3c4346e00",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n55": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "fifty-five",
+    "seconds": 1.08,
+    "hash": "25102b4dfe05",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n56": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "fifty-six",
+    "seconds": 1.26,
+    "hash": "ee41e5464eec",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n57": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "fifty-seven",
+    "seconds": 1.35,
+    "hash": "d376c3658fc4",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n58": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "fifty-eight",
+    "seconds": 1.08,
+    "hash": "dcf2928126cc",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n59": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "fifty-nine",
+    "seconds": 1.17,
+    "hash": "69193cd7186a",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n6": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "six",
+    "seconds": 0.81,
+    "hash": "44778d82365e",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n60": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "sixty",
+    "seconds": 1.26,
+    "hash": "df41164e1512",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n61": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "sixty-one",
+    "seconds": 1.35,
+    "hash": "ccfe4766f535",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n62": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "sixty-two",
+    "seconds": 1.26,
+    "hash": "e904d40a691e",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n63": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "sixty-three",
+    "seconds": 1.7,
+    "hash": "e2a062cc5c47",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n64": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "sixty-four",
+    "seconds": 1.35,
+    "hash": "bf9d197ad7d4",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n65": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "sixty-five",
+    "seconds": 1.08,
+    "hash": "4a8692d5b7e3",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n66": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "sixty-six",
+    "seconds": 2.23,
+    "hash": "f63dbf1efd6c",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n67": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "sixty-seven",
+    "seconds": 1.79,
+    "hash": "07943fed3e15",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n68": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "sixty-eight",
+    "seconds": 1.43,
+    "hash": "783524f5ac6e",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n69": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "sixty-nine",
+    "seconds": 1.35,
+    "hash": "db3a6068f1db",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n7": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "seven",
+    "seconds": 1.26,
+    "hash": "3ba8d02b16fd",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n70": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "seventy",
+    "seconds": 0.99,
+    "hash": "ab0e4b1a7839",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n71": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "seventy-one",
+    "seconds": 1.35,
+    "hash": "f02086f9f5f5",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n72": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "seventy-two",
+    "seconds": 1.35,
+    "hash": "84c4b20b93e4",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n73": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "seventy-three",
+    "seconds": 1.61,
+    "hash": "9b9c69560bb2",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n74": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "seventy-four",
+    "seconds": 1.08,
+    "hash": "392e02f565ae",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n75": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "seventy-five",
+    "seconds": 1.43,
+    "hash": "4dc2e8075c6c",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n76": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "seventy-six",
+    "seconds": 1.52,
+    "hash": "3ba5ea68a8eb",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n77": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "seventy-seven",
+    "seconds": 1.26,
+    "hash": "cffdc28faeaa",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n78": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "seventy-eight",
+    "seconds": 1.26,
+    "hash": "1377c1880450",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n79": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "seventy-nine",
+    "seconds": 1.26,
+    "hash": "14493e55e60a",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n8": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "eight",
+    "seconds": 0.81,
+    "hash": "c195d2d87562",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n80": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "eighty",
+    "seconds": 0.99,
+    "hash": "0dbc3407a708",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n81": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "eighty-one",
+    "seconds": 1.17,
+    "hash": "ad5070bcac4c",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n82": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "eighty-two",
+    "seconds": 1.17,
+    "hash": "e80f294b0b49",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n83": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "eighty-three",
+    "seconds": 1.35,
+    "hash": "dbcb538af292",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n84": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "eighty-four",
+    "seconds": 1.17,
+    "hash": "c3dc190dd3a7",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n85": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "eighty-five",
+    "seconds": 1.08,
+    "hash": "d4e7456af463",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n86": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "eighty-six",
+    "seconds": 1.35,
+    "hash": "964899f3dfc0",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n87": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "eighty-seven",
+    "seconds": 1.35,
+    "hash": "16898b9b8503",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n88": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "eighty-eight",
+    "seconds": 1.17,
+    "hash": "1bbfc0a45053",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n89": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "eighty-nine",
+    "seconds": 1.17,
+    "hash": "5c64a2202314",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n9": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "nine",
+    "seconds": 1.08,
+    "hash": "edcd8e701a2d",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n90": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "ninety",
+    "seconds": 1.26,
+    "hash": "521c74a4d582",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n91": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "ninety-one",
+    "seconds": 1.35,
+    "hash": "009a3a2549a0",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n92": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "ninety-two",
+    "seconds": 1.17,
+    "hash": "1a79274e8f29",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n93": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "ninety-three",
+    "seconds": 1.26,
+    "hash": "2acfc7ff4195",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n94": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "ninety-four",
+    "seconds": 1.35,
+    "hash": "17901bab2d97",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n95": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "ninety-five",
+    "seconds": 1.17,
+    "hash": "8562e935d3b8",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n96": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "ninety-six",
+    "seconds": 1.26,
+    "hash": "1ceeaf17724b",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n97": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "ninety-seven",
+    "seconds": 1.26,
+    "hash": "0bdb23f9e3ec",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n98": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "ninety-eight",
+    "seconds": 1.17,
+    "hash": "60e6dda7a5e4",
+    "voice": "aa1b97eeb811"
+  },
+  "tb-n99": {
+    "chapter": "giant",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "ninety-nine",
+    "seconds": 1.17,
+    "hash": "1a2516bbaf9c",
+    "voice": "aa1b97eeb811"
+  },
+  "teddy-bad-key-1": {
+    "chapter": "teddy",
+    "where": "Hint line: a wrong key",
+    "text": "That key leads to the biscuit cupboard.",
+    "seconds": 2.57,
+    "hash": "ec6b77607d63",
+    "voice": "771812683fc2"
+  },
+  "teddy-bad-key-2": {
+    "chapter": "teddy",
+    "where": "Hint line: a wrong key",
+    "text": "The cupboard has declined to comment.",
+    "seconds": 2.07,
+    "hash": "f68369cbe077",
+    "voice": "771812683fc2"
+  },
+  "teddy-bad-key-3": {
+    "chapter": "teddy",
+    "where": "Hint line: a wrong key",
+    "text": "Try 1 through 5, or 0 to leave.",
+    "seconds": 3.57,
+    "hash": "3077ca0ca5f8",
+    "voice": "771812683fc2"
+  },
+  "teddy-bill-tail-1": {
+    "chapter": "teddy",
+    "where": "Hint line: press 5",
+    "text": "Gwinn has offered to pay in lint.",
+    "seconds": 2.29,
+    "hash": "b4d45752a2c5",
+    "voice": "771812683fc2"
+  },
+  "teddy-bill-tail-2": {
+    "chapter": "teddy",
+    "where": "Hint line: press 5",
+    "text": "The telephone company is considering it.",
+    "seconds": 2,
+    "hash": "6b62c85f1c67",
+    "voice": "771812683fc2"
+  },
+  "teddy-hint-1-1": {
+    "chapter": "teddy",
+    "where": "Hint line: press 1",
+    "text": "Save with F5 before trying a tricky stretch.",
+    "seconds": 3.21,
+    "hash": "cdb422576757",
+    "voice": "771812683fc2"
+  },
+  "teddy-hint-1-2": {
+    "chapter": "teddy",
+    "where": "Hint line: press 1",
+    "text": "Use different save slots so one unfortunate landing does not become family history.",
+    "seconds": 7.07,
+    "hash": "8fbc41b58fcc",
+    "voice": "771812683fc2"
+  },
+  "teddy-hint-1-3": {
+    "chapter": "teddy",
+    "where": "Hint line: press 1",
+    "text": "Teddy saves before jumping.",
+    "seconds": 2.07,
+    "hash": "bbbdc30b6e32",
+    "voice": "771812683fc2"
+  },
+  "teddy-hint-1-4": {
+    "chapter": "teddy",
+    "where": "Hint line: press 1",
+    "text": "Gwinn saves after saying, watch this.",
+    "seconds": 2.93,
+    "hash": "7b0d6bbe48aa",
+    "voice": "771812683fc2"
+  },
+  "teddy-hint-2-1": {
+    "chapter": "teddy",
+    "where": "Hint line: press 2",
+    "text": "Open the game box and choose Level Maps.",
+    "seconds": 2.86,
+    "hash": "f3099526f5b5",
+    "voice": "771812683fc2"
+  },
+  "teddy-hint-2-2": {
+    "chapter": "teddy",
+    "where": "Hint line: press 2",
+    "text": "Follow the marked start and exits.",
+    "seconds": 2.21,
+    "hash": "695fe236fbe9",
+    "voice": "771812683fc2"
+  },
+  "teddy-hint-2-3": {
+    "chapter": "teddy",
+    "where": "Hint line: press 2",
+    "text": "Dashed wrap edges join: leaving one side can bring you back on the other.",
+    "seconds": 4.5,
+    "hash": "6c7ab97e0fe1",
+    "voice": "771812683fc2"
+  },
+  "teddy-hint-2-4": {
+    "chapter": "teddy",
+    "where": "Hint line: press 2",
+    "text": "Teddy calls this geography with a revolving door.",
+    "seconds": 2.86,
+    "hash": "590061b62120",
+    "voice": "771812683fc2"
+  },
+  "teddy-hint-3-1": {
+    "chapter": "teddy",
+    "where": "Hint line: press 3",
+    "text": "Watch an enemy before charging in.",
+    "seconds": 3.36,
+    "hash": "1a19c3567834",
+    "voice": "771812683fc2"
+  },
+  "teddy-hint-3-2": {
+    "chapter": "teddy",
+    "where": "Hint line: press 3",
+    "text": "Look for a gap in its movement, keep an escape route, and check whether your character can shoot.",
+    "seconds": 6.21,
+    "hash": "cff17dff15f9",
+    "voice": "771812683fc2"
+  },
+  "teddy-hint-3-3": {
+    "chapter": "teddy",
+    "where": "Hint line: press 3",
+    "text": "A boss may have another stage.",
+    "seconds": 3.14,
+    "hash": "abdd6a0e6791",
+    "voice": "771812683fc2"
+  },
+  "teddy-hint-3-4": {
+    "chapter": "teddy",
+    "where": "Hint line: press 3",
+    "text": "Teddy recommends waiting until the victory is actually victorious.",
+    "seconds": 4.07,
+    "hash": "2cbbe8654fa1",
+    "voice": "771812683fc2"
+  },
+  "teddy-hint-4-1": {
+    "chapter": "teddy",
+    "where": "Hint line: press 4",
+    "text": "The game box may include a hint book, and the walkthrough shows a route through the game.",
+    "seconds": 5.35,
+    "hash": "1b1673d86f5a",
+    "voice": "771812683fc2"
+  },
+  "teddy-hint-4-2": {
+    "chapter": "teddy",
+    "where": "Hint line: press 4",
+    "text": "Those are free.",
+    "seconds": 1.29,
+    "hash": "3e2d2baf0846",
+    "voice": "771812683fc2"
+  },
+  "teddy-hint-4-3": {
+    "chapter": "teddy",
+    "where": "Hint line: press 4",
+    "text": "Asking for help is clever.",
+    "seconds": 1.78,
+    "hash": "221aeea5dcec",
+    "voice": "771812683fc2"
+  },
+  "teddy-hint-4-4": {
+    "chapter": "teddy",
+    "where": "Hint line: press 4",
+    "text": "Paying a corgi to tell you where the free help lives is extremely 1994.",
+    "seconds": 4.36,
+    "hash": "e5f91b0c039a",
+    "voice": "771812683fc2"
+  },
+  "teddy-kennel": {
+    "chapter": "teddy",
+    "where": "Hint line: answers",
+    "text": "Teddy's Hint Kennel!",
+    "seconds": 1.5,
+    "hash": "690fcec72fa8",
+    "voice": "771812683fc2"
+  },
+  "teddy-menu": {
+    "chapter": "teddy",
+    "where": "Hint line: the menu",
+    "text": "Press 1 for saving, 2 for maps, 3 for enemies, 4 for free help, 5 for the pretend bill, or 0 to hang up.",
+    "seconds": 9.14,
+    "hash": "82d99c31ff64",
+    "voice": "771812683fc2"
+  },
+  "teddy-rate-1": {
+    "chapter": "teddy",
+    "where": "Hint line: the greeting",
+    "text": "This game charges a fictional $1.99 per minute, never real money.",
+    "seconds": 6.21,
+    "hash": "c7f7dba7c08c",
+    "voice": "771812683fc2"
+  },
+  "teddy-rate-2": {
+    "chapter": "teddy",
+    "where": "Hint line: the greeting",
+    "text": "Press 1 to start the meter, or 0 to leave free.",
+    "seconds": 4.28,
+    "hash": "bfd4c2f8094f",
+    "voice": "771812683fc2"
+  },
+  "teddy-rate-3": {
+    "chapter": "teddy",
+    "where": "Hint line: the greeting",
+    "text": "Teddy accepts neither credit cards nor stolen sandwiches.",
+    "seconds": 3.28,
+    "hash": "7fafeb782a2d",
+    "voice": "771812683fc2"
+  },
+  "time-lead": {
+    "chapter": "time-lady",
+    "where": "Time: every other call",
+    "text": "Riverbend Savings & Loan time and temperature.",
+    "seconds": 4.48,
+    "hash": "bdc5e9814006",
+    "voice": "f9f845e5385c"
+  },
+  "time-temp": {
+    "chapter": "time-lady",
+    "where": "Time: after the tone",
+    "text": "The temperature is 28 degrees.",
+    "seconds": 3.79,
+    "hash": "a4b1e1270f08",
+    "voice": "f9f845e5385c"
+  },
+  "tl-exactly": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "exactly",
+    "seconds": 2,
+    "hash": "24065231df1b",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n1": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "one",
+    "seconds": 1.48,
+    "hash": "7692c3ad3540",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n10": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "ten",
+    "seconds": 1.4,
+    "hash": "e4432baa9081",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n11": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "eleven",
+    "seconds": 1.74,
+    "hash": "e979074ebd56",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n12": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "twelve",
+    "seconds": 1.42,
+    "hash": "d1a749ad879b",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n13": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "thirteen",
+    "seconds": 1.79,
+    "hash": "9ecc81f0a4b6",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n14": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "fourteen",
+    "seconds": 1.85,
+    "hash": "fef8f41cdcd2",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n15": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "fifteen",
+    "seconds": 1.9,
+    "hash": "c463967e5708",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n16": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "sixteen",
+    "seconds": 1.74,
+    "hash": "f2ce341fdaa6",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n17": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "seventeen",
+    "seconds": 2.11,
+    "hash": "2c5abdef2a0e",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n18": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "eighteen",
+    "seconds": 1.69,
+    "hash": "34357b18abdd",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n19": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "nineteen",
+    "seconds": 1.9,
+    "hash": "cde4e100efd2",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n2": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "two",
+    "seconds": 1.21,
+    "hash": "3fc4ccfe7458",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n20": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "twenty",
+    "seconds": 1.48,
+    "hash": "7c2c4df740f7",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n21": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "twenty-one",
+    "seconds": 1.87,
+    "hash": "a69edb489f4e",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n22": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "twenty-two",
+    "seconds": 1.85,
+    "hash": "2a8daa7aac7a",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n23": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "twenty-three",
+    "seconds": 2.11,
+    "hash": "328e51fcaeaf",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n24": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "twenty-four",
+    "seconds": 2.03,
+    "hash": "1bcbce780ddd",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n25": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "twenty-five",
+    "seconds": 2.06,
+    "hash": "ac3164d59c69",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n26": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "twenty-six",
+    "seconds": 1.9,
+    "hash": "60b7d1f7ad42",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n27": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "twenty-seven",
+    "seconds": 2.32,
+    "hash": "412866d80035",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n28": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "twenty-eight",
+    "seconds": 1.77,
+    "hash": "96c2a8346189",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n29": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "twenty-nine",
+    "seconds": 2.27,
+    "hash": "a0d9676cc598",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n3": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "three",
+    "seconds": 1.5,
+    "hash": "8b5b9db0c13d",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n30": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "thirty",
+    "seconds": 1.74,
+    "hash": "aca5fb59db69",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n31": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "thirty-one",
+    "seconds": 2.11,
+    "hash": "dfa5c4c47fb2",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n32": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "thirty-two",
+    "seconds": 1.9,
+    "hash": "7a78c7548928",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n33": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "thirty-three",
+    "seconds": 2.24,
+    "hash": "3c218b98f1bf",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n34": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "thirty-four",
+    "seconds": 2.27,
+    "hash": "ee9764b6b133",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n35": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "thirty-five",
+    "seconds": 2.14,
+    "hash": "49fa6fb4bad9",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n36": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "thirty-six",
+    "seconds": 2.11,
+    "hash": "56d89c668162",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n37": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "thirty-seven",
+    "seconds": 2.24,
+    "hash": "ee0d8e38580a",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n38": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "thirty-eight",
+    "seconds": 1.9,
+    "hash": "518ce854e4d7",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n39": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "thirty-nine",
+    "seconds": 2.11,
+    "hash": "c19e6b18f754",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n4": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "four",
+    "seconds": 1.48,
+    "hash": "04efaf080f5a",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n40": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "forty",
+    "seconds": 1.77,
+    "hash": "9cee2304bd63",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n41": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "forty-one",
+    "seconds": 2.19,
+    "hash": "074ec9ddfe44",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n42": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "forty-two",
+    "seconds": 1.92,
+    "hash": "5cc47001f7c1",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n43": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "forty-three",
+    "seconds": 2.34,
+    "hash": "fbcb14038f6b",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n44": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "forty-four",
+    "seconds": 2.21,
+    "hash": "9a56bd594d93",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n45": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "forty-five",
+    "seconds": 2.14,
+    "hash": "ce8cdef089ac",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n46": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "forty-six",
+    "seconds": 2.08,
+    "hash": "17b42cc951ba",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n47": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "forty-seven",
+    "seconds": 2.27,
+    "hash": "11d5b531ae2c",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n48": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "forty-eight",
+    "seconds": 1.79,
+    "hash": "2b8de4d500dd",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n49": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "forty-nine",
+    "seconds": 2.06,
+    "hash": "0f09c0097e47",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n5": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "five",
+    "seconds": 1.37,
+    "hash": "222b0bd51fce",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n50": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "fifty",
+    "seconds": 1.56,
+    "hash": "f8d807ee15e9",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n51": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "fifty-one",
+    "seconds": 2,
+    "hash": "76bcec87152d",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n52": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "fifty-two",
+    "seconds": 1.95,
+    "hash": "7236b63e2db5",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n53": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "fifty-three",
+    "seconds": 2.21,
+    "hash": "6382cd3f5ae1",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n54": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "fifty-four",
+    "seconds": 2.24,
+    "hash": "7da3c4346e00",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n55": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "fifty-five",
+    "seconds": 2.19,
+    "hash": "25102b4dfe05",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n56": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "fifty-six",
+    "seconds": 2.03,
+    "hash": "ee41e5464eec",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n57": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "fifty-seven",
+    "seconds": 2.29,
+    "hash": "d376c3658fc4",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n58": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "fifty-eight",
+    "seconds": 1.87,
+    "hash": "dcf2928126cc",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n59": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "fifty-nine",
+    "seconds": 2.27,
+    "hash": "69193cd7186a",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n6": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "six",
+    "seconds": 1.29,
+    "hash": "44778d82365e",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n7": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "seven",
+    "seconds": 1.56,
+    "hash": "3ba8d02b16fd",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n8": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "eight",
+    "seconds": 1.24,
+    "hash": "c195d2d87562",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n9": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "nine",
+    "seconds": 1.71,
+    "hash": "edcd8e701a2d",
+    "voice": "f9f845e5385c"
+  },
+  "tl-oclock": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "o’clock",
+    "seconds": 1.45,
+    "hash": "e40c0d5d47ec",
+    "voice": "f9f845e5385c"
+  },
+  "tl-oh-1": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "oh one",
+    "seconds": 1.92,
+    "hash": "11ba9926f584",
+    "voice": "f9f845e5385c"
+  },
+  "tl-oh-2": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "oh two",
+    "seconds": 1.79,
+    "hash": "6646e89f534a",
+    "voice": "f9f845e5385c"
+  },
+  "tl-oh-3": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "oh three",
+    "seconds": 2.06,
+    "hash": "45f01f238d6a",
+    "voice": "f9f845e5385c"
+  },
+  "tl-oh-4": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "oh four",
+    "seconds": 2,
+    "hash": "cc6d3e8dd86a",
+    "voice": "f9f845e5385c"
+  },
+  "tl-oh-5": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "oh five",
+    "seconds": 2.06,
+    "hash": "44ff8463a3f8",
+    "voice": "f9f845e5385c"
+  },
+  "tl-oh-6": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "oh six",
+    "seconds": 2.16,
+    "hash": "80f8bd48f170",
+    "voice": "f9f845e5385c"
+  },
+  "tl-oh-7": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "oh seven",
+    "seconds": 2.21,
+    "hash": "fe819b8ce921",
+    "voice": "f9f845e5385c"
+  },
+  "tl-oh-8": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "oh eight",
+    "seconds": 1.92,
+    "hash": "110bbf28cf51",
+    "voice": "f9f845e5385c"
+  },
+  "tl-oh-9": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "oh nine",
+    "seconds": 2.14,
+    "hash": "21eccca1f715",
+    "voice": "f9f845e5385c"
+  },
+  "tl-sec-10": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "and ten seconds",
+    "seconds": 2.61,
+    "hash": "a474680addf2",
+    "voice": "f9f845e5385c"
+  },
+  "tl-sec-20": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "and twenty seconds",
+    "seconds": 2.61,
+    "hash": "19995e2e9a19",
+    "voice": "f9f845e5385c"
+  },
+  "tl-sec-30": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "and thirty seconds",
+    "seconds": 2.69,
+    "hash": "f6576d0601df",
+    "voice": "f9f845e5385c"
+  },
+  "tl-sec-40": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "and forty seconds",
+    "seconds": 2.63,
+    "hash": "eec3c72ce70b",
+    "voice": "f9f845e5385c"
+  },
+  "tl-sec-50": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "and fifty seconds",
+    "seconds": 2.66,
+    "hash": "6fba292b7aa8",
+    "voice": "f9f845e5385c"
+  },
+  "tl-tone": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "At the tone, the time will be",
+    "seconds": 3.24,
+    "hash": "c3f724dba199",
+    "voice": "f9f845e5385c"
+  },
+  "weather-1": {
+    "chapter": "weather",
+    "where": "Weather line",
+    "text": "National Weather Service forecast for Pittsburgh and vicinity.",
+    "seconds": 4.5,
+    "hash": "3905ba94fee8",
+    "voice": "2a9126714f4e"
+  },
+  "weather-2": {
+    "chapter": "weather",
+    "where": "Weather line",
+    "text": "This afternoon, snow showers.",
+    "seconds": 2.94,
+    "hash": "206de2d983e2",
+    "voice": "2a9126714f4e"
+  },
+  "weather-3": {
+    "chapter": "weather",
+    "where": "Weather line",
+    "text": "Accumulation of two to four inches.",
+    "seconds": 3.37,
+    "hash": "5690bcbaa43d",
+    "voice": "2a9126714f4e"
+  },
+  "weather-4": {
+    "chapter": "weather",
+    "where": "Weather line",
+    "text": "High 29.",
+    "seconds": 2.17,
+    "hash": "632338ccaaba",
+    "voice": "2a9126714f4e"
+  },
+  "weather-5": {
+    "chapter": "weather",
+    "where": "Weather line",
+    "text": "Tonight, cloudy with flurries.",
+    "seconds": 2.73,
+    "hash": "10a74559ad37",
+    "voice": "2a9126714f4e"
+  },
+  "weather-6": {
+    "chapter": "weather",
+    "where": "Weather line",
+    "text": "Low 18.",
+    "seconds": 2.05,
+    "hash": "f18ec29e8d86",
+    "voice": "2a9126714f4e"
+  },
+  "weather-7": {
+    "chapter": "weather",
+    "where": "Weather line",
+    "text": "Tomorrow, partly sunny and cold.",
+    "seconds": 3.19,
+    "hash": "dc46a53115b0",
+    "voice": "2a9126714f4e"
+  },
+  "weather-8": {
+    "chapter": "weather",
+    "where": "Weather line",
+    "text": "High 31.",
+    "seconds": 2.17,
+    "hash": "6b262fdb8a2f",
+    "voice": "2a9126714f4e"
+  },
+  "weather-9": {
+    "chapter": "weather",
+    "where": "Weather line",
+    "text": "Currently in Pittsburgh, light snow, and 28 degrees.",
+    "seconds": 4.39,
+    "hash": "7c2515f0a292",
+    "voice": "2a9126714f4e"
+  },
+  "yell-1-mom-1": {
+    "chapter": "mom",
+    "where": "Picking up the extension during a BBS call",
+    "text": "Hello?",
+    "seconds": 1.62,
+    "hash": "0da72197e898",
+    "voice": "b4caa961aa41"
+  },
+  "yell-1-mom-2": {
+    "chapter": "mom",
+    "where": "Picking up the extension during a BBS call",
+    "text": "Hello?!",
+    "seconds": 1.69,
+    "hash": "3357d4b269ae",
+    "voice": "b4caa961aa41"
+  },
+  "yell-1-mom-3": {
+    "chapter": "mom",
+    "where": "Picking up the extension during a BBS call",
+    "text": "What is that screeching?",
+    "seconds": 2.05,
+    "hash": "d5d565e292c8",
+    "voice": "b4caa961aa41"
+  },
+  "yell-1-mom-4": {
+    "chapter": "mom",
+    "where": "Picking up the extension during a BBS call",
+    "text": "Is that the computer again?",
+    "seconds": 2.36,
+    "hash": "cd33976c215d",
+    "voice": "b4caa961aa41"
+  },
+  "yell-1-mom-5": {
+    "chapter": "mom",
+    "where": "Picking up the extension during a BBS call",
+    "text": "Get off the phone, I need to make a call!",
+    "seconds": 2.88,
+    "hash": "f277d32c7724",
+    "voice": "b4caa961aa41"
+  },
+  "yell-2-dad-2": {
+    "chapter": "dad",
+    "where": "Picking up the extension during a BBS call",
+    "text": "HELLO?",
+    "seconds": 2.3,
+    "hash": "0da72197e898",
+    "voice": "24a011153f36"
+  },
+  "yell-2-dad-3": {
+    "chapter": "dad",
+    "where": "Picking up the extension during a BBS call",
+    "text": "What in the world is that racket?",
+    "seconds": 2.79,
+    "hash": "8e6734770983",
+    "voice": "24a011153f36"
+  },
+  "yell-2-dad-4": {
+    "chapter": "dad",
+    "where": "Picking up the extension during a BBS call",
+    "text": "Are you on that bulletin board again?",
+    "seconds": 3.65,
+    "hash": "e6cd7955a589",
+    "voice": "24a011153f36"
+  },
+  "yell-2-dad-5": {
+    "chapter": "dad",
+    "where": "Picking up the extension during a BBS call",
+    "text": "I am expecting a call from work!",
+    "seconds": 3.58,
+    "hash": "2ce70c11f434",
+    "voice": "24a011153f36"
+  },
+  "yell-3-mom-2": {
+    "chapter": "mom",
+    "where": "Picking up the extension during a BBS call",
+    "text": "Who is this?",
+    "seconds": 1.84,
+    "hash": "b7f28b09afe4",
+    "voice": "b4caa961aa41"
+  },
+  "yell-3-mom-3": {
+    "chapter": "mom",
+    "where": "Picking up the extension during a BBS call",
+    "text": "Oh, for crying out loud, it is that modem again!",
+    "seconds": 3.79,
+    "hash": "0860319dcc6d",
+    "voice": "b4caa961aa41"
+  },
+  "yell-3-mom-4": {
+    "chapter": "mom",
+    "where": "Picking up the extension during a BBS call",
+    "text": "I have been trying to call Grandma all evening!",
+    "seconds": 3.22,
+    "hash": "d864adea2666",
+    "voice": "b4caa961aa41"
+  }
+}

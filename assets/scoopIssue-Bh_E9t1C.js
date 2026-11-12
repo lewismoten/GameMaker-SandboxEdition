@@ -1,0 +1,1 @@
+import{S as n}from"./scoopIssues-Bd5MubYo.js";const s=e=>Object.keys(n).indexOf(e),r=e=>n[e.id]??`${e.year??1995}-99`;function a(e,c){const i=[...c].sort((o,t)=>r(o).localeCompare(r(t))||(s(o.id)>=0&&s(t.id)>=0?s(o.id)-s(t.id):0)||o.title.localeCompare(t.title)),d=i.findIndex(o=>o.id===e);return d>=0?d+1:i.length+1}export{a as s};

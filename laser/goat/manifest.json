@@ -1,0 +1,98 @@
+{
+ "key": "laser-nickel",
+ "game": "goat",
+ "title": "Third Goat from the Left",
+ "concept": "A shepherds' tally token: the third goat from the left.",
+ "source": "6b32811f7efd251c",
+ "mm": {
+  "coin": 38.1,
+  "sheet": [
+   270,
+   150
+  ],
+  "jigHole": 38,
+  "jigAt": [
+   235,
+   75
+  ],
+  "pitch": 44,
+  "wood": 3
+ },
+ "colors": {
+  "cut": "#ff0000",
+  "score": "#ff00ff",
+  "engrave": "#0000ff"
+ },
+ "series": {
+  "no": 5,
+  "of": 26,
+  "letter": "N",
+  "message": "BEKINDANDKEEPPLAYINGFRIEND"
+ },
+ "holes": [],
+ "clearance": {
+  "front": [],
+  "back": []
+ },
+ "reach": {
+  "front": 15.07,
+  "back": 15.07
+ },
+ "texts": {
+  "front": [
+   {
+    "text": "THIRD GOAT",
+    "capMm": 2.52
+   },
+   {
+    "text": "FROM THE LEFT",
+    "capMm": 2.5
+   }
+  ],
+  "back": [
+   {
+    "text": "GOOD FOR",
+    "capMm": 2.52
+   },
+   {
+    "text": "SANDBOX SOFTWARE",
+    "capMm": 2.5
+   },
+   {
+    "text": "ONE GOAT",
+    "capMm": 2.52
+   },
+   {
+    "text": "SCREAM",
+    "capMm": 2.52
+   },
+   {
+    "text": "NO.05/26",
+    "capMm": 2.5
+   },
+   {
+    "text": "1994 SM",
+    "capMm": 2.5
+   },
+   {
+    "text": "sandscript N",
+    "capMm": 2.52
+   }
+  ]
+ },
+ "paths": {
+  "front": 193,
+  "back": 387,
+  "sheet": 2318
+ },
+ "files": [
+  "front.svg",
+  "back.svg",
+  "sheet.svg",
+  "sheet-back.svg",
+  "front.png",
+  "back.png",
+  "sheet.png",
+  "manifest.json"
+ ]
+}

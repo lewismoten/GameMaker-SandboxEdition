@@ -1,0 +1,643 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>The Sandbox Scoop</title>
+    <link>https://lewismoten.github.io/GameMaker-SandboxEdition/</link>
+    <atom:link href="https://lewismoten.github.io/GameMaker-SandboxEdition/scoop.xml" rel="self" type="application/rss+xml" />
+    <description>News from Sandbox Software: the stories in the newsletter that comes in every game's box.</description>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 01 Nov 2026 12:00:00 GMT</lastBuildDate>
+    <item>
+      <title>Since last issue: A year of Sparky mail</title>
+      <link>https://lewismoten.github.io/GameMaker-SandboxEdition/play-logic.html</link>
+      <guid isPermaLink="false">https://lewismoten.github.io/GameMaker-SandboxEdition/#scoop/logic/since-last-issue-a-year-of-sparky-mail</guid>
+      <category>Ohm Sweet Ohm</category>
+      <pubDate>Sun, 01 Nov 2026 12:00:00 GMT</pubDate>
+      <description><![CDATA[<p>It has been a while since issue 2, and the mailbag filled up. Your favorite gadget in In The Year 2000! was the Teleport-A-Phone. Your least favorite moment was running out of quarters at the Phone Exchange (every room has more, and they come back each time you dial). Three of you sent drawings of Sparky 3000, and one of you built him out of a shoebox and two flashlights.</p>]]></description>
+    </item>
+    <item>
+      <title>Around the Sandbox: Bouncy</title>
+      <link>https://lewismoten.github.io/GameMaker-SandboxEdition/play-tuneup.html</link>
+      <guid isPermaLink="false">https://lewismoten.github.io/GameMaker-SandboxEdition/#scoop/tuneup/around-the-sandbox-bouncy</guid>
+      <category>Tune-Up</category>
+      <pubDate>Sun, 01 Nov 2026 12:00:00 GMT</pubDate>
+      <description><![CDATA[<p>The workshop smelled of vinegar for two days this month. Doc Leo read that a raw egg left in vinegar loses its shell and goes bouncy, and had to see it for himself. It worked. Sir Reginald III watched the whole time and called it "hardly the point of an egg." Teddy was not allowed to play with it. Gwinn was not asked.]]></description>
+    </item>
+    <item>
+      <title>In the workshop: One more Teddy</title>
+      <link>https://lewismoten.github.io/GameMaker-SandboxEdition/play-tuneup.html</link>
+      <guid isPermaLink="false">https://lewismoten.github.io/GameMaker-SandboxEdition/#scoop/tuneup/in-the-workshop-one-more-teddy</guid>
+      <category>Tune-Up</category>
+      <pubDate>Sun, 01 Nov 2026 12:00:00 GMT</pubDate>
+      <description><![CDATA[<p>The Teddy trilogy ends next month with <b>Teddy's Little Biggest Adventure</b>: seventeen stops, every place and friend from the first two games, and a surprise Teddy knows nothing about. For the first time, you get to drive THE CHEZ. What is the occasion? We can't say. Gwinn made us promise.</p>]]></description>
+    </item>
+    <item>
+      <title>Letters: &#34;Does the tuba know it is a tuba?&#34;</title>
+      <link>https://lewismoten.github.io/GameMaker-SandboxEdition/play-tuneup.html</link>
+      <guid isPermaLink="false">https://lewismoten.github.io/GameMaker-SandboxEdition/#scoop/tuneup/letters-does-the-tuba-know-it-is-a-tuba</guid>
+      <category>Tune-Up</category>
+      <pubDate>Sun, 01 Nov 2026 12:00:00 GMT</pubDate>
+      <description><![CDATA[<p>We asked. The tuba has not commented. It is, however, very good at keeping the beat, and it has never once knocked over a trunk. Write to us about the trunk.]]></description>
+    </item>
+    <item>
+      <title>Since last issue: Teddy&#39;s Little Bigger Adventure</title>
+      <link>https://lewismoten.github.io/GameMaker-SandboxEdition/play-tuneup.html</link>
+      <guid isPermaLink="false">https://lewismoten.github.io/GameMaker-SandboxEdition/#scoop/tuneup/since-last-issue-teddy-s-little-bigger-adventure</guid>
+      <category>Tune-Up</category>
+      <pubDate>Sun, 01 Nov 2026 12:00:00 GMT</pubDate>
+      <description><![CDATA[<p>The dog show is over, and Teddy's Little Bigger Adventure players are still not telling the BBS how the Best Behaved ring came out. Thank you. The most-asked question: can Gwinn really sit? Halfway, yes. Her tail has opinions.]]></description>
+    </item>
+    <item>
+      <title>Tune-Up: no wrenches, no problem</title>
+      <link>https://lewismoten.github.io/GameMaker-SandboxEdition/play-tuneup.html</link>
+      <guid isPermaLink="false">https://lewismoten.github.io/GameMaker-SandboxEdition/#scoop/tuneup/tune-up-no-wrenches-no-problem</guid>
+      <category>Tune-Up</category>
+      <pubDate>Sun, 01 Nov 2026 12:00:00 GMT</pubDate>
+      <description><![CDATA[<p>It's parade morning, THE&nbsp;CHEZ honks like a kazoo, and Gwinn has buried the toolbox. Our newest game, <b>Tune-Up</b>, sends Doc Leo inside the car to tune it up by ear, with Sir Reginald III, his rubber chicken, doing the fiddly bits. Crank the battery to a bugle call, pluck the spark plugs like a harp, play the timing back into step on four glass pipes and oil the Squeaks off a staff. A Sound Blaster is a very good idea.]]></description>
+    </item>
+    <item>
+      <title>Around the Sandbox: Our lighting director</title>
+      <link>https://lewismoten.github.io/GameMaker-SandboxEdition/play-depth.html</link>
+      <guid isPermaLink="false">https://lewismoten.github.io/GameMaker-SandboxEdition/#scoop/depth/around-the-sandbox-our-lighting-director</guid>
+      <category>Depth Perception</category>
+      <pubDate>Sun, 25 Oct 2026 12:00:00 GMT</pubDate>
+      <description><![CDATA[<p>Doc Leo has a new title. He spent so many nights at the office watching renders crawl down the screen that we made him our lighting director, which mostly means he leaves the spotlight on. He paces the Teapot Temple with his rubber chicken, Teddy strolls the Checkerboard, Gwinn sits pretty in the Glass Garden and THE CHEZ is parked in the temple, charging. Gwinn's sit is ray traced. We're counting it.</p>]]></description>
+    </item>
+    <item>
+      <title>In the workshop: We are getting around to it</title>
+      <link>https://lewismoten.github.io/GameMaker-SandboxEdition/play-depth.html</link>
+      <guid isPermaLink="false">https://lewismoten.github.io/GameMaker-SandboxEdition/#scoop/depth/in-the-workshop-we-are-getting-around-to-it</guid>
+      <category>Depth Perception</category>
+      <pubDate>Sun, 25 Oct 2026 12:00:00 GMT</pubDate>
+      <description><![CDATA[<p>Since our first disk you've asked for a role-playing game, and since our first disk we've said we'd get around to it. We're getting around to it: <b>Quest for the Round Tuit</b>, a whole kingdom where everything gets done, eventually. Towns, dungeons, a quest log, and a horseless carriage you may recognize.</p>]]></description>
+    </item>
+    <item>
+      <title>Letters: &#34;A corgi in my library book&#34;</title>
+      <link>https://lewismoten.github.io/GameMaker-SandboxEdition/play-depth.html</link>
+      <guid isPermaLink="false">https://lewismoten.github.io/GameMaker-SandboxEdition/#scoop/depth/letters-a-corgi-in-my-library-book</guid>
+      <category>Depth Perception</category>
+      <pubDate>Sun, 25 Oct 2026 12:00:00 GMT</pubDate>
+      <description><![CDATA[<p><i>"I found a corgi in one of the library books. Is that allowed?"</i> - A reader, by mail</p><p><b>The Scoop replies:</b> Teddy is allowed. Gwinn is not allowed in the library, and is in the library.</p>]]></description>
+    </item>
+    <item>
+      <title>Since last issue: The Word Counter is still thinking</title>
+      <link>https://lewismoten.github.io/GameMaker-SandboxEdition/play-depth.html</link>
+      <guid isPermaLink="false">https://lewismoten.github.io/GameMaker-SandboxEdition/#scoop/depth/since-last-issue-the-word-counter-is-still-thinking</guid>
+      <category>Depth Perception</category>
+      <pubDate>Sun, 25 Oct 2026 12:00:00 GMT</pubDate>
+      <description><![CDATA[<p>KEEP IT BRIEF! readers have put a lot of stories back together this month. The Word Counter found exactly one hundred words in each one but Steam-Powered Summer, where it found ninety-nine until somebody pointed out what a hyphen does. It is still thinking about it. Judging by the BBS, so are some of you.</p>]]></description>
+    </item>
+    <item>
+      <title>Around the Sandbox: Trick or treat</title>
+      <link>https://lewismoten.github.io/GameMaker-SandboxEdition/play-sleuth.html</link>
+      <guid isPermaLink="false">https://lewismoten.github.io/GameMaker-SandboxEdition/#scoop/sleuth/around-the-sandbox-trick-or-treat</guid>
+      <category>Final Curtain</category>
+      <pubDate>Sun, 25 Oct 2026 12:00:00 GMT</pubDate>
+      <description><![CDATA[<p>On Halloween night Doc Leo will be at the office door with balloon animals for the trick-or-treaters: dogs, swords and, by special request, one very long giraffe. Teddy is going as a knight again. Gwinn is going as Gwinn; she ate the other costume. THE CHEZ is going as a pumpkin, which, being tomato red, it already mostly is.</p>]]></description>
+    </item>
+    <item>
+      <title>Final Curtain: our first whodunit</title>
+      <link>https://lewismoten.github.io/GameMaker-SandboxEdition/play-sleuth.html</link>
+      <guid isPermaLink="false">https://lewismoten.github.io/GameMaker-SandboxEdition/#scoop/sleuth/final-curtain-our-first-whodunit</guid>
+      <category>Final Curtain</category>
+      <pubDate>Sun, 25 Oct 2026 12:00:00 GMT</pubDate>
+      <description><![CDATA[<p>Port Ellery, Halloween night, 1936. Six hundred people watched Victor Crane die in Act III of THE RAVEN'S BRIDE and thought it was acting. In <b>Final Curtain</b> you are Inspector Ada Penn of Homicide, and you have until dawn. Search the Paragon with the house lights up, then again by the ghost light; question five suspects, then show them what you found. Name the killer, how and why. Commissioner Hale gives you three chances.</p>]]></description>
+    </item>
+    <item>
+      <title>In the workshop: A library in a box</title>
+      <link>https://lewismoten.github.io/GameMaker-SandboxEdition/play-sleuth.html</link>
+      <guid isPermaLink="false">https://lewismoten.github.io/GameMaker-SandboxEdition/#scoop/sleuth/in-the-workshop-a-library-in-a-box</guid>
+      <category>Final Curtain</category>
+      <pubDate>Sun, 25 Oct 2026 12:00:00 GMT</pubDate>
+      <description><![CDATA[<p>Remember the Dog House, the tiny red lending library on a post on Maple Street in Teddy's adventure? We looked inside. It's much bigger than the box. <b>KEEP IT BRIEF!</b> is about the night every word fell out of every book, and the tin night librarian who has to put them back, exactly one hundred words at a time.</p>]]></description>
+    </item>
+    <item>
+      <title>Letters: &#34;Is the Clown Club real?&#34;</title>
+      <link>https://lewismoten.github.io/GameMaker-SandboxEdition/play-sleuth.html</link>
+      <guid isPermaLink="false">https://lewismoten.github.io/GameMaker-SandboxEdition/#scoop/sleuth/letters-is-the-clown-club-real</guid>
+      <category>Final Curtain</category>
+      <pubDate>Sun, 25 Oct 2026 12:00:00 GMT</pubDate>
+      <description><![CDATA[<p><i>"Teddy, Gwinn, Doc Leo, the Big Show... is the Clown Club real?"</i> - A reader, age 9</p><p><b>The Scoop replies:</b> Very real. Doc Leo marches in its parades, and the Clown Club puts on shows for kids all over town. In real life there are fewer custard pies.</p>]]></description>
+    </item>
+    <item>
+      <title>Since last issue: The Big Show went on</title>
+      <link>https://lewismoten.github.io/GameMaker-SandboxEdition/play-sleuth.html</link>
+      <guid isPermaLink="false">https://lewismoten.github.io/GameMaker-SandboxEdition/#scoop/sleuth/since-last-issue-the-big-show-went-on</guid>
+      <category>Final Curtain</category>
+      <pubDate>Sun, 25 Oct 2026 12:00:00 GMT</pubDate>
+      <description><![CDATA[<p>Teddy's Little Big Adventure is the most-played game on our BBS this summer. Play dead is still the favorite trick (it's the only way past the Pie-O-Matic), and the most-asked question is how high a corgi can hop. Two blocks easily, three with good steering, four never. A wall that tall always has another way around.</p>]]></description>
+    </item>
+    <item>
+      <title>Around the Sandbox: Homework comes first</title>
+      <link>https://lewismoten.github.io/GameMaker-SandboxEdition/play-year2000.html</link>
+      <guid isPermaLink="false">https://lewismoten.github.io/GameMaker-SandboxEdition/#scoop/year2000/around-the-sandbox-homework-comes-first</guid>
+      <category>In The Year 2000!</category>
+      <pubDate>Sun, 25 Oct 2026 12:00:00 GMT</pubDate>
+      <description><![CDATA[<p>The founder is a junior at Frankfort High, so Sandbox Software keeps strict hours: after homework, before bed, and all day Saturday. The office is still a desk, the family 286 and a stack of graph paper. The snow shovel has moved to the porch. It may be needed again.</p>]]></description>
+    </item>
+    <item>
+      <title>In the workshop: A puzzle made of pure Game-Maker</title>
+      <link>https://lewismoten.github.io/GameMaker-SandboxEdition/play-year2000.html</link>
+      <guid isPermaLink="false">https://lewismoten.github.io/GameMaker-SandboxEdition/#scoop/year2000/in-the-workshop-a-puzzle-made-of-pure-game-maker</guid>
+      <category>In The Year 2000!</category>
+      <pubDate>Sun, 25 Oct 2026 12:00:00 GMT</pubDate>
+      <description><![CDATA[<p>The founder's notebook is already full. First on the list is a puzzle game where electricity is made of ordinary Game-Maker blocks and monsters: switches, fuses, and a little robot who must never touch a live wire. Its working title is <b>Ohm Sweet Ohm</b>, and we apologize for it now. It won’t be quick: there’s homework first, and a diploma after that.</p>]]></description>
+    </item>
+    <item>
+      <title>Letters: &#34;Did you make it to the mall?&#34;</title>
+      <link>https://lewismoten.github.io/GameMaker-SandboxEdition/play-year2000.html</link>
+      <guid isPermaLink="false">https://lewismoten.github.io/GameMaker-SandboxEdition/#scoop/year2000/letters-did-you-make-it-to-the-mall</guid>
+      <category>In The Year 2000!</category>
+      <pubDate>Sun, 25 Oct 2026 12:00:00 GMT</pubDate>
+      <description><![CDATA[<p><i>"In Snowbound, did the real founder make it to the register in time?"</i> - A reader in West Virginia</p><p><b>The Scoop replies:</b> Look at the name on this newsletter. Then look at the box your game came in.</p>]]></description>
+    </item>
+    <item>
+      <title>Our second game: In The Year 2000!</title>
+      <link>https://lewismoten.github.io/GameMaker-SandboxEdition/play-year2000.html</link>
+      <guid isPermaLink="false">https://lewismoten.github.io/GameMaker-SandboxEdition/#scoop/year2000/our-second-game-in-the-year-2000</guid>
+      <category>In The Year 2000!</category>
+      <pubDate>Sun, 25 Oct 2026 12:00:00 GMT</pubDate>
+      <description><![CDATA[<p>Sandbox Software is four months old, and its second game is in your hands. In <b>In The Year 2000!</b> you are Dex Dynamo, age 11, and your robot dog Sparky 3000 just ate your science report. Find 20 pages across six levels of the future, from the dome homes of Hover Heights to the Moon, and get them to the Science Fair by 3:00. Bring a quarter: every phone booth is a Teleport-A-Phone.</p>]]></description>
+    </item>
+    <item>
+      <title>Since last issue: Snowbound, rough edges and all</title>
+      <link>https://lewismoten.github.io/GameMaker-SandboxEdition/play-year2000.html</link>
+      <guid isPermaLink="false">https://lewismoten.github.io/GameMaker-SandboxEdition/#scoop/year2000/since-last-issue-snowbound-rough-edges-and-all</guid>
+      <category>In The Year 2000!</category>
+      <pubDate>Sun, 25 Oct 2026 12:00:00 GMT</pubDate>
+      <description><![CDATA[<p>Snowbound got our roughest reviews and our warmest letters. Yes, it’s the simplest game we’ll ever make; it’s also the truest. Readers from all over Mineral County wrote to say we got the sled run on Jamie Street just right. The most-asked question: does the arcade eat all your dollars? Only if you let it. Count the can (F2) before you head for the register.</p>]]></description>
+    </item>
+    <item>
+      <title>Around the Sandbox: Neighbors on the line</title>
+      <link>https://lewismoten.github.io/GameMaker-SandboxEdition/play-brief.html</link>
+      <guid isPermaLink="false">https://lewismoten.github.io/GameMaker-SandboxEdition/#scoop/brief/around-the-sandbox-neighbors-on-the-line</guid>
+      <category>KEEP IT BRIEF! The Tiny Pockets Library</category>
+      <pubDate>Sun, 25 Oct 2026 12:00:00 GMT</pubDate>
+      <description><![CDATA[<p>We aren't the only game-makers on the 412 exchange. Over on The Sofa BBS (1-412-555-SOFA), The Bard of Bizarre has been uploading song-games, each one built around a song of his. It's a different shop with a different sense of humor, and we like it a lot. Tell the SysOp we said hi. Meanwhile, THE CHEZ is parked in front of the library in this game. Of course it's charging.</p>]]></description>
+    </item>
+    <item>
+      <title>In the workshop: Real depth</title>
+      <link>https://lewismoten.github.io/GameMaker-SandboxEdition/play-brief.html</link>
+      <guid isPermaLink="false">https://lewismoten.github.io/GameMaker-SandboxEdition/#scoop/brief/in-the-workshop-real-depth</guid>
+      <category>KEEP IT BRIEF! The Tiny Pockets Library</category>
+      <pubDate>Sun, 25 Oct 2026 12:00:00 GMT</pubDate>
+      <description><![CDATA[<p>The office 486 has been running all night for weeks, ray tracing chrome spheres, glass cubes and one red teapot. That's our next game: <b>Depth Perception</b>, where every scene has a near plane and a far plane, and only the one in focus is solid. No cardboard glasses required.</p>]]></description>
+    </item>
+    <item>
+      <title>Letters: &#34;Is Macbeth the cat a suspect?&#34;</title>
+      <link>https://lewismoten.github.io/GameMaker-SandboxEdition/play-brief.html</link>
+      <guid isPermaLink="false">https://lewismoten.github.io/GameMaker-SandboxEdition/#scoop/brief/letters-is-macbeth-the-cat-a-suspect</guid>
+      <category>KEEP IT BRIEF! The Tiny Pockets Library</category>
+      <pubDate>Sun, 25 Oct 2026 12:00:00 GMT</pubDate>
+      <description><![CDATA[<p><i>"Is Macbeth the cat a suspect? He was in every room I searched."</i> - A detective, by modem</p><p><b>The Scoop replies:</b> Not a suspect. Macbeth is the theater cat, and he goes wherever he likes. Most cats do.</p>]]></description>
+    </item>
+    <item>
+      <title>Since last issue: Nobody has spoiled it</title>
+      <link>https://lewismoten.github.io/GameMaker-SandboxEdition/play-brief.html</link>
+      <guid isPermaLink="false">https://lewismoten.github.io/GameMaker-SandboxEdition/#scoop/brief/since-last-issue-nobody-has-spoiled-it</guid>
+      <category>KEEP IT BRIEF! The Tiny Pockets Library</category>
+      <pubDate>Sun, 25 Oct 2026 12:00:00 GMT</pubDate>
+      <description><![CDATA[<p>Final Curtain detectives: thank you for keeping the solution off the BBS. Commissioner Hale has handed out a lot of strikes this month. The most-asked question is about Victor's safe: three dials, four symbols, no numbers. Victor never wrote anything down that he could hang on a wall instead. Go and look at his walls.</p>]]></description>
+    </item>
+    <item>
+      <title>Around the Sandbox: A clown on the line</title>
+      <link>https://lewismoten.github.io/GameMaker-SandboxEdition/play-maximus.html</link>
+      <guid isPermaLink="false">https://lewismoten.github.io/GameMaker-SandboxEdition/#scoop/maximus/around-the-sandbox-a-clown-on-the-line</guid>
+      <category>Maximus: The Hundred Worlds</category>
+      <pubDate>Sun, 25 Oct 2026 12:00:00 GMT</pubDate>
+      <description><![CDATA[<p>While we were building the hails in Maximus, a friend of the office asked to be in one. So on Boxcar Flats you'll meet Doc Leo, PhD (Comedic Science), a hobo clown with a rubber chicken on a leash. Doc Leo is a proud member of the Clown Club, twists balloon animals for the kids at every parade, and parks a little red electric car out front. He says he'll be in more games. We believe him.</p>]]></description>
+    </item>
+    <item>
+      <title>In the workshop: Teddy gets a game</title>
+      <link>https://lewismoten.github.io/GameMaker-SandboxEdition/play-maximus.html</link>
+      <guid isPermaLink="false">https://lewismoten.github.io/GameMaker-SandboxEdition/#scoop/maximus/in-the-workshop-teddy-gets-a-game</guid>
+      <category>Maximus: The Hundred Worlds</category>
+      <pubDate>Sun, 25 Oct 2026 12:00:00 GMT</pubDate>
+      <description><![CDATA[<p>Remember Teddy, the SysOp's corgi? He's getting his own game, and it starts on the Fourth of July. <b>Sandcastle Knight</b> puts him in a tin helmet with a red plume as the knight of the backyard sandbox, with four castles to win back. Who knocked them down? Somebody with a lot of zoomies. You'll meet her next issue.</p>]]></description>
+    </item>
+    <item>
+      <title>Letters: &#34;Only in an emergency&#34;</title>
+      <link>https://lewismoten.github.io/GameMaker-SandboxEdition/play-maximus.html</link>
+      <guid isPermaLink="false">https://lewismoten.github.io/GameMaker-SandboxEdition/#scoop/maximus/letters-only-in-an-emergency</guid>
+      <category>Maximus: The Hundred Worlds</category>
+      <pubDate>Sun, 25 Oct 2026 12:00:00 GMT</pubDate>
+      <description><![CDATA[<p><i>"I told my mom I was shrinking down into the family 486 to fight a virus. She said to be home for dinner."</i> - A pilot, by modem</p><p><b>The Scoop replies:</b> Good advice. VACCINE.EXE is only for emergencies, and so is skipping dinner.</p>]]></description>
+    </item>
+    <item>
+      <title>Maximus: 100 scenes, and not one more</title>
+      <link>https://lewismoten.github.io/GameMaker-SandboxEdition/play-maximus.html</link>
+      <guid isPermaLink="false">https://lewismoten.github.io/GameMaker-SandboxEdition/#scoop/maximus/maximus-100-scenes-and-not-one-more</guid>
+      <category>Maximus: The Hundred Worlds</category>
+      <pubDate>Sun, 25 Oct 2026 12:00:00 GMT</pubDate>
+      <description><![CDATA[<p><b>Maximus: The Hundred Worlds</b> is out. The Maximus Core has gone dark, and Max, a courier at Maxima Station, must carry ten star-shards home across 88 worlds by pod, on foot, by rover and in a diving bell. Game-Maker holds up to 231 scenes; we stopped at 100: a galaxy chart, five sector charts, 88 worlds, the Maelstrom, the Citadel and the Heart, plus a title, a training deck and an ending. Every limit we found is in LIMITS.TXT on the disk.</p>]]></description>
+    </item>
+    <item>
+      <title>Since last issue: GLITCH is gone</title>
+      <link>https://lewismoten.github.io/GameMaker-SandboxEdition/play-maximus.html</link>
+      <guid isPermaLink="false">https://lewismoten.github.io/GameMaker-SandboxEdition/#scoop/maximus/since-last-issue-glitch-is-gone</guid>
+      <category>Maximus: The Hundred Worlds</category>
+      <pubDate>Sun, 25 Oct 2026 12:00:00 GMT</pubDate>
+      <description><![CDATA[<p>Virus Blaster pilots have been posting high scores on the BBS since July. Your favorite boss is the Feedback Howler; your least favorite is the Head Crash and its rings of platter shards. And the question everybody asks: can the BLASTER stop? No. The data stream never stops flowing. Pull Down to brake.</p>]]></description>
+    </item>
+    <item>
+      <title>Around the Sandbox: New address, new computer</title>
+      <link>https://lewismoten.github.io/GameMaker-SandboxEdition/play-logic.html</link>
+      <guid isPermaLink="false">https://lewismoten.github.io/GameMaker-SandboxEdition/#scoop/logic/around-the-sandbox-new-address-new-computer</guid>
+      <category>Ohm Sweet Ohm</category>
+      <pubDate>Sun, 25 Oct 2026 12:00:00 GMT</pubDate>
+      <description><![CDATA[<p>Where did we go? The founder finished high school, a 486 with a CD-ROM drive turned up as a graduation present, and Sandbox Software moved to Pittsburgh, where the founder is studying at the Art Institute of Pittsburgh. You can see it on the boxes. The best part of the new desk is a modem: our own BBS is online at 1-412-555-SAND, and every Sandbox game, hint and high-score list goes there first.</p>]]></description>
+    </item>
+    <item>
+      <title>In the workshop: Can Game-Maker scroll a shooter?</title>
+      <link>https://lewismoten.github.io/GameMaker-SandboxEdition/play-logic.html</link>
+      <guid isPermaLink="false">https://lewismoten.github.io/GameMaker-SandboxEdition/#scoop/logic/in-the-workshop-can-game-maker-scroll-a-shooter</guid>
+      <category>Ohm Sweet Ohm</category>
+      <pubDate>Sun, 25 Oct 2026 12:00:00 GMT</pubDate>
+      <description><![CDATA[<p>Everybody on the BBS says Game-Maker can't do a real scrolling shoot-'em-up. We think it can. The workbench has a nano-fighter, a lot of graph paper covered in circuit traces, and a title: <b>Virus Blaster</b>. A hint: it's set somewhere very close to you right now.</p>]]></description>
+    </item>
+    <item>
+      <title>Letters: &#34;Is the pocket telephone real?&#34;</title>
+      <link>https://lewismoten.github.io/GameMaker-SandboxEdition/play-logic.html</link>
+      <guid isPermaLink="false">https://lewismoten.github.io/GameMaker-SandboxEdition/#scoop/logic/letters-is-the-pocket-telephone-real</guid>
+      <category>Ohm Sweet Ohm</category>
+      <pubDate>Sun, 25 Oct 2026 12:00:00 GMT</pubDate>
+      <description><![CDATA[<p><i>"Dex's science report is about a telephone that fits in your pocket. Is that a real invention?"</i> - A reader, by mail</p><p><b>The Scoop replies:</b> Not yet. In our BBS poll it got two votes, and one of those was a joke. Ask us again in the year 2000.</p>]]></description>
+    </item>
+    <item>
+      <title>A horseless carriage in Procrastia</title>
+      <link>https://lewismoten.github.io/GameMaker-SandboxEdition/play-realm.html</link>
+      <guid isPermaLink="false">https://lewismoten.github.io/GameMaker-SandboxEdition/#scoop/realm/a-horseless-carriage-in-procrastia</guid>
+      <category>Quest for the Round Tuit</category>
+      <pubDate>Sun, 25 Oct 2026 12:00:00 GMT</pubDate>
+      <description><![CDATA[<p>Every kingdom needs a way to get around. Procrastia's is THE CHEZ, a horseless carriage from the far-off future of 1976 and a half, waiting in Professor Fiddlesticks' garage for something with lightning in it. Charge it and drive forty leagues of tidal mud across the Dawdle Flats; its ah-OOO-gah horn clears the crabs off the causeway. Its charge port is on the rear passenger side, as always.</p>]]></description>
+    </item>
+    <item>
+      <title>Around the Sandbox: Royal hounds</title>
+      <link>https://lewismoten.github.io/GameMaker-SandboxEdition/play-realm.html</link>
+      <guid isPermaLink="false">https://lewismoten.github.io/GameMaker-SandboxEdition/#scoop/realm/around-the-sandbox-royal-hounds</guid>
+      <category>Quest for the Round Tuit</category>
+      <pubDate>Sun, 25 Oct 2026 12:00:00 GMT</pubDate>
+      <description><![CDATA[<p>Teddy and Gwinn have royal jobs this time: they're the King's two runaway hounds, and Kennelmaster Bess would like them home. Doc Leo plays himself, as usual, and his rubber chicken finally has a name of its own. Office news: Gwinn sat on command this month. Once. Nobody had a camera, but three of us saw it.</p>]]></description>
+    </item>
+    <item>
+      <title>In the workshop: Where&#39;s Gwinn?</title>
+      <link>https://lewismoten.github.io/GameMaker-SandboxEdition/play-realm.html</link>
+      <guid isPermaLink="false">https://lewismoten.github.io/GameMaker-SandboxEdition/#scoop/realm/in-the-workshop-where-s-gwinn</guid>
+      <category>Quest for the Round Tuit</category>
+      <pubDate>Sun, 25 Oct 2026 12:00:00 GMT</pubDate>
+      <description><![CDATA[<p>The morning after the Big Show, Gwinn's bed is empty. That's how our next game begins: <b>Teddy's Little Bigger Adventure</b>. Teddy has a new trick, and for the first time in a Sandbox game you'll play as somebody else, too. Somebody big, brown and still learning to sit.</p>]]></description>
+    </item>
+    <item>
+      <title>Letters: &#34;Why ray tracing?&#34;</title>
+      <link>https://lewismoten.github.io/GameMaker-SandboxEdition/play-realm.html</link>
+      <guid isPermaLink="false">https://lewismoten.github.io/GameMaker-SandboxEdition/#scoop/realm/letters-why-ray-tracing</guid>
+      <category>Quest for the Round Tuit</category>
+      <pubDate>Sun, 25 Oct 2026 12:00:00 GMT</pubDate>
+      <description><![CDATA[<p><i>"My dad says ray tracing is for serious computers. Why is it in a game?"</i> - A reader, by modem</p><p><b>The Scoop replies:</b> Because a chrome sphere on a checkerboard is the most beautiful thing a computer can draw. Tell your dad the office 486 agrees, eventually.</p>]]></description>
+    </item>
+    <item>
+      <title>Since last issue: The box art made the printer</title>
+      <link>https://lewismoten.github.io/GameMaker-SandboxEdition/play-realm.html</link>
+      <guid isPermaLink="false">https://lewismoten.github.io/GameMaker-SandboxEdition/#scoop/realm/since-last-issue-the-box-art-made-the-printer</guid>
+      <category>Quest for the Round Tuit</category>
+      <pubDate>Sun, 25 Oct 2026 12:00:00 GMT</pubDate>
+      <description><![CDATA[<p>Depth Perception's box art went to the printer on time, and you've been pulling focus ever since. The trick most of you learned the hard way: a soft, see-through block isn't there right now. The trick most of you learned on the BBS: not every mirror in the Hall of Mirrors is a wall. And yes, registered players, the cardboard glasses are in your box. No, you won't need them.</p>]]></description>
+    </item>
+    <item>
+      <title>A corgi in a tin helmet</title>
+      <link>https://lewismoten.github.io/GameMaker-SandboxEdition/play-sandcast.html</link>
+      <guid isPermaLink="false">https://lewismoten.github.io/GameMaker-SandboxEdition/#scoop/sandcast/a-corgi-in-a-tin-helmet</guid>
+      <category>Sandcastle Knight</category>
+      <pubDate>Sun, 25 Oct 2026 12:00:00 GMT</pubDate>
+      <description><![CDATA[<p>Teddy the Pembroke Welsh Corgi is the knight of the backyard sandbox, and in <b>Sandcastle Knight</b> he wins back four castles, his toys and the Crown of the Sandbox from under his snoring big sister. Dig dunes, plug anthills, build towers of sand and show off his tricks: sit, spin, play dead and roll over. It's the Fourth of July, so every knight who wins back the crown gets fireworks. No sound card needed: Teddy beeps along on the PC speaker.</p>]]></description>
+    </item>
+    <item>
+      <title>Around the Sandbox: Meet Gwinn</title>
+      <link>https://lewismoten.github.io/GameMaker-SandboxEdition/play-sandcast.html</link>
+      <guid isPermaLink="false">https://lewismoten.github.io/GameMaker-SandboxEdition/#scoop/sandcast/around-the-sandbox-meet-gwinn</guid>
+      <category>Sandcastle Knight</category>
+      <pubDate>Sun, 25 Oct 2026 12:00:00 GMT</pubDate>
+      <description><![CDATA[<p>Teddy has a big sister. Gwinn is a chocolate-brown pit-lab mix with amber eyes and a pink collar, younger than Teddy and twice his size, and she knows exactly one trick: zoomies. In her first week at the office she knocked over a coffee can of pencils, unplugged the modem and lay down on the SysOp's keyboard. She has never once sat when asked. Everybody loves her anyway.</p>]]></description>
+    </item>
+    <item>
+      <title>Dial the sandbox</title>
+      <link>https://lewismoten.github.io/GameMaker-SandboxEdition/play-sandcast.html</link>
+      <guid isPermaLink="false">https://lewismoten.github.io/GameMaker-SandboxEdition/#scoop/sandcast/dial-the-sandbox</guid>
+      <category>Sandcastle Knight</category>
+      <pubDate>Sun, 25 Oct 2026 12:00:00 GMT</pubDate>
+      <description><![CDATA[<p>Not every little hole in the sandbox was dug by an ant. One of them dials our BBS, right inside the game, and your phone bill is safe. Have a look in the file area while you're logged on.</p>]]></description>
+    </item>
+    <item>
+      <title>In the workshop: Teddy&#39;s next adventure</title>
+      <link>https://lewismoten.github.io/GameMaker-SandboxEdition/play-sandcast.html</link>
+      <guid isPermaLink="false">https://lewismoten.github.io/GameMaker-SandboxEdition/#scoop/sandcast/in-the-workshop-teddy-s-next-adventure</guid>
+      <category>Sandcastle Knight</category>
+      <pubDate>Sun, 25 Oct 2026 12:00:00 GMT</pubDate>
+      <description><![CDATA[<p>Registered Sandcastle Knight players were promised the next Teddy adventure on disk, and it's on our workbench now: <b>Teddy's Little Big Adventure</b>. This time Teddy leaves the sandbox for the big town, with more tricks than ever and a friend of ours in a felt fedora. Your copy is on the house; watch the BBS for it.</p>]]></description>
+    </item>
+    <item>
+      <title>Letters: &#34;A galaxy on my monitor&#34;</title>
+      <link>https://lewismoten.github.io/GameMaker-SandboxEdition/play-sandcast.html</link>
+      <guid isPermaLink="false">https://lewismoten.github.io/GameMaker-SandboxEdition/#scoop/sandcast/letters-a-galaxy-on-my-monitor</guid>
+      <category>Sandcastle Knight</category>
+      <pubDate>Sun, 25 Oct 2026 12:00:00 GMT</pubDate>
+      <description><![CDATA[<p><i>"My Maximus galaxy chart is taped to the side of my monitor. Is that where it goes?"</i> - A courier, by mail</p><p><b>The Scoop replies:</b> That's where ours is. Fold it along the creases, and mind the Maelstrom.</p>]]></description>
+    </item>
+    <item>
+      <title>Since last issue: Couriers report in</title>
+      <link>https://lewismoten.github.io/GameMaker-SandboxEdition/play-sandcast.html</link>
+      <guid isPermaLink="false">https://lewismoten.github.io/GameMaker-SandboxEdition/#scoop/sandcast/since-last-issue-couriers-report-in</guid>
+      <category>Sandcastle Knight</category>
+      <pubDate>Sun, 25 Oct 2026 12:00:00 GMT</pubDate>
+      <description><![CDATA[<p>Maximus couriers have been busy. The most-hailed world is Boxcar Flats (hi, Doc Leo). The most-asked question is about the star whales: every whale in a pod swims the same loop at the same moment, so a pod keeps its shape. Several of you have noticed that a pod in The Cradle spells a name. We aren't saying whose.</p>]]></description>
+    </item>
+    <item>
+      <title>Around the Sandbox: A company started with a snow shovel</title>
+      <link>https://lewismoten.github.io/GameMaker-SandboxEdition/play-snowbound.html</link>
+      <guid isPermaLink="false">https://lewismoten.github.io/GameMaker-SandboxEdition/#scoop/snowbound/around-the-sandbox-a-company-started-with-a-snow-shovel</guid>
+      <category>Snowbound: The $89 Shovel</category>
+      <pubDate>Sun, 25 Oct 2026 12:00:00 GMT</pubDate>
+      <description><![CDATA[<p>This company was paid for one driveway at a time. When the big storm closed school on December 11, the founder shoveled the neighborhood at a dollar a scoop until there was enough for a copy of GAME-MAKER. Christmas vacation did the rest. The office is a desk, the family 286 and a stack of graph paper. The shovel is in the corner, in case we ever need another program.</p>]]></description>
+    </item>
+    <item>
+      <title>In the workshop: The future, as we see it</title>
+      <link>https://lewismoten.github.io/GameMaker-SandboxEdition/play-snowbound.html</link>
+      <guid isPermaLink="false">https://lewismoten.github.io/GameMaker-SandboxEdition/#scoop/snowbound/in-the-workshop-the-future-as-we-see-it</guid>
+      <category>Snowbound: The $89 Shovel</category>
+      <pubDate>Sun, 25 Oct 2026 12:00:00 GMT</pubDate>
+      <description><![CDATA[<p>Everybody knows what the year 2000 will be like: flying cars, robots everywhere and dinner in a pill. Our next game goes there to find out. In <b>In The Year 2000!</b> a kid and his robot dog have until 3:00 to get a science report to the Fair. The robot dog is the problem.</p>]]></description>
+    </item>
+    <item>
+      <title>Letters: The mailbag is empty</title>
+      <link>https://lewismoten.github.io/GameMaker-SandboxEdition/play-snowbound.html</link>
+      <guid isPermaLink="false">https://lewismoten.github.io/GameMaker-SandboxEdition/#scoop/snowbound/letters-the-mailbag-is-empty</guid>
+      <category>Snowbound: The $89 Shovel</category>
+      <pubDate>Sun, 25 Oct 2026 12:00:00 GMT</pubDate>
+      <description><![CDATA[<p>This is issue 1, so nobody has written to us yet. Be the first! Tell us how many dollars you scooped, which hill you sledded best, and whether Biscuit got you. The first letter we get goes right here.</p>]]></description>
+    </item>
+    <item>
+      <title>Snowbound: how Sandbox Software began</title>
+      <link>https://lewismoten.github.io/GameMaker-SandboxEdition/play-snowbound.html</link>
+      <guid isPermaLink="false">https://lewismoten.github.io/GameMaker-SandboxEdition/#scoop/snowbound/snowbound-how-sandbox-software-began</guid>
+      <category>Snowbound: The $89 Shovel</category>
+      <pubDate>Sun, 25 Oct 2026 12:00:00 GMT</pubDate>
+      <description><![CDATA[<p>Hello, and welcome to the very first Sandbox Scoop. Fort Ashby, West Virginia, Friday, December 11, 1992: a foot and a half of snow, no school, and a pink box in the window of Bits &amp; Bytes Software at LaVale Mall: GAME-MAKER, $89 until January. <b>Snowbound: The $89 Shovel</b> is the true(ish) story of how this company was paid for, and our first game. Dig out the neighbors’ driveways at a dollar a scoop, deliver the papers, sled down Jamie Street and get to the register before closing time. Mind Biscuit. He is very friendly.</p>]]></description>
+    </item>
+    <item>
+      <title>Around the Sandbox: The little red car has a name</title>
+      <link>https://lewismoten.github.io/GameMaker-SandboxEdition/play-teddy.html</link>
+      <guid isPermaLink="false">https://lewismoten.github.io/GameMaker-SandboxEdition/#scoop/teddy/around-the-sandbox-the-little-red-car-has-a-name</guid>
+      <category>Teddy&#39;s Little Big Adventure</category>
+      <pubDate>Sun, 25 Oct 2026 12:00:00 GMT</pubDate>
+      <description><![CDATA[<p>Doc Leo's little red CitiCar is in this game (his friend Pockets drives it between stops, with Teddy in the front seat), and you keep asking what it's called. Read the license plate: THE CHEZ. It's a 1976½ CitiCar, 100% electric, and it charges at about a mile an hour, so it's plugged in out front more often than not. Sharp-eyed players saw one before: Grandpa's CitiCar in In The Year 2000!</p>]]></description>
+    </item>
+    <item>
+      <title>In the workshop: A mystery for Halloween</title>
+      <link>https://lewismoten.github.io/GameMaker-SandboxEdition/play-teddy.html</link>
+      <guid isPermaLink="false">https://lewismoten.github.io/GameMaker-SandboxEdition/#scoop/teddy/in-the-workshop-a-mystery-for-halloween</guid>
+      <category>Teddy&#39;s Little Big Adventure</category>
+      <pubDate>Sun, 25 Oct 2026 12:00:00 GMT</pubDate>
+      <description><![CDATA[<p>Our first mystery is nearly done, and it's coming in October for a good reason. <b>Final Curtain</b> puts you in a trench coat at the Paragon Theatre on Halloween night, 1936. Every clue is in the game, and the solution comes in three parts: who, how and why. Our testers have argued about it over lunch for a week.</p>]]></description>
+    </item>
+    <item>
+      <title>Letters: &#34;Is Gwinn a bad dog?&#34;</title>
+      <link>https://lewismoten.github.io/GameMaker-SandboxEdition/play-teddy.html</link>
+      <guid isPermaLink="false">https://lewismoten.github.io/GameMaker-SandboxEdition/#scoop/teddy/letters-is-gwinn-a-bad-dog</guid>
+      <category>Teddy&#39;s Little Big Adventure</category>
+      <pubDate>Sun, 25 Oct 2026 12:00:00 GMT</pubDate>
+      <description><![CDATA[<p><i>"Gwinn flattened every castle and fell asleep on the crown. Is she a bad dog?"</i> - Two readers, one of them a little sister</p><p><b>The Scoop replies:</b> No. Gwinn is a good girl who knocks things over. In this game she might even learn a trick. Keep an eye on her.</p>]]></description>
+    </item>
+    <item>
+      <title>Since last issue: The crown is back</title>
+      <link>https://lewismoten.github.io/GameMaker-SandboxEdition/play-teddy.html</link>
+      <guid isPermaLink="false">https://lewismoten.github.io/GameMaker-SandboxEdition/#scoop/teddy/since-last-issue-the-crown-is-back</guid>
+      <category>Teddy&#39;s Little Big Adventure</category>
+      <pubDate>Sun, 25 Oct 2026 12:00:00 GMT</pubDate>
+      <description><![CDATA[<p>Sandcastle Knight was our first game made for the PC speaker alone, and you played it everywhere. You found the secret dial-up in about a week, and the GIF in its file area, the SysOp and his corgi, is the most downloaded picture on the board. The most-asked question: how do I get past Gwinn? Toss her a tennis ball. She can't resist.</p>]]></description>
+    </item>
+    <item>
+      <title>Around the Sandbox: Gwinn&#39;s progress report</title>
+      <link>https://lewismoten.github.io/GameMaker-SandboxEdition/play-teddy2.html</link>
+      <guid isPermaLink="false">https://lewismoten.github.io/GameMaker-SandboxEdition/#scoop/teddy2/around-the-sandbox-gwinn-s-progress-report</guid>
+      <category>Teddy&#39;s Little Bigger Adventure</category>
+      <pubDate>Sun, 25 Oct 2026 12:00:00 GMT</pubDate>
+      <description><![CDATA[<p>Gwinn has her own levels this time, and our testers say she's a natural: she BOOFs, she chews, she digs big and she does zoomies straight through the hay bales. Her SIT is coming along. She gets about halfway, sits for one moment, and is up again wiggling. We're told that's how it starts.</p>]]></description>
+    </item>
+    <item>
+      <title>In the workshop: The biggest one yet</title>
+      <link>https://lewismoten.github.io/GameMaker-SandboxEdition/play-teddy2.html</link>
+      <guid isPermaLink="false">https://lewismoten.github.io/GameMaker-SandboxEdition/#scoop/teddy2/in-the-workshop-the-biggest-one-yet</guid>
+      <category>Teddy&#39;s Little Bigger Adventure</category>
+      <pubDate>Sun, 25 Oct 2026 12:00:00 GMT</pubDate>
+      <description><![CDATA[<p>The Clown Club is putting a band together for the town parade, and Gwinn has already knocked over the trunk: <b>Tune-Up</b> is next, with thirteen neighborhoods of lost instruments for Teddy to fetch. Then the Teddy trilogy ends with <b>Teddy's Little Biggest Adventure</b>: every place from the first two games, more heroes than ever, and, for the first time, you get to drive THE CHEZ. What's the occasion? We can't say. Gwinn made us promise.</p>]]></description>
+    </item>
+    <item>
+      <title>Since last issue: The kingdom got around to it</title>
+      <link>https://lewismoten.github.io/GameMaker-SandboxEdition/play-teddy2.html</link>
+      <guid isPermaLink="false">https://lewismoten.github.io/GameMaker-SandboxEdition/#scoop/teddy2/since-last-issue-the-kingdom-got-around-to-it</guid>
+      <category>Teddy&#39;s Little Bigger Adventure</category>
+      <pubDate>Sun, 25 Oct 2026 12:00:00 GMT</pubDate>
+      <description><![CDATA[<p>Quest for the Round Tuit players have been very prompt. The Royal Library reports the Tome of Tomorrow returned, three hundred years overdue, by dozens of you, and Doc Leo reports Sir Reginald Cluckington III home safe. The most-asked question on the BBS: where can I swim? Nowhere. The rivers of Procrastia can't be swum. Look for bridges.</p>]]></description>
+    </item>
+    <item>
+      <title>Around the Sandbox: From a snow shovel to here</title>
+      <link>https://lewismoten.github.io/GameMaker-SandboxEdition/play-teddy3.html</link>
+      <guid isPermaLink="false">https://lewismoten.github.io/GameMaker-SandboxEdition/#scoop/teddy3/around-the-sandbox-from-a-snow-shovel-to-here</guid>
+      <category>Teddy&#39;s Little Biggest Adventure</category>
+      <pubDate>Sun, 25 Oct 2026 12:00:00 GMT</pubDate>
+      <description><![CDATA[<p>Two years ago this company was the family 286, a snow shovel and a box of GAME-MAKER. Since then: a future, a smart home, a virus, a galaxy, a sandbox, a big town, a theater, a library, a snowstorm, a render, a kingdom, a fair, and now a birthday. Teddy still sleeps on the modem cable. Gwinn still sits about halfway. Doc Leo still leaves the spotlight on, and THE CHEZ is still charging. Thank you for reading.</p>]]></description>
+    </item>
+    <item>
+      <title>In the workshop: Your turn</title>
+      <link>https://lewismoten.github.io/GameMaker-SandboxEdition/play-teddy3.html</link>
+      <guid isPermaLink="false">https://lewismoten.github.io/GameMaker-SandboxEdition/#scoop/teddy3/in-the-workshop-your-turn</guid>
+      <category>Teddy&#39;s Little Biggest Adventure</category>
+      <pubDate>Sun, 25 Oct 2026 12:00:00 GMT</pubDate>
+      <description><![CDATA[<p>For the first time since issue 1, the workbench is clear. What comes next is up to you: every Sandbox game was made with GAME-MAKER, and if you can draw a block, you can make a game. Upload yours to our BBS, 1-412-555-SAND. We'll print the best of them here.</p>]]></description>
+    </item>
+    <item>
+      <title>Since last issue: Best Behaved?</title>
+      <link>https://lewismoten.github.io/GameMaker-SandboxEdition/play-teddy3.html</link>
+      <guid isPermaLink="false">https://lewismoten.github.io/GameMaker-SandboxEdition/#scoop/teddy3/since-last-issue-best-behaved</guid>
+      <category>Teddy&#39;s Little Biggest Adventure</category>
+      <pubDate>Sun, 25 Oct 2026 12:00:00 GMT</pubDate>
+      <description><![CDATA[<p>Tune-Up got the Clown Club band's trunk back to the bandstand, instrument by instrument, and the BBS hasn't stopped asking about the farm's cowbell. Teddy's Little Bigger Adventure players are still being very good about not posting how the Best Behaved ring turns out; keep it that way. The most-asked question: is SNIFF really better than rolling over? Teddy says yes. He is a professional.</p>]]></description>
+    </item>
+    <item>
+      <title>Around the Sandbox: The SysOp&#39;s assistant</title>
+      <link>https://lewismoten.github.io/GameMaker-SandboxEdition/play-blaster.html</link>
+      <guid isPermaLink="false">https://lewismoten.github.io/GameMaker-SandboxEdition/#scoop/blaster/around-the-sandbox-the-sysop-s-assistant</guid>
+      <category>Virus Blaster</category>
+      <pubDate>Sun, 25 Oct 2026 12:00:00 GMT</pubDate>
+      <description><![CDATA[<p>The SysOp checks every upload for viruses before it goes in the file area, and he has help: a corgi named Teddy, who sleeps under the desk with his chin on the modem cable. This month Teddy walked across the keyboard twice and posted one message to the board. It read "jjjjjjjjj". It is our most popular message.</p>]]></description>
+    </item>
+    <item>
+      <title>In the workshop: A hundred worlds</title>
+      <link>https://lewismoten.github.io/GameMaker-SandboxEdition/play-blaster.html</link>
+      <guid isPermaLink="false">https://lewismoten.github.io/GameMaker-SandboxEdition/#scoop/blaster/in-the-workshop-a-hundred-worlds</guid>
+      <category>Virus Blaster</category>
+      <pubDate>Sun, 25 Oct 2026 12:00:00 GMT</pubDate>
+      <description><![CDATA[<p>Our biggest game yet is on the workbench, and it's big on purpose: we want to find out how much Game-Maker can hold. A courier, a galaxy chart, five sectors and eighty-eight worlds to land on, every one of them wrapping all the way around. It's called <b>Maximus: The Hundred Worlds</b>. It needs a 386. Sorry, 286.</p>]]></description>
+    </item>
+    <item>
+      <title>Letters: &#34;My clock radio plays polka&#34;</title>
+      <link>https://lewismoten.github.io/GameMaker-SandboxEdition/play-blaster.html</link>
+      <guid isPermaLink="false">https://lewismoten.github.io/GameMaker-SandboxEdition/#scoop/blaster/letters-my-clock-radio-plays-polka</guid>
+      <category>Virus Blaster</category>
+      <pubDate>Sun, 25 Oct 2026 12:00:00 GMT</pubDate>
+      <description><![CDATA[<p><i>"My clock radio plays polka at three in the morning, just like the Bitmores'. Is my house haunted?"</i> - A reader in Ohio</p><p><b>The Scoop replies:</b> Check for lightning. Then send for Watt.</p>]]></description>
+    </item>
+    <item>
+      <title>Readable from across the room</title>
+      <link>https://lewismoten.github.io/GameMaker-SandboxEdition/play-blaster.html</link>
+      <guid isPermaLink="false">https://lewismoten.github.io/GameMaker-SandboxEdition/#scoop/blaster/readable-from-across-the-room</guid>
+      <category>Virus Blaster</category>
+      <pubDate>Sun, 25 Oct 2026 12:00:00 GMT</pubDate>
+      <description><![CDATA[<p>Overcreative Labs says you can read the name on a Sound Boaster from across the room. Virus Blaster put that to the test. On the sound card, in the run called <i>The Big Name</i>, the BLASTER flies up the face of the card, over SOUND BOASTER in letters two blocks tall. The FM chip carries its maker's name too: YO MAMA! HA HA HA. It laughs. <i>Modest</i> is still not on the board.</p>]]></description>
+    </item>
+    <item>
+      <title>Since last issue: Watt made it home</title>
+      <link>https://lewismoten.github.io/GameMaker-SandboxEdition/play-blaster.html</link>
+      <guid isPermaLink="false">https://lewismoten.github.io/GameMaker-SandboxEdition/#scoop/blaster/since-last-issue-watt-made-it-home</guid>
+      <category>Virus Blaster</category>
+      <pubDate>Sun, 25 Oct 2026 12:00:00 GMT</pubDate>
+      <description><![CDATA[<p>Ohm Sweet Ohm players have been rewiring the Bitmores' Smart Home all spring. The most-asked question on the BBS: why can't Watt roll on a slant? Circuit boards are wired in straight lines, and so is Watt. The most-pressed key, by a mile, is R for reboot. It costs a spare battery, and the board starts over exactly as it was.</p>]]></description>
+    </item>
+    <item>
+      <title>Letters: &#34;Is it really Teddy&#39;s birthday?&#34;</title>
+      <link>https://lewismoten.github.io/GameMaker-SandboxEdition/play-teddy3.html</link>
+      <guid isPermaLink="false">https://lewismoten.github.io/GameMaker-SandboxEdition/#scoop/teddy3/letters-is-it-really-teddy-s-birthday</guid>
+      <category>Teddy&#39;s Little Biggest Adventure</category>
+      <pubDate>Sat, 24 Oct 2026 12:00:00 GMT</pubDate>
+      <description><![CDATA[<p>We can't say. We really can't. Gwinn would never forgive us. Play to the end.</p>]]></description>
+    </item>
+    <item>
+      <title>Teddy&#39;s back for the big one</title>
+      <link>https://lewismoten.github.io/GameMaker-SandboxEdition/play-teddy3.html</link>
+      <guid isPermaLink="false">https://lewismoten.github.io/GameMaker-SandboxEdition/#scoop/teddy3/teddy-s-back-for-the-big-one</guid>
+      <category>Teddy&#39;s Little Biggest Adventure</category>
+      <pubDate>Sat, 24 Oct 2026 12:00:00 GMT</pubDate>
+      <description><![CDATA[<p>The Teddy trilogy ends with its biggest adventure yet: <b>Teddy's Little Biggest Adventure</b>. Seventeen stops, a dream run, every place and friend from the first two games, and four heroes: Teddy, Gwinn, Doc Leo (at last!) and THE CHEZ, which you get to drive. Mind the charge.</p>]]></description>
+    </item>
+    <item>
+      <title>How long does a render take?</title>
+      <link>https://lewismoten.github.io/GameMaker-SandboxEdition/play-depth.html</link>
+      <guid isPermaLink="false">https://lewismoten.github.io/GameMaker-SandboxEdition/#scoop/depth/how-long-does-a-render-take</guid>
+      <category>Depth Perception</category>
+      <pubDate>Thu, 22 Oct 2026 12:00:00 GMT</pubDate>
+      <description><![CDATA[<p>Every block, sprite and cartoon in <b>Depth Perception</b> was ray traced on our office 486. The intro alone took a long weekend. The box art took eleven hours and a vampire. We are told the next machine will be faster.</p>]]></description>
+    </item>
+    <item>
+      <title>We threw away the cardboard glasses</title>
+      <link>https://lewismoten.github.io/GameMaker-SandboxEdition/play-depth.html</link>
+      <guid isPermaLink="false">https://lewismoten.github.io/GameMaker-SandboxEdition/#scoop/depth/we-threw-away-the-cardboard-glasses</guid>
+      <category>Depth Perception</category>
+      <pubDate>Thu, 22 Oct 2026 12:00:00 GMT</pubDate>
+      <description><![CDATA[<p>Our art department spent a week squinting through red and blue cellophane before Doc Leo said what everybody was thinking: real depth isn't two colors, it's focus. <b>Depth Perception</b> has a near plane and a far plane in every scene, and only the one in focus is solid. The glasses are still in the box. You won't need them.</p>]]></description>
+    </item>
+    <item>
+      <title>A library in a box on a post</title>
+      <link>https://lewismoten.github.io/GameMaker-SandboxEdition/play-brief.html</link>
+      <guid isPermaLink="false">https://lewismoten.github.io/GameMaker-SandboxEdition/#scoop/brief/a-library-in-a-box-on-a-post</guid>
+      <category>KEEP IT BRIEF! The Tiny Pockets Library</category>
+      <pubDate>Thu, 22 Oct 2026 12:00:00 GMT</pubDate>
+      <description><![CDATA[<p>Our lawyers asked us to keep the press release for <b>KEEP IT BRIEF!</b> under one hundred words, so: thirty-two stories, one hundred words each, a tin librarian who refuses to round, and shushers who fine. Register for $10. Exactly $10. The Word Counter will not make change. Keep it brief.</p>]]></description>
+    </item>
+    <item>
+      <title>Sandbox Software Gets Around to an RPG</title>
+      <link>https://lewismoten.github.io/GameMaker-SandboxEdition/play-realm.html</link>
+      <guid isPermaLink="false">https://lewismoten.github.io/GameMaker-SandboxEdition/#scoop/realm/sandbox-software-gets-around-to-an-rpg</guid>
+      <category>Quest for the Round Tuit</category>
+      <pubDate>Thu, 22 Oct 2026 12:00:00 GMT</pubDate>
+      <description><![CDATA[<p>Fans have asked for a role-playing game since our first disk. We said we'd get around to it. <b>Quest for the Round Tuit</b> is that. Four towns, four dungeons, two dozen people to talk to, and coastlines that curve - in Game-Maker, which nobody told us couldn't be done until we'd done it.</p>]]></description>
+    </item>
+    <item>
+      <title>Letters: &#34;Why did Teddy stop rolling over?&#34;</title>
+      <link>https://lewismoten.github.io/GameMaker-SandboxEdition/play-teddy2.html</link>
+      <guid isPermaLink="false">https://lewismoten.github.io/GameMaker-SandboxEdition/#scoop/teddy2/letters-why-did-teddy-stop-rolling-over</guid>
+      <category>Teddy&#39;s Little Bigger Adventure</category>
+      <pubDate>Thu, 22 Oct 2026 12:00:00 GMT</pubDate>
+      <description><![CDATA[<p>He retired from it, by choice, like he retired from hoops. He is a professional now. Roll over's key went to his new SNIFF, which our testers say is the best trick in the game. Teddy agrees.</p>]]></description>
+    </item>
+    <item>
+      <title>Teddy&#39;s back, and this time Gwinn&#39;s playable</title>
+      <link>https://lewismoten.github.io/GameMaker-SandboxEdition/play-teddy2.html</link>
+      <guid isPermaLink="false">https://lewismoten.github.io/GameMaker-SandboxEdition/#scoop/teddy2/teddy-s-back-and-this-time-gwinn-s-playable</guid>
+      <category>Teddy&#39;s Little Bigger Adventure</category>
+      <pubDate>Thu, 22 Oct 2026 12:00:00 GMT</pubDate>
+      <description><![CDATA[<p>Our corgi's sequel, <b>Teddy's Little Bigger Adventure</b>, is out! Nine levels from the attic to the dog show, a brand-new trick (SNIFF), and the first Sandbox game with two heroes: in the MEANWHILE... levels you are Gwinn, with tricks of her own. One of them is sitting. She is working on it.</p>]]></description>
+    </item>
+    <item>
+      <title>Sparky says thanks</title>
+      <link>https://lewismoten.github.io/GameMaker-SandboxEdition/play-year2000.html</link>
+      <guid isPermaLink="false">https://lewismoten.github.io/GameMaker-SandboxEdition/#scoop/year2000/sparky-says-thanks</guid>
+      <category>In The Year 2000!</category>
+      <pubDate>Tue, 20 Oct 2026 12:00:00 GMT</pubDate>
+      <description><![CDATA[<p>Register <b>In The Year 2000!</b> for $12 and you get the next Sandbox Software game on a 3 1/2" disk, a printed manual and a sticker for your computer. Sparky promises not to eat any of it.</p>]]></description>
+    </item>
+    <item>
+      <title>What will the year 2000 be like?</title>
+      <link>https://lewismoten.github.io/GameMaker-SandboxEdition/play-year2000.html</link>
+      <guid isPermaLink="false">https://lewismoten.github.io/GameMaker-SandboxEdition/#scoop/year2000/what-will-the-year-2000-be-like</guid>
+      <category>In The Year 2000!</category>
+      <pubDate>Tue, 20 Oct 2026 12:00:00 GMT</pubDate>
+      <description><![CDATA[<p>We asked our classmates what they expect in seven short years. The top answers: flying cars (41 votes), robot dogs (29), dinner in a pill (17), and a telephone small enough to fit in your pocket (2 votes, and one of those was a joke). Our programmer is betting on the pocket telephone. Our mail room is still betting on the mail.</p>]]></description>
+    </item>
+    <item>
+      <title>Courier’s corner</title>
+      <link>https://lewismoten.github.io/GameMaker-SandboxEdition/play-maximus.html</link>
+      <guid isPermaLink="false">https://lewismoten.github.io/GameMaker-SandboxEdition/#scoop/maximus/courier-s-corner</guid>
+      <category>Maximus: The Hundred Worlds</category>
+      <pubDate>Tue, 20 Oct 2026 12:00:00 GMT</pubDate>
+      <description><![CDATA[<p>Registered couriers: your fold-out galaxy chart, the sector map of all 88 worlds and the hint book are in this box. Fold the chart along the creases and keep it by the keyboard.</p>]]></description>
+    </item>
+    <item>
+      <title>Ohm Sweet Ohm: puzzles made of pure Game-Maker</title>
+      <link>https://lewismoten.github.io/GameMaker-SandboxEdition/play-logic.html</link>
+      <guid isPermaLink="false">https://lewismoten.github.io/GameMaker-SandboxEdition/#scoop/logic/ohm-sweet-ohm-puzzles-made-of-pure-game-maker</guid>
+      <category>Ohm Sweet Ohm</category>
+      <pubDate>Tue, 20 Oct 2026 12:00:00 GMT</pubDate>
+      <description><![CDATA[<p>A thunderstorm has scrambled the Bitmores' brand-new Smart Home, and Watt, the pocket-sized repair robot who lives in the fuse box, must roll home through twenty-three haywire circuit boards, from the toaster to the attic. Every switch, fuse and relay is built from ordinary Game-Maker blocks and monsters: batteries are blocks that give birth to "current" monsters, and gates fall when a stronger monster touches them. Not one line of code!</p>]]></description>
+    </item>
+    <item>
+      <title>SNOWBOUND II: Spring Thaw</title>
+      <link>https://lewismoten.github.io/GameMaker-SandboxEdition/play-snowbound.html</link>
+      <guid isPermaLink="false">https://lewismoten.github.io/GameMaker-SandboxEdition/#scoop/snowbound/snowbound-ii-spring-thaw</guid>
+      <category>Snowbound: The $89 Shovel</category>
+      <pubDate>Tue, 20 Oct 2026 12:00:00 GMT</pubDate>
+      <description><![CDATA[<p>The snow is melting in Fort Ashby, and the founder has a new plan: mow lawns all through mud season. Registered SNOWBOUND players get it free when it’s done.</p>]]></description>
+    </item>
+    <item>
+      <title>A corgi joins the Sandbox family</title>
+      <link>https://lewismoten.github.io/GameMaker-SandboxEdition/play-teddy.html</link>
+      <guid isPermaLink="false">https://lewismoten.github.io/GameMaker-SandboxEdition/#scoop/teddy/a-corgi-joins-the-sandbox-family</guid>
+      <category>Teddy&#39;s Little Big Adventure</category>
+      <pubDate>Tue, 20 Oct 2026 12:00:00 GMT</pubDate>
+      <description><![CDATA[<p>Teddy the corgi is back, and this time he's left the sandbox for the big town! <b>Teddy's Little Big Adventure</b> sends him from Doc Leo's backyard to the Clown Club's Big Show with nine tricks on nine keys. Our testers' favorite trick? Play dead. Our testers' favorite dog? Don't ask Gwinn.</p>]]></description>
+    </item>
+    <item>
+      <title>Ask the Sandbox: why so many dogs?</title>
+      <link>https://lewismoten.github.io/GameMaker-SandboxEdition/play-teddy.html</link>
+      <guid isPermaLink="false">https://lewismoten.github.io/GameMaker-SandboxEdition/#scoop/teddy/ask-the-sandbox-why-so-many-dogs</guid>
+      <category>Teddy&#39;s Little Big Adventure</category>
+      <pubDate>Tue, 20 Oct 2026 12:00:00 GMT</pubDate>
+      <description><![CDATA[<p>Readers keep asking why our games star so many dogs. Simple: the office has two of them, and they won't stop walking across the keyboard. If you find a typo in one of our manuals, now you know who to blame. Send your own pet's best trick to the BBS and we may print it in the next Scoop!</p>]]></description>
+    </item>
+    <item>
+      <title>Game-Maker learns to scroll</title>
+      <link>https://lewismoten.github.io/GameMaker-SandboxEdition/play-blaster.html</link>
+      <guid isPermaLink="false">https://lewismoten.github.io/GameMaker-SandboxEdition/#scoop/blaster/game-maker-learns-to-scroll</guid>
+      <category>Virus Blaster</category>
+      <pubDate>Tue, 20 Oct 2026 12:00:00 GMT</pubDate>
+      <description><![CDATA[<p>Sandbox Software's <b>Virus Blaster</b> is a real vertically scrolling shoot-'em-up, built entirely in Game-Maker. The trick? The BLASTER drifts forward two pixels on every frame of every move, so the screen has no choice but to follow it up the map.</p>]]></description>
+    </item>
+    <item>
+      <title>Scan every download</title>
+      <link>https://lewismoten.github.io/GameMaker-SandboxEdition/play-blaster.html</link>
+      <guid isPermaLink="false">https://lewismoten.github.io/GameMaker-SandboxEdition/#scoop/blaster/scan-every-download</guid>
+      <category>Virus Blaster</category>
+      <pubDate>Tue, 20 Oct 2026 12:00:00 GMT</pubDate>
+      <description><![CDATA[<p>Virus Blaster starts with a mistake: late one night you download COOLGAME.ZIP from a BBS you never called before, and it turns out to be GLITCH, a virus that eats a PC from the inside out. Shrink down and blast your way up through the family 486: five stages, twenty-five scrolling runs and five bosses. It's only a game, but the moral is real. Scan every download.</p>]]></description>
+    </item>
+  </channel>
+</rss>
