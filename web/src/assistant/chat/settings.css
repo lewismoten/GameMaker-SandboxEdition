@@ -190,8 +190,14 @@ dialog.modal .ai-provider {
     width: 100%;
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 4px 12px;
+    gap: 2px 12px;
     align-items: start;
+  }
+  dialog.modal .ai-setup .ai-providers {
+    gap: 4px 8px;
+  }
+  .ai-setup .ai-providers legend {
+    margin-bottom: 2px;
   }
   .ai-setup > :is(.ai-providers, .ai-status, .ai-help-slot, .buttons) {
     grid-column: 1 / -1;
@@ -200,12 +206,27 @@ dialog.modal .ai-provider {
     min-height: 24px;
   }
   dialog.modal .ai-provider {
-    padding: 4px 8px;
+    padding: 2px 8px;
   }
   .ai-setup .ai-privacy {
+    /* Let the test button and collapsed help share the space beside this note. */
+    grid-row: span 2;
     margin: 0;
     font-size: 12px;
     line-height: 1.3;
+  }
+  .ai-setup > .ai-help-slot {
+    grid-column: 2;
+  }
+  /* Inline labels save two text rows without shrinking text or controls. */
+  .ai-setup > .ai-field:not([hidden]) {
+    display: grid;
+    grid-template-columns: max-content minmax(0, 1fr);
+    align-items: center;
+    gap: 4px 8px;
+  }
+  .ai-setup > .ai-field > .ai-row {
+    min-width: 0;
   }
   .ai-setup .ai-field :is(input, select) {
     min-width: 0;
