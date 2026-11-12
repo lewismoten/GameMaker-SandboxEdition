@@ -203,9 +203,14 @@ dialog.modal .ai-provider {
     padding: 4px 8px;
   }
   .ai-setup .ai-privacy {
+    /* Let the test button and collapsed help share the space beside this note. */
+    grid-row: span 2;
     margin: 0;
     font-size: 12px;
     line-height: 1.3;
+  }
+  .ai-setup > .ai-help-slot {
+    grid-column: 2;
   }
   .ai-setup .ai-field :is(input, select) {
     min-width: 0;
