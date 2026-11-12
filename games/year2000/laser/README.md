@@ -42,7 +42,7 @@ for the core, 12 mm for the pocket) add up.
   is under the rim of the next ring up (hole radius = that ring's outer radius minus the rim), so a load passes straight down the
   rims to the base. The washers still lift out of the digit slice's socket and turn, so setting your own code works as before
   (the lock check still frees the core for 2000 and no other of the 10,000 codes).
-- **Nesting.** `cryptexNest.ts` cuts the small parts out of the empty middles (first-fit circle packing, 2 mm of wood between cuts,
+- **Nesting.** `kit/laserNest.ts` (tools package) cuts the small parts out of the empty middles (first-fit circle packing, 2 mm of wood between cuts,
   re-checked by the build). The kit went from 3 sheets (233,413 mm2 of bed) to 2 (183,000 mm2); the parts use about 72,000 mm2 of
   wood instead of 82,000.
 - **IDs.** The letter is the sub-assembly (A base stack, B to E rings 4 to 1, F core, G1 to G4 washer pairs, H head, I lid); the

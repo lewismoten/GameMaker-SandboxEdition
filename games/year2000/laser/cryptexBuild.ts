@@ -1,10 +1,10 @@
 // "In The Year 2000!" cryptex: builds the parts, the sheets and the checks in memory (the test and cryptex.ts use it).
-// Rings and plates are hollow; small parts are nested in their empty middles (cryptexNest.ts), so the sheets are fewer and smaller.
+// Rings and plates are hollow; small parts are nested in their empty middles (kit/laserNest.ts), so the sheets are fewer and smaller.
 import { packRows, type Part, type Placed } from '@lewismoten/gamemaker-sandbox-tools/kit/laserLayout';
 import type { LaserSheet } from '@lewismoten/gamemaker-sandbox-tools/kit/laserSvg';
 import { engravingProblems } from '../../sleuth/laser/stageBoxBuild';
 import { RINGS, SLICE_HOLE, WASHER, SOCKET_FIT, checkLock } from './cryptexDims';
-import { boundingRadius, nest, nestProblems, type Guest, type Hole } from './cryptexNest';
+import { boundingRadius, nest, nestProblems, type Guest, type Hole } from '@lewismoten/gamemaker-sandbox-tools/kit/laserNest';
 import { makeParts, type Parts } from './cryptexParts';
 
 export interface Built {

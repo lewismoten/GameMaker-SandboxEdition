@@ -93,6 +93,7 @@ const iso = createIso([
 Laser helpers use millimeters and take caller-supplied designs:
 
 - `kit/laserJoints`: `jointOutline`, `outlineFromRects`, `offsetPoly`, rectangle and rotation helpers.
+- `kit/laserNest`: `nest` and `nestProblems` cut small parts from the empty middles of hollow ones (first-fit circle packing with a 2 mm wood gap), `boundingRadius`.
 - `kit/laserLayout`: kerf-adjusted `Part` with compensated `cutBounds`, `BED`, `PART_GAP`, `packRows`,
   and `STOCK`/`STOCK_MARGIN` for Proofgrade 6 × 12, 8 × 12, 12 × 12 and 12 × 20 inch sheets.
   `packStock` packs with quarter turns inside the cutter margins; `placePart` copies a placement without SVG transforms.

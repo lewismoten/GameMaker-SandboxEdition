@@ -57,6 +57,7 @@ const sources = {
   'kit/laserClearance': 'kit/laserClearance',
   'kit/laserJoints': 'kit/laserJoints',
   'kit/laserLayout': 'kit/laserLayout',
+  'kit/laserNest': 'kit/laserNest',
   'kit/laserStock': 'kit/laserStock',
   'kit/laserPixels': 'kit/laserPixels',
   'kit/laserSvg': 'kit/laserSvg',
