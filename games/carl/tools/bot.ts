@@ -14,7 +14,10 @@ type Key = keyof typeof SCAN;
 
 export class Bot {
   log: string[] = [];
-  constructor(readonly sim: GameSim) {}
+  constructor(
+    readonly sim: GameSim,
+    readonly basicKeys = false,
+  ) {}
 
   snapshot() {
     return { sim: this.sim.snapshot(), log: this.log.length };
@@ -98,7 +101,34 @@ export class Bot {
       const h = Math.abs(dx) > 3 ? Math.sign(dx) : 0;
       const v = Math.abs(dy) > 3 ? Math.sign(dy) : 0;
       const diag = Math.abs(dx) >= 4 && Math.abs(dy) >= 4;
-      const key: Key = diag ? (v < 0 ? (h < 0 ? 'q' : 'e') : h < 0 ? 'z' : 'c') : h > 0 ? 'right' : h < 0 ? 'left' : v < 0 ? 'up' : 'down';
+      // In basic mode keep one arrow down until its axis arrives or a wall asks for a turn.
+      // This is a human-paced right-angle route, not simultaneous-arrow emulation.
+      const horizontal = held === 'left' || held === 'right';
+      const keepAxis = held && still < 2 && (horizontal ? h !== 0 : v !== 0);
+      const goHorizontal = keepAxis ? horizontal : still >= 2 ? !horizontal && h !== 0 : Math.abs(dx) >= Math.abs(dy);
+      const key: Key = this.basicKeys
+        ? goHorizontal
+          ? h > 0
+            ? 'right'
+            : 'left'
+          : v < 0
+            ? 'up'
+            : 'down'
+        : diag
+          ? v < 0
+            ? h < 0
+              ? 'q'
+              : 'e'
+            : h < 0
+              ? 'z'
+              : 'c'
+          : h > 0
+            ? 'right'
+            : h < 0
+              ? 'left'
+              : v < 0
+                ? 'up'
+                : 'down';
       if (key !== held) {
         if (held) this.sim.release(SCAN[held]);
         this.sim.press(SCAN[key]);
@@ -133,6 +163,7 @@ export class Bot {
 
   /** Taps a key (a barrel roll, a buzz) and waits `after` ticks. */
   async tap(key: Key, after = 8): Promise<Result> {
+    if (this.basicKeys && key === 'b') key = 'enter';
     // a roll is a .VOC: let a lyric that is playing finish first
     if (this.sim.clip && LONG.has(this.sim.clip.name)) {
       const out = await this.sim.waitForClip();

@@ -5,7 +5,7 @@
 import { writeSimWalkthrough } from '../../kit/walkthrough';
 import { SEED, play } from './play';
 
-const { sim } = await play(SEED);
+const { sim } = await play(SEED, undefined, true);
 const titles: Record<number, string> = {
   2: 'Level 1: The Couch',
   3: 'Level 2: The Walls',

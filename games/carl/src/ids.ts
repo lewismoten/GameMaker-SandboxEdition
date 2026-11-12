@@ -95,6 +95,7 @@ export const SEQ = {
   downRight3: 16,
   roll: 17,
   buzz: 18,
+  buzzEnter: 19,
 } as const;
 
 /** Keys (scan code << 8 | ASCII). */
@@ -104,6 +105,7 @@ export const KEY = {
   left: 0x4b00,
   right: 0x4d00,
   space: 0x3920,
+  enter: 0x1c0d,
   q: 0x1071,
   e: 0x1265,
   z: 0x2c7a,
@@ -116,7 +118,7 @@ export const KEY = {
 } as const;
 
 /** PC scan codes the bot and the demo press. */
-export const SCAN = { up: 72, down: 80, left: 75, right: 77, space: 57, q: 16, e: 18, z: 44, c: 46, b: 48 } as const;
+export const SCAN = { up: 72, down: 80, left: 75, right: 77, space: 57, enter: 28, q: 16, e: 18, z: 44, c: 46, b: 48 } as const;
 
 /**
  * Counters 20 and up refuse a touch that would empty them, so each gate opens only for what it
