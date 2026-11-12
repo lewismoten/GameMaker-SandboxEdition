@@ -1,3 +1,3 @@
 ### Changed
 
-- Play offline downloads one archive, shows download and unpacking progress, and keeps the previous complete copy until its replacement is ready.
+- Play offline downloads the whole offline copy as one archive with a progress bar, instead of thousands of separate files, and keeps the previous copy if a download fails.
