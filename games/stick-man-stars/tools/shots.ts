@@ -47,5 +47,5 @@ save('3-confetti.png', 1, 8, [...man(['stand.top', 'throw2'], 12), thing('confet
 save('4-lit.png', 1, 8, [...man(['cheer2.top', 'cheer'], 12), thing('litcottage0', 17)]);
 save('5-shy-tower.png', 2, 15, [...man(['cheer.top', 'throw1'], 19), thing('star1', 21), thing('tower0', 24)]);
 save('6-spam-bot.png', 3, 26, [...man(['cheer.top', 'throw1'], 28), thing('star0', 30), thing('bot0', 33)]);
-save('7-big-repo.png', 3, 46, [...man(['stand.top', 'throw2'], 50), thing('big20', 56)]);
+save('7-big-repo.png', 3, 43, [...man(['stand.top', 'throw2'], 45), thing('big20', 56)]);
 console.log(`shots in ${out}`);

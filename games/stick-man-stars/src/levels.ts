@@ -132,10 +132,10 @@ function shyStreet(w: World): StarterMap {
   const g = base(L2.width, L2.exit);
   tunnel(g, L2.tunnel[0], L2.tunnel[1]);
   g.row(9, 10, 14, 'c').row(9, 27, 29, 'c').row(9, 40, 42, 'c').row(9, 50, 52, 'c').row(9, 69, 70, 'c');
-  scenery(g, [7, 18, 30, 42, 54, 66], [12, 25, 38, 51, 62], [9, 17, 35, 48, 58]);
+  scenery(g, [7, 18, 30, 42, 54], [12, 25, 38, 51, 62], [9, 17, 35, 48, 58]);
   const m = new StarterMap(w.book, g.rows());
   signAt(m, w, 5, 'shy');
-  signAt(m, w, 57 - 5, 'shed');
+  signAt(m, w, 50, 'shed');
   signAt(m, w, 68, 'exit');
   for (const x of L2.towers) m.mon(TOWER, x, STAND);
   named(m, w, COTTAGE, L2.cottage, 'MOTHS');
