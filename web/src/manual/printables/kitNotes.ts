@@ -114,6 +114,8 @@ export function openKitNotes(kit: LaserKit, href: string, from?: HTMLElement): v
     h('p', { class: 'kn-wait', role: 'status' }, 'Making the pictures…'),
   );
   const save = h('a', { class: 'oc-btn kn-save', role: 'button', 'aria-disabled': 'true' }, 'Save as web page');
+  // a link with role=button: Space presses it like a button
+  save.addEventListener('keydown', (e) => e.key === ' ' && save.getAttribute('aria-disabled') !== 'true' && (e.preventDefault(), save.click()));
   const print = h('button', { type: 'button', class: 'oc-btn', disabled: true, onclick: () => window.print() }, 'Print or save as PDF');
   const close = h('button', { type: 'button', class: 'oc-btn', onclick: () => dialog.close() }, 'Close');
   dialog.append(

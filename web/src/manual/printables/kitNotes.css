@@ -66,4 +66,14 @@
   .kn-bar {
     display: none;
   }
+  .kn-body:focus-visible {
+    outline: 0;
+  }
+  /* the box's own print rule (paper.css) hides every other body child, this one too: it wins here, and the box's pages stay out */
+  body > dialog.kn[open] {
+    display: block !important;
+  }
+  body:has(> dialog.kn[open]) > .gmb-print {
+    display: none !important;
+  }
 }
