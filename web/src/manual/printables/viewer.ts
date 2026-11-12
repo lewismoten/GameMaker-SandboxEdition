@@ -542,6 +542,8 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[], opti
         : undefined;
     const onKey = (e: KeyboardEvent) => {
       if (zoomOpen()) return; // an enlarged screen shot takes the keys
+      // a dialog opened over the box's contents (the kit viewer, the build notes) owns its keys, Esc included, and closes first
+      if (document.querySelector('dialog[open]')) return;
       // a control that turns with these keys (a code wheel's disc, any slider) has them while it has the focus
       if (/^(Arrow|Home$|End$)/.test(e.key) && (e.target as Element | null)?.closest?.('[role="slider"]')) return;
       e.stopImmediatePropagation(); // not for the PC underneath
