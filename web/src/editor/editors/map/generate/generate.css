@@ -18,6 +18,10 @@
   grid-template-columns: 1fr 1fr;
   gap: 8px;
 }
+.gen-offers > p {
+  grid-column: 1 / -1;
+  margin: 0;
+}
 .gen-offer {
   display: flex;
   flex-direction: column;

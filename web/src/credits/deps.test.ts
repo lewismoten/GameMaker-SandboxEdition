@@ -9,7 +9,7 @@ import file from './deps.json';
 
 const web = join(import.meta.dirname, '../..');
 const lock = JSON.parse(readFileSync(join(web, '../package-lock.json'), 'utf8')) as Lockfile;
-const saved = file as DepsFile;
+const saved: DepsFile = file;
 
 describe('credits: deps.json', () => {
   it('follows workspace links and hoisted dependencies without crediting the app itself', () => {
