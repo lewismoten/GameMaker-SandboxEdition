@@ -92,3 +92,23 @@
     min-height: 44px;
   }
 }
+
+/* A preview that opens large in the viewer, and a file read in the page: a button that looks like the link */
+.fe-pic-btn {
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: none;
+  cursor: zoom-in;
+}
+.fe-pic-btn:focus-visible {
+  outline: 2px solid #ffd84a;
+  outline-offset: 2px;
+}
+.fe-read {
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  cursor: pointer;
+}

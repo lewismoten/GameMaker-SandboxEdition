@@ -1,0 +1,69 @@
+/* The build notes dialog (kitNotes.ts): a phone-sized window with the page scrolling inside it, and a print that is only the page. */
+.kn {
+  box-sizing: border-box;
+  width: min(96vw, 900px);
+  height: min(92vh, 900px);
+  max-width: 100vw;
+  padding: 8px;
+  border: 2px solid #251b16;
+  border-radius: 10px;
+  background: #f4eee2;
+  color: #251b16;
+  font:
+    14px/1.3 system-ui,
+    sans-serif;
+  flex-direction: column;
+  gap: 8px;
+}
+.kn[open] {
+  display: flex;
+}
+.kn::backdrop {
+  background: rgb(0 0 0 / 0.6);
+}
+.kn-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+.kn-title {
+  flex: 1 1 100%;
+}
+.kn-save {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+}
+.kn-save[aria-disabled='true'] {
+  opacity: 0.5;
+  pointer-events: none;
+}
+.kn-body {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  background: #fff;
+  border: 1px solid #cfc9bb;
+  border-radius: 6px;
+}
+.kn-body:focus-visible {
+  outline: 3px solid #923900;
+  outline-offset: 2px;
+}
+@media print {
+  body > *:not(.kn) {
+    display: none !important;
+  }
+  .kn,
+  .kn-body {
+    position: static;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    border: 0;
+  }
+  .kn-bar {
+    display: none;
+  }
+}

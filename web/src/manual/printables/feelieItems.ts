@@ -11,6 +11,7 @@ import { madeDownload } from '../../desk/boxes/madeDownload';
 import { trinketDownload } from '../../desk/boxes/trinketData';
 import { sheet, type Sheet } from './kit';
 import type { BoxItem } from './viewer';
+import type { ViewerItem } from './svgViewer';
 
 /** One file to download: its link, what it is, and its size once known. */
 interface Attachment {
@@ -19,6 +20,8 @@ interface Attachment {
   file: string;
   label: string;
   bytes?: number;
+  /** A file read in the page instead of saved (a kit's build notes): the link becomes a button that calls this. */
+  open?: (from: HTMLElement) => void;
   /** Sets the link up when the site makes the file on demand (a packed trinket file: trinketData.ts). */
   link?: (a: HTMLAnchorElement) => HTMLAnchorElement;
 }
@@ -44,7 +47,28 @@ function trinketAttachments(f: Extract<Feelie, { kind: 'trinket' }>): Attachment
 
 /** A laser kit's downloads, from its manifest (sizes are asked of the site). */
 function kitAttachments(f: Extract<Feelie, { kind: 'nickel' | 'box' | 'kit' | 'patch' }>): Attachment[] {
-  return f.kit.downloads.map((d) => ({ href: `${f.kit.base}${d.file}`, file: d.file.split('/').pop() ?? d.file, label: d.label }));
+  return f.kit.downloads.map((d) => {
+    const href = `${f.kit.base}${d.file}`;
+    const file = d.file.split('/').pop() ?? d.file;
+    // the build notes are written in Markdown for the repository; a player reads them as a page, with pictures (kitNotes.ts)
+    if (/\.md$/i.test(file))
+      return { href, file, label: d.label, open: (from: HTMLElement) => void import('./kitNotes').then((m) => m.openKitNotes(f.kit, href, from)) };
+    return { href, file, label: d.label };
+  });
+}
+
+const stem = (file: string) => file.replace(/^.*\//, '').replace(/\.[^.]+$/, '');
+
+/** A kit's preview picture as a button: it opens the drawing it is a picture of (same name, .svg) large, among the kit's drawings. */
+function previewButton(f: Extract<Feelie, { kind: 'nickel' | 'box' | 'kit' | 'patch' }>, p: { file: string; alt: string }): HTMLElement {
+  const src = `${f.kit.base}${p.file}`;
+  const svgs = kitAttachments(f).filter((a) => isSvgHref(a.href));
+  const at = svgs.findIndex((a) => stem(a.file) === stem(p.file));
+  const items: ViewerItem[] =
+    at >= 0 ? svgs.map(({ href, file, label }) => ({ href, file, label })) : [{ href: src, file: p.file.split('/').pop() ?? p.file, label: p.alt }];
+  const b = h('button', { type: 'button', class: 'fe-pic-btn', 'aria-label': `Open ${p.alt} large`, title: 'Open large' }, img(src, p.alt));
+  b.addEventListener('click', () => void import('./svgViewer').then((m) => m.openSvgViewer(items, Math.max(0, at), b)));
+  return b;
 }
 
 /** The phone kit's downloads: the printer parts and board files as ZIPs, the parts lists as CSV. */
@@ -69,22 +93,36 @@ export function phoneAttachments(): Attachment[] {
 /** A link to an SVG drawing: it opens in the page's viewer (svgViewer.ts). */
 export const isSvgHref = (href: string): boolean => /\.svg(?:[?#].*)?$/i.test(href);
 
+/** The drawings a link steps through, and where it is among them. */
+const drawings1 = (a: Attachment, all: Attachment[]) => ({
+  items: all.map(({ href, file, label }) => ({ href, file, label })),
+  at: Math.max(0, all.indexOf(a)),
+});
+
 /** The attachments as a list of download links, each with its size. */
 function attachmentList(list: Attachment[]): HTMLElement {
+  const svgs = list.filter((a) => isSvgHref(a.href));
   return h(
     'ul',
     { class: 'fe-files', 'aria-label': 'Attachments' },
     ...list.map((a) => {
       const size = h('span', { class: 'fe-size' }, a.bytes ? sizeText(a.bytes) : '');
       if (!a.bytes && !a.link) void fileSize(a.href).then((n) => (size.textContent = n ? sizeText(n) : ''));
+      if (a.open) {
+        const read = a.open;
+        const b = h('button', { type: 'button', class: 'fe-dl fe-read', onclick: () => read(b) }, a.label);
+        return h('li', null, b, h('span', { class: 'fe-size' }, 'read here'));
+      }
       const link = h('a', { class: 'fe-dl', href: a.href, download: a.file }, a.label);
-      // a drawing opens large in the page (pan, zoom, Download there); the other files download as before
-      if (isSvgHref(a.href))
+      // a drawing opens large in the page (pan, zoom, Download there), with Previous and Next through the kit's drawings; the other files download as before
+      if (isSvgHref(a.href)) {
+        const own = drawings1(a, svgs);
         link.addEventListener('click', (e) => {
           if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
           e.preventDefault();
-          void import('./svgViewer').then((m) => m.openSvgViewer(a.href, a.file, a.label, link));
+          void import('./svgViewer').then((m) => m.openSvgViewer(own.items, own.at, link));
         });
+      }
       return h('li', null, a.link ? a.link(link) : link, size);
     }),
   );
@@ -149,7 +187,7 @@ function pieceOf(f: Feelie): BoxItem | undefined {
       card(
         kit.title,
         [kit.summary],
-        kit.previews.map((p) => img(`${kit.base}${p.file}`, p.alt)),
+        kit.previews.map((p) => previewButton(f, p)),
         kitAttachments(f),
       ),
   };
