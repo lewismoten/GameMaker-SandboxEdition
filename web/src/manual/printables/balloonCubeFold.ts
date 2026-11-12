@@ -112,7 +112,7 @@ const flat3 = (h: FoldedPiece['hist'][number], q: V2): V3 => {
 };
 const SHEET = { m: [1, 0, 0, 1, 0, 0] as FoldedPiece['hist'][number]['m'], layer: 0, moved: false };
 
-export interface Pose {
+interface Pose {
   /** The piece's outline points in the model (x right, y up, z toward you; the finished cube's hole is down). */
   pts: V3[];
 }
@@ -189,7 +189,7 @@ export function normalOf(pose: Pose, poly: V2[]): V3 {
 }
 
 // ---- the camera ----
-export type View = { yaw: number; pitch: number };
+type View = { yaw: number; pitch: number };
 /** The camera at a position: a little from the right and above; turned round for the back; from below at the end, to show the hole. */
 export function viewAt(pos: number): View {
   const turnOver = smooth(clamp01(pos - 6));

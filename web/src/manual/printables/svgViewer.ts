@@ -6,7 +6,7 @@ import './svgViewer.css';
 import { h } from '../../editor/core/ui';
 import { sizeWords } from './svgSize';
 
-export interface Pan {
+interface Pan {
   x: number;
   y: number;
   zoom: number;
@@ -18,8 +18,8 @@ export interface ViewerItem {
   label: string;
 }
 /** Fitted to the window is the smallest view; twelve times is the largest. */
-export const PAN_MIN = 1;
-export const PAN_MAX = 12;
+const PAN_MIN = 1;
+const PAN_MAX = 12;
 /** Zoom by `k` keeping the point (px, py), in the frame's own pixels from its center, where it is on screen. */
 export function zoomAt(v: Pan, k: number, px = 0, py = 0): Pan {
   const zoom = Math.max(PAN_MIN, Math.min(PAN_MAX, v.zoom * k));

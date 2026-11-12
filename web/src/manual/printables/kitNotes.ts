@@ -83,7 +83,7 @@ async function sheetFigures(kit: LaserKit): Promise<HTMLElement[]> {
 }
 
 /** The notes page for a kit, from its README text. */
-export async function kitNotesPage(kit: LaserKit, source: string): Promise<HTMLElement> {
+async function kitNotesPage(kit: LaserKit, source: string): Promise<HTMLElement> {
   const sections = playerSections(source);
   const [steps, sheets] = await Promise.all([stepFigures(kit), sheetFigures(kit)]);
   const doc = h('article', { class: 'kn-doc' });
@@ -100,7 +100,7 @@ export async function kitNotesPage(kit: LaserKit, source: string): Promise<HTMLE
 }
 
 /** One HTML file with its styles and pictures inside. */
-export function standalone(title: string, doc: HTMLElement): string {
+function standalone(title: string, doc: HTMLElement): string {
   const esc = (t: string) => t.replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' })[c]!);
   return `<!doctype html>\n<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(title)}</title><style>body{margin:0;background:#fff}${CSS}</style></head><body>${doc.outerHTML}</body></html>\n`;
 }
