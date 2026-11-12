@@ -190,8 +190,14 @@ dialog.modal .ai-provider {
     width: 100%;
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 4px 12px;
+    gap: 2px 12px;
     align-items: start;
+  }
+  dialog.modal .ai-setup .ai-providers {
+    gap: 4px 8px;
+  }
+  .ai-setup .ai-providers legend {
+    margin-bottom: 2px;
   }
   .ai-setup > :is(.ai-providers, .ai-status, .ai-help-slot, .buttons) {
     grid-column: 1 / -1;
@@ -200,7 +206,7 @@ dialog.modal .ai-provider {
     min-height: 24px;
   }
   dialog.modal .ai-provider {
-    padding: 4px 8px;
+    padding: 2px 8px;
   }
   .ai-setup .ai-privacy {
     /* Let the test button and collapsed help share the space beside this note. */
