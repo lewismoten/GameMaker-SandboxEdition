@@ -1,6 +1,6 @@
 // OFFLINE.EXE on the desk PC (C:\DOS): the web's "Play offline" (offlineDialog.ts) as a 1995
 // text-mode program in Game-Maker's colors. It says what a copy of the whole site costs,
-// downloads it with a progress bar (Esc stops; what came in is kept), and once it is all in
+// downloads and unpacks one archive (Esc stops; the previous complete copy stays), and once it is all in
 // says so, with R to remove it again.
 import { attr } from '../retro/text/textScreen';
 import { MENUATTR, SHADATTR, TITLEATTR, BARATTR, type Ui } from '../retro/text/textUi';
@@ -84,15 +84,15 @@ export async function runOfflineExe(ui: Ui): Promise<void> {
         }
         continue;
       }
-      const partial = st.missing.length < st.files.length;
+
       const room = hasRoom(st, st.storedMissing);
       frame('TAKE IT ALONG', room ? ' Y Download   N or Esc Quit' : ' Esc Quit');
       lines([
         [
-          st.copy === 'outdated' && partial
-            ? `Your offline copy needs an update: ${st.missing.length} files are new or changed.`
-            : st.copy === 'unfinished' && partial
-              ? `Your offline copy is not finished: ${st.missing.length} files still to come.`
+          st.copy === 'outdated'
+            ? `Download one replacement archive. The old copy stays until it is ready.`
+            : st.copy === 'unfinished'
+              ? `Your offline copy is unfinished. Download the archive again.`
               : `Copies the whole site to this computer, so it runs with no connection: all ${games(st)} games, this desk, Game-Maker, the editors, the manuals and the boxes.`,
         ],
         [''],
@@ -111,7 +111,7 @@ export async function runOfflineExe(ui: Ui): Promise<void> {
       const stop = new AbortController();
       let p: OfflineProgress = { done: 0, total: st.missing.length, bytes: 0, totalBytes: st.wireMissing };
       const draw = () => {
-        frame('DOWNLOADING', ' Esc Stop');
+        frame(p.phase === 'extract' ? 'UNPACKING' : 'DOWNLOADING', ' Esc Stop');
         const bar = W - 4;
         const filled = Math.round((p.bytes / Math.max(1, p.totalBytes)) * bar);
         lines([['Copying the site to this computer...'], ['']]);

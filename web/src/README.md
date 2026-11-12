@@ -155,8 +155,7 @@ SDK implementation lives in the packages below; the app imports their declared e
 - [`linkIn/`](linkIn/README.md): opening a game another site links to or sends by postMessage.
 - [`community/`](community/README.md): reviewed links to independently hosted games and
   the Community submission form; [contribution guide](../../docs/community-games.md).
-- [`offline/`](offline/README.md): "Make available offline": the app's offline manifest and the visible
-  games in the service worker's cache at once (`offlineCopy.ts`), from the web's Offline dialog (`offlineDialog.ts`) or `OFFLINE.EXE` on
+- [`offline/`](offline/README.md): "Make available offline": one build-generated ZIP, explicitly downloaded and unpacked into a complete, atomically published Cache API snapshot (`offlineCopy.ts`, `archiveStore.ts`), from the web's Offline dialog (`offlineDialog.ts`) or `OFFLINE.EXE` on
   the desk (`offlineExe.ts`); `loadFailure.ts` says so when a part of the site cannot load.
 - [`courier/`](courier/README.md): what Scoot, the desk buddy, carries: mail (a letter from each BBS
   on its first call), postcards and packages, in one store read by its card on the desk and by
