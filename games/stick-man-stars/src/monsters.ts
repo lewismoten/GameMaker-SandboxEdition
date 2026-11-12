@@ -39,6 +39,8 @@ export const LIT_COT = 14;
 export const LIT_TOW = 15;
 export const LIT_SHED = 16;
 export const BOT = 17;
+export const TWINK = 18;
+export const SHOOT = 19;
 
 export const HERO_HIT_POINTS = 50;
 /** Pixels a star flies a tick, and how many ticks: the range is the product, about 6 blocks. */
@@ -96,6 +98,7 @@ function house(pal: Pal, kind: Kind, lit: boolean, frame: 0 | 1, pips = 0): Pixe
   const glass = lit ? c('gold', 4) : c('sky', 4);
   for (const wx of kind === 'tower' ? [7] : [x0 + 2, x1 - 3]) {
     if (!lit && frame === 1) px(p, wx, wy + 1, 2, 1, ink);
+    else if (lit) px(p, wx - 1, wy - 1, 4, 4, glass).rect(wx, wy, 2, 2, c('white', 3));
     else px(p, wx, wy, 2, 2, glass);
   }
   if (lit)
@@ -157,6 +160,31 @@ function bot(pal: Pal, frame: 0 | 1): Pixels {
   return outline(p, ink, { transparent: T });
 }
 
+/** A twinkle in the night sky: a small bright plus (frame 0) that dims to a dot (frame 1). */
+function twink(pal: Pal, frame: 0 | 1): Pixels {
+  const p = new Pixels(20, 20, T);
+  const w = pal.c('white', 3);
+  if (frame === 0) {
+    px(p, 9, 7, 2, 6, w);
+    px(p, 7, 9, 6, 2, w);
+    p.set(9, 9, pal.c('gold', 5)).set(10, 10, pal.c('gold', 5));
+  } else px(p, 9, 9, 2, 2, pal.c('white', 1));
+  return p;
+}
+
+/** A shooting star: a bright head with a long tail trailing up and to the left. */
+function shooter(pal: Pal, frame: 0 | 1): Pixels {
+  const p = new Pixels(20, 20, T);
+  const w = pal.c('white', 3);
+  for (let i = 0; i < 12; i++) {
+    const c = i < 4 ? pal.c('white', 2) : i < 8 ? pal.c('white', 1) : pal.c('white', 0);
+    px(p, 12 - i, 11 - Math.floor(i / 2) - (frame && i % 3 === 0 ? 1 : 0), 1, 1 + (i < 6 ? 1 : 0), c);
+  }
+  p.disc(14.5, 13, 2.4, pal.c('gold', 4));
+  p.set(14, 12, w).set(15, 12, w);
+  return p;
+}
+
 /** The monster pictures: the kit's, then the star's two turns, two sparkles, every house, the confetti and the bot. */
 export function monsterPictures(pal: Pal): Book {
   const mb = buildMonsterBlocks(pal);
@@ -170,6 +198,8 @@ export function monsterPictures(pal: Pal): Book {
   for (const k of kinds) for (const f of [0, 1] as const) mb.add(`lit${k}${f}`, house(pal, k, true, f), {});
   for (const f of [0, 1] as const) mb.add(`confetti${f}`, confetti(pal, f), {});
   for (const f of [0, 1] as const) mb.add(`bot${f}`, bot(pal, f), {});
+  for (const f of [0, 1] as const) mb.add(`twk${f}`, twink(pal, f), {});
+  for (const f of [0, 1] as const) mb.add(`shoot${f}`, shooter(pal, f), {});
   return mb;
 }
 
@@ -214,5 +244,8 @@ export function monsterSet(mb: Book): Monster[] {
   set[LIT_TOW] = lit('littower');
   set[LIT_SHED] = lit('litshed');
   set[BOT] = mon(anim('bot', 4), { power: 150, thru: 1, newmon: TWINKLE, upscore: BOT_SCORE }, pace(5, 1));
+  // the night sky's twinkles sit still and blink; a shooting star glides down the sky and back, for looks only
+  set[TWINK] = mon(anim('twk', 9), { power: 250, thru: 1 });
+  set[SHOOT] = mon(anim('shoot', 3), { power: 250, thru: 1 }, pace(14, 3, 4));
   return set;
 }

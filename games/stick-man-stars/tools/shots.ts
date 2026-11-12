@@ -35,16 +35,16 @@ const thing = (name: string, col: number): Sprite => ({ pixels: Uint8Array.from(
 /** The level's map with its monsters taken out (the picture adds the ones to show). */
 const empty = (level: number) => {
   const m = levels[level].map.done();
-  m.monsters = [];
+  if (level) m.monsters = [];
   return m;
 };
-const save = (name: string, level: number, col: number, extra: Sprite[]) =>
-  writePng(join(out, name), renderRegion(empty(level), bbl, mbl, set, ORIGIN + col, ORIGIN + 2, 16, 10, extra), levels[level].pal.pal, 3);
+const save = (name: string, level: number, col: number, extra: Sprite[], w = 16, scale = 3) =>
+  writePng(join(out, name), renderRegion(empty(level), bbl, mbl, set, ORIGIN + col, ORIGIN + 2, w, 10, extra), levels[level].pal.pal, scale);
 
-save('1-hill-night.png', 0, 10, man(['up.top', 'jumpup'], 17, 1));
+save('1-hill-night.png', 0, 10, man(['up.top', 'jumpup'], 17, 1), 24);
 save('2-throw.png', 1, 8, [...man(['cheer.top', 'throw1'], 12), thing('star0', 14), thing('cottage0', 17)]);
-save('3-confetti.png', 1, 8, [...man(['stand.top', 'throw2'], 12), thing('confetti0', 17)]);
-save('4-lit.png', 1, 8, [...man(['cheer2.top', 'cheer'], 12), thing('litcottage0', 17)]);
+save('3-confetti.png', 1, 13, [...man(['stand.top', 'throw2'], 14), thing('confetti0', 17), thing('cottage0', 22)], 12, 5);
+save('4-lit.png', 1, 13, [...man(['cheer2.top', 'cheer'], 14), thing('litcottage0', 17), thing('cottage0', 22)], 12, 5);
 save('5-shy-tower.png', 2, 15, [...man(['cheer.top', 'throw1'], 19), thing('star1', 21), thing('tower0', 24)]);
 save('6-spam-bot.png', 3, 26, [...man(['cheer.top', 'throw1'], 28), thing('star0', 30), thing('bot0', 33)]);
 save('7-big-repo.png', 3, 43, [...man(['stand.top', 'throw2'], 45), thing('big20', 56)]);

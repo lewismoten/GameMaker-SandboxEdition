@@ -8,7 +8,8 @@ import { ORIGIN } from '../../kit/starter/map';
 import { SCAN } from '../../kit/starter/ids';
 import { L0, L1, L2, L4 } from '../src/levels';
 import { BIG1, BIG2, BIG3, BOT, BOT_SCORE, COTTAGE, POP_SCORE, SHED, STAR, TOWER } from '../src/monsters';
-import { PICK_SCORE } from '../src/pickStar';
+import { GATE_STARS, PICK_SCORE } from '../src/pickStar';
+import { KEYS } from '../../kit/starter/blocks';
 import { SCAN_THROW } from '../src/hero';
 
 async function must(bot: StarterBot, r: Promise<Result>, what: string): Promise<void> {
@@ -106,8 +107,12 @@ export async function stargazingHill(bot: StarterBot): Promise<void> {
     if (high) await hop(bot);
     bot.say(`picked at ${x}, score ${bot.sim.ci.score}`);
   }
-  await must(bot, bot.walk(L0.exit - 2, 'the door'), 'to the door');
+  // the star counter holds one more than it shows: the kit's key counter, which the town gate spends
+  if (bot.sim.ci.meter[KEYS] !== 1 + stars.length) throw new Error(`the star counter should hold ${1 + stars.length}, not ${bot.sim.ci.meter[KEYS]}`);
   totals(bot, start, coinCells(bot), stars.length, 0, 0, 'the hill');
+  await must(bot, bot.walk(L0.gate + 2, 'through the town gate'), 'through the town gate');
+  if (bot.sim.ci.meter[KEYS] !== 1 + stars.length - GATE_STARS)
+    throw new Error(`the gate should cost ${GATE_STARS} stars; the counter is ${bot.sim.ci.meter[KEYS]}`);
   await leave(bot, bot.walk(L0.exit + 1, 'the exit'), 'the exit');
 }
 

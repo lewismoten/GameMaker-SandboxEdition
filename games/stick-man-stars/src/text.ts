@@ -10,7 +10,7 @@ Repo Row is a street of little houses, and each one is somebody's project.
 
 They sit dark until a stranger stops by and leaves a star.
 
-Stick Man has no stars. So he climbs the hill at night and picks them out of the sky, one at a time.
+Stick Man has no stars. So he climbs the hill at night and picks them out of the sky, one at a time. The town gate will not open for less than five.
 
 Then he carries them to town, and tosses them at the houses.
 
@@ -25,7 +25,7 @@ export const HOWTO = wrap(`
 |SPACE         throw a star
 |F2            lives, score
 
-On the hill, jump up to pick a bright star out of the sky.
+On the hill, jump up to pick bright stars out of the sky. The town gate takes five of them.
 
 In town, walk toward a house and press Space. A star flies the way you last walked, and only so far.
 

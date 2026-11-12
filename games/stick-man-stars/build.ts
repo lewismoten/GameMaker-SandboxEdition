@@ -4,7 +4,7 @@
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { serializeBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
-import { INF_REPEAT, serializeCharacter } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import { serializeCharacter } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 import { serializeGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { serializeSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
 import { serializeMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
@@ -49,7 +49,7 @@ disk.put('stars.mbl', serializeBlocks(finishMonsterPictures(monsterBlocks)));
 disk.put('stars.mon', serializeMonsters(monsterSet(monsterBlocks)));
 disk.put('hero.cbl', serializeBlocks(heroBlocks.finish()));
 const heroChar = buildThrower(heroBlocks);
-heroChar.meter[KEYS] = INF_REPEAT; // no keys in this game
+heroChar.meter[KEYS] = 1; // the star counter (the kit's key counter): it shows one less than it holds
 heroChar.meter[0] = HERO_HIT_POINTS; // nothing here takes any
 disk.put('hero.chr', serializeCharacter(heroChar));
 disk.put('stars.snd', serializeSoundSet(throwSounds()));

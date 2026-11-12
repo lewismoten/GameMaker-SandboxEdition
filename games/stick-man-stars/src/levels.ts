@@ -14,11 +14,13 @@ import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
 import { addSign, type Sign } from '../../kit/starter/sign';
 import { BIG3, BOT, COTTAGE, LIT_COT, LIT_SHED, LIT_TOW, SHED, TOWER } from './monsters';
-import { addPickStar } from './pickStar';
+import { addNightBlocks } from './nightSky';
+import { addPickStar, addStarGate } from './pickStar';
+import { paintNight } from './nightSky';
 import { paletteFor, type Mood } from './moods';
 
 /** The signs the levels use, by name. */
-export type SignName = 'gaze' | 'how' | 'far' | 'shed' | 'shy' | 'bots' | 'three' | 'thanks' | 'exit';
+export type SignName = 'gaze' | 'gate' | 'how' | 'far' | 'shed' | 'shy' | 'bots' | 'three' | 'thanks' | 'exit';
 /** Repo names that go over a house's door (six letters fit). */
 const NAMES = ['SOCKS', 'SOUP', 'TEAPOT', 'MOTHS', 'NAPS', 'PUNS', 'PIE', 'KEYS'] as const;
 type Name = (typeof NAMES)[number];
@@ -28,8 +30,11 @@ function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign>; nam
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
   addPickStar(book, pal);
+  addStarGate(book, pal);
+  addNightBlocks(book, pal);
   const signs = {
-    gaze: addSign(book, pal, 'gaze', 'JUMP WITH UP TO PICK STARS', 4, 2),
+    gaze: addSign(book, pal, 'gaze', 'PICK STARS: JUMP WITH UP', 4, 2),
+    gate: addSign(book, pal, 'gate', 'THE TOWN GATE WANTS 5 STARS', 4, 2),
     how: addSign(book, pal, 'how', 'SPACE THROWS A STAR', 4, 2),
     far: addSign(book, pal, 'far', 'A STAR FLIES ONLY SO FAR', 4, 2),
     shed: addSign(book, pal, 'shed', 'A SHY SHED BLOCKS THE WAY', 4, 2),
@@ -93,14 +98,17 @@ function named(m: StarterMap, w: World, kind: number, x: number, name: Name): vo
   m.mon(kind, x, STAND);
 }
 
-/** Level 1: a night hill, and bright stars (hung at heights from a walk to a jump) to pick before the door. */
-export const L0 = { walk: [14, 22, 40] as const, jump: [18, 26, 31, 36, 44, 48] as const, exit: 56, width: 60 };
+/** Level 1: a night hill with a starfield, and bright stars (hung from a walk to a jump high) to pick. The town gate wants five. */
+export const L0 = { walk: [20, 24, 40] as const, jump: [17, 28, 33, 37, 44, 48] as const, gate: 52, tunnel: [50, 54] as const, exit: 57, width: 61, need: 5 };
 function stargazingHill(w: World): StarterMap {
   const g = base(L0.width, L0.exit);
-  scenery(g, [4, 20, 38, 52], [10, 24, 42], [7, 29, 47, 54]);
+  tunnel(g, L0.tunnel[0], L0.tunnel[1]);
+  for (const x of [24, 42]) g.put(x, GROUND - 1, 'b');
   const m = new StarterMap(w.book, g.rows());
+  paintNight(m, L0.width, L0.tunnel);
   signAt(m, w, 5, 'gaze');
-  signAt(m, w, 51, 'exit');
+  signAt(m, w, 45, 'gate');
+  m.set(L0.gate, STAND - 1, 'stargateTop').set(L0.gate, STAND, 'stargate');
   for (const x of L0.walk) m.set(x, 8, 'pickstar');
   const rows = [7, 6, 5, 6, 7, 5];
   L0.jump.forEach((x, i) => m.set(x, rows[i], 'pickstar'));
