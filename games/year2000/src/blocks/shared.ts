@@ -29,7 +29,7 @@ const ITEM_DEFS: Record<ItemName, BlockDef> = {
   battery: { effect: CTR.zap, eamt: 6, score: 10 },
   zapper: { effect: CTR.zap, eamt: 15, score: 250 },
   cola: { effect: CTR.lives, eamt: 1, score: 500 },
-  keys: { effect: CTR.keys, eamt: 2, score: 100 },
+  keys: { effect: CTR.keys, eamt: 3, score: 100 },
   keycard: { effect: CTR.keycard, eamt: 1, score: 100 },
   pass: { effect: CTR.moonpass, eamt: 1, score: 100 },
   cover: { effect: CTR.cover, eamt: 1, score: 1000 },
