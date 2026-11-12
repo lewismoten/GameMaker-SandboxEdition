@@ -6,7 +6,7 @@ import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { BlockSet, SOLID } from './book';
 import { blob, gradient, oval, shadeAt, speckle } from '../art/draw';
 import { FLOORS } from './floors';
-import { micro } from '../art/font';
+import { micro, microWidth } from '../art/font';
 import { CTR, DOME_PAGES, MON } from '../ids';
 import { C } from '../art/pal';
 import { billboard, domeHome } from '../art/bigart';
@@ -26,9 +26,12 @@ function gatePic(lines: string[], tone: 'pink' | 'teal' | 'gold', state: 'shut' 
   p.rect(0, 3, w, 14, C(tone, 1));
   for (let y = 4; y < 16; y += 3) p.rect(0, y, w, 1, C(tone, 3));
   if (state === 'shut') {
-    p.rect(0, 2, 20, 16, C(tone, 1)).frame(0, 2, 20, 16, C('gray', 1));
-    p.rect(0, 4, 20, 12, C('paper', 2));
-    lines.forEach((line, i) => micro(p, 1, 5 + i * 6, line, C('denim', 1)));
+    // short words leave a margin, so neighboring signs never run together
+    const wide = Math.max(...lines.map((l) => microWidth(l))) > 15;
+    const m = wide ? 0 : 2;
+    p.rect(m, 2, 20 - 2 * m, 16, C(tone, 1)).frame(m, 2, 20 - 2 * m, 16, C('gray', 1));
+    p.rect(m, 4, 20 - 2 * m, 12, C('paper', 2));
+    lines.forEach((line, i) => micro(p, (20 - microWidth(line)) >> 1, 5 + i * 6, line, C('denim', 1)));
   }
   if (state !== 'shut') posts();
   return p;

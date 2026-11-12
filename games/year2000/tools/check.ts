@@ -209,9 +209,9 @@ async function keysAndCar(): Promise<void> {
     { name: 'gatePages', x: 7, y: 13, from: [6, 13], key: 0x4d, have: (m) => (m[CTR.pages] = DOME_PAGES + 1), lack: (m) => (m[CTR.pages] = DOME_PAGES) },
     {
       name: 'gateZap',
-      x: 8,
+      x: 9,
       y: 13,
-      from: [7, 13],
+      from: [8, 13],
       key: 0x4d,
       have: (m) => (m[CTR.zapperFound] = 2),
       lack: (m) => ((m[CTR.zapperFound] = 1), (m[SEQ.zap] = 30)),
