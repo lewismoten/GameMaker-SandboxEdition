@@ -12,6 +12,12 @@ export function addPickStar(book: Book, pal: Pal): void {
   const p = new Pixels(20, 20, skyOf(pal));
   p.blit(drawStar(pal, 0), 0, 0, 255);
   // a glint of white on the sky around it
-  for (const [x, y] of [[2, 3], [17, 5], [3, 16], [16, 17]] as const) p.set(x, y, pal.c('white', 3));
+  for (const [x, y] of [
+    [2, 3],
+    [17, 5],
+    [3, 16],
+    [16, 17],
+  ] as const)
+    p.set(x, y, pal.c('white', 3));
   book.add('pickstar', p, { grav: PULL.down, score: PICK_SCORE, touch: 'sky' });
 }

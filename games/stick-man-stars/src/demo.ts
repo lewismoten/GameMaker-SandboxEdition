@@ -3,7 +3,10 @@
 // since the last key, PC scan code; +128 = released], ending with Esc.
 import { recordedDemo } from '@lewismoten/gamemaker-sandbox-tools/kit/recordedDemo';
 
-const RECORDED: number[] = [1, 77, 55, 205, 3, 77, 20, 205, 3, 72, 2, 200, 24, 77, 20, 205, 3, 77, 20, 205, 3, 72, 2, 200, 24, 77, 25, 205, 3, 72, 2, 200, 24, 77, 25, 205, 3, 72, 2, 200, 24, 77, 20, 205, 3, 77, 20, 205, 3, 72, 2, 200, 24, 77, 20, 205, 3, 72, 2, 200, 24, 77, 30, 205, 3, 77];
+const RECORDED: number[] = [
+  1, 77, 55, 205, 3, 77, 20, 205, 3, 72, 2, 200, 24, 77, 20, 205, 3, 77, 20, 205, 3, 72, 2, 200, 24, 77, 25, 205, 3, 72, 2, 200, 24, 77, 25, 205, 3, 72, 2, 200,
+  24, 77, 20, 205, 3, 77, 20, 205, 3, 72, 2, 200, 24, 77, 20, 205, 3, 72, 2, 200, 24, 77, 30, 205, 3, 77,
+];
 
 export function demoRecording(): Uint8Array {
   return recordedDemo(RECORDED, 25, 2);

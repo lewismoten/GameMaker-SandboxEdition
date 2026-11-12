@@ -30,7 +30,7 @@ const poses: [string, string][] = [
   ['stand.top', 'walk2'],
   ['stand.top', 'walk3'],
   ['cheer.top', 'jump'],
-    ['stand.top', 'throw0'],
+  ['stand.top', 'throw0'],
   ['cheer.top', 'throw1'],
   ['stand.top', 'throw2'],
 ];

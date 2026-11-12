@@ -168,7 +168,14 @@ function starCount(w: World): StarterMap {
 export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
   const pal = buildStarterPalette(undefined, 'stick-man-stars');
   const w = buildBlocks(pal);
-  const level = (file: string, title: string, hint: string, mood: Mood, map: StarterMap): Level => ({ file, title, hint, mood, map, pal: paletteFor(pal, mood) });
+  const level = (file: string, title: string, hint: string, mood: Mood, map: StarterMap): Level => ({
+    file,
+    title,
+    hint,
+    mood,
+    map,
+    pal: paletteFor(pal, mood),
+  });
   const levels: Level[] = [
     level('one', 'Stargazing Hill', 'Pick the bright stars.', 'night', stargazingHill(w)),
     level('two', 'Main Street', 'Space throws a star.', 'dawn', mainStreet(w)),

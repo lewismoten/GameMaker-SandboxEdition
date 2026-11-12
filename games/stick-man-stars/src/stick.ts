@@ -14,7 +14,9 @@ type Pt = [number, number];
 
 /** A line two pixels thick. */
 function thick(p: Pixels, a: Pt, b: Pt, c: number): void {
-  p.line(a[0], a[1], b[0], b[1], c).line(a[0] + 1, a[1], b[0] + 1, b[1], c).line(a[0], a[1] + 1, b[0], b[1] + 1, c);
+  p.line(a[0], a[1], b[0], b[1], c)
+    .line(a[0] + 1, a[1], b[0] + 1, b[1], c)
+    .line(a[0], a[1] + 1, b[0], b[1] + 1, c);
 }
 
 export type Face = 'smile' | 'blink' | 'ouch' | 'cheer' | 'oh' | 'back';
@@ -65,7 +67,9 @@ function body(pal: Pal, o: Pose): Pixels {
   thick(p, [10, 11], o.legFront, ink);
   const lift = o.lift ?? 0;
   const red = pal.c('red', 2);
-  p.rect(5, 1 - lift, 6, 2, red).rect(2, 2 - lift * 2, 4, 2, red).set(1, 3 - lift * 2, red);
+  p.rect(5, 1 - lift, 6, 2, red)
+    .rect(2, 2 - lift * 2, 4, 2, red)
+    .set(1, 3 - lift * 2, red);
   return p;
 }
 

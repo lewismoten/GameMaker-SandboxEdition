@@ -83,7 +83,10 @@ function coinsLeft(bot: StarterBot): string {
 }
 function totals(bot: StarterBot, from: number, coins: number, picks: number, pops: number, bots: number, what: string): void {
   const want = coins * 10 + picks * PICK_SCORE + pops * POP_SCORE + bots * BOT_SCORE;
-  if (bot.sim.ci.score - from !== want) throw new Error(`${what}: score ${bot.sim.ci.score - from}, expected ${want} (${coins} coins, ${picks} stars picked, ${pops} pops, ${bots} bots; coins left at ${coinsLeft(bot)})`);
+  if (bot.sim.ci.score - from !== want)
+    throw new Error(
+      `${what}: score ${bot.sim.ci.score - from}, expected ${want} (${coins} coins, ${picks} stars picked, ${pops} pops, ${bots} bots; coins left at ${coinsLeft(bot)})`,
+    );
 }
 
 /** A hop with Up, in place, waiting for the landing. */
@@ -163,7 +166,11 @@ export async function spamRow(bot: StarterBot): Promise<void> {
   await must(bot, bot.walk(L4.bots[1] - 5, 'the second bot'), 'to the second bot');
   await popWhenNear(bot, [BOT], 'at the second bot', 40, 110);
   await must(bot, bot.walk(L4.tunnel[0] - 2, 'the Big Repo'), 'to the Big Repo');
-  for (const [n, now, next] of [[1, BIG3, BIG2], [2, BIG2, BIG1], [3, BIG1, -1]] as const) {
+  for (const [n, now, next] of [
+    [1, BIG3, BIG2],
+    [2, BIG2, BIG1],
+    [3, BIG1, -1],
+  ] as const) {
     if (!foes(bot, now).length) throw new Error(`the Big Repo should be at stage ${now} before star ${n}`);
     await throwStar(bot, `at the Big Repo, star ${n}`);
     if (foes(bot, now).length || (next >= 0 && !foes(bot, next).length)) throw new Error(`star ${n} should take the Big Repo from stage ${now} to ${next}`);
