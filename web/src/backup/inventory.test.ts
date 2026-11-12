@@ -32,7 +32,10 @@ const NOT_KEYS = new Set([
   'gm-tour', // the guided tour's start and end, as an event
   'gm-tour-act', // a tour step asking the page to do something, as an event
   'gm-made-with',
-  'gm-site', // the offline copy's cache name
+  'gm-site', // an adopted legacy offline copy
+  'gm-site-v2', // ordinary site browsing
+  'gm-offline-control', // scoped offline snapshot pointer
+  'gm-offline-copy', // scoped offline snapshots
   'gm-actions',
   'gm-pad',
   'gm-sys',

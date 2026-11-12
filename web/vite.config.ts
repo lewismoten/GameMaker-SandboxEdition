@@ -12,6 +12,7 @@ import { singlePagePlayer } from './scripts/singlePageBuild';
 import { hostedPlayer } from './scripts/hostedPlayerBuild';
 import { seoPages } from './scripts/seoBuild';
 import { devLog } from './scripts/devLog';
+import { buildOfflineArchive } from './scripts/offlineArchive';
 
 const publicDir = resolve(__dirname, 'public');
 
@@ -131,6 +132,7 @@ function offlineFiles(bundle: Bundle, forArchive = false): [string, number, numb
         : /^(og\/|og-image\.|robots\.txt$|sitemap\.xml$|llms\.txt$|sw\.js$|index\.html$|archive\.html$|web-player\.html$|player\/|trinkets\/|laser\/|pocket\/)/
     ).test(f) &&
     !DEV_ONLY.test(f) &&
+    !/^(offline\.[a-f0-9]+\.zip$|offline\.json$|archive\.json$|games\/extra-\d+\.json$)/.test(f) &&
     (!/^games\/(gameware|shareware|originals)\//.test(f) || /\.(zip|zpart|gmpak)$|\/walkthrough\.json\.gz$/.test(f));
   return [...sources]
     .filter(([f]) => wanted(f))
@@ -158,14 +160,30 @@ function offline(): Plugin {
     enforce: 'post', // after Vite's HTML plugin has emitted the pages
     generateBundle: {
       order: 'post', // and after scripts/seoBuild.ts has made each game's play page from play.html
-      handler(_options, bundle) {
+      async handler(_options, bundle) {
         const built = Object.keys(bundle);
         const precache = appShell(bundle);
         const groups = groupHashes(bundle);
         const assets = built.filter(isHashed).sort();
         const version = hashText(JSON.stringify([groups, assets]));
         this.emitFile({ type: 'asset', fileName: 'sw.js', source: siteWorkerSource({ version, precache, groups, assets }) });
-        this.emitFile({ type: 'asset', fileName: 'offline.json', source: JSON.stringify({ version, shell: precache, files: offlineFiles(bundle) }) });
+        const files = offlineFiles(bundle);
+        const read = (path: string): Uint8Array => {
+          const item = bundle[path];
+          const source = item ? (item.type === 'chunk' ? item.code : item.source) : readFileSync(resolve(publicDir, path));
+          return typeof source === 'string' ? new TextEncoder().encode(source) : source;
+        };
+        // Include the complete shell, especially index.html, in the replacement snapshot.
+        for (const path of precache.map((f) => (f === './' ? 'index.html' : f.replace(/^\.\//, '')))) {
+          if (!files.some(([f]) => f === path)) {
+            const data = read(path);
+            files.push([path, TEXT_FILE.test(path) ? gzipSync(data, { level: 6 }).length : data.length, data.length]);
+          }
+        }
+        files.sort(([a], [b]) => (a < b ? -1 : 1));
+        const { data, ...archive } = await buildOfflineArchive(files.map(([name]) => ({ name, data: read(name) })));
+        this.emitFile({ type: 'asset', fileName: archive.path, source: data });
+        this.emitFile({ type: 'asset', fileName: 'offline.json', source: JSON.stringify({ version, shell: precache, files, archive }) });
         // every file for archive.html: the offline copy's list and what it leaves out (previews, firmware, crawler files)
         this.emitFile({ type: 'asset', fileName: 'archive.json', source: JSON.stringify({ version, shell: precache, files: offlineFiles(bundle, true) }) });
         const player = playerGraph(bundle);
