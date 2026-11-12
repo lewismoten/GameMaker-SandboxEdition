@@ -34,14 +34,14 @@ function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign>; nam
   addNightBlocks(book, pal);
   const signs = {
     gaze: addSign(book, pal, 'gaze', 'PICK STARS: JUMP WITH UP', 4, 2),
-    gate: addSign(book, pal, 'gate', 'SHARE 5 STARS TO LIGHT THE PATH', 4, 2),
+    gate: addSign(book, pal, 'gate', 'LEAVE 5 STARS TO LIGHT THE PATH', 4, 2),
     how: addSign(book, pal, 'how', 'SPACE THROWS A STAR', 4, 2),
     far: addSign(book, pal, 'far', 'A STAR FLIES ONLY SO FAR', 4, 2),
     shed: addSign(book, pal, 'shed', 'A SLEEPY SHED NAPS IN THE WAY', 4, 2),
     shy: addSign(book, pal, 'shy', 'SHY ONES WANDER', 4, 2),
     bots: addSign(book, pal, 'bots', 'SPAM BOTS BUMP. POP THEM', 4, 2),
     three: addSign(book, pal, 'three', 'THREE LANTERNS: ONE THANK YOU EACH', 4, 2),
-    thanks: addSign(book, pal, 'thanks', 'THANK YOU STAR GAZERS', 4, 2),
+    thanks: addSign(book, pal, 'thanks', 'LIKED A PROJECT? LEAVE IT A STAR', 4, 2),
     thx: addSign(book, pal, 'thx', 'A STAR SAYS THANKS', 3, 2),
     readme: addSign(book, pal, 'readme', 'SAYS WHAT IT IS', 3, 2),
     fake: addSign(book, pal, 'fake', 'FAKE STARS FADE', 3, 2),

@@ -10,7 +10,7 @@ Repo Row is a street of little houses, and each one is somebody's project.
 
 They sit dark until a stranger stops by and leaves a star. A star can say thanks. Some are bookmarks for later.
 
-Stick Man has no stars. So he climbs the hill at night and picks them out of the sky, one at a time. The path to town is dark, and it lights when he shares five.
+Stick Man has no stars. So he climbs the hill at night and picks them out of the sky, one at a time. The path to town is dark, and it lights when he leaves five.
 
 Then he walks into town and tosses them at the houses, one thank-you each.
 
@@ -25,11 +25,13 @@ export const HOWTO = wrap(`
 |SPACE         throw a star
 |F2            lives, score
 
-On the hill, jump up to pick bright stars out of the sky. Share five to light the path to town.
+On the hill, jump up to pick bright stars out of the sky. Leave five to light the path to town.
 
 In town, walk toward a house and press Space. A star flies the way you last walked, and only so far.
 
 A lit house throws confetti. A shy one wanders, so wait for it. A sleepy shed in a tunnel wakes when a star says thanks. A spam bot bumps and hands out fake stars: pop it from a distance and its star fades.
+
+In real life, a star on a project you like thanks its maker and saves it for later.
 `);
 
 export const CREDITS = withCreditPage(
@@ -52,7 +54,7 @@ Every house on Repo Row has a gold star on its flag and a light in its window, a
 
 The brightest houses have a sign out front that says what they are. Nobody had to be asked.
 
-Found something useful? A star says thanks. Some stars are bookmarks for later. Both are fine.
+Liked a project? Leave it a star: it thanks the maker and saves the project for later. Only if you want to.
 `);
 
 export const LOST = wrap(`
