@@ -1,0 +1,90 @@
+{
+ "version": 1,
+ "game": "stick-man-stars",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "AU1GzQNIAsgYTQ/NA00UzQNNFM0DSALIGE0ZzQNIAsgYTRTNA0gCyBhND80DTRTNA0gCyBhNFM0DSALIGE0ezQNN"
+  },
+  {
+   "scene": 3,
+   "keys": "AU0yzQM5A7ktTSjNAzkDuS1NLc0DOQO5LU03zQM5A7lLTTLNAzkDuS1NI80DTQ=="
+  },
+  {
+   "scene": 4,
+   "keys": "AU1GzXI5A7ktTTzNXTkDuS1NPM1gOQO5LU03zQM5A7ktTSPNAzkDuUtNN80DTQ=="
+  },
+  {
+   "scene": 5,
+   "keys": "AU0jzQM5A7ktTTfNKjkDuS1NHs2HATkDuS1NLc0DOQO5LU0ezR45A7ktTSjNAzkDuS05A7ktOQO5S01uzQNN"
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: Stargazing Hill"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: Main Street"
+  },
+  {
+   "scene": 4,
+   "title": "Level 3: Shy Street"
+  },
+  {
+   "scene": 5,
+   "title": "Level 4: Spam Row"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 16105,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 1028,
+    "time": 17133.33333333315
+   },
+   {
+    "title": "Level 1: Stargazing Hill",
+    "frame": 2257,
+    "time": 37616.66666666692
+   },
+   {
+    "title": "Level 2: Main Street",
+    "frame": 4096,
+    "time": 68266.66666666364
+   },
+   {
+    "title": "Level 3: Shy Street",
+    "frame": 6319,
+    "time": 105316.66666667443
+   },
+   {
+    "title": "Level 4: Spam Row",
+    "frame": 9709,
+    "time": 161816.66666666404
+   },
+   {
+    "title": "Ending",
+    "frame": 13301,
+    "time": 221683.33333329586
+   },
+   {
+    "title": "Credits",
+    "frame": 15032,
+    "time": 250533.33333327906
+   }
+  ]
+ }
+}

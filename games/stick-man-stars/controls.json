@@ -1,0 +1,47 @@
+{
+  "keys": {
+    "75": {
+      "short": "Walk left",
+      "long": "Walk left."
+    },
+    "77": {
+      "short": "Walk right",
+      "long": "Walk right."
+    },
+    "57": {
+      "short": "Throw a star",
+      "long": "Throw a star the way you last walked. It flies only so far."
+    },
+    "72": {
+      "short": "Jump",
+      "long": "Jump, to pick a high star out of the night sky. Steer with Left and Right while you are in the air."
+    },
+    "30": {
+      "short": "Walk left",
+      "long": "Same as the Left arrow."
+    },
+    "32": {
+      "short": "Walk right",
+      "long": "Same as the Right arrow."
+    }
+  },
+  "joystick": {
+    "2": {
+      "short": "Throw a star",
+      "long": "Throw a star the way you last walked."
+    },
+    "1": {
+      "short": "Jump",
+      "long": "Jump."
+    }
+  },
+  "sounds": {
+    "9": "The jump",
+    "10": "Bumped by a spam bot",
+    "11": "Bumped over by spam bots",
+    "13": "The throw"
+  },
+  "counters": {
+    "20": "Keys: not used here, but a copy can add them."
+  }
+}
