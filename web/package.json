@@ -84,9 +84,9 @@
     "check:cyd": "vite-node scripts/cydFriendly.ts --"
   },
   "dependencies": {
-    "@lewismoten/gamemaker-sandbox-archives": "3.2.2",
-    "@lewismoten/gamemaker-sandbox-engine": "3.3.2",
-    "@lewismoten/gamemaker-sandbox-tools": "3.5.0",
+    "@lewismoten/gamemaker-sandbox-archives": "3.2.3",
+    "@lewismoten/gamemaker-sandbox-engine": "3.3.3",
+    "@lewismoten/gamemaker-sandbox-tools": "3.6.0",
     "@types/node": "^22.20.5",
     "esbuild": "^0.28.2",
     "typescript": "~5.9.0",
