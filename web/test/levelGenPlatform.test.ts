@@ -130,7 +130,7 @@ describe('platform generator', () => {
     expect(coins).toBeGreaterThan(SEEDS.length * 3);
     expect(ledges).toBeGreaterThan(0);
     expect(doors).toBeGreaterThan(0);
-  });
+  }, 30_000); // 1 to 2 s alone, over 5 s when the machine is loaded
 
   it('proposes the entry on the left and the exit on the right, on the ground', () => {
     const r = make(ROLES, 99);

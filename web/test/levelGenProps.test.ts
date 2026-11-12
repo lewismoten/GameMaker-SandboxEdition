@@ -38,7 +38,7 @@ describe('locks and keys', () => {
       expect(r.locks.map((l) => l.order)).toEqual(r.locks.map((_, i) => i));
     }
     expect(locked).toBeGreaterThan(150);
-  });
+  }, 30_000); // 1 to 2 s alone, over 5 s when the machine is loaded
 
   it('puts the exit behind every lock and the treasure off the entry', () => {
     for (let s = 1; s <= 40; s++) {
