@@ -23,7 +23,7 @@ export function trinketShelf(id: string, paper: Promise<BoxItem[]> = Promise.res
   const shelf = h('section', { class: 'bc-trinkets', hidden: '', 'aria-label': 'Feelies' });
   void Promise.all([loadFeelies(id), paper.catch((): BoxItem[] => [])]).then(([list, sheets]) => {
     if (!list.length && !sheets.length) return;
-    shelf.append(...strip(list, paperFeelieTiles(sheets, open)), h('button', { type: 'button', onclick: open }, 'Build instructions & downloads…'));
+    shelf.append(...strip(list, sheets, open), h('button', { type: 'button', onclick: open }, 'Build instructions & downloads…'));
     shelf.hidden = false;
   });
   return shelf;
@@ -32,11 +32,31 @@ export function trinketShelf(id: string, paper: Promise<BoxItem[]> = Promise.res
 const ABOUT =
   'Feelies are physical extras packed in a game box. Infocom began the habit in the 1980s, and the name stuck. Some were copy protection, like a code wheel that had to be turned to answer the game. Others set a box apart from its shelf neighbors, helped during play, made the story feel real, or carried it beyond the screen.';
 
-function strip(list: Feelie[], paperTiles: HTMLElement[]): HTMLElement[] {
+function strip(list: Feelie[], sheets: BoxItem[], open: () => void): HTMLElement[] {
   let at = -1; // -1: the box is showing
   let pv: PhoneViewer | undefined;
   let assembly: { close(): void } | undefined;
   const total = list.length;
+  let foldTile: HTMLElement | undefined;
+  /** The die's fold view takes the box's place above the shelf, as a kit's assembly does; choosing it again brings the box back. */
+  async function showFold(item: BoxItem, tile: HTMLElement) {
+    if (foldTile === tile) {
+      foldTile = undefined;
+      tile.setAttribute('aria-pressed', 'false');
+      return void (await choose(-1));
+    }
+    await choose(-1);
+    const el = await item.fold!();
+    foldTile = tile;
+    tile.setAttribute('aria-pressed', 'true');
+    assembly = { close: () => (foldTile?.setAttribute('aria-pressed', 'false'), (foldTile = undefined)) };
+    const viewer = row.closest('.box-viewer');
+    viewer?.classList.add('trinket-on');
+    float.hidden = false;
+    float.replaceChildren(el);
+    el.querySelector<HTMLElement>('.bcf-svg')?.focus({ preventScroll: true });
+  }
+  const paperTiles = paperFeelieTiles(sheets, open, (item, tile) => void showFold(item, tile));
 
   // PageUp and PageDown change feelie; the turntable has the rest of the keys
   const table = trinketTurntable(

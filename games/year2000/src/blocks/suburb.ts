@@ -6,7 +6,7 @@ import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { BlockSet, SOLID } from './book';
 import { blob, gradient, oval, shadeAt, speckle } from '../art/draw';
 import { FLOORS } from './floors';
-import { micro } from '../art/font';
+import { micro, microWidth } from '../art/font';
 import { CTR, DOME_PAGES, MON } from '../ids';
 import { C } from '../art/pal';
 import { billboard, domeHome } from '../art/bigart';
@@ -16,6 +16,27 @@ import { R, addBig, addBooths, addFloors, addItems, addWalkways, blank, on, staf
 import { addEgg } from './egg';
 
 // ------------------------------------------------------------------ walls and things
+/** A garden gate between two chrome posts with a sign on it saying what it wants. */
+function gatePic(lines: string[], tone: 'pink' | 'teal' | 'gold', state: 'shut' | 'ajar'): Pixels {
+  const p = on('grass');
+  const posts = () => {
+    for (const x of [0, 17]) p.rect(x, 2, 3, 16, C('chrome', 4)).rect(x, 2, 1, 16, C('chrome', 7)).rect(x, 16, 3, 2, C('gray', 1));
+  };
+  const w = state === 'shut' ? 20 : 5;
+  p.rect(0, 3, w, 14, C(tone, 1));
+  for (let y = 4; y < 16; y += 3) p.rect(0, y, w, 1, C(tone, 3));
+  if (state === 'shut') {
+    // short words leave a margin, so neighboring signs never run together
+    const wide = Math.max(...lines.map((l) => microWidth(l))) > 15;
+    const m = wide ? 0 : 2;
+    p.rect(m, 2, 20 - 2 * m, 16, C(tone, 1)).frame(m, 2, 20 - 2 * m, 16, C('gray', 1));
+    p.rect(m, 4, 20 - 2 * m, 12, C('paper', 2));
+    lines.forEach((line, i) => micro(p, (20 - microWidth(line)) >> 1, 5 + i * 6, line, C('denim', 1)));
+  }
+  if (state !== 'shut') posts();
+  return p;
+}
+
 function chromeFence(floor: Floor, dir: 'h' | 'v' | 'post'): Pixels {
   const p = on(floor);
   if (dir === 'h') {
@@ -217,21 +238,14 @@ export function suburbSet(): BlockSet {
   // the backyard pool (the block set has no room to ripple it between two pictures)
   addBig(s, 'swim', poolBig());
   // The CitiCar on its charger: honk it (touch the front, on the left) and the headlights flash.
-  // Its door checks keys, all seven neighborhood pages, then the Zapper pickup receipt.
-  // Each solid touch-block stage names the next missing item; only the final stage opens.
+  // The car's picture is left whole; the three gates in front of it (below) do the checking, and
+  // its door takes the keys. Stepping in is Dome Sweet Dome's way out (to the Cloud Lane).
   const parked = citicar(false);
-  const door = (lines: string[]) => {
-    const p = parked.crop(20, 20, 20, 20);
-    p.rect(0, 0, 20, 19, C('gold', 5)).frame(0, 0, 20, 19, C('gold', 3));
-    lines.forEach((line, i) => micro(p, 1, 1 + i * 6, line, C('red', 2)));
-    return p;
-  };
-  parked.blit(door(['GET', 'KEYS!']), 20, 20);
   addBig(s, 'citi', parked, (col, row) =>
     col === 0 && row === 1
       ? { solid: SOLID, score: 1976, touch: 'citiLit' }
       : col === 1 && row === 1
-        ? { solid: SOLID, effect: CTR.keys, eamt: -1, touch: 'citiPages' }
+        ? { solid: SOLID, effect: CTR.keys, eamt: -1, touch: 'citiOpen' }
         : // the top row is only the sky above the roof (the car stands in the lower row): Dex can walk through it
           row === 0
           ? {}
@@ -283,11 +297,14 @@ export function suburbSet(): BlockSet {
   addBig(s, 'bbFax', billboard(['FAX-A-PIZZA!', 'HOT PIZZA BY', 'FAX IN 30 SEC'], 'red', 'gold', FLOORS.deck));
   addTicker(s, () => rail('h', 'deck'));
 
-  // PLAYGAME checks counters >=20 before accepting a touch (PLAYGAME.C DoBlockTouchChar).
-  // Refund the checked pages on the next solid stage: Dex still needs them at the fair.
-  s.add('citiPages', door(['GET', 'PAGES']), { solid: SOLID, effect: CTR.pages, eamt: -DOME_PAGES, touch: 'citiPagesBack' });
-  s.add('citiPagesBack', door(['GET', 'ZAP-', 'PER!']), { solid: SOLID, effect: CTR.pages, eamt: DOME_PAGES, touch: 'citiZapper' });
-  s.add('citiZapper', door(['GET', 'ZAP-', 'PER!']), { solid: SOLID, effect: CTR.zapperFound, eamt: -1, touch: 'citiOpen' });
+  // Three gates in a row lead to the car: all seven pages, then the Zapper, then the keys.
+  // PLAYGAME checks counters >=20 before accepting a touch (PLAYGAME.C DoBlockTouchChar), so the
+  // pages are only checked: the next solid stage gives them back (Dex still needs them at the
+  // fair). The ring holds three keys: the garage gate, this gate and the car's door each take one.
+  s.add('gatePages', gatePic(['SEVEN', 'PAGES'], 'pink', 'shut'), { solid: SOLID, effect: CTR.pages, eamt: -DOME_PAGES, touch: 'gatePagesB' });
+  s.add('gatePagesB', gatePic([], 'pink', 'ajar'), { solid: SOLID, effect: CTR.pages, eamt: DOME_PAGES, touch: 'grass' });
+  s.add('gateZap', gatePic(['ZAP-', 'PER'], 'teal', 'shut'), { solid: SOLID, effect: CTR.zapperFound, eamt: -1, touch: 'grass' });
+  s.add('gateKeys', gatePic(['THE', 'KEYS'], 'gold', 'shut'), { solid: SOLID, effect: CTR.keys, eamt: -1, touch: 'doormat' });
   // A pickup receipt is separate from ammunition: batteries cannot impersonate the Zapper,
   // and spending every shot before boarding cannot lock Dex out. The next touch grants ammo.
   Object.assign(s.def('zapper_grass'), { effect: CTR.zapperFound, eamt: 1, touch: 'zapperCharge' });

@@ -5,7 +5,7 @@
 // copy, never kept or opened for editing.
 import { loadCatalog, type CatalogEntry } from '../project/files';
 import { crc32 } from '@lewismoten/gamemaker-sandbox-archives/zip';
-import { askToOpen, showLinkError, waitingDialog } from './dialogs';
+import { askToFetch, askToOpen, showLinkError, waitingDialog } from './dialogs';
 import { fetchGame, urlFileName } from './fetchGame';
 import { keepGame } from './keep';
 import { LinkError, cleanName, keptName, originLabel, type LinkRequest, type Mode, type Target } from './protocol';
@@ -49,6 +49,7 @@ const bytesOf = (g: UnpackedGame) => g.files.entries().reduce((n, [, b]) => n + 
  * no or it failed (after saying why). `fallback` is the interface to open when none is named.
  */
 export async function runLinkIn(req: LinkRequest, fallback: Target): Promise<Destination | undefined> {
+  if (req.kind === 'open' && !(await askToFetch(originLabel(new URL(req.url).origin)))) return undefined;
   let sender: Sender | undefined;
   const abort = new AbortController();
   const wait = waitingDialog(req.kind === 'open' ? `Fetching ${urlFileName(req.url)}…` : 'Waiting for the game from the page that opened this one…', () =>
@@ -63,10 +64,7 @@ export async function runLinkIn(req: LinkRequest, fallback: Target): Promise<Des
     let mode = req.mode;
     if (req.kind === 'open') {
       origin = new URL(req.url).origin;
-      files = await Promise.race([
-        fetchGame(req.url, (done, total) => wait.say(`Fetching the game’s files: ${done} of ${total}…`)),
-        new Promise<never>((_, reject) => abort.signal.addEventListener('abort', () => reject(new LinkError('Canceled.', 'declined')))),
-      ]);
+      files = await fetchGame(req.url, (done, total) => wait.say(`Fetching the game’s files: ${done} of ${total}…`), abort.signal);
       name = cleanName(urlFileName(req.url).replace(/\.(zip|gmpak|html?|gam)$/i, ''));
     } else {
       const got = await receiveFiles({ from: req.from, signal: abort.signal });

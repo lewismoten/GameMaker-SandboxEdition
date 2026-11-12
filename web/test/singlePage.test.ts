@@ -85,3 +85,23 @@ describe('importing a one-page export as a project', () => {
     expect(await gameFromPageHtml('<p>hi</p>')).toBeUndefined();
   });
 });
+
+describe('bounded page decoding', () => {
+  it('rejects inflated output beyond its manifest, including trailing raw data', async () => {
+    // A two-byte fixture is sufficient; no expanding or memory-exhaustion payload is needed.
+    const game = await encodeGame({ id: 'x', title: 'x', gam: 'x.gam' }, [['x.gam', new Uint8Array([1, 2])]]);
+    game.files = [['x.gam', 1]];
+    await expect(decodeGame(game)).rejects.toThrow(/declared size|trailing/);
+    await expect(decodeGame({ ...game, enc: 'raw', data: toBase64(new Uint8Array([1, 2])) })).rejects.toThrow(/trailing/);
+    await expect(decodeGame({ ...game, files: [['x.gam', 3]] })).rejects.toThrow(/cut short/);
+  });
+
+  it('rejects invalid lengths, counts and totals before decoding data', async () => {
+    const game: SinglePageGame = { v: 1, id: 'x', title: 'x', gam: 'x.gam', enc: 'raw', files: [], data: 'not base64' };
+    for (const length of [-1, 0.5, Infinity, Number.MAX_SAFE_INTEGER]) {
+      await expect(decodeGame({ ...game, files: [['x.gam', length]] })).rejects.toThrow(/length|too large/);
+    }
+    await expect(decodeGame({ ...game, files: Array.from({ length: 2001 }, () => ['x', 0]) })).rejects.toThrow(/Too many files/);
+    await expect(decodeGame({ ...game, ext: [['x', 'id', -1]] })).rejects.toThrow(/length/);
+  });
+});

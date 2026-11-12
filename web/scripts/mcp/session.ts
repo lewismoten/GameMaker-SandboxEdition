@@ -2,8 +2,9 @@
 // on), and the working folder its changes are saved to. A folder inside a writable root is
 // edited where it is; anything else (a zip, this repository's games, the CD's, a folder only
 // readable) is copied, on its first save, to a working folder the user names or a new one in
-// the scratch root. Nothing is written before save, and only inside the working folder.
-import { existsSync, mkdirSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
+// the scratch root. Game files are written only on save; recorded artifacts are written
+// immediately into the working folder’s assistant subfolder.
+import { existsSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { GameFiles } from '../../src/project/files';
 import { newGame, serializeGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
@@ -13,6 +14,7 @@ import { MemoryContext } from '../../src/assistant/tools/memoryContext';
 import { ToolError } from '../../src/assistant/tools/types';
 import { loadGame } from './sources';
 import type { Roots } from './roots';
+import { childPath, makeDirectory, removeFile, writeFile } from './safeFiles';
 
 /** Where an assistant's own files (walkthroughs) go inside the working folder: a subfolder, never among the game's files. */
 const ARTIFACTS = 'assistant';
@@ -26,12 +28,14 @@ export class OpenGame {
     readonly source: string,
     readonly workdir: string,
     inPlace: boolean,
+    private readonly roots: Roots,
   ) {
     this.written = inPlace;
     ctx.saveArtifact = async (name, bytes) => {
+      if (ctx.readOnly) throw new ToolError('This game was opened read-only.');
       const dir = join(this.workdir, ARTIFACTS);
-      mkdirSync(dir, { recursive: true });
-      writeFileSync(join(dir, name), bytes);
+      makeDirectory(this.roots, dir);
+      writeFile(this.roots, childPath(dir, name), bytes);
       return join(dir, name);
     };
   }
@@ -54,18 +58,18 @@ export class OpenGame {
     const patches = this.ctx.patchesDirty || (!this.written && Object.keys(this.ctx.playerPatches()).length);
     if (patches) written.push(companion);
     if (dry) return { written, deleted, workdir: this.workdir };
-    mkdirSync(this.workdir, { recursive: true });
+    makeDirectory(this.roots, this.workdir);
     // a file already there keeps its name's case; a new one is named as DOS would (upper case)
     const there = new Map(readdirSync(this.workdir).map((f) => [f.toLowerCase(), f]));
-    const path = (n: string) => join(this.workdir, there.get(n) ?? n.toUpperCase());
-    for (const n of written) if (n !== companion) writeFileSync(path(n), this.ctx.files.get(n)!);
-    for (const n of deleted) if (there.has(n)) rmSync(path(n));
+    const path = (n: string) => childPath(this.workdir, there.get(n) ?? n.toUpperCase());
+    for (const n of written) if (n !== companion) writeFile(this.roots, path(n), this.ctx.files.get(n)!);
+    for (const n of deleted) if (there.has(n)) removeFile(this.roots, path(n));
     if (patches) {
       const c = emptyCompanion();
       setSection(c, this.ctx.gam, PLAYER_SECTION, playerRecord(this.ctx.playerPatches()));
       const entry = backupEntries(new GameFiles(), this.ctx.gam, c)[0];
-      if (entry) writeFileSync(path(companion), entry.data);
-      else if (there.has(companion)) rmSync(path(companion));
+      if (entry) writeFile(this.roots, path(companion), entry.data);
+      else if (there.has(companion)) removeFile(this.roots, path(companion));
     }
     this.written = true;
     this.ctx.saved();
@@ -93,9 +97,9 @@ export async function openGame(roots: Roots, source: string, opt: { gam?: string
   const g = await loadGame(source, roots, opt.gam);
   const ctx = new MemoryContext(g.files, g.gam, g.patches);
   ctx.readOnly = !!opt.readOnly;
-  if (g.folder && !opt.workdir) return new OpenGame(ctx, source, g.folder, true);
+  if (g.folder && !opt.workdir) return new OpenGame(ctx, source, g.folder, true, roots);
   const workdir = opt.workdir ? namedWorkdir(roots, opt.workdir) : freeFolder(roots.scratch, `${g.stem}-copy`);
-  return new OpenGame(ctx, source, workdir, false);
+  return new OpenGame(ctx, source, workdir, false, roots);
 }
 
 /** A new game: just its .gam (title and game-over scenes), saved to a new working folder. */
@@ -108,5 +112,5 @@ export function createGame(roots: Roots, title: string, workdir?: string): OpenG
   const gam = `${stem}.gam`;
   const files = new GameFiles([[gam, serializeGame(newGame(title))]]);
   const dir = workdir ? namedWorkdir(roots, workdir) : freeFolder(roots.scratch, stem);
-  return new OpenGame(new MemoryContext(files, gam), `new:${title}`, dir, false);
+  return new OpenGame(new MemoryContext(files, gam), `new:${title}`, dir, false, roots);
 }

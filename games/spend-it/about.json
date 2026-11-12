@@ -6,7 +6,7 @@
   "hero": "YANA",
   "year": 1994,
   "price": "Free",
-  "version": "1.0",
+  "version": "1.1",
   "blurb": "Two short levels about spending. Coins add to your Money, and a stall sells a gold key for a price: touch it with enough coins and it takes them and hands over the key. With too few, nothing happens. Money carries to the next level, and the Money counter is the one Game-Maker prints as a number (F2). Signs in the levels say how. Play it, then open it in Game-Maker and change a price.",
   "exe": "SPENDIT.EXE",
   "dosName": "SPENDIT",

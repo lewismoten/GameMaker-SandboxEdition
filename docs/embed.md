@@ -122,17 +122,19 @@ window.open(…?receive…)  ─────────────────
 
    `files` may also hold a single .zip, .gmpak or exported .html, which is opened like a link.
    Folders in file names (`SNOWDAY/SNOWDAY.MAP`) are dropped, as DOS names have none.
-4. **Read the answer.** You get `gm-received` (`{type, name, files}`) once the visitor has said
-   yes and the game is kept. Otherwise you get `gm-error` (`{type, reason, message}`). Its
-   `reason` is one of:
+4. **Read the answer.** Once a `gm-files` message has arrived, you get `gm-received`
+   (`{type, name, files}`) when the visitor has said yes and the game is kept: `name` is the
+   game's display title and `files` is the number of files, not the `files` object you sent.
+   Otherwise you get `gm-error` (`{type, reason, message}`). Its `reason` is one of:
    - `declined`: the visitor said no;
    - `invalid`: the message or a file is malformed or damaged;
    - `no-game`: no .gam came with the files;
    - `too-big`: over the limits;
    - `storage`: the browser wouldn't store it.
 
-   Game-Maker waits 60 seconds for `gm-files` after `gm-ready`. It reads only the first
-   `gm-files` message. Messages of other types are ignored.
+   Game-Maker waits 60 seconds for `gm-files` after `gm-ready`. If none arrives in that time,
+   it stops waiting and sends no reply, so give your page its own timeout. It reads only the
+   first `gm-files` message. Messages of other types are ignored.
 
 **An iframe instead of a window.** If your page frames Game-Maker
 (`<iframe src="…/?receive&in=web&from=…">`), the frame sends `gm-ready` to its parent, and the

@@ -76,8 +76,7 @@ export function patchFile(from: FileState | undefined, d: FileDelta): FileState 
     return out;
   }
   const x = lines(from);
-  x.splice(d.start, d.remove, ...d.add);
-  return bytesOf(x);
+  return bytesOf(x.slice(0, d.start).concat(d.add, x.slice(d.start + d.remove)));
 }
 
 /** The delta between two whole versions (file name to bytes). */

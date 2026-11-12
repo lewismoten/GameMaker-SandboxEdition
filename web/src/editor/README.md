@@ -84,8 +84,8 @@ Part of the [source map](../README.md).
   `all.ts` imports them all.
 - [`check/`](check/README.md): the level check and the walkthrough bot, with no DOM.
   - Playing: `sim.ts` plays a scene on the engine's own calls with small snapshots, `explore.ts`
-    tries every move (`inputs.ts`, `drive.ts`) from every resting place for the heat map, `stuck.ts`
-    finds places with no way out and `escape.ts` whether the hero can get out of harm;
+    tries generated key scripts (`inputs.ts`, `drive.ts`) from bucketed resting places within a time and node budget for the heat map, `stuck.ts`
+    suggests places with no way out (a finding of that search, not proof) and `escape.ts` whether the hero can get out of harm;
     `sceneData.ts` parses each level scene once, and `sceneLinks.ts` gives the level scenes and the
     links into a scene (apart from `playtest.ts`, so the editors' badges don't load the explorer and
     engine).

@@ -155,8 +155,8 @@ SDK implementation lives in the packages below; the app imports their declared e
 - [`linkIn/`](linkIn/README.md): opening a game another site links to or sends by postMessage.
 - [`community/`](community/README.md): reviewed links to independently hosted games and
   the Community submission form; [contribution guide](../../docs/community-games.md).
-- [`offline/`](offline/README.md): "Make available offline": the whole site in the service worker's cache at
-  once (`offlineCopy.ts`), from the web's Offline dialog (`offlineDialog.ts`) or `OFFLINE.EXE` on
+- [`offline/`](offline/README.md): "Make available offline": the app's offline manifest and the visible
+  games in the service worker's cache at once (`offlineCopy.ts`), from the web's Offline dialog (`offlineDialog.ts`) or `OFFLINE.EXE` on
   the desk (`offlineExe.ts`); `loadFailure.ts` says so when a part of the site cannot load.
 - [`courier/`](courier/README.md): what Scoot, the desk buddy, carries: mail (a letter from each BBS
   on its first call), postcards and packages, in one store read by its card on the desk and by
@@ -211,7 +211,7 @@ SDK implementation lives in the packages below; the app imports their declared e
 - [`editor/editors/palette/`](editor/editors/palette/README.md): VGA palette editing, role reservations and contrast checks.
 - [`saves/`](saves/README.md): the home page's Saves & scores panel: saved games, high scores and
   backups.
-- [`backup/`](backup/README.md): Settings › Back up / restore: everything this browser keeps in one
+- [`backup/`](backup/README.md): Settings › Back up / restore: what this site keeps in a browser in one
   `.gmbackup` file, and bringing it back part by part.
   Subareas:
   - [`backup/sections/`](backup/sections/README.md): validation and merge rules for each kind of backed-up data.
@@ -299,9 +299,10 @@ SDK implementation lives in the packages below; the app imports their declared e
 and the editors (`editor/editors/registry.ts` `loadEditor`) one at a time, as files of each kind
 are opened, so each interface is its own download. `offline.ts` registers the service worker
 (`siteWorker.ts`), which precaches only the app shell and caches games as they are used; a new
-deploy waits for the visitor to say "Reload". A hosted game comes in one request: its pack
-(`<id>.<hash>.gmpak`, all its files gzipped in play order, `project/gamePack.ts`), read as it
-arrives so play starts once the .gam is in (`loadHostedGame`, `streamHostedGame`). Single files go
+deploy waits for the visitor to say "Reload". A hosted game comes as a DOS distribution ZIP
+(a split one fetches its own and shared pieces and joins them); `streamHostedGame` starts play once the ZIP has loaded
+(`loadHostedGame`). Only a legacy GMPK pack (`<id>.<hash>.gmpak`, all its files gzipped in play order, written by
+`web/packages/archives/src/project/gamePack.ts`) or loose-file catalog is read as it arrives, so play starts once the .gam is in. Single files go
 through `fetchGameFile` (`project/files.ts`), which shares each request and reads from a pack
 already at hand. The build also puts in the catalog what pages would otherwise fetch files to work
 out (the quick health check, a box's captions). Lists load `games/catalog.json`
@@ -313,11 +314,11 @@ editors full screen on its monitor (`retro/computer.ts` `openEditor`, through th
 registry).
 
 **Formats → engine → player.** A game is a `GameFiles` (`project/files.ts`): loaded from the CD
-catalog, IndexedDB, a zip or a folder. A hosted game on the play page streams in
-(`project/streamGame.ts`): it starts once its `.gam` is in, and the engine asks for each file just
-before reading it (`engine/machine.ts` `need`). `player/player.ts` mounts a canvas and runs
-`engine/game.ts`, which parses the `.gam` and the files each scene names with `formats/`, and
-plays them on the `engine/machine.ts` screen, keyboard and timers (an 18.2 Hz game clock, 145.6 Hz
+catalog, IndexedDB, a zip or a folder. A hosted game on the play page loads through
+`project/streamGame.ts`: a ZIP starts once it has loaded, and a legacy pack or loose-file game starts once its `.gam` is in,
+with the engine asking for each file just before reading it (the engine package's `src/engine/machine.ts` `need`).
+`player/player.ts` mounts a canvas and runs the engine package's `src/engine/game.ts`, which parses the `.gam` and the
+files each scene names with its `src/formats/`, and plays them on the `machine.ts` screen, keyboard and timers (an 18.2 Hz game clock, 145.6 Hz
 for scrolling and sound) with `audio/` for music and sound.
 
 **Editors, exports and media.** How the editors work is in [`editor/`](editor/README.md), how a

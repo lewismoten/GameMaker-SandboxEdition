@@ -67,7 +67,7 @@ export const stopped = (n: number) => `stop${n}`;
 type SignName = 'roll' | 'touch' | 'odd' | 'even';
 const SIGNS: Record<SignName, string> = {
   roll: 'A DIE ROLLS AND ROLLS',
-  touch: 'TOUCH IT TO STOP IT',
+  touch: 'WALK INTO IT TO STOP IT',
   odd: 'ODD: 1 3 5 GOLD DOOR AHEAD',
   even: 'EVEN: 2 4 6 SILVER DOOR UP THE LADDER',
 };

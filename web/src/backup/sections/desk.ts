@@ -43,7 +43,7 @@ export const desk: Section<DeskPayload> = {
   validate(raw) {
     need(isRecord(raw) && isRecord(raw.records), 'desk');
     if ('C' in raw.records) need(isCDrive(raw.records.C), 'C: drive');
-    return { records: raw.records, local: stringMap(raw.local, 'desk') };
+    return { records: raw.records, local: stringMap(raw.local, 'desk', 'desk') };
   },
   merge(mine, theirs, ctx) {
     const records = ctx.prefer === 'theirs' ? { ...mine.records, ...theirs.records } : { ...theirs.records, ...mine.records };

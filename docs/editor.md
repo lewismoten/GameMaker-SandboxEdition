@@ -296,7 +296,7 @@ Blaster `.VOC` sample instead.
 The `.VOC` editor trims, fades, normalizes, reverses and changes the speed and pitch of a
 sample, or records a new one from the microphone. It saves 8-bit sound, the way the Sound
 Blaster played it.
-Under the waveform a time ruler marks seconds and game ticks, with a yellow zone where a slow PC may stutter and a red zone where it likely will, and a line at 64 KB. DOS reads the whole sound from disk while the game waits, so the zones are estimates from old hard-disk speeds. The sound still records and plays in full; the ruler is only a warning.
+Under the waveform a time ruler marks seconds and game ticks, with a yellow zone where a slow PC may stutter and a red zone where it likely will, and a line at 64 KB. DOS reads the whole sound from disk while the game waits, so the zones are estimates from old hard-disk speeds. Recording stops at the editor's DOS size limit of 65,535 bytes including the header, and it won't start when less than half a second of room is left; the ruler itself is only an estimate.
 
 ## Animations, slide shows, backdrops and text screens
 
@@ -423,7 +423,7 @@ before changing_ each change waits for Apply or Skip; _Change freely (Undo still
 still there, and _Read-only_ keeps it to looking. _What should I do next?_ runs the Level check, the bot
 and the file checks and has the AI say what to fix first (with no AI set up, it lists what the
 checks found), and the game keeps a to-do list. _Describe a game…_, for an empty game here, or
-_✦ Describe it to your AI…_ in the home page's _+ New game_, builds a game from a description until the bot can win it. The picture was taken with a
+_✦ Describe it to your AI…_ in the home page's _+ New game_, builds a game from a description, asking the AI for up to two fixes if the bot cannot win; it reports whether the bot won. The picture was taken with a
 scripted stand-in for a model, not a real AI.
 
 _Use an AI tool on this computer instead (MCP)…_ at the bottom of the chat connects the open game

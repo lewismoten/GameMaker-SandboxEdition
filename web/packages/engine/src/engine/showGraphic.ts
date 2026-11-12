@@ -33,6 +33,13 @@ interface GraphicOptions {
 
 /** Returns false when the player pressed Esc (which aborts slide shows). */
 export async function showGraphic(m: Machine, file: string, opts: GraphicOptions): Promise<boolean> {
+  return showGraphicPath(m, file, opts, []);
+}
+
+async function showGraphicPath(m: Machine, file: string, opts: GraphicOptions, active: string[]): Promise<boolean> {
+  m.checkAbort();
+  const name = m.files.resolve(file) ?? file.toLowerCase();
+  if (active.includes(name) || active.length >= 64) throw new Error('Cyclic or excessively nested slide list');
   await m.need(file);
   if (ext(file) === '.bkd') {
     const bkd = m.files.get(file);
@@ -40,10 +47,10 @@ export async function showGraphic(m: Machine, file: string, opts: GraphicOptions
   }
   // ShowGraphic's pictures, animations and text pages read keys through GetKey, which
   // kept a demo's recorder running (see Machine.keyPoll).
-  return m.waiting(() => showGraphicNow(m, file, opts));
+  return m.waiting(() => showGraphicNow(m, file, opts, [...active, name]));
 }
 
-async function showGraphicNow(m: Machine, file: string, opts: GraphicOptions): Promise<boolean> {
+async function showGraphicNow(m: Machine, file: string, opts: GraphicOptions, active: string[]): Promise<boolean> {
   m.audio.stopVoc(); // FreeSoundSample
   const e = ext(file);
   let pause = opts.pause ?? -1;
@@ -76,7 +83,11 @@ async function showGraphicNow(m: Machine, file: string, opts: GraphicOptions): P
       // An entry without a pause keeps 0xFFFF seconds: wait for a key. FileListClass
       // meant to give such entries the list's own pause, but after MaxFiles++ it tests
       // the next, still empty entry, so the 0xFFFF always stayed.
-      const ok = await showGraphic(m, entry.name, { cols, pause: entry.pause ?? 0xffff, gamePalette: opts.gamePalette, look });
+      // DOS followed recursive lists without a bound. Yield here so Stop can run even
+      // when every entry is missing or has zero pause; no display frame is required.
+      await new Promise<void>((resolve) => setTimeout(resolve, 0));
+      m.checkAbort();
+      const ok = await showGraphicPath(m, entry.name, { cols, pause: entry.pause ?? 0xffff, gamePalette: opts.gamePalette, look }, active);
       if (!ok) return false;
     }
   }
@@ -110,10 +121,23 @@ function drawGifFile(m: Machine, file: string, cols: Uint8Array, backdrop = fals
 
 /** Yields to the event loop without waiting for a frame (a MessageChannel task is not clamped like setTimeout). */
 function yieldTask(): Promise<void> {
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     const ch = new MessageChannel();
-    ch.port1.onmessage = () => resolve();
-    ch.port2.postMessage(0);
+    const close = () => {
+      ch.port1.onmessage = null;
+      ch.port1.close();
+      ch.port2.close();
+    };
+    try {
+      ch.port1.onmessage = () => {
+        close();
+        resolve();
+      };
+      ch.port2.postMessage(0);
+    } catch (error) {
+      close();
+      reject(error);
+    }
   });
 }
 

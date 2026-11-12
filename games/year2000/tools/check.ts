@@ -158,7 +158,37 @@ async function keysAndCar(): Promise<void> {
   const door = set.def('citi3');
   if (!door.solid || door.effect !== CTR.keys || (door.eamt ?? 0) >= 0) throw new Error('year2000: the CitiCar door does not take the keys');
   const ring = set.def('keys_grass');
-  if ((ring.eamt ?? 0) < 2) throw new Error('year2000: the key ring must open both the garage gate and the car');
+  if ((ring.eamt ?? 0) < 3) throw new Error('year2000: the key ring must open the garage gate, the keys gate and the car');
+  // The gates are the only way to the car: with every gate solid, the door cannot be reached from the start.
+  const start = lm.at('start');
+  const seen = new Set<string>([`${start.x},${start.y}`]);
+  const todo = [[start.x, start.y]];
+  while (todo.length) {
+    const [x, y] = todo.pop()!;
+    for (const [dx, dy] of [
+      [1, 0],
+      [-1, 0],
+      [0, 1],
+      [0, -1],
+    ]) {
+      const nx = x + dx;
+      const ny = y + dy;
+      if (nx < 0 || ny < 0 || nx >= 48 || ny >= 32 || seen.has(`${nx},${ny}`)) continue;
+      const d = set.def(lm.get(nx, ny));
+      // the top row of the car is open sky only above the roof; the garage gate counts as open (keys come before it)
+      if (d.solid && !(lm.get(nx, ny) === 'garagedoor')) continue;
+      seen.add(`${nx},${ny}`);
+      todo.push([nx, ny]);
+    }
+  }
+  for (const [dx, dy] of [
+    [0, 1],
+    [0, -1],
+    [1, 0],
+    [-1, 0],
+  ])
+    if (seen.has(`${exit.x + dx},${exit.y + dy}`))
+      throw new Error(`year2000: the CitiCar's door can be reached around the gates (from ${exit.x + dx},${exit.y + dy})`);
   const scene: SimScene = {
     map: { ...lm.done(), monsters: lm.done().monsters.map((m) => ({ ...m, monnum: MON.none })) },
     bbl: set.build(),
@@ -174,32 +204,52 @@ async function keysAndCar(): Promise<void> {
   for (let t = 0; t < 12; t++) await pickup.tick();
   if (pickup.w.ci.meter[CTR.zapperFound] !== 2 || pickup.w.ci.meter[SEQ.zap] !== 15)
     throw new Error('year2000: walking over the Zapper must record ownership and grant 15 shots');
-  for (let mask = 0; mask < 8; mask++) {
-    // Try from every walkable side: links check overlap, so no approach may bypass a solid stage.
-    for (const [dx, dy, key] of [
-      [0, 1, 0x48],
-      [0, -1, 0x50],
-      [1, 0, 0x4b],
-    ]) {
-      const sim = new Sim(scene, { x: exit.x + dx, y: exit.y + dy });
+  // Each gate, walked into from the lane with and without its item (the meters start at 1 for zero).
+  const gates: { name: string; x: number; y: number; from: [number, number]; key: number; have: (m: number[]) => void; lack: (m: number[]) => void }[] = [
+    { name: 'gatePages', x: 7, y: 13, from: [6, 13], key: 0x4d, have: (m) => (m[CTR.pages] = DOME_PAGES + 1), lack: (m) => (m[CTR.pages] = DOME_PAGES) },
+    {
+      name: 'gateZap',
+      x: 9,
+      y: 13,
+      from: [8, 13],
+      key: 0x4d,
+      have: (m) => (m[CTR.zapperFound] = 2),
+      lack: (m) => ((m[CTR.zapperFound] = 1), (m[SEQ.zap] = 30)),
+    },
+    { name: 'gateKeys', x: 10, y: 13, from: [9, 13], key: 0x4d, have: (m) => (m[CTR.keys] = 2), lack: (m) => (m[CTR.keys] = 1) },
+  ];
+  for (const g of gates) {
+    if (lm.get(g.x, g.y) !== g.name) throw new Error(`year2000: ${g.name} is not at ${g.x},${g.y}`);
+    // the gates before this one stand open, so Dex can start beside it
+    const here = l.build(set);
+    for (const before of gates.slice(0, gates.indexOf(g))) here.rect(before.x, before.y, 1, 1, 'grass');
+    const gateScene = { ...scene, map: { ...here.done(), monsters: here.done().monsters.map((m) => ({ ...m, monnum: MON.none })) } };
+    for (const has of [false, true]) {
+      const sim = new Sim(gateScene, { x: g.from[0], y: g.from[1] });
       const meters = sim.w.ci.meter;
-      meters[CTR.keys] = mask & 1 ? 3 : 1;
-      meters[CTR.pages] = mask & 2 ? DOME_PAGES + 1 : DOME_PAGES;
-      meters[CTR.zapperFound] = mask & 4 ? 2 : 1;
-      // Batteries without the Zapper must fail; an empty Zapper must still pass.
-      meters[SEQ.zap] = mask & 4 ? 0 : 30;
+      meters[CTR.pages] = DOME_PAGES + 1;
+      meters[CTR.zapperFound] = 2;
+      meters[CTR.keys] = 2;
+      (has ? g.have : g.lack)(meters);
       const pages = meters[CTR.pages];
-      sim.press(key);
-      for (let t = 0; t < 80 && sim.link < 0; t++) await sim.tick();
-      if (sim.link >= 0 !== (mask === 7)) throw new Error(`year2000: car gate bypass/stall, items ${mask}, approach ${dx},${dy}`);
-      if (mask !== 7) {
-        const want = !(mask & 1) ? 'citi3' : !(mask & 2) ? 'citiPages' : 'citiZapper';
-        if (mapBlock(sim.w, exit.x, exit.y) !== set.id(want)) throw new Error(`year2000: missing-item hint should be ${want}`);
-      }
-      if (meters[CTR.pages] !== pages) throw new Error('year2000: the car kept the report pages');
+      sim.press(g.key);
+      for (let t = 0; t < 80; t++) await sim.tick();
+      const passed = !set.def(set.names[mapBlock(sim.w, g.x, g.y)]).solid;
+      if (passed !== has) throw new Error(`year2000: ${g.name} ${has ? 'stayed shut with its item' : 'opened without its item'}`);
+      if (meters[CTR.pages] !== pages) throw new Error(`year2000: ${g.name} kept the report pages`);
     }
   }
-  console.log('keys and car: all 8 item combinations from all 3 walkable sides; pages kept, batteries cannot replace the Zapper, empty Zapper accepted');
+  // The door itself, with its gate open: no keys, no exit; keys, exit.
+  lm.rect(10, 13, 1, 1, 'doormat');
+  const doorScene = { ...scene, map: { ...lm.done(), monsters: lm.done().monsters.map((m) => ({ ...m, monnum: MON.none })) } };
+  for (const has of [false, true]) {
+    const sim = new Sim(doorScene, { x: exit.x, y: exit.y + 1 });
+    sim.w.ci.meter[CTR.keys] = has ? 2 : 1;
+    sim.press(0x48);
+    for (let t = 0; t < 80 && sim.link < 0; t++) await sim.tick();
+    if (sim.link >= 0 !== has) throw new Error(`year2000: the CitiCar door ${has ? 'would not open with the keys' : 'opened without the keys'}`);
+  }
+  console.log('keys and car: three gates (pages, Zapper, keys) each need their item, no way around them; the pages are kept; batteries are not the Zapper');
 }
 await keysAndCar();
 

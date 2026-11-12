@@ -1,13 +1,15 @@
 # `offline/`: working without a network
 
-Part of the [source map](../README.md). "Make available offline": the whole site in the service
-worker's cache at once, and the notices around it.
+Part of the [source map](../README.md). "Make available offline": the site's offline manifest and
+the games in this browser's catalog in the service worker's cache at once, and the notices around it.
+The separate web-player pages, trinket and laser-kit downloads, firmware and link-preview files
+are not part of it (`offlineFiles` in `web/vite.config.ts`).
 
 Entry points: `offline.ts` (the service worker's notices) imports `loadFailure.ts`, `replay.ts` and
 `updateState.ts`; `settingsMenu.ts` loads `offlineDialog.ts` on demand; `retro/computer.ts` loads
 `offlineExe.ts` when OFFLINE.EXE runs.
 
-- `offlineCopy.ts`: downloads every file into the service worker's cache, for the dialog and OFFLINE.EXE.
+- `offlineCopy.ts`: downloads the manifest's files and the catalog's game packs into the service worker's cache, for the dialog and OFFLINE.EXE.
 - `offlineDialog.ts`: today's web: the Offline dialog (header button and ⋯ menu); `offline.css` styles it.
 - `offlineExe.ts`: OFFLINE.EXE in `C:\DOS` on the desk PC, the same job as a 1995 text program.
 - `loadFailure.ts`: a part of the site that cannot load (a missing chunk, a deploy that replaced it) says so instead of leaving a blank page.

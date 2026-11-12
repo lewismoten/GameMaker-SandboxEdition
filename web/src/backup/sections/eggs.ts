@@ -59,7 +59,7 @@ export const eggs: Section<EggsPayload> = {
   count: foundCount,
   validate(raw) {
     need(isRecord(raw) && Array.isArray(raw.inSaves) && raw.inSaves.every((k) => typeof k === 'string'), 'eggs');
-    return { local: stringMap(raw.local, 'eggs'), inSaves: raw.inSaves };
+    return { local: stringMap(raw.local, 'eggs', 'eggs'), inSaves: raw.inSaves };
   },
   merge(mine, theirs, ctx) {
     const a = overrides(mine.local);

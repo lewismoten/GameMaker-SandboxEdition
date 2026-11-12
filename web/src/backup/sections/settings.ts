@@ -4,7 +4,9 @@
 // browser's settings and fills in the ones not set here; Replace takes the file's.
 //
 // The AI setup's API key is left out of a backup unless asked for (withApiKey), and an import
-// without one keeps the key this browser has.
+// without one keeps the key only for the same provider and endpoint.
+import type { AiSettings } from '../../assistant/chat/settings';
+import { chatUrl, modelsUrl } from '../../assistant/chat/providers';
 import { localOf, type SectionId } from '../inventory';
 import { describeKeys, fillGaps, injectLocal, isRecord, json, need, stringMap, type Section } from './types';
 
@@ -23,7 +25,7 @@ function keysSection(id: SectionId, title: string, short: string, description: s
     count: (p) => Object.keys(p.local).length,
     validate(raw) {
       need(isRecord(raw), title);
-      return { local: stringMap(raw.local, title) };
+      return { local: stringMap(raw.local, title, id) };
     },
     merge: (mine, theirs, ctx) => ({ local: fillGaps(mine.local, theirs.local, ctx.prefer) }),
     inject: (w, mine, next) => injectLocal(w, mine.local, next.local),
@@ -54,11 +56,25 @@ export function withoutApiKey(local: Record<string, string>): Record<string, str
 /** Whether these settings hold an API key. */
 export const hasApiKey = (local: Record<string, string>): boolean => !!keyOf(local[AI]);
 
-/** The file's AI settings, keeping this browser's key when the file has none. */
+/** Canonical addresses to which this setup sends its credential. Invalid settings never inherit it. */
+function binding(text: string | undefined): string | undefined {
+  const v = json<Record<string, unknown>>(text);
+  if (!isRecord(v) || (v.provider !== 'openai' && v.provider !== 'ollama') || typeof v.baseUrl !== 'string') return;
+  const setup: Pick<AiSettings, 'provider' | 'baseUrl'> = { provider: v.provider, baseUrl: v.baseUrl };
+  try {
+    return JSON.stringify([v.provider, new URL(chatUrl(setup)).href, new URL(modelsUrl(setup)).href]);
+  } catch {
+    return;
+  }
+}
+
+/** Keep an omitted credential only when its provider and destination stay the same. */
 function keepKey(mine: Record<string, string>, next: Record<string, string>): Record<string, string> {
   const here = keyOf(mine[AI]);
   const v = json<Record<string, unknown>>(next[AI]);
   if (!here || !isRecord(v) || keyOf(next[AI])) return next;
+  const same = binding(mine[AI]);
+  if (!same || same !== binding(next[AI])) return next;
   return { ...next, [AI]: JSON.stringify({ ...v, apiKey: here }) };
 }
 

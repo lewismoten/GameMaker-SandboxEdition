@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { kitOf, loadLaserKits } from './laserKits';
+import { kitOf, loadLaserKits, withInches } from './laserKits';
 
 const nickel = { key: 'laser-nickel', game: 'realm', mm: { coin: 38.1 } };
 const reply = (body: unknown, type = 'application/json') =>
@@ -99,5 +99,15 @@ describe('loadLaserKits', () => {
     const kits = await loadLaserKits('sleuth');
     expect(kits.map((k) => k.title)).toEqual(['Wooden nickel', 'Stage Box']);
     expect(kits[1]?.base).toBe('./laser/sleuth/stage-box/');
+  });
+});
+
+describe('withInches', () => {
+  it('adds the inch size after a material thickness, and leaves other millimeters alone', () => {
+    expect(withInches('A laser-cut puzzle box, 3 mm plywood or MDF. The lid is 40 mm wide.')).toBe(
+      'A laser-cut puzzle box, 3 mm (1/8 in) plywood or MDF. The lid is 40 mm wide.',
+    );
+    expect(withInches('6 mm plywood')).toBe('6 mm (1/4 in) plywood');
+    expect(withInches('7 mm plywood')).toBe('7 mm plywood');
   });
 });

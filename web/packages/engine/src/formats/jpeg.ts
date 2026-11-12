@@ -13,6 +13,10 @@
 // then entropy-coded data with 0xFF stuffed as FF 00 and RSTn (D0-D7) markers; EOI (D9).
 // One component is grayscale; three are YCbCr (JFIF).
 
+// Bound coefficients, decoded planes and output together before allocating a frame.
+const MAX_PIXELS = 4096 * 4096;
+const MAX_WORK_BYTES = 128 * 1024 * 1024;
+
 const ZIGZAG = Int32Array.from([
   0, 1, 8, 16, 9, 2, 3, 10, 17, 24, 32, 25, 18, 11, 4, 5, 12, 19, 26, 33, 40, 48, 41, 34, 27, 20, 13, 6, 7, 14, 21, 28, 35, 42, 49, 56, 57, 50, 43, 36, 29, 22,
   15, 23, 30, 37, 44, 51, 58, 59, 52, 45, 38, 31, 39, 46, 53, 60, 61, 54, 47, 55, 62, 63,
@@ -154,13 +158,19 @@ export function decodePartialJpeg(data: Uint8Array): PartialJpeg | undefined {
       case 0xc0:
       case 0xc1:
       case 0xc2: {
+        if (comps.length || len < 8 || data[seg] !== 8) throw new Error('Unsupported JPEG frame');
         progressive = marker === 0xc2;
         height = u16(seg + 1);
         width = u16(seg + 3);
         const n = data[seg + 5];
+        if (!width || !height || width * height > MAX_PIXELS) throw new Error('JPEG picture is too large to show');
+        if ((n !== 1 && n !== 3) || len !== 8 + 3 * n) throw new Error('Unsupported JPEG components');
         comps = [];
         for (let i = 0; i < n; i++) {
           const o = seg + 6 + i * 3;
+          const h = data[o + 1] >> 4;
+          const v = data[o + 1] & 15;
+          if (h < 1 || h > 4 || v < 1 || v > 4 || data[o + 2] > 3 || comps.some((c) => c.id === data[o])) throw new Error('Invalid JPEG component');
           comps.push({
             id: data[o],
             h: data[o + 1] >> 4,
@@ -178,6 +188,8 @@ export function decodePartialJpeg(data: Uint8Array): PartialJpeg | undefined {
         maxV = Math.max(...comps.map((c) => c.v));
         mcusPerLine = Math.ceil(width / (8 * maxH));
         mcusPerColumn = Math.ceil(height / (8 * maxV));
+        const blocks = mcusPerLine * mcusPerColumn * comps.reduce((sum, c) => sum + c.h * c.v, 0);
+        if (blocks * (128 + 1 + 64) + width * height * (n + 1) > MAX_WORK_BYTES) throw new Error('JPEG working memory is too large');
         for (const c of comps) {
           c.blocksPerLine = Math.ceil(Math.ceil((width * c.h) / maxH) / 8);
           c.blocksPerColumn = Math.ceil(Math.ceil((height * c.v) / maxV) / 8);

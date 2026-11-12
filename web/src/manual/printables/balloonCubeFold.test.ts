@@ -3,7 +3,7 @@
 import { describe, expect, it } from 'vitest';
 import { ap, type V2, type V3 } from './balloonCubeSim';
 import { FACE_FRAME, FACE_REGIONS, L, OPS, PIECES, inside } from './balloonCubeModel';
-import { LAST, STEPS, collapsePoint, isFace, normalOf, phiOf, poseAt, stepAt } from './balloonCubeFold';
+import { LAST, STEPS, collapsePoint, isFace, normalOf, phiOf, poseAt, stepAt, toView } from './balloonCubeFold';
 
 const near2 = (a: V3, b: V2, tol = 1e-9) => Math.hypot(a[0] - b[0], a[1] - b[1]) < tol;
 const dist = (a: V3, b: V3) => Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]);
@@ -81,5 +81,14 @@ describe('balloon cube fold steps', () => {
   it('never tears the paper while folding: shared points stay together within the drawn paper thickness', () => {
     for (let pos = 1.25; pos <= LAST; pos += 0.25) expect(worstTear(pos), `at ${pos}`).toBeLessThan(0.03);
     for (let step = 2; step <= LAST; step++) expect(worstTear(step), `end of step ${step}`).toBeLessThan(1e-9 + 0.025);
+  });
+});
+
+describe('balloon cube view direction', () => {
+  it('turns the front face left as yaw grows, which is why the fold view negates the drag yaw', () => {
+    const front: V3 = [0, 0, 1];
+    expect(toView(front, { yaw: 0.3, pitch: 0 })[0]).toBeLessThan(0);
+    // the fold view passes -cam.yaw: a drag to the right (cam.yaw > 0) moves the front face right
+    expect(toView(front, { yaw: -0.3, pitch: 0 })[0]).toBeGreaterThan(0);
   });
 });

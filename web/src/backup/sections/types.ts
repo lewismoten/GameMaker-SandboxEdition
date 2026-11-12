@@ -1,5 +1,5 @@
 // What every backup section does, and what an import's choices are. No DOM.
-import type { SectionId } from '../inventory';
+import { sectionOfKey, type SectionId } from '../inventory';
 import type { World } from '../world';
 
 /** What to do with a project in the file whose id is already used here. */
@@ -56,9 +56,10 @@ export function need(ok: unknown, what: string): asserts ok {
 }
 
 /** A map of string values (localStorage keys and their text). */
-export function stringMap(v: unknown, what: string): Record<string, string> {
+export function stringMap(v: unknown, what: string, section?: SectionId): Record<string, string> {
   need(isRecord(v), what);
   for (const x of Object.values(v)) need(typeof x === 'string', what);
+  if (section) for (const key of Object.keys(v)) need(sectionOfKey(key) === section, what);
   return v as Record<string, string>;
 }
 

@@ -109,10 +109,16 @@ export function decodeVoc(bytes: Uint8Array): DecodedVoc {
         break;
       }
       case 9: {
-        sampleRate = bytes[d] | (bytes[d + 1] << 8) | (bytes[d + 2] << 16) | (bytes[d + 3] << 24);
-        // Channels (d + 5) and codec (d + 6) are not checked; samples follow 12 header bytes.
+        if (size < 12 || d + size > bytes.length) throw new Error('Truncated VOC sound block');
+        const rate = (bytes[d] | (bytes[d + 1] << 8) | (bytes[d + 2] << 16) | (bytes[d + 3] << 24)) >>> 0;
         const bits = bytes[d + 4];
+        const channels = bytes[d + 5];
+        const format = bytes[d + 6] | (bytes[d + 7] << 8);
+        if (!rate || rate > 192000 || channels !== 1 || !((bits === 8 && format === 0) || (bits === 16 && format === 4)))
+          throw new Error('Unsupported VOC sound format (only mono PCM is supported)');
         const data = bytes.subarray(d + 12, end);
+        if (data.length % (bits / 8)) throw new Error('Incomplete VOC PCM sample');
+        sampleRate = rate;
         add(bits === 16 ? pcm16(data) : pcm8(data));
         break;
       }

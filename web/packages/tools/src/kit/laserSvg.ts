@@ -30,11 +30,15 @@ export class LaserSheet {
     return this;
   }
   /** Copy another sheet's items onto this one, moved by (dx, dy) millimeters. */
-  place(other: LaserSheet, dx: number, dy: number, only?: Op[]): this {
+  place(other: LaserSheet, dx: number, dy: number, only?: Op[], turn: 0 | 90 = 0): this {
+    const point = ([x, y]: Pt): Pt => (turn === 90 ? [dx - y, dy + x] : [dx + x, dy + y]);
     for (const it of other.items) {
       if (only && !only.includes(it.op)) continue;
-      if (it.k === 'poly') this.items.push({ ...it, pts: it.pts.map(([x, y]) => [x + dx, y + dy] as Pt) });
-      else this.items.push({ ...it, cx: it.cx + dx, cy: it.cy + dy });
+      if (it.k === 'poly') this.items.push({ ...it, pts: it.pts.map(point) });
+      else {
+        const [cx, cy] = point([it.cx, it.cy]);
+        this.items.push({ ...it, cx, cy });
+      }
     }
     return this;
   }

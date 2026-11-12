@@ -6,7 +6,7 @@
   "hero": "YANA",
   "year": 1994,
   "price": "Free",
-  "version": "1.1",
+  "version": "1.2",
   "blurb": "Three short levels about a ladder of locks. A bronze key is worth 1, a silver key 2 and a gold key 3, and a door has a price of its own. A door opens when you can pay it and takes only its price, so a gold key opens a silver door and still has some left. Signs in the levels say how. Play it, then open it in Game-Maker and change a door's price.",
   "exe": "POWERKEY.EXE",
   "dosName": "POWERKEY",

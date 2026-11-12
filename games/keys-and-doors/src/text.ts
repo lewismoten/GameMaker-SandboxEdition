@@ -20,7 +20,7 @@ export const HOWTO = wrap(`
 |SPACE         jump
 |UP, DOWN      climb a ladder
 
-Touch a key and it is yours: the key counter goes up by one.
+Walk into a key and it is yours: the key counter goes up by one.
 
 Walk into a locked door while you carry its key. The door opens and the counter goes down by one. A door with two key holes needs two keys.
 
