@@ -1,10 +1,11 @@
 // Build the cryptex and validate its lock, unglued hidden engraving, hole nesting and selected library stock.
-import { packStock, placePart, STOCK, STOCK_MARGIN, type Part, type Placed, type StockSize } from '@lewismoten/gamemaker-sandbox-tools/kit/laserLayout';
+import { placePart, STOCK, STOCK_MARGIN, type Part, type Placed, type StockSize } from '@lewismoten/gamemaker-sandbox-tools/kit/laserLayout';
 import { cutSpacingProblems, engravingRegionProblems } from '@lewismoten/gamemaker-sandbox-tools/kit/laserClearance';
 import type { LaserSheet } from '@lewismoten/gamemaker-sandbox-tools/kit/laserSvg';
 import { engravingProblems } from '../../sleuth/laser/stageBoxBuild';
 import { COLLAR_R, POCKET, RINGS, SLICE_HOLE, WASHER, SOCKET_FIT, checkLock } from './cryptexDims';
 import { NEST_GAP, boundingRadius, nest, nestProblems, type Guest, type Hole } from './cryptexNest';
+import { packCryptex } from './cryptexPack';
 import { makeParts, type Parts } from './cryptexParts';
 
 export interface Built {
@@ -49,7 +50,7 @@ function layout(parts: Parts, kerf: number, stock: StockSize) {
   const holes = hosts.map(([, h]) => h);
   const { placed: nested, left } = nest(holes, guests, kerf);
   const problems = nestProblems(holes, nested, kerf);
-  const packed = packStock([parts.A1.part, ...left.map((g) => g.part)], stock);
+  const packed = packCryptex([parts.A1.part, ...left.map((g) => g.part)], stock);
   const sheets = packed.map((s, si) => {
     const roots = [...s.placed];
     const children = (key: string, parent: Placed) => {

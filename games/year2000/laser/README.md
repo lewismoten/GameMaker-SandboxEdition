@@ -29,12 +29,15 @@ rectangle for 12x12 is 291.8 x 279 mm; for 12x20 it is 495 x 279 mm.
 
 At the default 0.2 mm kerf:
 
-| Stock (inches) | Sheets | Purchased material (in²) | Purchased material (mm²) |
-| -------------- | ------ | ------------------------ | ------------------------ |
-| 6x12           | 4      | 288                      | 185,806                  |
-| 8x12           | 4      | 384                      | 247,741                  |
-| **12x12**      | **2**  | **288**                  | **185,806**              |
-| **12x20**      | **1**  | **240**                  | **154,838**              |
+| Stock (inches) | Sheets | Purchased material (in²) | Purchased material (mm²) | Occupied rectangles (was) |
+| -------------- | ------ | ------------------------ | ------------------------ | ------------------------- |
+| 6x12           | 4      | 288                      | 185,806                  | 78.4% (80.2%)             |
+| 8x12           | 3      | 288                      | 185,806                  | 75.3% (63.7%, 4 sheets)   |
+| **12x12**      | **2**  | **288**                  | **185,806**              | 70.0% (83.2%)             |
+| **12x20**      | **1**  | **240**                  | **154,838**              | 80.1% (95.1%)             |
+
+Occupied rectangles are each sheet's used corner (parts plus margins) over the purchased
+area; a smaller share means a bigger reusable offcut. Sheet 1 is filled first.
 
 The library's 12x20 size uses 16.7% less purchased material than two 12x12 sheets. Retained
 wood is about **61,757 mm²**, down from **72,275 mm²** (14.6%). The old 183,222 mm² figure
@@ -44,9 +47,10 @@ part area `area.wood`. Reclaimed hole waste is not counted twice. The machine-re
 `fitting` array includes a label such as `fits 2 sheets of 12x12`; `fit` is the selected label.
 
 `cryptexNest.ts` nests smaller rings and parts recursively inside larger holes, including
-plugs inside collar/washer bores. The stock packer tries eight deterministic rectangle
-orders/scoring choices with quarter turns, keeping the fewest sheets and then the least
-occupied area. It uses the actual kerf-compensated outline bounds, including mitered
+plugs inside collar/washer bores. `cryptexPack.ts` places each root piece by its bounding circle (the square title plate as a
+rectangle) at the first free spot on a 1 mm grid, in three size orders and two scan directions,
+keeping the fewest sheets and then the least occupied area; every round part looks the same
+turned, so quarter turns change nothing. It uses the actual kerf-compensated outline bounds, including mitered
 corners and the cut hairline. Nesting keeps at least **2 mm between compensated cut
 paths**; the build independently measures every pair of cut paths on each finished sheet.
 This is heuristic packing, not a proof of a global nesting optimum.
@@ -96,17 +100,17 @@ on wood. All art is on the face lying **up on the sheet**, engraved before cutti
 There is no second laser pass or registration flip. Some parts are turned over **during
 assembly** so their engraved faces point down. Their blank reverse faces take the glue.
 
-| Part       | Engraved face in assembly | Hidden design and glue exclusion |
-| ---------- | ------------------------- | -------------------------------- |
+| Part       | Engraved face in assembly | Hidden design and glue exclusion                                                                                                                                                                                       |
+| ---------- | ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | A1 floor   | Up                        | Large phone-booth teleporter, 32 radiating beams, pulse rings, stars and TELEPORT-A-PHONE in the hollow. Arrival booth and A1 beneath the removable core. Both regions avoid the collar and outer rim glue footprints. |
-| A5R, A5C   | Up                        | Circuit bands with nodes and stars on the last base layer, beneath loose rings/washers. The wide outer rim adds chip outlines, branches and parallel traces; the collar clears the ridge slot. |
-| B1, C1, D1 | Down                      | Full bands of teleporter booths and beams (B1), cratered moons (C1), and a suburb skyline with houses and stars (D1). IDs occupy a reserved gap; only the blank reverse glues to the digit slice. |
-| E1         | Down                      | A band of 32 pixel twinkles and comet trails in the narrow ring; no ID squeezed into its 4 mm wall. |
-| B2, C2, D2 | Up                        | Larger teleporter, lunar and suburb panoramas under the next loose ring, inside the unchanged digit band. |
-| G1–G4      | Up                        | Small circuit and star bands, IDs and clear notches on the upper washers. Glue blank G1B–G4B underneath, with notches aligned. |
-| CORE0      | Up                        | YOU FOUND IT. BZZZT! on the inside floor, with BZZZT! curved along the bottom. The entire wall glue annulus stays blank. |
-| HEAD       | Down                      | Cratered moon, pixel stars, a segmented medallion rim and 2000 outside the core's glue annulus. |
-| LID        | Down                      | Cratered moon and stars with a segmented medallion rim around the central plug footprint; the lid top is blank. |
+| A5R, A5C   | Up                        | Circuit bands with nodes and stars on the last base layer, beneath loose rings/washers. The wide outer rim adds chip outlines, branches and parallel traces; the collar clears the ridge slot.                         |
+| B1, C1, D1 | Down                      | Full bands of teleporter booths and beams (B1), cratered moons (C1), and a suburb skyline with houses and stars (D1). IDs occupy a reserved gap; only the blank reverse glues to the digit slice.                      |
+| E1         | Down                      | A band of 32 pixel twinkles and comet trails in the narrow ring; no ID squeezed into its 4 mm wall.                                                                                                                    |
+| B2, C2, D2 | Up                        | Larger teleporter, lunar and suburb panoramas under the next loose ring, inside the unchanged digit band.                                                                                                              |
+| G1–G4      | Up                        | Small circuit and star bands, IDs and clear notches on the upper washers. Glue blank G1B–G4B underneath, with notches aligned.                                                                                         |
+| CORE0      | Up                        | YOU FOUND IT. BZZZT! on the inside floor, with BZZZT! curved along the bottom. The entire wall glue annulus stays blank.                                                                                               |
+| HEAD       | Down                      | Cratered moon, pixel stars, a segmented medallion rim and 2000 outside the core's glue annulus.                                                                                                                        |
+| LID        | Down                      | Cratered moon and stars with a segmented medallion rim around the central plug footprint; the lid top is blank.                                                                                                        |
 
 The A1 center picture is uncovered when the core is out; the other inner pictures appear
 as the unlocked kit is taken apart. CORE0 provides the core-slice picture. CORER and

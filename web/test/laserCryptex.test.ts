@@ -68,6 +68,17 @@ describe('cryptex stock sheets', () => {
   it('uses two 12x12 sheets or one 12x20 sheet, with less retained wood than before', () => {
     expect(kit.sheets).toHaveLength(2);
     expect(buildCryptex(0.2, false, '12x20').sheets).toHaveLength(1);
+  });
+  it('packs discs by their circles: at most 4, 3, 2 and 1 sheets, none overlapping within 2 mm', { timeout: 120000 }, () => {
+    const most = { '6x12': 4, '8x12': 3, '12x12': 2, '12x20': 1 } as const;
+    for (const stock of Object.keys(most) as StockSize[]) {
+      const b = buildCryptex(0.2, true, stock);
+      expect(b.sheets.length, stock).toBeLessThanOrEqual(most[stock]);
+      expect(
+        b.problems.filter((p) => /apart|outside/.test(p)),
+        stock,
+      ).toEqual([]);
+    }
     expect(kit.area.wood).toBeLessThan(72274.93 * 0.86);
   });
   it('keeps engraving and cuts separated on every part', () => {
