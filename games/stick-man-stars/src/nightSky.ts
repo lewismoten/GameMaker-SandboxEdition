@@ -7,31 +7,33 @@ import { skyOf, type Pal } from '../../kit/starter/palette';
 import type { StarterMap } from '../../kit/starter/map';
 import { TWINK, SHOOT } from './monsters';
 
-export const NIGHT_BLOCKS = ['dotsA', 'dotsB', 'cstar', 'moon', 'blanketL', 'blanketR', 'telescope'] as const;
+const VARIANTS = 6;
+
+/** A small seeded integer hash (no Math.random: the same sky every build). */
+function hash(a: number, b: number, c: number): number {
+  let h = (Math.imul(a + 1, 374761393) + Math.imul(b + 1, 668265263) + Math.imul(c + 1, 2147483647)) | 0;
+  h = Math.imul(h ^ (h >>> 13), 1274126177);
+  return (h ^ (h >>> 16)) >>> 0;
+}
+
+export const NIGHT_BLOCKS = ['dots0', 'cstar', 'moon', 'blanketL', 'blanketR', 'telescope'] as const;
 
 export function addNightBlocks(book: Book, pal: Pal): void {
   const air = { grav: PULL.down };
   const sky = () => new Pixels(20, 20, skyOf(pal));
   const w = pal.c('white', 3);
   const dim = pal.c('white', 1);
-  const a = sky();
-  for (const [x, y] of [
-    [3, 4],
-    [14, 11],
-    [8, 16],
-  ] as const)
-    a.set(x, y, dim);
-  a.set(16, 3, w);
-  book.add('dotsA', a, air);
-  const b = sky();
-  for (const [x, y] of [
-    [11, 5],
-    [4, 13],
-    [17, 15],
-  ] as const)
-    b.set(x, y, dim);
-  b.set(6, 8, w);
-  book.add('dotsB', b, air);
+  // six starfield blocks with different dot layouts (one nearly empty), drawn from a seeded hash so a rebuild is byte for byte the same
+  const DOTS = [1, 2, 3, 4, 5, 2];
+  for (let v = 0; v < DOTS.length; v++) {
+    const p = sky();
+    for (let i = 0; i < DOTS[v]; i++) {
+      const x = 1 + (hash(v, i, 1) % 18);
+      const y = 1 + (hash(v, i, 2) % 18);
+      p.set(x, y, hash(v, i, 3) % 4 === 0 ? w : dim);
+    }
+    book.add(`dots${v}`, p, air);
+  }
   // a constellation star: the bright star shrunk to a small point of light
   const c = sky();
   const rows = ['..#..', '.###.', '#####', '.###.', '.#.#.'];
@@ -70,9 +72,8 @@ export function addNightBlocks(book: Book, pal: Pal): void {
 
 /** Dots, three constellations, the moon, the blanket and the telescope, and the monsters that twinkle and streak. */
 export function paintNight(m: StarterMap, width: number, skip: readonly [number, number]): void {
-  const taken = (x: number, y: number) => (x * 7 + y * 13) % 5;
   for (let x = 1; x < width - 1; x++)
-    for (let y = 0; y < 8; y++) if (x < skip[0] || x > skip[1]) if (taken(x, y) === 0) m.set(x, y, (x + y) % 2 ? 'dotsA' : 'dotsB');
+    for (let y = 0; y < 8; y++) if (x < skip[0] || x > skip[1]) if (hash(x, y, 7) % 100 < 70) m.set(x, y, `dots${hash(x, y, 9) % VARIANTS}`);
   const dipper = [
     [3, 1],
     [5, 1],
