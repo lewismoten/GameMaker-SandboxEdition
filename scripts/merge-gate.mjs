@@ -118,7 +118,9 @@ export function runGate(options, settings = {}) {
     result.candidateTree = git(integration, 'rev-parse', 'HEAD^{tree}');
     step('declarations', web, ['node', join(repo.root, 'scripts/decl-preflight.mjs'), '--web', web]);
     step('tsc', web, ['npx', '--no-install', 'tsc', '--noEmit', '-p', '.']);
-    step('lint', web, ['npm', 'run', 'lint']);
+    // No lint cache: a content cache keys on each file's own text, so a changed JSON import
+    // (deps.json, 2026-11-12) left two stale casts passing.
+    step('lint', web, ['npm', 'run', 'lint:full']);
     const reportFile = join(output, 'vitest.json');
     const tests = step(
       'vitest',
@@ -156,6 +158,19 @@ export function runGate(options, settings = {}) {
       unchanged();
       step('push', integration, ['git', 'push', 'origin', `${result.testedRevision}:refs/heads/develop`]);
       result.pushedRevision = result.testedRevision;
+      // Merged branches go away (git flow), but only at the revision tested: a branch that moved
+      // on since keeps its new work, and a branch a worktree has checked out stays local.
+      const checkedOut = git(repo.root, 'worktree', 'list', '--porcelain');
+      for (const { branch, revision } of result.inputs) {
+        step(
+          `delete-${branch.replace(/\//g, '-')}`,
+          integration,
+          ['git', 'push', `--force-with-lease=refs/heads/${branch}:${revision}`, 'origin', `:refs/heads/${branch}`],
+          [0, 1, 128],
+        );
+        if (!checkedOut.includes(`branch refs/heads/${branch}\n`) && !checkedOut.endsWith(`branch refs/heads/${branch}`))
+          execute(repo.root, ['git', 'update-ref', '-d', `refs/heads/${branch}`, revision]);
+      }
     }
     result.status = result.tests.failures.length ? 'passed-with-exceptions' : 'passed';
     result.exitCode = 0;
