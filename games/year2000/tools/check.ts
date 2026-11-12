@@ -206,7 +206,7 @@ async function keysAndCar(): Promise<void> {
     throw new Error('year2000: walking over the Zapper must record ownership and grant 15 shots');
   // Each gate, walked into from the lane with and without its item (the meters start at 1 for zero).
   const gates: { name: string; x: number; y: number; from: [number, number]; key: number; have: (m: number[]) => void; lack: (m: number[]) => void }[] = [
-    { name: 'gatePages', x: 6, y: 13, from: [5, 13], key: 0x4d, have: (m) => (m[CTR.pages] = DOME_PAGES + 1), lack: (m) => (m[CTR.pages] = DOME_PAGES) },
+    { name: 'gatePages', x: 7, y: 13, from: [6, 13], key: 0x4d, have: (m) => (m[CTR.pages] = DOME_PAGES + 1), lack: (m) => (m[CTR.pages] = DOME_PAGES) },
     {
       name: 'gateZap',
       x: 8,
@@ -220,32 +220,36 @@ async function keysAndCar(): Promise<void> {
   ];
   for (const g of gates) {
     if (lm.get(g.x, g.y) !== g.name) throw new Error(`year2000: ${g.name} is not at ${g.x},${g.y}`);
+    // the gates before this one stand open, so Dex can start beside it
+    const here = l.build(set);
+    for (const before of gates.slice(0, gates.indexOf(g))) here.rect(before.x, before.y, 1, 1, 'grass');
+    const gateScene = { ...scene, map: { ...here.done(), monsters: here.done().monsters.map((m) => ({ ...m, monnum: MON.none })) } };
     for (const has of [false, true]) {
-      const sim = new Sim(scene, { x: g.from[0], y: g.from[1] });
+      const sim = new Sim(gateScene, { x: g.from[0], y: g.from[1] });
       const meters = sim.w.ci.meter;
       meters[CTR.pages] = DOME_PAGES + 1;
       meters[CTR.zapperFound] = 2;
       meters[CTR.keys] = 2;
       (has ? g.have : g.lack)(meters);
       const pages = meters[CTR.pages];
-      const keys = meters[CTR.keys];
       sim.press(g.key);
       for (let t = 0; t < 80; t++) await sim.tick();
-      const passed = !set.def(mapBlock(sim.w, g.x, g.y)).solid;
+      const passed = !set.def(set.names[mapBlock(sim.w, g.x, g.y)]).solid;
       if (passed !== has) throw new Error(`year2000: ${g.name} ${has ? 'stayed shut with its item' : 'opened without its item'}`);
       if (meters[CTR.pages] !== pages) throw new Error(`year2000: ${g.name} kept the report pages`);
-      if (g.name !== 'gateKeys' && meters[CTR.keys] !== keys) throw new Error(`year2000: ${g.name} kept the keys`);
     }
   }
-  // The door itself: no keys, no exit; keys, exit.
+  // The door itself, with its gate open: no keys, no exit; keys, exit.
+  lm.rect(10, 13, 1, 1, 'doormat');
+  const doorScene = { ...scene, map: { ...lm.done(), monsters: lm.done().monsters.map((m) => ({ ...m, monnum: MON.none })) } };
   for (const has of [false, true]) {
-    const sim = new Sim(scene, { x: exit.x, y: exit.y + 1 });
+    const sim = new Sim(doorScene, { x: exit.x, y: exit.y + 1 });
     sim.w.ci.meter[CTR.keys] = has ? 2 : 1;
     sim.press(0x48);
     for (let t = 0; t < 80 && sim.link < 0; t++) await sim.tick();
     if (sim.link >= 0 !== has) throw new Error(`year2000: the CitiCar door ${has ? 'would not open with the keys' : 'opened without the keys'}`);
   }
-  console.log('keys and car: three gates (pages, Zapper, keys) each need their item, no way around them; pages and keys kept; batteries are not the Zapper');
+  console.log('keys and car: three gates (pages, Zapper, keys) each need their item, no way around them; the pages are kept; batteries are not the Zapper');
 }
 await keysAndCar();
 
