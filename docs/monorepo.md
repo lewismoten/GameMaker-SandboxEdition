@@ -20,15 +20,18 @@ existing `formats/*` API by re-exporting its declared engine dependency.
 ## Commands
 
 ```sh
-npm ci                       # links workspaces and builds SDKs through prepare
+npm run heavy -- npm ci       # links workspaces, builds SDKs and generates ignored game outputs through prepare
 npm run build:packages       # engine, archives, tools in dependency order
 npm run verify:packages      # builds isolated source copies and tests packed consumers
 npm run dev                  # app, http://localhost:5173 (serves at once; game disks and ZIPs refresh in the background)
 npm run typecheck
-npm test
+npm run heavy -- npm test     # full default Vitest suite, including game-output preparation
 npm run lint
-npm run build                # SDKs and production app
+npm run heavy -- npm run build # SDKs, game outputs and production app
 ```
+
+Run heavy jobs through `npm run heavy -- <command...>` so builds and full test runs share
+the scheduler's slots with other checkouts. It may wait for a free slot or lower system load.
 
 Existing app commands still work from `web/`. The workspace toolchain is hoisted into
 root `node_modules`; scripts should resolve executable packages rather than assume
