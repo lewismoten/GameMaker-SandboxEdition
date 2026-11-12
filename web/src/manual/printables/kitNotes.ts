@@ -35,7 +35,7 @@ export function playerSections(source: string) {
 const dataUrl = (blob: Blob) =>
   new Promise<string>((ok, no) => {
     const r = new FileReader();
-    r.onload = () => ok(String(r.result));
+    r.onload = () => ok(typeof r.result === 'string' ? r.result : '');
     r.onerror = () => no(r.error);
     r.readAsDataURL(blob);
   });
