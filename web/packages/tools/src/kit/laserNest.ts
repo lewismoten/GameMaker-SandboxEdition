@@ -1,7 +1,7 @@
-// "In The Year 2000!" cryptex: nesting. Rings and plates are hollow, so small parts are cut from the empty middles on the sheet.
-// Every part is treated as its bounding circle (round parts and the washers are close to one); a guest must keep NEST_GAP mm of
-// wood between its cut and the host's hole. The check below re-tests every placed pair, so a layout change cannot slip through.
-import type { Part } from '@lewismoten/gamemaker-sandbox-tools/kit/laserLayout';
+// Laser nesting: hollow parts (rings, plates) are cut from the empty middles of other parts so a sheet holds more.
+// Every part is treated as its bounding circle (round parts and washers are close to one); a guest keeps NEST_GAP mm of
+// wood between its cut and the host hole. nestProblems re-tests every placed pair, so a layout change cannot slip through.
+import type { Part } from './laserLayout';
 
 export const NEST_GAP = 2;
 

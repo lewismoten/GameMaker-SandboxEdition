@@ -59,7 +59,7 @@ const pocketOf = (flap: string) => (all: Piece[]) => {
     : ([Math.max(...outer), Math.min(...inner)] as [number, number]);
 };
 
-export interface Op {
+interface Op {
   /** The animation step it belongs to, and which part of that step (0 to 1) it takes. */
   step: number;
   phase: [number, number];
@@ -298,7 +298,7 @@ interface Frame3 {
   right: V3;
   up: V3;
 }
-export interface Placement {
+interface Placement {
   face: FaceId;
   clip: V2[];
   sheet: Frame2;

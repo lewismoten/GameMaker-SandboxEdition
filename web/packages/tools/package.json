@@ -83,6 +83,11 @@
       "gamemaker-source": "./src/kit/laserLayout.ts",
       "import": "./dist/kit/laserLayout.js"
     },
+    "./kit/laserNest": {
+      "types": "./dist/types/kit/laserNest.d.ts",
+      "gamemaker-source": "./src/kit/laserNest.ts",
+      "import": "./dist/kit/laserNest.js"
+    },
     "./kit/laserSvg": {
       "types": "./dist/types/kit/laserSvg.d.ts",
       "gamemaker-source": "./src/kit/laserSvg.ts",
