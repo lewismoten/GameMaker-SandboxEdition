@@ -9,7 +9,7 @@
 //   CONF_*    the party: a burst of confetti for about a second after a pop, then the house lights up
 //   LIT_*     the lit house, with a gold star on its flag and gold windows; power 250 so a star can't pop it
 //             again, passable so a lit gate lets Stick Man walk on through
-//   BOT       a spam bot: a rolling little robot that pops with one star and bumps (it hurts a little)
+//   BOT       a spam bot: a rolling little fake-star farm that pops with one star and bumps (it hurts a little); it leaves a gray fake star that fades
 // A pop is the engine's own collision rule (code/GM/PLAYGAME.C, DoCollision): the weaker monster dies and
 // leaves its `newmon`, and the character is paid the dead monster's score; a star born from him is used up too.
 import { SOLBOT, SOLLEF, SOLRIG, SOLTOP, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
@@ -41,14 +41,15 @@ export const LIT_SHED = 16;
 export const BOT = 17;
 export const TWINK = 18;
 export const SHOOT = 19;
+export const FAKE = 20;
 
 export const HERO_HIT_POINTS = 50;
 /** Pixels a star flies a tick, and how many ticks: the range is the product, about 6 blocks. */
 export const STAR_SPEED = 4;
 export const STAR_LIFE = 30;
-/** Points: a house (each of a Big Repo's three stars too) and a spam bot. */
+/** Points: a house (each of a Big Repo's three stars too). A spam bot's star is fake and pays nothing. */
 export const POP_SCORE = 50;
-export const BOT_SCORE = 20;
+export const BOT_SCORE = 0;
 /** How long the confetti flies before the house lights (ticks). */
 const PARTY = 16;
 
@@ -160,6 +161,16 @@ function bot(pal: Pal, frame: 0 | 1): Pixels {
   return outline(p, ink, { transparent: T });
 }
 
+/** A fake star: the gold star turned dull gray, so it reads as not the real thing. */
+function fakeStar(pal: Pal, turn: 0 | 1): Pixels {
+  const gold = pal.r('gold');
+  const gray = pal.r('stone');
+  return drawStar(pal, turn).map((_x, _y, c) => {
+    const k = gold.indexOf(c);
+    return k < 0 ? c : gray[Math.min(gray.length - 1, Math.max(0, k - 1))];
+  });
+}
+
 /** A twinkle in the night sky: a small bright plus (frame 0) that dims to a dot (frame 1). */
 function twink(pal: Pal, frame: 0 | 1): Pixels {
   const p = new Pixels(20, 20, T);
@@ -198,6 +209,7 @@ export function monsterPictures(pal: Pal): Book {
   for (const k of kinds) for (const f of [0, 1] as const) mb.add(`lit${k}${f}`, house(pal, k, true, f), {});
   for (const f of [0, 1] as const) mb.add(`confetti${f}`, confetti(pal, f), {});
   for (const f of [0, 1] as const) mb.add(`bot${f}`, bot(pal, f), {});
+  for (const f of [0, 1] as const) mb.add(`fake${f}`, fakeStar(pal, f), {});
   for (const f of [0, 1] as const) mb.add(`twk${f}`, twink(pal, f), {});
   for (const f of [0, 1] as const) mb.add(`shoot${f}`, shooter(pal, f), {});
   return mb;
@@ -243,7 +255,9 @@ export function monsterSet(mb: Book): Monster[] {
   set[LIT_COT] = lit('litcottage');
   set[LIT_TOW] = lit('littower');
   set[LIT_SHED] = lit('litshed');
-  set[BOT] = mon(anim('bot', 4), { power: 150, thru: 1, newmon: TWINKLE, upscore: BOT_SCORE }, pace(5, 1));
+  // a popped bot leaves a dull gray fake star that fades away (no points: fake stars are worth nothing)
+  set[FAKE] = mon(anim('fake', 4), { power: 250, thru: 1, end: 18 });
+  set[BOT] = mon(anim('bot', 4), { power: 150, thru: 1, newmon: FAKE, upscore: BOT_SCORE }, pace(5, 1));
   // the night sky's twinkles sit still and blink; a shooting star glides down the sky and back, for looks only
   set[TWINK] = mon(anim('twk', 9), { power: 250, thru: 1 });
   set[SHOOT] = mon(anim('shoot', 3), { power: 250, thru: 1 }, pace(14, 3, 4));
