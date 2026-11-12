@@ -43,7 +43,7 @@ const save = (name: string, level: number, col: number, extra: Sprite[], w = 16,
 
 save('1-hill-night.png', 0, 10, man(['up.top', 'jumpup'], 17, 1), 24);
 save('2-throw.png', 1, 8, [...man(['cheer.top', 'throw1'], 12), thing('star0', 14), thing('cottage0', 17)]);
-save('3-confetti.png', 1, 13, [...man(['stand.top', 'throw2'], 14), thing('confetti0', 17), thing('cottage0', 22)], 12, 5);
+save('3-confetti.png', 1, 13, [...man(['stand.top', 'throw2'], 14), thing('confetticottage0', 17), thing('cottage0', 22)], 12, 5);
 save('4-lit.png', 1, 13, [...man(['cheer2.top', 'cheer'], 14), thing('litcottage0', 17), thing('cottage0', 22)], 12, 5);
 save('5-shy-tower.png', 2, 15, [...man(['cheer.top', 'throw1'], 19), thing('star1', 21), thing('tower0', 24)]);
 save('6-spam-bot.png', 3, 26, [...man(['cheer.top', 'throw1'], 28), thing('star0', 30), thing('bot0', 33), thing('fake0', 35)]);

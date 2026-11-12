@@ -8,6 +8,8 @@ import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import type { Book } from '../../kit/starter/book';
 import type { Pal } from '../../kit/starter/palette';
 import { scene } from '../../kit/starter/screens';
+import { outlined, textWidth } from '@lewismoten/gamemaker-sandbox-tools/kit/pcText';
+import { paletteFor } from './moods';
 
 export type SunMove = 'rise' | 'climb' | 'set';
 const FRAMES = 36;
@@ -66,6 +68,47 @@ export function skyFli(
     const s = pal.c('sky', 1) * 3;
     for (let c = 0; c < 3; c++) mixed[starIdx * 3 + c] = Math.round(mixed[s + c] + (60 - mixed[s + c]) * k);
     palettes.push(mixed);
+  }
+  return encodeFli(frames, palettes[0], { speed: SPEED, palettes, runs: true, noLoopFrame: true });
+}
+
+/** The won street at nightfall: warm windows, the hero cheering, and stars coming out.
+ * Only palette entries change; the final twelve frames hold, and the cartoon plays once.
+ */
+export function endingFli(pal: Pal, book: Book, mb: Book, hero: Pixels): Uint8Array {
+  const picture = scene(pal, book, 160);
+  scaleBlit(picture, hero, 32, 80, 2);
+  for (const [name, x] of [
+    ['litcottage0', 106],
+    ['littower0', 178],
+    ['litshed0', 250],
+  ] as const)
+    scaleBlit(picture, mb.pics.get(name)!, x, 120, 2);
+  const heading = 'ALL LIT UP!';
+  // A dark caption plate separates the white heading from the clouds behind it.
+  picture.rect(56, 8, 208, 34, pal.c('ink', 0)).rect(58, 10, 204, 30, pal.c('sky', 0));
+  outlined(picture, Math.round((320 - textWidth(heading, 2)) / 2), 18, heading, pal.c('white', 3), pal.c('ink', 0), 2);
+  const sky = new Set(pal.r('sky'));
+  const star = pal.c('gold', 5);
+  const rand = rng(67);
+  for (let i = 0; i < 44; i++) {
+    const x = Math.floor(rand() * 318);
+    const y = 52 + Math.floor(rand() * 54);
+    if (sky.has(picture.get(x, y))) picture.rect(x, y, 2, 2, star);
+  }
+  const from = paletteFor(pal, 'dusk').pal;
+  const to = paletteFor(pal, 'night').pal;
+  const frames: Uint8Array[] = [];
+  const palettes: Uint8Array[] = [];
+  for (let f = 0; f < 48; f++) {
+    const t = Math.min(1, f / 35);
+    const colors = from.map((v, i) => Math.round(v + (to[i] - v) * t));
+    const darkSky = pal.c('sky', 1) * 3;
+    for (let c = 0; c < 3; c++) colors[star * 3 + c] = Math.round(colors[darkSky + c] + (60 - colors[darkSky + c]) * t);
+    // A gentle brightening, not a flashing light; no new gameplay state or text.
+    for (const idx of [pal.c('gold', 3), pal.c('gold', 4)]) for (let c = 0; c < 3; c++) colors[idx * 3 + c] = Math.round(to[idx * 3 + c] * (0.7 + 0.3 * t));
+    frames.push(Uint8Array.from(picture.px));
+    palettes.push(colors);
   }
   return encodeFli(frames, palettes[0], { speed: SPEED, palettes, runs: true, noLoopFrame: true });
 }

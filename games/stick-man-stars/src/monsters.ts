@@ -6,7 +6,7 @@
 //             shy and paces up and down the street, the shed is solid (it can block a doorway)
 //   BIG3, BIG2, BIG1       the Big Repo: a solid shed that takes three stars (three pips on its wall, then
 //             two, then one)
-//   CONF_*    the party: a burst of confetti for about a second after a pop, then the house lights up
+//   CONF_*    the party: the house lights on impact, under a burst of confetti for about a second
 //   LIT_*     the lit house, with a gold star on its flag and gold windows; power 250 so a star can't pop it
 //             again, passable so a lit gate lets Stick Man walk on through
 //   BOT       a spam bot: a rolling little fake-star farm that pops with one star and bumps (it hurts a little); it leaves a gray fake star that fades
@@ -121,9 +121,9 @@ function house(pal: Pal, kind: Kind, lit: boolean, frame: 0 | 1, pips = 0): Pixe
 }
 
 /** A burst of confetti, two frames. */
-function confetti(pal: Pal, frame: 0 | 1): Pixels {
+function confetti(pal: Pal, kind: Kind, frame: 0 | 1): Pixels {
   const { c } = pal;
-  const p = new Pixels(20, 20, T);
+  const p = house(pal, kind, true, frame);
   const colors = [c('red', 2), c('gold', 3), c('teal', 2), c('pink', 2), c('blue', 2), c('white', 3)];
   const dots: [number, number][] = [
     [3, 3],
@@ -207,7 +207,7 @@ export function monsterPictures(pal: Pal): Book {
   for (const k of kinds) for (const f of [0, 1] as const) mb.add(`${k}${f}`, house(pal, k, false, f), {});
   for (const n of [3, 2, 1]) for (const f of [0, 1] as const) mb.add(`big${n}${f}`, house(pal, 'shed', false, f, n), {});
   for (const k of kinds) for (const f of [0, 1] as const) mb.add(`lit${k}${f}`, house(pal, k, true, f), {});
-  for (const f of [0, 1] as const) mb.add(`confetti${f}`, confetti(pal, f), {});
+  for (const k of kinds) for (const f of [0, 1] as const) mb.add(`confetti${k}${f}`, confetti(pal, k, f), {});
   for (const f of [0, 1] as const) mb.add(`bot${f}`, bot(pal, f), {});
   for (const f of [0, 1] as const) mb.add(`fake${f}`, fakeStar(pal, f), {});
   for (const f of [0, 1] as const) mb.add(`twk${f}`, twink(pal, f), {});
@@ -247,10 +247,10 @@ export function monsterSet(mb: Book): Monster[] {
   set[BIG3] = mon(anim('big3', 9), { ...dark, newmon: BIG2 });
   set[BIG2] = mon(anim('big2', 9), { ...dark, newmon: BIG1 });
   set[BIG1] = mon(anim('big1', 9), { ...dark, newmon: CONF_SHED });
-  const party = (newmon: number) => mon(anim('confetti', 4), { power: 250, thru: 1, end: PARTY, newmon });
-  set[CONF_COT] = party(LIT_COT);
-  set[CONF_TOW] = party(LIT_TOW);
-  set[CONF_SHED] = party(LIT_SHED);
+  const party = (kind: Kind, newmon: number) => mon(anim(`confetti${kind}`, 4), { power: 250, thru: 1, end: PARTY, newmon });
+  set[CONF_COT] = party('cottage', LIT_COT);
+  set[CONF_TOW] = party('tower', LIT_TOW);
+  set[CONF_SHED] = party('shed', LIT_SHED);
   const lit = (name: string) => mon(anim(name, 6), { power: 250, thru: 1 });
   set[LIT_COT] = lit('litcottage');
   set[LIT_TOW] = lit('littower');

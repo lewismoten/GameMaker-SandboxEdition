@@ -150,20 +150,23 @@ function mainStreet(w: World): StarterMap {
 }
 
 /** Level 2: three shy towers (each walks 5 blocks from where it starts), a cottage, and a shed in a tunnel. */
-export const L2 = { bonus: 48, towers: [20, 32, 44] as const, cottage: 56, tunnel: [60, 67] as const, gate: 64, exit: 72, width: 76 };
+export const L2 = { bonus: 48, towers: [20, 32, 44] as const, cottage: 56, tunnel: [60, 67] as const, gate: 64, rest: [71, 80] as const, exit: 84, width: 88 };
 function shyStreet(w: World): StarterMap {
   const g = base(L2.width, L2.exit);
   tunnel(g, L2.tunnel[0], L2.tunnel[1]);
   g.row(9, 10, 14, 'c').row(9, 27, 29, 'c').row(9, 40, 42, 'c').row(9, 50, 52, 'c').row(9, 69, 70, 'c');
-  scenery(g, [7, 18, 30, 42, 54], [12, 25, 38, 51, 62], [9, 17, 35, 48, 58]);
+  scenery(g, [7, 18, 30, 42, 54, 73], [12, 25, 38, 51, 62, 72, 79], [9, 17, 35, 48, 58, 74, 78]);
   const m = new StarterMap(w.book, g.rows());
   signAt(m, w, 5, 'shy');
   signAt(m, w, 50, 'shed');
-  signAt(m, w, 68, 'exit');
+  signAt(m, w, 81, 'exit');
   for (const x of L2.towers) m.mon(TOWER, x, STAND);
   named(m, w, COTTAGE, L2.cottage, 'MOTHS');
   m.set(L2.bonus, 5, 'pickstar');
   m.mon(SHED, L2.gate, STAND);
+  // A safe garden after the last task, before Spam Row: no pickups, hazards or timer.
+  // The already-lit, passable houses are company, not another aiming test. Stay or walk on.
+  m.mon(LIT_COT, 73, STAND).mon(LIT_TOW, 77, STAND);
   return m;
 }
 
