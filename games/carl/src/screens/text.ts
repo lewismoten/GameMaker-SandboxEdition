@@ -65,8 +65,8 @@ export const INSTRUCTIONS = [
     'clap or swatter it hits will',
     'MISS, and stay missed a bit.',
     '',
-    'B: BUZZ, the way you last',
-    'flew. It wakes sleeping ears.',
+    'ENTER or B: BUZZ, the way you',
+    'last flew. Wakes sleepy ears.',
   ]),
   page([
     'SUGAR keeps a fly flying.',
@@ -161,6 +161,7 @@ const CREDITS_TEXT = page(
     '3.0 files. Made with GAME-',
     'MAKER by Recreational',
     'Software Designs.',
+
     '',
     "Carl's got the aux cord now.",
   ],
@@ -168,7 +169,21 @@ const CREDITS_TEXT = page(
 );
 
 /** The credits, ending with the FREE TO SHARE page (kit/license.ts). */
-export const CREDITS = withCreditPage(CREDITS_TEXT, true);
+export const CREDITS = withCreditPage(
+  [
+    CREDITS_TEXT,
+    page([
+      'Keyboard traversal:',
+      'Hermes Agent running',
+      'OpenAI Codex GPT-6.1 Sol.',
+      '',
+      'Arrows fly. Space rolls.',
+      'Enter or B buzzes.',
+      'Diagonal keys still work.',
+    ]),
+  ].join('\n'),
+  true,
+);
 
 export function readme(price: string): string {
   return `
@@ -274,6 +289,8 @@ CREDITS (NOW)
   by Claude with GAME-MAKER 3.0
   by Recreational Software
   Designs.
+  Keyboard traversal: Hermes
+  OpenAI Codex GPT-6.1 Sol.
 
 Rest in peace, peace and quiet.
 `.replace(/^\n/, '');

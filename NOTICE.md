@@ -59,6 +59,7 @@ game folder opens in the browser unchanged.
 - **Public documentation review (November 12, 2026)**: **Hermes Agent running OpenAI Codex GPT-6.1 Sol**, directed by Lewis Moten, checked the embedding, web player, editor and workspace guides against the source and clarified file lookup, consent, save identities, checkpoints and build preparation. No implementation or third-party material changed.
 - **Source README ownership clarification (November 12, 2026)**: **Hermes Agent running OpenAI Codex GPT-6.1 Sol**, directed by Lewis Moten, clarified the owning source areas for native download wrappers, notices and the EPUB ZIP writer. No implementation or third-party material changed.
 - **AI setup landscape fit (November 12, 2026)**: Hermes Agent running OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, adjusted the short-landscape grid and added a browser layout regression. No new third-party material or game assets were added.
+- **Carl keyboard traversal (November 12, 2026)**: Hermes Agent running OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, added Enter as an alternate buzz key, a basic-key walkthrough and keyboard regressions. Existing art, music and extra controls are preserved.
 
 - **Verified finding fixes (November 11, 2026)**: OpenAI Codex (GPT-6), directed by Lewis Moten, added input bounds, backup authentication and credential checks, MCP file-access and read-only checks, atomic save updates, download consent and cancellation, and regression tests. No new third-party material or game assets were added.
 

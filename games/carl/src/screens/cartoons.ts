@@ -279,7 +279,7 @@ export function howtoFli(cast: Cast): Uint8Array {
       scaleBlit(p, sprite(cast.carl, u >= 3 && u < 8 ? `buzz${u % 2}` : 'front0'), 60, 70, 3);
       if (u >= 4 && u < 12) scaleBlit(p, M(`buzz${u % 2}`), 110 + (u - 4) * 14, 70, 3);
       if (u >= 10) say(p, pal, 250, 40, 'HUH?!', 'white', 3);
-      caption(p, pal, ['B: buzz. It wakes', 'sleeping ears.']);
+      caption(p, pal, ['ENTER or B: buzz.', 'Wake sleeping ears.']);
     }
   };
   const first = new Pixels(W, H);
