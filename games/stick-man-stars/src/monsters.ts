@@ -242,7 +242,7 @@ export function monsterSet(mb: Book): Monster[] {
   const dark = { power: 150, thru: 1, upscore: POP_SCORE };
   set[COTTAGE] = mon(anim('cottage', 9), { ...dark, newmon: CONF_COT });
   // the shy tower slips back and forth along the street, slowly
-  set[TOWER] = mon(anim('tower', 7), { ...dark, newmon: CONF_TOW }, [corner(0, 0, 1), corner(5, 0, 1), corner(0, 0, 1, 4)]);
+  set[TOWER] = mon(anim('tower', 7), { ...dark, newmon: CONF_TOW }, [corner(0, 0, 2), corner(5, 0, 2), corner(0, 0, 2, 4)]);
   set[SHED] = mon(anim('shed', 9), { ...dark, newmon: CONF_SHED });
   set[BIG3] = mon(anim('big3', 9), { ...dark, newmon: BIG2 });
   set[BIG2] = mon(anim('big2', 9), { ...dark, newmon: BIG1 });

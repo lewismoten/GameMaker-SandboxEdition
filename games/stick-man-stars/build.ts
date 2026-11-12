@@ -21,6 +21,7 @@ import { buildThrower } from './src/hero';
 import { buildStickBlocks } from './src/stick';
 import { cardPicture, endPicture, gif, menuPicture, paper, scoresPicture, slotsPicture } from '../kit/starter/screens';
 import { skyOf } from '../kit/starter/palette';
+import { skyFli, type SunMove } from './src/skyFli';
 import { throwSounds } from './src/sounds';
 import { demoRecording } from './src/demo';
 import { TITLE, buildGame } from './src/game';
@@ -60,7 +61,15 @@ levels.forEach((l, i) => {
   disk.put(`${l.file}.pal`, serializePalette(l.pal.pal));
   disk.put(`${l.file}.map`, serializeMap(l.map.done()));
   disk.put(`${l.file}.gif`, gif(cardPicture(pal, book, hero, i + 1, levels.length, l.title, l.hint), pal));
-  disk.put(`${l.file}.lst`, serializeSlideList([{ name: `${l.file}.gif`, pause: 3 }]));
+  // between levels, a cartoon: the sky turns from the last level's palette to this one's
+  const move: [SunMove, 'fade-out' | 'fade-in' | 'none'][] = [
+    ['rise', 'fade-out'],
+    ['climb', 'none'],
+    ['set', 'fade-in'],
+  ];
+  const cartoon = i > 0 ? `sky${i}.fli` : '';
+  if (cartoon) disk.put(cartoon, skyFli(pal, book, hero, levels[i - 1].pal.pal, l.pal.pal, move[i - 1][0], move[i - 1][1]));
+  disk.put(`${l.file}.lst`, serializeSlideList([...(cartoon ? [{ name: cartoon, pause: 0 }] : []), { name: `${l.file}.gif`, pause: 3 }]));
 });
 
 // pictures and words

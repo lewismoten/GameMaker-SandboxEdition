@@ -94,9 +94,18 @@ function scenery(g: Grid, clouds: number[], bushes: number[], flowers: number[])
 type World = { book: Book; signs: Record<SignName, Sign>; names: Record<Name, Sign> };
 
 /** Stamps sign `s` at block x, standing on the ground. */
-const signAt = (m: StarterMap, w: World, x: number, which: SignName) => m.sign(x, onGround(GROUND, w.signs[which]), w.signs[which]);
+/** Where each level's signs stand, for tools/layoutCheck.ts: block rectangles (the board and its legs row). */
+export const PLACED = new WeakMap<StarterMap, { what: string; x: number; y: number; w: number; h: number }[]>();
+function note(m: StarterMap, what: string, x: number, y: number, s: Sign): void {
+  PLACED.set(m, [...(PLACED.get(m) ?? []), { what, x, y, w: s.board[0].length, h: s.board.length + 1 }]);
+}
+const signAt = (m: StarterMap, w: World, x: number, which: SignName) => {
+  note(m, which, x, onGround(GROUND, w.signs[which]), w.signs[which]);
+  return m.sign(x, onGround(GROUND, w.signs[which]), w.signs[which]);
+};
 /** A house with its name over the door (the name board is three wide, the house in the middle). */
 function named(m: StarterMap, w: World, kind: number, x: number, name: Name): void {
+  note(m, `name ${name}`, x - 1, STAND - 1, w.names[name]);
   m.sign(x - 1, STAND - 1, w.names[name]);
   m.mon(kind, x, STAND);
 }
@@ -119,7 +128,7 @@ function stargazingHill(w: World): StarterMap {
 }
 
 /** Where level 1's houses and gate stand (block x). */
-export const L1 = { cottages: [17, 34, 55] as const, tunnel: [42, 49] as const, gate: 46, exit: 60, width: 64 };
+export const L1 = { bonus: 53, cottages: [17, 34, 55] as const, tunnel: [42, 49] as const, gate: 46, exit: 60, width: 64 };
 function mainStreet(w: World): StarterMap {
   const g = base(L1.width, L1.exit);
   tunnel(g, L1.tunnel[0], L1.tunnel[1]);
@@ -131,16 +140,17 @@ function mainStreet(w: World): StarterMap {
   signAt(m, w, 22, 'far');
   signAt(m, w, 29, 'readme');
   signAt(m, w, 37, 'shed');
-  signAt(m, w, 56, 'exit');
+  signAt(m, w, 57, 'exit');
   named(m, w, COTTAGE, L1.cottages[0], 'SOCKS');
   named(m, w, COTTAGE, L1.cottages[1], 'SOUP');
   named(m, w, COTTAGE, L1.cottages[2], 'TEAPOT');
+  m.set(L1.bonus, 5, 'pickstar');
   m.mon(SHED, L1.gate, STAND);
   return m;
 }
 
 /** Level 2: three shy towers (each walks 5 blocks from where it starts), a cottage, and a shed in a tunnel. */
-export const L2 = { towers: [20, 32, 44] as const, cottage: 56, tunnel: [60, 67] as const, gate: 64, exit: 72, width: 76 };
+export const L2 = { bonus: 48, towers: [20, 32, 44] as const, cottage: 56, tunnel: [60, 67] as const, gate: 64, exit: 72, width: 76 };
 function shyStreet(w: World): StarterMap {
   const g = base(L2.width, L2.exit);
   tunnel(g, L2.tunnel[0], L2.tunnel[1]);
@@ -152,12 +162,13 @@ function shyStreet(w: World): StarterMap {
   signAt(m, w, 68, 'exit');
   for (const x of L2.towers) m.mon(TOWER, x, STAND);
   named(m, w, COTTAGE, L2.cottage, 'MOTHS');
+  m.set(L2.bonus, 5, 'pickstar');
   m.mon(SHED, L2.gate, STAND);
   return m;
 }
 
 /** Level 4: a cottage, a tower, a bot, a cottage, a bot, then the Big Repo in its tunnel and the lit street. */
-export const L4 = { cottages: [14, 40] as const, tower: 24, bots: [32, 47] as const, tunnel: [52, 59] as const, gate: 56, exit: 74, width: 78 };
+export const L4 = { bonus: 44, cottages: [14, 40] as const, tower: 24, bots: [32, 47] as const, tunnel: [52, 59] as const, gate: 56, exit: 74, width: 78 };
 function starCount(w: World): StarterMap {
   const g = base(L4.width, L4.exit);
   tunnel(g, L4.tunnel[0], L4.tunnel[1]);
@@ -173,6 +184,7 @@ function starCount(w: World): StarterMap {
   for (const x of L4.bots) m.mon(BOT, x, STAND);
   named(m, w, COTTAGE, L4.cottages[1], 'PIE');
   m.mon(BIG3, L4.gate, STAND);
+  m.set(L4.bonus, 5, 'pickstar');
   // the street past the Big Repo is already lit, and waves
   m.mon(LIT_COT, 65, STAND).mon(LIT_TOW, 67, STAND).mon(LIT_SHED, 69, STAND);
   return m;
