@@ -4,3 +4,4 @@
 - `walkthrough.ts`, `gendemo.ts`: re-record the walkthrough and the title demo (the start of the hill).
 - `preview.ts`: PNGs of the blocks, the hero's poses, the monsters, each level (in its own sky) and every picture.
 - `shots.ts`: pictures of the lessons for the progress shots.
+- `skyFli.ts` (src): the between-level cartoons (a palette animation from one level's sky to the next).

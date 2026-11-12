@@ -134,7 +134,9 @@ export async function mainStreet(bot: StarterBot): Promise<void> {
   await must(bot, bot.walk(c - 4, 'the last cottage'), 'to the last cottage');
   await throwAt(bot, [COTTAGE], 'at the last cottage');
   await must(bot, bot.walk(L1.exit - 2, 'the door'), 'to the door');
-  totals(bot, start, coins, 0, 4, 0, 'main street');
+  await must(bot, bot.walk(L1.bonus, 'the high star'), 'to the high star');
+  await hop(bot);
+  totals(bot, start, coins, 1, 4, 0, 'main street');
   await leave(bot, bot.walk(L1.exit + 1, 'the exit'), 'the exit');
 }
 
@@ -146,13 +148,15 @@ export async function shyStreet(bot: StarterBot): Promise<void> {
     await must(bot, bot.walk(t - 3, 'a shy tower'), 'to a tower');
     await popWhenNear(bot, [TOWER], 'at a shy tower');
   }
+  await must(bot, bot.walk(L2.bonus, 'the high star'), 'to the high star');
+  await hop(bot);
   await must(bot, bot.walk(L2.cottage - 4, 'the cottage'), 'to the cottage');
   await throwAt(bot, [COTTAGE], 'at the cottage');
   await must(bot, bot.walk(L2.tunnel[0] - 1, 'the shed'), 'to the shed');
   await throwAt(bot, [SHED], 'at the shed');
   await must(bot, bot.wait(30), 'the party');
   await must(bot, bot.walk(L2.exit - 2, 'the door'), 'to the door');
-  totals(bot, start, coins, 0, 5, 0, 'shy street');
+  totals(bot, start, coins, 1, 5, 0, 'shy street');
   await leave(bot, bot.walk(L2.exit + 1, 'the exit'), 'the exit');
 }
 
@@ -170,6 +174,8 @@ export async function spamRow(bot: StarterBot): Promise<void> {
   await throwAt(bot, [COTTAGE], 'at the second cottage');
   await must(bot, bot.walk(L4.bots[1] - 5, 'the second bot'), 'to the second bot');
   await popWhenNear(bot, [BOT], 'at the second bot', 40, 110);
+  await must(bot, bot.walk(L4.bonus, 'the high star'), 'to the high star');
+  await hop(bot);
   await must(bot, bot.walk(L4.tunnel[0] - 2, 'the Big Repo'), 'to the Big Repo');
   for (const [n, now, next] of [
     [1, BIG3, BIG2],
@@ -182,6 +188,6 @@ export async function spamRow(bot: StarterBot): Promise<void> {
   }
   await must(bot, bot.wait(30), 'the party');
   await must(bot, bot.walk(L4.exit - 2, 'the door'), 'to the door');
-  totals(bot, start, coins, 0, 6, 2, 'spam row');
+  totals(bot, start, coins, 1, 6, 2, 'spam row');
   await leave(bot, bot.walk(L4.exit + 1, 'the exit'), 'the exit');
 }

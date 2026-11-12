@@ -31,6 +31,8 @@ In town, walk toward a house and press Space. A star flies the way you last walk
 
 A lit house throws confetti. A shy one wanders, so wait for it. A sleepy shed in a tunnel wakes when a star says thanks. A spam bot bumps and hands out fake stars: pop it from a distance and its star fades.
 
+Look up: most streets hang a high star out of the way. Jump for it.
+
 In real life, a star on a project you like thanks its maker and saves it for later.
 `);
 
