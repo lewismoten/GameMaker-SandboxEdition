@@ -7,7 +7,7 @@ import { DEP_NOTES } from './depNotes';
 import type { Dep, DepsFile } from './lockDeps';
 import file from './deps.json';
 
-const data = file as DepsFile;
+const data: DepsFile = file;
 const DIRECT = new Set(data.deps.filter((d) => d.direct).map((d) => d.name));
 
 function depItem(d: Dep): HTMLElement {
