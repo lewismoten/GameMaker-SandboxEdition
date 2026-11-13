@@ -42,7 +42,7 @@ function locksIn(sim: GameSim): Lock[] {
  * Where the hero can get to from where the scene puts him, with every lock shut: walking, falling, climbing
  * ladders (blocks that pull no way) and jumps up to 3 blocks high and 4 across. Keys are not used.
  */
-function reachable(sim: GameSim): Set<number> {
+export function reachable(sim: GameSim): Set<number> {
   const free = (x: number, y: number) => x > 0 && y > 1 && x < MLEN - 1 && y < MLEN - 2 && !sim.solidAt(x, y) && !sim.solidAt(x, y - 1);
   const ladder = (x: number, y: number) => sim.shown(x, y).solid === 0 && sim.shown(x, y).grav === 0;
   const held = (x: number, y: number) => sim.solidAt(x, y + 1) || ladder(x, y);
