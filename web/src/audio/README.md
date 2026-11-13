@@ -1,11 +1,12 @@
 # `audio/`: music and sound
 
-Part of the [source map](../README.md). Playback modules (`opl`, `cmfPlayer`, `cmfLoad`, `music.worklet`, `engine`, `context`, `output`) now live in the [engine workspace](../../packages/engine/README.md), under `src/audio/`. CMF composition belongs to the [tools workspace](../../packages/tools/README.md), `src/music/compose.ts`. This folder retains editor-specific tools, presets and integration tests.
+Part of the [source map](../README.md). Playback modules (`opl`, `cmfPlayer`, `cmfLoad`, `music.worklet`, `engine`, `context`, `output`, `mix`) live in the [engine workspace](../../packages/engine/README.md), under `src/audio/`. CMF composition belongs to the [tools workspace](../../packages/tools/README.md), `src/music/compose.ts`. References to those filenames below are package-relative; the other filenames are relative to this folder. This folder retains editor-specific tools, presets and integration tests.
 
 `opl.ts` (OPL2 FM emulation), `cmfPlayer.ts` (port of `PlayIt` and the SBFMDRV
 calls; `cmfLoad.ts` reads a song's header as its `load_file` did, CMF 1.0 included, and refuses
 what it refused), the AudioWorklet (`music.worklet.ts`), Web Audio output (`engine.ts`, the page's one
-`context.ts`, one volume for everything in `output.ts`), PC speaker sound sets (`vocToSpeaker.ts`
+`context.ts`, the shared speaker-volume control in `output.ts`, and the Music, Voice,
+Sound effects and Games settings in `mix.ts`), PC speaker sound sets (`vocToSpeaker.ts`
 drafts one from a `.voc`'s pitch) and sample editing (`sampleEdit.ts`).
 
 - Music: `compose.ts` writes `.CMF` songs from notes as text (shared with `games/kit`); the
@@ -13,7 +14,8 @@ drafts one from a `.voc`'s pitch) and sample editing (`sampleEdit.ts`).
   shown off by `oplPresetPreview.ts`).
 - Sound effects: `sfxSynth.ts` and `sfxPresets.ts` (the sound effect maker); `soundProfile.ts`
   sorts digital sounds into kinds by listening to them.
-- `voices.ts`: the people on the other end of the desk's phone line, in the browser's speech.
+- `voices.ts`: browser-speech fallback for callers on the desk's phone line; recorded clips
+  are tried first by `phone/phonePlayer.ts` (see below).
 
 ## The 64 KB .VOC limit
 
