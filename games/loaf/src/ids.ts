@@ -54,6 +54,7 @@ export const SEQ = {
   breadB: 16,
   riseLeft7: 17,
   riseRight9: 18,
+  riseEnter: 19,
 } as const;
 
 /** Keys (scan code << 8 | ASCII). */
