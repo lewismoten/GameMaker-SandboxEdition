@@ -64,6 +64,8 @@ export function buildWatt(cb: BlockSet, bombMonster: number): Character {
   // start of the board (and costs a spare battery).
   const bomb: Frame = { ...emptyFrame(), x: 0, y: 20, pic1: bombMonster, pic2: MONBL, pause: 1 };
   set(S[SEQ.reboot], [f('zapped', 2), bomb, f('zapped', 6)], { key: KEY.r, sound: SND.boing, ground: 1, norepeat: 1, jstkBut: 0 });
+  // Use an ordinary spare slot, not pickup/drop: Enter recovers the same board as R.
+  Object.assign(S[14], structuredClone(S[SEQ.reboot]), { key: 0x1c0d });
 
   ch.meter[0] = 1; // one hit point: any zap reboots
   ch.meter[1] = 20; // spare batteries: plenty, so a reboot to rethink a board is cheap

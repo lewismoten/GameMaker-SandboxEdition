@@ -55,6 +55,10 @@
     "48": {
       "short": "Still bread",
       "long": "I'm still bread!"
+    },
+    "28": {
+      "short": "Rise right",
+      "long": "Enter: rise up and to the right, the same as E."
     }
   },
   "joystick": {

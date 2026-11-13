@@ -60,8 +60,8 @@ export const HELP = pages([
   `KEYS
  Arrows, W A S D or the
  number pad: roll one block
- R: reboot the board (costs
-    one spare battery)
+ R or Enter: reboot the board
+    (costs one spare battery)
  F1 help  F2 batteries left
  F5 save  F6 load
  Esc  quit to the menu

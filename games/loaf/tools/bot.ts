@@ -11,12 +11,12 @@ import type { GameSim } from './sim';
 export type { Dir } from '@lewismoten/gamemaker-sandbox-tools/kit/hopBot';
 
 /** The loaf's bot: its keys, its map origin, and its crumbs meter for BOT_HURT. */
-export class Bot extends HopBot<GameSim, typeof SCAN> {
+export class Bot extends HopBot<GameSim, { [K in keyof typeof SCAN]: number }> {
   /** Let a clip that is playing (a basket's "twelve baskets full") finish before a hop's puff. */
   patient = false;
 
-  constructor(sim: GameSim) {
-    super(sim, { scan: SCAN, origin: ORIGIN, meter: { name: 'crumbs', n: 20 } });
+  constructor(sim: GameSim, basicKeys = true) {
+    super(sim, { scan: { ...SCAN, e: basicKeys ? 28 : SCAN.e, q: basicKeys ? SCAN.up : SCAN.q }, origin: ORIGIN, meter: { name: 'crumbs', n: 20 } });
   }
 
   /** When patient: stands still until the playing clip ends (keys let go). */
