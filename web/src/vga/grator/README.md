@@ -8,7 +8,7 @@ Edits the game scene graph, scene files and entry and exit links using the porte
 
 - [`layout.ts`](layout.ts): Defines scene-map layout, constants and folder helpers.
 - [`state.ts`](state.ts): Reads and writes GAM data and creates scenes and links.
-- [`draw.ts`](draw.ts): Draws scene boxes, XOR links and controls.
+- [`draw.ts`](draw.ts): Draws scene boxes, links and controls.
 - [`scenes.ts`](scenes.ts): Edits scene descriptions, files, scrolling and world-map positions.
 - [`gramap.ts`](gramap.ts): Shows two scenes' maps for choosing link departure and arrival cells.
 

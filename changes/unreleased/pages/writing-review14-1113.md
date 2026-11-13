@@ -1,3 +1,3 @@
 ### Fixed
 
-- Clarify that the Block Designer loads palettes and remaps block pixels rather than editing palette files.
+- Clarify Block Designer palette handling and remove an incorrect XOR claim about Integrator links.
