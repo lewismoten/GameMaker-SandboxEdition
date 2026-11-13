@@ -20,8 +20,17 @@ const moduleScene = (id: string, module: string, fn: string, args: unknown[] = [
       const styles = module.startsWith('editor/editors/blocks/') ? ['editor/editors/blocks/blocks.css', 'editor/editors/blocks/groupView.css']
         : module.startsWith('editor/editors/palette/') ? ['editor/editors/palette/palette.css']
         : module === 'editor/disk/compareDialog' ? ['editor/disk/diskTool.css'] : [];
-      await Promise.all(styles.map((style) => import('/src/' + style)));
-      const api = await import('/src/' + module + '.ts');
+      // Vite may re-optimize dependencies and reload mid-import under load (the first import then
+      // rejects with "Failed to fetch dynamically imported module", and the browser caches that
+      // failure), so retry once, after a pause, with a fresh URL.
+      const load = async (url) => {
+        try { return await import(url); } catch (error) {
+          await new Promise((done) => setTimeout(done, 1500));
+          return await import(url + '?retry=' + Date.now());
+        }
+      };
+      await Promise.all(styles.map((style) => load('/src/' + style)));
+      const api = await load('/src/' + module + '.ts');
       let project, palette, blocks;
       if (needsProject) {
         const { loadProject } = await import('/src/project/storage.ts');

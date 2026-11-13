@@ -32,9 +32,10 @@ function streamingModel(log: string[], stopAfter?: { piece: number; stop: AbortC
     if (turn++ > 0) return { content: 'All done.', toolCalls: [] };
     let soFar = '';
     for (const [i, piece] of REPLY.entries()) {
-      // render_png does real work, so on a loaded machine give it a bounded number of turns to
-      // finish before the last piece; calls that only ran after the stream would still fail
-      for (let n = 0; i === 6 && !stopAfter && n < 200 && !log.includes('ran render_png'); n++) await tick();
+      // render_png does real work, so before the last piece wait for it to actually finish (no
+      // fixed turn count: under load that is the flake). It is already running, so this ends;
+      // a call that never ran until after the stream would hit the test's own timeout.
+      while (i === 6 && !stopAfter && !log.includes('ran render_png')) await tick();
       req.signal?.throwIfAborted();
       soFar += piece;
       log.push(`piece ${i}`);
