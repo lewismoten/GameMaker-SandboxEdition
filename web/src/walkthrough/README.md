@@ -1,13 +1,16 @@
-# `walkthrough/`: a Sandbox game's walkthrough
+# `walkthrough/`: recorded game walkthroughs
 
 Part of the [source map](../README.md).
 
-A Sandbox game's walkthrough (`format.ts`): played on the real
+A recorded walkthrough (`format.ts`): played on the web
 engine, deterministically (`runtime.ts`), in a player with chapters and a seek bar (`player.ts`;
-a jump replays the game unseen up to that frame), with made-up callers filling the empty Top Ten
-at the end (`madeUpScores.ts`), and rendered to an MP4 with its soundtrack (`exportVideo.ts`,
-`audioRender.ts`, `mp4av.ts`). `button.ts` is the home page panel's Walkthrough, for every game:
-one dialog (`editor/widgets/walkDialog.ts`) to watch the game's own walkthrough or yours, and to
+a jump plays ahead unseen, restarting first when going backward), with made-up callers filling the empty Top Ten
+at the end (`madeUpScores.ts`), and exported to MP4 (`exportVideo.ts`, `audioRender.ts`,
+`mp4av.ts`). Export requires a WebCodecs H.264 encoder; audio uses AAC, then Opus if supported,
+or is omitted if neither encoder is available or the sound choice is None. This exporter has
+no live-recording fallback. `button.ts` adds the home page panel's Walkthrough button when
+the game has a .gam and a project or catalog .gam entry. It opens
+one dialog ([`editor/widgets/walkDialog.ts`](../editor/widgets/walkDialog.ts)) to watch the game's own walkthrough or yours, and to
 make your own with the walkthrough bot; it loads it all only when pressed.
 A walkthrough the bot made only partway (`partial`, with its `ending`) plays as far as it got and
 ends on a closing card (`endCard.ts`), in the player and for a few seconds at the end of its MP4.
@@ -28,3 +31,5 @@ jump goes to the last mark before now (the one before when within a second of it
 unseen to the next.
 
 The bot itself and the dialog are the editor's (`editor/check/walk/`, `editor/widgets/walkDialog.ts`).
+All `editor/` paths above are relative to `web/src/`, not this folder. Playback uses a private
+clock and seeded random numbers; this is web-engine replay, not execution of the DOS player.
