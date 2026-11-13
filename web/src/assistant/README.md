@@ -19,7 +19,9 @@ What lets an AI tool open, check and change a game.
     (`kinds.ts`, `parts.ts`); its test keeps every tool and argument they name real. It needs no
     game (`noGame`), and is in the chat's core tools.
   - `index.ts` lists them. `memoryContext.ts` is a `GameContext` over files in memory.
-- `png.ts` writes a palette picture as a PNG with no canvas.
+- `tools/renderTools.ts` uses `encodePng` from
+  `@lewismoten/gamemaker-sandbox-tools/image/png` to encode indexed pictures without a browser
+  canvas. The encoder lives in `web/packages/tools/src/image/png.ts`, not this folder.
 - `openai.ts` (`toOpenAITools`) gives the tools as function-calling definitions for OpenAI
   or Ollama.
 - `chat/`: the Assistant chat, the person's own AI working on the open game. Its own
@@ -35,10 +37,13 @@ What lets an AI tool open, check and change a game.
     listening, a 403, a model without tools).
   - `agent.ts`: the tool loop. Calls run as they arrive while the reply streams (`textCalls.ts`
     finds calls written as text), with Apply/Skip through `approve` and Stop through a signal.
-    It keeps within the model's context: tool groups loaded on request (`toolCategories.ts`,
-    terse definitions), result budgets, compaction near the limit (`compact.ts`), and the
-    whole conversation in `archive.ts` (sessionStorage, per game) for `recall`. `tokens.ts`
-    counts for the gauge; `trim.ts` cuts older results as they are sent.
+    It budgets for the model's context: tool groups loaded on request (`toolCategories.ts`,
+    terse definitions), result budgets and compaction near the limit (`compact.ts`).
+    `archive.ts` keeps text for `recall` in sessionStorage, per game: entries longer than
+    6,000 characters are cut there with an ellipsis, and older entries are dropped to keep
+    retained text within 400,000 characters. Storage failures leave the current archive in
+    memory only. `tokens.ts` estimates tokens for the gauge; `trim.ts` cuts older results as
+    they are sent.
   - `chatTools.ts` binds the shared tools, `map_sketch` (`mapSketch.ts`, a map as text) and
     the tab's screenshot to the open project; `session.ts` holds the conversation and what the
     model can do; `prompt.ts` has the system prompts (a compact one under 8k) and briefs.
@@ -47,9 +52,11 @@ What lets an AI tool open, check and change a game.
     the companion data, in three groups: Doing, To do and Done (`todoView.ts` shows the list;
     `todoTool.ts` is the model's `todo` tool, which lists it, adds next steps and moves items
     along, so what was next outlasts the conversation).
-  - `makeGame.ts`: Describe a game: the starter level for an empty game, then the AI
-    builds it until the bot wins. `homeDescribe.ts` asks for the description when New game's
-    "Describe it to your AI…" is chosen (`editor/shell/homeImport.ts`).
+  - `makeGame.ts`: Describe a game: the starter level for an empty game, then an initial AI
+    build and bot play-test, with at most two repair rounds by default. It returns the last
+    report even if the bot still cannot win; a win is not guaranteed. `homeDescribe.ts` asks
+    for the description when New game's "Describe it to your AI…" is chosen
+    (`editor/shell/homeImport.ts`).
   - `panel.ts` is the docked panel (full screen on phones): the gauge with Compact now and
     Reset, Copy (`clipboard.ts`), and the editor moved to each change (`showChange.ts`).
     `log.ts` is the conversation: reply bubbles, tool lines, picture thumbnails, Markdown.
