@@ -4,7 +4,7 @@
 import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { writePng } from '@lewismoten/gamemaker-sandbox-tools/kit/png';
-import { renderRegion } from '@lewismoten/gamemaker-sandbox-tools/kit/levelPicture';
+import { cameraTop, renderRegion } from '@lewismoten/gamemaker-sandbox-tools/kit/levelPicture';
 import { buildHeroBlocks, heroPicture } from '../../kit/starter/hero';
 import { ORIGIN } from '../../kit/starter/map';
 import { buildMonsterBlocks, buildMonsters } from '../../kit/starter/monsters';
@@ -29,8 +29,8 @@ const kit = (pose: [string, string], col: number, feet = GROUND - 1) => {
   ];
 };
 type Map = ReturnType<(typeof levels)[0]['map']['done']>;
-const region = (map: Map, col: number, w: number, extra: ReturnType<typeof kit> = [], top = 2, h = 10) =>
-  renderRegion(map, bbl, mbl, set, ORIGIN + col, ORIGIN + top, w, h, extra);
+const region = (map: Map, col: number, w: number, extra: ReturnType<typeof kit> = [], top: number | null = null, h = 10) =>
+  renderRegion(map, bbl, mbl, set, ORIGIN + col, top === null && extra.length ? cameraTop(extra) : ORIGIN + (top ?? 2), w, h, extra);
 const stand: [string, string] = ['stand.top', 'stand'];
 
 const floor = GROUND + DEPTH - 1;

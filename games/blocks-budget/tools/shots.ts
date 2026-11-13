@@ -4,7 +4,7 @@
 import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { writePng } from '@lewismoten/gamemaker-sandbox-tools/kit/png';
-import { renderRegion } from '@lewismoten/gamemaker-sandbox-tools/kit/levelPicture';
+import { cameraTop, renderRegion } from '@lewismoten/gamemaker-sandbox-tools/kit/levelPicture';
 import { buildHeroBlocks, heroPicture } from '../../kit/starter/hero';
 import { buildMonsterBlocks, buildMonsters } from '../../kit/starter/monsters';
 import { ORIGIN } from '../../kit/starter/map';
@@ -30,7 +30,7 @@ const kit = (col: number): Sprite[] => {
   ];
 };
 const region = (level: number, col: number, w: number, extra: Sprite[]) =>
-  renderRegion(levels[level].map.done(), bbl, mbl, set, ORIGIN + col, ORIGIN + 1, w, 10, extra);
+  renderRegion(levels[level].map.done(), bbl, mbl, set, ORIGIN + col, cameraTop(extra), w, 10, extra);
 const save = (name: string, pic: ReturnType<typeof region>) => writePng(join(out, name), pic, pal.pal, 3);
 
 save('1-before-tower.png', region(0, TOWER_X - 8, 16, kit(TOWER_X - 3)));
