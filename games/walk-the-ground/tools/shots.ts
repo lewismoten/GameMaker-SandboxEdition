@@ -4,7 +4,7 @@
 import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { writePng } from '@lewismoten/gamemaker-sandbox-tools/kit/png';
-import { renderRegion } from '@lewismoten/gamemaker-sandbox-tools/kit/levelPicture';
+import { cameraTop, renderRegion } from '@lewismoten/gamemaker-sandbox-tools/kit/levelPicture';
 import { heroPicture } from '../../kit/starter/hero';
 import { buildDigHeroBlocks } from '../src/digHero';
 import { ORIGIN } from '../../kit/starter/map';
@@ -43,8 +43,8 @@ const run = (x0: number, x1: number, y0: number, y1: number): [number, number][]
   return out;
 };
 /** One 16 by 10 block screen of `map` with its top left at (col, row). */
-const screen = (map: (typeof maps)[number], col: number, row: number, ...sprites: ReturnType<typeof kit>[]) =>
-  renderRegion(map, bbl, mbl, set, ORIGIN + col, ORIGIN + row, 16, 10, sprites.flat());
+const screen = (map: (typeof maps)[number], col: number, row: number | null, ...sprites: ReturnType<typeof kit>[]) =>
+  renderRegion(map, bbl, mbl, set, ORIGIN + col, row === null ? cameraTop(sprites.flat()) : ORIGIN + row, 16, 10, sprites.flat());
 
 const G = L1.ground;
 // the break-up chain laid out on level 1's hill: one row, each block a step further along, with Nova at the foot
@@ -52,9 +52,9 @@ const G = L1.ground;
   const m = dug(0, []);
   const chain = ['soil', 'cracked', 'splitOpen', 'halfDug', 'nearlyDug', 'dug'];
   chain.forEach((n, i) => (m.blocks[(G - 2 + ORIGIN) * 100 + L1.hill[0] + 5 + i + ORIGIN] = book.n(n)));
-  writePng(join(out, 'dig-chain.png'), screen(m, L1.hill[0] + 1, 1, kit(L1.hill[0] + 3, G - 1)), pal.pal, 4);
+  writePng(join(out, 'dig-chain.png'), screen(m, L1.hill[0] + 1, null, kit(L1.hill[0] + 3, G - 1)), pal.pal, 4);
 }
-writePng(join(out, 'one-1-the-rock.png'), screen(maps[0], 8, 1, kit(L1.rock - 1, G - 1)), pal.pal, 3);
+writePng(join(out, 'one-1-the-rock.png'), screen(maps[0], 8, null, kit(L1.rock - 1, G - 1)), pal.pal, 3);
 writePng(
   join(out, 'one-2-dug-over-it.png'),
   screen(
@@ -74,7 +74,7 @@ writePng(
 );
 writePng(join(out, 'one-3-through-the-hill.png'), screen(dug(0, run(L1.rock + 1, 27, G - 2, G - 1)), 18, 1, kit(26, G - 1)), pal.pal, 3);
 const S = L2.surface;
-writePng(join(out, 'two-1-the-trapdoor.png'), screen(maps[1], 5, 1, kit(L2.shaft[0], S - 1)), pal.pal, 3);
+writePng(join(out, 'two-1-the-trapdoor.png'), screen(maps[1], 5, null, kit(L2.shaft[0], S - 1)), pal.pal, 3);
 writePng(join(out, 'two-2-sinking.png'), screen(dug(1, run(L2.shaft[0], L2.shaft[1], S, S + 4)), 6, 4, kit(L2.shaft[0], S + 4)), pal.pal, 3);
 writePng(join(out, 'two-3-under-the-spikes.png'), screen(dug(1, run(L2.shaft[0], 24, S + 3, S + 4)), 14, 2, kit(22, S + 4)), pal.pal, 3);
 writePng(join(out, 'two-4-the-ladder.png'), screen(dug(1, run(L2.shaft[0], L2.ladder - 1, S + 3, S + 4)), 22, 1, kit(L2.ladder, S + 2)), pal.pal, 3);

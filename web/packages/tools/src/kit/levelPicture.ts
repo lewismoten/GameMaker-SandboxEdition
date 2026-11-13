@@ -6,6 +6,16 @@ import type { Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monst
 import { orientIndex } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { Pixels } from './pixels';
 
+/**
+ * The top map row of the screen PLAYGAME shows while the hero stands still (ChangeScroll holds his feet 120 of the 200 pixels down,
+ * so six rows sit above them and four below). `hero` is his sprites (the first one's column picks them); a picture that starts
+ * anywhere else shows rows a player never sees. Not for a jump or a fall: the camera lags those, so frame them by hand.
+ */
+export function cameraTop(hero: { x: number; y: number }[]): number {
+  const col = hero[0].x;
+  return Math.max(...hero.filter((s) => s.x === col).map((s) => s.y)) + 1 - 6;
+}
+
 export function renderRegion(
   map: GameMap,
   bg: Block[],

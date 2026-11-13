@@ -4,7 +4,7 @@
 import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { writePng } from '@lewismoten/gamemaker-sandbox-tools/kit/png';
-import { renderRegion } from '@lewismoten/gamemaker-sandbox-tools/kit/levelPicture';
+import { cameraTop, renderRegion } from '@lewismoten/gamemaker-sandbox-tools/kit/levelPicture';
 import { heroPicture } from '../../kit/starter/hero';
 import { buildStickBlocks } from '../src/stick';
 import { ORIGIN } from '../../kit/starter/map';
@@ -38,10 +38,15 @@ const empty = (level: number) => {
   if (level) m.monsters = [];
   return m;
 };
-const save = (name: string, level: number, col: number, extra: Sprite[], w = 16, scale = 3) =>
-  writePng(join(out, name), renderRegion(empty(level), bbl, mbl, set, ORIGIN + col, ORIGIN + 2, w, 10, extra), levels[level].pal.pal, scale);
+const save = (name: string, level: number, col: number, extra: Sprite[], w = 16, scale = 3, jump = false) =>
+  writePng(
+    join(out, name),
+    renderRegion(empty(level), bbl, mbl, set, ORIGIN + col, jump ? ORIGIN + 2 : cameraTop(extra), w, 10, extra),
+    levels[level].pal.pal,
+    scale,
+  );
 
-save('1-hill-night.png', 0, 10, man(['up.top', 'jumpup'], 17, 1), 24);
+save('1-hill-night.png', 0, 10, man(['up.top', 'jumpup'], 17, 1), 24, 3, true);
 save('2-throw.png', 1, 8, [...man(['cheer.top', 'throw1'], 12), thing('star0', 14), thing('cottage0', 17)]);
 save('3-confetti.png', 1, 13, [...man(['stand.top', 'throw2'], 14), thing('confetticottage0', 17), thing('cottage0', 22)], 12, 5);
 save('4-lit.png', 1, 13, [...man(['cheer2.top', 'cheer'], 14), thing('litcottage0', 17), thing('cottage0', 22)], 12, 5);

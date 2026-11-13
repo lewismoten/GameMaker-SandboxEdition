@@ -5,7 +5,7 @@ import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { writePng } from '@lewismoten/gamemaker-sandbox-tools/kit/png';
-import { renderRegion } from '@lewismoten/gamemaker-sandbox-tools/kit/levelPicture';
+import { cameraTop, renderRegion } from '@lewismoten/gamemaker-sandbox-tools/kit/levelPicture';
 import { buildHeroBlocks, heroPicture } from '../../kit/starter/hero';
 import { ORIGIN } from '../../kit/starter/map';
 import { buildMonsterBlocks, buildMonsters } from '../../kit/starter/monsters';
@@ -30,7 +30,7 @@ function view(n: 0 | 1, col: number, tick: number, row = GROUND - 1): Pixels {
     { pixels: Uint8Array.from(h.px.subarray(0, 400)), x: ORIGIN + col, y: ORIGIN + row - 1 },
     { pixels: Uint8Array.from(h.px.subarray(400)), x: ORIGIN + col, y: ORIGIN + row },
   ];
-  return renderRegion(mapAt(l, tick), finishBlocks(l), mbl, set, ORIGIN + col - 8, ORIGIN + 2, 16, 10, kit);
+  return renderRegion(mapAt(l, tick), finishBlocks(l), mbl, set, ORIGIN + col - 8, cameraTop(kit), 16, 10, kit);
 }
 const shot = (name: string, n: 0 | 1, col: number, tick: number, row?: number) => writePng(join(out, name), view(n, col, tick, row), pal.pal, 3);
 shot('one-1-bolt-sign-dark.png', 0, 15, DARK - 1);
