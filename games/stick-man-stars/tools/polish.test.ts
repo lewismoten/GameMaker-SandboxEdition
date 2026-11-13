@@ -2,7 +2,7 @@
 import { Buffer } from 'node:buffer';
 import { describe, expect, it } from 'vitest';
 import { buildLevels, L2 } from '../src/levels';
-import { monsterPictures, monsterSet, CONF_COT, CONF_TOW, CONF_SHED, LIT_COT, LIT_TOW, LIT_SHED } from '../src/monsters';
+import { monsterPictures, monsterSet, CONF_BIG, CONF_COT, CONF_TOW, CONF_SHED, LIT_BIG, LIT_COT, LIT_TOW, LIT_SHED } from '../src/monsters';
 import { houseLitVoc, throwSounds } from '../src/sounds';
 import { decodeVoc } from '@lewismoten/gamemaker-sandbox-engine/formats/voc';
 import * as cartoons from '../src/skyFli';
@@ -33,6 +33,7 @@ describe('house lighting cue', () => {
       [CONF_COT, LIT_COT],
       [CONF_TOW, LIT_TOW],
       [CONF_SHED, LIT_SHED],
+      [CONF_BIG, LIT_BIG],
     ]) {
       const first = mb.finish()[mons[party].pic[0][0]].pixels;
       const settled = mb.finish()[mons[lit].pic[0][0]].pixels;

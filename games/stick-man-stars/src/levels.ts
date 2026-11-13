@@ -13,16 +13,16 @@ import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
 import { addSign, type Sign } from '../../kit/starter/sign';
-import { BIG3, BOT, COTTAGE, LIT_COT, LIT_SHED, LIT_TOW, SHED, TOWER } from './monsters';
+import { BIG3, BOT, COTTAGE, FORK_COT, FORK_TOW, LIT_COT, LIT_TOW, OLD_BIG, SHED, TOWER } from './monsters';
 import { addNightBlocks } from './nightSky';
 import { addPickStar, addStarGate } from './pickStar';
 import { paintNight } from './nightSky';
 import { paletteFor, type Mood } from './moods';
 
 /** The signs the levels use, by name. */
-export type SignName = 'thx' | 'readme' | 'fake' | 'gaze' | 'gate' | 'how' | 'far' | 'shed' | 'shy' | 'bots' | 'three' | 'thanks' | 'exit';
+export type SignName = 'thx' | 'readme' | 'fake' | 'gaze' | 'gate' | 'how' | 'far' | 'shed' | 'shy' | 'bots' | 'three' | 'thanks' | 'forked' | 'exit';
 /** Repo names that go over a house's door (six letters fit). */
-const NAMES = ['SOCKS', 'SOUP', 'TEAPOT', 'MOTHS', 'NAPS', 'PUNS', 'PIE', 'KEYS'] as const;
+const NAMES = ['SOCKS', 'SOUP', 'TEAPOT', 'MOTHS', 'PIE', 'KEYS'] as const;
 type Name = (typeof NAMES)[number];
 
 /** The block set every level shares: the Starter blocks, then this game's signs. */
@@ -42,6 +42,7 @@ function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign>; nam
     bots: addSign(book, pal, 'bots', 'SPAM BOTS BUMP. POP THEM', 4, 2),
     three: addSign(book, pal, 'three', 'THREE LANTERNS: ONE THANK YOU EACH', 4, 2),
     thanks: addSign(book, pal, 'thanks', 'LIKED A PROJECT? LEAVE IT A STAR', 4, 2),
+    forked: addSign(book, pal, 'forked', 'BIG REPO: FORKED FROM →', 3, 2),
     thx: addSign(book, pal, 'thx', 'A STAR SAYS THANKS', 3, 2),
     readme: addSign(book, pal, 'readme', 'SAYS WHAT IT IS', 3, 2),
     fake: addSign(book, pal, 'fake', 'FAKE STARS FADE', 3, 2),
@@ -158,7 +159,7 @@ function shyStreet(w: World): StarterMap {
   const g = base(L2.width, L2.exit);
   tunnel(g, L2.tunnel[0], L2.tunnel[1]);
   g.row(9, 10, 14, 'c').row(9, 27, 29, 'c').row(9, 40, 42, 'c').row(9, 50, 52, 'c').row(9, 69, 70, 'c');
-  scenery(g, [7, 18, 30, 42, 54, 73], [12, 25, 38, 51, 62, 72, 79], [9, 17, 35, 48, 58, 74, 78]);
+  scenery(g, [7, 18, 30, 42, 54, 73], [12, 25, 38, 51, 62, 72, 79], [9, 17, 35, 48, 58, 75, 80]);
   const m = new StarterMap(w.book, g.rows());
   signAt(m, w, 5, 'shy');
   signAt(m, w, 50, 'shed');
@@ -169,11 +170,12 @@ function shyStreet(w: World): StarterMap {
   m.mon(SHED, L2.gate, STAND);
   // A safe garden after the last task, before Spam Row: no pickups, hazards or timer.
   // The already-lit, passable houses are company, not another aiming test. Stay or walk on.
-  m.mon(LIT_COT, 73, STAND).mon(LIT_TOW, 77, STAND);
+  // Each has a fork beside it: a smaller copy with a fork for a weathervane.
+  m.mon(LIT_COT, 73, STAND).mon(FORK_COT, 74, STAND).mon(LIT_TOW, 77, STAND).mon(FORK_TOW, 78, STAND);
   return m;
 }
 
-/** Level 4: a cottage, a tower, a bot, a cottage, a bot, then the Big Repo in its tunnel and the lit street. */
+/** Level 4: a cottage, a tower, a bot, a cottage, a bot, then the Big Repo (a fork) in its tunnel, and the lit street with its old original. */
 export const L4 = { bonus: 44, cottages: [14, 40] as const, tower: 24, bots: [32, 47] as const, tunnel: [52, 59] as const, gate: 56, exit: 74, width: 78 };
 function starCount(w: World): StarterMap {
   const g = base(L4.width, L4.exit);
@@ -191,8 +193,9 @@ function starCount(w: World): StarterMap {
   named(m, w, COTTAGE, L4.cottages[1], 'PIE');
   m.mon(BIG3, L4.gate, STAND);
   m.set(L4.bonus, 5, 'pickstar');
-  // the street past the Big Repo is already lit, and waves
-  m.mon(LIT_COT, 65, STAND).mon(LIT_TOW, 67, STAND).mon(LIT_SHED, 69, STAND);
+  // the street past the Big Repo is already lit, and waves: a cottage and its fork, then the old original the Big Repo was forked from
+  m.mon(LIT_COT, 65, STAND).mon(FORK_COT, 66, STAND).mon(OLD_BIG, 70, STAND).mon(LIT_TOW, 73, STAND);
+  signAt(m, w, 67, 'forked');
   return m;
 }
 

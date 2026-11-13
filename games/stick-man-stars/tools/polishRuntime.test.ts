@@ -7,7 +7,7 @@ import { parseGame, serializeGame } from '@lewismoten/gamemaker-sandbox-engine/f
 import { ORIGIN } from '../../kit/starter/map';
 import { L2, STAND } from '../src/levels';
 import { stargazingHill, mainStreet, shyStreet, spamRow } from './route';
-import { BIG1, COTTAGE, TOWER, SHED, CONF_COT, CONF_TOW, CONF_SHED, LIT_COT, LIT_TOW, LIT_SHED } from '../src/monsters';
+import { BIG1, COTTAGE, TOWER, SHED, CONF_BIG, CONF_COT, CONF_TOW, CONF_SHED, LIT_BIG, LIT_COT, LIT_TOW, LIT_SHED } from '../src/monsters';
 
 describe('built Stick Man Stars polish', () => {
   it('allows an untimed rest and a direct walk onward without a pickup, hit or lighting cue', async () => {
@@ -78,7 +78,7 @@ describe('built Stick Man Stars polish', () => {
                 [COTTAGE, CONF_COT],
                 [TOWER, CONF_TOW],
                 [SHED, CONF_SHED],
-                [BIG1, CONF_SHED],
+                [BIG1, CONF_BIG],
               ].some(([a, b]) => before[i] === a && m.monnum === b)
             )
               return;
@@ -88,7 +88,7 @@ describe('built Stick Man Stars polish', () => {
             lighting.push(`${scene}:${w.clock}:${before[i]}:${m.monnum}`);
           });
           // Becoming a settled lit house must not play the cue again.
-          if (w.mm.some((m, i) => [CONF_COT, CONF_TOW, CONF_SHED].includes(before[i]) && [LIT_COT, LIT_TOW, LIT_SHED].includes(m.monnum)))
+          if (w.mm.some((m, i) => [CONF_COT, CONF_TOW, CONF_SHED, CONF_BIG].includes(before[i]) && [LIT_COT, LIT_TOW, LIT_SHED, LIT_BIG].includes(m.monnum)))
             expect(events.filter((e) => e.scene === scene && e.clock === w.clock && e.n === 1)).toHaveLength(0);
         }
         return out;
