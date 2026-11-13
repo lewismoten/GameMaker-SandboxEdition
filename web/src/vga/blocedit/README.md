@@ -2,7 +2,7 @@
 
 Part of the [source map](../../README.md).
 
-Edits block pixels, palettes and game behavior using the ported BLOCEDIT screens.
+Edits block pixels and game behavior using the ported BLOCEDIT screens. Loads palettes for viewing and can remap block pixels to another palette; it does not edit palette files.
 
 ## Main modules
 
