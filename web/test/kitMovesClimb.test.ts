@@ -40,6 +40,35 @@ describe("Kit's Moves climb boundaries", () => {
     expect(sim.deaths).toBe(0);
   });
 
+  it.each([
+    [1, 1],
+    [2, 2],
+    [4, 2],
+    [1, 2],
+    [1, 3],
+    [2, 1],
+    [3, 1],
+    [3, 2],
+    [4, 1],
+    [6, 2],
+    [8, 4],
+    [12, 4],
+  ])('stops sustained Up %i-on/%i-off from replacing the dash lesson', async (on, off) => {
+    const sim = atScene(3);
+    sim.press(77);
+    let descend = false;
+    for (let tick = 1; tick <= 3000; tick++) {
+      if (x(sim) >= 1180) descend = true;
+      if (!descend && (tick - 1) % (on + off) < on) sim.press(72);
+      else sim.release(72);
+      if (descend && x(sim) >= 1480) sim.release(77);
+      if (await sim.tick()) break;
+    }
+    expect(sim.ended).not.toBe('won');
+    expect(x(sim)).toBeLessThan(1180);
+    expect(sim.deaths).toBe(0);
+  });
+
   it('preserves the complete intended lift and dash route, all coins and no deaths', async () => {
     const { sim } = await play();
     expect(sim.ended).toBe('won');

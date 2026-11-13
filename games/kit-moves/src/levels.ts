@@ -139,6 +139,9 @@ function oncePerPress(book: Book, signs: Record<SignName, Sign>): StarterMap {
   g.col(0, 0, G - 1, 'X').col(L2.width - 1, 0, G - 1, 'X');
   // Keep the dash course below a visible roof, rather than open sky for repeated lifts.
   g.row(5, 0, L2.width - 1, 'B');
+  // Between the first two gaps, walk under a lower ceiling before the next hop.
+  // Repeated lifts cannot stay aloft through this two-block-high walking lane.
+  g.col(18, 6, 8, 'B');
   for (const [a, b] of L2.pits) {
     g.fill(a, G, b - a + 1, L2.depth, ' ');
   }
