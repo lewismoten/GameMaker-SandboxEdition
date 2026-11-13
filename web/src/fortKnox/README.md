@@ -4,11 +4,15 @@ Part of the [source map](../README.md). It was the desk's piggy bank; the saved 
 name (`piggy-bank.json`) so older saves still read.
 
 - `hook.ts` hears a catalog game's real session and stores its visible money counter only when it
-  wins. `money.ts` keeps the latest completed amount per game beside the score trophies' save
-  data (unchanged), so backups carry it.
+  wins. A `game:` save ID is required; losses, quits, projects and downloaded bundles do not record money.
+  `money.ts` keeps the latest winning amount per game beside the score trophies' save data, so backups
+  carry it. A later win replaces that game's amount, even when lower or zero; wins are not added together.
 - `store.ts` is the safe's own record, `fort-knox.json` in the same save: whether the door has
-  been opened, the pretend coins spent and the treats bought. The balance is the games' money
-  less what was spent. The backup's trophies section merges it (`backup/sections/trophies.ts`).
+  been opened, the pretend coins spent and the treats bought. The balance is the sum of the games'
+  latest winning amounts less what was spent, clamped at zero. The backup's trophies section
+  (`../backup/sections/trophies.ts`) merges the opened flag with OR and keeps the higher spent
+  amount and each treat count. Conflicting per-game money amounts instead follow the backup's
+  mine/theirs preference (mine by default), not a highest-value or latest-time comparison.
 - `dial.ts` is the lock with no DOM, modeled on a real safe lock (sources in its header): 60 ticks
   (numbers go up clockwise, so turning right lowers the one under the pointer), two loose wheels
   and the drive cam, whose own gate is the third. A pin and the fly it pushes leave a lash of
@@ -22,7 +26,9 @@ name (`piggy-bank.json`) so older saves still read.
 - `treats.ts` is the treat store's list (generic names, prices in pretend coins, one free
   imaginary treat that can be bought any number of times).
 - `safeSpot.ts` places the safe on the desk after the first catalog win; `safeDialog.ts` is its
-  close-up (drag, scroll or arrow keys on the dial, or a number box that turns it there; the store when open). `safeArt.ts`,
+  close-up (drag, scroll or arrow keys on the dial, or a number box that turns it there; the store when open).
+  Once an opening is saved, later visits start with the door open; closing the door still leaves a reopen button.
+  `safeArt.ts`,
   `teddyArt.ts` and `gwinnArt.ts` (Gwinn, the troublemaker dog, beside Teddy; the jerky strip is Gwinny Snaps) draw them in SVG.
 
 Drawn by Claude Sonnet 5.5 from Lewis's description of his childhood bank. Tests: `dial.test.ts`.

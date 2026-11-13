@@ -2,9 +2,9 @@
 
 The art courses (`#/art-courses`, a card on the Library shelf): how to draw the art for a game.
 
-- `courses.ts`: the course list and every lesson's words (paragraphs, lists, figures with alt text and caption), plus `COMING`, the planned courses (none left: all seven are written).
+- `courses.ts`: the course list, the first course's words and the shared lesson types (paragraphs, lists, figures with alt text and caption). It imports courses 2–7 from the `course*.ts` files below. `COMING` holds the planned courses (none left: all seven are written).
 - `artCoursesPage.ts` and `artCourses.css`: the contents page and a page for each course (`#/art-courses/<course>`). Loaded when first opened (`main.ts`).
-- `figures/*.png`: real indexed blocks drawn in code by `../../scripts/artCourseFigures.ts` (`cd web && npx vite-node scripts/artCourseFigures.ts`). Redraw them after changing that script and commit the PNGs.
+- `figures/*.png`: figures drawn in code or read from built game disks by `../../scripts/artCourseFigures.ts` (course 1) and `artCourseFigures2.ts` through `artCourseFigures7.ts` (courses 2–7). From the repository root, `cd web && npx vite-node scripts/artCourseFigures.ts` redraws only course 1; use the matching numbered script for another course. Redraw the affected figures after changing their script and commit the PNGs. Courses 3, 5 and 7 need built disks; prepare them from the root with `npm run heavy -- npm run build:games`.
 
 Course 1, "Blocks: cut, repeat, reuse", has five lessons: draw big then cut, edges that meet, 2 x 2 groups, reusing blocks (one centered post for a sign), variants against patterns.
 
@@ -12,7 +12,7 @@ Course 2, "Shadows and depth" (`courseShadows.ts`, figures by `../../scripts/art
 
 Course 3, "Palettes" (`coursePalettes.ts`, figures by `../../scripts/artCourseFigures3.ts`), has five lessons: a ramp is a color family dark to light, shades that lean cool and warm, one palette to a scene and who shares it, how each series spends its 256 colors (counts from a survey of every non-secret game and the CD), a new look from the same blocks. Its swap, spend and series figures are read from built disks (`GM_GAMES` picks another games folder).
 
-Course 4, "Characters that move" (`courseCharacters.ts`, figures by `../../scripts/artCourseFigures4.ts`), has five lessons: frames, four facings and a climb view, a four-frame walk cycle, mirroring and what it costs, keeping 20 x 20 readable. The shared palette and helpers for the three figure scripts are in `../../scripts/artCourseKit.ts`.
+Course 4, "Characters that move" (`courseCharacters.ts`, figures by `../../scripts/artCourseFigures4.ts`), has five lessons: frames, four facings and a climb view, a four-frame walk cycle, mirroring and what it costs, keeping 20 x 20 readable. The shared palette and helpers for the figure scripts are in `../../scripts/artCourseKit.ts`.
 
 Course 5, "Block animation" (`courseAnimation.ts`, figures by `../../scripts/artCourseFigures5.ts`), has five lessons: a block that turns into another (a ring of `nextbl` and `ntime`), water that closes its loop, fire and torches, doors and levers (a swap when touched), timing and what each frame costs. It states what PLAYGAME's `changeblks` does (`code/GM/PLAYGAME.C:2322`) and the Guide's chapter 5; the Heat Waves ring, door and lever are real blocks read from built disks.
 
