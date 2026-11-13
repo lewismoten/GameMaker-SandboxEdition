@@ -19,7 +19,9 @@ game is revealed) show their length over a picture kept in `web/public/videos/`,
 and open in `videoDialog.ts`: nothing comes from YouTube until Play (or a chapter, or a time in the
 transcript, which start it there), which embeds youtube-nocookie.com; closing removes the player.
 A tour's Transcript disclosure fetches `web/public/videos/<id>.transcript.json` when opened, written from
-YouTube's automatic captions by `web/scripts/videoTranscript.ts` (see [`web/scripts/`](../../scripts/README.md)).
+YouTube's automatic captions or a local Whisper transcription by `web/scripts/videoTranscript.ts`;
+`web/scripts/videoTranscribe.ts` makes the latter, and the dialog labels the recorded source
+(see [`web/scripts/`](../../scripts/README.md)).
 `shelf.ts` is the list as data (the kinds of paper, from manuals, hint books and maps to
 keyboard reference, registration, business and ID, and license and warranty cards and hint
 book postcards; the games, a secret one only once revealed in this browser, and the two
@@ -35,7 +37,7 @@ box, the Game-Maker box flat and its CD's label with the Game-Maker box's paper,
 reading, under the kinds Disk and CD labels and Retail boxes; they open in the print shop
 (`../manual/printables/printShop.ts`, loaded when one is opened or drawn).
 The page is a card catalog over stacks. `cabinet.ts` is the cabinet: a drawer (an ARIA tab: arrow keys, Home and End,
-one tab stop) for each group of the sort, with a brass label holder showing its call number, name and count; the open
+one tab stop) for each group of the sort, with a brass label holder showing its call number and name; the open
 drawer is the address's `only` (the first drawer when none is named, and the game a start-on-this-game
 opens). Below it the open group's cards stand on wooden shelves (CSS and markup only; each card's
 thumbnail and click are unchanged), each with a spine label. `tinyShelf.ts` holds the few call numbers used, in the
@@ -67,9 +69,11 @@ quiet cough, page turn or chair creak (Web Audio, silent when the demo sound is 
 row of labeled buttons. `libraryMusic.ts` plays Keep It Brief!'s `library.cmf` (a bell over a pad, 100 BPM, looping) softly
 under the Music setting: it starts on the first click or key press, pauses while a video or walkthrough dialog is open (`libraryMedia.ts`: an open player counts as playing, since YouTube's state can't be read without its API), while the tab is hidden, is silent when the demo
 sound is None, and stops on leaving (the engine loads on that first gesture).
-`callOrder.ts` puts the drawers, and the cards in each, in call-number order (the three-digit class, then the
+`callOrder.ts` puts the drawers, and the cards within each part of a drawer, in call-number order (the three-digit class, then the
 author mark with numbers as numbers: 614-MAH TED, 660-GAM TED, 660-GAM TED2, 660-GAM TED10); cards with the same
-call number keep the order `shelf.ts` gave them. The drawers no longer show a count (the line under the sort does).
+call number keep the order `shelf.ts` gave them. The drawer labels show no count; `libraryPage.ts`
+keeps a screen-reader status count that Joe's help also reads, and the open drawer's heading
+shows its item count (a filtered count out of the whole drawer when one game is selected).
 `copier.ts` is the photocopier beside the cabinet (below it on small windows): "Copies: choose a paper" lists the
 print shop's pieces in the open drawer and COPY sweeps a green scan light (a still glow with reduced motion), then
 opens that piece in the print shop through `libraryPage.ts`'s `openPiece`. With nothing to print its display reads

@@ -60,7 +60,8 @@ stays hidden until earned, so the gold never gives it away.
 "n of m unlocked", three toggle buttons with `aria-pressed`, and the tab row, which scrolls sideways
 at phone width). The toggles are 📅 dates, 📊 progress and 🙈 hide unearned, kept in localStorage
 (`gm-ach-dates`, `gm-ach-progress`, `gm-ach-hide-unearned`, listed in `backup/inventory.ts`). Dates
-and progress are off by default and cards are one height per mode (`--card-h` in `page.css`). With
+and progress are off by default. Cards have a minimum height, not a fixed height per mode
+(`.ach-card` in `page.css`); a row stretches to fit its tallest card. With
 unearned hidden a "n not yet earned are hidden" line remains. Earned badges have a solid accent frame
 and a check; unearned ones a dashed frame and a lock, so they differ without color.
 
@@ -91,7 +92,14 @@ catalog id and reset baseline automatically. Tests: `highScores.test.ts`, `highS
 
 ## Course grades
 
-`courseGrades.ts` keeps, per Starter, the best letter grade ever earned (`gm-course-grades`, in the backup under Achievements, emptied by Reset). A `CourseRun` is fed by `playAchievements` from the player's scene and life-lost hooks and by a key or touch on the page (the engine is untouched); the rules, course numbers (101 ...), GPA and transcript are in `project/grades.ts` and `project/ceremonies.ts`. A first-level grade (C-, C, D+) is saved when the play ends.
+`courseGrades.ts` keeps, per numbered Starter course, the best letter grade ever earned
+(`gm-course-grades`, in the backup under Achievements, emptied by Reset). A `CourseRun` is fed
+by `playAchievements` from the player's scene and life-lost hooks and by a move key or pointer
+press on the page (the engine is untouched); the rules, course numbers (101 ...), GPA and
+transcript are in `project/grades.ts` and `project/ceremonies.ts`. Entering a later level or
+Game Won saves a grade that improves the stored best; a first-level grade (C-, C, D+) waits
+until the play ends, including a quit. A failed localStorage write leaves no saved-grade
+fallback; `loadGrades` rereads storage.
 
 `honorDates.ts` keeps the day each graduation was first finished (`gm-honors-dates`, in the backup and cleared by Reset) for the certificate; `noteFinished` writes it. The Honors tab's name field is `gm-certificate-name` (in the backup, kept by Reset, never sent anywhere).
 
