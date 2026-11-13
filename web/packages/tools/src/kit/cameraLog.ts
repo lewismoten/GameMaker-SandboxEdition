@@ -21,6 +21,9 @@ export interface CameraSample {
   /** The screen's corner. The map wraps, so this is the copy of it nearest the hero (it can be negative). */
   x: number;
   y: number;
+  /** Where the engine's own sprite bookkeeping has the hero on the screen (ci.nextx, ci.nexty): hero minus corner, once both rest. */
+  scrX: number;
+  scrY: number;
   /** Neither the hero nor the screen moved since the tick before. */
   still: boolean;
 }
@@ -50,12 +53,12 @@ export class CameraLog {
     const last = this.samples[this.samples.length - 1];
     const still = last?.scene === scene && last.heroX === heroX && last.heroY === heroY && last.x === x && last.y === y;
     if (!this.scenes.includes(scene)) this.scenes.push(scene);
-    this.samples.push({ scene, tick, heroX, heroY, x, y, still });
+    this.samples.push({ scene, tick, heroX, heroY, x, y, scrX: w.ci.nextx, scrY: w.ci.nexty, still });
   }
 
   /**
    * The screen when the hero's block was at map block (`col`, `row`) of the `level`-th scene played (0 is the first): the tick he
-   * was nearest, height first, a tick he stood still before one he passed through, the latest of equals. It throws when he never
+   * was nearest, height first, a tick he and the screen stood still before one a block nearer in passing, the first of equals (how a player first sees the spot). It throws when he never
    * came within a block of that height (or eight blocks of that column), because then nobody knows what the screen showed.
    */
   at(level: number, col: number, row: number): CameraView {
@@ -64,8 +67,8 @@ export class CameraLog {
     let cost = Infinity;
     for (const s of this.samples) {
       if (s.scene !== scene) continue;
-      const c = Math.abs(s.heroY - row * BLEN) * 1000 + Math.abs(s.heroX - col * BLEN) * 2 + (s.still ? 0 : 1);
-      if (c <= cost) [best, cost] = [s, c];
+      const c = Math.abs(s.heroY - row * BLEN) * 1000 + Math.abs(s.heroX - col * BLEN) * 2 + (s.still ? 0 : 2 * BLEN);
+      if (c < cost) [best, cost] = [s, c];
     }
     if (!best || Math.abs(best.heroY - row * BLEN) >= BLEN || Math.abs(best.heroX - col * BLEN) > 8 * BLEN)
       throw new Error(
