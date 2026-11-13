@@ -2,10 +2,10 @@
 //   STAR      the gold star Stick Man throws: born from a frame of his Throw sequence (hero.ts), it flies
 //             the way he last walked until it hits something or runs out of range. Power 200.
 //   TWINKLE   the sparkle a star leaves
-//   COTTAGE, TOWER, SHED   repo houses, dark and waiting for a star. The cottage sits still, the tower is
+//   COTTAGE, TOWER, SHED   repo houses, dark and waiting for a star, their windows for eyes. The cottage (red gable, chimney) sits still, the tower (stone, blue cap) is
 //             shy and paces up and down the street, the shed is solid (it can block a doorway)
-//   BIG3, BIG2, BIG1       the Big Repo: a solid shed that takes three stars (three pips on its wall, then
-//             two, then one)
+//   BIG3, BIG2, BIG1       the Big Repo: a solid shed that takes three stars (three dark lanterns under its eaves, lit
+//             one by one)
 //   CONF_*    the party: the house lights on impact, under a burst of confetti for about a second
 //   LIT_*     the lit house, with a gold star on its flag and gold windows; power 250 so a star can't pop it
 //             again, passable so a lit gate lets Stick Man walk on through
@@ -71,52 +71,149 @@ function zero(p: Pixels, x: number, y: number, c: number): void {
   px(p, x + 2, y + 1, 1, 3, c);
 }
 
-/** A little repo house, `lit` or dark, in one of two frames, with `pips` star dots on the wall for the Big Repo. */
-function house(pal: Pal, kind: Kind, lit: boolean, frame: 0 | 1, pips = 0): Pixels {
+/** The windows are the house's eyes: dark and blinking on the second frame, or gold and glowing when lit. */
+function eyes(p: Pixels, pal: Pal, at: readonly (readonly [number, number])[], lit: boolean, frame: 0 | 1): void {
   const { c } = pal;
-  const ink = c('ink', 0);
-  const p = new Pixels(20, 20, T);
-  const wall = kind === 'cottage' ? c('parch', 3) : kind === 'tower' ? c('stone', 3) : c('wood', 3);
-  const wallShade = kind === 'cottage' ? c('parch', 2) : kind === 'tower' ? c('stone', 2) : c('wood', 2);
-  const roof = kind === 'cottage' ? pal.r('red') : kind === 'tower' ? pal.r('blue') : pal.r('green');
-  // the walls and the roof
-  const [x0, x1, top] = kind === 'cottage' ? [3, 15, 9] : kind === 'tower' ? [5, 12, 6] : [2, 16, 10];
-  px(p, x0, top, x1 - x0 + 1, 19 - top, wall);
-  px(p, x1 - 1, top, 2, 19 - top, wallShade);
-  const roofTop = kind === 'tower' ? 1 : kind === 'cottage' ? 3 : 6;
-  for (let y = roofTop; y <= top; y++) {
-    const t = (y - roofTop) / (top - roofTop + 1);
-    const half = Math.round(((x1 - x0) / 2 + 2) * (kind === 'tower' ? t : 0.25 + 0.75 * t));
-    const mid = (x0 + x1) / 2;
-    px(p, Math.round(mid - half), y, half * 2 + 1, 1, roof[y % 2 ? 3 : 2]);
+  for (const [wx, wy] of at) {
+    if (lit)
+      px(p, wx - 1, wy - 1, 4, 4, c('gold', 3))
+        .rect(wx, wy, 2, 2, c('gold', 5))
+        .set(wx, wy, c('white', 3));
+    else if (frame === 1) px(p, wx, wy, 2, 2, c('ink', 1)).rect(wx, wy + 1, 2, 1, c('ink', 0));
+    else px(p, wx, wy, 2, 2, c('sky', 1)).set(wx, wy, c('sky', 4));
   }
-  // the door
-  const dx = Math.round((x0 + x1) / 2) - 1;
-  px(p, dx, 14, 3, 5, c('wood', 1));
-  p.set(dx + 2, 16, c('gold', 3));
-  // the windows: eyes at a happy height; the shy houses blink on the second frame
-  const wy = kind === 'tower' ? 8 : 11;
-  const glass = lit ? c('gold', 4) : c('sky', 4);
-  for (const wx of kind === 'tower' ? [7] : [x0 + 2, x1 - 3]) {
-    if (!lit && frame === 1) px(p, wx, wy + 1, 2, 1, ink);
-    else if (lit) px(p, wx - 1, wy - 1, 4, 4, glass).rect(wx, wy, 2, 2, c('white', 3));
-    else px(p, wx, wy, 2, 2, glass);
-  }
-  if (lit)
-    for (const [sx, sy] of [
-      [x0 - 1, 6],
-      [x1 + 2, 12],
-    ] as const)
-      p.set(sx, sy + frame * 2, c('white', 3));
-  // the flag on a pole: gray with a 0 before a star, gold with a star after
-  const poleX = kind === 'tower' ? 15 : 17;
-  px(p, poleX, 1, 1, 9, ink);
+}
+
+/** A door with a gold knob (the door is the house's mouth, so it sits under the eyes). */
+function door(p: Pixels, pal: Pal, x: number, y: number, w: number, lit: boolean): void {
+  const { c } = pal;
+  px(p, x, y, w, 19 - y, c('wood', 1));
+  px(p, x, y, w, 1, c('wood', 0));
+  if (lit) px(p, x + 1, y + 1, w - 2, 1, c('gold', 2));
+  p.set(x + w - 1, y + 3, c('gold', 4));
+}
+
+/** The flag on a pole: gray with a 0 before a star, gold with a star after. */
+function flag(p: Pixels, pal: Pal, poleX: number, lit: boolean, frame: 0 | 1): void {
+  const { c } = pal;
+  px(p, poleX, 1, 1, 9, c('ink', 0));
   const flagX = poleX - 6;
   px(p, flagX, 1 + frame, 6, 7, lit ? c('gold', 3) : c('white', 2));
+  px(p, flagX, 7 + frame, 6, 1, lit ? c('gold', 1) : c('stone', 2));
   if (lit) tinyStar(p, flagX, 2 + frame, c('ink', 0));
   else zero(p, flagX + 1, 2 + frame, c('ink', 1));
-  // the Big Repo's pips: how many stars it still wants
-  for (let i = 0; i < pips; i++) tinyStar(p, 4 + i * 5, 11, c('gold', 4));
+}
+
+/** A shingled gable roof from an apex down to the eaves, lit from the left. */
+function gable(p: Pixels, ramp: number[], apexX: number, top: number, eave: number, left: number, right: number): void {
+  for (let y = top; y <= eave; y++) {
+    const t = (y - top) / Math.max(1, eave - top);
+    const l = Math.round(apexX - (apexX - left) * t);
+    const r = Math.round(apexX + (right - apexX) * t);
+    const shade = y === eave ? 1 : (y - top) % 2 ? 3 : 2;
+    px(p, l, y, r - l + 1, 1, ramp[shade]);
+    p.set(l, y, ramp[Math.min(ramp.length - 1, shade + 1)]);
+    p.set(r, y, ramp[0]);
+  }
+}
+
+/** The cottage: a plaster box with a red shingled gable, a brick chimney, window boxes and a front door. */
+function cottage(p: Pixels, pal: Pal, lit: boolean, frame: 0 | 1): void {
+  const { c, r } = pal;
+  px(p, 3, 3, 2, 5, c('brick', 2)).rect(3, 3, 2, 1, c('brick', 4));
+  px(p, 2, 10, 11, 9, c('parch', 3));
+  px(p, 11, 10, 2, 9, c('parch', 2));
+  px(p, 2, 10, 11, 1, c('parch', 1));
+  gable(p, r('red'), 7, 3, 9, 0, 14);
+  eyes(
+    p,
+    pal,
+    [
+      [3, 12],
+      [10, 12],
+    ],
+    lit,
+    frame,
+  );
+  for (const x of [2, 9]) px(p, x, 14, 4, 1, c('green', 2));
+  door(p, pal, 6, 14, 3, lit);
+}
+
+/** The shy tower: tall and narrow, stone courses, a pointed blue cap and one round window peeking out. */
+function tower(p: Pixels, pal: Pal, lit: boolean, frame: 0 | 1): void {
+  const { c, r } = pal;
+  px(p, 4, 8, 7, 11, c('stone', 3));
+  px(p, 9, 8, 2, 11, c('stone', 2));
+  for (let y = 10; y < 19; y += 3) {
+    px(p, 4, y, 7, 1, c('stone', 2));
+    p.set(y % 2 ? 6 : 8, y + 1, c('stone', 2));
+  }
+  const blue = r('blue');
+  for (let y = 1; y <= 7; y++) {
+    const half = Math.round(((y - 1) / 6) * 4);
+    for (let x = 7 - half; x <= 7 + half; x++) p.set(x, y, blue[x < 7 ? 4 - Math.min(2, (7 - x) >> 1) : x === 7 ? 3 : x > 9 ? 1 : 2]);
+  }
+  px(p, 2, 7, 11, 1, blue[0]);
+  // the round window, glancing aside on the second frame (shy)
+  if (lit) px(p, 5, 9, 4, 4, c('gold', 3)).rect(6, 10, 2, 2, c('gold', 5)).set(6, 10, c('white', 3));
+  else px(p, 6, 10, 2, 2, c('sky', 1)).set(6 + frame, 10, c('sky', 4));
+  door(p, pal, 6, 15, 3, lit);
+  p.set(6, 15, c('stone', 3)).set(8, 15, c('stone', 2));
+}
+
+/** The shed: a low plank box under a sloping green roof. The Big Repo is the same shed with three lanterns under its eaves. */
+function shed(p: Pixels, pal: Pal, lit: boolean, frame: 0 | 1, lanterns: number, litLanterns: number): void {
+  const { c, r } = pal;
+  px(p, 2, 8, 16, 11, c('wood', 3));
+  px(p, 16, 8, 2, 11, c('wood', 2));
+  for (const x of [5, 13]) px(p, x, 10, 1, 9, c('wood', 2));
+  const green = r('green');
+  for (let x = 1; x <= 18; x++) {
+    const y = 6 + Math.floor(((x - 1) * 3) / 17);
+    p.set(x, y, green[4])
+      .set(x, y + 1, green[2])
+      .set(x, y + 2, green[1]);
+    if (x % 3 === 0) p.set(x, y + 1, green[3]);
+  }
+  const low = lanterns > 0 ? 1 : 0;
+  eyes(
+    p,
+    pal,
+    [
+      [3, 14 + low],
+      [14, 14 + low],
+    ],
+    lit,
+    frame,
+  );
+  door(p, pal, 8, 13 + low * 2, 4, lit);
+  px(p, 8, 16 + low, 4, 1, c('wood', 0));
+  for (let i = 0; i < lanterns; i++) {
+    const x = [2, 8, 15][i];
+    const on = lit || i < litLanterns;
+    const top = 6 + Math.floor(((x - 1) * 3) / 17) + 3;
+    px(p, x + 1, top, 1, 10 - top + 1, c('ink', 0));
+    px(p, x, 11, 3, 1, c('ink', 0));
+    px(p, x, 12, 3, 2, on ? c('gold', 4) : c('stone', 1));
+    p.set(x + 1, 12, on ? (frame ? c('gold', 5) : c('white', 3)) : c('stone', 2));
+    p.set(x + 1, 14, c('ink', 0));
+  }
+}
+
+/** A little repo house, `lit` or dark, in one of two frames. The Big Repo (`lanterns` 3) shows how many of its lanterns are lit. */
+function house(pal: Pal, kind: Kind, lit: boolean, frame: 0 | 1, lanterns = 0, litLanterns = 0): Pixels {
+  const ink = pal.c('ink', 0);
+  const p = new Pixels(20, 20, T);
+  if (kind === 'cottage') cottage(p, pal, lit, frame);
+  else if (kind === 'tower') tower(p, pal, lit, frame);
+  else shed(p, pal, lit, frame, lit ? 3 : lanterns, litLanterns);
+  flag(p, pal, 18, lit, frame);
+  if (lit)
+    for (const [sx, sy] of [
+      [0, 5],
+      [19, 13],
+    ] as const)
+      p.set(sx, sy + frame * 2, pal.c('white', 3));
   return outline(p, ink, { transparent: T });
 }
 
@@ -171,15 +268,13 @@ function fakeStar(pal: Pal, turn: 0 | 1): Pixels {
   });
 }
 
-/** A twinkle in the night sky: a small bright plus (frame 0) that dims to a dot (frame 1). */
+/** A twinkle in the night sky: a small bright diamond with a gold heart (frame 0) that dims to a dot (frame 1). */
 function twink(pal: Pal, frame: 0 | 1): Pixels {
   const p = new Pixels(20, 20, T);
-  const w = pal.c('white', 3);
   if (frame === 0) {
-    px(p, 9, 7, 2, 6, w);
-    px(p, 7, 9, 6, 2, w);
-    p.set(9, 9, pal.c('gold', 5)).set(10, 10, pal.c('gold', 5));
-  } else px(p, 9, 9, 2, 2, pal.c('white', 1));
+    for (let dy = -2; dy <= 2; dy++) px(p, 10 - (2 - Math.abs(dy)), 10 + dy, 1 + 2 * (2 - Math.abs(dy)), 1, pal.c('white', 2));
+    p.set(10, 10, pal.c('gold', 5)).set(10, 9, pal.c('white', 3));
+  } else px(p, 10, 10, 1, 1, pal.c('white', 1));
   return p;
 }
 
@@ -205,7 +300,7 @@ export function monsterPictures(pal: Pal): Book {
   mb.add('twinkle1', sparkle(pal, true), {});
   const kinds: Kind[] = ['cottage', 'tower', 'shed'];
   for (const k of kinds) for (const f of [0, 1] as const) mb.add(`${k}${f}`, house(pal, k, false, f), {});
-  for (const n of [3, 2, 1]) for (const f of [0, 1] as const) mb.add(`big${n}${f}`, house(pal, 'shed', false, f, n), {});
+  for (const n of [3, 2, 1]) for (const f of [0, 1] as const) mb.add(`big${n}${f}`, house(pal, 'shed', false, f, 3, 3 - n), {});
   for (const k of kinds) for (const f of [0, 1] as const) mb.add(`lit${k}${f}`, house(pal, k, true, f), {});
   for (const k of kinds) for (const f of [0, 1] as const) mb.add(`confetti${k}${f}`, confetti(pal, k, f), {});
   for (const f of [0, 1] as const) mb.add(`bot${f}`, bot(pal, f), {});
