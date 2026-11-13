@@ -1,8 +1,8 @@
 # player/dosConfig
 
-PLAYGAME's own Configure screen (`AskConfigData`, `DrawConfigScrn`, `DrawSurf`, `CuteBox` in `code/GM/PLAYGAME.C`,
-around lines 4756 to 5133), shown on the 1994 PC's monitor instead of the web's setup dialog
-(`../hardwareSetup.ts`). The desk and `dos.html` both play through `retro/computer.ts`, which passes
+A TypeScript recreation of PLAYGAME's Configure screen (`DrawConfigScrn`, `AskConfigData`, `CuteBox`, `DrawSurf`
+in `code/GM/PLAYGAME.C`, lines 4790 to 5132), shown on the 1994 PC's monitor instead of the web's setup dialog
+(`../hardwareSetup.ts`). No DOS or x86 code runs here. The desk and `dos.html` both play through `retro/computer.ts`, which passes
 `dosSetup: true` to the player; the web player and the editor keep the dialog.
 
 | File          | What it holds                                                                                             |
@@ -10,13 +10,14 @@ around lines 4756 to 5133), shown on the 1994 PC's monitor instead of the web's 
 | `model.ts`    | Layout constants, the cursor moves of the arrow keys, starting values and the mapping to `hardwarePrefs`. |
 | `draw.ts`     | The drawing with the C's coordinates and palette entries (320 x 200, 8 x 8 font).                         |
 | `screen.ts`   | The key, mouse and blink loop, Help (`config.hlp` through the engine's `displayFile`) and the fade in.    |
-| `helpText.ts` | `CONFIG.HLP`, word for word.                                                                              |
+| `helpText.ts` | Original `code/GM/CONFIG.HLP` text, with trailing blanks trimmed and the DOS end-of-file marker omitted. |
 | `dosSetup.ts` | The same interface as `hardwareSetup`: `prepare(force)` for first run, FASTPLAY and CONFIG.BAT.           |
 
 ## Keys
 
 Arrows move a blinking white cursor, Enter picks (or opens Help, or edits the driver name or path), Esc or Enter on
-Done saves and goes on. Moving the mouse nudges the cursor and a click is Enter, as the C did.
+Done saves and goes on. While editing the driver name or path, Esc discards that text edit and returns to Configure;
+it does not finish setup. Moving the mouse nudges the cursor and a click is Enter, as the C did.
 
 ## Choices and what the web does with them
 
@@ -29,5 +30,5 @@ record with the rest:
 
 ## Like the C, on purpose
 
-The cursor starts on Help (the first label drawn at the left button), Esc saves rather than cancels, and the interrupt
-list stores 2 and 10 as 1 and 9 while editing.
+The cursor starts on Help (the first label drawn at the left button). On the main Configure screen, Esc saves
+rather than cancels. The interrupt list stores 2 and 10 as 1 and 9 while editing.
