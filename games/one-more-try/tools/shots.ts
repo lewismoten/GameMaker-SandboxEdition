@@ -4,12 +4,17 @@
 import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { writePng } from '@lewismoten/gamemaker-sandbox-tools/kit/png';
-import { cameraTop, renderRegion } from '@lewismoten/gamemaker-sandbox-tools/kit/levelPicture';
+import { recordCamera } from '@lewismoten/gamemaker-sandbox-tools/kit/cameraLog';
+import { renderRegion } from '@lewismoten/gamemaker-sandbox-tools/kit/levelPicture';
 import { buildHeroBlocks, heroPicture } from '../../kit/starter/hero';
 import { ORIGIN } from '../../kit/starter/map';
 import { buildMonsterBlocks, buildMonsters } from '../../kit/starter/monsters';
 import { DEPTH, GROUND, L1, L2, buildLevels } from '../src/levels';
+import { play } from './play';
+import { GameSim } from './sim';
 
+// where the screen really was on the bot's way through the game (it rests in a new place after a climb or a drop)
+const cam = await recordCamera(GameSim, () => play());
 const out = process.argv[2];
 if (!out) throw new Error('usage: shots.ts <outDir>');
 mkdirSync(out, { recursive: true });
@@ -29,22 +34,22 @@ const kit = (pose: [string, string], col: number, feet = GROUND - 1) => {
   ];
 };
 type Map = ReturnType<(typeof levels)[0]['map']['done']>;
-const region = (map: Map, col: number, w: number, extra: ReturnType<typeof kit> = [], top: number | null = null, h = 10) =>
-  renderRegion(map, bbl, mbl, set, ORIGIN + col, top === null && extra.length ? cameraTop(extra) : ORIGIN + (top ?? 2), w, h, extra);
+const region = (level: number, map: Map, col: number, w: number, extra: ReturnType<typeof kit> = [], top: number | null = null, h = 10) =>
+  renderRegion(map, bbl, mbl, set, ORIGIN + col, top === null && extra.length ? cam.top(level, extra) : ORIGIN + (top ?? 2), w, h, extra);
 const stand: [string, string] = ['stand.top', 'stand'];
 
 const floor = GROUND + DEPTH - 1;
 
 // level 1: the pit with its post and coin, then Kit at the bottom looking up
 const l1 = levels[0].map.done();
-writePng(join(out, 'post-1-pit.png'), region(l1, 17, 16, kit(stand, L1.pit - 2)), pal.pal, 3);
-writePng(join(out, 'post-2-inside.png'), region(l1, 20, 12, kit(['cheer.top', 'jump'], L1.pit + 1, floor), 4, 11), pal.pal, 3);
+writePng(join(out, 'post-1-pit.png'), region(0, l1, 17, 16, kit(stand, L1.pit - 2)), pal.pal, 3);
+writePng(join(out, 'post-2-inside.png'), region(0, l1, 20, 12, kit(['cheer.top', 'jump'], L1.pit + 1, floor), 4, 11), pal.pal, 3);
 
 // level 2: a pit for each way back
 const l2 = levels[1].map.done();
-writePng(join(out, 'back-1-ladder.png'), region(l2, L2.ladder.pit - 2, 8, kit(stand, L2.ladder.pit + 1, floor), 4, 11), pal.pal, 4);
-writePng(join(out, 'back-2-planks.png'), region(l2, L2.steps.pit - 2, 8, kit(stand, L2.steps.pit + 1, floor), 4, 11), pal.pal, 4);
-writePng(join(out, 'back-3-blocks.png'), region(l2, L2.stairs.pit - 2, 8, kit(stand, L2.stairs.pit + 1, floor), 4, 11), pal.pal, 4);
+writePng(join(out, 'back-1-ladder.png'), region(1, l2, L2.ladder.pit - 2, 8, kit(stand, L2.ladder.pit + 1, floor), 4, 11), pal.pal, 4);
+writePng(join(out, 'back-2-planks.png'), region(1, l2, L2.steps.pit - 2, 8, kit(stand, L2.steps.pit + 1, floor), 4, 11), pal.pal, 4);
+writePng(join(out, 'back-3-blocks.png'), region(1, l2, L2.stairs.pit - 2, 8, kit(stand, L2.stairs.pit + 1, floor), 4, 11), pal.pal, 4);
 for (const [i, m] of [l1, l2].entries())
   writePng(join(out, `level-${i + 1}.png`), renderRegion(m, bbl, mbl, set, ORIGIN, ORIGIN, levels[i].map.width, 15), pal.pal, 2);
 console.log(`shots in ${out}`);

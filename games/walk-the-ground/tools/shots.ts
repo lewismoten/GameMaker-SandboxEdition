@@ -4,13 +4,18 @@
 import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { writePng } from '@lewismoten/gamemaker-sandbox-tools/kit/png';
-import { cameraTop, renderRegion } from '@lewismoten/gamemaker-sandbox-tools/kit/levelPicture';
+import { recordCamera } from '@lewismoten/gamemaker-sandbox-tools/kit/cameraLog';
+import { renderRegion } from '@lewismoten/gamemaker-sandbox-tools/kit/levelPicture';
 import { heroPicture } from '../../kit/starter/hero';
 import { buildDigHeroBlocks } from '../src/digHero';
 import { ORIGIN } from '../../kit/starter/map';
 import { buildMonsterBlocks, buildMonsters } from '../../kit/starter/monsters';
 import { L1, L2, buildLevels } from '../src/levels';
+import { play } from './play';
+import { GameSim } from './sim';
 
+// where the screen really was on the bot's way through the game (it rests in a new place after a climb or a drop)
+const cam = await recordCamera(GameSim, () => play());
 const out = process.argv[2];
 if (!out) throw new Error('usage: shots.ts <outDir>');
 mkdirSync(out, { recursive: true });
@@ -43,8 +48,8 @@ const run = (x0: number, x1: number, y0: number, y1: number): [number, number][]
   return out;
 };
 /** One 16 by 10 block screen of `map` with its top left at (col, row). */
-const screen = (map: (typeof maps)[number], col: number, row: number | null, ...sprites: ReturnType<typeof kit>[]) =>
-  renderRegion(map, bbl, mbl, set, ORIGIN + col, row === null ? cameraTop(sprites.flat()) : ORIGIN + row, 16, 10, sprites.flat());
+const screen = (level: number, map: (typeof maps)[number], col: number, row: number | null, ...sprites: ReturnType<typeof kit>[]) =>
+  renderRegion(map, bbl, mbl, set, ORIGIN + col, row === null ? cam.top(level, sprites.flat()) : ORIGIN + row, 16, 10, sprites.flat());
 
 const G = L1.ground;
 // the break-up chain laid out on level 1's hill: one row, each block a step further along, with Nova at the foot
@@ -52,12 +57,13 @@ const G = L1.ground;
   const m = dug(0, []);
   const chain = ['soil', 'cracked', 'splitOpen', 'halfDug', 'nearlyDug', 'dug'];
   chain.forEach((n, i) => (m.blocks[(G - 2 + ORIGIN) * 100 + L1.hill[0] + 5 + i + ORIGIN] = book.n(n)));
-  writePng(join(out, 'dig-chain.png'), screen(m, L1.hill[0] + 1, null, kit(L1.hill[0] + 3, G - 1)), pal.pal, 4);
+  writePng(join(out, 'dig-chain.png'), screen(0, m, L1.hill[0] + 1, null, kit(L1.hill[0] + 3, G - 1)), pal.pal, 4);
 }
-writePng(join(out, 'one-1-the-rock.png'), screen(maps[0], 8, null, kit(L1.rock - 1, G - 1)), pal.pal, 3);
+writePng(join(out, 'one-1-the-rock.png'), screen(0, maps[0], 8, null, kit(L1.rock - 1, G - 1)), pal.pal, 3);
 writePng(
   join(out, 'one-2-dug-over-it.png'),
   screen(
+    0,
     dug(
       0,
       run(L1.rock, L1.rock + 4, G - 3, G - 2).concat([
@@ -72,12 +78,12 @@ writePng(
   pal.pal,
   3,
 );
-writePng(join(out, 'one-3-through-the-hill.png'), screen(dug(0, run(L1.rock + 1, 27, G - 2, G - 1)), 18, 1, kit(26, G - 1)), pal.pal, 3);
+writePng(join(out, 'one-3-through-the-hill.png'), screen(0, dug(0, run(L1.rock + 1, 27, G - 2, G - 1)), 18, 1, kit(26, G - 1)), pal.pal, 3);
 const S = L2.surface;
-writePng(join(out, 'two-1-the-trapdoor.png'), screen(maps[1], 5, null, kit(L2.shaft[0], S - 1)), pal.pal, 3);
-writePng(join(out, 'two-2-sinking.png'), screen(dug(1, run(L2.shaft[0], L2.shaft[1], S, S + 4)), 6, 4, kit(L2.shaft[0], S + 4)), pal.pal, 3);
-writePng(join(out, 'two-3-under-the-spikes.png'), screen(dug(1, run(L2.shaft[0], 24, S + 3, S + 4)), 14, 2, kit(22, S + 4)), pal.pal, 3);
-writePng(join(out, 'two-4-the-ladder.png'), screen(dug(1, run(L2.shaft[0], L2.ladder - 1, S + 3, S + 4)), 22, 1, kit(L2.ladder, S + 2)), pal.pal, 3);
+writePng(join(out, 'two-1-the-trapdoor.png'), screen(1, maps[1], 5, null, kit(L2.shaft[0], S - 1)), pal.pal, 3);
+writePng(join(out, 'two-2-sinking.png'), screen(1, dug(1, run(L2.shaft[0], L2.shaft[1], S, S + 4)), 6, 4, kit(L2.shaft[0], S + 4)), pal.pal, 3);
+writePng(join(out, 'two-3-under-the-spikes.png'), screen(1, dug(1, run(L2.shaft[0], 24, S + 3, S + 4)), 14, 2, kit(22, S + 4)), pal.pal, 3);
+writePng(join(out, 'two-4-the-ladder.png'), screen(1, dug(1, run(L2.shaft[0], L2.ladder - 1, S + 3, S + 4)), 22, 1, kit(L2.ladder, S + 2)), pal.pal, 3);
 levels.forEach((l, i) =>
   writePng(join(out, `level-${i + 1}.png`), renderRegion(maps[i], bbl, mbl, set, ORIGIN, ORIGIN, l.map.width, l.map.height), pal.pal, 2),
 );

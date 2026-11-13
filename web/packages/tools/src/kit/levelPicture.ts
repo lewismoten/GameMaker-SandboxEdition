@@ -7,15 +7,19 @@ import { orientIndex } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks
 import { Pixels } from './pixels';
 
 /**
- * The top map row of the screen PLAYGAME shows while the hero stands still (ChangeScroll holds his feet 120 of the 200 pixels down,
- * so six rows sit above them and four below). `hero` is his sprites (the first one's column picks them); a picture that starts
- * anywhere else shows rows a player never sees. Not for a jump or a fall: the camera lags those, so frame them by hand.
+ * The top map row of the screen PLAYGAME opens a scene with: the hero's own block (his feet) starts on the screen's sixth row.
+ * `hero` is his sprites (the first one's column picks them). It holds only until the screen first scrolls up or down; after a
+ * climb or a drop the screen rests somewhere else (33 pixels past center), so ask the bot's run: kit/cameraLog.ts.
  */
-export function cameraTop(hero: { x: number; y: number }[]): number {
+export function openingTop(hero: { x: number; y: number }[]): number {
   const col = hero[0].x;
   return Math.max(...hero.filter((s) => s.x === col).map((s) => s.y)) + 1 - 6;
 }
 
+/**
+ * `w` by `h` blocks of the map from block (`x0`, `y0`). The corner may sit part way into a block (the engine's screen does,
+ * to the pixel, after it scrolls: kit/cameraLog.ts); the picture is still `w` by `h` blocks.
+ */
 export function renderRegion(
   map: GameMap,
   bg: Block[],
@@ -27,6 +31,10 @@ export function renderRegion(
   h: number,
   extra: { pixels: Uint8Array; x: number; y: number }[] = [],
 ): Pixels {
+  const fx = Math.round((x0 - Math.floor(x0)) * 20);
+  const fy = Math.round((y0 - Math.floor(y0)) * 20);
+  if (fx || fy || !Number.isInteger(x0) || !Number.isInteger(y0))
+    return renderRegion(map, bg, mbl, mons, Math.floor(x0), Math.floor(y0), w + (fx ? 1 : 0), h + (fy ? 1 : 0), extra).crop(fx, fy, w * 20, h * 20);
   const p = new Pixels(w * 20, h * 20);
   for (let by = 0; by < h; by++)
     for (let bx = 0; bx < w; bx++) {

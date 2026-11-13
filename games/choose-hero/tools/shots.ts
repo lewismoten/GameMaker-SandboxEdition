@@ -4,13 +4,18 @@
 import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { writePng } from '@lewismoten/gamemaker-sandbox-tools/kit/png';
-import { cameraTop, renderRegion } from '@lewismoten/gamemaker-sandbox-tools/kit/levelPicture';
+import { recordCamera } from '@lewismoten/gamemaker-sandbox-tools/kit/cameraLog';
+import { renderRegion } from '@lewismoten/gamemaker-sandbox-tools/kit/levelPicture';
 import { buildHeroBlocks, heroPicture } from '../../kit/starter/hero';
 import { ORIGIN } from '../../kit/starter/map';
 import { buildMonsterBlocks, buildMonsters } from '../../kit/starter/monsters';
 import { bigBlocks } from '../src/hero';
 import { L1, L2, L3, buildLevels } from '../src/levels';
+import { play } from './play';
+import { GameSim } from './sim';
 
+// where the screen really was on the bot's way through the game (it rests in a new place after a climb or a drop)
+const cam = await recordCamera(GameSim, () => play());
 const out = process.argv[2];
 if (!out) throw new Error('usage: shots.ts <outDir>');
 mkdirSync(out, { recursive: true });
@@ -33,7 +38,7 @@ const stand = (hero: typeof fast, col: number, feet: number, top = 'stand.top', 
 const maps = levels.map((l) => l.map.done());
 /** One 16 by 10 block screen of level `i` with its top left at (col, row). */
 const screen = (i: number, col: number, row: number | null, ...sprites: ReturnType<typeof stand>[]) =>
-  renderRegion(maps[i], bbl, mbl, set, ORIGIN + col, row === null ? cameraTop(sprites.flat()) : ORIGIN + row, 16, 10, sprites.flat());
+  renderRegion(maps[i], bbl, mbl, set, ORIGIN + col, row === null ? cam.top(i, sprites.flat()) : ORIGIN + row, 16, 10, sprites.flat());
 
 const G1 = L1.ground - 1;
 const G2 = L2.ground - 1;

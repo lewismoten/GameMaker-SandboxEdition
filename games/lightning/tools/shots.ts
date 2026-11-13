@@ -5,14 +5,19 @@ import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { writePng } from '@lewismoten/gamemaker-sandbox-tools/kit/png';
-import { cameraTop, renderRegion } from '@lewismoten/gamemaker-sandbox-tools/kit/levelPicture';
+import { recordCamera } from '@lewismoten/gamemaker-sandbox-tools/kit/cameraLog';
+import { renderRegion } from '@lewismoten/gamemaker-sandbox-tools/kit/levelPicture';
 import { buildHeroBlocks, heroPicture } from '../../kit/starter/hero';
 import { ORIGIN } from '../../kit/starter/map';
 import { buildMonsterBlocks, buildMonsters } from '../../kit/starter/monsters';
 import { GROUND, buildLevels } from '../src/levels';
 import { BOLT, DARK, boltPicture, finishBlocks } from '../src/storm';
 import { mapAt } from './frames';
+import { play } from './play';
+import { GameSim } from './sim';
 
+// where the screen really was on the bot's way through the game (it rests in a new place after a climb or a drop)
+const cam = await recordCamera(GameSim, () => play());
 const out = process.argv[2];
 if (!out) throw new Error('usage: shots.ts <outDir>');
 mkdirSync(out, { recursive: true });
@@ -30,7 +35,7 @@ function view(n: 0 | 1, col: number, tick: number, row = GROUND - 1): Pixels {
     { pixels: Uint8Array.from(h.px.subarray(0, 400)), x: ORIGIN + col, y: ORIGIN + row - 1 },
     { pixels: Uint8Array.from(h.px.subarray(400)), x: ORIGIN + col, y: ORIGIN + row },
   ];
-  return renderRegion(mapAt(l, tick), finishBlocks(l), mbl, set, ORIGIN + col - 8, cameraTop(kit), 16, 10, kit);
+  return renderRegion(mapAt(l, tick), finishBlocks(l), mbl, set, ORIGIN + col - 8, cam.top(n, kit), 16, 10, kit);
 }
 const shot = (name: string, n: 0 | 1, col: number, tick: number, row?: number) => writePng(join(out, name), view(n, col, tick, row), pal.pal, 3);
 shot('one-1-bolt-sign-dark.png', 0, 15, DARK - 1);
