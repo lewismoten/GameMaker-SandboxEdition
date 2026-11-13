@@ -1,4 +1,3 @@
 ### Fixed
 
-- Loaf #13 can now rise up and to the right with Enter, so the whole game plays with arrows, Space and Enter; the other keys still work.
-- Ohm Sweet Ohm can now reboot a stuck board with Enter as well as R.
+- Loaf #13 and Ohm Sweet Ohm now play start to finish with arrows, Space and Enter: Enter rises up and to the right in Loaf #13 and reboots a stuck board in Ohm Sweet Ohm, and the other keys still work.
