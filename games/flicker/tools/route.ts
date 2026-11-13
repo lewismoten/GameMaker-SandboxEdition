@@ -3,7 +3,7 @@
 // engine shows (the block the game's own tables give for the ring's first block), then checks the loop's character:
 //   level 1: the pulse torches change frame at even gaps (a pulse); the flickering torches at uneven gaps, and the two
 //            flicker loops are rarely at the same frame; both blocks of a flag change on the same tick
-//   level 2: the fall's four columns step together at even gaps; the splash's gaps are uneven; the lip steps on its own
+//   level 2: the fall's four columns step together at even gaps; the lip and the splash step at the body's gap, so the streaks run on across the seams
 //   level 3: the big fire's gaps are uneven; each spark loop is dark for most of its round, and the three differ
 import type { Result, StarterBot } from '../../kit/starter/bot';
 import { buildLevels } from '../src/levels';
@@ -94,11 +94,10 @@ export async function theFalls(bot: StarterBot): Promise<void> {
   const body = w.fallL;
   if (body.runs.length < 6 || distinct(body.runs) !== 1) throw new Error(`the fall should step at even gaps, not ${body.runs.join(' ')}`);
   for (const r of ['fallM', 'fallN', 'fallR']) if (w[r].frames.some((f, i) => f !== body.frames[i])) throw new Error(`${r} should step with the left column`);
-  if (distinct(w.splashM.runs) < 3) throw new Error(`the splash should step at uneven gaps, not ${w.splashM.runs.join(' ')}`);
-  if (distinct(w.lipM.runs) !== 1) throw new Error('the lip should step at even gaps of its own');
-  bot.say(
-    `the fall: every column steps every ${body.runs[0]} ticks; the lip every ${w.lipM.runs[0]}; the splash at gaps ${[...new Set(w.splashM.runs)].sort().join(', ')}`,
-  );
+  for (const r of ['lipM', 'splashM'])
+    if (distinct(w[r].runs) !== 1 || w[r].runs[0] !== body.runs[0])
+      throw new Error(`${r} should step at the body's gap (${body.runs[0]}), not ${w[r].runs.join(' ')}`);
+  bot.say(`the fall: every column steps every ${body.runs[0]} ticks; the lip every ${w.lipM.runs[0]}; the splash every ${w.splashM.runs[0]}`);
   await must(bot, bot.walk(38, 'the second sign'), 'to the second sign');
   await must(bot, bot.wait(LOOK), 'reading');
   await must(bot, bot.walk(47, 'the third sign'), 'to the third sign');
