@@ -8,7 +8,7 @@
  "segments": [
   {
    "scene": 2,
-   "keys": "AU0ZzSs5JLkJTQ/NAzkCuQBNEs0DTQXNDk0KzStNHs0rTRnNA0gIyCpIF8gATRTNHk0KzStNI80DTQ=="
+   "keys": "AU0ZzSs5JLkJTQ/NAzkCuQBNEs0DTQXNDk0KzStNHs0rTRnNA0gIyCpIF8gATRTNA00KzStNI80DTQ=="
   },
   {
    "scene": 3,
@@ -27,7 +27,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 9553,
+  "frames": 9464,
   "chapters": [
    {
     "title": "Opening",
@@ -46,18 +46,18 @@
    },
    {
     "title": "Level 2: Once Per Press",
-    "frame": 4327,
-    "time": 72116.66666666477
+    "frame": 4238,
+    "time": 70633.333333331
    },
    {
     "title": "Ending",
-    "frame": 6270,
-    "time": 104500.00000000752
+    "frame": 6181,
+    "time": 103016.66666667376
    },
    {
     "title": "Credits",
-    "frame": 8479,
-    "time": 141316.66666667597
+    "frame": 8390,
+    "time": 139833.3333333435
    }
   ]
  }

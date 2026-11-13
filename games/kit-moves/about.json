@@ -6,7 +6,7 @@
   "hero": "KIT",
   "year": 1994,
   "price": "Free",
-  "version": "1.1",
+  "version": "1.2",
   "blurb": "Two short levels about what a key does while you hold it. Space hops once however long it is held, Up keeps lifting for as long as it is down, and Enter dashes once for each press. Each is a setting on a sequence in the character file, and the levels are built so that you feel the difference. Nothing here hurts. Signs explain each idea, and every level has a page on how it is made.",
   "exe": "KITMOVES.EXE",
   "dosName": "KITMOVES",

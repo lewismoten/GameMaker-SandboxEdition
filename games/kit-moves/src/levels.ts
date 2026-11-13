@@ -104,6 +104,8 @@ function tapAndHold(book: Book, signs: Record<SignName, Sign>): StarterMap {
   // the cliff: nine blocks high, a brick face and grass on top
   g.fill(L1.cliff, L1.cliffTop + 1, L1.width - 1 - L1.cliff, G - L1.cliffTop - 1, 'B').row(L1.cliffTop, L1.cliff, L1.width - 2, 'G');
   g.col(L1.width - 1, 0, L1.cliffTop - 1, 'X');
+  // A visible roof joins the hedges; the cliff still has three clear rows above it.
+  g.row(0, 0, L1.width - 1, 'B');
   g.put(3, G - 2, 's').put(3, G - 1, 'S');
   g.put(L1.exit, L1.cliffTop - 2, 'e').put(L1.exit, L1.cliffTop - 1, 'E');
   for (const [x, y] of L1.coins) g.put(x, y, 'c');
@@ -135,6 +137,8 @@ function oncePerPress(book: Book, signs: Record<SignName, Sign>): StarterMap {
   const g = new Grid(L2.width, rows);
   g.row(G, 0, L2.width - 1, 'G').fill(0, G + 1, L2.width, rows - G - 1, 'D');
   g.col(0, 0, G - 1, 'X').col(L2.width - 1, 0, G - 1, 'X');
+  // Keep the dash course below a visible roof, rather than open sky for repeated lifts.
+  g.row(5, 0, L2.width - 1, 'B');
   for (const [a, b] of L2.pits) {
     g.fill(a, G, b - a + 1, L2.depth, ' ');
   }
