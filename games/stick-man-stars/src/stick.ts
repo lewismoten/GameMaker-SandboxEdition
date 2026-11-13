@@ -13,8 +13,9 @@ const T = 255;
 type Pt = [number, number];
 
 /** A line two pixels thick. */
-function thick(p: Pixels, a: Pt, b: Pt, c: number): void {
-  p.line(a[0], a[1], b[0], b[1], c)
+function thick(p: Pixels, a: Pt, b: Pt, c: number): Pixels {
+  return p
+    .line(a[0], a[1], b[0], b[1], c)
     .line(a[0] + 1, a[1], b[0] + 1, b[1], c)
     .line(a[0], a[1] + 1, b[0], b[1] + 1, c);
 }
@@ -57,6 +58,9 @@ interface Pose {
   /** Feet, from the hip at (10, 11). */
   legBack: Pt;
   legFront: Pt;
+  /** Knees, for a bent leg (a straight leg has none). */
+  kneeBack?: Pt;
+  kneeFront?: Pt;
   /** The scarf tail streams behind (left); `lift` raises it in the air. */
   lift?: number;
 }
@@ -68,8 +72,9 @@ function body(pal: Pal, o: Pose): Pixels {
   thick(p, [10, 0], [10, 11], ink);
   thick(p, [10, 3], o.back, ink);
   thick(p, [10, 3], o.front, ink);
-  thick(p, [10, 11], o.legBack, ink);
-  thick(p, [10, 11], o.legFront, ink);
+  const leg = (foot: Pt, knee?: Pt) => (knee ? thick(thick(p, [10, 11], knee, ink), knee, foot, ink) : thick(p, [10, 11], foot, ink));
+  leg(o.legBack, o.kneeBack);
+  leg(o.legFront, o.kneeFront);
   const lift = o.lift ?? 0;
   const red = pal.c('red', 2);
   p.rect(5, 1 - lift, 6, 2, red)
@@ -96,18 +101,24 @@ export function buildStickBlocks(pal: Pal): Book {
     if (!book.has(topName)) book.add(topName, t);
     if (!book.has(bottomName)) book.add(bottomName, b);
   };
+  // a walk cycle: a long stride, then a step with the knee bent, then the other stride and pass
   const walk: Pose[] = [
-    { ...stand(), back: [5, 10], front: [15, 12], legBack: [3, 19], legFront: [16, 19] },
-    { ...stand(), back: [7, 12], front: [13, 11], legBack: [7, 19], legFront: [12, 19] },
-    { ...stand(), back: [15, 12], front: [5, 10], legBack: [16, 19], legFront: [3, 19] },
-    { ...stand(), back: [13, 11], front: [7, 12], legBack: [12, 19], legFront: [7, 19] },
+    { ...stand(), back: [5, 10], front: [15, 12], legBack: [4, 19], kneeBack: [7, 15], legFront: [16, 19], kneeFront: [14, 15] },
+    { ...stand(), back: [6, 10], front: [14, 10], legBack: [8, 19], legFront: [13, 19], kneeFront: [15, 15] },
+    { ...stand(), back: [15, 12], front: [5, 10], legBack: [16, 19], kneeBack: [14, 15], legFront: [4, 19], kneeFront: [7, 15] },
+    { ...stand(), back: [14, 10], front: [6, 10], legBack: [13, 19], kneeBack: [15, 15], legFront: [8, 19] },
   ];
   add('stand.top', 'stand', head(pal, 'smile'), body(pal, stand()));
   add('blink.top', 'stand', head(pal, 'blink'), body(pal, stand()));
   add('hurt.top', 'hurt', head(pal, 'ouch'), body(pal, { back: [3, 0], front: [17, 0], legBack: [4, 19], legFront: [16, 19], lift: 1 }));
   add('cheer.top', 'jump', head(pal, 'cheer'), body(pal, { back: [3, 1], front: [17, 1], legBack: [6, 15], legFront: [14, 15], lift: 1 }));
   walk.forEach((w, i) => add('stand.top', `walk${i}`, head(pal, 'smile'), body(pal, w)));
-  add('up.top', 'jumpup', head(pal, 'smile'), body(pal, { back: [5, 0], front: [15, 0], legBack: [7, 16], legFront: [13, 16], lift: 1 }));
+  add(
+    'up.top',
+    'jumpup',
+    head(pal, 'smile'),
+    body(pal, { back: [5, 0], front: [15, 0], legBack: [7, 18], kneeBack: [6, 15], legFront: [12, 18], kneeFront: [15, 14], lift: 1 }),
+  );
   add('oh.top', 'fall', head(pal, 'oh'), body(pal, { back: [2, 5], front: [18, 5], legBack: [5, 19], legFront: [15, 19], lift: 2 }));
   add('cheer2.top', 'cheer', head(pal, 'cheer'), body(pal, { back: [4, 0], front: [16, 0], legBack: [6, 19], legFront: [14, 19], lift: 1 }));
   add('look.top', 'stand', head(pal, 'smile', -1), body(pal, stand()));
