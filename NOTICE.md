@@ -56,6 +56,8 @@ game folder opens in the browser unchanged.
 
 ## Credits
 
+- **Source documentation review (part 13)**: **Hermes Agent running OpenAI Codex GPT-6.1 Sol**, directed by Lewis Moten, checked the retro text, picture-viewer, desk-mug and framed-certificate READMEs against the source and clarified which mug-art modules use DOM and canvas APIs and when image-based badge tests are skipped. The other three READMEs needed no correction. No implementation or third-party material changed.
+
 - **Source documentation review (part 11)**: **Hermes Agent running OpenAI Codex GPT-6.1 Sol**, directed by Lewis Moten, checked the Linux, Mac, Windows and Assistant READMEs against the source and clarified Linux metadata ownership, the Assistant's PNG encoder, text-archive limits and bounded repair attempts. The Mac and Windows READMEs needed no correction. No implementation or third-party material changed.
 - **Source documentation review (part 12)**: **Hermes Agent running OpenAI Codex GPT-6.1 Sol**, directed by Lewis Moten, checked the recorded-phone, motor-sound, DOS Configure and save-data READMEs against the source and clarified the Configure recreation, text-edit cancellation, help text, save-start selection and test coverage. The two audio READMEs needed no correction. No implementation or third-party material changed.
 
