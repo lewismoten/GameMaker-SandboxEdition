@@ -56,6 +56,8 @@ game folder opens in the browser unchanged.
 
 ## Credits
 
+- **Source documentation review (part 9)**: **Hermes Agent running OpenAI Codex GPT-6.1 Sol**, directed by Lewis Moten, checked the art-course, Programmer's Guide, Specials and toy-safe READMEs against the source and clarified module ownership, citation checks, availability rules and saved-money accounting. No implementation or third-party material changed.
+
 - **Source documentation review (part 8)**: **Hermes Agent running OpenAI Codex GPT-6.1 Sol**, directed by Lewis Moten, checked the SEO, challenge foundations, tin-heart and development-log READMEs against the source and clarified entry points, guest-state limits, completion rules and logging scope. No implementation or third-party material changed.
 
 - **Source documentation review (part 7)**: **Hermes Agent running OpenAI Codex GPT-6.1 Sol**, directed by Lewis Moten, checked the imported-game, walkthrough, score-trophy and Cast READMEs against the source and clarified fingerprints, storage limits, replay and export requirements, score accounting and stage controls. No implementation or third-party material changed.
