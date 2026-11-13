@@ -6,7 +6,7 @@ import { join } from 'node:path';
 import { MLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { writePng } from '@lewismoten/gamemaker-sandbox-tools/kit/png';
-import { renderRegion } from '@lewismoten/gamemaker-sandbox-tools/kit/levelPicture';
+import { cameraTop, renderRegion } from '@lewismoten/gamemaker-sandbox-tools/kit/levelPicture';
 import { buildHeroBlocks, heroPicture } from '../../kit/starter/hero';
 import { ORIGIN } from '../../kit/starter/map';
 import { buildMonsterBlocks, buildMonsters } from '../../kit/starter/monsters';
@@ -40,7 +40,7 @@ function view(n: number, col: number, tick: number, kitAt = col, walked = -1): P
     { pixels: Uint8Array.from(h.px.subarray(0, 400)), x: ORIGIN + kitAt, y: ORIGIN + GROUND - 2 },
     { pixels: Uint8Array.from(h.px.subarray(400)), x: ORIGIN + kitAt, y: ORIGIN + GROUND - 1 },
   ];
-  return renderRegion(m, finishBlocks(l), mbl, set, ORIGIN + col - 8, ORIGIN + 2, 16, 10, kit);
+  return renderRegion(m, finishBlocks(l), mbl, set, ORIGIN + col - 8, cameraTop(kit), 16, 10, kit);
 }
 const shot = (name: string, n: number, col: number, tick: number, kitAt?: number, walked?: number) =>
   writePng(join(out, name), view(n, col, tick, kitAt, walked), levels[n].pal.pal, 3);
