@@ -117,7 +117,7 @@ export function buildStickBlocks(pal: Pal): Book {
     'up.top',
     'jumpup',
     head(pal, 'smile'),
-    body(pal, { back: [5, 0], front: [15, 0], legBack: [7, 18], kneeBack: [6, 15], legFront: [12, 18], kneeFront: [15, 14], lift: 1 }),
+    body(pal, { back: [5, 0], front: [15, 0], legBack: [4, 18], legFront: [14, 19], kneeFront: [16, 14], lift: 1 }),
   );
   add('oh.top', 'fall', head(pal, 'oh'), body(pal, { back: [2, 5], front: [18, 5], legBack: [5, 19], legFront: [15, 19], lift: 2 }));
   add('cheer2.top', 'cheer', head(pal, 'cheer'), body(pal, { back: [4, 0], front: [16, 0], legBack: [6, 19], legFront: [14, 19], lift: 1 }));
