@@ -56,6 +56,8 @@ game folder opens in the browser unchanged.
 
 ## Credits
 
+- **Source documentation review (part 16)**: **Hermes Agent running OpenAI Codex GPT-6.1 Sol**, directed by Lewis Moten, checked the desk-buddy, disk-box, phone-viewer and outside-window READMEs against the source and corrected disk entry points, label-loading scope, Eject ownership and phone-thumbnail imports. The desk-buddy and outside-window READMEs needed no correction. No implementation or third-party material changed.
+
 - **Source documentation review (part 14)**: **Hermes Agent running OpenAI Codex GPT-6.1 Sol**, directed by Lewis Moten, checked the shared VGA, Integrator, Block Designer and Monster Maker READMEs against the source and clarified that the Block Designer loads palettes and remaps block pixels rather than editing palette files, and removed an incorrect XOR claim about Integrator links. The shared VGA and Monster Maker READMEs needed no correction. No implementation or third-party material changed.
 - **Source documentation review (part 15)**: **Hermes Agent running OpenAI Codex GPT-6.1 Sol**, directed by Lewis Moten, checked the Character Maker, Graphics Image Reader, hex editor and registration READMEs against the source and clarified sequence settings and registration startup ownership. The image-reader and hex-editor READMEs needed no correction. No implementation or third-party material changed.
 
