@@ -56,6 +56,8 @@ game folder opens in the browser unchanged.
 
 ## Credits
 
+- **Source documentation review (part 4)**: **Hermes Agent running OpenAI Codex GPT-6.1 Sol**, directed by Lewis Moten, checked the project files, Saves & scores, audio and sound-settings READMEs against the source and clarified package ownership, damaged-copy limits, save actions and recorded-voice settings. No implementation or third-party material changed.
+
 - **Distribution, Community and release documentation review (part 3)**: **Hermes Agent running OpenAI Codex GPT-6.1 Sol**, directed by Lewis Moten, checked four more guides against the source and clarified split game ZIPs, DOS naming, Community metadata and contribution links, and release checks and writes. No implementation or third-party material changed.
 
 - **Public documentation review (November 12, 2026)**: **Hermes Agent running OpenAI Codex GPT-6.1 Sol**, directed by Lewis Moten, checked the embedding, web player, editor and workspace guides against the source and clarified file lookup, consent, save identities, checkpoints and build preparation. No implementation or third-party material changed.
