@@ -135,7 +135,7 @@ function torchHall(): Level {
   };
   for (const x of [13, 16]) torch(x, 'pulse', 'pulse');
   [24, 27, 30, 33].forEach((x, i) => torch(x, i % 2 ? 'flameB' : 'flameA', 'flicker'));
-  for (const x of [8, 20, 37, 47]) m.set(x, 4, 'window.top').set(x, 5, 'window.bot');
+  for (const x of [8, 20, 37, 47]) m.set(x, 5, 'window.top').set(x, 6, 'window.bot');
   m.sign(5, onGround(signs.pulse), signs.pulse);
   m.sign(18, onGround(signs.flicker), signs.flicker);
   m.sign(34, onGround(signs.two), signs.two);
