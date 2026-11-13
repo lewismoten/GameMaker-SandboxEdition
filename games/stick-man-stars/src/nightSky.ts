@@ -73,45 +73,46 @@ export function addNightBlocks(book: Book, pal: Pal): void {
 /** Dots, three constellations, the moon, the blanket and the telescope, and the monsters that twinkle and streak. */
 export function paintNight(m: StarterMap, width: number, skip: readonly [number, number]): void {
   for (let x = 1; x < width - 1; x++)
-    for (let y = 0; y < 8; y++) if (x < skip[0] || x > skip[1]) if (hash(x, y, 7) % 100 < 70) m.set(x, y, `dots${hash(x, y, 9) % VARIANTS}`);
+    for (let y = 1; y < 8; y++) if (x < skip[0] || x > skip[1]) if (hash(x, y, 7) % 100 < 70) m.set(x, y, `dots${hash(x, y, 9) % VARIANTS}`);
+  // The screen shows rows 4 to 7 over his head when he stands (and the jump reaches row 5), so the sky art lives there.
   const dipper = [
-    [3, 1],
-    [5, 1],
-    [7, 2],
-    [9, 3],
-    [12, 3],
-    [12, 1],
-    [9, 1],
+    [3, 4],
+    [5, 4],
+    [7, 5],
+    [9, 6],
+    [12, 6],
+    [12, 4],
+    [9, 4],
   ];
   const cassiopeia = [
-    [28, 1],
-    [30, 3],
-    [32, 1],
-    [34, 3],
-    [36, 1],
+    [29, 4],
+    [31, 6],
+    [33, 4],
+    [35, 6],
+    [37, 4],
   ];
   const belt = [
-    [42, 2],
-    [44, 2],
-    [46, 2],
+    [39, 6],
+    [41, 5],
+    [43, 4],
   ];
   for (const [x, y] of [...dipper, ...cassiopeia, ...belt]) m.set(x, y, 'cstar');
-  m.set(24, 1, 'moon');
+  m.set(24, 4, 'moon');
   m.set(10, 9, 'blanketL').set(11, 9, 'blanketR').set(13, 9, 'telescope');
   const twinkles = [
-    [2, 4],
-    [16, 2],
-    [19, 4],
-    [22, 2],
+    [2, 6],
+    [16, 4],
+    [19, 6],
+    [22, 5],
     [27, 4],
-    [39, 2],
-    [40, 4],
-    [49, 3],
-    [55, 2],
-    [20, 0],
-    [34, 0],
-    [57, 4],
+    [40, 7],
+    [49, 4],
+    [55, 5],
+    [20, 4],
+    [34, 5],
+    [57, 6],
+    [14, 5],
   ];
   for (const [x, y] of twinkles) m.mon(TWINK, x, y);
-  m.mon(SHOOT, 17, 0).mon(SHOOT, 38, 0);
+  m.mon(SHOOT, 17, 4).mon(SHOOT, 46, 4);
 }
