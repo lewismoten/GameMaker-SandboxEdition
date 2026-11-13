@@ -104,8 +104,6 @@ function tapAndHold(book: Book, signs: Record<SignName, Sign>): StarterMap {
   // the cliff: nine blocks high, a brick face and grass on top
   g.fill(L1.cliff, L1.cliffTop + 1, L1.width - 1 - L1.cliff, G - L1.cliffTop - 1, 'B').row(L1.cliffTop, L1.cliff, L1.width - 2, 'G');
   g.col(L1.width - 1, 0, L1.cliffTop - 1, 'X');
-  // A visible roof joins the hedges; the cliff still has three clear rows above it.
-  g.row(0, 0, L1.width - 1, 'B');
   g.put(3, G - 2, 's').put(3, G - 1, 'S');
   g.put(L1.exit, L1.cliffTop - 2, 'e').put(L1.exit, L1.cliffTop - 1, 'E');
   for (const [x, y] of L1.coins) g.put(x, y, 'c');
@@ -122,6 +120,8 @@ function tapAndHold(book: Book, signs: Record<SignName, Sign>): StarterMap {
   );
   scenery(g, L1.cliffTop, [], [34, 47], [37, 42]);
   const m = new StarterMap(book, g.rows());
+  // Join the hedges above the tall top sign, so stamping its non-solid board cannot open the roof.
+  for (let x = 0; x < L1.width; x++) m.set(x, -1, 'brick');
   m.sign(6, onGround(G, signs.hop), signs.hop);
   m.sign(18, onGround(G, signs.hold), signs.hold);
   m.sign(23, onGround(G, signs.lift), signs.lift);

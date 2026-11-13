@@ -2,6 +2,8 @@
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import { GameSim, readDisk } from '@lewismoten/gamemaker-sandbox-tools/kit/gameSim';
+import { parseBlocks, BACKBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { parseMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { play } from '../../games/kit-moves/tools/play';
 
 const files = () => readDisk(fileURLToPath(new URL('../../games/kit-moves/disk/', import.meta.url)));
@@ -15,6 +17,20 @@ function atScene(scene: number): GameSim {
 const x = (sim: GameSim) => sim.pos.x * 20 + sim.pos.sx;
 
 describe("Kit's Moves climb boundaries", () => {
+  it('keeps a continuous solid roof above the level-1 sign and across level 2', () => {
+    const disk = files();
+    const blocks = parseBlocks(disk.get('km.bbl')!, BACKBL);
+    for (const [name, row, width] of [
+      ['one.map', 9, 50],
+      ['two.map', 15, 70],
+    ] as const) {
+      const map = parseMap(disk.get(name)!);
+      for (let x = 10; x < 10 + width; x++) {
+        expect(blocks[map.blocks[row * 100 + x]].solid, `${name}, roof cell ${x},${row}`).toBeTruthy();
+      }
+    }
+  });
+
   it.each([2, 3])('keeps Left plus Up two ticks on/two off inside scene %i', async (scene) => {
     const sim = atScene(scene);
     sim.press(75);
