@@ -37,10 +37,12 @@ receive only a fully loaded pristine disk and a copied allowlist of presentation
 backup, collection inventory or a reference to owner stores.
 
 `guestState.ts` implements the small storage seam: deep-copied `GameFiles` and an in-memory
-settings map for each turn. It does not inherit stream, guard or change callbacks. Saves,
+settings map for each turn. The caller must select the presentation settings: the seam copies
+every supplied entry, not a built-in allowlist. It does not inherit stream, guard or change callbacks. Saves,
 recordings and `.HIS` writes remain inside those files. Reads cannot discover owner saves.
 No IndexedDB, localStorage or sessionStorage is used, so blocked storage is also supported.
-Closing drops all files/settings; late normal file writes fail. Call close only after
+Closing removes the capability's file entries and settings; late normal file writes fail.
+It does not erase byte arrays a caller already holds. Call close only after
 stopping the engine and releasing input; discard the object afterwards. The pristine disk
 argument is a trusted loader boundary, not an imported owner's overlaid directory.
 
