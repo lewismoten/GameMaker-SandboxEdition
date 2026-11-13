@@ -120,6 +120,8 @@ function tapAndHold(book: Book, signs: Record<SignName, Sign>): StarterMap {
   );
   scenery(g, L1.cliffTop, [], [34, 47], [37, 42]);
   const m = new StarterMap(book, g.rows());
+  // Join the hedges above the tall top sign, so stamping its non-solid board cannot open the roof.
+  for (let x = 0; x < L1.width; x++) m.set(x, -1, 'brick');
   m.sign(6, onGround(G, signs.hop), signs.hop);
   m.sign(18, onGround(G, signs.hold), signs.hold);
   m.sign(23, onGround(G, signs.lift), signs.lift);
@@ -152,6 +154,10 @@ function oncePerPress(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [20, 38, 56],
     [18, 40, 58],
   );
+  // A visible roof keeps repeated lifts from clearing the dash course, and the whole low
+  // section between the first two gaps (world x520-600) has a solid ceiling.
+  g.row(5, 0, L2.width - 1, 'B');
+  g.fill(16, 6, 4, 3, 'B');
   const m = new StarterMap(book, g.rows());
   m.sign(6, onGround(G, signs.dash), signs.dash);
   m.sign(20, onGround(G, signs.again), signs.again);
