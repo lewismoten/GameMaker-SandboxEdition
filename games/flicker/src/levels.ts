@@ -288,12 +288,13 @@ function fireOnTheHill(): Level {
     m.set(x, y, `fire.${q}.0`);
     things.push({ ring: `fire.${q}`, x, y, kind: 'fire' });
   });
+  // Sparks fly up and out from the flame; none sits above row 5, the screen's top row from the ground.
   const sparks: [number, number, number][] = [
     [cx, top - 4, 0],
-    [cx + 1, top - 5, 1],
-    [cx - 1, top - 5, 2],
-    [cx, top - 6, 0],
-    [cx + 2, top - 6, 2],
+    [cx + 1, top - 4, 1],
+    [cx - 1, top - 3, 2],
+    [cx - 2, top - 4, 0],
+    [cx + 2, top - 3, 2],
   ];
   for (const [x, y, i] of sparks) {
     m.set(x, y, `spark${i}.0`);
