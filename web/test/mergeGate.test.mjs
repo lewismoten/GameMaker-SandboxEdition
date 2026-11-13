@@ -38,6 +38,7 @@ describe('merge gate', () => {
       'packages',
       'disks',
       'levelViews',
+      'release-check',
       'declarations',
       'tsc',
       'lint',
@@ -61,6 +62,20 @@ describe('merge gate', () => {
     expect(result.tests.failures[0].allowed).toBe(false);
     expect(result.steps.at(-1).name).toBe('vitest');
     expect(git(f.root, 'rev-parse', 'origin/develop')).toBe(before);
+  });
+
+  it('fails on a badly formatted release fragment, naming the file, before tsc or tests', () => {
+    const f = setup();
+    change(f.root, 'feature/task', 'new.txt', 'feature\n');
+    const result = run(f, { push: true }, (cwd, argv) =>
+      argv.includes('release:check')
+        ? { code: 1, stdout: '', stderr: 'Error: /x/changes/unreleased/pages/bad-1112.md: expected one ### category, a blank line and one bullet.' }
+        : fakeChecks()(cwd, argv),
+    );
+    expect(result.exitCode).toBe(4);
+    expect(result.error).toMatch(/release-check failed: .*bad-1112\.md/);
+    expect(result.steps.at(-1).name).toBe('release-check');
+    expect(result.pushedRevision).toBeUndefined();
   });
 
   it('propagates a build failure before running tsc or tests', () => {

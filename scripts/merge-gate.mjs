@@ -35,7 +35,11 @@ export function runGate(options, settings = {}) {
     writeFileSync(log, `${r.stdout ?? ''}${r.stderr ?? ''}`);
     result.steps.push({ name, argv, cwd, code: r.code, signal: r.signal, durationMs: Date.now() - started, log });
     process.stderr.write(`merge:gate ${name}: exit ${r.code}\n`);
-    if (!accepted.includes(r.code)) throw new Error(`${name} failed; see ${log}`);
+    if (!accepted.includes(r.code)) {
+      // release-check: name the bad fragment (or failing target) in the message, not only the log.
+      const why = name === 'release-check' ? ((`${r.stdout ?? ''}${r.stderr ?? ''}`.match(/^.*(?:expected one|FAIL).*$/m) ?? [])[0] ?? '').trim() : '';
+      throw new Error(`${name} failed${why ? `: ${why}` : ''}; see ${log}`);
+    }
     return r;
   }
   const heavy = (name, cwd, argv) => step(name, cwd, ['node', join(repo.root, 'scripts/heavy.mjs'), ...argv]);
@@ -116,6 +120,8 @@ export function runGate(options, settings = {}) {
     if (git(integration, 'status', '--porcelain')) throw new Error('Candidate is dirty before validation');
     result.candidateRevision = git(integration, 'rev-parse', 'HEAD');
     result.candidateTree = git(integration, 'rev-parse', 'HEAD^{tree}');
+    // Cheap and early: a badly formatted changes/unreleased fragment (web/scripts/release/fragments.ts) fails here.
+    step('release-check', web, ['npm', 'run', 'release:check']);
     step('declarations', web, ['node', join(repo.root, 'scripts/decl-preflight.mjs'), '--web', web]);
     step('tsc', web, ['npx', '--no-install', 'tsc', '--noEmit', '-p', '.']);
     // No lint cache: a content cache keys on each file's own text, so a changed JSON import
