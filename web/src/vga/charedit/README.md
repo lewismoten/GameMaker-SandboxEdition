@@ -10,7 +10,7 @@ Edits character animation sequences, frame placement and inventory using the por
 - [`state.ts`](state.ts): Holds character, blocks, palette and sounds and loads supporting files.
 - [`draw.ts`](draw.ts): Draws oriented blocks, frames, lists and placement controls.
 - [`sequence.ts`](sequence.ts): Edits frame pairs, relative placement, orientation and animation timing.
-- [`inventory.ts`](inventory.ts): Edits starting inventory, frame object requirements, uses and monster birth.
+- [`inventory.ts`](inventory.ts): Edits starting inventory, the object a sequence requires and the monster a frame gives birth to. Sequence execution limits are set by the text menus in [`../charedit.ts`](../charedit.ts).
 
 ## Loading
 
