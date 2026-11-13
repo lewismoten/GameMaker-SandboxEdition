@@ -134,7 +134,7 @@ function nightSky(pal: Pal): Level {
   const m = new StarterMap(book, g.rows());
   for (const x0 of [12, 36]) for (let i = 0; i < 3; i++) m.set(x0 + i + (x0 === 12 ? 2 : 6), GROUND - 1, `hill.${i}`);
   const moon = [...Array(3).keys()].map((row) => [...Array(3).keys()].map((col) => `moon.${col}${row}`));
-  moon.forEach((row, dy) => row.forEach((name, dx) => m.set(46 + dx, 1 + dy, name)));
+  moon.forEach((row, dy) => row.forEach((name, dx) => m.set(46 + dx, 5 + dy, name)));
   m.sign(7, onGround(signs.night), signs.night);
   m.sign(26, onGround(signs.apart), signs.apart);
   const stars = scatter(m, book, 'star', 1, 58, 8, 21);
