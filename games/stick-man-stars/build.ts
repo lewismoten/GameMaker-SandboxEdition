@@ -20,7 +20,6 @@ import { KEYS } from '../kit/starter/blocks';
 import { buildThrower } from './src/hero';
 import { buildStickBlocks } from './src/stick';
 import { cardPicture, endPicture, gif, menuPicture, paper, scoresPicture, slotsPicture } from '../kit/starter/screens';
-import { skyOf } from '../kit/starter/palette';
 import { endingFli, skyFli, type SunMove } from './src/skyFli';
 import { houseLitVoc, throwSounds } from './src/sounds';
 import { demoRecording } from './src/demo';
@@ -38,10 +37,8 @@ const { book, pal, levels } = buildLevels();
 const heroBlocks = buildStickBlocks(pal);
 const monsterBlocks = monsterPictures(pal);
 const hero = heroPicture(heroBlocks, 'stand.top', 'stand');
-const throwPose = heroPicture(heroBlocks, 'cheer.top', 'throw1');
+const lookUp = heroPicture(heroBlocks, 'look.top', 'stand');
 const cheer = heroPicture(heroBlocks, 'cheer.top', 'jump');
-// the exit door as a picture to stand in the scenes: its sky made clear
-const door = heroPicture(book, 'doorTop', 'doorBottom').map((_x, _y, c) => (c === skyOf(pal) ? 255 : c));
 
 // the game's shared data: one block set, one palette, one hero, one set of monsters, one song
 disk.put('stars.pal', serializePalette(pal.pal));
@@ -79,7 +76,8 @@ const text = (base: string, heading: string, body: string) => {
   disk.put(`${base}.txt`, body);
   disk.put(`${base}.lst`, serializeSlideList([{ name: `${base}.gif`, pause: 0 }, { name: `${base}.txt` }]));
 };
-disk.put('title.gif', gif(titlePicture(pal, book, monsterBlocks, throwPose, door, TITLE, 'A STARGAZING SPECIAL'), pal));
+// the title is a night scene, so it carries the night hill's palette
+disk.put('title.gif', gif(titlePicture(pal, book, monsterBlocks, lookUp, TITLE, 'A STARGAZING SPECIAL'), levels[0].pal));
 disk.put(SANDLOGO, sandLogoFli());
 disk.put(
   'title.lst',
