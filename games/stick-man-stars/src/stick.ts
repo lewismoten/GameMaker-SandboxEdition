@@ -22,17 +22,22 @@ function thick(p: Pixels, a: Pt, b: Pt, c: number): void {
 export type Face = 'smile' | 'blink' | 'ouch' | 'cheer' | 'oh' | 'back';
 
 /** The head block: a ring, two dot eyes looking right and a smile, over the neck and the scarf. */
-function head(pal: Pal, face: Face, look = 0): Pixels {
+function head(pal: Pal, face: Face, look = 0, front = false): Pixels {
   const ink = pal.c('ink', 0);
   const p = new Pixels(20, 20, T);
   p.ring(10, 10, 7, ink).ring(10, 10, 6, ink);
   const eyeY = 8;
-  const ex = [11 + look, 15 + look];
+  // front: looking out of the screen, eyes and smile centered, so he faces no way (standing still after a walk left or right)
+  const ex = front ? [7 + look, 13 + look] : [11 + look, 15 + look];
+  const smile = front ? -3 : 0;
   if (face === 'back') return thickNeck(p, ink, pal);
   if (face === 'blink') for (const x of ex) p.line(x - 1, eyeY, x + 1, eyeY, ink);
   else if (face === 'ouch') for (const x of ex) p.line(x - 1, eyeY - 1, x + 1, eyeY + 1, ink).line(x - 1, eyeY + 1, x + 1, eyeY - 1, ink);
   else for (const x of ex) p.rect(x - 1, eyeY - 1, 2, 3, ink);
-  if (face === 'smile' || face === 'blink') p.line(11, 13, 12, 14, ink).line(12, 14, 15, 14, ink).line(15, 14, 16, 13, ink);
+  if (face === 'smile' || face === 'blink')
+    p.line(11 + smile, 13, 12 + smile, 14, ink)
+      .line(12 + smile, 14, 15 + smile, 14, ink)
+      .line(15 + smile, 14, 16 + smile, 13, ink);
   else if (face === 'cheer') p.rect(11, 12, 6, 2, ink).rect(12, 14, 4, 1, ink);
   else p.rect(13, 12, 3, 3, ink); // oh and ouch: a round mouth
   return thickNeck(p, ink, pal);
@@ -106,6 +111,10 @@ export function buildStickBlocks(pal: Pal): Book {
   add('oh.top', 'fall', head(pal, 'oh'), body(pal, { back: [2, 5], front: [18, 5], legBack: [5, 19], legFront: [15, 19], lift: 2 }));
   add('cheer2.top', 'cheer', head(pal, 'cheer'), body(pal, { back: [4, 0], front: [16, 0], legBack: [6, 19], legFront: [14, 19], lift: 1 }));
   add('look.top', 'stand', head(pal, 'smile', -1), body(pal, stand()));
+  // standing still: facing front, so he never turns right after walking left (the engine's idle sequence cannot remember a facing)
+  add('front.top', 'stand', head(pal, 'smile', 0, true), body(pal, stand()));
+  add('frontblink.top', 'stand', head(pal, 'blink', 0, true), body(pal, stand()));
+  add('frontlook.top', 'stand', head(pal, 'smile', -1, true), body(pal, stand()));
   // digging (unused here, kept so the file keeps every sequence the kit's does)
   add('stand.top', 'dig0', head(pal, 'smile'), body(pal, { back: [6, 12], front: [14, 14], legBack: [6, 19], legFront: [14, 19] }));
   add('stand.top', 'dig1', head(pal, 'smile'), body(pal, { back: [6, 14], front: [14, 12], legBack: [6, 19], legFront: [14, 19] }));

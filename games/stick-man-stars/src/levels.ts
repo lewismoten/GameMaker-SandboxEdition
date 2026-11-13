@@ -75,6 +75,8 @@ function base(width: number, exitX: number): Grid {
   const g = new Grid(width, 15);
   g.row(GROUND, 0, width - 1, 'G').fill(0, GROUND + 1, width, 4, 'D');
   g.col(0, 0, 9, 'B').col(width - 1, 0, 9, 'B');
+  // a brick ceiling: Up can be pressed in the air again and again, so without it he climbs out over the walls and the tunnels
+  g.row(0, 0, width - 1, 'B');
   g.put(3, 8, 's').put(3, 9, 'S');
   g.put(exitX, 8, 'e').put(exitX, 9, 'E');
   return g;
@@ -86,7 +88,8 @@ function tunnel(g: Grid, x0: number, x1: number): void {
 }
 
 function scenery(g: Grid, clouds: number[], bushes: number[], flowers: number[]): void {
-  clouds.forEach((x, i) => g.put(x, 1 + ((i * 2) % 4), '(').put(x + 1, 1 + ((i * 2) % 4), ')'));
+  // rows 4 and 5: the screen shows four rows over his head when he stands (the camera keeps his feet 120 px down)
+  clouds.forEach((x, i) => g.put(x, 4 + (i % 2), '(').put(x + 1, 4 + (i % 2), ')'));
   for (const x of bushes) g.put(x, GROUND - 1, 'b');
   for (const x of flowers) g.put(x, GROUND - 1, 'f');
 }

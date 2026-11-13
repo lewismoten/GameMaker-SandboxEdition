@@ -27,6 +27,23 @@ export function buildThrower(heroBlocks: Parameters<typeof buildHero>[0]): Chara
   // Space throws one star a press (norepeat); the toss cannot be cut short (ground: 1), so a star
   // is never born without his arm swinging
   Object.assign(s, { key: KEY.space, sound: SND_THROW, norepeat: 1, ground: 1, jstkMov: 9, jstkBut: 2 });
+  // standing still he faces front (no engine memory of a facing); walking, each pose lasts two ticks so legs and arms can be seen at 18 ticks a second
+  const front = new Map([
+    ['stand.top', 'front.top'],
+    ['blink.top', 'frontblink.top'],
+    ['look.top', 'frontlook.top'],
+  ]);
+  for (const f of ch.sequences[SEQ.idle].frames) {
+    for (const [from, to] of front) if (f.pic1 === heroBlocks.n(from)) f.pic1 = heroBlocks.n(to);
+  }
+  for (const q of [SEQ.right, SEQ.left, SEQ.rightD, SEQ.leftA]) {
+    const w = ch.sequences[q];
+    const poses = w.frames.slice(0, 4);
+    poses.forEach((f, i) => {
+      w.frames[i * 2] = { ...f };
+      w.frames[i * 2 + 1] = { ...f };
+    });
+  }
   // the kit's jump moves from Space to the Up arrow; the ladder-climbing keys go quiet
   Object.assign(ch.sequences[SEQ.jump], { key: KEY.up, jstkMov: 1, jstkBut: 1 });
   for (const q of [SEQ.up, SEQ.upW, SEQ.down, SEQ.downS]) ch.sequences[q].key = 0;
