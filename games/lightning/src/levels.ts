@@ -65,12 +65,13 @@ function blocks(pal: Pal, level: 1 | 2): Built {
   return { book, timed, signs, clouds, hill };
 }
 
-/** Lays the clouds, the hill and the bolt: the bolt in column `x`, from under a cloud down to the hill's top. */
+/** Lays the clouds, the hill and the bolt: the bolt in column `x`, from under a cloud down to the ground, the hill beside it. Every
+ *  piece sits in the six rows above the hero's feet, the part of the sky the screen shows from the ground. */
 function storm(m: StarterMap, b: Built, x: number, more: [number, number, 2 | 3][]): [number, number] {
-  const top = GROUND - 2 - BOLT; // the hill is 2 high, on the ground
+  const top = GROUND - BOLT; // the bolt's top row: the bolt ends on the ground, so the cloud above it is the screen's top row
   b.clouds.three.forEach((name, i) => m.set(x - 1 + i, top - 1, name));
   for (let i = 0; i < BOLT; i++) m.set(x, top + i, `bolt.${i}`);
-  b.hill.forEach((row, dy) => row.forEach((name, dx) => m.set(x - 1 + dx, GROUND - 2 + dy, name)));
+  b.hill.forEach((row, dy) => row.forEach((name, dx) => m.set(x + 1 + dx, GROUND - 2 + dy, name)));
   for (const [cx, cy, w] of more) (w === 2 ? b.clouds.two : b.clouds.three).forEach((name, i) => m.set(cx + i, cy, name));
   return [x, top];
 }
@@ -96,9 +97,9 @@ function flashAndRumble(pal: Pal): Level {
   m.sign(12, onGround(b.signs.bolt), b.signs.bolt);
   m.sign(23, onGround(b.signs.thunder), b.signs.thunder);
   const bolt = storm(m, b, 19, [
-    [6, 2, 2],
-    [27, 3, 3],
-    [34, 2, 2],
+    [6, 5, 2],
+    [27, 5, 3],
+    [34, 5, 2],
   ]);
   addLitTwins(b.book, b.timed, pal, laid(m, b.book));
   return { file: 'one', title: 'Flash and Rumble', hint: 'A flash, a bolt, then a rumble.', book: b.book, timed: b.timed, map: m, bolt, stones: [] };
@@ -127,9 +128,9 @@ function lightTheWay(pal: Pal): Level {
   m.sign(4, onGround(b.signs.stones), b.signs.stones);
   m.sign(9, onGround(b.signs.always), b.signs.always);
   const bolt = storm(m, b, 34, [
-    [7, 2, 2],
-    [19, 3, 3],
-    [39, 2, 2],
+    [7, 5, 2],
+    [19, 5, 3],
+    [39, 5, 2],
   ]);
   addLitTwins(b.book, b.timed, pal, laid(m, b.book));
   return { file: 'two', title: 'Light the Way', hint: 'Stones over a ditch in the dark.', book: b.book, timed: b.timed, map: m, bolt, stones };

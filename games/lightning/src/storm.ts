@@ -96,7 +96,7 @@ export function addHill(book: Book, pal: Pal): string[][] {
   return names;
 }
 
-/** The bolt's path through its column, top to bottom: x at each 10 pixels down (it ends on the hill's top). */
+/** The bolt's path through its column, top to bottom: x at each 10 pixels down (it ends on the ground, beside the hill). */
 const PATH = [9, 12, 7, 11, 14, 9, 6, 10, 13, 9, 11];
 
 /** The bolt as one picture BOLT blocks tall, on the lit sky: a pale core with a soft blue glow. */
