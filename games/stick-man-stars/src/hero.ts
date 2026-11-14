@@ -9,6 +9,7 @@ import { KEY, SEQ } from '../../kit/starter/ids';
 import { buildHero } from '../../kit/starter/heroChar';
 import { STAR } from './monsters';
 import { SND_THROW } from './sounds';
+import { ERASE } from './erase';
 
 /** The PC scan code the bot and the demo press to throw: Space (the kit's own key code for it is KEY.space). */
 export const SCAN_THROW = 57;
@@ -44,6 +45,11 @@ export function buildThrower(heroBlocks: Parameters<typeof buildHero>[0]): Chara
       w.frames[i * 2 + 1] = { ...f };
     });
   }
+  // losing a life rubs him out: the shaky hurt pose, then three erase poses (erase.ts), 34 ticks in all like the kit's
+  const die = ch.sequences[SEQ.die];
+  const first = die.frames[0];
+  const steps: [string, string, number][] = [['hurt.top', 'hurt', 10], ...ERASE.map(([t, b]) => [t, b, 8] as [string, string, number])];
+  steps.forEach(([t, b, pause], i) => (die.frames[i] = { ...first, pic1: heroBlocks.n(t), pic2: heroBlocks.n(b), pause }));
   // the kit's jump moves from Space to the Up arrow; the ladder-climbing keys go quiet
   Object.assign(ch.sequences[SEQ.jump], { key: KEY.up, jstkMov: 1, jstkBut: 1 });
   for (const q of [SEQ.up, SEQ.upW, SEQ.down, SEQ.downS]) ch.sequences[q].key = 0;

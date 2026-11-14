@@ -73,11 +73,12 @@ export function titlePicture(pal: Pal, book: Book, mb: Book, hero: Pixels, name:
   const rx = Math.round((W - ribbon) / 2);
   bevel(p, rx, 50, ribbon, 14, pal.r('parch'), 3, 2);
   text(p, rx + 10, 54, tagline, pal.c('ink', 0));
-  // Stick Man on the hilltop, looking up, and his telescope beside him (its sky made clear)
+  // Stick Man on the hilltop, looking up, and his telescope beside him (its sky, paper lines and all, made clear)
   const src = book.pics.get('telescope')!;
   const scope = new Pixels(src.w, src.h);
   scope.px.set(src.px);
-  scope.map((_x, _y, k) => (k === skyOf(pal) ? 255 : k));
+  const clear = new Set([skyOf(pal), ...pal.r('paper')]);
+  scope.map((_x, _y, k) => (clear.has(k) ? 255 : k));
   scaleBlit(p, hero, 24, hillTop(0) - 80 + 2, 2);
   scaleBlit(p, scope, 80, hillTop(100) - 40 + 2, 2);
   // Repo Row down the slope: dark houses, and one with its window lit
