@@ -95,6 +95,18 @@ function vocPreview(bytes: Uint8Array): Uint8Array | undefined {
   }
 }
 
+/** A link only for http: and https: addresses; anything else (javascript:, data:) is plain text. */
+export function websiteLink(w: string): string {
+  let ok = false;
+  try {
+    const p = new URL(w).protocol;
+    ok = p === 'http:' || p === 'https:';
+  } catch {
+    ok = false;
+  }
+  return ok ? `<a style="color:#9cf" href="${esc(w)}" rel="noopener">${esc(w)}</a>` : esc(w);
+}
+
 /** Credits the author wrote, as visible text: facts first, then role and name pairs. */
 function aboutBlock(a: AboutGame, version?: string): string {
   const facts = [
@@ -114,7 +126,7 @@ function aboutBlock(a: AboutGame, version?: string): string {
         .join('')}`,
     );
   if (facts.length) parts.push(`<ul>${facts.map((f) => `<li>${esc(f)}</li>`).join('')}</ul>`);
-  if (a.website) parts.push(`<p>Website: <a style="color:#9cf" href="${esc(a.website)}" rel="noopener">${esc(a.website)}</a></p>`);
+  if (a.website) parts.push(`<p>Website: ${websiteLink(a.website)}</p>`);
   if (a.credits?.length)
     parts.push(`<h2>Credits</h2><dl>${a.credits.map((c) => `${c.role ? `<dt>${esc(c.role)}</dt>` : ''}<dd>${esc(c.name)}</dd>`).join('')}</dl>`);
   return parts.length ? `<div class="gm-credits">${parts.join('')}</div>` : '';
