@@ -23,15 +23,58 @@
   .pic-layout .pic-copy {
     margin-top: 0;
   }
-  /* the blocks to replace take what the window has left, scrolling by themselves */
-  .pic-layout .pic-slots {
-    max-height: clamp(96px, calc(var(--ws-vh, 100dvh) - 705px), 220px);
-  }
-  /* on short windows the copying column scrolls by itself rather than the editor */
+  /* the block picker is the task: the copying column is a flex column and the picker takes what the swap panel leaves */
   .pic-layout .pic-side {
+    display: flex;
+    flex-direction: column;
     max-height: var(--room, calc(var(--ws-vh, 100dvh) - 180px));
     overflow-y: auto;
     overscroll-behavior: contain;
+  }
+  .pic-layout .pic-copy,
+  .pic-layout .pic-copy-body,
+  .pic-layout .pic-slots-wrap {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+  .pic-layout .pic-copy-body {
+    flex-wrap: nowrap;
+    align-items: stretch;
+    gap: 8px;
+  }
+  .pic-layout .pic-slots {
+    flex: 1 1 auto;
+    max-height: none;
+    min-height: 150px;
+  }
+  /* a compact swap panel: small before and after, the options and Replace beside them */
+  .pic-layout .pic-swap {
+    padding: 8px;
+    gap: 6px;
+  }
+  .pic-layout .pic-swap canvas {
+    width: 80px;
+    height: 80px;
+  }
+  .pic-layout .pic-swap {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-rows: auto 1fr auto;
+    gap: 6px 12px;
+  }
+  .pic-layout .pic-swap > strong {
+    grid-column: 1 / -1;
+  }
+  .pic-layout .pic-swap-row {
+    grid-row: 2 / 4;
+  }
+  .pic-layout .pic-advance {
+    align-self: end;
+  }
+  .pic-layout .pic-swap > button {
+    align-self: start;
   }
 }
 .pic-copy {
