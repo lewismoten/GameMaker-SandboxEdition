@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 import type { Browser } from 'playwright-core';
 import { expect, it } from 'vitest';
 import { launch, target } from './perfLib';
-import { forceTheme } from './forceTheme';
+import { assertTheme, forceTheme } from './forceTheme';
 
 it('opens by keyboard, applies and remembers hardware, preserves TURBO, and fits both themes', async () => {
   const server = await target(5198);
@@ -32,6 +32,7 @@ it('opens by keyboard, applies and remembers hardware, preserves TURBO, and fits
           break;
         if (tries >= 11) throw new Error('Machine settings dialog never opened after 12 presses');
       }
+      await assertTheme(page, theme);
       await dialog.getByLabel('CPU', { exact: true }).selectOption('ps1');
       await dialog.getByLabel('Hard drive timing').selectOption('286');
       // drive sounds: one switch off, and the master switch holds the grid while it is off

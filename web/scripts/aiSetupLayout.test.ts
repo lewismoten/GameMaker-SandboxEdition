@@ -1,7 +1,7 @@
 // Real-page regression: AI setup must fit a short landscape phone without hiding controls.
 import { expect, it } from 'vitest';
 import { launch, target } from './perfLib';
-import { forceTheme } from './forceTheme';
+import { assertTheme, forceTheme } from './forceTheme';
 import { scenes } from './dialogsFitScenes';
 import { measure } from './dialogsFitMeasure';
 
@@ -18,6 +18,7 @@ it('fits AI setup at 844x390 in both themes with keyboard-reachable actions', as
         await page.goto(server.base);
         await scenes.find((scene) => scene.id === 'ai-setup')!.open(page);
         await page.waitForSelector('dialog[open] .ai-setup');
+        await assertTheme(page, theme);
         const result = await measure(page);
         expect(result.problems, theme).toEqual([]);
         const save = page.getByRole('button', { name: 'Save', exact: true });
