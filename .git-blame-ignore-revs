@@ -40,3 +40,5 @@ c29161d032a1e55ab0bd4476bf221cc951bb879e
 340c0eb986e98d552d080803181b9b1dcace420e
 # Format bookLinks.test.ts (prettier drift)
 48e086ea2997a2693ca8422f757f3e5e08553d82
+# Prettier: web/eslint.config.js allowDefaultProject list
+948a39ce391693482ef0ada8c05f5c84200cd922
