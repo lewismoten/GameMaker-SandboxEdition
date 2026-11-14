@@ -1,8 +1,8 @@
 // STICK MAN STARS' four levels. Each is painted on a Grid (a block a character, see
 // games/kit/starter/map.ts for what the letters mean), then given its signs and its monsters.
 //
-//   1. Stargazing Hill (night): Stick Man picks bright stars out of the sky (Up jumps to the high ones). They are what he throws.
-//   2. Main Street (dawn): learn Space. Two cottages, one too far for a first throw; then a solid shed
+//   1. Stargazing Hill (night): Stick Man picks bright stars out of the sky (Space jumps to the high ones). They are what he throws.
+//   2. Main Street (dawn): learn Enter. Two cottages, one too far for a first throw; then a solid shed
 //      fills a brick tunnel, and the way opens when a star lights it.
 //   3. Shy Street (day): the towers wander up and down the street. Wait, aim, throw. A shed again.
 //   4. Spam Row (dusk): spam bots roll and bump, then the Big Repo, a shed that takes three stars, and the lit street beyond.
@@ -17,8 +17,8 @@ import { BIG3, BOT, COTTAGE, FORK_COT, FORK_TOW, LIT_COT, LIT_TOW, OLD_BIG, SHED
 import { addNightBlocks } from './nightSky';
 import { addPickStar, addStarGate } from './pickStar';
 import { paintNight } from './nightSky';
-import { paletteFor, type Mood } from './moods';
-import { addPaperBlocks, hidePaper, hillAt, hillPastEdges, paperRamps, paperize, pencilAt, seamAt } from './paper';
+import { paletteFor, type Mood, type PaperKind } from './moods';
+import { FORK, addPaperBlocks, hidePaper, hillAt, hillPastEdges, paperRamps, paperize, pencilAt, seamAt } from './paper';
 
 /** The signs the levels use, by name. */
 export type SignName = 'thx' | 'readme' | 'fake' | 'gaze' | 'gate' | 'how' | 'far' | 'shed' | 'shy' | 'bots' | 'three' | 'thanks' | 'forked' | 'exit';
@@ -41,9 +41,9 @@ function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign>; nam
   // the wording is cut in chunks of five letters, and a chunk two signs share is one block (signs.ts)
   const sign = (chunks: string): Sign => smallSign(book, pal, chunks);
   const signs = {
-    gaze: sign('PICK |STARS|: UP |JUMPS'),
+    gaze: sign('SPACE|: JUM|P UP!'),
     gate: sign('FIVE |STARS| OPEN| THE |GATE.'),
-    how: sign('SPACE|: THR|OW A |STAR!'),
+    how: sign('ENTER|: THR|OW A |STAR!'),
     far: sign('STARS| ONLY| GO S|O FAR'),
     shed: sign('SHEDS| NAP |HERE.'),
     shy: sign('SHY O|NES W|ANDER'),
@@ -94,7 +94,7 @@ function base(width: number, exitX: number): Grid {
   const g = new Grid(width, 15);
   g.row(GROUND, 0, width - 1, 'G').fill(0, GROUND + 1, width, 4, 'D');
   g.col(0, 0, 9, 'B').col(width - 1, 0, 9, 'B');
-  // a brick ceiling: Up can be pressed in the air again and again, so without it he climbs out over the walls and the tunnels
+  // a brick ceiling: Space can be pressed in the air again and again, so without it he climbs out over the walls and the tunnels
   g.row(0, 0, width - 1, 'B');
   g.put(3, 8, 's').put(3, 9, 'S');
   g.put(exitX, 8, 'e').put(exitX, 9, 'E');
@@ -151,7 +151,7 @@ function stargazingHill(w: World): StarterMap {
   const g = base(L0.width, L0.exit);
   tunnel(g, L0.tunnel[0], L0.tunnel[1]);
   // the screen never scrolls up or down here (game.ts), so the brick ceiling comes down to row 3, just above
-  // the top of the screen: however often Up is pressed in the air, Stick Man stays in sight
+  // the top of the screen: however often Space is pressed in the air, Stick Man stays in sight
   g.fill(1, 0, L0.width - 2, L0.ceiling + 1, 'B');
   for (const x of [24, 42]) g.put(x, GROUND - 1, 'b');
   const m = new StarterMap(w.book, g.rows());
@@ -172,11 +172,11 @@ function stargazingHill(w: World): StarterMap {
 }
 
 /** Where level 1's houses and gate stand (block x). */
-export const L1 = { bonus: 53, cottages: [17, 34, 55] as const, tunnel: [42, 49] as const, gate: 46, exit: 60, width: 64 };
+export const L1 = { fork: 24, bonus: 53, cottages: [17, 34, 55] as const, tunnel: [42, 49] as const, gate: 46, exit: 60, width: 64 };
 function mainStreet(w: World): StarterMap {
   const g = base(L1.width, L1.exit);
   tunnel(g, L1.tunnel[0], L1.tunnel[1]);
-  g.row(9, 10, 12, 'c').row(9, 24, 28, 'c').row(9, 38, 40, 'c').row(9, 49, 51, 'c');
+  g.row(9, 10, 12, 'c').row(8, 24, 27, 'c').row(9, 28, 28, 'c').row(9, 38, 40, 'c').row(9, 49, 51, 'c');
   scenery(g, [8, 22, 36, 50], [14, 30, 44, 58], [11, 26, 38, 52]);
   const m = new StarterMap(w.book, g.rows());
   signAt(m, w, 5, 'how');
@@ -188,6 +188,8 @@ function mainStreet(w: World): StarterMap {
   named(m, w, COTTAGE, L1.cottages[0], 'SOCKS');
   named(m, w, COTTAGE, L1.cottages[1], 'SOUP');
   named(m, w, COTTAGE, L1.cottages[2], 'TEAPOT');
+  // a giant silver fork lies on the sheet: he hops onto it, takes the coins along it, and hops down
+  FORK.forEach((name, i) => m.set(L1.fork + i, STAND, name));
   m.set(L1.bonus, 5, 'pickstar');
   m.mon(SHED, L1.gate, STAND);
   return m;
@@ -245,20 +247,20 @@ export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
   const pal = buildStarterPalette(paperRamps, 'stick-man-stars');
   hidePaper(pal.pal, skyOf(pal), pal.r('paper'));
   const w = buildBlocks(pal);
-  const level = (file: string, title: string, hint: string, mood: Mood, map: StarterMap, flat = false): Level => ({
+  const level = (file: string, title: string, hint: string, mood: Mood, map: StarterMap, paper: PaperKind, flat = false): Level => ({
     file,
     title,
     hint,
     mood,
     map,
-    pal: paletteFor(pal, mood, flat),
+    pal: paletteFor(pal, mood, paper),
     flat,
   });
   const levels: Level[] = [
-    level('one', 'Stargazing Hill', 'Pick the bright stars.', 'night', stargazingHill(w), true),
-    level('two', 'Main Street', 'Space throws a star.', 'dawn', mainStreet(w)),
-    level('three', 'Shy Street', 'Houses wander. Wait and aim.', 'day', shyStreet(w)),
-    level('four', 'Spam Row', 'Pop the bots. Light three lanterns.', 'dusk', starCount(w)),
+    level('one', 'Stargazing Hill', 'Pick the bright stars.', 'night', stargazingHill(w), 'notebook', true),
+    level('two', 'Main Street', 'Enter throws a star.', 'dawn', mainStreet(w), 'graph'),
+    level('three', 'Shy Street', 'Houses wander. Wait and aim.', 'day', shyStreet(w), 'postit'),
+    level('four', 'Spam Row', 'Pop the bots. Light three lanterns.', 'dusk', starCount(w), 'construction'),
   ];
   return { book: w.book, pal, levels };
 }

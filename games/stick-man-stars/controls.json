@@ -9,10 +9,6 @@
       "long": "Walk right."
     },
     "57": {
-      "short": "Throw a star",
-      "long": "Throw a star the way you last walked. It flies only so far."
-    },
-    "72": {
       "short": "Jump",
       "long": "Jump, to pick a high star out of the night sky. Steer with Left and Right while you are in the air."
     },
@@ -23,6 +19,10 @@
     "32": {
       "short": "Walk right",
       "long": "Same as the Right arrow."
+    },
+    "28": {
+      "short": "Throw a star",
+      "long": "Throw a star the way you last walked. It flies only so far."
     }
   },
   "joystick": {

@@ -18,9 +18,14 @@ import { ORIGIN, type StarterMap } from '../../kit/starter/map';
 /** A little five-pointed star, 7 by 7 (a constellation's, and a twinkle's). */
 export const STAR7 = ['...#...', '..###..', '#######', '.#####.', '..###..', '.##.##.', '.#...#.'];
 
-/** The paper's own ramp: [0] the ruled line, [1] a crayon stroke, [2] the shadow along a taped seam. */
+/**
+ * The paper's own ramp: [0] the ruled line (graph paper's heavy horizontal), [1] a crayon stroke or fleck, [2] the shadow
+ * along a taped seam, [3] graph paper's fine grid, [4] graph paper's heavy vertical. A level's palette (moods.ts) gives each
+ * a color for its kind of paper, or the sheet's own color so it does not show: notebook paper uses [0] to [2], graph paper
+ * all of them, a post-it note and construction paper only [0] and [1].
+ */
 export function paperRamps(b: PaletteBuilder): void {
-  b.ramp('paper', 3, [60, 74, 140], [20, 24, 64], [26, 30, 78]);
+  b.ramp('paper', 5, [60, 74, 140], [20, 24, 64], [26, 30, 78]);
 }
 
 /** Gives the paper ramp the sky's own color (a level not drawn on paper). */
@@ -38,10 +43,12 @@ function stroke(x: number, y: number): boolean {
 /** The ruled line, one a block, 15 pixels down. */
 const RULE_Y = 15;
 
-/** The paper behind everything: ruled lines over crayon-colored sky. */
+/** The paper behind everything: ruled lines (and graph paper's grid) over crayon-colored sky. */
 function paperAt(pal: Pal, x: number, y: number): number {
   if (y === RULE_Y) return pal.c('paper', 0);
-  return stroke(x, y) ? pal.c('paper', 1) : skyOf(pal);
+  if (stroke(x, y)) return pal.c('paper', 1);
+  if (x === 10) return pal.c('paper', 4);
+  return x % 5 === 0 || y % 5 === 0 ? pal.c('paper', 3) : skyOf(pal);
 }
 
 /** Turns every sky pixel of every block in `book` into paper. */
@@ -122,6 +129,51 @@ export function addPaperBlocks(book: Book, pal: Pal): void {
   tip.rect(3, 19, 14, 1, c('ink', 0));
   for (let x = 4; x < 16; x++) if (x % 3 === 0) tip.set(x, 18, c('wood', 2));
   book.add('pencilTip', tip, { solid: SOLID });
+  addFork(book, pal);
+}
+
+/** The block names of the giant fork lying on the sheet, left to right: handle end, shaft, head, tines. */
+export const FORK = ['forkEnd', 'forkShaft', 'forkHead', 'forkTines'] as const;
+/** Tine rows (three, 4 tall with 3 between) across the head, 18 pixels from row 2 down. */
+const TINE_ROWS = (y: number) => (y - 2) % 7 < 4 && y >= 2 && y <= 19;
+
+/**
+ * A giant silver table fork lying flat on the paper, tines to the right, four blocks long (a solid obstacle he hops over).
+ * Each piece is a shape; the drawing outlines it in graphite like the rest of the sheet, shades the top bright and the
+ * bottom dark so the metal shines, and leaves a white glint.
+ */
+function addFork(book: Book, pal: Pal): void {
+  const { c } = pal;
+  const shapes: ((x: number, y: number) => boolean)[] = [
+    // the handle's end: a rounded bowl, joined to the shaft
+    (x, y) => ((x - 9) / 9) ** 2 + ((y - 10) / 8) ** 2 <= 1 || (x >= 9 && y >= 5 && y <= 16),
+    // the shaft widens toward the head
+    (x, y) => y >= 5 - Math.round((3 * x) / 19) && y <= 16 + Math.round((3 * x) / 19),
+    // the head's palm, then the first of the tines
+    (x, y) => y >= 2 && y <= 19 && (x < 10 || TINE_ROWS(y)),
+    // the tines, their tips rounded
+    (x, y) => TINE_ROWS(y) && x <= 13 && !(x >= 12 && [0, 3].includes((y - 2) % 7)) && x <= 13,
+  ];
+  FORK.forEach((name, i) => {
+    const inside = (x: number, y: number) => x >= 0 && y >= 0 && x < 20 && y < 20 && shapes[i](x, y);
+    const p = new Pixels(20, 20, skyOf(pal));
+    for (let y = 0; y < 20; y++)
+      for (let x = 0; x < 20; x++) {
+        if (!inside(x, y)) continue;
+        // the outline only where the shape ends, not where it carries on into the next block
+        const rim = (dx: number, dy: number) => !inside(x + dx, y + dy) && x + dx >= 0 && x + dx < 20 && y + dy >= 0 && y + dy < 20;
+        let shade = c('stone', 4);
+        if (!inside(x, y - 1) || !inside(x, y - 2)) shade = c('white', 2);
+        else if (!inside(x, y + 1) || !inside(x, y + 2)) shade = c('stone', 3);
+        if (rim(0, -1) || rim(0, 1) || rim(-1, 0) || rim(1, 0) || y === 0 || y === 19) shade = c('stone', 0);
+        // a rim on a tile's own top or bottom edge is the fork's own edge (it never runs off the block)
+        p.set(x, y, shade);
+      }
+    // a glint
+    if (i === 0) p.set(5, 7, c('white', 3)).set(6, 7, c('white', 3));
+    if (i === 2) p.set(3, 6, c('white', 3)).set(4, 6, c('white', 3));
+    book.add(name, p, { solid: SOLID });
+  });
 }
 
 /** How far the hill's pencil line wanders up or down across a block (it meets itself at the block's edges). */
