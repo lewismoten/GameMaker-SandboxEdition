@@ -14,6 +14,7 @@ import { PULL, SOLID, type Book } from '../../kit/starter/book';
 import { skyOf, type Pal } from '../../kit/starter/palette';
 import { MLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { ORIGIN, type StarterMap } from '../../kit/starter/map';
+import { dirtTile, grassTile } from './pencilArt';
 
 /** A little five-pointed star, 7 by 7 (a constellation's, and a twinkle's). */
 export const STAR7 = ['...#...', '..###..', '#######', '.#####.', '..###..', '.##.##.', '.#...#.'];
@@ -67,30 +68,9 @@ export function addPaperBlocks(book: Book, pal: Pal): void {
   const { c } = pal;
   const air = { grav: PULL.down };
   const blank = () => new Pixels(20, 20, skyOf(pal));
-  const ground = { grass: book.rulesOf('grass'), dirt: book.rulesOf('dirt') };
-  // the hill, drawn on the sheet: a wobbly pencil line with green crayon scribbled under it, then plain paper
-  const hill = () => {
-    const p = blank();
-    for (let x = 0; x < 20; x++) {
-      const y = 3 + HILL[x];
-      p.set(x, y, c('stone', 0));
-      if ((x * 7) % 5 < 2) p.set(x, y + 1, c('stone', 2));
-      for (let d = 1; d < 6; d++) if ((x * 2 + d * 3) % 5 === 0 && (d < 3 || (x + d) % 3 !== 0)) p.set(x, y + d, c('green', d < 3 ? 3 : 4));
-    }
-    return p;
-  };
-  const dirt = () => {
-    const p = blank();
-    for (const [x, y] of [
-      [4, 3],
-      [13, 9],
-      [7, 15],
-    ])
-      p.set(x, y, c('green', 4)).set(x + 1, y - 1, c('green', 4));
-    return p;
-  };
-  book.add('hill', hill(), ground.grass);
-  book.add('hillPaper', dirt(), ground.dirt);
+  const ground = { grass: { solid: SOLID }, dirt: { solid: SOLID } };
+  const hill = () => grassTile(pal);
+  const dirt = () => dirtTile(pal);
   // a sheet's left edge: the shadow it casts on the sheet under it, its cut edge, and its red margin line
   const edge = (p: Pixels) => p.rect(2, 0, 1, 20, c('paper', 2)).rect(3, 0, 1, 20, c('white', 1)).rect(16, 0, 1, 20, c('red', 3));
   // a binder hole punched through it: the sheet below shows, shaded along its top
@@ -176,9 +156,6 @@ function addFork(book: Book, pal: Pal): void {
   });
 }
 
-/** How far the hill's pencil line wanders up or down across a block (it meets itself at the block's edges). */
-const HILL = [0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, -1, -1, 0];
-
 /** A sheet's rows, top to bottom of what the screen shows: a binder hole at 5, 9 and 12, tape at 7 and 11. */
 const SHEET: Record<number, [string, string]> = {
   5: ['seamHole', ''],
@@ -191,8 +168,8 @@ const SHEET: Record<number, [string, string]> = {
 /** The ground of a sheet drawn on: the hill's line on row `ground`, plain paper under it, from column x0 to x1. */
 export function hillAt(m: StarterMap, x0: number, x1: number, ground: number, bottom: number): void {
   for (let x = x0; x <= x1; x++) {
-    m.set(x, ground, 'hill');
-    for (let y = ground + 1; y <= bottom; y++) m.set(x, y, 'hillPaper');
+    m.set(x, ground, 'grass');
+    for (let y = ground + 1; y <= bottom; y++) m.set(x, y, 'dirt');
   }
 }
 
@@ -201,7 +178,7 @@ export function hillPastEdges(m: StarterMap, book: Book): void {
   const done = m.done.bind(m);
   m.done = () => {
     const map = done();
-    const hill = [book.n('hill'), book.n('hillPaper')];
+    const hill = [book.n('grass'), book.n('dirt')];
     for (let y = ORIGIN; y < ORIGIN + m.height; y++) {
       const left = map.blocks[y * MLEN + ORIGIN];
       const right = map.blocks[y * MLEN + ORIGIN + m.width - 1];
