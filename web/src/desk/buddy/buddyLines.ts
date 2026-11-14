@@ -59,6 +59,25 @@ export function newMind(saved: { quiet?: boolean; met?: boolean; helloDay?: stri
   return { quiet: !!saved.quiet, met: !!saved.met, helloDay: saved.helloDay, lastLine: -Infinity, seen: new Set(), hops: 0, sleeping: false, turn: 0 };
 }
 
+export interface BuddyKept {
+  quiet?: boolean;
+  met?: boolean;
+  helloDay?: string;
+}
+
+/**
+ * Stored state wins: when what is stored now (FLAGS, another tab) differs from what this buddy last
+ * read or wrote (`known`), the mind takes all three fields from it, so its next write cannot undo it.
+ * Returns whether it did.
+ */
+export function adoptStored(mind: Mind, known: BuddyKept, stored: BuddyKept): boolean {
+  if (!!stored.quiet === !!known.quiet && !!stored.met === !!known.met && stored.helloDay === known.helloDay) return false;
+  mind.quiet = !!stored.quiet;
+  mind.met = !!stored.met;
+  mind.helloDay = stored.helloDay;
+  return true;
+}
+
 /** How the buddy takes `ev` at `now`; changes `mind`. Undefined: nothing to show. */
 export function react(mind: Mind, ev: BuddyEvent, now: number): Reaction | undefined {
   const pick = (list: readonly string[], t = '') => list[mind.turn++ % list.length].replace('{t}', t);
