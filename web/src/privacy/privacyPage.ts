@@ -67,7 +67,7 @@ export function renderPrivacy(el: HTMLElement): void {
         null,
         'If something breaks, the site shows a notice with a Copy error details button. The details (the message, the build, the page, the browser’s name and the screen size) are copied to your clipboard only when you press it, and are never sent anywhere.',
       ),
-      h('p', null, 'Only these reach anywhere else, and only when you ask:'),
+      h('p', null, 'Only these reach anywhere else, and all but the community game pictures only when you ask:'),
       h(
         'ul',
         null,
