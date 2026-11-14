@@ -133,3 +133,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, extracted the portable Level check
 animation findings and their tests using this project's existing engine decoders.
+
+OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, implemented `kit/tiledSigns` (November 14, 2026), its tests and documentation,
+modeled on this project's Stick Man Stars signs by Lewis Moten / Claude Sonnet 5.5, using the
+existing project micro font (MIT).

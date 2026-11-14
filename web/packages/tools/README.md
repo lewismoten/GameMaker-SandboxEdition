@@ -148,3 +148,20 @@ The tarball includes JavaScript, declarations, README, changelog,
 [LICENSE](https://github.com/lewismoten/GameMaker-SandboxEdition/blob/master/web/packages/tools/LICENSE)
 and [NOTICE.md](https://github.com/lewismoten/GameMaker-SandboxEdition/blob/master/web/packages/tools/NOTICE.md).
 Source is MIT licensed; no game assets or decoder binaries are bundled.
+
+## Tiled signs
+
+`kit/tiledSigns` exports `buildTiledSigns(texts, options)` and `stampTiledSign(map, x, y, sign, postHeight = 1)`.
+Supply every sign from every level together as a record of `{ rows: string[][], post?: boolean }`.
+Each row contains explicit chunks of up to five letters (or four with `lettersPerBlock: 4`).
+Plan phrases around repeated chunks; short chunks receive trailing spaces, and lowercase becomes uppercase.
+The result contains `blocks: Map<string, Pixels>` and `signs` with named-block boards and optional centered posts.
+Eight border/corner tiles are separate from the letter tiles; an odd board width uses one shared post tile.
+Even chunk counts receive blank padding. `post: false` omits the post for a wall sign.
+
+Pass six palette indices in `colors` (`background`, `paper`, `ink`, `wood`, `highlight`, `shadow`),
+optional `glyphs` for game-owned symbols, and `maxBlocks` for the remaining block budget (0–100; default 100).
+Unsupported glyphs, oversized chunks, empty rows and budget overflow throw errors.
+The builder uses the project's existing 3×5 micro font; six letters with gaps cannot fit a 20-pixel tile.
+Add the returned pictures to your block set with the game's passable-background rules, once for the whole game.
+The stamp helper accepts any map with `set(x, y, blockName)`; taller posts reuse the same centered tile.
