@@ -13,8 +13,9 @@ import { SOLID, Book, PULL } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
-import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
-import { addSign, type Sign } from '../../kit/starter/sign';
+import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
+import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { MICRO_GLYPHS } from '@lewismoten/gamemaker-sandbox-tools/microFont';
 import { drawBoards, drawCurtain, drawValance } from './actorArt';
 import { CAMEO, MON, WALK } from './monsters';
 
@@ -27,15 +28,32 @@ function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
   book.add('curtain', drawCurtain(pal), { grav: PULL.down });
   book.add('valance', drawValance(pal), { grav: PULL.down });
   book.add('boards', drawBoards(pal), { solid: SOLID, grav: PULL.down });
-  const signs = {
-    path: addSign(book, pal, 'path.sign', 'A SCENE IS MONSTERS ON PATHS', 4, 3),
-    start: addSign(book, pal, 'start.sign', 'IT STARTS WHEN THE LEVEL DOES', 4, 3),
-    chain: addSign(book, pal, 'chain.sign', 'EACH ACT BECOMES THE NEXT ONE', 4, 3),
-    encore: addSign(book, pal, 'encore.sign', 'MISSED IT? ← ENCORE DOOR', 4, 3),
-    once: addSign(book, pal, 'once.sign', 'A CAMEO SAYS HELLO ONCE', 4, 3),
-    late: addSign(book, pal, 'late.sign', 'GONE? IT WILL NOT WAIT', 4, 3),
-    exit: addSign(book, pal, 'exit.sign', 'EXIT →', 3),
-  };
+  const { blocks, signs } = buildTiledSigns(
+    {
+      path: { rows: [['A SCENE IS'], ['MONSTERS'], ['ON PATHS']] },
+      start: { rows: [['IT STARTS'], ['WHEN THE'], ['LEVEL DOES']] },
+      chain: { rows: [['EACH ACT'], ['BECOMES THE'], ['NEXT ONE']] },
+      encore: { rows: [['MISSED IT?'], ['←'], ['ENCORE DOOR']] },
+      once: { rows: [['A CAMEO'], ['SAYS'], ['HELLO ONCE']] },
+      late: { rows: [['GONE?'], ['IT WILL'], ['NOT WAIT']] },
+      exit: { rows: [['EXIT →']] },
+    },
+    {
+      colors: {
+        background: skyOf(pal),
+        paper: pal.c('parch', 3),
+        ink: pal.c('ink', 0),
+        wood: pal.c('wood', 2),
+        highlight: pal.c('wood', 4),
+        shadow: pal.c('wood', 0),
+      },
+      glyphs: { ...MICRO_GLYPHS, '←': '001011111011001', '→': '100110111110100' },
+      compact: true,
+      maxWidth: 5,
+      maxBlocks: Math.min(100, 150 - book.index.size),
+    },
+  );
+  for (const [name, pic] of blocks) book.add(name, pic, { grav: PULL.down });
   return { book, signs };
 }
 
@@ -109,11 +127,11 @@ function curtainUp(book: Book, signs: Record<SignName, Sign>): StarterMap {
   const m = new StarterMap(book, g.rows());
   const s = STAGE_ONE;
   build(m, s);
-  m.sign(5, onGround(GROUND, signs.path), signs.path);
-  m.sign(10, onGround(GROUND, signs.start), signs.start);
-  m.sign(29, onGround(GROUND, signs.chain), signs.chain);
-  m.sign(34, onGround(GROUND, signs.encore), signs.encore);
-  m.sign(47, onGround(GROUND, signs.exit), signs.exit);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 4, onGround(GROUND, signs.path), signs.path);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 10, onGround(GROUND, signs.start), signs.start);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 28, onGround(GROUND, signs.chain), signs.chain);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 33, onGround(GROUND, signs.encore), signs.encore);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 46, 7, signs.exit, 2);
   // the actors wait behind the curtains, peeking
   m.mon(MON.pipPeek, s.left, STAND);
   m.mon(MON.bluPeek, s.right, STAND);
@@ -144,10 +162,10 @@ function sayHello(book: Book, signs: Record<SignName, Sign>): StarterMap {
   // the doorway the cameo waits in, to the right of the stage
   const doorX = DOORWAY;
   m.set(doorX, 8, 'doorwayTop').set(doorX, 9, 'doorwayBottom');
-  m.sign(5, onGround(GROUND, signs.once), signs.once);
-  m.sign(12, onGround(GROUND, signs.late), signs.late);
-  m.sign(17, onGround(GROUND, signs.encore), signs.encore);
-  m.sign(54, onGround(GROUND, signs.exit), signs.exit);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 5, onGround(GROUND, signs.once), signs.once);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 11, onGround(GROUND, signs.late), signs.late);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 17, onGround(GROUND, signs.encore), signs.encore);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 53, onGround(GROUND, signs.exit), signs.exit);
   m.mon(MON.camWait, doorX, STAND);
   m.mon(MON.camCue, doorX - CAMEO.walkIn, STAND - 1);
   return m;
