@@ -38,8 +38,6 @@
   },
   "acceptedFindings": [
     "facing s3 The hero climbs side on",
-    "flashing s2 Block 79 flashes light and dark about 0.1 times a second over 126 blocks of one screen, from (9, 19)",
-    "flashing s4 Block 81 flashes light and dark about 0.3 times a second over 126 blocks of one screen, from (9, 19)",
     "waits s2 Timed block 79 stays shut for 16.8 s at a time"
   ]
 }
