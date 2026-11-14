@@ -55,3 +55,4 @@ __pycache__/
 # Leftover PlatformIO build cache from before the Pocket Player moved to gamemaker-pocket
 /hardware/pocket-player/
 .pio/
+.leak-patterns.local
