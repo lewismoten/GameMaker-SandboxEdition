@@ -51,6 +51,8 @@ interface PlayerOptions extends RunOptions {
    * the focus or the pointer, so the page around it keeps scrolling and typing as usual.
    */
   preview?: boolean;
+  /** What the game's keys do (its controls.json): the touch buttons are named for it. */
+  controls?: unknown;
   /** Where the game's saves are kept ('game:<id>'): a catalog game's tin heart is looked for (tinHearts/tinHearts.ts). */
   saveId?: string;
   /** Stable identity for browser hardware settings (defaults to saveId, or file and title). */
@@ -101,7 +103,7 @@ export function mountPlayer(container: HTMLElement, files: GameFiles, gamFile: s
   container.append(loading);
   machine.onLoading = (on) => (loading.hidden = !on);
   const unexact = opts.exactPixels ? exactScale(canvas) : undefined;
-  const touch = !opts.preview && (opts.touch ?? wantsTouchControls()) ? new TouchControls(machine.keyboard) : undefined;
+  const touch = !opts.preview && (opts.touch ?? wantsTouchControls()) ? new TouchControls(machine.keyboard, opts.controls) : undefined;
   touch?.attach(container);
   const previousWrite = files.onChange;
   files.onChange = (name) => {

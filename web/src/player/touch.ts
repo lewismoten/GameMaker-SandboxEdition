@@ -12,6 +12,7 @@ import { scanName } from '@lewismoten/gamemaker-sandbox-engine/input/scancodes';
 import type { Sequence } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 import { padPlan, type PadPlan, type Sector } from './moveKeys';
 import { actionPages } from './actionPages';
+import { actionLabel, keyNames } from './actionLabels';
 
 const UP = 72;
 const LEFT = 75;
@@ -71,6 +72,7 @@ export class TouchControls {
   private shown = '';
   private page = 0;
   private keys: number[] = [];
+  private names = new Map<number, string>();
   private padDown = new Set<number>();
   private plan: PadPlan = ARROWS_ONLY;
   private planFor?: readonly Sequence[];
@@ -78,7 +80,12 @@ export class TouchControls {
   private arrows: Record<number, HTMLElement> = {};
   private resize?: ResizeObserver;
 
-  constructor(private keyboard: Keyboard) {
+  /** `controls`: the game's controls.json (what each key does), so buttons say "Throw a star" and not "Enter". */
+  constructor(
+    private keyboard: Keyboard,
+    controls?: unknown,
+  ) {
+    this.names = keyNames(controls);
     this.el = document.createElement('div');
     this.el.className = 'gm-touch';
     this.el.addEventListener('contextmenu', (e) => e.preventDefault());
@@ -209,11 +216,22 @@ export class TouchControls {
       }
   }
 
-  private button(scan: number, label: string): HTMLButtonElement {
+  /** A key's button. `named`: the action buttons show the game's name for the key (actionLabels.ts); the fixed row keeps the key's name and only says the name aloud. */
+  private button(scan: number, label: string, named = false): HTMLButtonElement {
     const b = document.createElement('button');
     b.type = 'button';
-    b.textContent = label;
-    b.setAttribute('aria-label', scanName(scan));
+    const l = actionLabel(label, scanName(scan), this.names.get(scan));
+    if (named && l.key) {
+      const main = document.createElement('span');
+      main.className = 'gm-act-name';
+      main.textContent = l.main;
+      const key = document.createElement('span');
+      key.className = 'gm-act-key';
+      key.textContent = `(${l.key})`;
+      // (a space between, so the visible text reads "Throw a star (Enter)", which the aria-label repeats exactly)
+      b.append(main, ' ', key);
+    } else b.textContent = named ? l.main : label;
+    b.setAttribute('aria-label', l.aria);
     const down = (e: PointerEvent) => {
       e.preventDefault();
       b.setPointerCapture?.(e.pointerId);
@@ -259,7 +277,7 @@ export class TouchControls {
     this.shown = sig;
     // (a held button lets go of its key before it goes)
     this.actions.querySelectorAll('button.down').forEach((b) => b.dispatchEvent(new Event('pointercancel')));
-    const buttons = pages[this.page].map((s) => this.button(s, touchLabel(s)));
+    const buttons = pages[this.page].map((s) => this.button(s, touchLabel(s), true));
     if (pages.length > 1) buttons.push(this.more(this.page + 1, pages.length));
     this.actions.replaceChildren(...buttons);
     this.actions.dataset.count = String(buttons.length);
@@ -271,7 +289,7 @@ export class TouchControls {
     b.type = 'button';
     b.className = 'gm-more';
     b.textContent = `More ${at}/${of}`;
-    b.setAttribute('aria-label', `More buttons, page ${at} of ${of}`);
+    b.setAttribute('aria-label', `More ${at}/${of}, more buttons`);
     b.addEventListener('pointerdown', (e) => e.preventDefault()); // the game keeps the focus
     b.addEventListener('click', () => {
       this.page += 1;

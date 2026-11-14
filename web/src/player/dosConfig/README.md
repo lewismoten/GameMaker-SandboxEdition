@@ -10,7 +10,7 @@ in `code/GM/PLAYGAME.C`, lines 4790 to 5132), shown on the 1994 PC's monitor ins
 | `model.ts`    | Layout constants, the cursor moves of the arrow keys, starting values and the mapping to `hardwarePrefs`. |
 | `draw.ts`     | The drawing with the C's coordinates and palette entries (320 x 200, 8 x 8 font).                         |
 | `screen.ts`   | The key, mouse and blink loop, Help (`config.hlp` through the engine's `displayFile`) and the fade in.    |
-| `helpText.ts` | Original `code/GM/CONFIG.HLP` text, with trailing blanks trimmed and the DOS end-of-file marker omitted. |
+| `helpText.ts` | Original `code/GM/CONFIG.HLP` text, with trailing blanks trimmed and the DOS end-of-file marker omitted.  |
 | `dosSetup.ts` | The same interface as `hardwareSetup`: `prepare(force)` for first run, FASTPLAY and CONFIG.BAT.           |
 
 ## Keys

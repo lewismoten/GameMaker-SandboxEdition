@@ -255,6 +255,30 @@
   font-size: 13px;
 }
 
+.gm-actions button {
+  /* one size for every name, so a long one wraps and the circle stays round */
+  width: 64px;
+  flex-direction: column;
+  gap: 1px;
+  padding: 0 4px;
+  overflow: hidden;
+}
+
+/* the game's name for the key (up to two lines) and the key small under it */
+.gm-actions .gm-act-name {
+  max-width: 100%;
+  font-size: 12px;
+  line-height: 1.1;
+  text-align: center;
+  overflow-wrap: normal;
+}
+
+.gm-actions .gm-act-key {
+  font-size: 9px;
+  font-weight: 600;
+  opacity: 0.85;
+}
+
 .gm-actions .gm-more {
   background: rgb(36 38 58 / var(--touch-alpha));
   border-color: rgb(138 141 172 / 0.6);
@@ -328,6 +352,7 @@
 }
 
 .gm-player.touch-landscape .gm-actions button {
+  width: 58px;
   min-width: 58px;
   min-height: 58px;
 }
