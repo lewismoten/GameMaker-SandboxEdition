@@ -7,12 +7,13 @@
 //   2. The View Follows: a level 60 blocks wide, with scrolling on. The screen shows 16 blocks, and
 //      the view slides along as Kit walks.
 // Every room is closed in by hedges you can see, so Kit is never stopped by something he can't.
-import { Book } from '../../kit/starter/book';
+import { Book, PULL } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
-import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
-import { addSign, type Sign } from '../../kit/starter/sign';
+import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
+import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { MICRO_GLYPHS } from '@lewismoten/gamemaker-sandbox-tools/microFont';
 
 export type SignName = 'one' | 'hedge' | 'follows' | 'wide' | 'switch' | 'exit';
 
@@ -20,14 +21,40 @@ export type SignName = 'one' | 'hedge' | 'follows' | 'wide' | 'switch' | 'exit';
 function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
-  const signs = {
-    one: addSign(book, pal, 'one.sign', 'THIS ROOM IS ONE SCREEN, SO IT DOES NOT SCROLL', 4, 3),
-    hedge: addSign(book, pal, 'hedge.sign', 'THE HEDGE KEEPS KIT ON THE SCREEN', 3, 3),
-    follows: addSign(book, pal, 'follows.sign', 'THE VIEW FOLLOWS KIT WHEN THEY WALK', 4, 3),
-    wide: addSign(book, pal, 'wide.sign', 'THIS LEVEL IS 60 BLOCKS WIDE. THE SCREEN SHOWS 16', 4, 3),
-    switch: addSign(book, pal, 'switch.sign', 'SCROLLING IS A SWITCH ON EACH SCENE', 4, 3),
-    exit: addSign(book, pal, 'exit.sign', 'EXIT →', 3),
+  const texts = {
+    one: { rows: [['THIS ROOM IS'], ['ONE SCREEN, SO IT'], ['DOES NOT SCROLL']] },
+    hedge: { rows: [['THE HEDGE KEEPS'], ['KIT ON THE SCREEN']] },
+    follows: { rows: [['THE VIEW FOLLOWS KIT'], ['WHEN THEY WALK']] },
+    wide: { rows: [['THIS LEVEL IS 60'], ['BLOCKS WIDE.'], ['THE SCREEN SHOWS 16']] },
+    switch: { rows: [['SCROLLING IS A SWITCH'], ['ON EACH SCENE']] },
+    exit: { rows: [['EXIT →']] },
   };
+  const colors = {
+    background: skyOf(pal),
+    paper: pal.c('parch', 3),
+    ink: pal.c('ink', 0),
+    wood: pal.c('wood', 2),
+    highlight: pal.c('wood', 4),
+    shadow: pal.c('wood', 0),
+  };
+  // Only the fixed-screen lesson needs compact letters; the long path has room for larger ones.
+  const small = buildTiledSigns(texts, {
+    include: ['one', 'hedge'],
+    colors,
+    compact: true,
+    prefix: 'smallSign',
+    maxBlocks: Math.min(100, 150 - book.index.size),
+  });
+  for (const [name, pic] of small.blocks) book.add(name, pic, { grav: PULL.down });
+  const large = buildTiledSigns(texts, {
+    include: ['follows', 'wide', 'switch', 'exit'],
+    colors,
+    lettersPerBlock: 3,
+    glyphs: { ...MICRO_GLYPHS, '→': '100110111110100' },
+    maxBlocks: Math.min(100 - small.blocks.size, 150 - book.index.size),
+  });
+  for (const [name, pic] of large.blocks) book.add(name, pic, { grav: PULL.down });
+  const signs = { ...small.signs, ...large.signs };
   return { book, signs };
 }
 
@@ -69,8 +96,10 @@ function oneScreen(book: Book, signs: Record<SignName, Sign>): StarterMap {
   for (const x of L1.coins) g.put(x, L1.ground - 1, 'c');
   scenery(g, L1.ground, [[6, 1]], [9], [1]);
   const m = new StarterMap(book, g.rows());
-  m.sign(2, onGround(L1.ground, signs.one), signs.one);
-  m.sign(10, onGround(L1.ground, signs.hedge), signs.hedge);
+  const sky = { set: (x: number, y: number, name: string) => m.setOnSky(x, y, name) };
+  stampTiledSign(sky, 1, onGround(L1.ground, signs.one), signs.one);
+  // Above the entrance and exit, with a post in the clear space between them.
+  stampTiledSign(sky, 8, 2, signs.hedge, 2);
   return m;
 }
 
@@ -97,10 +126,10 @@ function theViewFollows(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [9, 27, 40, 54],
   );
   const m = new StarterMap(book, g.rows());
-  m.sign(5, onGround(G, signs.follows), signs.follows);
-  m.sign(24, onGround(G, signs.wide), signs.wide);
-  m.sign(40, onGround(G, signs.switch), signs.switch);
-  m.sign(53, onGround(G, signs.exit), signs.exit);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 6, onGround(G, signs.follows), signs.follows);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 24, onGround(G, signs.wide), signs.wide);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 39, onGround(G, signs.switch), signs.switch);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 51, onGround(G, signs.exit), signs.exit);
   return m;
 }
 
