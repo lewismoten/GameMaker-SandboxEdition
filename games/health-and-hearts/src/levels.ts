@@ -5,12 +5,13 @@
 //   2. Hearts Heal: another spike, then two hearts give the hit points back. They go on to the next room.
 //   3. Lives: four spikes spread along the ground are more than Lian has, so the third one costs a life and the
 //      room starts again with a full 30. The hearts on the ledge up and left, and the second try takes them.
-import { Book } from '../../kit/starter/book';
+import { Book, PULL } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
-import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
-import { addSign, type Sign } from '../../kit/starter/sign';
+import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
+import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { MICRO_GLYPHS } from '@lewismoten/gamemaker-sandbox-tools/microFont';
 import { addHealth } from './health';
 
 export type SignName = 'f2' | 'spike' | 'heal' | 'carry' | 'zero' | 'past' | 'face' | 'exit';
@@ -19,17 +20,33 @@ export type SignName = 'f2' | 'spike' | 'heal' | 'carry' | 'zero' | 'past' | 'fa
 function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
-  const signs = {
-    f2: addSign(book, pal, 'f2.sign', 'F2 SHOWS YOUR HIT POINTS', 4, 3),
-    spike: addSign(book, pal, 'spike.sign', 'A SPIKE TAKES 10 HIT POINTS', 4, 3),
-    heal: addSign(book, pal, 'heal.sign', 'A HEART GIVES 10 HIT POINTS BACK', 4, 3),
-    carry: addSign(book, pal, 'carry.sign', 'HIT POINTS GO WITH YOU TO THE NEXT ROOM', 4, 4),
-    zero: addSign(book, pal, 'zero.sign', 'AT ZERO HIT POINTS YOU LOSE A LIFE', 4, 3),
-    past: addSign(book, pal, 'past.sign', 'HEARTS CAN TAKE YOU PAST 30', 4, 3),
-    face: addSign(book, pal, 'face.sign', 'A FACE ADDS A LIFE', 4, 2),
-    exit: addSign(book, pal, 'exit.sign', 'EXIT →', 3),
-  };
   addHealth(book, pal);
+  const { blocks, signs } = buildTiledSigns(
+    {
+      f2: { rows: [['F2 SHOWS YOUR HIT POINTS']] },
+      spike: { rows: [['A SPIKE TAKES 10 HIT POINTS']] },
+      heal: { rows: [['A HEART GIVES 10 HIT POINTS BACK']] },
+      carry: { rows: [['HIT POINTS GO WITH YOU TO THE NEXT ROOM']] },
+      zero: { rows: [['AT ZERO HIT POINTS YOU LOSE A LIFE']] },
+      past: { rows: [['HEARTS CAN TAKE YOU PAST 30']] },
+      face: { rows: [['A FACE ADDS A LIFE']] },
+      exit: { rows: [['EXIT →']] },
+    },
+    {
+      colors: {
+        background: skyOf(pal),
+        paper: pal.c('parch', 3),
+        ink: pal.c('ink', 0),
+        wood: pal.c('wood', 2),
+        highlight: pal.c('wood', 4),
+        shadow: pal.c('wood', 0),
+      },
+      glyphs: { ...MICRO_GLYPHS, '→': '100110111110100' },
+      lettersPerBlock: 3,
+      maxBlocks: Math.min(100, 150 - book.index.size),
+    },
+  );
+  for (const [name, pic] of blocks) book.add(name, pic, { grav: PULL.down });
   return { book, signs };
 }
 
@@ -41,8 +58,12 @@ export interface Level {
   map: StarterMap;
 }
 
-/** The top row of a sign standing on ground row `ground`. */
-const onGround = (ground: number, s: Sign) => ground - 1 - s.board.length;
+/** Keep boards below the top visible row, and extend their centered posts to the ground.
+ * Guard every cell so signs cannot cover scenery, pickups, platforms or each other.
+ */
+function sign(map: StarterMap, x: number, board: Sign): void {
+  stampTiledSign({ set: (x, y, block) => map.setOnSky(x, y, block) }, x, 6, board, 3);
+}
 
 export const GROUND = 10;
 
@@ -77,10 +98,10 @@ function hitPoints(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [8, 28, 32],
   );
   const m = new StarterMap(book, g.rows());
-  m.sign(6, onGround(GROUND, signs.f2), signs.f2);
-  m.sign(12, onGround(GROUND, signs.spike), signs.spike);
-  m.sign(32, onGround(GROUND, signs.exit), signs.exit);
   m.set(17, GROUND - 1, 'spikeUp');
+  sign(m, 2, signs.f2);
+  sign(m, 14, signs.spike);
+  sign(m, 33, signs.exit);
   return m;
 }
 
@@ -99,11 +120,11 @@ function heartsHeal(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [8, 25, 33],
   );
   const m = new StarterMap(book, g.rows());
-  m.sign(6, onGround(GROUND, signs.heal), signs.heal);
-  m.sign(23, onGround(GROUND, signs.carry), signs.carry);
-  m.sign(32, onGround(GROUND, signs.exit), signs.exit);
   m.set(13, GROUND - 1, 'spikeUp');
   for (const x of [17, 19]) m.set(x, GROUND - 1, 'heart');
+  sign(m, 1, signs.heal);
+  sign(m, 15, signs.carry);
+  sign(m, 33, signs.exit);
   return m;
 }
 
@@ -130,13 +151,13 @@ function lives(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [32, 42],
   );
   const m = new StarterMap(book, g.rows());
-  m.sign(5, onGround(GROUND, signs.zero), signs.zero);
-  m.sign(9, onGround(GROUND, signs.past), signs.past);
-  m.sign(33, onGround(GROUND, signs.face), signs.face);
-  m.sign(43, onGround(GROUND, signs.exit), signs.exit);
   for (const x of LEDGE_HEARTS) m.set(x, 7, 'heart');
   for (const x of SPIKE_ROW) m.set(x, GROUND - 1, 'spikeUp');
   m.set(FACE_X, 7, 'oneUp');
+  sign(m, 1, signs.zero);
+  sign(m, 15, signs.past);
+  sign(m, 29, signs.face);
+  sign(m, 43, signs.exit);
   return m;
 }
 
