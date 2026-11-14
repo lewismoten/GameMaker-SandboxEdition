@@ -118,10 +118,9 @@ export async function knockOnWood(bot: StarterBot): Promise<void> {
   await must(bot, bot.walk(FIVE.crowA + 3, 'past the first crow'), 'past the first crow');
   await must(bot, bot.walk(FIVE.wood - 1, 'the wooden boxes'), 'to the boxes');
   await must(bot, bot.walk(FIVE.wood + 2, 'through the boxes'), 'knocking through the boxes');
-  await must(bot, bot.walk(FIVE.feather, 'the feather'), 'to the feather');
   await must(bot, bot.walk(FIVE.crowD - 3, 'before the next crow'), 'to the next crow');
   await watchFor(bot, lifting(bot, FIVE.crowD, FIVE.crowRow), 'the next crow flying up');
-  await must(bot, bot.walk(FIVE.crowD + 4, 'past the next crows'), 'past the next crow');
+  await must(bot, bot.walk(FIVE.crowD + 4, 'past the next crows, the feather on the way'), 'past the next crow');
   await readAt(bot, 44, 'the roof sign');
   await climbUp(bot, FIVE.ladder, 4, 'the roof ladder');
   await must(bot, bot.walk(FIVE.rainbow, 'the rainbow'), 'to the rainbow');

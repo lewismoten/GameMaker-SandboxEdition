@@ -1,7 +1,7 @@
 // Level 5, KNOCK ON WOOD: up on the rooftops a crow keeps knocking on wood.
 //   - three crows bob up and down across the lane: go as each lifts off and slip under (every tick it touches is bad luck); the middle watch is two crows wing to wing;
 //   - a wall of wooden boxes closes the lane: knock on them (touch them) and the boxes you touch open, leaving a
-//     doorway under the rest; a lucky feather waits behind;
+//     doorway under the rest; a lucky feather lies under the two-crow watch beyond;
 //   - a ladder up to a high roof with a rainbow.
 // Two charms: the feather and the rainbow.
 import { StarterMap } from '../../../kit/starter/map';
@@ -13,7 +13,8 @@ export const FIVE = {
   crowA: 20,
   crowRow: 5,
   wood: 28,
-  feather: 31,
+  /** Under the two-crow watch: take it in the gap. */
+  feather: 41,
   crowD: 40,
   ladder: 48,
   crowC: 66,
