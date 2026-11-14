@@ -1259,7 +1259,7 @@ registerEditor(['map'], (host, project, file) => {
   // visible + and − beside the menu: a finger has no wheel (44 px on touch, mapTools.css)
   const zoomStep = (label: string, name: string, factor: number) =>
     h('button', { type: 'button', class: 'mt-zoom-step', 'aria-label': name, title: name, onclick: () => setZoom(zoom * factor) }, label);
-  // phones: the file pickers and Download picture fold behind one button, so the tools and the map
+  // phones: the block-set, monster and palette pickers and Download picture fold behind one button, so the tools and the map
   // come first (mapTools.css); wider screens show them all and the button is hidden
   const filesToggle = h(
     'button',
@@ -1270,11 +1270,11 @@ registerEditor(['map'], (host, project, file) => {
       'aria-controls': 'mt-files-body',
       onclick: () => setFilesOpen(filesToggle.getAttribute('aria-expanded') !== 'true'),
     },
-    'Files ▸',
+    'Blocks & palette ▸',
   );
   function setFilesOpen(open: boolean): void {
     filesToggle.setAttribute('aria-expanded', String(open));
-    filesToggle.textContent = open ? 'Files ▾' : 'Files ▸';
+    filesToggle.textContent = open ? 'Blocks & palette ▾' : 'Blocks & palette ▸';
     filesToggle.parentElement?.classList.toggle('mt-files-open', open);
     requestAnimationFrame(() => window.dispatchEvent(new Event('resize')));
   }
