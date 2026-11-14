@@ -6,12 +6,12 @@
 //      moment over a hill, and the song plays a low rumble a beat later.
 //   2. Light the Way: a dark ditch with three stepping stones. The stones have lit twins too, so the flash lights the
 //      way over, but they are dim, not hidden: the stones can always be seen. Falling in hurts nothing; steps lead out.
-import { Book } from '../../kit/starter/book';
+import { Book, PULL } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
-import { type Pal } from '../../kit/starter/palette';
-import { addSign, type Sign } from '../../kit/starter/sign';
+import { skyOf, type Pal } from '../../kit/starter/palette';
+import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { BOLT, addBolt, addCloud, addHill, addLitTwins, addStone, stormPalette, type Timed } from './storm';
 
 export interface Level {
@@ -30,11 +30,11 @@ export interface Level {
 }
 
 const WORDS = {
-  sky: 'THE SKY TURNS LIGHT FOR A MOMENT',
-  bolt: 'THE BOLT IS 5 BLOCKS THAT SHOW FOR A MOMENT',
-  thunder: 'THE SONG PLAYS THE THUNDER, A BEAT LATER',
-  stones: 'THE STONES LIGHT UP WITH THE SKY',
-  always: 'DIM, BUT YOU CAN ALWAYS SEE THEM',
+  sky: { rows: [['THE SKY TURNS'], ['LIGHT FOR'], ['A MOMENT']] },
+  bolt: { rows: [['THE BOLT IS'], ['5 BLOCKS THAT'], ['SHOW FOR'], ['A MOMENT']] },
+  thunder: { rows: [['THE SONG PLAYS'], ['THE THUNDER,'], ['A BEAT LATER']] },
+  stones: { rows: [['THE STONES'], ['LIGHT UP'], ['WITH THE SKY']] },
+  always: { rows: [['DIM, BUT YOU'], ['CAN ALWAYS'], ['SEE THEM']] },
 } as const;
 type SignName = keyof typeof WORDS;
 
@@ -55,9 +55,22 @@ function blocks(pal: Pal, level: 1 | 2): Built {
   const book = new Book('bbl');
   const timed: Timed[] = [];
   addStarterBlocks(book, pal);
-  const signs = {} as Record<SignName, Sign>;
+  // Build the complete sign vocabulary together; each level keeps only the tiles it uses.
+  const { blocks: tiles, signs } = buildTiledSigns(WORDS, {
+    colors: {
+      background: skyOf(pal),
+      paper: pal.c('parch', 3),
+      ink: pal.c('ink', 0),
+      wood: pal.c('wood', 2),
+      highlight: pal.c('wood', 4),
+      shadow: pal.c('wood', 0),
+    },
+    lettersPerBlock: 3,
+    maxBlocks: 100 - book.index.size,
+  });
   const used: SignName[] = level === 1 ? ['sky', 'bolt', 'thunder'] : ['stones', 'always'];
-  for (const k of used) signs[k] = addSign(book, pal, k, WORDS[k], 4, k === 'sky' || k === 'always' ? 2 : 3);
+  const needed = new Set(used.flatMap((k) => [...signs[k].board.flat(), signs[k].post!.block]));
+  for (const [name, pic] of tiles) if (needed.has(name)) book.add(name, pic, { grav: PULL.down });
   const clouds = { two: addCloud(book, pal, 2), three: addCloud(book, pal, 3) };
   const hill = addHill(book, pal);
   addBolt(book, timed, pal);
@@ -93,9 +106,9 @@ function flashAndRumble(pal: Pal): Level {
   for (const x of [10, 31]) g.put(x, GROUND - 1, 'b');
   for (const x of [17, 28, 36]) g.put(x, GROUND - 1, 'f');
   const m = new StarterMap(b.book, g.rows());
-  m.sign(5, onGround(b.signs.sky), b.signs.sky);
-  m.sign(12, onGround(b.signs.bolt), b.signs.bolt);
-  m.sign(24, onGround(b.signs.thunder), b.signs.thunder);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 5, onGround(b.signs.sky), b.signs.sky);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 12, onGround(b.signs.bolt), b.signs.bolt);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 24, onGround(b.signs.thunder), b.signs.thunder);
   const bolt = storm(m, b, 19, [
     [6, 5, 2],
     [27, 5, 3],
@@ -125,8 +138,9 @@ function lightTheWay(pal: Pal): Level {
     [24, 25],
   ];
   for (const s of stones) for (const x of s) m.set(x, GROUND, 'stone');
-  m.sign(4, onGround(b.signs.stones), b.signs.stones);
-  m.sign(9, onGround(b.signs.always), b.signs.always);
+  // Spread the wider boards one cell each way; both posts still meet the left bank.
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 3, onGround(b.signs.stones), b.signs.stones);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 10, onGround(b.signs.always), b.signs.always);
   const bolt = storm(m, b, 34, [
     [7, 5, 2],
     [19, 5, 3],
