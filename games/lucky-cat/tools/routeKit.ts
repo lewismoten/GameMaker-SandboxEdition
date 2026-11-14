@@ -82,15 +82,18 @@ export async function watchFor(bot: StarterBot, ready: () => boolean, what: stri
   throw new Error(`never saw ${what}`);
 }
 
-/** A person's cue to slip under a bobbing crow (its beat starts at `row`): it has just lifted off the low end of its
- * beat and is on its way up, so the gap under it opens while she runs. Waiting for it to reach the top is too late
+/** A person's cue to slip under a bobbing crow (its beat starts at `row`): she watches it reach the low end of its beat,
+ * then goes as it lifts off, so the gap under it opens while she runs. Waiting for it to reach the top is too late
  * now that crows fly fast. */
 export function lifting(bot: StarterBot, x0: number, row: number): () => boolean {
   let last = monsterY(bot, x0);
+  let low = false;
   return () => {
     const y = monsterY(bot, x0);
-    const go = y < last && y <= row * 20 + 50;
+    low ||= y >= row * 20 + 54;
+    const go = low && y < last && y <= row * 20 + 50;
     last = y;
+    if (go) bot.say(`crow ${x0} lifting at y ${y - row * 20}, cat x ${bot.px.x}, tick ${bot.sim.ticks}`);
     return go;
   };
 }

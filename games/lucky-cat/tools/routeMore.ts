@@ -135,7 +135,7 @@ export async function nightMarket(bot: StarterBot): Promise<void> {
   await must(bot, bot.walk(MARKET.boxes[2] + 2, 'through the last stall'), 'knocking through the last stall');
   await must(bot, bot.walk(MARKET.gates[2] + 2, 'through the last shutter'), 'through the last shutter');
   bot.say(`through the last shutter after ${bot.sim.ticks} ticks of ${MARKET.openTicks}`);
-  if (bot.sim.ticks > MARKET.openTicks * 0.75) throw new Error(`the run is too slow for the market: ${bot.sim.ticks} ticks of ${MARKET.openTicks}`);
+  if (bot.sim.ticks > MARKET.openTicks * 0.85) throw new Error(`the run is too slow for the market: ${bot.sim.ticks} ticks of ${MARKET.openTicks}`);
   score(bot, from, 0, 30, 'The Night Market');
   if (bot.sim.ci.hitpts !== hp) throw new Error(`The Night Market cost hit points: ${hp} -> ${bot.sim.ci.hitpts}`);
   await leave(bot, bot.walk(MARKET.exit + 1, 'the exit'), 'the exit');

@@ -1,6 +1,6 @@
 // Level 12, THE NIGHT MARKET: the stalls close at the 13th chime, all at once. Three shutters (the fair's gate, four
 // blocks tall) stand across the lane; the row of bells overhead counts down to the chime, and when the last bell goes
-// dark every shutter slams down together for a few seconds. Run the lane ahead of the clock, past the crows who keep
+// dark every shutter slams down together for about fourteen seconds. Run the lane ahead of the clock, past the crows who keep
 // the stalls' watch (a crow bobs between each pair of shutters).
 //   - stacks of two wooden boxes at three stalls: knock through them (5 points a box);
 //   - cracks to hop on the way; crates to climb at the last stall.
@@ -21,8 +21,8 @@ export const MARKET = {
   crates: 61,
   exit: 84,
   width: 88,
-  /** Ticks the shutters stay open: 30% over the fair's, for slower hands (the bot is through the last one in about two thirds). */
-  openTicks: 1260,
+  /** Ticks the shutters stay open (seven bells of 109): the bot, reading the first sign, is through the last one in about four fifths. */
+  openTicks: 7 * 109,
 } as const;
 
 const SIGNS = {

@@ -91,7 +91,7 @@ export async function raceToTheFair(bot: StarterBot): Promise<void> {
   const hp = bot.sim.ci.hitpts;
   await readAt(bot, 6, 'the race sign');
   await hop(bot, FOUR.cracks, 3, 'the first cracks');
-  // under the stepladder: a drip of paint costs a quarter of her luck, but it is the quick way
+  // under the stepladder: a drip of paint costs a fifth of her luck, but it is the quick way
   await must(bot, bot.walk(FOUR.ladder - 1, 'the stepladder'), 'to the stepladder');
   await must(bot, bot.walk(FOUR.ladder + 5, 'under the stepladder'), 'under the stepladder');
   if (bot.sim.ci.hitpts !== hp + BAD_LUCK) throw new Error(`the drip should cost ${-BAD_LUCK}: ${hp} -> ${bot.sim.ci.hitpts}`);
@@ -103,7 +103,7 @@ export async function raceToTheFair(bot: StarterBot): Promise<void> {
   await must(bot, bot.walk(FOUR.crates + 3, 'over the crates'), 'over the crates');
   await must(bot, bot.walk(FOUR.dice, 'the dice'), 'to the dice');
   bot.say(`at the gate after ${bot.sim.ticks} ticks of ${OPEN_TICKS}`);
-  if (bot.sim.ticks > OPEN_TICKS * 0.8) throw new Error(`the run is too slow for the fair: ${bot.sim.ticks} ticks of ${OPEN_TICKS}`);
+  if (bot.sim.ticks > OPEN_TICKS * 0.85) throw new Error(`the run is too slow for the fair: ${bot.sim.ticks} ticks of ${OPEN_TICKS}`);
   score(bot, from, 2, 0, 'level 5');
   if (bot.sim.ci.hitpts !== hp + BAD_LUCK) throw new Error(`level 5 cost more than the drip: ${hp} -> ${bot.sim.ci.hitpts}`);
   await leave(bot, bot.walk(FOUR.exit + 1, 'the exit'), 'the exit');

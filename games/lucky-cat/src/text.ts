@@ -25,7 +25,7 @@ export const HOWTO = wrap(`
 
 Touch a lucky charm to take it. There are 13.
 
-Cracks and paint cost a quarter of your luck. A crow keeps costing while it touches you. Luck does not come back between levels.
+Cracks and paint cost a fifth of your luck. A crow keeps costing while it touches you. Luck does not come back between levels.
 
 A key opens one lock, once.
 

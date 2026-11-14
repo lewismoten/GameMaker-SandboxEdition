@@ -3,7 +3,7 @@
 //     one is always in view: they go dark one at a time, and when the last is dark the gate shuts (meter.ts);
 //   - the way: cracks to hop, a painter's stepladder (under it a drip of paint, or over its top), a brick wall with
 //     a ladder up and down, a lucky shooting star on top of the wall, crates, dice that make seven on the street;
-//   - the gate is four blocks tall: late means waiting a few seconds for it to open again and the bells to relight.
+//   - the gate is four blocks tall: late means waiting about fourteen seconds for it to open again and the bells to relight.
 // Two charms: the shooting star and the dice.
 import { StarterMap } from '../../../kit/starter/map';
 import type { Pal } from '../print';
