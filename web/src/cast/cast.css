@@ -556,3 +556,15 @@ main.cast .lead {
 #cast-joe .cast-pic {
   background: repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.18) 0 2px, transparent 2px 26px), radial-gradient(circle at 50% 55%, #c98a4b 0%, #7a4a22 80%);
 }
+
+/* a short window (a phone on its side): the stage and its controls fit the screen height, and
+   the small stage shrinks so it hides less of the text */
+@media (max-height: 500px) {
+  .cast-stage-box {
+    max-width: min(720px, calc((100vh - 170px) * 160 / 70));
+  }
+
+  .cast-mini {
+    width: 136px;
+  }
+}
