@@ -11,6 +11,7 @@ const LEVELS = [walkJumpFall, climbAndFall];
 export async function play(seed = SEED, upTo = LEVELS.length): Promise<{ sim: GameSim; bot: StarterBot }> {
   const sim = new GameSim(undefined, seed);
   const bot = new StarterBot(sim);
+  bot.jumpHold = 8; // a held-rise hero rises while Space is held (kit/starter/heroChar.ts heldRise)
   await playLevels(bot, LEVELS, upTo);
   return { sim, bot };
 }

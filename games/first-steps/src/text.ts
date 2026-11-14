@@ -22,7 +22,7 @@ export const HOWTO = wrap(`
 |SPACE         jump
 |UP, DOWN      climb a ladder
 
-Jump, then steer with LEFT and RIGHT while you are in the air.
+Hold SPACE to rise, let go, then steer with LEFT and RIGHT while you are in the air.
 
 Gravity pulls you down. Walk off a ledge and you fall; nothing hurts.
 

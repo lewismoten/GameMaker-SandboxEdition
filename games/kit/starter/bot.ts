@@ -12,6 +12,8 @@ export type Result = string | undefined;
 
 export class StarterBot {
   readonly log: string[] = [];
+  /** Ticks Space is held for a jump: 2 is a tap; a held-rise hero (heroChar heldRise) rises while it is held, so a game with one sets this higher. */
+  jumpHold = 2;
 
   constructor(readonly sim: GameSim) {}
 
@@ -75,7 +77,7 @@ export class StarterBot {
       if (stuck.update(this.px.x)) {
         // blocked: tap Space while still holding the way, so the jump carries him over
         this.sim.press(SCAN.space);
-        const r2 = await this.wait(2);
+        const r2 = await this.wait(this.jumpHold);
         this.sim.release(SCAN.space);
         if (r2) return (this.sim.releaseAll(), r2);
         stuck.reset(this.px.x);
@@ -92,7 +94,7 @@ export class StarterBot {
   /** A jump straight up; then `steer` held in the air until he has gone `steerTo` columns (or lands). */
   async jump(steer?: Dir, steerTo?: number): Promise<Result> {
     this.sim.press(SCAN.space);
-    let r = await this.wait(2);
+    let r = await this.wait(this.jumpHold);
     this.sim.release(SCAN.space);
     if (r) return r;
     if (steer) {
