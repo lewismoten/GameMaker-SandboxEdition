@@ -33,7 +33,7 @@ export function dirtTile(pal: Pal): Pixels {
   const p = new Pixels(20, 20, skyOf(pal));
   for (let y = 0; y < 20; y++)
     for (let x = 0; x < 20; x++) {
-      if ((x - y + 20) % 4 === 0 && hash(x, y, 11) < 62) p.set(x, y, c('dirt', hash(x, y, 5) % 3 === 0 ? 3 : 4));
+      if ((x - y + 20) % 4 === 0 && hash(x, y, 11) < 42) p.set(x, y, c('dirt', hash(x, y, 5) % 3 === 0 ? 3 : 4));
     }
   for (const [x, y] of [
     [4, 6],
