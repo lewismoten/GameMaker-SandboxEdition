@@ -69,9 +69,9 @@ function blocks(pal: Pal, level: 1 | 2): Built {
  *  piece sits in the six rows above the hero's feet, the part of the sky the screen shows from the ground. */
 function storm(m: StarterMap, b: Built, x: number, more: [number, number, 2 | 3][]): [number, number] {
   const top = GROUND - BOLT; // the bolt's top row: the bolt ends on the ground, so the cloud above it is the screen's top row
-  b.clouds.three.forEach((name, i) => m.set(x - 1 + i, top - 1, name));
-  for (let i = 0; i < BOLT; i++) m.set(x, top + i, `bolt.${i}`);
-  b.hill.forEach((row, dy) => row.forEach((name, dx) => m.set(x + 1 + dx, GROUND - 2 + dy, name)));
+  b.clouds.three.forEach((name, i) => m.setOnSky(x - 1 + i, top - 1, name));
+  for (let i = 0; i < BOLT; i++) m.setOnSky(x, top + i, `bolt.${i}`);
+  b.hill.forEach((row, dy) => row.forEach((name, dx) => m.setOnSky(x + 1 + dx, GROUND - 2 + dy, name)));
   for (const [cx, cy, w] of more) (w === 2 ? b.clouds.two : b.clouds.three).forEach((name, i) => m.set(cx + i, cy, name));
   return [x, top];
 }
@@ -95,7 +95,7 @@ function flashAndRumble(pal: Pal): Level {
   const m = new StarterMap(b.book, g.rows());
   m.sign(5, onGround(b.signs.sky), b.signs.sky);
   m.sign(12, onGround(b.signs.bolt), b.signs.bolt);
-  m.sign(23, onGround(b.signs.thunder), b.signs.thunder);
+  m.sign(24, onGround(b.signs.thunder), b.signs.thunder);
   const bolt = storm(m, b, 19, [
     [6, 5, 2],
     [27, 5, 3],

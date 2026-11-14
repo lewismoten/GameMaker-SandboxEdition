@@ -90,6 +90,13 @@ export class StarterMap {
     if (!this.start[0]) throw new Error('A level needs an entrance (S)');
   }
 
+  /** Like set(), but throws if the cell already holds anything but sky (a sign or a hill must not overwrite another piece). */
+  setOnSky(x: number, y: number, name: string): this {
+    const at = (y + ORIGIN) * MLEN + x + ORIGIN;
+    if (this.map.blocks[at] !== this.book.n('sky')) throw new Error(`"${name}" at ${x},${y} would overwrite a block that is not sky`);
+    return this.set(x, y, name);
+  }
+
   /** Puts block `name` at level coordinates. */
   set(x: number, y: number, name: string): this {
     this.map.blocks[(y + ORIGIN) * MLEN + x + ORIGIN] = this.book.n(name);
@@ -115,10 +122,10 @@ export class StarterMap {
 
   /** A sign with its board's top-left block at level (x, y), and its two posts below. */
   sign(x: number, y: number, s: Sign): this {
-    s.board.forEach((row, dy) => row.forEach((name, dx) => this.set(x + dx, y + dy, name)));
+    s.board.forEach((row, dy) => row.forEach((name, dx) => this.setOnSky(x + dx, y + dy, name)));
     const w = s.board[0].length;
     const below = y + s.board.length;
-    this.set(x, below, s.legs[0]).set(x + w - 1, below, s.legs[1]);
+    this.setOnSky(x, below, s.legs[0]).setOnSky(x + w - 1, below, s.legs[1]);
     return this;
   }
 
