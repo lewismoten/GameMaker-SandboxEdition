@@ -34,6 +34,7 @@
     "test:fast": "npm run test:fast -w gamemaker-web --",
     "release:draft": "npm run release:draft -w gamemaker-web --",
     "release:cut": "npm run release:cut -w gamemaker-web --",
+    "release:sbom": "npm run release:sbom -w gamemaker-web --",
     "release:check": "npm run release:check -w gamemaker-web --",
     "release:sizes": "node scripts/release/sizes.mjs",
     "release:pages": "node scripts/release/publish-pages.mjs",
