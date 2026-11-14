@@ -4,30 +4,32 @@
 //
 //   1. Gravity On:  side.bbl, every air block has Gravity "down".
 //   2. Gravity Off: top.bbl, every block has Gravity "none", and top.chr walks in four directions.
-import { Book } from '../../kit/starter/book';
+import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
+import { MICRO_GLYPHS } from '@lewismoten/gamemaker-sandbox-tools/microFont';
+import { Book, PULL } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
-import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
-import { addSign, type Sign } from '../../kit/starter/sign';
-import { addTopBlocks, addTopSign } from './topBlocks';
+import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
+import { addTopBlocks } from './topBlocks';
 import { TopMap } from './topMap';
 
 export type SignName = 'jump' | 'wall' | 'ledge' | 'exit';
 
 /** The signs' words in both levels (the same four ideas, said for each view). */
-const WORDS: Record<'side' | 'top', Record<SignName, { text: string; w: number; h: number }>> = {
+const WORDS: Record<'side' | 'top', Record<SignName, string>> = {
   side: {
-    jump: { text: 'GRAVITY IS ON. SPACE JUMPS AND YOU FALL BACK', w: 4, h: 3 },
-    wall: { text: 'A WALL IS A STEP. JUMP OVER IT', w: 4, h: 2 },
-    ledge: { text: 'WALK OFF THE LEDGE AND GRAVITY PULLS YOU DOWN', w: 4, h: 3 },
-    exit: { text: 'EXIT →', w: 3, h: 1 },
+    jump: 'GRAVITY IS ON. SPACE JUMPS AND YOU FALL BACK',
+    wall: 'A WALL IS A STEP. JUMP OVER IT',
+    ledge: 'WALK OFF THE LEDGE AND GRAVITY PULLS YOU DOWN',
+    exit: 'EXIT →',
   },
   top: {
-    jump: { text: 'GRAVITY IS OFF. THE ARROWS WALK IN FOUR WAYS', w: 4, h: 3 },
-    wall: { text: 'SPACE DOES NOTHING NOW. WALK AROUND THE WALL', w: 4, h: 3 },
-    ledge: { text: 'WALK OFF THE DECK. NOTHING PULLS YOU DOWN', w: 4, h: 3 },
-    exit: { text: 'EXIT →', w: 3, h: 1 },
+    jump: 'GRAVITY IS OFF. THE ARROWS WALK IN FOUR WAYS',
+    wall: 'SPACE DOES NOTHING NOW. WALK AROUND THE WALL',
+    ledge: 'WALK OFF THE DECK. NOTHING PULLS YOU DOWN',
+    exit: 'EXIT →',
   },
 };
 
@@ -52,7 +54,28 @@ export const WALL_BOTTOM = 6;
 export const ROUND_Y = 8;
 export const TOP_HEIGHT = 11;
 
-const onGround = (s: Sign) => GROUND - 1 - s.board.length;
+/** Each narrow room shares its frame, letter fragments and single post. */
+function compactSigns(book: Book, pal: Pal, view: 'side' | 'top', lawn?: Pixels): Record<SignName, Sign> {
+  const texts = Object.fromEntries(
+    (Object.keys(WORDS[view]) as SignName[]).map((name) => [name, { rows: [[WORDS[view][name]]], maxWidth: name === 'wall' ? 5 : 7 }]),
+  ) as Record<SignName, { rows: string[][]; maxWidth: number }>;
+  const { blocks, signs } = buildTiledSigns(texts, {
+    compact: true,
+    colors: {
+      background: skyOf(pal),
+      paper: pal.c('parch', 3),
+      ink: pal.c('ink', 0),
+      wood: pal.c('wood', 2),
+      highlight: pal.c('wood', 4),
+      shadow: pal.c('wood', 0),
+    },
+    glyphs: { ...MICRO_GLYPHS, '→': '100110111110100' },
+    maxBlocks: 100 - book.index.size,
+  });
+  for (const [name, pic] of blocks)
+    book.add(name, lawn ? pic.map((x, y, c) => (c === skyOf(pal) ? lawn.get(x, y) : c)) : pic, { grav: view === 'side' ? PULL.down : PULL.none });
+  return signs;
+}
 
 /** Level 1: a side view, 40 blocks wide. */
 function sideLevel(book: Book, signs: Record<SignName, Sign>): StarterMap {
@@ -72,10 +95,10 @@ function sideLevel(book: Book, signs: Record<SignName, Sign>): StarterMap {
   for (const x of [21, 28, 34]) g.put(x, GROUND - 1, 'b');
   for (const x of [10, 17, 30]) g.put(x, GROUND - 1, 'f');
   const m = new StarterMap(book, g.rows());
-  m.sign(4, onGround(signs.jump), signs.jump);
-  m.sign(9, onGround(signs.wall), signs.wall);
-  m.sign(27, onGround(signs.ledge), signs.ledge);
-  m.sign(31, onGround(signs.exit), signs.exit);
+  stampTiledSign(m, 1, 5, signs.jump);
+  stampTiledSign(m, 8, 5, signs.wall);
+  stampTiledSign(m, 25, 5, signs.ledge);
+  stampTiledSign(m, 34, 5, signs.exit);
   return m;
 }
 
@@ -98,10 +121,10 @@ function topLevel(book: Book, signs: Record<SignName, Sign>): TopMap {
   for (const x of [21, 28, 34]) g.put(x, ROUND_Y, 'b');
   for (const x of [10, 17, 30]) g.put(x, ROUND_Y + 1, 'f');
   const m = new TopMap(book, g.rows());
-  m.sign(4, 1, signs.jump);
-  m.sign(9, 1, signs.wall);
-  m.sign(27, 1, signs.ledge);
-  m.sign(31, 2, signs.exit);
+  stampTiledSign(m, 1, 1, signs.jump);
+  stampTiledSign(m, 8, 1, signs.wall);
+  stampTiledSign(m, 25, 1, signs.ledge);
+  stampTiledSign(m, 34, 2, signs.exit);
   return m;
 }
 
@@ -110,12 +133,10 @@ export function buildLevels(): { book: Book; topBook: Book; pal: Pal; levels: Le
   const pal = buildStarterPalette(undefined, 'gravity-on-gravity-off');
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
-  const side = {} as Record<SignName, Sign>;
-  for (const n of Object.keys(WORDS.side) as SignName[]) side[n] = addSign(book, pal, `${n}.sign`, WORDS.side[n].text, WORDS.side[n].w, WORDS.side[n].h);
+  const side = compactSigns(book, pal, 'side');
   const topBook = new Book('bbl');
   const lawn = addTopBlocks(topBook, pal, book);
-  const top = {} as Record<SignName, Sign>;
-  for (const n of Object.keys(WORDS.top) as SignName[]) top[n] = addTopSign(topBook, pal, lawn, `${n}.sign`, WORDS.top[n].text, WORDS.top[n].w, WORDS.top[n].h);
+  const top = compactSigns(topBook, pal, 'top', lawn);
   const levels: Level[] = [
     { file: 'one', title: 'Gravity On', hint: 'Jump, and fall back down.', book, map: sideLevel(book, side) },
     { file: 'two', title: 'Gravity Off', hint: 'The same place, from above.', book: topBook, map: topLevel(topBook, top) },
