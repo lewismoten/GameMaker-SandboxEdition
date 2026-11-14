@@ -62,7 +62,15 @@ export function parseBak(text: string | null): Bak | undefined {
   }
 }
 
-const EVENTS = ['gm-eggs-changed', 'gm-tin-hearts-changed', 'gm-score-trophies-changed', 'gm-desk-clock'];
+const EVENTS = [
+  'gm-eggs-changed',
+  'gm-tin-hearts-changed',
+  'gm-score-trophies-changed',
+  'gm-desk-clock',
+  'course-grades-changed',
+  'courier-changed',
+  'gm-chicken-changed',
+];
 
 /** Puts a backup's state back: every kept key is set or removed, so the state is exactly as it was. */
 export async function restoreBak(bak: Bak): Promise<void> {
