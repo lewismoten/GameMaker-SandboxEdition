@@ -17,6 +17,7 @@ import { execFileSync } from 'node:child_process';
 import { basename, join, resolve } from 'node:path';
 import { GameFiles } from '../src/project/files';
 import { exportDos } from '../src/export/exportDos';
+import { PLAYED, copyOut, editedFiles, readTree, stamp } from './playedFiles';
 import { readZip } from '@lewismoten/gamemaker-sandbox-archives/zip';
 
 const ROOT = resolve(__dirname, '../..');
@@ -62,27 +63,17 @@ function copyUpper(from: string, to: string): void {
 }
 
 // what playing in DOS wrote survives a rebuild: each game's sound and video setup (CONFIG.DAT),
-// saved games (GAME0-9.SAV, SAVNAMES.DAT) and high scores (.HIS). They are copied first to
+// saved games (GAME0-9.SAV, SAVNAMES.DAT, NAME.SAV) and high scores (.HIS). They are copied first to
 // dosbox-saves/<date and time>/ beside the folder (git-ignored), then put back into the new one.
-const PLAYED = /^(config\.dat|game\d\.sav|savnames\.dat|.*\.his)$/i;
-const kept = new Map<string, Buffer>();
-const keep = (dir: string, rel = ''): void => {
-  if (!existsSync(dir)) return;
-  for (const name of readdirSync(dir)) {
-    const path = join(dir, name);
-    if (statSync(path).isDirectory()) keep(path, join(rel, name));
-    else if (PLAYED.test(name)) kept.set(join(rel, name), readFileSync(path));
-  }
-};
-keep(target);
+// Any other file a person changed or added there goes to dosbox-edits/<date and time>/ (see playedFiles.ts).
+const kept = readTree(target, (name) => PLAYED.test(name));
+// everything else in the old folder, to compare with the new build: what a person edited or added there
+// (a game made in Game-Maker, say) is copied to dosbox-edits/<date and time>/ and never deleted
+const old = readTree(target, (name) => !PLAYED.test(name));
 let backup: string | undefined;
 if (kept.size) {
-  const stamp = new Date().toISOString().replace(/[:T]/g, '-').slice(0, 19);
-  backup = join(target, '..', `${basename(target)}-saves`, stamp);
-  for (const [rel, data] of kept) {
-    mkdirSync(join(backup, rel, '..'), { recursive: true });
-    writeFileSync(join(backup, rel), data);
-  }
+  backup = join(target, '..', `${basename(target)}-saves`, stamp());
+  copyOut(kept, backup);
 }
 rmSync(target, { recursive: true, force: true });
 mkdirSync(target, { recursive: true });
@@ -153,6 +144,12 @@ for (const [rel, data] of kept) {
   if (existsSync(join(path, '..'))) (writeFileSync(path, data), restored++);
 }
 if (backup) pruneEmpty(backup);
+const edited = editedFiles(old, target);
+if (edited.size) {
+  const dir = join(target, '..', `${basename(target)}-edits`, stamp());
+  copyOut(edited, dir);
+  console.log(`copied ${edited.size} file${edited.size === 1 ? '' : 's'} you changed or added in the old folder (not part of the fresh build) to ${dir}`);
+}
 if (backup && existsSync(backup)) console.log(`backed up what DOS wrote (setups, saved games, high scores) to ${backup}`);
 if (restored) console.log(`put back ${restored} played file${restored === 1 ? '' : 's'} (a game left out this time keeps its copy in the backup only)`);
 for (const [kind, dirs] of Object.entries(made)) console.log(`GAMES\\${kind}\\  and GM\\  ${dirs.length} games: ${dirs.join(' ')}`);
