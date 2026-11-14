@@ -1,6 +1,6 @@
 // What a touch action button says. A game's controls.json names what each key does ("Throw a
 // star"); the button shows that name, with the key as a small second line (a player with a
-// keyboard learns it there) and both in its aria-label ("Throw a star (Enter)"). Pure:
+// keyboard learns it there) and the aria-label says the same ("Throw a star (Enter)"). Pure:
 // touch.ts draws what this returns.
 //
 // The rule, so the name fits a round 58 to 64 px button: at most MAX_NAME characters, no word
@@ -35,14 +35,17 @@ export interface ActionLabel {
   main: string;
   /** The small text under it: the key's name, only when `main` is the game's name. */
   key?: string;
-  /** What assistive tech hears: "Throw a star (Enter)", or the key's name alone. */
+  /** What assistive tech hears on an action button: exactly its visible text ("Throw a star (Enter)"), or the key's name, then the game's name ("G, Throw a star at the boss"). */
   aria: string;
+  /** The same for a button that shows only the key's name (the fixed row): the key first, then what it does ("Enter, Pick up"). */
+  plainAria: string;
 }
 
-/** The label for a key, given its short key name (touchLabel), its full key name and the game's name for it (if any). */
+/** The label for a key, given its short key name (touchLabel), its full key name and the game's name for it (if any). The accessible name always starts with the visible text (WCAG 2.5.3). */
 export function actionLabel(keyShort: string, keyFull: string, name: string | undefined): ActionLabel {
-  if (!name) return { main: keyShort, aria: keyFull };
-  const aria = `${name} (${keyFull})`;
-  if (!nameFits(name)) return { main: keyShort, aria };
-  return name.toLowerCase() === keyShort.toLowerCase() ? { main: name, aria } : { main: name, key: keyShort, aria };
+  if (!name) return { main: keyShort, aria: keyFull, plainAria: keyFull };
+  const plainAria = `${keyShort}, ${name}`;
+  if (!nameFits(name)) return { main: keyShort, aria: plainAria, plainAria };
+  if (name.toLowerCase() === keyShort.toLowerCase()) return { main: name, aria: name, plainAria };
+  return { main: name, key: keyShort, aria: `${name} (${keyShort})`, plainAria };
 }
