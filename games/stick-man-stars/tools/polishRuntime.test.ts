@@ -96,7 +96,7 @@ describe('built Stick Man Stars polish', () => {
       for (const route of [stargazingHill, mainStreet, shyStreet, spamRow]) await route(bot);
       expect(sim.ended).toBe('won');
       expect(sim.deaths).toBe(0);
-      expect(sim.ci.score).toBe(1390);
+      expect(sim.ci.score).toBe(1420); // the signs stand on one post now, so three coins a second post covered are back
       expect(lighting.length).toBeGreaterThan(0);
       expect(new Set(lighting.map((s) => Number(s.split(':')[2])))).toEqual(new Set([COTTAGE, TOWER, SHED, BIG1]));
       traces.push(lighting);
