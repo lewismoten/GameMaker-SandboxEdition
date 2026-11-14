@@ -14,6 +14,7 @@
 // (the author's heat map and a play for the walkthrough, in one session), and watching the
 // bot's route or the author's play.
 import './checkPanel.css';
+import { passesThrough } from '../../integrator/sceneRole';
 import { h, clear, checkField, numberField, selectField, toast } from '../../../core/ui';
 import type { Project } from '../../../core/project';
 import type { MapSelection } from '../tools/selection';
@@ -471,12 +472,24 @@ export function checkPanel(host: CheckHost): {
     said.textContent = `${at(c)}: ${describe(c).join('. ')}.`;
   }
 
+  /** A scene the hero leaves at once (a talk page or a fade) has no level to check: say so beside the status. */
+  const passNote = (): string => {
+    if (host.scene === undefined) return '';
+    try {
+      return passesThrough(project.game(), host.scene)
+        ? ' This scene is a talk page or fade: the hero arrives on one of its own links and leaves at once, so findings about getting through a level don’t apply to it.'
+        : '';
+    } catch {
+      return '';
+    }
+  };
+
   /** The saved findings, those still open and those accepted as meant to be. */
   const split = () => splitAccepted(saved?.findings ?? [], acceptedFindings(project));
 
   function render(): void {
     if (!saved) {
-      status.textContent = host.scene === undefined ? 'No scene plays this map yet, so only its files can be checked.' : 'Not checked yet.';
+      status.textContent = host.scene === undefined ? 'No scene plays this map yet, so only its files can be checked.' : `Not checked yet.${passNote()}`;
       clear(list);
       clear(counts);
       clear(acceptedBox);
@@ -486,7 +499,7 @@ export function checkPanel(host: CheckHost): {
     }
     toggles.hidden = false;
     const when = new Date(saved.when);
-    status.textContent = `Checked ${when.toLocaleString()}: ${saved.places} places tried in ${(saved.ms / 1000).toFixed(0)} s${saved.complete ? ', every move from every one' : ', then the time ran out'}.`;
+    status.textContent = `Checked ${when.toLocaleString()}: ${saved.places} places tried in ${(saved.ms / 1000).toFixed(0)} s${saved.complete ? ', every move from every one' : ', then the time ran out'}.${passNote()}`;
     const { open, accepted } = split();
     const by = (s: Kind) => open.filter((f) => kindOf(f) === s).length;
     clear(
