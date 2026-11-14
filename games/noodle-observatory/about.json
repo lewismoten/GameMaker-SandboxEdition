@@ -16,5 +16,5 @@
     "ink": "#22201c",
     "logo": "SANDBOX SOFTWARE"
   },
-  "acceptedFindings": ["facing s3 The hero climbs side on", "facing s7 The hero faces the same way walking left and right", "waits s43 Timed block 45 stays shut for 49.5 s at a time", "waits s49 Timed block 45 stays shut for 60.4 s at a time"]
+  "acceptedFindings": [{ "finding": "facing s3 The hero climbs side on", "why": "Nell climbs the ladder side on, as every Starter hero does." }, { "finding": "facing s7 The hero faces the same way walking left and right", "why": "The ring is round, so it looks the same rolling either way." }, "waits s43 Timed block 45 stays shut for 49.5 s at a time", "waits s49 Timed block 45 stays shut for 60.4 s at a time"]
 }
