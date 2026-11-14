@@ -26,6 +26,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.`;
 
+/** Said wherever the MIT notice for the player travels with a game (notices, LICENSE.txt, README). */
+export const GAME_OWNERSHIP =
+  "The game itself is not covered by this license: it remains its author's work under its own terms (a game you made yourself is yours).";
+
 /** This project's MIT License: the player programs' and every exported page's (pageSeo.ts, exportWebApp.ts LICENSE.txt). */
 export const PROJECT = `Game-Maker: Sandbox Edition (the player program and the game's player page)
 https://github.com/lewismoten/GameMaker-SandboxEdition
@@ -33,6 +37,8 @@ MIT License
 
 Copyright (c) 2014 gandrewstone
 Copyright (c) 2026 Lewis Moten
+
+${GAME_OWNERSHIP}
 
 ${MIT}
 
