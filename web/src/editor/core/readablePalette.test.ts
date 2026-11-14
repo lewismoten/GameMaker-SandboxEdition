@@ -128,3 +128,25 @@ describe('a sprite used in scenes with several palettes', () => {
     expect(p.paletteFor('x.cbl', used).source).toBe('b.pal');
   });
 });
+
+describe('a scene with blank slots', () => {
+  it('counts what it inherits from the scene before it', () => {
+    const game = newGame('T');
+    const a = newGame('T').scenes[0];
+    a.gametype = 10;
+    a.files = ['a.pal', 'm.map', 'b.bbl'];
+    const b = newGame('T').scenes[0];
+    b.gametype = 10;
+    b.files = ['', 'n.map', ''];
+    game.scenes.push(a, b);
+    const p = Project.fromFiles(
+      new GameFiles([
+        ['t.gam', serializeGame(game)],
+        ['a.pal', pal([40, 30, 20])],
+        ['z.pal', pal([10, 50, 20])],
+      ]),
+    );
+    expect(p.paletteFor('n.map').source).toBe('a.pal');
+    expect(p.paletteFor('lonely.bbl').source).not.toBe('');
+  });
+});

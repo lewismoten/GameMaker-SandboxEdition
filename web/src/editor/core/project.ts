@@ -211,10 +211,16 @@ export class Project {
     const game = this.game();
     // several scenes may use one file with different palettes: the palette most of them use wins, the first on a tie
     const tally = new Map<string, { n: number; name: string }>();
-    for (const u of this.usesOf(file)) {
-      const scene = game.scenes[u.scene];
-      const pal = scene.files[0];
-      if (scene.gametype !== 10 || !pal || !this.files.has(pal)) continue;
+    // a slot left blank keeps the file of the level scene before it (loadscene's globals), so a scene counts as using what it inherits
+    const want = normalize(file);
+    const held: string[] = [];
+    for (const scene of game.scenes) {
+      if (scene.gametype !== 10) continue;
+      scene.files.forEach((f, slot) => {
+        if (f) held[slot] = f;
+      });
+      const pal = held[0];
+      if (!want || !pal || !this.files.has(pal) || !held.some((f) => f && normalize(f) === want)) continue;
       const hit = tally.get(normalize(pal));
       if (hit) hit.n++;
       else tally.set(normalize(pal), { n: 1, name: pal });
