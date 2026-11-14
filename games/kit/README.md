@@ -219,7 +219,7 @@ catalogPatches.ts`) and the DOS download writes it into XFERPLAY.EXE; it never g
   checks each against the rules, writes it into the CD's player, and checks that a color it changes on the black
   screens (F2, the drop picker, F1's no-help line, F10, the name prompt) stands 3 : 1 against color 0 in every level's
   palette. `levelCheck.ts` judges the menu's words and the color 0 check with it.
-- `levelCheck.ts` — the editor's Level check (static part) on a built disk; only an error or warning missing from
+- `levelCheck.ts` — the editor's Level check (static part) on a built disk; only an error or warning (a taste check's warning is a suggestion: printed, never a failure; `levelCheckLines.ts`) missing from
   `levelCheck.baseline.json` fails. After looking at new findings and judging them fine (or after tuning the checks), run
   `npx vite-node ../games/kit/levelCheck.ts <id> --update` to rewrite that game's baseline. A game's about.json
   `"sameEverySide"` (`["ship.chr", "hive.mon#0"]`) lists heroes and monsters meant to look the same from every side,
