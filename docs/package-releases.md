@@ -28,6 +28,8 @@ Every release target has a hand-written [Keep a Changelog](https://keepachangelo
 
 The workflow ends each package by creating its GitHub Release: the body is that version's changelog section (`scripts/release/section.mjs`), and a CycloneDX SBOM of the runtime dependencies from npm's own `npm sbom` is attached. This runs in the same job and needs `contents: write`. (`npm sbom` needs the root `package.json` to have a `version`, which is why it says `0.0.0`.)
 
+`npm run release:sbom -- <pages|engine|archives|tools> [version] [--out file]` runs that same `npm sbom` for a target and writes `release-out/<target>-<version>.sbom.cdx.json` (git-ignored; the site's version defaults to `next`). Use it for the site's release, and to look at a package's SBOM before the tag; the workflow still makes the packages' own. `release:cut` prints the command when it finishes.
+
 To add a release for a tag that already exists (such as `engine-v3.1.0`), run from the repository root with `gh` signed in:
 
 ```sh

@@ -56,3 +56,4 @@ __pycache__/
 /hardware/pocket-player/
 .pio/
 .leak-patterns.local
+release-out/
