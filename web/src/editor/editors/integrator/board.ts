@@ -5,6 +5,7 @@
 import type { Project } from '../../core/project';
 import { fromCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 import { NOSCENE, sceneKind, type Game, type Point, gameTitle } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { passesThrough, roleNote } from './sceneRole';
 import { WORLD, CARD_UNITS, arrival } from './layoutCells';
 import { START_SONGS } from './sceneSlots';
 import { isSolidPalette } from '../../core/readablePalette';
@@ -149,7 +150,8 @@ export function drawCard(ctx: CanvasRenderingContext2D, i: number, forExport: bo
   // a pass-through scene: the hero arrives on one of its own links out, so it leaves at once (a talk page
   // between scenes, or just a fade)
   const at = kind === 'adventure' ? arrival(v.game, i) : undefined;
-  const pass = !!at && s.links.some((l) => l.toScene !== NOSCENE && !!v.game.scenes[l.toScene] && l.from.x === at.x && l.from.y === at.y);
+  const pass = passesThrough(v.game, i);
+  const note = roleNote(v.game, i);
   const pal = s.files[0] ? v.project.files.get(s.files[0]) : undefined;
   const page = pass ? (v.screenOf(s.files[9]) ?? v.screenOf(s.files[10])) : undefined;
   const color = pass ? TALK : COLORS[kind];
@@ -225,7 +227,7 @@ export function drawCard(ctx: CanvasRenderingContext2D, i: number, forExport: bo
     : kind === 'adventure'
       ? (() => {
           const a = at!;
-          return `${pass ? (page ? 'talk · ' : 'pass · ') : ''}in at ${a.x},${a.y}`;
+          return `${pass ? (page ? 'talk · ' : 'pass · ') : note ? `${note} · ` : ''}in at ${a.x},${a.y}`;
         })()
       : kind === 'start'
         ? 'start'
