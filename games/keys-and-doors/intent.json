@@ -1,0 +1,9 @@
+{
+  "levels": [
+    {
+      "scene": 2,
+      "teaches": "find a key (up the ladder) before the locked door",
+      "rules": [{ "rule": "before", "a": "score:25", "b": "leave" }, { "rule": "uses", "move": "Up", "min": 1 }]
+    }
+  ]
+}

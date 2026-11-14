@@ -76,6 +76,7 @@ const iso = createIso([
 - `fli-check`: `fliCheck(files)` accepts engine `GameFiles`' `get` and `byExtension`
   methods and returns warning findings for PLAYGAME animation decoder limits. It works
   in Node and browsers, reads no project metadata, and leaves accepting suggestions to callers.
+- `kit/eventLog`: `recordEvents(SimClass, run)` logs a headless `GameSim`'s key edges, score changes, scene changes and deaths as an `EventLog` (`presses(scan, scene?)`), patching the class only while `run` runs; `scanOf`/`nameOf` map key names ("Enter") and scan codes. Rules over the log live in `games/kit/intentRules.ts`.
 - `kit/blockRoles` and `kit/levelGen`: role-based seeded map generation. The latter
   exports `generate`, `generatePlatform`, `heroPhysics`, `capability`, `proveResult` and
   `reachFrom(area, physics, start, locksOpen, options?)`. The reach model tracks touched

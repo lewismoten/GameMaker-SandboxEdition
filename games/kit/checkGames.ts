@@ -11,6 +11,8 @@
 //   player  kit/playerCheck.ts (games/<id>/player.json, its DOS player look, keeps the rules)
 //   pal     kit/palCheck.ts (no two .pal files in disk/ are byte-identical; the shared writer merges them)
 //   leap    kit/leapCheck.ts (no locked door or gate can be jumped over without its key)
+//   intent  kit/intentCheck.ts (games/<id>/intent.json: what a level means to teach, against what a bot does; its findings print and are
+//           suggestions, so only a rule marked "strict" fails; skip without intent.json)
 //   controls kit/controlsCheck.ts (games/<id>/controls.json describes exactly the keys, joystick buttons and counters the game uses)
 // then once: kit/tinHearts.ts check, kit/saveSignCheck.ts (one save sign per felt-egg game, none
 // elsewhere), kit/syncCheck.ts (levelSecrets.json and box hours) and kit/versionCheck.ts (a game
@@ -69,7 +71,7 @@ const hasNice = process.platform !== 'win32' && spawnSync('nice', ['true']).stat
 const viteNode = join(webDir, '../node_modules/.bin/vite-node');
 
 /** Runs one script with vite-node from web/, niced; logs its tail when it fails. Output goes to `log`. */
-function step(log: string[], label: string, script: string, scriptArgs: string[] = [], env: Record<string, string> = {}): Promise<Status> {
+function step(log: string[], label: string, script: string, scriptArgs: string[] = [], env: Record<string, string> = {}, always = false): Promise<Status> {
   const cmd = hasNice ? 'nice' : viteNode;
   const cmdArgs = [...(hasNice ? ['-n', '10', viteNode] : []), script, ...scriptArgs];
   return new Promise((resolve) => {
@@ -84,7 +86,7 @@ function step(log: string[], label: string, script: string, scriptArgs: string[]
       clearTimeout(timer);
       const out = text.split('\n').filter((l) => l && !/ExperimentalWarning|--trace-warnings/.test(l));
       const ok = code === 0;
-      if (verbose || !ok) {
+      if (verbose || always || !ok) {
         log.push(`  ${label}${ok ? '' : ` failed (${error || `exit ${code ?? signal}`})`}:`);
         for (const l of verbose ? out : out.slice(-20)) log.push(`    ${l}`);
       }
@@ -154,7 +156,7 @@ async function rebuild(id: string, log: string[]): Promise<Status> {
   }
 }
 
-const COLS = ['build', 'bounds', 'check', 'walk', 'text', 'hidden', 'level', 'player', 'controls', 'leap', 'pal'] as const;
+const COLS = ['build', 'bounds', 'check', 'walk', 'text', 'hidden', 'level', 'player', 'controls', 'leap', 'pal', 'intent'] as const;
 type Row = Record<(typeof COLS)[number], Status> & { sec: number };
 const rows = new Map<string, Row>();
 const t0 = Date.now();
@@ -227,6 +229,7 @@ async function checkGame(id: string): Promise<void> {
     controls: has(id, 'controls.json') ? await step(log, 'controls', '../games/kit/controlsCheck.ts', [id]) : 'skip',
     leap: await step(log, 'leap', '../games/kit/leapCheck.ts', [id]),
     pal: await step(log, 'pal', '../games/kit/palCheck.ts', [id]),
+    intent: has(id, 'intent.json') ? await step(log, 'intent', '../games/kit/intentCheck.ts', [id], {}, true) : 'skip',
     sec: 0,
   };
   row.sec = Math.round((Date.now() - t) / 1000) + (buildSec.get(id) ?? 0);

@@ -52,6 +52,7 @@ const sources = {
   'kit/blit': 'kit/blit',
   'kit/blockRoles': 'kit/blockRoles',
   'kit/clips': 'kit/clips',
+  'kit/eventLog': 'kit/eventLog',
   'kit/gameSim': 'kit/gameSim',
   'kit/levelGen': 'kit/levelGen/index',
   'kit/laserClearance': 'kit/laserClearance',

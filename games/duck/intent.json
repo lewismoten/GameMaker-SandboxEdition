@@ -1,0 +1,9 @@
+{
+  "levels": [
+    {
+      "scene": 2,
+      "teaches": "pass each bird by ducking (Down)",
+      "rules": [{ "rule": "uses", "move": "Down", "min": 3 }, { "rule": "needs", "move": "Down" }]
+    }
+  ]
+}
