@@ -21,8 +21,10 @@ import { CHARMS, charmPicture } from './charms';
 import { T, art, blank, cut, hatch, onSky, skyTile, tri, type Pal } from './print';
 import { rascalStanding } from './rascal';
 
-/** Hit points a bad-luck hazard takes, once. */
-export const BAD_LUCK = -5;
+/** Hit points a bad-luck hazard takes, once: a quarter of the cat's luck, which does not come back between levels. */
+export const BAD_LUCK = -25;
+/** Hit points a crow takes for every tick it touches the cat. */
+export const PECK = -5;
 /** Points a charm is worth: lucky 13. */
 export const CHARM_POINTS = 13;
 /** The counter the charms add to (counters 20 to 29 are free; 20 is the salt shaker's and the bin key's, 21 the mirror key's). */
