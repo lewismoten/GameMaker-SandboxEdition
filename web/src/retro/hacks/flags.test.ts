@@ -227,6 +227,11 @@ describe('FLAGS desk state (grades, courier, buddy, chicken, tour)', () => {
     await item('TOUR').clear!([]);
     expect(await item('TOUR').show()).toBe('no visit recorded');
   });
+  it('RESET GRADES also forgets the days the honors were earned', async () => {
+    localStorage.setItem('gm-honors-dates', JSON.stringify({ x: '2026-01-02' }));
+    await item('GRADES').reset!();
+    expect(localStorage.getItem('gm-honors-dates')).toBeNull();
+  });
   it('is in the backup, and RESET ALL reaches it; Specials point to their own program', () => {
     for (const k of ['gm-course-grades', 'gm-courier', 'gm-desk-buddy', 'gm-chicken', 'gm-tour-seen']) expect(BACKUP_KEYS).toContain(k);
     for (const id of ['GRADES', 'COURIER', 'BUDDY', 'CHICKEN', 'TOUR']) expect(item(id).reset, id).toBeDefined();
