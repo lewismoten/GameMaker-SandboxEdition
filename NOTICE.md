@@ -21,6 +21,14 @@ Windows and Linux players in `mac/`, `win/` and `linux/`) is released under the 
 License; see [LICENSE](LICENSE), whose original copyright notice is kept unchanged as the
 license requires.
 
+The MIT License covers the Stones' source and this fork's own code and content. It is not a
+grant from the authors of other people's work that happens to sit in the same repository or on
+the CD image: the shareware and sample games by other authors, the CD's pictures and
+animations, its bundled tools, and the third-party items listed below stay under their own
+authors' rights and terms (see "The sample and shareware games on the CD" and the third-party
+sections). Games a visitor imports are likewise their authors' own and are kept apart from this
+project's catalog. This is a plain statement of how the files are labeled, not legal advice.
+
 ## The name: Game-Maker: Sandbox Edition
 
 To keep this fork from being mistaken for RSD's own release, it goes by **Game-Maker:
@@ -274,7 +282,7 @@ game folder opens in the browser unchanged.
   shots and manual pages (`frames/`, `web/scripts/shotFrames.ts`); the 1200 × 630 social preview
   `og-image.png` (`web/scripts/ogImage.ts`); the app icons (`icon.svg` and the PNGs made from
   it, drawn for this project as a block grid); the magazine's screenshots of the site, its
-  editors and the desk (`magazine/`, `web-*.webp` and `desk-1994.webp`); and the demo recordings
+  editors and the desk (`magazine/`, `web-*.webp` and `desk-1994.webp`), its three turned box renders (`box-*.webp`) and its renders of made-up 1996 web pages (`oldweb-*.webp`, drawn by `web/scripts/oldWebPages.ts` and `oldWebShots.ts`, made with **Claude Sonnet 5.5**, directed by Lewis Moten); and the demo recordings
   for CD games that shipped without one (`extras/demos`, recorded and replayed by
   `games/kit/cdDemos/make.ts`; they are not part of the original games). The Credits page's
   small title-screen pictures (`credits/`) are frames of RSD's own Game-Maker title screen and
