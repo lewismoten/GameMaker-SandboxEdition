@@ -24,6 +24,7 @@ import { endingFli, skyFli, type SunMove } from './src/skyFli';
 import { houseLitVoc, throwSounds } from './src/sounds';
 import { demoRecording } from './src/demo';
 import { TITLE, buildGame } from './src/game';
+import { WORLD, packLevels } from './src/pack';
 import { buildLevels } from './src/levels';
 import { paletteFor } from './src/moods';
 import { HERO_HIT_POINTS, finishMonsterPictures, monsterPictures, monsterSet } from './src/monsters';
@@ -55,10 +56,10 @@ disk.put('stars.snd', serializeSoundSet(throwSounds()));
 disk.put('houselit.voc', houseLitVoc());
 disk.put('stars.cmf', song());
 
-// each level's map and its card
+// the one shared map, then each level's palette and card
+disk.put(`${WORLD}.map`, serializeMap(packLevels(levels)));
 levels.forEach((l, i) => {
   disk.put(`${l.file}.pal`, serializePalette(l.pal.pal));
-  disk.put(`${l.file}.map`, serializeMap(l.map.done()));
   disk.put(`${l.file}.gif`, gif(cardPicture(pal, book, hero, i + 1, levels.length, l.title, l.hint), pal));
   // between levels, a cartoon: the sky turns from the last level's palette to this one's
   const move: [SunMove, 'fade-out' | 'fade-in' | 'none'][] = [

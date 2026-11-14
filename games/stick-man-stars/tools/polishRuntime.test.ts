@@ -6,6 +6,7 @@ import { GameSim } from './sim';
 import { parseGame, serializeGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { ORIGIN } from '../../kit/starter/map';
 import { L2, STAND } from '../src/levels';
+import { shiftY } from '../src/pack';
 import { stargazingHill, mainStreet, shyStreet, spamRow } from './route';
 import { BIG1, COTTAGE, TOWER, SHED, CONF_BIG, CONF_COT, CONF_TOW, CONF_SHED, LIT_BIG, LIT_COT, LIT_TOW, LIT_SHED } from '../src/monsters';
 
@@ -14,7 +15,7 @@ describe('built Stick Man Stars polish', () => {
     const files = new Map(new GameSim(undefined, 1).files);
     const name = [...files.keys()].find((n) => n.endsWith('.gam'))!;
     const game = parseGame(files.get(name)!);
-    game.scenes[0].links[0] = { toScene: 4, from: { x: 0, y: 0 }, to: { x: ORIGIN + 76, y: ORIGIN + STAND } };
+    game.scenes[0].links[0] = { toScene: 4, from: { x: 0, y: 0 }, to: { x: ORIGIN + 76, y: ORIGIN + STAND + shiftY(3) } };
     files.set(name, serializeGame(game));
     const sim = new GameSim(files, 1);
     const bot = new StarterBot(sim);

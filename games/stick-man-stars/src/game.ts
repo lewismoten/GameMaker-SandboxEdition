@@ -3,9 +3,15 @@
 // blocks, character, character blocks, sounds, song, card) and links its door to the next scene.
 import { ADVTYPE, MAXSCENELINKS, NOSCENE, emptyScene, newGame, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import type { Level } from './levels';
+import { WORLD, inWorld } from './pack';
 
 /** The title of the game, as the .GAM names it (19 characters at most). */
 export const TITLE = 'STICK MAN STARS';
+
+const place = (i: number, p: [number, number]) => {
+  const [x, y] = inWorld(i, p);
+  return { x, y };
+};
 
 export function buildGame(levels: Level[]): Game {
   const game = newGame(TITLE);
@@ -36,7 +42,7 @@ export function buildGame(levels: Level[]): Game {
     scene.pos = { x: 60 + i * 80, y: 110 };
     scene.files = [
       `${l.file}.pal`,
-      `${l.file}.map`,
+      `${WORLD}.map`,
       'stars.bbl',
       'stars.mon',
       'stars.mbl',
@@ -50,12 +56,11 @@ export function buildGame(levels: Level[]): Game {
     ];
     scene.links = Array.from({ length: MAXSCENELINKS }, () => ({ toScene: NOSCENE, from: { x: 0, y: 0 }, to: { x: 0, y: 0 } }));
     const next = levels[i + 1];
-    const [fx, fy] = l.map.exits[0].from;
-    scene.links[0] = { toScene: next ? i + 3 : 1, from: { x: fx, y: fy }, to: next ? { x: next.map.start[0], y: next.map.start[1] } : { x: 0, y: 0 } };
+    const [fx, fy] = inWorld(i, l.map.exits[0].from);
+    scene.links[0] = { toScene: next ? i + 3 : 1, from: { x: fx, y: fy }, to: next ? place(i + 1, next.map.start) : { x: 0, y: 0 } };
     game.scenes.push(scene);
   });
 
-  const first = levels[0].map.start;
-  title.links[0] = { toScene: 2, from: { x: 0, y: 0 }, to: { x: first[0], y: first[1] } };
+  title.links[0] = { toScene: 2, from: { x: 0, y: 0 }, to: place(0, levels[0].map.start) };
   return game;
 }
