@@ -24,6 +24,7 @@ import { readView, viewToggle } from '../readView';
 import { percentOf, pinchZoom, readSize, sizeControl, widthAt, zoomKey, type ReadSize } from '../readSize';
 import { scrollPages, type ScrollPages } from '../scrollPages';
 import { epubControl } from '../epub/save';
+import { titleAfterPrint, titleForPrint } from '../printTitle';
 
 interface Loaded {
   issue: Issue;
@@ -321,9 +322,11 @@ export function mountMagazine(host: HTMLElement, o: MagazineOptions): () => void
     document.documentElement.classList.add('mag-printing');
     await Promise.all(made.map((m) => m.ready));
     await Promise.all([...printRoot.querySelectorAll('img')].filter((i) => i.src).map((i) => i.decode().catch(() => undefined)));
+    titleForPrint(`${MAG.name}: ${issue.mag.issue}`);
     window.print();
   };
   const afterPrint = () => {
+    titleAfterPrint();
     document.documentElement.classList.remove('mag-printing');
     printRoot.replaceChildren();
     printRoot.remove();
