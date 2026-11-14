@@ -11,6 +11,7 @@
     "build:packages": "npm run build -w @lewismoten/gamemaker-sandbox-engine && npm run build -w @lewismoten/gamemaker-sandbox-archives && npm run build -w @lewismoten/gamemaker-sandbox-tools",
     "prepare": "npm run build:packages && npm run build:games",
     "verify:packages": "node scripts/verify-packages.mjs",
+    "verify:consumer": "node scripts/verify-consumer.mjs",
     "verify:perf": "npm run verify:perf -w gamemaker-web --",
     "verify:changed": "node scripts/verify-changed.mjs",
     "heavy": "node scripts/heavy.mjs",
