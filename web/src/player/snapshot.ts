@@ -26,6 +26,12 @@ export function snapshotButton(corner: HTMLElement, screen: Screen, gameId: stri
   button.className = 'gm-snapshot';
   button.title = 'Save screenshot (F12)';
   button.setAttribute('aria-label', 'Save screenshot');
+  button.setAttribute('aria-keyshortcuts', 'F12');
+  // the failure is said in words, not only in the tooltip
+  const note = document.createElement('span');
+  note.className = 'gm-snapshot-note';
+  note.setAttribute('role', 'status');
+  let noteTimer: ReturnType<typeof setTimeout> | undefined;
   button.innerHTML =
     '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 6h4l2-3h6l2 3h4v15H3z"/><circle cx="12" cy="13" r="4"/></svg>';
   button.addEventListener('pointerdown', (e) => e.preventDefault());
@@ -67,7 +73,10 @@ export function snapshotButton(corner: HTMLElement, screen: Screen, gameId: stri
       .catch((error: unknown) => {
         console.error('Screenshot could not be saved', error);
         button.title = 'Screenshot could not be saved. Try again.';
+        note.textContent = 'Screenshot could not be saved. Try again.';
+        clearTimeout(noteTimer);
+        noteTimer = setTimeout(() => (note.textContent = ''), 6000);
       });
   });
-  corner.append(button);
+  corner.append(button, note);
 }
