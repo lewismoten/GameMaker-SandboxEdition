@@ -1,6 +1,6 @@
 // The DAST tool (housekeeping 15b): renders everything a "what would a child point out?" pass has to look
 // at, so the pass is just looking, and searches tiled art for swastika-like shapes.
-//   npm run dast -- <id>... | --all [--out dir] [--no-search] [--sheet]   (from the root or web/; default dir
+//   npm run dast -- <id>... | --all [--out dir] [--no-search] [--sheet] [--unseen]   (from the root or web/; default dir
 //   .for-lewis/research/dast/renders/). Reads each game's built games/<id>/disk/ and never builds.
 // Per game, in <out>/<id>/: gif/ (every GIF at 1x and 3x), fli/ (a contact sheet of every frame, or 48 evenly
 // spaced), sheets/ (block, monster and character sheets at 3x), map/ (every map whole at 1x), turned/ (for each
@@ -23,7 +23,7 @@ import { fromIndexed, grid, rotationSheet, shelfSheet, silhouette, toPng, type P
 import { findSwastikaLike, type Hit } from './dastSymmetry';
 
 // --sheet adds sheet.png per game: one contact sheet of every GIF, the middle frame of every FLI, the block, monster and
-// character sheets and the maps (shrunk to fit), block sheets with their silhouette beside them, so a first look is one picture.
+// character sheets and the maps (shrunk to fit), block sheets with their silhouette beside them, so a first look is one picture. --unseen leaves out pictures an earlier game in the same run already showed.
 const here = dirname(fileURLToPath(import.meta.url));
 const gamesDir = join(here, '..');
 const MAGENTA = 0xff00ff;
@@ -40,6 +40,13 @@ interface Candidate {
 }
 
 let images = 0;
+/** With --unseen: the pictures an earlier game in this run already put on a sheet (starters share their art). */
+const seenPics: Set<string> | null = process.argv.includes('--unseen') ? new Set() : null;
+const isNew = (p: Pix): boolean => {
+  if (!seenPics) return true;
+  const k = `${p.w}x${p.h}:${createHash('md5').update(p.px).digest('hex')}`;
+  return !seenPics.has(k) && !!seenPics.add(k);
+};
 
 async function save(path: string, p: Pix, scale = 1): Promise<void> {
   mkdirSync(dirname(path), { recursive: true });
@@ -302,7 +309,8 @@ async function renderGame(
     if (search && blocks) await searchMap(blocks, map.blocks, [x0, y0, x1, y1], `scene ${i} ${s.files[1]}`, col);
   }
 
-  if (sheet && sheetPics.length) await save(join(dir, 'sheet.png'), shelfSheet(sheetPics, 1800, withSil));
+  const fresh = sheet ? sheetPics.filter(isNew) : [];
+  if (fresh.length) await save(join(dir, 'sheet.png'), shelfSheet(fresh, 1800, withSil));
   const cands = col.list;
   writeFileSync(join(dir, 'swastika.json'), JSON.stringify(cands, null, 1));
   const head = {
@@ -335,7 +343,7 @@ async function main(): Promise<void> {
     ? readdirSync(gamesDir).filter((id) => existsSync(join(gamesDir, id, 'about.json')) && existsSync(join(gamesDir, id, 'disk')))
     : rest;
   if (!ids.length) {
-    console.log('usage: npm run dast -- <id>... | --all [--out dir] [--no-search] [--sheet]');
+    console.log('usage: npm run dast -- <id>... | --all [--out dir] [--no-search] [--sheet] [--unseen]');
     process.exit(1);
   }
   mkdirSync(out, { recursive: true });
