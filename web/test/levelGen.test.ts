@@ -36,7 +36,7 @@ describe('generate', () => {
       c = run('dungeon', dungeonRoles, 8);
     expect([...a.blocks]).toEqual([...b.blocks]);
     expect([...a.blocks]).not.toEqual([...c.blocks]);
-    expect([...offerSeed(5, 0).toString()]).toBeTruthy();
+    expect(offerSeed(5, 0)).toBe(5); // the first offer keeps the base seed
     expect(new Set([0, 1, 2, 3].map((i) => offerSeed(5, i))).size).toBe(4);
   });
   it('uses only blocks that hold the roles', () => {
