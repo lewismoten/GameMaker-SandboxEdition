@@ -16,4 +16,10 @@ export const BACKUP_KEYS = [
   'gm-bbs-signups',
   'gm-bbs-door-tictactoe',
   'gm-desk-clock',
+  'gm-course-grades',
+  'gm-honors-dates',
+  'gm-courier',
+  'gm-desk-buddy',
+  'gm-chicken',
+  'gm-tour-seen',
 ] as const;

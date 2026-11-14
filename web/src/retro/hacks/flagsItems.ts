@@ -1,6 +1,6 @@
 // What FLAGS.EXE can list, set, clear and reset: the desk PC's hard-to-see browser state (merit
 // badges, felt eggs, tin hearts, score trophy tiers, the hint line's bill, the registration card's
-// mail, the BBS caller file, the room clock). Each item says what it shows and what it lets you do.
+// mail, the BBS caller file, the room clock, Starter grades, Scoot's mail, the chicken, "What's new"). Each item says what it shows and what it lets you do.
 // Scope: this browser's simulated environment only. It never writes into a game's save files
 // (SAVEHACK's job); a count of eggs or hearts is an override on top of the saves, like EGG.EXE's.
 // Secret games are never named: the bonus rows speak of "bonus game 1/2" and only show once open.
@@ -14,27 +14,13 @@ import { bestSum, loadScores } from '../../scoreTrophies/scores';
 import { deskClockSet, deskNow, resetDeskClock } from '../dos/deskClock';
 import { PLAYED_GROUPS, PlayedError, playedSummary, setPlayed } from './flagsPlayed';
 import { account, filePoints, restoreAccount } from '../bbs/ratio';
+import { DESK_ITEMS } from './flagsDesk';
+import { FlagError, type FlagItem } from './flagsTypes';
 
 /** The hint line's rate (desk/room/phone/hintBill.ts, which the DOS page may not load: flags.test.ts checks it). */
 export const HINT_CENTS_PER_MINUTE = 199;
 
-interface FlagItem {
-  id: string;
-  /** What it is, in a few words (the help's list). */
-  label: string;
-  /** The current value in a few words; undefined hides the row until it applies. */
-  show: () => Promise<string | undefined>;
-  /** SET <id> <words...>; omitted when the state can only come from play. */
-  set?: (words: string[]) => Promise<string>;
-  /** CLEAR <id> <words...>. */
-  clear?: (words: string[]) => Promise<string>;
-  /** RESET <id>: back to the way a new visitor has it. */
-  reset?: () => Promise<string>;
-  /** Plain words for what to use instead when an action isn't offered. */
-  elsewhere?: string;
-}
-
-export class FlagError extends Error {}
+export { FlagError };
 
 async function playedAction(words: string[], clear: boolean): Promise<string> {
   try {
@@ -337,6 +323,7 @@ export const ITEMS: readonly FlagItem[] = [
     },
     elsewhere: 'GMCRACK registers or unregisters it.',
   },
+  ...DESK_ITEMS,
   {
     id: 'BONUS',
     label: 'Bonus games',
@@ -348,7 +335,12 @@ export const ITEMS: readonly FlagItem[] = [
     },
     elsewhere: 'They open at 13 felt eggs or every tin heart: SET EGGS 13 or SET HEARTS ALL.',
   },
-  { id: 'ROOM', label: 'Safe, lights, lume, mug...', show: async () => undefined, elsewhere: 'ROOMFIX does the room and the safe.' },
+  {
+    id: 'ROOM',
+    label: 'Safe, lights, lume, mug...',
+    show: async () => undefined,
+    elsewhere: 'ROOMFIX does the room and the safe; the mug, shelf, pad and sound card are settings, not progress.',
+  },
   { id: 'SAVES', label: 'Saved games', show: async () => undefined, elsewhere: 'SAVEHACK edits saves; BACKUP keeps copies.' },
 ];
 
