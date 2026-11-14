@@ -39,6 +39,8 @@ import type { FirstStepsPanel } from './firstStepsPanel';
 import { readOnlyBar } from './released';
 import { saveNote } from './saveNote';
 import { crumbs } from './crumbs';
+import { foldRefs } from './refsFold';
+import './editorHead.css';
 import { keepScroll } from './keepScroll';
 import { restoreScroll, savedScroll, stampEntry, watchScroll } from './scrollMemory';
 import { assistantHost, setAssistantHost, type AssistantHost } from '../../assistant/hostSlot';
@@ -716,6 +718,10 @@ export class Workspace implements AssistantHost {
     const body = h('div');
     const isGam = file === this.project.gam;
     const changes = !this.looking;
+    // beside the title row's other parts, so a phone puts it next to the Read-only chip (editorHead.css)
+    const refs = isGam
+      ? null
+      : foldRefs(h('div', { class: 'file-refs' }, usedByLine(this.project, file), kindOf(file) === 'map' ? mapUsesLine(this.project, file) : null));
     this.bar?.classList.add('released-inline'); // beside the file's title
     clear(
       this.main,
@@ -727,7 +733,7 @@ export class Workspace implements AssistantHost {
       }),
       h(
         'div',
-        { class: 'row', style: 'justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:8px' },
+        { class: 'row file-head', style: 'justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:8px' },
         h('h1', { class: 'file-title' }, file),
         this.bar,
         h(
@@ -759,6 +765,11 @@ export class Workspace implements AssistantHost {
           ),
           this.assistantButton(),
           fileActions([
+            // the phone's header keeps only this menu; the buttons beside it move in
+            { label: 'Assets', title: 'Browse this file category', phone: true, run: () => this.openAssets(kindOf(file)) },
+            { label: 'Open a file by name', phone: true, run: () => void this.quickOpen() },
+            { label: 'Keyboard shortcuts', phone: true, run: () => void showShortcuts(kindOf(file)) },
+            { label: 'Assistant', phone: true, run: () => void import('../../assistant/chat/panel').then((m) => m.toggleChat()) },
             ...(isGam || !changes ? [] : [{ label: 'Rename', run: () => void this.rename(file) }]),
             ...(changes ? [{ label: 'Duplicate', run: () => void this.duplicate(file) }] : []),
             {
@@ -769,10 +780,9 @@ export class Workspace implements AssistantHost {
             ...(isGam || !changes ? [] : [{ label: 'Delete', run: () => void this.remove(file), danger: true }]),
           ]),
         ),
+        refs,
       ),
-      isGam
-        ? this.nextSteps()
-        : h('div', { class: 'file-refs' }, usedByLine(this.project, file), kindOf(file) === 'map' ? mapUsesLine(this.project, file) : null),
+      isGam ? this.nextSteps() : null,
       body,
     );
     void this.mountEditor(body, file);
@@ -926,7 +936,7 @@ export class Workspace implements AssistantHost {
       this.bar,
       h(
         'div',
-        { class: 'row', style: 'justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:8px' },
+        { class: 'row file-head', style: 'justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:8px' },
         h('h1', { class: 'file-title' }, level ? `Playing ${where}` : `Playing ${this.project.name}`),
         h(
           'div',

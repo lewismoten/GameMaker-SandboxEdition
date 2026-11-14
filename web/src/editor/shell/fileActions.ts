@@ -8,6 +8,8 @@ interface FileAction {
   run(): void;
   title?: string;
   danger?: boolean;
+  /** Only in the phone's ⋯ menu (a wide screen has its own button for it). */
+  phone?: boolean;
 }
 
 export function fileActions(acts: FileAction[]): HTMLElement {
@@ -15,7 +17,7 @@ export function fileActions(acts: FileAction[]): HTMLElement {
   const wide = h(
     'span',
     { class: 'file-acts' },
-    ...acts.map((a) => h('button', { type: 'button', class: cls(a), title: a.title, onclick: () => a.run() }, a.label)),
+    ...acts.filter((a) => !a.phone).map((a) => h('button', { type: 'button', class: cls(a), title: a.title, onclick: () => a.run() }, a.label)),
   );
   const summary = h('summary', { title: 'More actions', 'aria-label': `File actions: ${acts.map((a) => a.label.toLowerCase()).join(', ')}` }, '⋯');
   const more = h('details', { class: 'file-more' });
@@ -31,7 +33,7 @@ export function fileActions(acts: FileAction[]): HTMLElement {
         'button',
         {
           type: 'button',
-          class: cls(a),
+          class: `${cls(a)}${a.phone ? ' phone-only' : ''}`.trim(),
           title: a.title,
           onclick: () => {
             shut();
