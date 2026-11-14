@@ -246,7 +246,10 @@
   min-height: 0;
 }
 .mt-side-col .block-picker:not(.mt-brushes) {
-  max-height: max(160px, calc(var(--side-col-room, 440px) - 80px));
+  /* one scroller: the column (or the page below 901px) scrolls, and the picker grows to its
+     blocks, so a wheel or drag over it never scrolls a second, nested pane first */
+  max-height: none;
+  overflow: visible;
 }
 .mt-side-col .mt-panel {
   max-height: none;
