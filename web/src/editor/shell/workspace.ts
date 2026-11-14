@@ -768,8 +768,9 @@ export class Workspace implements AssistantHost {
           ]),
         ),
       ),
-      isGam ? this.nextSteps() : usedByLine(this.project, file),
-      kindOf(file) === 'map' ? mapUsesLine(this.project, file) : null,
+      isGam
+        ? this.nextSteps()
+        : h('div', { class: 'file-refs' }, usedByLine(this.project, file), kindOf(file) === 'map' ? mapUsesLine(this.project, file) : null),
       body,
     );
     void this.mountEditor(body, file);
