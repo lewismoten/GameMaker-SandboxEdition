@@ -1240,7 +1240,7 @@ maker "ZORP" is invented. The shell is untested: nothing has been printed.
   Twinkle, Twinkle; Beat the Clock; Big Bug; Smash It; Beams and Fog; Who Do You Want to Be?; and, with **OpenAI Codex (GPT-6.1 Sol)**, Coins and Score, Color Doors, Colors That Work, Countdown, Cutscenes, Day and Night, Around the Room, Block Brains, Three Phases, Drop Down, Fireworks Night, Birds of a Feather, Follow Me and Health and Hearts, modeled on Stick Man Stars' signs by
   Lewis Moten / Claude Sonnet 5.5.
   **OpenAI Codex**, directed by Lewis Moten, added the compact 4×8 font adapted from the micro font,
-  automatic width-limited wrapping, tests, and compact boards in Gravity On, Gravity Off and Heat Waves.
+  automatic width-limited wrapping, tests, and compact boards in Gravity On, Gravity Off, Heat Waves, Gusts, Flash Safe, The Giant and Everybody Talks.
   The letters reuse this project's existing MIT-licensed micro font; no third-party assets were added.
 
 - **Editor scene roles (November 14, 2026):** OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, added timed-cutscene detection, native-game regression checks and scene role labels in Overview and file lists. Existing game data and export formats remain unchanged.
