@@ -6,7 +6,7 @@
   "hero": "KIT",
   "year": 1994,
   "price": "Free",
-  "version": "1.0",
+  "version": "1.1",
   "blurb": "Two short levels about a boss that takes several hits. Big Bug sits in a narrow way and a star does not stop it: it takes five. In the first level nothing says how many are left, so you count. In the second its shell has five lights and one goes out with each hit. Signs in the levels say how. Play it, then open it in Game-Maker and change how many hits it takes.",
   "exe": "BIGBUG.EXE",
   "dosName": "BIGBUG",

@@ -77,8 +77,8 @@ export async function beatTheClock(bot: StarterBot): Promise<void> {
   bot.say(`through the gate with ${RACE_TOTAL - took} ticks to spare`);
   if (took > RACE_TOTAL - 40) throw new Error(`too close to the clock: ${took} of ${RACE_TOTAL} ticks`);
   await must(bot, bot.walk(41, 'the exit sign'), 'to the exit sign');
-  // 5 coins on the first go, then all 8
-  if (bot.sim.ci.score !== 130) throw new Error(`level 1 should give 13 coins (130), not ${bot.sim.ci.score}`);
+  // 6 coins before the gate on the first go, then all 8
+  if (bot.sim.ci.score !== 140) throw new Error(`level 1 should give 14 coins (140), not ${bot.sim.ci.score}`);
   await leave(bot, bot.walk(43, 'the exit'), 'the exit');
 }
 
@@ -99,6 +99,6 @@ export async function roundAndRound(bot: StarterBot): Promise<void> {
   bot.say(`open again at tick ${bot.sim.ticks}`);
   await must(bot, bot.walk(LOOP_GATE + 3, 'through the gate'), 'through the gate');
   await must(bot, bot.walk(36, 'the coins'), 'to the coins');
-  if (bot.sim.ci.score !== 220) throw new Error(`level 2 should add 9 coins (220 in all), not ${bot.sim.ci.score}`);
+  if (bot.sim.ci.score !== 230) throw new Error(`level 2 should add 9 coins (230 in all), not ${bot.sim.ci.score}`);
   await leave(bot, bot.walk(43, 'the exit'), 'the exit');
 }
