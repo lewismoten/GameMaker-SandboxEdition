@@ -89,6 +89,18 @@ export function renderPrivacy(el: HTMLElement): void {
           h('strong', null, 'A game from a link. '),
           'If a link asks this site to open a game from another address, the site asks you first, then downloads that game. It sends no cookies or sign-ins with the request.',
         ),
+        h(
+          'li',
+          null,
+          h('strong', null, 'Community game pictures. '),
+          'A listed community game on the home page shows a preview picture that loads from the creator’s own website, so that site sees the visit. The game itself is not downloaded until you open it.',
+        ),
+        h(
+          'li',
+          null,
+          h('strong', null, 'An AI tool on this computer. '),
+          'If you press “Use an AI tool on this computer instead (MCP)…” and enter its pairing code, the open game is shared with that program over a connection to the address you typed (meant to be on this computer).',
+        ),
         h('li', null, h('strong', null, 'Links you click. '), 'Links to GitHub, YouTube and other sites open their pages, which have their own rules.'),
       ),
     ),
