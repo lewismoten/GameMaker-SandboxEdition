@@ -68,6 +68,8 @@ try {
   // npm ci's prepare step builds the packages; the games are built next on their own, with timing
   run('npm', ['ci', '--no-audit', '--no-fund'], work, { GM_SKIP_GAME_BUILD: '1' });
   run('npm', ['run', 'build:games', '--', '--timing'], work);
+  // the Pocket Player firmware images are not in the repository: fetch the pinned release (hashes checked) before the site build
+  run('npx', ['vite-node', 'scripts/pocketFirmware.ts'], join(work, 'web'));
   run('npx', ['vite', 'build'], join(work, 'web'));
   run('node', ['scripts/release/sizes.mjs', '--dist', 'web/dist'], work);
 
