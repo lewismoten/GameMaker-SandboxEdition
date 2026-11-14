@@ -3,13 +3,17 @@
 // library has no Web Serial yet, so the few parts used are typed here.
 import { LineSplitter, PI_USB_FILTER } from './protocol';
 
-interface SerialPortLike {
+export interface SerialPortLike {
+  getInfo?(): { usbVendorId?: number; usbProductId?: number };
   open(options: { baudRate: number }): Promise<void>;
   close(): Promise<void>;
   readonly readable: ReadableStream<Uint8Array> | null;
   readonly writable: WritableStream<Uint8Array> | null;
 }
-interface SerialLike {
+export interface SerialLike {
+  getPorts?(): Promise<SerialPortLike[]>;
+  addEventListener?(type: 'connect' | 'disconnect', listener: (e: Event) => void): void;
+  removeEventListener?(type: 'connect' | 'disconnect', listener: (e: Event) => void): void;
   requestPort(options: { filters: { usbVendorId: number; usbProductId?: number }[] }): Promise<SerialPortLike>;
 }
 
@@ -22,6 +26,8 @@ export class SerialLink {
   private port?: SerialPortLike;
   private reader?: ReadableStreamDefaultReader<Uint8Array>;
   private writer?: WritableStreamDefaultWriter<Uint8Array>;
+  /** The port in use, kept after the link closes so an unplug can be told apart. */
+  current?: SerialPortLike;
   private queue: Promise<void> = Promise.resolve();
   private readonly encoder = new TextEncoder();
 
@@ -35,13 +41,27 @@ export class SerialLink {
     return !!this.writer;
   }
 
-  /** Asks for the Pi's port and opens it. Rejects when the person cancels or it is busy. */
-  async connect(serial: SerialLike): Promise<void> {
-    const port = await serial.requestPort({ filters: [PI_USB_FILTER] });
+  /** The Pi's port already granted to this site, if any (no chooser needed). */
+  static async granted(serial: SerialLike): Promise<SerialPortLike | undefined> {
+    try {
+      const ports = (await serial.getPorts?.()) ?? [];
+      return ports.find((p) => {
+        const i = p.getInfo?.();
+        return i?.usbVendorId === PI_USB_FILTER.usbVendorId && i.usbProductId === PI_USB_FILTER.usbProductId;
+      });
+    } catch {
+      return undefined;
+    }
+  }
+
+  /** Opens `granted`, or asks for the Pi's port (a gesture needed). Rejects when the person cancels or it is busy. */
+  async connect(serial: SerialLike, granted?: SerialPortLike): Promise<void> {
+    const port = granted ?? (await serial.requestPort({ filters: [PI_USB_FILTER] }));
     // A USB CDC port ignores the rate; usb_kernel.py leaves it as the system sets it.
     await port.open({ baudRate: 115200 });
     if (!port.readable || !port.writable) throw new Error('The port opened without streams.');
     this.port = port;
+    this.current = port;
     this.writer = port.writable.getWriter();
     this.reader = port.readable.getReader();
     void this.readLoop(this.reader);
