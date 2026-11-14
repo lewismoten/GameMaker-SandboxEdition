@@ -19,8 +19,8 @@ import { Book, PULL, SOLID } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
-import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
-import { addSign, type Sign } from '../../kit/starter/sign';
+import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
+import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { HUES, cap, gate, lamp, type Hue } from './props';
 import { SPELL, TURN } from './timing';
 
@@ -81,20 +81,37 @@ function addRing(book: Book, timed: Timed[], ring: string, turns: number, ticks:
 }
 
 type SignName = 'lamps' | 'gates' | 'sun' | 'moon' | 'step';
-const SIGNS: Record<SignName, string> = {
-  lamps: 'THREE LAMPS TAKE TURNS',
-  gates: 'THE LIT LAMP OPENS ITS GATE. GO IN ORDER',
-  sun: 'SUN GATES ALL OPEN TOGETHER',
-  moon: 'MOON GATES OPEN AS SUN SHUTS',
-  step: 'CROSS ONE, WAIT, CROSS THE NEXT',
+const SIGNS = {
+  lamps: { rows: [['THREE LAMPS'], ['TAKE TURNS']] },
+  gates: { rows: [['THE LIT LAMP'], ['OPENS ITS GATE.'], ['GO IN ORDER']] },
+  sun: { rows: [['SUN GATES'], ['ALL OPEN'], ['TOGETHER']] },
+  moon: { rows: [['MOON'], ['GATES'], ['OPEN AS'], ['SUN SHUTS']] },
+  step: { rows: [['CROSS'], ['ONE,'], ['WAIT,'], ['CROSS THE'], ['NEXT']] },
 };
 
 function startBook(pal: Pal, names: SignName[]): { book: Book; signs: Record<string, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
-  const signs: Record<string, Sign> = {};
-  for (const n of names) signs[n] = addSign(book, pal, `${n}.sign`, SIGNS[n], 4, 3);
+  const { blocks, signs } = buildTiledSigns(SIGNS, {
+    include: names,
+    lettersPerBlock: 3,
+    maxBlocks: 100 - book.index.size,
+    colors: {
+      background: skyOf(pal),
+      paper: pal.c('parch', 3),
+      ink: pal.c('ink', 0),
+      wood: pal.c('wood', 2),
+      highlight: pal.c('wood', 4),
+      shadow: pal.c('wood', 0),
+    },
+  });
+  for (const [name, pic] of blocks) book.add(name, pic, AIR);
   return { book, signs };
+}
+
+/** Stamp only over sky; the one centered post ends immediately above the ground. */
+function sign(m: StarterMap, x: number, s: Sign): void {
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, x, onGround(GROUND, s), s);
 }
 
 /** The top row of a sign standing on ground row `ground`. */
@@ -148,12 +165,12 @@ function takeYourTurn(pal: Pal): Level {
     [16, 26, 33],
   );
   const m = new StarterMap(book, g.rows());
-  m.sign(5, onGround(GROUND, signs.lamps), signs.lamps);
-  m.sign(15, onGround(GROUND, signs.gates), signs.gates);
   HUES.forEach((_, k) => {
     m.set(LAMPS_ONE[k], GROUND - 1, startOf(`lamp${k}`, 3, k));
     stampGate(m, GATES_ONE[k], `cap${k}`, startOf(`gate${k}`, 3, k));
   });
+  sign(m, 5, signs.lamps);
+  sign(m, 14, signs.gates);
   return { file: 'one', title: 'Take Your Turn', hint: 'The lit lamp opens its gate.', map: m, book, timed };
 }
 
@@ -184,15 +201,15 @@ function outOfStep(pal: Pal): Level {
     [19, 26, 32],
   );
   const m = new StarterMap(book, g.rows());
-  m.sign(5, onGround(GROUND, signs.sun), signs.sun);
-  m.sign(12, onGround(GROUND, signs.moon), signs.moon);
-  m.sign(18, onGround(GROUND, signs.step), signs.step);
   // the sun is open on the first turn, the moon on the second: the same ring, started one block along
   m.set(LAMPS_TWO[0], GROUND - 1, startOf('sun.lamp', 2, 0)).set(LAMPS_TWO[1], GROUND - 1, startOf('moon.lamp', 2, 1));
   GATES_TWO.forEach((x, i) => {
     const sun = i % 2 === 0;
     stampGate(m, x, sun ? 'cap.sun' : 'cap.moon', sun ? startOf('sun.gate', 2, 0) : startOf('moon.gate', 2, 1));
   });
+  sign(m, 4, signs.sun);
+  sign(m, 10, signs.moon);
+  sign(m, 23, signs.step);
   return { file: 'two', title: 'Out of Step', hint: 'Two rings, one step apart.', map: m, book, timed };
 }
 

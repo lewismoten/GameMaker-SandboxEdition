@@ -6,7 +6,7 @@
   "hero": "MARA",
   "year": 1994,
   "price": "Free",
-  "version": "1.0",
+  "version": "1.1",
   "blurb": "Two short levels about blocks that take turns. Gates stand in a row, and each one is open for only a short while. A ring of blocks, each turning into the next after a few ticks, decides whose turn it is, and a row of lamps shows it: the lit lamp is the open gate. Mara watches, then walks through each gate in its turn. In the second level a sun ring and a moon ring run one step apart, so every sun gate opens together and the moon gates open as they shut. Signs in the levels say how. Play it, then open it in Game-Maker and change how long a turn lasts.",
   "exe": "BLOCKBRN.EXE",
   "dosName": "BLOCKBRN",

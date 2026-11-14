@@ -7,12 +7,12 @@
 //   2. The left wall:  gravity left,  the hero on his side, Up walks (up the wall)
 //   3. The ceiling:    gravity up,    the hero upside down, Right walks
 //   4. The right wall: gravity right, the hero on his other side, Down walks (down the wall)
-import { Book } from '../../kit/starter/book';
+import { Book, PULL } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { MLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { StarterMap } from '../../kit/starter/map';
-import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
-import { addSign, linesDown, lettersAcross, wrapWords, type Sign } from '../../kit/starter/sign';
+import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
+import { buildTiledSigns, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { roomBook } from './blocks';
 import { ACROSS, frameOf, type Frame, type Room } from './frame';
 
@@ -39,23 +39,23 @@ interface Course {
   scenery: [number, 'b' | 'f'][];
 }
 
-/** The signs' words and sizes: each is 4 blocks wide. */
-const SIGNS: Record<string, { text: string; h: number }> = {
-  floor: { text: 'THE FLOOR. GRAVITY PULLS DOWN. LEFT WALKS, SPACE JUMPS', h: 3 },
-  block1: { text: 'A BLOCK. JUMP OVER IT', h: 2 },
-  trench1: { text: 'A TRENCH. JUMP ACROSS', h: 2 },
-  exit1: { text: 'THE ROOM TURNS NEXT. WALK TO THE DOOR', h: 3 },
-  left: { text: 'THE LEFT WALL. GRAVITY PULLS LEFT. UP WALKS UP THE WALL', h: 3 },
-  jump2: { text: 'SPACE JUMPS OFF THE WALL, AND YOU FALL BACK', h: 3 },
-  trench2: { text: 'A TRENCH IN THE WALL. JUMP IT', h: 2 },
-  exit2: { text: 'NEXT, THE CEILING. WALK TO THE DOOR', h: 3 },
-  ceil: { text: 'THE CEILING. GRAVITY PULLS UP. RIGHT WALKS RIGHT', h: 3 },
-  jump3: { text: 'SPACE JUMPS DOWN FROM THE CEILING', h: 3 },
-  trench3: { text: 'A WIDE TRENCH. FALLING UP IS STILL FALLING', h: 3 },
-  exit3: { text: 'ONE WALL LEFT. WALK TO THE DOOR', h: 3 },
-  right: { text: 'THE RIGHT WALL. GRAVITY PULLS RIGHT. DOWN WALKS DOWN', h: 3 },
-  block4: { text: 'BLOCKS AND TRENCHES. SAME JUMPS, ONE MORE TURN', h: 3 },
-  exit4: { text: 'THAT WAS ONE LAP. THE LAST DOOR', h: 3 },
+/** Upright wall boards: all four rooms' words, selected per map. */
+const SIGNS = {
+  floor: { rows: [['THE FLOOR.'], ['GRAVITY PULLS DOWN.'], ['LEFT WALKS,'], ['SPACE JUMPS']], post: false },
+  block1: { rows: [['A BLOCK.'], ['JUMP OVER IT']], post: false },
+  trench1: { rows: [['A TRENCH.'], ['JUMP ACROSS']], post: false },
+  exit1: { rows: [['THE ROOM TURNS NEXT.'], ['WALK TO THE DOOR']], post: false },
+  left: { rows: [['THE LEFT WALL.'], ['GRAVITY PULLS LEFT.'], ['UP WALKS UP'], ['THE WALL']], post: false },
+  jump2: { rows: [['SPACE JUMPS OFF'], ['THE WALL, AND'], ['YOU FALL BACK']], post: false },
+  trench2: { rows: [['A TRENCH IN'], ['THE WALL. JUMP IT']], post: false },
+  exit2: { rows: [['NEXT, THE CEILING.'], ['WALK TO THE DOOR']], post: false },
+  ceil: { rows: [['THE CEILING.'], ['GRAVITY PULLS UP.'], ['RIGHT WALKS RIGHT']], post: false },
+  jump3: { rows: [['SPACE JUMPS DOWN FROM THE CEILING']], post: false },
+  trench3: { rows: [['A WIDE TRENCH. FALLING UP IS STILL FALLING']], post: false },
+  exit3: { rows: [['ONE WALL LEFT.'], ['WALK TO THE DOOR']], post: false },
+  right: { rows: [['THE RIGHT WALL.'], ['GRAVITY PULLS RIGHT.'], ['DOWN WALKS DOWN']], post: false },
+  block4: { rows: [['BLOCKS AND TRENCHES.'], ['SAME JUMPS,'], ['ONE MORE TURN']], post: false },
+  exit4: { rows: [['THAT WAS ONE LAP.'], ['THE LAST DOOR']], post: false },
 };
 
 const COURSES: Course[] = [
@@ -77,7 +77,7 @@ const COURSES: Course[] = [
     ],
     signs: [
       ['floor', 5, 3],
-      ['block1', 14, 3],
+      ['block1', 14, 4],
       ['trench1', 22, 3],
       ['exit1', 35, 3],
     ],
@@ -109,9 +109,9 @@ const COURSES: Course[] = [
     ],
     signs: [
       ['left', 5, 4],
-      ['jump2', 10, 8],
+      ['jump2', 10, 4],
       ['trench2', 24, 4],
-      ['exit2', 38, 5],
+      ['exit2', 38, 4],
     ],
     scenery: [
       [17, 'b'],
@@ -139,10 +139,10 @@ const COURSES: Course[] = [
       [30, 4],
     ],
     signs: [
-      ['ceil', 5, 4],
-      ['jump3', 12, 8],
-      ['trench3', 21, 5],
-      ['exit3', 39, 4],
+      ['ceil', 6, 1],
+      ['jump3', 17, 1],
+      ['trench3', 22, 0],
+      ['exit3', 34, 2],
     ],
     scenery: [
       [14, 'f'],
@@ -172,8 +172,8 @@ const COURSES: Course[] = [
     ],
     signs: [
       ['right', 5, 4],
-      ['block4', 17, 8],
-      ['exit4', 36, 5],
+      ['block4', 17, 4],
+      ['exit4', 36, 4],
     ],
     scenery: [
       [8, 'f'],
@@ -226,12 +226,14 @@ function roomMap(f: Frame, course: Course, book: Book, signs: Record<string, Sig
     rows.map((r) => r.join('')),
   );
   for (const [name, u, h] of course.signs) {
-    // the board is upright whatever the room's turn, centered on place (u, h)
+    // The board stays upright. Its center can move off the path to clear coins and
+    // scenery while staying within the camera's narrow view beside each surface.
     const board = signs[name].board;
     const [cx, cy] = f.at(u, h);
     const x0 = cx - Math.floor(board[0].length / 2);
     const y0 = cy - Math.floor(board.length / 2);
-    board.forEach((row, dy) => row.forEach((id, dx) => m.set(x0 + dx, y0 + dy, id)));
+    if (x0 < 0 || y0 < 0 || x0 + board[0].length > f.w || y0 + board.length > f.h) throw new Error(`Sign ${name} leaves the room`);
+    board.forEach((row, dy) => row.forEach((id, dx) => m.setOnSky(x0 + dx, y0 + dy, id)));
   }
   const dirt = book.n('dirt');
   return {
@@ -261,20 +263,20 @@ export function buildLevels(): { base: Book; pal: Pal; levels: Level[] } {
   const floorBook = (course: Course): { book: Book; signs: Record<string, Sign> } => {
     const book = new Book('bbl');
     addStarterBlocks(book, pal);
-    const signs: Record<string, Sign> = {};
-    for (const [name] of course.signs) {
-      const s = SIGNS[name];
-      // the smallest board (4 blocks wide) the words fit
-      let h = 2;
-      for (; h < 6; h++)
-        try {
-          wrapWords(s.text, lettersAcross(4), linesDown(h));
-          break;
-        } catch {
-          // too small: try a taller board
-        }
-      signs[name] = addSign(book, pal, name, s.text, 4, h);
-    }
+    const { blocks, signs } = buildTiledSigns(SIGNS, {
+      include: course.signs.map(([name]) => name as keyof typeof SIGNS),
+      lettersPerBlock: 3,
+      maxBlocks: 100 - book.index.size,
+      colors: {
+        background: skyOf(pal),
+        paper: pal.c('parch', 3),
+        ink: pal.c('ink', 0),
+        wood: pal.c('wood', 2),
+        highlight: pal.c('wood', 4),
+        shadow: pal.c('wood', 0),
+      },
+    });
+    for (const [name, pic] of blocks) book.add(name, pic, { grav: PULL.down });
     return { book, signs };
   };
   const levels: Level[] = COURSES.map((course, i) => {
