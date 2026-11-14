@@ -16,19 +16,18 @@ export const THREE = {
   shaker: 31,
   wall: 52,
   sock: 56,
+  /** Two cracks between the sock and the door. */
+  cracks: 57,
   exit: 61,
 } as const;
 
 const SIGNS = {
-  umb: ['UMBRELLAS OPEN INDOORS. THEY FLOAT UP.', 4, 3],
-  ride: ['STEP IN TO RISE. STEP OFF AT THE TOP.', 4, 3],
   salt: ['SPILLED SALT. A PINCH OVER THE SHOULDER FIXES IT. EVERYONE KNOWS.', 4, 4],
-  shaker: ['SALT SHAKER: UP HERE.', 4, 2],
 } as const;
 
 export function levelThree(pal: Pal): Level {
   const charms = ['acorn', 'sock'] as const;
-  const book = startBook(pal, ['brolly', 'salt', 'town'], charms);
+  const book = startBook(pal, ['brolly', 'salt', 'town', 'crack'], charms);
   const s = addSigns(book, pal, SIGNS);
   const g = room(66, THREE.exit);
   g.row(4, THREE.gallery[0], THREE.gallery[1], '=');
@@ -44,10 +43,8 @@ export function levelThree(pal: Pal): Level {
   for (let y = -10; y < GROUND - 2; y++) m.set(THREE.wall, y, 'brick');
   m.set(THREE.wall, GROUND - 2, 'saltArch').set(THREE.wall, GROUND - 1, 'saltPile');
   m.set(THREE.sock, GROUND - 1, 'charm.sock');
+  for (const x of [THREE.cracks, THREE.cracks + 1]) m.set(x, GROUND - 1, 'crack');
   for (const x of [38, 46, 58]) m.set(x, 8, 'lampHead').set(x, 9, 'lampPost');
-  m.sign(5, onGround(GROUND, s.umb), s.umb);
-  m.sign(10, onGround(GROUND, s.ride), s.ride);
-  m.sign(34, onGround(GROUND, s.shaker), s.shaker);
   m.sign(47, onGround(GROUND, s.salt), s.salt);
   return {
     file: 'three',

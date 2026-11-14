@@ -27,11 +27,7 @@ export const ALLEY = {
 } as const;
 
 const SIGNS = {
-  back: ['BACK LANE. NO CATS. NO CREAM. NO LOITER.', 4, 3],
   trail: ['SOMEONE LEFT A SAUCER OF CREAM. AGAIN.', 4, 3],
-  escape: ['FIRE ESCAPE: THE GATE KEY IS HUNG UP TOP.', 4, 3],
-  crow: ['A CROW ON THE WIRE. IT TELLS ALL.', 4, 3],
-  gate: ['GATE LOCKED. KEY HOLDERS ONLY.', 4, 3],
 } as const;
 
 export function levelAlley(pal: Pal): Level {
@@ -55,17 +51,13 @@ export function levelAlley(pal: Pal): Level {
   for (let x = ALLEY.awning[0]; x <= ALLEY.awning[1]; x++) m.set(x, 6, x % 2 ? 'awning' : 'awning2');
   for (const x of [ALLEY.saucer1, ALLEY.saucer2, ALLEY.saucer3, ALLEY.saucer4, ALLEY.saucer5]) m.set(x, GROUND - 1, 'step');
   for (const y of [8, 9]) for (const x of [ALLEY.crates, ALLEY.crates + 1]) m.set(x, y, 'crate');
-  for (const x of [ALLEY.cracks, ALLEY.cracks + 1]) m.set(x, GROUND - 1, 'crack');
+  for (const x of [ALLEY.cracks, ALLEY.cracks + 1, ALLEY.cracks + 2]) m.set(x, GROUND - 1, 'crack');
   m.set(ALLEY.key, 5, 'binKey');
   m.mon(CROW.bobbing, ALLEY.crow, ALLEY.crowRow);
   for (let y = -10; y < GROUND - 2; y++) m.set(ALLEY.wall, y, 'brick');
   m.set(ALLEY.wall, GROUND - 2, 'saltArch').set(ALLEY.wall, GROUND - 1, 'padlock');
   for (const x of [20, 55]) m.set(x, 8, 'lampHead').set(x, 9, 'lampPost');
-  m.sign(4, onGround(GROUND, s.back), s.back);
   m.sign(13, onGround(GROUND, s.trail), s.trail);
-  m.sign(30, onGround(GROUND, s.escape), s.escape);
-  m.sign(48, onGround(GROUND, s.crow), s.crow);
-  m.sign(59, onGround(GROUND, s.gate), s.gate);
   return {
     file: 'alley',
     title: 'Saucer Alley',

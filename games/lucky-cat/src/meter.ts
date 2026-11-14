@@ -1,7 +1,7 @@
 // The fair's clock: a meter of bells and a gate that run on Game-Maker's own block timers (a block turns into
 // another after a number of ticks, 18.2 a second). Seven bells hang in a row after a little clock face, and they
 // go dark one at a time, the last when the 13th chime sounds: that moment the fair's gate (four blocks tall,
-// too high to jump) shuts for a few seconds, then the gate opens and the bells light up again.
+// too high to jump) shuts for about fourteen seconds, then the gate opens and the bells light up again.
 // Every bell block is its own two-block loop (lit, then dark, then lit again), so all the meters and gates in a
 // level change together and are always in view.
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
@@ -12,9 +12,9 @@ import { fairGate, pip } from './props';
 
 /** Ticks the gate stays open, and the bells' share of it. */
 export const BELLS = 7;
-export const OPEN_TICKS = BELLS * 130;
-/** Ticks the gate stays shut. */
-export const SHUT_TICKS = 150;
+export const OPEN_TICKS = BELLS * 95;
+/** Ticks the gate stays shut: long enough that missing the chime costs a real wait. */
+export const SHUT_TICKS = 250;
 export const CYCLE = OPEN_TICKS + SHUT_TICKS;
 
 /** The little clock face that starts each row of bells: paper dial on ink, the hands a minute from 13. */

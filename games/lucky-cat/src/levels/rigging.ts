@@ -36,9 +36,6 @@ const TOP_B = -1;
 
 const SIGNS = {
   closed: ['HALL CLOSED FOR LUNCH. - THE COMMITTEE', 4, 3],
-  trust: ['STEP IN. TRUST THE BROLLIES.', 4, 3],
-  rafters: ['THE RAFTERS: ROPE, KEY, NOBODY.', 4, 3],
-  crow: ['CROW ON DUTY. WAIT FOR IT.', 4, 3],
 } as const;
 
 export function levelRigging(pal: Pal): Level {
@@ -62,15 +59,12 @@ export function levelRigging(pal: Pal): Level {
   m.set(RIGGING.key, TOP_B, 'binKey');
   for (const x of [RIGGING.step1, RIGGING.step2, RIGGING.step3]) m.set(x, GROUND - 1, 'step');
   for (const y of [8, 9]) m.set(RIGGING.crates, y, 'crate').set(RIGGING.crates + 1, y, 'crate');
-  for (const x of [RIGGING.cracks, RIGGING.cracks + 1]) m.set(x, GROUND - 1, 'crack');
+  for (const x of [RIGGING.cracks, RIGGING.cracks + 1, RIGGING.cracks + 2]) m.set(x, GROUND - 1, 'crack');
   m.mon(CROW.bobbing, RIGGING.crow, RIGGING.crowRow);
   for (let y = -10; y < GROUND - 2; y++) m.set(RIGGING.wall, y, 'brick');
   m.set(RIGGING.wall, GROUND - 2, 'saltArch').set(RIGGING.wall, GROUND - 1, 'padlock');
   for (const x of [66, 67]) m.set(x, GROUND - 2, 'binTop').set(x, GROUND - 1, 'bin');
   m.sign(4, onGround(GROUND, s.closed), s.closed);
-  m.sign(19, onGround(TOP_A + 1, s.trust), s.trust);
-  m.sign(38, onGround(TOP_B + 1, s.rafters), s.rafters);
-  m.sign(54, onGround(GROUND, s.crow), s.crow);
   return {
     file: 'still',
     title: 'Earlier Still',

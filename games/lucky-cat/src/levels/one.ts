@@ -1,5 +1,5 @@
 // Level 1, LADDER LANE: the town's first superstitions on the sidewalk.
-//   - a painter's stepladder across the lane: walk under it and a drip of paint is bad luck (5 hit points);
+//   - a painter's stepladder across the lane: walk under it and a drip of paint is bad luck (a fifth of her luck);
 //     go around by the scaffold over the top and a four-leaf clover waits on the awning;
 //   - two cracks in the pavement (bad luck, once each): hop them;
 //   - a ladder up to a high awning with a horseshoe, and a crate wall to hop.
@@ -24,9 +24,6 @@ export const ONE = {
 
 const SIGNS = {
   start: ['NOTICE: BLACK CAT AT LARGE. AVOID EYE CONTACT.', 4, 3],
-  ladder: ['LADDER: DO NOT WALK UNDER. USE THE SCAFFOLD.', 4, 3],
-  crack: ["STEP ON A CRACK? DON'T. JUMP.", 4, 3],
-  shoe: ['LOST: ONE LUCKY SHOE. LAST SEEN ON AN AWNING.', 4, 3],
   blame: ['CATS ARE BAD LUCK. THIS IS A FACT. SIGNED, THE COMMITTEE', 4, 4],
 } as const;
 
@@ -66,16 +63,13 @@ export function levelOne(pal: Pal): Level {
   for (let x = 35; x <= 40; x++) m.set(x, 6, x % 2 ? 'awning' : 'awning2');
   m.set(ONE.clover, 5, 'charm.clover').set(ONE.horseshoe, 5, 'charm.horseshoe');
   // cracks
-  for (const x of [ONE.cracks, ONE.cracks + 1, ONE.cracks2]) m.set(x, GROUND - 1, 'crack');
+  for (const x of [ONE.cracks, ONE.cracks + 1, ONE.cracks + 2, ONE.cracks2, ONE.cracks2 + 1]) m.set(x, GROUND - 1, 'crack');
   // crates to hop
   for (const y of [8, 9]) m.set(ONE.crates, y, 'crate').set(ONE.crates + 1, y, 'crate');
   // lamp posts and a fence for the street
   for (const x of [21, 44, 56, 68]) m.set(x, 8, 'lampHead').set(x, 9, 'lampPost');
   for (const x of [58, 59, 60]) m.set(x, 9, 'fence');
   m.sign(4, onGround(GROUND, s.start), s.start);
-  m.sign(8, onGround(GROUND, s.ladder), s.ladder);
-  m.sign(22, onGround(GROUND, s.crack), s.crack);
-  m.sign(30, onGround(GROUND, s.shoe), s.shoe);
   m.sign(49, onGround(GROUND, s.blame), s.blame);
   return {
     file: 'one',
