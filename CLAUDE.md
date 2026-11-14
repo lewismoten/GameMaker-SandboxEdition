@@ -53,7 +53,7 @@ runs on `npm ci` and before `dev`, `test` and `check:games`.
 - `web/scripts/`: build-time and maintenance scripts, run with vite-node (see its README).
 - `web/scripts/mcp/`: the `gamemaker` MCP server (`.mcp.json`, `npm run mcp`). It opens,
   edits, checks and renders games in `~/GameMakerWork`.
-- The Pocket Player (CYD firmware, board tools) is its own repository, `gamemaker-pocket` (`GAMEMAKER_POCKET_DIR`, default `../gamemaker-pocket`). Here, `web/scripts/pocketData.ts` and `pocketArt.ts` make what it plays (`pocket-out/`); `web/public/pocket/` serves the committed firmware images.
+- The Pocket Player (CYD firmware, board tools) is its own repository, `gamemaker-pocket` (`GAMEMAKER_POCKET_DIR`, default `../gamemaker-pocket`). Here, `web/scripts/pocketData.ts` and `pocketArt.ts` make what it plays (`pocket-out/`); `web/public/pocket/` is the web flasher; its firmware images are not committed: `web/scripts/pocketFirmware.ts` downloads the release pinned in `pocketFirmware.json` (hashes checked) during the gh-pages build (`release:pages`).
 - `.claude/agents/worker.md`: the subagent to use for repository work in place of
   general-purpose.
 
