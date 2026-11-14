@@ -1228,6 +1228,7 @@ maker "ZORP" is invented. The shell is untested: nothing has been printed.
 - **Offline copy as one archive (November 12, 2026)** (`web/src/offline/archiveStore.ts`, `offlineCopy.ts`, `web/scripts/offlineArchive.ts`): **Hermes Agent running OpenAI Codex GPT-6.1 Sol**, directed by Lewis Moten, prepared the atomic single-archive offline copy and its tests, using the browser's own storage and compression streams. No third-party code was added.
 - **Shared tiled-sign builder and Starter adoption (November 14, 2026)** (`web/packages/tools/src/kit/tiledSigns.ts`): **OpenAI Codex (GPT-6.1 Sol)**, directed by Lewis Moten,
   implemented the game-wide tile builder, separate shared borders, centered post, tests and
-  documentation, and adopted the signs in First Steps, Lightning, Flicker and Flow, and
-  Twinkle, Twinkle, modeled on Stick Man Stars' signs by Lewis Moten / Claude Sonnet 5.5.
+  documentation, and adopted the signs in First Steps; Lightning; Flicker and Flow;
+  Twinkle, Twinkle; Beat the Clock; and Big Bug, modeled on Stick Man Stars' signs by
+  Lewis Moten / Claude Sonnet 5.5.
   The letters reuse this project's existing MIT-licensed micro font; no third-party assets were added.
