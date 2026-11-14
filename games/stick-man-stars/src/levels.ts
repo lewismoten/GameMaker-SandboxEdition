@@ -18,7 +18,7 @@ import { addNightBlocks } from './nightSky';
 import { addPickStar, addStarGate } from './pickStar';
 import { paintNight } from './nightSky';
 import { paletteFor, type Mood, type PaperKind } from './moods';
-import { addPaperBlocks, hidePaper, hillAt, hillPastEdges, paperRamps, paperize, pencilAt, seamAt } from './paper';
+import { FORK, addPaperBlocks, hidePaper, hillAt, hillPastEdges, paperRamps, paperize, pencilAt, seamAt } from './paper';
 
 /** The signs the levels use, by name. */
 export type SignName = 'thx' | 'readme' | 'fake' | 'gaze' | 'gate' | 'how' | 'far' | 'shed' | 'shy' | 'bots' | 'three' | 'thanks' | 'forked' | 'exit';
@@ -172,11 +172,11 @@ function stargazingHill(w: World): StarterMap {
 }
 
 /** Where level 1's houses and gate stand (block x). */
-export const L1 = { bonus: 53, cottages: [17, 34, 55] as const, tunnel: [42, 49] as const, gate: 46, exit: 60, width: 64 };
+export const L1 = { fork: 24, bonus: 53, cottages: [17, 34, 55] as const, tunnel: [42, 49] as const, gate: 46, exit: 60, width: 64 };
 function mainStreet(w: World): StarterMap {
   const g = base(L1.width, L1.exit);
   tunnel(g, L1.tunnel[0], L1.tunnel[1]);
-  g.row(9, 10, 12, 'c').row(9, 24, 28, 'c').row(9, 38, 40, 'c').row(9, 49, 51, 'c');
+  g.row(9, 10, 12, 'c').row(8, 24, 27, 'c').row(9, 28, 28, 'c').row(9, 38, 40, 'c').row(9, 49, 51, 'c');
   scenery(g, [8, 22, 36, 50], [14, 30, 44, 58], [11, 26, 38, 52]);
   const m = new StarterMap(w.book, g.rows());
   signAt(m, w, 5, 'how');
@@ -188,6 +188,8 @@ function mainStreet(w: World): StarterMap {
   named(m, w, COTTAGE, L1.cottages[0], 'SOCKS');
   named(m, w, COTTAGE, L1.cottages[1], 'SOUP');
   named(m, w, COTTAGE, L1.cottages[2], 'TEAPOT');
+  // a giant silver fork lies on the sheet: he hops onto it, takes the coins along it, and hops down
+  FORK.forEach((name, i) => m.set(L1.fork + i, STAND, name));
   m.set(L1.bonus, 5, 'pickstar');
   m.mon(SHED, L1.gate, STAND);
   return m;

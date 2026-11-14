@@ -125,6 +125,8 @@ export async function mainStreet(bot: StarterBot): Promise<void> {
   // the second sign says a star flies only so far: from 13 blocks away it falls short
   await must(bot, bot.walk(b - 13, 'too far'), 'to the second sign');
   await throwAt(bot, [COTTAGE], 'from too far', true);
+  // the giant fork lies across the street: hop onto it and walk its length, taking the coins along it
+  for (let i = 1; i <= 4; i++) await must(bot, bot.walk(L1.fork + i, 'the fork'), 'over the fork');
   await must(bot, bot.walk(b - 4, 'closer'), 'closer');
   await throwAt(bot, [COTTAGE], 'from close by');
   await must(bot, bot.walk(L1.tunnel[0] - 1, 'the shed'), 'to the shed');
