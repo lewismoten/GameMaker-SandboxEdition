@@ -2,6 +2,7 @@
 // dimmed and cooled to match (the block pictures are the same indexes, so the street is the same street at
 // dusk, at night and at sunrise). Gold, white and the houses keep their colors, so a star still shines.
 import type { Pal } from '../../kit/starter/palette';
+import { hidePaper } from './paper';
 
 export type Mood = 'day' | 'dusk' | 'night' | 'dawn';
 type RGB = [number, number, number];
@@ -13,8 +14,15 @@ const SKIES: Record<Exclude<Mood, 'day'>, [RGB, RGB, RGB, number, number]> = {
   dawn: [[130, 150, 235], [255, 226, 236], [250, 170, 190], 0.95, 0.94],
 };
 
-/** The palette for `mood` (day is the shared one itself). */
-export function paletteFor(pal: Pal, mood: Mood): Pal {
+/** The paper's ruled line, crayon stroke and seam shadow on a night sheet (paper.ts). */
+const NIGHT_PAPER: RGB[] = [
+  [58, 72, 140],
+  [22, 26, 70],
+  [12, 14, 44],
+];
+
+/** The palette for `mood` (day is the shared one itself). `paper`: the level is drawn on ruled paper (paper.ts); otherwise the paper ramp is the sky's color. */
+export function paletteFor(pal: Pal, mood: Mood, paper = false): Pal {
   if (mood === 'day') return pal;
   const [dark, light, mid, grass, ground] = SKIES[mood];
   const out = new Uint8Array(pal.pal);
@@ -35,5 +43,11 @@ export function paletteFor(pal: Pal, mood: Mood): Pal {
     const o = idx * 3;
     out.set([out[o] * ground, out[o + 1] * ground, out[o + 2] * blue].map(Math.round), o);
   }
+  if (paper) {
+    pal.r('paper').forEach((idx, k) => set(idx, NIGHT_PAPER[k]));
+    // the ground is brown crayon on the sheet: its lightest speckles are gaps where the paper shows through
+    const sky3 = pal.c('sky', 3) * 3;
+    for (const idx of pal.r('dirt').slice(4)) out.copyWithin(idx * 3, sky3, sky3 + 3);
+  } else hidePaper(out, pal.c('sky', 3), pal.r('paper'));
   return { ...pal, pal: out };
 }

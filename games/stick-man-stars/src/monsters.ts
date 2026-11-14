@@ -1,4 +1,4 @@
-// STICK MAN STARS' monsters. The kit's gumdrop 0, buzzer 1 and shelly 2 stay in the file (unused), then:
+// STICK MAN STARS' monsters. Slots 0 to 2 are empty (the game draws none of the Starter monsters), then:
 //   STAR      the gold star Stick Man throws: born from a frame of his Throw sequence (hero.ts), it flies
 //             the way he last walked until it hits something or runs out of range. Power 200.
 //   TWINKLE   the sparkle a star leaves
@@ -21,11 +21,12 @@ import { corner, mon, pace } from '@lewismoten/gamemaker-sandbox-tools/kit/actor
 import { outline } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';
-import type { Book } from '../../kit/starter/book';
-import { buildMonsterBlocks, buildMonsters } from '../../kit/starter/monsters';
+import { newMonsterSet } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
+import { Book } from '../../kit/starter/book';
 import type { Pal } from '../../kit/starter/palette';
 import { sparkle } from '../../kit/starter/sparkle';
 import { drawStar } from './starArt';
+import { crayon, sketch } from './paper';
 
 export const STAR = 3;
 export const TWINKLE = 4;
@@ -239,7 +240,9 @@ function house(pal: Pal, kind: Kind, lit: boolean, frame: 0 | 1, lanterns = 0, l
       [19, 13],
     ] as const)
       p.set(sx, sy + frame * 2, pal.c('white', 3));
-  return outline(p, ink, { transparent: T });
+  // on paper: a dark house is a pencil drawing, a lit one is colored in with crayon
+  if (lit) return outline(crayon(p, pal, T), ink, { transparent: T });
+  return outline(sketch(p, pal, T), pal.c('stone', 0), { transparent: T });
 }
 
 /** A fork: a lit house drawn two thirds the size, standing on the ground, with a fork weathervane on its peak. */
@@ -253,7 +256,7 @@ function forkHouse(pal: Pal, kind: 'cottage' | 'tower', frame: 0 | 1): Pixels {
   // the peak: the cottage's gable tops out at row 3, the tower's cap at row 1 (two thirds of that, from row 7)
   forkVane(p, pal, 8, 1, kind === 'cottage' ? 8 : 7, frame);
   p.set(17, 9 + frame * 2, pal.c('white', 3));
-  return outline(p, pal.c('ink', 0), { transparent: T });
+  return outline(crayon(p, pal, T), pal.c('ink', 0), { transparent: T });
 }
 
 /** The old original: the Big Repo's shed, lit long ago, its planks gone gray, its roof faded and patched, and no weathervane. */
@@ -351,7 +354,7 @@ function shooter(pal: Pal, frame: 0 | 1): Pixels {
 
 /** The monster pictures: the kit's, then the star's two turns, two sparkles, every house, the confetti and the bot. */
 export function monsterPictures(pal: Pal): Book {
-  const mb = buildMonsterBlocks(pal);
+  const mb = new Book('mbl');
   mb.add('star0', drawStar(pal, 0), {});
   mb.add('star1', drawStar(pal, 1), {});
   mb.add('twinkle0', sparkle(pal, false), {});
@@ -375,10 +378,6 @@ export function monsterPictures(pal: Pal): Book {
 /** The finished .MBL: houses that can block a way are solid on every side, and the bot bumps like the kit's monsters (solid on three sides, hurts a little). */
 export function finishMonsterPictures(mb: Book): Block[] {
   const blocks = mb.finish();
-  for (const n of ['gumdrop0', 'gumdrop1', 'buzzer0', 'buzzer1', 'shelly0', 'shelly1']) {
-    blocks[mb.n(n)].solid = 0;
-    blocks[mb.n(n)].chHitPt = 0;
-  }
   for (const n of ['shed', 'big3', 'big2', 'big1']) for (const f of [0, 1]) blocks[mb.n(`${n}${f}`)].solid = SOLBOT | SOLLEF | SOLRIG | SOLTOP;
   for (const f of [0, 1]) {
     blocks[mb.n(`bot${f}`)].solid = SOLBOT | SOLLEF | SOLRIG;
@@ -387,9 +386,9 @@ export function finishMonsterPictures(mb: Book): Block[] {
   return blocks;
 }
 
-/** The .MON: the kit's three, then everything above. */
+/** The .MON: three empty slots, then everything above. */
 export function monsterSet(mb: Book): Monster[] {
-  const set = buildMonsters(mb);
+  const set = newMonsterSet();
   const anim = (name: string, t: number): [number, number][] => [
     [mb.n(`${name}0`), t],
     [mb.n(`${name}1`), t],

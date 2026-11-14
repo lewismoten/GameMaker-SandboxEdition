@@ -71,9 +71,10 @@ export function addNightBlocks(book: Book, pal: Pal): void {
 }
 
 /** Dots, three constellations, the moon, the blanket and the telescope, and the monsters that twinkle and streak. */
-export function paintNight(m: StarterMap, width: number, skip: readonly [number, number]): void {
+/** `top`: the first row of sky under the ceiling. */
+export function paintNight(m: StarterMap, width: number, skip: readonly [number, number], top = 1): void {
   for (let x = 1; x < width - 1; x++)
-    for (let y = 1; y < 8; y++) if (x < skip[0] || x > skip[1]) if (hash(x, y, 7) % 100 < 70) m.set(x, y, `dots${hash(x, y, 9) % VARIANTS}`);
+    for (let y = top; y < 8; y++) if (x < skip[0] || x > skip[1]) if (hash(x, y, 7) % 100 < 70) m.set(x, y, `dots${hash(x, y, 9) % VARIANTS}`);
   // The screen shows rows 4 to 7 over his head when he stands (and the jump reaches row 5), so the sky art lives there.
   const dipper = [
     [3, 4],

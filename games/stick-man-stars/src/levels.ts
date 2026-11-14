@@ -7,17 +7,19 @@
 //   3. Shy Street (day): the towers wander up and down the street. Wait, aim, throw. A shed again.
 //   4. Spam Row (dusk): spam bots roll and bump, then the Big Repo, a shed that takes three stars, and the lit street beyond.
 // Every room is closed in by brick walls you can see, so Stick Man is never stopped by something he can't.
-import { Book } from '../../kit/starter/book';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
+import { Book, PULL } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
-import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
+import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
 import { addSign, type Sign } from '../../kit/starter/sign';
 import { BIG3, BOT, COTTAGE, FORK_COT, FORK_TOW, LIT_COT, LIT_TOW, OLD_BIG, SHED, TOWER } from './monsters';
 import { addNightBlocks } from './nightSky';
 import { addPickStar, addStarGate } from './pickStar';
 import { paintNight } from './nightSky';
 import { paletteFor, type Mood } from './moods';
+import { addPaperBlocks, hidePaper, paperRamps, paperize, pencilAt, seamAt } from './paper';
 
 /** The signs the levels use, by name. */
 export type SignName = 'thx' | 'readme' | 'fake' | 'gaze' | 'gate' | 'how' | 'far' | 'shed' | 'shy' | 'bots' | 'three' | 'thanks' | 'forked' | 'exit';
@@ -25,31 +27,44 @@ export type SignName = 'thx' | 'readme' | 'fake' | 'gaze' | 'gate' | 'how' | 'fa
 const NAMES = ['SOCKS', 'SOUP', 'TEAPOT', 'MOTHS', 'PIE', 'KEYS'] as const;
 type Name = (typeof NAMES)[number];
 
-/** The block set every level shares: the Starter blocks, then this game's signs. */
+/** The Starter blocks this game places (the rest of the kit's set stays out, to leave room for its own art). */
+const STARTER_KEEP = ['sky', 'cloudL', 'cloudR', 'grass', 'dirt', 'brick', 'bush', 'flower', 'doorTop', 'doorBottom', 'doorwayTop', 'doorwayBottom', 'coin'];
+/** One sign post, centered in its block, stands under both ends of every board (the kit's name for its first post). */
+const POST = 'signPostL';
+
+/** The block set every level shares: the Starter blocks it uses, its own art, the paper, then the signs. */
 function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign>; names: Record<Name, Sign> } {
+  const kit = new Book('bbl');
+  addStarterBlocks(kit, pal);
   const book = new Book('bbl');
-  addStarterBlocks(book, pal);
+  for (const n of STARTER_KEEP) book.add(n, kit.pics.get(n)!, kit.rulesOf(n));
   addPickStar(book, pal);
   addStarGate(book, pal);
   addNightBlocks(book, pal);
+  addPaperBlocks(book, pal);
+  const w = pal.r('wood');
+  const post = new Pixels(20, 20, skyOf(pal)).rect(8, 0, 4, 20, w[2]).rect(8, 0, 1, 20, w[4]).rect(11, 0, 1, 20, w[1]);
+  book.add(POST, post, { grav: PULL.down });
+  const sign = (name: string, text: string, w: number, h = 1): Sign => ({ ...addSign(book, pal, name, text, w, h), legs: [POST, POST] });
   const signs = {
-    gaze: addSign(book, pal, 'gaze', 'PICK STARS: JUMP WITH UP', 4, 2),
-    gate: addSign(book, pal, 'gate', 'LEAVE 5 STARS TO LIGHT THE PATH', 4, 2),
-    how: addSign(book, pal, 'how', 'SPACE THROWS A STAR', 4, 2),
-    far: addSign(book, pal, 'far', 'A STAR FLIES ONLY SO FAR', 4, 2),
-    shed: addSign(book, pal, 'shed', 'A SLEEPY SHED NAPS IN THE WAY', 4, 2),
-    shy: addSign(book, pal, 'shy', 'SHY ONES WANDER', 4, 2),
-    bots: addSign(book, pal, 'bots', 'SPAM BOTS BUMP. POP THEM', 4, 2),
-    three: addSign(book, pal, 'three', 'THREE LANTERNS: ONE THANK YOU EACH', 4, 2),
-    thanks: addSign(book, pal, 'thanks', 'LIKED A PROJECT? LEAVE IT A STAR', 4, 2),
-    forked: addSign(book, pal, 'forked', 'BIG REPO: FORKED FROM →', 3, 2),
-    thx: addSign(book, pal, 'thx', 'A STAR SAYS THANKS', 3, 2),
-    readme: addSign(book, pal, 'readme', 'SAYS WHAT IT IS', 3, 2),
-    fake: addSign(book, pal, 'fake', 'FAKE STARS FADE', 3, 2),
-    exit: addSign(book, pal, 'exit', 'EXIT →', 3),
+    gaze: sign('gaze', 'PICK STARS: JUMP WITH UP', 4, 2),
+    gate: sign('gate', 'LEAVE 5 STARS TO LIGHT THE PATH', 4, 2),
+    how: sign('how', 'SPACE THROWS A STAR', 4, 2),
+    far: sign('far', 'A STAR FLIES ONLY SO FAR', 4, 2),
+    shed: sign('shed', 'A SLEEPY SHED NAPS IN THE WAY', 4, 2),
+    shy: sign('shy', 'SHY ONES WANDER', 4, 2),
+    bots: sign('bots', 'SPAM BOTS BUMP. POP THEM', 4, 2),
+    three: sign('three', 'THREE LANTERNS: ONE THANK YOU EACH', 4, 2),
+    thanks: sign('thanks', 'LIKED A PROJECT? LEAVE IT A STAR', 4, 2),
+    forked: sign('forked', 'BIG REPO: FORKED FROM →', 3, 2),
+    thx: sign('thx', 'A STAR SAYS THANKS', 3, 2),
+    readme: sign('readme', 'SAYS WHAT IT IS', 3, 2),
+    fake: sign('fake', 'FAKE STARS FADE', 3, 2),
+    exit: sign('exit', 'EXIT →', 3),
   };
   const names = {} as Record<Name, Sign>;
-  for (const n of NAMES) names[n] = addSign(book, pal, `n.${n}`, n, 3, 1);
+  for (const n of NAMES) names[n] = sign(`n.${n}`, n, 3, 1);
+  paperize(book, pal);
   return { book, signs, names };
 }
 
@@ -62,6 +77,8 @@ export interface Level {
   map: StarterMap;
   /** This level's palette: the shared one with its sky (and grass) swapped. */
   pal: Pal;
+  /** Drawn on paper, with no climbing: its scene never scrolls up or down (game.ts). */
+  flat: boolean;
 }
 
 /** The top row of a sign standing on ground row `ground`. */
@@ -115,15 +132,31 @@ function named(m: StarterMap, w: World, kind: number, x: number, name: Name): vo
 }
 
 /** Level 1: a night hill with a starfield, and bright stars (hung from a walk to a jump high) to pick. The town gate wants five. */
-export const L0 = { walk: [20, 24, 40] as const, jump: [17, 28, 33, 37, 44, 48] as const, gate: 52, tunnel: [50, 54] as const, exit: 57, width: 61, need: 5 };
+export const L0 = {
+  walk: [20, 24, 40] as const,
+  jump: [17, 28, 33, 37, 44, 48] as const,
+  gate: 52,
+  tunnel: [50, 54] as const,
+  exit: 57,
+  width: 61,
+  need: 5,
+  ceiling: 3,
+  seams: [15, 38] as const,
+};
 function stargazingHill(w: World): StarterMap {
   const g = base(L0.width, L0.exit);
   tunnel(g, L0.tunnel[0], L0.tunnel[1]);
+  // the screen never scrolls up or down here (game.ts), so the brick ceiling comes down to row 3, just above
+  // the top of the screen: however often Up is pressed in the air, Stick Man stays in sight
+  g.fill(1, 0, L0.width - 2, L0.ceiling + 1, 'B');
   for (const x of [24, 42]) g.put(x, GROUND - 1, 'b');
   const m = new StarterMap(w.book, g.rows());
-  paintNight(m, L0.width, L0.tunnel);
+  paintNight(m, L0.width, L0.tunnel, L0.ceiling + 1);
   signAt(m, w, 5, 'gaze');
   signAt(m, w, 45, 'gate');
+  // on paper: giant pencils for the end walls (their tips just under the ceiling), and two sheets taped on
+  for (const x of [0, L0.width - 1]) pencilAt(m, x, L0.ceiling + 1, STAND);
+  for (const x of L0.seams) seamAt(m, x, L0.ceiling + 1, STAND, [5, 8]);
   m.set(L0.gate, STAND - 1, 'stargateTop').set(L0.gate, STAND, 'stargate');
   for (const x of L0.walk) m.set(x, 8, 'pickstar');
   const rows = [7, 6, 5, 6, 7, 5];
@@ -201,18 +234,20 @@ function starCount(w: World): StarterMap {
 
 /** The levels in order. */
 export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
-  const pal = buildStarterPalette(undefined, 'stick-man-stars');
+  const pal = buildStarterPalette(paperRamps, 'stick-man-stars');
+  hidePaper(pal.pal, skyOf(pal), pal.r('paper'));
   const w = buildBlocks(pal);
-  const level = (file: string, title: string, hint: string, mood: Mood, map: StarterMap): Level => ({
+  const level = (file: string, title: string, hint: string, mood: Mood, map: StarterMap, flat = false): Level => ({
     file,
     title,
     hint,
     mood,
     map,
-    pal: paletteFor(pal, mood),
+    pal: paletteFor(pal, mood, flat),
+    flat,
   });
   const levels: Level[] = [
-    level('one', 'Stargazing Hill', 'Pick the bright stars.', 'night', stargazingHill(w)),
+    level('one', 'Stargazing Hill', 'Pick the bright stars.', 'night', stargazingHill(w), true),
     level('two', 'Main Street', 'Space throws a star.', 'dawn', mainStreet(w)),
     level('three', 'Shy Street', 'Houses wander. Wait and aim.', 'day', shyStreet(w)),
     level('four', 'Spam Row', 'Pop the bots. Light three lanterns.', 'dusk', starCount(w)),
