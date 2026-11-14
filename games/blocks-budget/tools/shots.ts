@@ -4,12 +4,17 @@
 import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { writePng } from '@lewismoten/gamemaker-sandbox-tools/kit/png';
-import { cameraTop, renderRegion } from '@lewismoten/gamemaker-sandbox-tools/kit/levelPicture';
+import { recordCamera } from '@lewismoten/gamemaker-sandbox-tools/kit/cameraLog';
+import { renderRegion } from '@lewismoten/gamemaker-sandbox-tools/kit/levelPicture';
 import { buildHeroBlocks, heroPicture } from '../../kit/starter/hero';
 import { buildMonsterBlocks, buildMonsters } from '../../kit/starter/monsters';
 import { ORIGIN } from '../../kit/starter/map';
 import { GROUND, TOWER_X, VILLAGE_X, WALL_X, buildLevels } from '../src/levels';
+import { play } from './play';
+import { GameSim } from './sim';
 
+// where the screen really was on the bot's way through the game (it rests in a new place after a climb or a drop)
+const cam = await recordCamera(GameSim, () => play());
 const out = process.argv[2];
 if (!out) throw new Error('usage: shots.ts <outDir>');
 mkdirSync(out, { recursive: true });
@@ -30,7 +35,7 @@ const kit = (col: number): Sprite[] => {
   ];
 };
 const region = (level: number, col: number, w: number, extra: Sprite[]) =>
-  renderRegion(levels[level].map.done(), bbl, mbl, set, ORIGIN + col, cameraTop(extra), w, 10, extra);
+  renderRegion(levels[level].map.done(), bbl, mbl, set, ORIGIN + col, cam.top(level, extra), w, 10, extra);
 const save = (name: string, pic: ReturnType<typeof region>) => writePng(join(out, name), pic, pal.pal, 3);
 
 save('1-before-tower.png', region(0, TOWER_X - 8, 16, kit(TOWER_X - 3)));

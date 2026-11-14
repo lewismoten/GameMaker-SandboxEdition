@@ -12,7 +12,7 @@ cd web && npx vite-node ../games/<id>/build.ts
 Reusable builders, drawing, synthesis, native animation, layout audits and headless helpers
 belong to [`web/packages/tools`](../../web/packages/tools/README.md). Its `kit/*` APIs include
 `pixels`, `palette`, `palRamps`, `pcText`, `microText`, `blit`, `shading`, `transforms`,
-`coverPaint`, `quantize`, `sdftext`, `raytrace`, `png`, `photo`, `levelPicture` (`renderRegion`; `cameraTop` gives the map row the engine's screen starts at when the hero stands), `actors`,
+`coverPaint`, `quantize`, `sdftext`, `raytrace`, `png`, `photo`, `levelPicture` (`renderRegion`), `cameraLog` (`recordCamera` runs a game's bot and logs the screen's real corner from the engine; `cam.top(level, sprites)` is the map row the screen starts at when the hero stands there), `actors`,
 `screenText`, `saveSlots`, `road3d`, `disk`, `menuVersion`, `fadeOut`, `fliClips`,
 `recordedDemo`, `synthParts`, `song`, `songFx`, `hopBot`, `align`, `sceneInit`, `routeChecks`,
 and `textfit`, alongside the earlier music, sound, simulation and clip APIs.
