@@ -114,8 +114,8 @@ export function addPaperBlocks(book: Book, pal: Pal): void {
 
 /** The block names of the giant fork lying on the sheet, left to right: handle end, shaft, head, tines. */
 export const FORK = ['forkEnd', 'forkShaft', 'forkHead', 'forkTines'] as const;
-/** Tine rows (three, 4 tall with 3 between) across the head, 18 pixels from row 2 down. */
-const TINE_ROWS = (y: number) => (y - 2) % 7 < 4 && y >= 2 && y <= 19;
+/** Tine rows (four, 3 tall with 2 between) across the head, 18 pixels from row 2 down. */
+const TINE_ROWS = (y: number) => (y - 2) % 5 < 3 && y >= 2 && y <= 19;
 
 /**
  * A giant silver table fork lying flat on the paper, tines to the right, four blocks long (a solid obstacle he hops over).
@@ -125,14 +125,14 @@ const TINE_ROWS = (y: number) => (y - 2) % 7 < 4 && y >= 2 && y <= 19;
 function addFork(book: Book, pal: Pal): void {
   const { c } = pal;
   const shapes: ((x: number, y: number) => boolean)[] = [
-    // the handle's end: a rounded bowl, joined to the shaft
-    (x, y) => ((x - 9) / 9) ** 2 + ((y - 10) / 8) ** 2 <= 1 || (x >= 9 && y >= 5 && y <= 16),
-    // the shaft widens toward the head
-    (x, y) => y >= 5 - Math.round((3 * x) / 19) && y <= 16 + Math.round((3 * x) / 19),
+    // the handle's end: a rounded end, joined to the narrow shaft
+    (x, y) => ((x - 9) / 9) ** 2 + ((y - 10) / 5) ** 2 <= 1 || (x >= 9 && y >= 7 && y <= 12),
+    // the shaft is a thin neck that widens toward the head
+    (x, y) => y >= 7 - Math.round((5 * x) / 19) && y <= 12 + Math.round((7 * x) / 19),
     // the head's palm, then the first of the tines
     (x, y) => y >= 2 && y <= 19 && (x < 10 || TINE_ROWS(y)),
     // the tines, their tips rounded
-    (x, y) => TINE_ROWS(y) && x <= 13 && !(x >= 12 && [0, 3].includes((y - 2) % 7)) && x <= 13,
+    (x, y) => TINE_ROWS(y) && x <= 13 && !(x >= 12 && [0, 2].includes((y - 2) % 5)),
   ];
   FORK.forEach((name, i) => {
     const inside = (x: number, y: number) => x >= 0 && y >= 0 && x < 20 && y < 20 && shapes[i](x, y);
