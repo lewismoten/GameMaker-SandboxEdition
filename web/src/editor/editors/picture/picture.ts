@@ -334,8 +334,11 @@ registerEditor(['gif'], (host, project, file) => {
               { class: 'pic-slots-wrap' },
               h(
                 'div',
-                { class: 'meta' },
-                'Click the block to replace. The orange frame is the one you’re about to change; blocks marked “empty” have nothing drawn yet.',
+                {
+                  class: 'meta',
+                  title: 'The orange frame is the block you’re about to change; blocks marked “empty” have nothing drawn yet.',
+                },
+                'Click the block to replace (orange frame).',
               ),
               slots,
             ),
