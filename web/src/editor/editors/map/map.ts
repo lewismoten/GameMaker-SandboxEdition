@@ -1487,7 +1487,7 @@ registerEditor(['map'], (host, project, file) => {
       h(
         'button',
         { class: 'mt-big', onclick: () => void exportImage(), title: 'Save the map, just the level, or one game screen as a picture' },
-        '🖼 Download map picture',
+        '🖼 Download picture',
       ),
     ),
     h('div', { class: 'row' }, h('div', { class: 'stack', style: 'flex:1 1 480px;min-width:0' }, modeBar, marksUi.panel, scroller, status), sideCol),
