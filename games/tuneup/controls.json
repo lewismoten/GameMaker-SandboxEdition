@@ -1,0 +1,108 @@
+{
+  "keys": {
+    "75": {
+      "short": "Walk left",
+      "long": "Walk left. In the car: drive on, and letting go coasts."
+    },
+    "77": {
+      "short": "Walk right",
+      "long": "Walk right. In the car: brake."
+    },
+    "72": {
+      "short": "Climb up",
+      "long": "Climb up a ladder, or hop up on a hop level."
+    },
+    "80": {
+      "short": "Climb down",
+      "long": "Climb down a ladder. In the car: back up gently."
+    },
+    "57": {
+      "short": "Jump",
+      "long": "Jump, or reach up into the block over your hat. In the car: toot the horn."
+    },
+    "17": {
+      "short": "Climb up",
+      "long": "Same as the Up arrow."
+    },
+    "30": {
+      "short": "Walk left",
+      "long": "Same as the Left arrow."
+    },
+    "32": {
+      "short": "Walk right",
+      "long": "Same as the Right arrow. In Oil's Well: squirt a drop into the fourth line."
+    },
+    "31": {
+      "short": "Climb down",
+      "long": "Same as the Down arrow."
+    },
+    "16": {
+      "short": "Hop left",
+      "long": "Hop up and to the left."
+    },
+    "18": {
+      "short": "Hop right",
+      "long": "Hop up and to the right. In Oil's Well: squirt a drop into the first line."
+    },
+    "71": {
+      "short": "Hop left",
+      "long": "Same as Q: hop up and to the left."
+    },
+    "73": {
+      "short": "Hop right",
+      "long": "Same as E: hop up and to the right."
+    },
+    "33": {
+      "short": "Oil line 5",
+      "long": "Oil's Well: squirt a drop into the fifth line."
+    },
+    "34": {
+      "short": "Oil line 2",
+      "long": "Oil's Well: squirt a drop into the second line."
+    },
+    "48": {
+      "short": "Oil line 3",
+      "long": "Oil's Well: squirt a drop into the third line. In Pump Up the Volume: twist a balloon."
+    },
+    "44": {
+      "short": "Trick 1",
+      "long": "Brake Dance: Teddy's first trick."
+    },
+    "45": {
+      "short": "Trick 2",
+      "long": "Brake Dance: Teddy's second trick."
+    },
+    "46": {
+      "short": "Trick 3",
+      "long": "Brake Dance: Teddy's third trick."
+    },
+    "47": {
+      "short": "Trick 4",
+      "long": "Brake Dance: Teddy's fourth trick."
+    }
+  },
+  "joystick": {
+    "1": {
+      "short": "Jump",
+      "long": "Jump, reach up, or toot the horn."
+    }
+  },
+  "counters": {
+    "20": "Red clamp, fans switched on, or the last station tuned",
+    "21": "Black clamp, brake lamps lit, tapes fetched, or the radio",
+    "22": "The battery's charge, the ball found, or the tire's air",
+    "23": "Spark plugs plucked, or raindrops rung",
+    "24": "Notes played on the beat, or horn pads honked"
+  },
+  "sounds": {
+    "9": "A hop",
+    "10": "Getting hurt",
+    "11": "Fainting",
+    "12": "A reach: crank ratchet or key boop",
+    "13": "Oil can line 1, a trick or a twist",
+    "14": "Oil can line 2",
+    "15": "Oil can line 3",
+    "16": "Oil can line 4",
+    "17": "Oil can line 5"
+  }
+}
