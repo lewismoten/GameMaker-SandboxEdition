@@ -8,8 +8,8 @@ try {
   document.documentElement.dataset.theme = 'dark';
 }
 const slot = document.getElementById('install-slot');
-const MANIFESTS = { '35': 'manifest-35.json', 28: 'manifest-28.json' };
-const BOARDS = { '35': 'esp32-3248s035', 28: 'cyd-2432s028' };
+const MANIFESTS = { 35: 'manifest-35.json', 28: 'manifest-28.json' };
+const BOARDS = { 35: 'esp32-3248s035', 28: 'cyd-2432s028' };
 // The firmware images are downloaded at production build time (web/scripts/pocketFirmware.ts); a dev server or a build
 // without them has none, so say so plainly instead of offering a button that cannot work.
 async function hasFirmware(value) {

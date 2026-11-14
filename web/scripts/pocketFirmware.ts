@@ -45,7 +45,7 @@ for (const e of pin.files) {
     writeFileSync(path, bytes);
     console.log(`fetched  ${label}`);
   } catch (err) {
-    console.error(`FAILED   ${label} from ${url}: ${err instanceof Error ? err.message : err}`);
+    console.error(`FAILED   ${label} from ${url}: ${err instanceof Error ? err.message : String(err)}`);
     bad++;
   }
 }
