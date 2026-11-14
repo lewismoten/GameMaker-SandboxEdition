@@ -6,7 +6,7 @@
   "hero": "KIT",
   "year": 1994,
   "price": "Free",
-  "version": "1.0",
+  "version": "1.1",
   "blurb": "Three short levels about heat over a desert road, drawn with blocks. Far hills wobble because each hills block turns into the same picture moved a pixel or two and back. In level 1 every row sways at once, like jelly, then each row sways a little after the one under it, so the wobble climbs like hot air. In level 2 a shiny puddle on the road is a monster that hides when Kit comes near. In level 3 the evening palette cools the same pictures and the hills hold still. Signs in the levels say how. Play it, then open it in Game-Maker and change a row's start.",
   "exe": "HEATWAVE.EXE",
   "dosName": "HEATWAVE",

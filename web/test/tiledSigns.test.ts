@@ -10,6 +10,8 @@ import { buildLevels as heroLevels } from '../../games/choose-hero/src/levels';
 import { buildGame as heroGame } from '../../games/choose-hero/src/game';
 import { CREDITS } from '../../games/first-steps/src/text';
 
+import { MICRO_GLYPHS } from '@lewismoten/gamemaker-sandbox-tools/microFont';
+
 const options = { colors: { background: 0, paper: 1, ink: 2, wood: 3, highlight: 4, shadow: 5 } };
 
 describe('game-wide tiled signs', () => {
@@ -103,6 +105,63 @@ describe('game-wide tiled signs', () => {
     }
     expect(buildTiledSigns(texts, { ...limited, include: [] }).blocks.size).toBe(0);
     expect(() => buildTiledSigns(texts, { ...limited, include: ['missing' as 'roomA'] })).toThrow('Unknown sign');
+  });
+
+  it('fits compact text to the total width, including odd interiors and both frame tiles', () => {
+    for (const post of [true, false])
+      for (const maxWidth of [5, 6, 7, 8, 9]) {
+        const { signs } = buildTiledSigns({ a: { rows: [['AAAA AAAA AAAA AAAA AAAA AAAA']], post } }, { ...options, compact: true, maxWidth });
+        const interior = maxWidth - 2 - (post && (maxWidth - 2) % 2 === 0 ? 1 : 0);
+        const capacity = Math.floor((interior * 20 - 8) / 5) + 1;
+        const wordsPerLine = Math.floor((capacity + 1) / 5);
+        const lineCount = Math.ceil(6 / wordsPerLine);
+        expect(signs.a.board[0].length).toBeLessThanOrEqual(maxWidth);
+        expect(signs.a.board).toHaveLength(Math.ceil((lineCount * 9 + 5) / 20));
+        if (post) expect(signs.a.post!.x).toBe((signs.a.board[0].length - 1) / 2);
+      }
+  });
+
+  it('wraps whole words without dropping punctuation, preserves explicit rows and normalizes chunks', () => {
+    const settings = { ...options, compact: true, maxWidth: 5 };
+    const wrapped = buildTiledSigns({ a: { rows: [['  one  TWO ', 'THREE! FOUR?']] } }, settings);
+    const explicit = buildTiledSigns({ a: { rows: [['ONE TWO'], ['THREE!'], ['FOUR?']] } }, settings);
+    expect(wrapped).toEqual(explicit);
+    expect(wrapped.signs.a.board).toHaveLength(2);
+    expect(() => buildTiledSigns({ a: { rows: [['ABCDEFGHIJKL']] } }, settings)).toThrow('exceeds maxWidth');
+    for (const maxWidth of [2, 4.5, NaN, Infinity]) expect(() => buildTiledSigns({ a: { rows: [['A']] } }, { ...settings, maxWidth })).toThrow('maxWidth');
+    expect(() => buildTiledSigns({ a: { rows: [['A']] } }, { ...settings, lettersPerBlock: 3 })).toThrow('four letters');
+  });
+
+  it('honors individual board limits and wraps the larger font within an even wall board', () => {
+    const { signs } = buildTiledSigns(
+      { wide: { rows: [['ONE TWO THREE FOUR']] }, narrow: { rows: [['ONE TWO THREE FOUR']], maxWidth: 5 } },
+      { ...options, compact: true, maxWidth: 9 },
+    );
+    expect(signs.wide.board[0]).toHaveLength(7);
+    expect(signs.wide.board).toHaveLength(1);
+    expect(signs.narrow.board[0]).toHaveLength(5);
+    expect(signs.narrow.board).toHaveLength(2);
+    const wall = buildTiledSigns({ a: { rows: [['ONE TWO THREE FOUR']], post: false } }, { ...options, lettersPerBlock: 3, maxWidth: 6 });
+    const explicit = buildTiledSigns({ a: { rows: [['ONE TWO'], ['THREE FOUR']], post: false } }, { ...options, lettersPerBlock: 3 });
+    expect(wall).toEqual(explicit);
+  });
+
+  it('draws compact capitals and digits at four by eight pixels, retaining shared frame and post art', () => {
+    const compact = buildTiledSigns(
+      { a: { rows: [['ABCDEFGHIJKLMNOPQRSTUVWXYZ 0123456789 .,:!?→']] } },
+      { ...options, compact: true, maxWidth: 13, glyphs: { ...MICRO_GLYPHS, '→': '100110111110100' } },
+    );
+    const standard = buildTiledSigns({ a: { rows: [['A'], ['B'], ['C']] } }, options);
+    for (const name of ['top-left', 'top-right', 'bottom-left', 'bottom-right', 'post'])
+      expect(compact.blocks.get(`tiledSign.${name}`)).toEqual(standard.blocks.get(`tiledSign.${name}`));
+    const { blocks, signs } = buildTiledSigns({ a: { rows: [['H']] } }, { ...options, compact: true });
+    const ink = signs.a.board.flatMap((row, by) =>
+      row.flatMap((id, bx) =>
+        [...blocks.get(id)!.px].flatMap((c, i) => (c === options.colors.ink ? [[bx * 20 + (i % 20), by * 20 + Math.floor(i / 20)]] : [])),
+      ),
+    );
+    expect(Math.max(...ink.map(([x]) => x)) - Math.min(...ink.map(([x]) => x)) + 1).toBe(4);
+    expect(Math.max(...ink.map(([, y]) => y)) - Math.min(...ink.map(([, y]) => y)) + 1).toBe(8);
   });
 
   it('keeps pickups and gameplay block IDs intact when maps load separate sign books', () => {

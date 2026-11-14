@@ -96,7 +96,7 @@ game folder opens in the browser unchanged.
 - **Carl keyboard traversal (November 12, 2026)**: Hermes Agent running OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, added Enter as an alternate buzz key, a basic-key walkthrough and keyboard regressions. Existing art, music and extra controls are preserved.
 - **Keyboard sweep 2 (November 12, 2026)**: Claude Sonnet 5.5 (Anthropic), directed by Lewis Moten and continuing a draft by Hermes Agent running OpenAI Codex (GPT-6.1 Sol), added Enter as a second key for rising right in Loaf #13 and for rebooting a board in Ohm Sweet Ohm, with a basic-key bot route and regression tests. Existing art, music and extra controls are preserved.
 
-- **Verified finding fixes (November 11, 2026)**: OpenAI Codex (GPT-6), directed by Lewis Moten, added input bounds, backup authentication and credential checks, MCP file-access and read-only checks, atomic save updates, download consent and cancellation, and regression tests. No new third-party material or game assets were added.
+- **Verified finding fixes (November 11, 2026)**: OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, added input bounds, backup authentication and credential checks, MCP file-access and read-only checks, atomic save updates, download consent and cancellation, and regression tests. No new third-party material or game assets were added.
 
 - **Short landscape dialogs (November 10, 2026)**: OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, added landscape layouts for phone dialogs using the existing forms and previews. No new third-party assets or game content were added.
 
@@ -962,9 +962,9 @@ frame-dump hook and kept the results. This fork uses two things from it:
 
 The firmware's source and its own credits moved to its own repository, https://github.com/lewismoten/gamemaker-pocket (see its NOTICE.md). What follows stays here because GameMaker still serves the prebuilt firmware images and the install page (`web/public/pocket/`) and makes the data the board plays.
 
-OpenAI Codex (GPT-6), directed by Lewis Moten, implemented the category and six-thumbnail library browser, optional version-1 package/index metadata, source-name overlays, title search scope, disposable card metadata cache, stable project identities, preview packing, host renders and regression checks. The previews reuse existing game artwork and this project's title/level renderers; their original credits remain.
+OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, implemented the category and six-thumbnail library browser, optional version-1 package/index metadata, source-name overlays, title search scope, disposable card metadata cache, stable project identities, preview packing, host renders and regression checks. The previews reuse existing game artwork and this project's title/level renderers; their original credits remain.
 
-OpenAI Codex (GPT-6), directed by Lewis Moten, revised the Pocket Player's card discovery, picker search and labels (including incremental search and paging redraws, the search icon and the calibration explanation), display options and setup flow, touch packet handling, single-touch jump wedges, saved sticky direction, packers, full-panel scene and text-page clearing, bounded picture bands and regression checks. Existing game assets retain their own credits.
+OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, revised the Pocket Player's card discovery, picker search and labels (including incremental search and paging redraws, the search icon and the calibration explanation), display options and setup flow, touch packet handling, single-touch jump wedges, saved sticky direction, packers, full-panel scene and text-page clearing, bounded picture bands and regression checks. Existing game assets retain their own credits.
 
 A firmware for the ESP32-3248S035 board that plays the Starter games, and an install page (`web/public/pocket/`). Claude Sonnet 5.5 wrote the firmware and the page. The firmware binaries' complete third-party notices are in [`web/public/pocket/fw/NOTICES.txt`](web/public/pocket/fw/NOTICES.txt).
 
@@ -978,7 +978,7 @@ A firmware for the ESP32-3248S035 board that plays the Starter games, and an ins
 
 ## Tools used to build and test
 
-OpenAI Codex (GPT-6), directed by Lewis Moten, added capture-matrix validation and failure regressions to the PLAYGAME measurement collector and plotter (`tools/dosbox-286/`).
+OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, added capture-matrix validation and failure regressions to the PLAYGAME measurement collector and plotter (`tools/dosbox-286/`).
 
 Built with [TypeScript](https://www.typescriptlang.org/) (Apache-2.0),
 [Vite](https://vitejs.dev/), [Vitest](https://vitest.dev/) and vite-node (MIT, both from the
@@ -1204,9 +1204,9 @@ maker "ZORP" is invented. The shell is untested: nothing has been printed.
 - **Desk machine settings** (`web/src/desk/pc/machine*.ts`): OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, implemented the hardware dialog, remembered CPU and disk timing, accessibility checks and regression tests using the existing engine estimates. No new third-party assets or game content were added.
 - **Livestream Desk, Editor, Site and Library follow-up**: OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, implemented navigation, asset filtering, scene-panel layout, creation labels, download discoverability, cached-search scheduling, and regression checks. Existing game data and artwork retain their credits.
 
-- **Full-window player snapshots**: OpenAI Codex (GPT-6), directed by Lewis Moten, implemented the camera control, DOS crop metadata, PNG regressions and documentation using this project’s existing PNG encoder. Original game artwork retains its existing credits.
-- **CYD friendliness check** (`web/scripts/cyd*.ts`): OpenAI Codex (GPT-6), directed by Lewis Moten, implemented the recorded-route measurements, engine probes, scoring, tests, and documentation. No game content or third-party material was added.
-- **Try Again plank landing** (`games/one-more-try/`): OpenAI Codex (GPT-6), directed by Lewis Moten, widened the upper plank and added headless jump checks against the original PLAYGAME collision rules. Existing Starter art and music retain their credits.
+- **Full-window player snapshots**: OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, implemented the camera control, DOS crop metadata, PNG regressions and documentation using this project’s existing PNG encoder. Original game artwork retains its existing credits.
+- **CYD friendliness check** (`web/scripts/cyd*.ts`): OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, implemented the recorded-route measurements, engine probes, scoring, tests, and documentation. No game content or third-party material was added.
+- **Try Again plank landing** (`games/one-more-try/`): OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, widened the upper plank and added headless jump checks against the original PLAYGAME collision rules. Existing Starter art and music retain their credits.
 
 - **Game-Maker history source notes** (`docs/history.md`): OpenAI Codex (GPT-6.1 Sol), directed
   by Lewis Moten, researched and wrote the dated summaries. The cited interviews by EJR
@@ -1231,7 +1231,7 @@ maker "ZORP" is invented. The shell is untested: nothing has been printed.
 
 - **In The Year 2000! CitiCar boarding checks and hints** (`games/year2000/`): the DOS counter gate, missing-item signs and regression checks were made with **OpenAI Codex (GPT-6)**, directed by Lewis Moten.
 
-- **Library stock for laser kits (November 11, 2026):** OpenAI Codex (GPT-6), directed by Lewis Moten, adapted this project’s Proofgrade sheet helpers for the Plowed Street box, Stage Box and paper THE CHEZ, implemented hole nesting, fitting tables and regression checks, and wrote the build notes. Existing kit designs and artwork retain their credits; no new third-party material was added.
+- **Library stock for laser kits (November 11, 2026):** OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, adapted this project’s Proofgrade sheet helpers for the Plowed Street box, Stage Box and paper THE CHEZ, implemented hole nesting, fitting tables and regression checks, and wrote the build notes. Existing kit designs and artwork retain their credits; no new third-party material was added.
 - **Kit 3D views and build notes (November 9 to 12, 2026)** (`web/src/desk/boxes/kitAssemblyViewer.ts`, `web/src/manual/printables/orbitCamera.ts`, `svgViewer.ts`, `balloonCubeFoldView.ts`, `feelieItems.ts`): **Claude** (Sonnet 5.5 and Opus 5.5, Anthropic), directed by Lewis Moten, wrote the sub-assembly views, orbit, zoom and reset camera, scrubber, die fold drag direction, in-page SVG viewer with fit and pan, and build notes. The camera and projection math is original code with no 3D library; no new third-party material was added.
 - **Offline copy as one archive (November 12, 2026)** (`web/src/offline/archiveStore.ts`, `offlineCopy.ts`, `web/scripts/offlineArchive.ts`): **Hermes Agent running OpenAI Codex GPT-6.1 Sol**, directed by Lewis Moten, prepared the atomic single-archive offline copy and its tests, using the browser's own storage and compression streams. No third-party code was added.
 - **Shared tiled-sign builder and Starter adoption (November 14, 2026)** (`web/packages/tools/src/kit/tiledSigns.ts`): **OpenAI Codex (GPT-6.1 Sol)**, directed by Lewis Moten,
@@ -1239,4 +1239,8 @@ maker "ZORP" is invented. The shell is untested: nothing has been printed.
   documentation, and adopted the signs in First Steps; Lightning; Flicker and Flow;
   Twinkle, Twinkle; Beat the Clock; Big Bug; Smash It; Beams and Fog; Who Do You Want to Be?; and, with **OpenAI Codex (GPT-6.1 Sol)**, Coins and Score, Color Doors, Colors That Work, Countdown, Cutscenes, Day and Night, Around the Room, Block Brains, Three Phases, Drop Down, Fireworks Night, Birds of a Feather, Follow Me and Health and Hearts, modeled on Stick Man Stars' signs by
   Lewis Moten / Claude Sonnet 5.5.
+  **OpenAI Codex**, directed by Lewis Moten, added the compact 4×8 font adapted from the micro font,
+  automatic width-limited wrapping, tests, and compact boards in Gravity On, Gravity Off and Heat Waves.
   The letters reuse this project's existing MIT-licensed micro font; no third-party assets were added.
+
+- **Editor scene roles (November 14, 2026):** OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, added timed-cutscene detection, native-game regression checks and scene role labels in Overview and file lists. Existing game data and export formats remain unchanged.

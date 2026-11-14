@@ -2,6 +2,7 @@
 // (GAMECLAS.H: a start scene's title, menu, storyline... screens; an end scene's won and
 // lost screens), named for the integrator's side panel and its cards.
 import { sceneKind, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { roleLabel, type SceneFiles } from './sceneRole';
 import { fromCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 
 /** Between-scene screens, by scene kind and slot. */
@@ -38,7 +39,7 @@ export interface SideEntry {
 }
 
 /** Every between-scene screen and song the game names, scene by scene (a level's intro and exit pictures and its song too). */
-export function screensAndSongs(game: Game): { screens: SideEntry[]; songs: SideEntry[] } {
+export function screensAndSongs(game: Game, files?: SceneFiles): { screens: SideEntry[]; songs: SideEntry[] } {
   const screens: SideEntry[] = [];
   const songs: SideEntry[] = [];
   game.scenes.forEach((s, i) => {
@@ -49,7 +50,7 @@ export function screensAndSongs(game: Game): { screens: SideEntry[]; songs: Side
     if (kind === 'start') (add(screens, START_SCREENS), add(songs, START_SONGS));
     else if (kind === 'end') (add(screens, END_SCREENS), add(songs, END_SONGS));
     else if (kind === 'adventure') {
-      const name = fromCp437(s.desc) || `Level ${i}`;
+      const name = `${fromCp437(s.desc).trim() || `Level ${i}`} · ${roleLabel(game, i, files)}`;
       add(
         screens,
         [

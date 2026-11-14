@@ -1482,3 +1482,10 @@ main:focus,
     margin: -10px 0;
   }
 }
+
+/* Scene roles are text alongside map names, wrapping within the file rail. */
+.sidebar .scene-file-roles {
+  display: block;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
