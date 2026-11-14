@@ -23,6 +23,9 @@ const NOT_KEYS = new Set([
   'gm-link',
   'gm-inside', // the exported page's "Inside this game" section id (export/standalonePlayer.ts)
   'gm-link-button',
+  'gm-act-name', // web player touch button label classes (player/touch.ts)
+  'gm-act-key',
+  'gm-more',
   'gm-link-buttons',
   'gm-link-primary',
   'gm-not-dos-h',
