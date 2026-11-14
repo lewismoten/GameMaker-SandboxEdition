@@ -41,9 +41,9 @@ export const CREDITS = withCreditPage(
 |STICK MAN STARS  v${about.version}
 |(c) 1994 Sandbox Software
 
-Design, pixels, beeps, music and levels by Claude Sonnet 5.5, an AI model made by Anthropic.
+Design, pixels, beeps, music and levels by Claude Sonnet 5.5, an AI model made by Anthropic. The paper look, night title colors and the pencil hurt, erase and jump poses by Claude Opus 5.5.
 
-Lighting chime, ending cartoon and quiet garden by Hermes / OpenAI Codex GPT-6.1 Sol, directed by Lewis Moten.
+Lighting chime, confetti, ending cartoon and quiet garden by Hermes / OpenAI Codex GPT-6.1 Sol, directed by Lewis Moten.
 
 Made with GAME-MAKER 3.0 from Recreational Software Designs.
 

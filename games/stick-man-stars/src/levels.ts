@@ -14,6 +14,7 @@ import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
 import { smallSign, stampSign, type SmallSign as Sign } from './signs';
 import { BIG3, BOT, COTTAGE, FORK_COT, FORK_TOW, LIT_COT, LIT_TOW, OLD_BIG, SHED, TOWER } from './monsters';
+import { addPencilScenery } from './pencilArt';
 import { addNightBlocks } from './nightSky';
 import { addPickStar, addStarGate } from './pickStar';
 import { paintNight } from './nightSky';
@@ -27,13 +28,14 @@ const NAMES = ['SOCKS', 'SOUP', 'TEAPOT', 'MOTHS', 'PIE', 'KEYS'] as const;
 type Name = (typeof NAMES)[number];
 
 /** The Starter blocks this game places (the rest of the kit's set stays out, to leave room for its own art). */
-const STARTER_KEEP = ['sky', 'cloudL', 'cloudR', 'grass', 'dirt', 'brick', 'bush', 'flower', 'doorTop', 'doorBottom', 'doorwayTop', 'doorwayBottom', 'coin'];
+const STARTER_KEEP = ['sky', 'brick', 'doorTop', 'doorBottom', 'doorwayTop', 'doorwayBottom', 'coin'];
 /** The block set every level shares: the Starter blocks it uses, its own art, the paper, then the signs. */
 function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign>; names: Record<Name, Sign> } {
   const kit = new Book('bbl');
   addStarterBlocks(kit, pal);
   const book = new Book('bbl');
   for (const n of STARTER_KEEP) book.add(n, kit.pics.get(n)!, kit.rulesOf(n));
+  addPencilScenery(book, pal);
   addPickStar(book, pal);
   addStarGate(book, pal);
   addNightBlocks(book, pal);
