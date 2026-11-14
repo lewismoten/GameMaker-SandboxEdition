@@ -22,16 +22,25 @@ describe('nameFits', () => {
 });
 
 describe('actionLabel', () => {
-  it('shows the name with the key small, and both in the aria-label', () => {
-    expect(actionLabel('Enter', 'Enter', 'Throw a star')).toEqual({ main: 'Throw a star', key: 'Enter', aria: 'Throw a star (Enter)' });
+  it('shows the name with the key small, and the aria-label is exactly that text', () => {
+    expect(actionLabel('Enter', 'Enter', 'Throw a star')).toEqual({
+      main: 'Throw a star',
+      key: 'Enter',
+      aria: 'Throw a star (Enter)',
+      plainAria: 'Enter, Throw a star',
+    });
   });
   it('falls back to the key without an entry', () => {
-    expect(actionLabel('G', 'G', undefined)).toEqual({ main: 'G', aria: 'G' });
+    expect(actionLabel('G', 'G', undefined)).toEqual({ main: 'G', aria: 'G', plainAria: 'G' });
   });
-  it('falls back to the key when the name is too long, keeping the name in aria', () => {
-    expect(actionLabel('G', 'G', 'Throw a star at the boss')).toEqual({ main: 'G', aria: 'Throw a star at the boss (G)' });
+  it('falls back to the key when the name is too long: key first, then the name', () => {
+    expect(actionLabel('G', 'G', 'Throw a star at the boss')).toEqual({
+      main: 'G',
+      aria: 'G, Throw a star at the boss',
+      plainAria: 'G, Throw a star at the boss',
+    });
   });
   it('does not repeat a name that is the key', () => {
-    expect(actionLabel('Space', 'Space', 'space')).toEqual({ main: 'space', aria: 'space (Space)' });
+    expect(actionLabel('Space', 'Space', 'space')).toEqual({ main: 'space', aria: 'space', plainAria: 'Space, space' });
   });
 });
