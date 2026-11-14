@@ -22,7 +22,7 @@ import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { parseRecording } from '@lewismoten/gamemaker-sandbox-engine/formats/recording';
 import { Screen } from '@lewismoten/gamemaker-sandbox-engine/gfx/screen';
 import { parseHighScores } from '@lewismoten/gamemaker-sandbox-engine/formats/highscore';
-import { textColors, textPicture } from './textPicture';
+import { TEXT_TILE, textColors, textTilePicture } from './textPicture';
 import type { PlayerPatches } from '@lewismoten/gamemaker-sandbox-engine/player/patchRules';
 import { parseBackdrop, parseSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
 import type { GameFiles } from '../../project/files';
@@ -212,10 +212,10 @@ export function fileThumb(name: string, bytes: Uint8Array | undefined, src: Thum
         return c;
       }
       case 'txt': {
-        const [c] = canvas(320, 200);
+        const [c] = canvas(TEXT_TILE.width, TEXT_TILE.height);
         const paint = (preferred?: number[]) => {
           const text = textColors(pal, preferred);
-          paintIndexed(c, textPicture(bytes, text.ink), 320, 200, text.palette);
+          paintIndexed(c, textTilePicture(bytes, text.ink), TEXT_TILE.width, TEXT_TILE.height, text.palette);
         };
         paint();
         // then the player's text-pages color if it reads on this palette, else the nearest that does
@@ -228,7 +228,7 @@ export function fileThumb(name: string, bytes: Uint8Array | undefined, src: Thum
               paint(Array.from(pal.subarray(i * 3, i * 3 + 3)));
             })
             .catch(() => undefined);
-        c.title = 'First text page, on a blank background';
+        c.title = 'Top left of the first text page, on a blank background';
         return c;
       }
       case 'lst': {
