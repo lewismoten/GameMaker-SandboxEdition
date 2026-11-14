@@ -16,5 +16,5 @@
     "ink": "#1a1e40",
     "logo": "SANDBOX SOFTWARE"
   },
-  "acceptedFindings": ["facing s2 The hero climbs side on"]
+  "acceptedFindings": [{ "finding": "facing s2 The hero climbs side on", "why": "The ladder is climbed side on, like the Starters." }]
 }

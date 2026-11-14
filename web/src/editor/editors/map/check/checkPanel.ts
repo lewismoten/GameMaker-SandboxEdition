@@ -30,7 +30,8 @@ import { mazeFor } from '../../../check/generators/mazeFor';
 import { companionPatches } from '../../../../dosPlayer/playerRecord';
 import { paletteReservations } from '../../palette/paletteReservations';
 import { markSame, sameEverySide, sameKeyOf } from '../../../check/sameEverySide';
-import { acceptedFindings, findingKey, setAccepted, splitAccepted, wasAcceptedButHard } from '../../../check/accepted';
+import { reasonField, reasonNote } from '../../../widgets/acceptReason';
+import { acceptedFindings, findingKey, reasonFor, setAccepted, splitAccepted, wasAcceptedButHard } from '../../../check/accepted';
 import type { LiveProgress } from '../../../check/live';
 import { MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { MARKS, describeCell, heatWords, type HeatView } from './markInfo';
@@ -543,8 +544,8 @@ export function checkPanel(host: CheckHost): {
   }
 
   /** Accepts a finding as meant to be, or (with `on` false) brings it back to the list. */
-  function accept(f: Finding, on: boolean): void {
-    setAccepted(project, findingKey(f), on);
+  function accept(f: Finding, on: boolean, why = ''): void {
+    setAccepted(project, findingKey(f), on, why);
     render();
     toast(
       on
@@ -554,6 +555,8 @@ export function checkPanel(host: CheckHost): {
   }
 
   function item(f: Finding, accepted = false): HTMLElement {
+    const reason = !accepted ? reasonField(() => accept(f, true, reason?.value() ?? '')) : null;
+    const why = accepted ? reasonFor(acceptedFindings(project), findingKey(f)) : '';
     const info = CHECKS[f.check];
     const cell = f.where.cell ?? f.where.cells?.[0];
     const fix = fixFor(f, project);
@@ -651,20 +654,24 @@ export function checkPanel(host: CheckHost): {
               '➜ Go to it',
             ),
           )
-        : h(
-            'button',
-            {
-              type: 'button',
-              class: 'lc-fix lc-accept',
-              title: accepted
-                ? 'Puts this finding back in the list and the counts.'
-                : taste
-                  ? 'A design suggestion, not a rule: if you chose this on purpose, the list, the counts, the badges and Before You Upload leave it out.'
-                  : 'You have looked at this and it is how you want it: the list, the counts, the badges and Before You Upload leave it out.',
-              onclick: () => accept(f, !accepted),
-            },
-            accepted ? '↺ Not meant to be: list it again' : taste ? '✓ That’s on purpose' : '✓ Mark as checked: it’s meant to be',
-          ),
+        : [
+            reason?.el ?? null,
+            h(
+              'button',
+              {
+                type: 'button',
+                class: 'lc-fix lc-accept',
+                title: accepted
+                  ? 'Puts this finding back in the list and the counts.'
+                  : taste
+                    ? 'A design suggestion, not a rule: if you chose this on purpose, the list, the counts, the badges and Before You Upload leave it out.'
+                    : 'You have looked at this and it is how you want it: the list, the counts, the badges and Before You Upload leave it out.',
+                onclick: () => accept(f, !accepted, reason?.value() ?? ''),
+              },
+              accepted ? '↺ Not meant to be: list it again' : taste ? '✓ That’s on purpose' : '✓ Mark as checked: it’s meant to be',
+            ),
+          ],
+      reasonNote(why),
     );
   }
 

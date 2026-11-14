@@ -24,7 +24,7 @@ import { fileURLToPath } from 'node:url';
 import { GameFiles } from '@lewismoten/gamemaker-sandbox-engine/core/gameFiles';
 import { runChecks } from '../../web/src/editor/check/report';
 import { gameOf, levelScenes } from '../../web/src/editor/check/playtest';
-import { findingKey, splitAccepted } from '../../web/src/editor/check/accepted';
+import { acceptedKeys, entriesWithoutReason, findingKey, splitAccepted, type AcceptedEntry } from '../../web/src/editor/check/accepted';
 import { readDisk } from '@lewismoten/gamemaker-sandbox-tools/kit/gameSim';
 import { readPlayer } from './player';
 import { measurePace } from '../../web/src/editor/check/walk/pace';
@@ -37,11 +37,11 @@ const baselinePath = join(here, 'levelCheck.baseline.json');
 
 interface About {
   sameEverySide?: string[];
-  acceptedFindings?: string[];
+  acceptedFindings?: AcceptedEntry[];
 }
 
 /** Each finding not accepted as a baseline line (severity, check, scene and title), and accepted keys no finding has now. */
-async function staticFindings(id: string): Promise<{ lines: string[]; advice: string[]; stale: string[] }> {
+async function staticFindings(id: string): Promise<{ lines: string[]; advice: string[]; stale: string[]; noReason: string[] }> {
   const path = join(here, '..', id, 'about.json');
   const about = existsSync(path) ? (JSON.parse(readFileSync(path, 'utf8')) as About) : {};
   const r = await runChecks(new GameFiles(readDisk(join(here, '..', id, 'disk'))), {
@@ -49,12 +49,17 @@ async function staticFindings(id: string): Promise<{ lines: string[]; advice: st
     sameEverySide: about.sameEverySide ?? [],
     player: readPlayer(id),
   });
-  const accepted = about.acceptedFindings ?? [];
+  const accepted = acceptedKeys(about.acceptedFindings ?? []);
   const { open } = splitAccepted(r.findings, accepted);
   const keys = new Set(r.findings.map(findingKey));
   const { hard, advice } = splitLines(open);
   // a play finding (one-way, softlock…) is only found by --play, so it is never stale here
-  return { lines: hard, advice, stale: accepted.filter((k) => !keys.has(k) && !PLAY_CHECKS.has(k.split(' ')[0])) };
+  return {
+    lines: hard,
+    advice,
+    noReason: entriesWithoutReason(about.acceptedFindings ?? []),
+    stale: accepted.filter((k) => !keys.has(k) && !PLAY_CHECKS.has(k.split(' ')[0])),
+  };
 }
 
 function readBaseline(): Record<string, string[]> {
@@ -113,8 +118,13 @@ const opt = (name: string, def: number) => {
 };
 if (id && flag === '--play') await playReport(id, opt('--steady', STEADY_MS), opt('--budget', 10));
 else if (id) {
-  const { lines: now, advice, stale } = await staticFindings(id);
+  const { lines: now, advice, stale, noReason } = await staticFindings(id);
   for (const k of stale) console.log(`${id}: about.json accepts "${k}", which is no longer found`);
+  // advice only: a reason (`{ "finding": ..., "why": ... }`) is optional and helps the next person to read the list
+  if (noReason.length)
+    console.log(
+      `${id}: ${noReason.length} accepted finding${noReason.length === 1 ? ' has' : 's have'} no reason (advice, not a failure; you can add one as { "finding": ..., "why": ... }): ${noReason.join('; ')}`,
+    );
   const base = readBaseline();
   if (flag === '--update') {
     base[id] = now;

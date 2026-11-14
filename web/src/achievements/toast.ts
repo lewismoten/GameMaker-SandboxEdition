@@ -55,18 +55,79 @@ function raise(el: HTMLElement): void {
  * A phone held upright while a game plays: the notes sit in the gap above the touch pad, not
  * over the game's screen (they were covering its top right).
  */
-function placeAbovePad(el: HTMLElement): void {
+function placeAbovePad(el: HTMLElement): boolean {
   const pad = document.querySelector<HTMLElement>('.gm-player:not(.gm-preview) .gm-touch');
-  if (!pad || innerHeight <= innerWidth) return;
+  if (!pad || innerHeight <= innerWidth) return false;
   // the pad's layer fills the player; its controls are its children
   let top = innerHeight;
   for (const c of pad.children) {
     const r = c.getBoundingClientRect();
     if (r.height > 0) top = Math.min(top, r.top);
   }
-  if (top >= innerHeight) return;
+  if (top >= innerHeight) return false;
   el.style.top = 'auto';
   el.style.bottom = `${Math.round(innerHeight - top + 8)}px`;
+  return true;
+}
+
+type Box = { l: number; t: number; r: number; b: number };
+
+/** The buttons, links and fields a person can press that show on the page right now. */
+function pressables(host: HTMLElement): Box[] {
+  const out: Box[] = [];
+  const sel = 'a[href],button,input,select,textarea,summary,[role=tab],[role=button],[tabindex="0"]';
+  for (const e of document.querySelectorAll<HTMLElement>(sel)) {
+    if (host.contains(e)) continue;
+    const b = e.getBoundingClientRect();
+    if (b.width < 2 || b.height < 2 || b.bottom < 0 || b.top > innerHeight || b.right < 0 || b.left > innerWidth) continue;
+    const cs = getComputedStyle(e);
+    if (cs.visibility === 'hidden' || cs.display === 'none') continue;
+    const top = document.elementsFromPoint(
+      Math.min(Math.max(b.left + b.width / 2, 0), innerWidth - 1),
+      Math.min(Math.max(b.top + b.height / 2, 0), innerHeight - 1),
+    )[0];
+    if (top && !host.contains(top) && !(top === e || e.contains(top) || top.contains(e))) continue; // hidden behind something
+    out.push({ l: b.left, t: b.top, r: b.right, b: b.bottom });
+  }
+  return out;
+}
+
+/**
+ * Anywhere else on today's web (the header, the editor's toolbar, a page's own buttons): a
+ * corner or edge where the note covers no control. A phone held upright starts at the bottom
+ * right (the toolbars are at the top); anywhere else at the top right under the header. The
+ * spots are tried in turn and the first that covers nothing wins; if every spot covers
+ * something, the one covering the fewest.
+ */
+function placeClear(el: HTMLElement): void {
+  const w = el.getBoundingClientRect().width;
+  const h = el.getBoundingClientRect().height;
+  if (!w || !h) return;
+  const boxes = pressables(el);
+  const phone = innerWidth <= 600 && innerHeight > innerWidth;
+  const spots: { side: 'right' | 'left'; top: number }[] = [];
+  const maxTop = innerHeight - h - 16;
+  const tops = [60];
+  for (let y = 108; y < maxTop; y += 48) tops.push(y);
+  tops.push(maxTop);
+  const sides = ['right', 'left'] as const;
+  for (const top of phone ? [...tops].reverse() : tops) for (const side of sides) spots.push({ side, top });
+  if (!phone) spots.splice(2, 0, ...sides.map((side) => ({ side, top: maxTop })));
+  let best = spots[0];
+  let bestN = Infinity;
+  for (const s of spots) {
+    const l = s.side === 'right' ? innerWidth - 16 - w : 16;
+    const n = boxes.filter((b) => b.l < l + w && b.r > l && b.t < s.top + h && b.b > s.top).length;
+    if (n < bestN) {
+      best = s;
+      bestN = n;
+    }
+    if (!n) break;
+  }
+  el.style.top = `${Math.max(8, Math.round(best.top))}px`;
+  el.style.bottom = 'auto';
+  el.style.right = best.side === 'right' ? '16px' : 'auto';
+  el.style.left = best.side === 'left' ? '16px' : 'auto';
 }
 
 function place(el: HTMLElement): void {
@@ -78,8 +139,9 @@ function place(el: HTMLElement): void {
   el.style.removeProperty('top');
   el.style.removeProperty('left');
   el.style.removeProperty('bottom');
+  el.style.removeProperty('right');
   if (!desk) {
-    placeAbovePad(el);
+    if (!placeAbovePad(el)) placeClear(el);
     return;
   }
   const width = Math.min(200, innerWidth - 32);
@@ -159,14 +221,22 @@ export function showUnlock(id: string): void {
       }
     }
   };
+  // it fades out in its last third of a second
   const later = () => {
     clearTimeout(timer);
-    timer = setTimeout(close, showMs());
+    timer = setTimeout(() => {
+      note.classList.add('ach-leaving');
+      timer = setTimeout(close, 300);
+    }, showMs() - 300);
   };
   x.addEventListener('click', close);
-  note.addEventListener('pointerenter', () => clearTimeout(timer));
+  const hold = () => {
+    clearTimeout(timer);
+    note.classList.remove('ach-leaving');
+  };
+  note.addEventListener('pointerenter', hold);
   note.addEventListener('pointerleave', later);
-  note.addEventListener('focusin', () => clearTimeout(timer));
+  note.addEventListener('focusin', hold);
   note.addEventListener('focusout', later);
   // a few at once is plenty: the oldest goes
   while (el.childElementCount >= 3) el.firstElementChild?.remove();

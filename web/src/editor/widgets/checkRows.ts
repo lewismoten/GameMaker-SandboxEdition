@@ -4,7 +4,7 @@
 // with every field quoted as spreadsheets expect. The report dialog (checkReport.ts) shows the
 // groups, downloads the CSV and prints the checklist from them.
 import { CHECKS, isHard, kindOf, sortFindings, type CheckInfo, type Finding, type Kind } from '../check/findings';
-import { findingKey } from '../check/accepted';
+import { acceptedKeys, findingKey, type AcceptedEntry } from '../check/accepted';
 import { GUIDE_TITLES } from './guideLink';
 
 type RowStatus = 'open' | 'accepted' | 'that’s on purpose';
@@ -21,8 +21,8 @@ export const KIND_LABEL: Record<Kind, string> = { error: 'Problem', warning: 'Wa
 export const KIND_PLURAL: Record<Kind, string> = { error: 'Problems', warning: 'Warnings', suggestion: 'Suggestions', info: 'Notes' };
 
 /** Each finding with its kind and status (an accepted taste finding is “that’s on purpose”). */
-export function findingRows(findings: Finding[], accepted: Iterable<string>): FindingRow[] {
-  const keys = new Set(accepted);
+export function findingRows(findings: Finding[], accepted: Iterable<AcceptedEntry>): FindingRow[] {
+  const keys = new Set(acceptedKeys(accepted));
   return sortFindings(findings).map((f) => {
     const on = keys.has(findingKey(f)) && !isHard(f);
     const taste = !!(CHECKS[f.check] as CheckInfo).taste;
