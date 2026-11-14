@@ -15,21 +15,19 @@ import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
-import { addSign, type Sign } from '../../kit/starter/sign';
+import { buildTiledSigns, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { CLEAR, backOf, layerOf, stillCell, type BandName } from './scene';
 import { CLOUDS, COLS, DOOR_COL, FENCE, GROUND_ROW, HILLS, ROWS, START, TOWN, WIDTH, WISPS, ringSize, type Band } from './view';
 
 export type SignName = 'speeds' | 'ring' | 'sky' | 'suns';
 
-/** The sign boards' size in blocks: four across, three high, hung on two posts. */
-const SIGN = { w: 4, h: 3 } as const;
-/** Where a sign's top-left block is, either side of the middle (its posts stand on row 3). */
-const SIGN_AT = { left: [1, 0], right: [11, 0] } as const;
-const SIGN_WORDS: Record<SignName, string> = {
-  speeds: 'FAR HILLS CRAWL, THE FENCE RACES',
-  ring: 'A BAND IS A RING OF BLOCKS, THE POSTS TOO',
-  sky: 'CLOUDS DRIFT AT TWO SPEEDS',
-  suns: 'THE DOOR OPENS WHEN THE SUNS FILL',
+/** Boards sit below the top visible row, either side of the suns. */
+const SIGN_AT = { left: [1, 1], right: [9, 1] } as const;
+const SIGN_WORDS = {
+  speeds: { rows: [['FAR HILLS'], ['CRAWL, THE'], ['FENCE RACES']] },
+  ring: { rows: [['A BAND IS A RING'], ['OF BLOCKS, THE'], ['POSTS TOO']] },
+  sky: { rows: [['CLOUDS'], ['DRIFT AT'], ['TWO SPEEDS']] },
+  suns: { rows: [['THE DOOR OPENS'], ['WHEN THE SUNS FILL']] },
 };
 
 /** Ticks (18.2 to the second) after level 2 starts that the next sun fills; the door opens with the last. */
@@ -74,7 +72,21 @@ export class Stage {
 
   constructor(readonly pal: Pal) {
     addStarterBlocks(this.book, pal);
-    for (const n of Object.keys(SIGN_WORDS) as SignName[]) this.signs[n] = addSign(this.scratch, pal, n, SIGN_WORDS[n], SIGN.w, SIGN.h);
+    const { blocks, signs } = buildTiledSigns(SIGN_WORDS, {
+      colors: {
+        background: skyOf(pal),
+        paper: pal.c('parch', 3),
+        ink: pal.c('ink', 0),
+        wood: pal.c('wood', 2),
+        highlight: pal.c('wood', 4),
+        shadow: pal.c('wood', 0),
+      },
+      // Larger letters do not fit beside the three suns without covering them.
+      compact: true,
+      maxWidth: 7,
+    });
+    Object.assign(this.signs, signs);
+    for (const [name, pic] of blocks) this.scratch.add(name, pic, AIR);
   }
 
   /** A block of this picture (the same picture is the same block), solid or air. */
@@ -128,7 +140,7 @@ export class Stage {
   /**
    * `src` (a sign post) over a sliding band, as a ring of its own that keeps step with the band's:
    * the same number of pictures, the same wait, and it starts with the band, so the band slides
-   * on behind the post instead of standing still there. Both legs of both signs share it.
+   * on behind the post instead of standing still there. Both signs share the centered post ring.
    */
   private ringOver(src: string, name: BandName, band: Band): string {
     const pre = `${src}~${name}`;
@@ -149,7 +161,7 @@ export class Stage {
    * would cost more blocks than a level may have.
    */
   sign(m: StarterMap, n: SignName, at: readonly [number, number], bands: Partial<Record<number, BandName>>): void {
-    const { board, legs } = this.signs[n];
+    const { board, post: leg } = this.signs[n];
     const put = (src: string, x: number, y: number) => m.set(x, y, this.plain(this.over(this.scratch.pics.get(src)!, this.under(y, bands))));
     const post = (src: string, x: number, y: number) => {
       const b = bands[y];
@@ -158,8 +170,7 @@ export class Stage {
       else put(src, x, y);
     };
     board.forEach((row, dy) => row.forEach((name, dx) => put(name, at[0] + dx, at[1] + dy)));
-    post(legs[0], at[0], at[1] + board.length);
-    post(legs[1], at[0] + SIGN.w - 1, at[1] + board.length);
+    if (leg) for (let y = at[1] + board.length; y < GROUND_ROW; y++) post(leg.block, at[0] + leg.x, y);
   }
 
   /** A copy of a door block with two red and white bars across it. */

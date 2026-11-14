@@ -37,9 +37,8 @@ const monsterBlocks = buildMonsterBlocks(pal);
 const hero = heroPicture(heroBlocks, 'stand.top', 'stand');
 const cheer = heroPicture(heroBlocks, 'cheer.top', 'jump');
 
-// the game's shared data: one block set, one palette, one hero, one set of monsters, one song
+// the game's shared data: one palette, one hero, one set of monsters, one song
 disk.put('pics.pal', serializePalette(pal.pal));
-disk.put('pics.bbl', serializeBlocks(book.finish()));
 disk.put('pics.mbl', serializeBlocks(monsterBlocks.finish()));
 disk.put('pics.mon', serializeMonsters(buildMonsters(monsterBlocks)));
 disk.put('hero.cbl', serializeBlocks(heroBlocks.finish()));
@@ -49,6 +48,7 @@ disk.put('pics.cmf', song());
 
 // each level's map and its card
 levels.forEach((l, i) => {
+  disk.put(`${l.file}.bbl`, serializeBlocks(l.book.finish()));
   disk.put(`${l.file}.map`, serializeMap(l.map.done()));
   disk.put(`${l.file}.gif`, gif(cardPicture(pal, book, hero, i + 1, levels.length, l.title, l.hint), pal));
 });
@@ -104,4 +104,6 @@ disk.put('pics.gam', serializeGame(buildGame(levels)));
 disk.put('license.txt', licenseText('Pictures and Cartoons'));
 clipEveryList(disk.files);
 disk.write();
-console.log(`${TITLE}: ${book.index.size} blocks, ${monsterBlocks.index.size} monster blocks, ${heroBlocks.index.size} hero blocks`);
+console.log(
+  `${TITLE}: ${levels.map((l) => l.book.index.size).join('/')} blocks, ${monsterBlocks.index.size} monster blocks, ${heroBlocks.index.size} hero blocks`,
+);
