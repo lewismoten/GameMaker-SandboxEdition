@@ -5,14 +5,13 @@
 //      times, frames that lean), two flicker loops so neighbors differ; then flags on poles, a wave on an even loop.
 //   2. The Falls: a cliff with a waterfall four blocks wide: a lip, a body and a splash, each a loop, over a pool.
 //   3. The Fire on the Hill: a dusk fire on a hill, a loop of big frames, and three loops of rising sparks.
-import { Book } from '../../kit/starter/book';
+import { Book, PULL } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
-import { type Pal } from '../../kit/starter/palette';
-import { addSign, type Sign } from '../../kit/starter/sign';
+import { skyOf, type Pal } from '../../kit/starter/palette';
+import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
-import { PULL } from '../../kit/starter/book';
 import { FIRE, FIRE_TICKS, SPARKS, fireFrame, logs, sparkFrame } from './camp';
 import { BODY_TICKS, COLS, LIP_TICKS, SPLASH_TICKS, bodyFrame, lipFrame, poolBlock, rockBlock, splashFrame } from './falls';
 import { FLAG_TICKS, flagFrames, poleBlocks } from './flag';
@@ -46,15 +45,15 @@ export interface Thing {
 }
 
 const WORDS = {
-  pulse: 'EVEN TIMES MAKE A PULSE',
-  flicker: 'UNEVEN TIMES MAKE IT FLICKER',
-  two: 'TWO LOOPS KEEP TORCHES APART',
-  flag: 'A WAVE MOVES ALONG TWO BLOCKS',
-  fall: 'STREAKS SLIDE DOWN 5 PIXELS A FRAME',
-  ends: 'THE TOP AND FOOT ARE LOOPS TOO',
-  wide: 'FOUR BLOCKS MAKE A WIDE FALL',
-  fire: 'A BIG FIRE: BIGGER FRAMES, UNEVEN TIMES',
-  sparks: 'SPARKS ARE 3 LOOPS, NEVER SIDE BY SIDE',
+  pulse: { rows: [['EVEN TIMES MAKE A PULSE']] },
+  flicker: { rows: [['UNEVEN TIMES MAKE IT FLICKER']] },
+  two: { rows: [['TWO LOOPS KEEP'], ['TORCHES APART']] },
+  flag: { rows: [['A WAVE MOVES'], ['ALONG TWO BLOCKS']] },
+  fall: { rows: [['STREAKS SLIDE DOWN'], ['5 PIXELS A FRAME']] },
+  ends: { rows: [['THE TOP AND FOOT ARE LOOPS TOO']] },
+  wide: { rows: [['FOUR BLOCKS MAKE A WIDE FALL']] },
+  fire: { rows: [['A BIG FIRE: BIGGER FRAMES, UNEVEN TIMES']] },
+  sparks: { rows: [['SPARKS ARE 3 LOOPS, NEVER SIDE BY SIDE']] },
 } as const;
 export type SignName = keyof typeof WORDS;
 
@@ -72,8 +71,21 @@ interface Built {
 function start(pal: Pal, names: SignName[]): Built {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
-  const signs: Record<string, Sign> = {};
-  for (const k of names) signs[k] = addSign(book, pal, k, WORDS[k], 4, 3);
+  // Pack every level's sign text together; keep only the tiles used in this palette.
+  const { blocks: tiles, signs } = buildTiledSigns(WORDS, {
+    colors: {
+      background: skyOf(pal),
+      paper: pal.c('parch', 3),
+      ink: pal.c('ink', 0),
+      wood: pal.c('wood', 2),
+      highlight: pal.c('wood', 4),
+      shadow: pal.c('wood', 0),
+    },
+    lettersPerBlock: 3,
+    maxBlocks: 100,
+  });
+  const needed = new Set(names.flatMap((k) => [...signs[k].board.flat(), signs[k].post!.block]));
+  for (const [name, pic] of tiles) if (needed.has(name)) book.add(name, pic, { grav: PULL.down });
   return { book, timed: [], signs };
 }
 
@@ -136,10 +148,10 @@ function torchHall(): Level {
   for (const x of [13, 16]) torch(x, 'pulse', 'pulse');
   [24, 27, 30, 33].forEach((x, i) => torch(x, i % 2 ? 'flameB' : 'flameA', 'flicker'));
   for (const x of [8, 20, 37, 47]) m.set(x, 5, 'window.top').set(x, 6, 'window.bot');
-  m.sign(5, onGround(signs.pulse), signs.pulse);
-  m.sign(18, onGround(signs.flicker), signs.flicker);
-  m.sign(34, onGround(signs.two), signs.two);
-  m.sign(41, onGround(signs.flag), signs.flag);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 5, onGround(signs.pulse), signs.pulse);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 18, onGround(signs.flicker), signs.flicker);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 34, onGround(signs.two), signs.two);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 41, onGround(signs.flag), signs.flag);
   // two flags: each a pole (top, flag, then the pole down to the floor)
   for (const x of [48, 51]) {
     m.set(x, 7, 'pole.top')
@@ -233,9 +245,9 @@ function falls(): Level {
   });
   [18, 19, 20].forEach((x, i) => m.set(x, 10, `pool.${i % 2}`));
   [25, 26, 27].forEach((x, i) => m.set(x, 10, `pool.${(i + 1) % 2}`));
-  m.sign(6, onGround(signs.fall), signs.fall);
-  m.sign(36, onGround(signs.ends), signs.ends);
-  m.sign(45, onGround(signs.wide), signs.wide);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 6, onGround(signs.fall), signs.fall);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 36, onGround(signs.ends) - 2, signs.ends, 3);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 45, onGround(signs.wide), signs.wide);
   return { file: 'falls', title: 'The Falls', hint: 'A cliff, a waterfall and its pool.', pal, palFile: 'day.pal', book, timed, map: m, things };
 }
 
@@ -300,8 +312,8 @@ function fireOnTheHill(): Level {
     m.set(x, y, `spark${i}.0`);
     things.push({ ring: `spark${i}`, x, y, kind: 'spark' });
   }
-  m.sign(6, onGround(signs.fire), signs.fire);
-  m.sign(30, onGround(signs.sparks), signs.sparks);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 6, onGround(signs.fire) - 1, signs.fire, 2);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 30, onGround(signs.sparks) - 1, signs.sparks, 2);
   return { file: 'camp', title: 'The Fire on the Hill', hint: 'A big fire and its sparks.', pal, palFile: 'night.pal', book, timed, map: m, things };
 }
 
