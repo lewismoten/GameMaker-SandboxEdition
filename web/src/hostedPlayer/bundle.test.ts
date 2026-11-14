@@ -25,3 +25,21 @@ describe('save zips', () => {
     expect(await importSaveZip(zip)).toEqual({ ok: { 'game1.sav': new Uint8Array([9]) } });
   });
 });
+
+describe('importSaveZip prototype safety', () => {
+  it('a __proto__ or constructor folder does not write onto Object.prototype or Object', async () => {
+    const zip = await createZip(
+      [
+        { name: '__proto__/debug', data: new Uint8Array([1, 2, 3]) },
+        { name: 'constructor/debug', data: new Uint8Array([4]) },
+        { name: 'nebula/GAME1.SAV', data: new Uint8Array([5]) },
+      ],
+      new Date(),
+    );
+    const out = await importSaveZip(zip);
+    expect(({} as Record<string, unknown>).debug).toBeUndefined();
+    expect((Object as unknown as Record<string, unknown>).debug).toBeUndefined();
+    expect(Object.keys(out).sort()).toContain('nebula');
+    expect(out.nebula['game1.sav']).toEqual(new Uint8Array([5]));
+  });
+});
