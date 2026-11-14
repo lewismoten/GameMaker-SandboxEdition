@@ -81,20 +81,38 @@ try {
   }
 
   // 2. typecheck each export under bundler and node16 resolution
-  for (const [mode, module] of [['bundler', 'esnext'], ['node16', 'node16']]) {
+  for (const [mode, module] of [
+    ['bundler', 'esnext'],
+    ['node16', 'node16'],
+  ]) {
     for (const n of names) {
       const dir = join(project, `ts-${mode}-${n}`);
       mkdirSync(dir);
       writeFileSync(join(dir, 'a.ts'), all[n].map((s, i) => `import * as m${i} from '${s}';\nvoid m${i};`).join('\n') + '\nexport {};\n');
       writeFileSync(
         join(dir, 'tsconfig.json'),
-        JSON.stringify({ compilerOptions: { target: 'es2022', module, moduleResolution: mode, strict: true, noEmit: true, skipLibCheck: false, lib: ['es2022', 'dom'], types: ['node'], typeRoots: ['../node_modules/@types'] }, files: ['a.ts'] }),
+        JSON.stringify({
+          compilerOptions: {
+            target: 'es2022',
+            module,
+            moduleResolution: mode,
+            strict: true,
+            noEmit: true,
+            skipLibCheck: false,
+            lib: ['es2022', 'dom'],
+            types: ['node'],
+            typeRoots: ['../node_modules/@types'],
+          },
+          files: ['a.ts'],
+        }),
       );
       try {
         sh(dir, join(project, 'node_modules/.bin/tsc'), ['-p', '.']);
         note(n, `tsc ${mode}`, true, `${all[n].length} imports`);
       } catch (e) {
-        const lines = String(e.stdout || e.message).split('\n').filter((l) => l.includes('error'));
+        const lines = String(e.stdout || e.message)
+          .split('\n')
+          .filter((l) => l.includes('error'));
         note(n, `tsc ${mode}`, false, `${lines.length} errors; first: ${lines.slice(0, 3).join(' | ')}`);
       }
     }
@@ -112,7 +130,15 @@ try {
       sh(dir, join(project, 'node_modules/.bin/vite'), ['build', '--logLevel', 'error', '--outDir', 'out']);
       note(n, 'vite build', true, `${sym} from ${spec.replace(pkgName(n), n)}`);
     } catch (e) {
-      note(n, 'vite build', false, String(e.stderr || e.message).split('\n').slice(0, 3).join(' '));
+      note(
+        n,
+        'vite build',
+        false,
+        String(e.stderr || e.message)
+          .split('\n')
+          .slice(0, 3)
+          .join(' '),
+      );
     }
   }
   // documented: tools' drawing rejects browser builds ("browser": null), so a client build must fail
@@ -128,7 +154,15 @@ try {
   }
   note('tools', 'drawing browser', rejected, rejected ? 'rejected as documented' : 'a browser build accepted a Node-only entry');
 } catch (e) {
-  note('setup', 'consumer', false, String(e.stderr || e.message).split('\n').slice(0, 6).join(' '));
+  note(
+    'setup',
+    'consumer',
+    false,
+    String(e.stderr || e.message)
+      .split('\n')
+      .slice(0, 6)
+      .join(' '),
+  );
 } finally {
   for (const r of rows) process.stdout.write(`${r[0].padEnd(9)}${r[1].padEnd(14)}${r[2].padEnd(6)}${r[3]}\n`);
   if (keep) process.stdout.write(`kept ${scratch}\n`);
