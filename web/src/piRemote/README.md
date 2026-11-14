@@ -19,12 +19,17 @@ https or localhost). Nothing on the site links to it.
 - `serialLink.ts`: the Web Serial port: ordered writes, a read loop of lines.
 - `soundSwitch.ts`: the **Pi sound** switch (off by default; its click starts the browser's
   audio). While on, the Pi's `SND` log lines (Game-Maker OS's sound events: `SND game`, `music
-  start|stop`, `voc`, `beep`, `stopall`, `end`; its `docs/play.md`) play here; off, a closed port
+start|stop`, `voc`, `beep`, `stopall`, `end`; its `docs/play.md`) play here; off, a closed port
   or `SND stopall` stops everything. A game the site does not have says so.
 - `soundLine.ts`: the `SND` line parser. `soundGame.ts`: the site game a Pi folder and `.GAM`
   name. `piSound.ts`: plays the events with the engine's `AudioEngine` (OPL2/CMF music, `.VOC`
   clips, the `.SND`'s PC speaker tunes) from the site's files, at the visitor's volume and Games
   setting. `sound.test.ts` tests all three.
+- `logModel.ts`: the log's filter (BOOT/ASSET/CRC lines, and SND lines while sound is on, hidden unless
+  "Show everything"), grouping of repeats with a count, error/warning marks, the status line (program,
+  game, screen mode) and the line limit. `keyGuard.ts`: arrows, Space and Page keys do not scroll the page
+  while the keyboard switch is off. Connect remembers the granted port (`serial.getPorts()`) as
+  Reconnect and reconnects itself when the Pi is plugged back in. `uxLog.test.ts` tests the log and guard.
 - `protocol.test.ts`: the encoder against usb_kernel.py's lines and codes, and the held keys.
 
 Next: sending a kernel, a file or a game folder (`PUT2`, `PUTF`) as usb_kernel.py does.
