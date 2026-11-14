@@ -10,23 +10,23 @@
 // close the road in, so nothing stops Mia that she can't see.
 import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
-import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
-import { type Sign } from '../../kit/starter/sign';
+import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
+import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { newMap, MLEN, type GameMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
-import { addTopBlocks, addTopSign } from './topBlocks';
+import { addTopBlocks } from './topBlocks';
 import { HEDGE, MAP, STRAIGHT, TILTED, WIDTH, capRow, cellAt, finishRow, type Course } from './course';
 
 export type SignName = 'straight' | 'seam' | 'back' | 'tilt' | 'lap1' | 'lap2' | 'length2';
 
-/** The signs: their words and size in blocks (the board is cut into 20x20 blocks; the book holds 150 blocks in all). */
-const WORDS: Record<SignName, { text: string; w: number; h: number }> = {
-  straight: { text: '100 BLOCKS TALL. THE ROAD RUNS STRAIGHT DOWN, BETWEEN HEDGES', w: 4, h: 4 },
-  seam: { text: 'THE DASHES ARE THE EDGE OF THE MAP. PAST THEM IS THE TOP', w: 4, h: 4 },
-  back: { text: 'BACK IN AT THE TOP. THE FINISH IS BESIDE THE START. 97 BLOCKS', w: 4, h: 4 },
-  tilt: { text: 'SAME MAP, SAME ROAD, TILTED: ONE BLOCK RIGHT EVERY 3 ROWS', w: 4, h: 4 },
-  lap1: { text: 'LAP 1 OF 3. THE EDGE IS AHEAD. YOU COME IN AT THE TOP, 33 OVER', w: 4, h: 4 },
-  lap2: { text: 'LAP 2 OF 3. THE ROAD GOES OFF THE RIGHT EDGE, BACK ON THE LEFT', w: 4, h: 4 },
-  length2: { text: 'LAP 3 OF 3. THIS ROAD: 297 BLOCKS, 3 TIMES AS FAR AS LEVEL 1', w: 4, h: 4 },
+/** Sign words and the original height used to keep the coin layout unchanged. */
+const WORDS: Record<SignName, { text: string; h: number }> = {
+  straight: { text: '100 BLOCKS TALL. THE ROAD RUNS STRAIGHT DOWN, BETWEEN HEDGES', h: 4 },
+  seam: { text: 'THE DASHES ARE THE EDGE OF THE MAP. PAST THEM IS THE TOP', h: 4 },
+  back: { text: 'BACK IN AT THE TOP. THE FINISH IS BESIDE THE START. 97 BLOCKS', h: 4 },
+  tilt: { text: 'SAME MAP, SAME ROAD, TILTED: ONE BLOCK RIGHT EVERY 3 ROWS', h: 4 },
+  lap1: { text: 'LAP 1 OF 3. THE EDGE IS AHEAD. YOU COME IN AT THE TOP, 33 OVER', h: 4 },
+  lap2: { text: 'LAP 2 OF 3. THE ROAD GOES OFF THE RIGHT EDGE, BACK ON THE LEFT', h: 4 },
+  length2: { text: 'LAP 3 OF 3. THIS ROAD: 297 BLOCKS, 3 TIMES AS FAR AS LEVEL 1', h: 4 },
 };
 
 export interface Level {
@@ -95,22 +95,24 @@ function build(book: Book, course: Course, signs: Record<SignName, Sign>, placed
     set(x, y, 'exitBottom');
     exits.push({ from: [x, y] });
   }
-  // signs at their rows: a board is laid square on the map (not stepped with the tilt), one block in on a tilted road
-  // so a step of the road under it never reaches the hedge; tilted signs start on a row that is a multiple of the rise
+  // Boards fill the road width. Tilted boards are three rows tall and start on a multiple
+  // of the rise, so the hedge never steps into them; the centered post remains on the road.
   for (const [name, u] of placed) {
     const s = signs[name];
-    const [x0, y0] = cellAt(course, u, course.rise ? 1 : 0);
+    const [x0, y0] = cellAt(course, u, 0);
     const at = (dx: number, dy: number): [number, number] => [(x0 + dx) % MAP, (y0 + dy) % MAP];
-    s.board.forEach((row, dy) =>
-      row.forEach((b, dx) => {
-        const [x, y] = at(dx, dy);
-        set(x, y, b);
-      }),
+    stampTiledSign(
+      {
+        set: (dx, dy, block) => {
+          const [x, y] = at(dx, dy);
+          if (map.blocks[y * MLEN + x] !== n('path')) throw new Error(`Sign ${name} would cover scenery at ${x},${y}`);
+          set(x, y, block);
+        },
+      },
+      0,
+      0,
+      s,
     );
-    const [lx, ly] = at(0, s.board.length);
-    const [rx, ry] = at(s.board[0].length - 1, s.board.length);
-    set(lx, ly, s.legs[0]);
-    set(rx, ry, s.legs[1]);
   }
   return { start: [sx, sy], exits, done: () => map };
 }
@@ -158,8 +160,27 @@ export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
   addStarterBlocks(side, pal);
   const book = new Book('bbl');
   const road = addTopBlocks(book, pal, side);
-  const signs = {} as Record<SignName, Sign>;
-  for (const k of Object.keys(WORDS) as SignName[]) signs[k] = addTopSign(book, pal, road, `${k}.sign`, WORDS[k].text, WORDS[k].w, WORDS[k].h);
+  const { blocks, signs } = buildTiledSigns(
+    Object.fromEntries(Object.entries(WORDS).map(([name, { text }]) => [name, { rows: [[text]] }])) as Record<SignName, { rows: string[][] }>,
+    {
+      compact: true,
+      maxWidth: WIDTH,
+      maxBlocks: Math.min(100, 150 - book.index.size),
+      colors: {
+        background: skyOf(pal),
+        paper: pal.c('parch', 3),
+        ink: pal.c('ink', 0),
+        wood: pal.c('wood', 2),
+        highlight: pal.c('wood', 4),
+        shadow: pal.c('wood', 0),
+      },
+    },
+  );
+  for (const [name, pic] of blocks)
+    book.add(
+      name,
+      pic.map((x, y, color) => (color === skyOf(pal) ? road.get(x, y) : color)),
+    );
   const levels: Level[] = [
     { file: 'one', title: 'Straight On', hint: 'Down the map, and round to the top.', course: STRAIGHT, map: straight(book, signs) },
     { file: 'two', title: 'Tilted', hint: 'The same map, three times as far.', course: TILTED, map: tilted(book, signs) },
