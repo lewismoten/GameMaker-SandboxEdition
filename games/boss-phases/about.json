@@ -6,7 +6,7 @@
   "hero": "NOVA",
   "year": 1994,
   "price": "Free",
-  "version": "1.0",
+  "version": "1.1",
   "blurb": "Two short levels about a boss that changes as it is hurt. Big Bug paces a long tunnel and a star does not stop it. Hit it twice and it turns into a quicker orange bug, which is a different monster with its own picture and path. In the second level the last hit brings a tiny third one. Signs in the levels say how. Play it, then open it in Game-Maker and change when it changes.",
   "exe": "PHASES.EXE",
   "dosName": "PHASES",
