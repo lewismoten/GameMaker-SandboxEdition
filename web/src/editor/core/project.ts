@@ -3,10 +3,9 @@ import { GameFiles, normalize } from '../../project/files';
 import { saveProject, newId } from '../../project/storage';
 import { libraryDefaultPalette } from '@lewismoten/gamemaker-sandbox-tools/palettes';
 import { parseGame, serializeGame, newGame, type Game, gameTitle } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
-import { defaultPalette, parsePalette, type Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
-import { decodeGif, isGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
+import { parsePalette, type Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 import { debounce } from './ui';
-import { isSolidPalette, mostReadable } from './readablePalette';
+import { scenePalette } from '../../project/scenePalette';
 import { emptyCompanion, getSection, renameInCompanion, setExportPreviews, setMenuVersion, setSection, type Companion } from '../../project/companion';
 import { setAbout, type AboutGame } from '../../project/aboutGame';
 import { editedFile, unlockAchievement } from '../../achievements';
@@ -206,68 +205,9 @@ export class Project {
     return out;
   }
 
-  /** The palette a block set/map/picture is shown with: the scene that uses it, else the first .pal. */
+  /** The palette a block set/map/picture is shown with: the scene that uses it, else the first .pal (scenePalette.ts). */
   paletteFor(file: string, used?: ArrayLike<number>): { palette: Palette; source: string } {
-    const game = this.game();
-    // several scenes may use one file with different palettes: the palette most of them use wins, the first on a tie
-    const tally = new Map<string, { n: number; name: string }>();
-    // a slot left blank keeps the file of the level scene before it (loadscene's globals), so a scene counts as using what it inherits
-    const want = normalize(file);
-    const held: string[] = [];
-    for (const scene of game.scenes) {
-      if (scene.gametype !== 10) continue;
-      scene.files.forEach((f, slot) => {
-        if (f) held[slot] = f;
-      });
-      const pal = held[0];
-      if (!want || !pal || !this.files.has(pal) || !held.some((f) => f && normalize(f) === want)) continue;
-      const hit = tally.get(normalize(pal));
-      if (hit) hit.n++;
-      else tally.set(normalize(pal), { n: 1, name: pal });
-    }
-    if (tally.size) {
-      const ranked = [...tally.values()].sort((a, b) => b.n - a.n); // stable: the first scene breaks a tie
-      // with the sprite's colors known, skip a scene palette that would show it dark on dark
-      const i = used
-        ? mostReadable(
-            ranked.map((t) => this.files.get(t.name)!),
-            used,
-          )
-        : 0;
-      return { palette: parsePalette(this.files.get(ranked[i].name)!), source: ranked[i].name };
-    }
-    // no scene uses the file: the palette the scenes use most (below)
-    let pals = this.files.byExtension('pal');
-    if (pals.length) {
-      // a palette that is one solid color stands for nothing: use the others, the one the scenes use most first
-      const usable = pals.filter((p) => !isSolidPalette(this.files.get(p)!));
-      if (usable.length) {
-        const uses = (p: string) => game.scenes.filter((sc) => normalize(sc.files[0] ?? '') === normalize(p)).length;
-        pals = usable
-          .map((p, i) => ({ p, i }))
-          .sort((a, b) => uses(b.p) - uses(a.p) || a.i - b.i)
-          .map((x) => x.p);
-      }
-      // with the sprite's colors known, skip a palette that would show it dark on dark
-      const i = used
-        ? mostReadable(
-            pals.map((p) => this.files.get(p)!),
-            used,
-          )
-        : 0;
-      return { palette: parsePalette(this.files.get(pals[i])!), source: pals[i] };
-    }
-    for (const g of this.files.byExtension('gif')) {
-      const b = this.files.get(g)!;
-      if (isGif(b)) {
-        try {
-          return { palette: decodeGif(b).palette, source: g };
-        } catch {
-          /* try the next one */
-        }
-      }
-    }
-    return { palette: defaultPalette(), source: 'default' };
+    return scenePalette(this.files, this.game(), file, used);
   }
 
   /**
