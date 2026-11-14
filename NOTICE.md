@@ -1229,6 +1229,6 @@ maker "ZORP" is invented. The shell is untested: nothing has been printed.
 - **Shared tiled-sign builder and Starter adoption (November 14, 2026)** (`web/packages/tools/src/kit/tiledSigns.ts`): **OpenAI Codex (GPT-6.1 Sol)**, directed by Lewis Moten,
   implemented the game-wide tile builder, per-map vocabulary selection, separate shared borders, centered post, tests and
   documentation, and adopted the signs in First Steps; Lightning; Flicker and Flow;
-  Twinkle, Twinkle; Beat the Clock; Big Bug; Smash It; Beams and Fog; Who Do You Want to Be?; and, with **OpenAI Codex (GPT-6)**, Coins and Score, Color Doors and Colors That Work, modeled on Stick Man Stars' signs by
+  Twinkle, Twinkle; Beat the Clock; Big Bug; Smash It; Beams and Fog; Who Do You Want to Be?; and, with **OpenAI Codex (GPT-6)**, Coins and Score, Color Doors, Colors That Work, Countdown, Cutscenes and Day and Night, modeled on Stick Man Stars' signs by
   Lewis Moten / Claude Sonnet 5.5.
   The letters reuse this project's existing MIT-licensed micro font; no third-party assets were added.

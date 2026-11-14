@@ -16,8 +16,8 @@ import { Book, PULL, SOLID } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { ORIGIN, StarterMap } from '../../kit/starter/map';
-import { type Pal } from '../../kit/starter/palette';
-import { addSign, type Sign } from '../../kit/starter/sign';
+import { skyOf, type Pal } from '../../kit/starter/palette';
+import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { buildPalettes, type Palettes } from './palettes';
 import { gateTop, lanternBrick, orb, pillar, post, postTop, roof, star, windowBrick } from './props';
 
@@ -53,13 +53,13 @@ export const GATES = [11, 23] as const;
 export const DOOR_TWO = 34;
 
 type SignName = 'palettes' | 'sun' | 'door' | 'gate' | 'steps' | 'fade';
-const SIGNS: Record<SignName, string> = {
-  palettes: 'SAME MAP, TWO PALETTES: DAY AND NIGHT',
-  sun: 'SUN BY DAY, MOON BY NIGHT: ONE BLOCK',
-  door: 'THE DOOR GOES TO A NEW SCENE WITH A NEW PALETTE',
-  gate: 'AT A GATE THE SCENE CHANGES. SAME MAP, NEW PALETTE',
-  steps: 'THREE PALETTES. GATES GO ONE WAY',
-  fade: 'A SCENE FADES IN FROM BLACK: THAT IS THE FADE',
+const SIGNS = {
+  palettes: { rows: [['SAME MAP, TWO'], ['PALETTES: DAY'], ['AND NIGHT']] },
+  sun: { rows: [['SUN BY'], ['DAY, MOON'], ['BY NIGHT:'], ['ONE BLOCK']] },
+  door: { rows: [['THE DOOR GOES TO'], ['A NEW SCENE WITH'], ['A NEW PALETTE']] },
+  gate: { rows: [['AT A GATE THE SCENE'], ['CHANGES. SAME MAP,'], ['NEW PALETTE']] },
+  steps: { rows: [['THREE PALETTES.'], ['GATES GO ONE WAY']] },
+  fade: { rows: [['A SCENE FADES IN'], ['FROM BLACK: THAT'], ['IS THE FADE']] },
 };
 
 function startBook(pal: Pal, names: SignName[]): { book: Book; signs: Record<string, Sign> } {
@@ -75,13 +75,22 @@ function startBook(pal: Pal, names: SignName[]): { book: Book; signs: Record<str
   book.add('post', post(pal), air);
   book.add('pillar', pillar(pal), air);
   for (const part of ['l', 'm', 'r'] as const) book.add(`gate.${part}`, gateTop(pal, part), air);
-  const signs: Record<string, Sign> = {};
-  for (const n of names) signs[n] = addSign(book, pal, `${n}.sign`, SIGNS[n], 4, 3);
+  const { blocks, signs } = buildTiledSigns(SIGNS, {
+    include: names,
+    lettersPerBlock: 3,
+    maxBlocks: Math.min(100, 150 - book.index.size),
+    colors: {
+      background: skyOf(pal),
+      paper: pal.c('parch', 3),
+      ink: pal.c('ink', 0),
+      wood: pal.c('wood', 2),
+      highlight: pal.c('wood', 4),
+      shadow: pal.c('wood', 0),
+    },
+  });
+  for (const [name, pic] of blocks) book.add(name, pic, air);
   return { book, signs };
 }
-
-/** The top row of a sign standing on ground row `ground`. */
-const onGround = (ground: number, s: Sign) => ground - 1 - s.board.length;
 
 const world = (x: number, y: number): [number, number] => [x + ORIGIN, y + ORIGIN];
 
@@ -104,9 +113,6 @@ function oneMapTwoLooks(pal: Pal): Level {
   g.fill(20, 9, 4, 1, 'c');
   g.put(DOOR_ONE, 8, 'e').put(DOOR_ONE, 9, 'E');
   const m = new StarterMap(book, g.rows());
-  m.sign(5, onGround(GROUND, signs.palettes), signs.palettes);
-  m.sign(10, onGround(GROUND, signs.sun), signs.sun);
-  m.sign(15, onGround(GROUND, signs.door), signs.door);
   for (let x = 20; x <= 28; x++) m.set(x, 3, 'roof');
   for (const x of [21, 23, 27]) m.set(x, 5, 'window');
   m.set(DOOR_ONE, 7, 'lantern');
@@ -122,6 +128,11 @@ function oneMapTwoLooks(pal: Pal): Level {
     [4, 4],
   ])
     m.set(x, y, 'star');
+  // Narrower boards fit between the clouds and porch; every post reaches clear ground.
+  const signsOnSky = { set: m.setOnSky.bind(m) };
+  stampTiledSign(signsOnSky, 1, 5, signs.palettes, 2);
+  stampTiledSign(signsOnSky, 8, 5, signs.sun);
+  stampTiledSign(signsOnSky, 13, 6, signs.door);
   const door = world(DOOR_ONE, 9);
   const enter = m.start;
   return {
@@ -163,9 +174,6 @@ function sundownStreet(pal: Pal): Level {
   g.fill(DOOR_TWO, 7, 6, 3, 'B');
   g.put(DOOR_TWO, 8, 'e').put(DOOR_TWO, 9, 'E');
   const m = new StarterMap(book, g.rows());
-  m.sign(4, onGround(GROUND, signs.gate), signs.gate);
-  m.sign(15, onGround(GROUND, signs.steps), signs.steps);
-  m.sign(27, onGround(GROUND, signs.fade), signs.fade);
   for (let x = DOOR_TWO; x <= DOOR_TWO + 5; x++) m.set(x, 6, 'roof');
   m.set(DOOR_TWO, 7, 'lantern');
   m.set(DOOR_TWO + 2, 8, 'window').set(DOOR_TWO + 4, 8, 'window');
@@ -194,6 +202,10 @@ function sundownStreet(pal: Pal): Level {
     [37, 2],
   ])
     m.set(x, y, 'star');
+  const signsOnSky = { set: m.setOnSky.bind(m) };
+  stampTiledSign(signsOnSky, 1, 5, signs.gate, 2);
+  stampTiledSign(signsOnSky, 13, 5, signs.steps, 3);
+  stampTiledSign(signsOnSky, 25, 6, signs.fade);
   const through = (mid: number): [number, number][] => [world(mid, 9), world(mid, 8)];
   const door = world(DOOR_TWO, 9);
   return {

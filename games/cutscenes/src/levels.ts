@@ -15,8 +15,8 @@ import { Book, PULL, SOLID } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { ORIGIN, StarterMap } from '../../kit/starter/map';
-import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
-import { addSign, type Sign } from '../../kit/starter/sign';
+import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
+import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { mat, shaft, trap } from './props';
 import { FLOOR_AT, QUICK_AT, QUICK_WARN, WARN } from './timing';
 
@@ -53,20 +53,19 @@ export const WIDTH_STAGE = 16;
 export const WIDTH_MENU = 40;
 export const MAT_ROW = 19;
 /** The stage's signs (x of the board's left block) and the menu's. */
-export const STAGE_SIGNS = [3, 9];
-export const MENU_INFO_X = 5;
+export const STAGE_SIGNS = [1, 8];
+export const MENU_INFO_X = 4;
 export const MENU_LABELS = [12, 21, 30];
 export const LEDGE_ROW = 6;
 export const MENU_DOORS = [13, 22, 31];
 
-type SignName = 'words' | 'floor' | 'menu' | 'one' | 'two' | 'end';
-const SIGNS: Record<SignName, [string, number]> = {
-  words: ['A SCENE SHOWS A PICTURE AND WORDS FIRST', 3],
-  floor: ['THEN THE ROOM. THE FLOOR DROPS AND TAKES YOU ON', 3],
-  menu: ['A MENU IS A ROOM WITH DOORS. PICK ONE', 3],
-  one: ['TALE ONE', 1],
-  two: ['TALE TWO', 1],
-  end: ['THE END', 1],
+const SIGNS = {
+  words: { rows: [['A SCENE SHOWS'], ['A PICTURE AND'], ['WORDS FIRST']] },
+  floor: { rows: [['THEN THE ROOM.'], ['THE FLOOR DROPS'], ['AND TAKES YOU ON']] },
+  menu: { rows: [['A MENU IS A ROOM'], ['WITH DOORS.'], ['PICK ONE']] },
+  one: { rows: [['TALE ONE']], post: false },
+  two: { rows: [['TALE TWO']], post: false },
+  end: { rows: [['THE END']], post: false },
 };
 
 /** The finished block set: the book's, with each timed block given its next block and its ticks. */
@@ -95,8 +94,8 @@ function stage(book: Book, signs: Record<string, Sign> | undefined, floor: 'trap
   g.put(1, 8, 's').put(1, 9, 'S');
   const m = new StarterMap(book, g.rows());
   if (signs) {
-    m.sign(STAGE_SIGNS[0], onGround(GROUND, signs.words), signs.words);
-    m.sign(STAGE_SIGNS[1], onGround(GROUND, signs.floor), signs.floor);
+    stampTiledSign({ set: m.setOnSky.bind(m) }, STAGE_SIGNS[0], 4, signs.words, 3);
+    stampTiledSign({ set: m.setOnSky.bind(m) }, STAGE_SIGNS[1], 4, signs.floor, 3);
   }
   const ways: [number, number][] = [];
   for (let x = 1; x < WIDTH_STAGE - 1; x++) {
@@ -131,8 +130,9 @@ function menu(book: Book, signs: Record<string, Sign>): StarterMap {
   for (const x of [4, 17, 26, 35]) g.put(x, GROUND - 1, 'b');
   for (const x of [3, 16, 18, 25, 34, 38]) g.put(x, GROUND - 1, 'f');
   const m = new StarterMap(book, g.rows());
-  m.sign(MENU_INFO_X, onGround(GROUND, signs.menu), signs.menu);
-  [signs.one, signs.two, signs.end].forEach((s, i) => m.sign(MENU_LABELS[i], onGround(GROUND, s), s));
+  stampTiledSign({ set: m.setOnSky.bind(m) }, MENU_INFO_X, onGround(GROUND, signs.menu), signs.menu);
+  // Put each wall label beside its doorway, within the ground-level camera rows.
+  [signs.one, signs.two, signs.end].forEach((s, i) => stampTiledSign({ set: m.setOnSky.bind(m) }, MENU_LABELS[i] + 2, 4, s));
   return m;
 }
 
@@ -141,8 +141,19 @@ export function buildLevels(): { pal: Pal; book: Book; timed: Timed[]; scenes: S
   const pal = buildStarterPalette(undefined, 'cutscenes');
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
-  const signs: Record<string, Sign> = {};
-  for (const [n, [words, h]] of Object.entries(SIGNS)) signs[n] = addSign(book, pal, `${n}.sign`, words, 4, h);
+  const { blocks, signs } = buildTiledSigns(SIGNS, {
+    lettersPerBlock: 3,
+    maxBlocks: 100 - book.index.size,
+    colors: {
+      background: skyOf(pal),
+      paper: pal.c('parch', 3),
+      ink: pal.c('ink', 0),
+      wood: pal.c('wood', 2),
+      highlight: pal.c('wood', 4),
+      shadow: pal.c('wood', 0),
+    },
+  });
+  for (const [name, pic] of blocks) book.add(name, pic, AIR);
   const timed: Timed[] = [];
   book.add('trap.shut', trap(pal, false), { solid: SOLID });
   book.add('trap.warn', trap(pal, true), { solid: SOLID });
