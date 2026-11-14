@@ -7,13 +7,12 @@
 //   3. Shy Street (day): the towers wander up and down the street. Wait, aim, throw. A shed again.
 //   4. Spam Row (dusk): spam bots roll and bump, then the Big Repo, a shed that takes three stars, and the lit street beyond.
 // Every room is closed in by brick walls you can see, so Stick Man is never stopped by something he can't.
-import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
-import { Book, PULL } from '../../kit/starter/book';
+import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
-import { addSign, type Sign } from '../../kit/starter/sign';
+import { smallSign, stampSign, type SmallSign as Sign } from './signs';
 import { BIG3, BOT, COTTAGE, FORK_COT, FORK_TOW, LIT_COT, LIT_TOW, OLD_BIG, SHED, TOWER } from './monsters';
 import { addNightBlocks } from './nightSky';
 import { addPickStar, addStarGate } from './pickStar';
@@ -29,9 +28,6 @@ type Name = (typeof NAMES)[number];
 
 /** The Starter blocks this game places (the rest of the kit's set stays out, to leave room for its own art). */
 const STARTER_KEEP = ['sky', 'cloudL', 'cloudR', 'grass', 'dirt', 'brick', 'bush', 'flower', 'doorTop', 'doorBottom', 'doorwayTop', 'doorwayBottom', 'coin'];
-/** One sign post, centered in its block, stands under both ends of every board (the kit's name for its first post). */
-const POST = 'signPostL';
-
 /** The block set every level shares: the Starter blocks it uses, its own art, the paper, then the signs. */
 function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign>; names: Record<Name, Sign> } {
   const kit = new Book('bbl');
@@ -42,28 +38,33 @@ function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign>; nam
   addStarGate(book, pal);
   addNightBlocks(book, pal);
   addPaperBlocks(book, pal);
-  const w = pal.r('wood');
-  const post = new Pixels(20, 20, skyOf(pal)).rect(8, 0, 4, 20, w[2]).rect(8, 0, 1, 20, w[4]).rect(11, 0, 1, 20, w[1]);
-  book.add(POST, post, { grav: PULL.down });
-  const sign = (name: string, text: string, w: number, h = 1): Sign => ({ ...addSign(book, pal, name, text, w, h), legs: [POST, POST] });
+  // the wording is cut in chunks of five letters, and a chunk two signs share is one block (signs.ts)
+  const sign = (chunks: string): Sign => smallSign(book, pal, chunks);
   const signs = {
-    gaze: sign('gaze', 'PICK STARS: JUMP WITH UP', 4, 2),
-    gate: sign('gate', 'LEAVE 5 STARS TO LIGHT THE PATH', 4, 2),
-    how: sign('how', 'SPACE THROWS A STAR', 4, 2),
-    far: sign('far', 'A STAR FLIES ONLY SO FAR', 4, 2),
-    shed: sign('shed', 'A SLEEPY SHED NAPS IN THE WAY', 4, 2),
-    shy: sign('shy', 'SHY ONES WANDER', 4, 2),
-    bots: sign('bots', 'SPAM BOTS BUMP. POP THEM', 4, 2),
-    three: sign('three', 'THREE LANTERNS: ONE THANK YOU EACH', 4, 2),
-    thanks: sign('thanks', 'LIKED A PROJECT? LEAVE IT A STAR', 4, 2),
-    forked: sign('forked', 'BIG REPO: FORKED FROM →', 3, 2),
-    thx: sign('thx', 'A STAR SAYS THANKS', 3, 2),
-    readme: sign('readme', 'SAYS WHAT IT IS', 3, 2),
-    fake: sign('fake', 'FAKE STARS FADE', 3, 2),
-    exit: sign('exit', 'EXIT →', 3),
+    gaze: sign('PICK |STARS|: UP |JUMPS'),
+    gate: sign('FIVE |STARS|LIGHT| THE |PATH.'),
+    how: sign('SPACE|: THR|OW A |STAR!'),
+    far: sign('STARS| ONLY| GO S|O FAR'),
+    shed: sign('SHEDS| NAP |HERE.'),
+    shy: sign('SHY O|NES W|ANDER'),
+    bots: sign('SPAM |BOTS |BUMP.| POP |THEM!'),
+    three: sign('3 LAM|PS: O|NE TH|ANKS |EACH!'),
+    thanks: sign('LIKED| IT? |STAR!'),
+    // over the old original the Big Repo was forked from: a name board, resting on its roof
+    forked: smallSign(book, pal, ' THE |ORIGI|NAL  ', false),
+    thx: sign('A STA|R: TH|ANKS!'),
+    readme: sign('SAYS |WHAT |IT IS'),
+    fake: sign('FAKE |STARS| FADE'),
+    exit: sign('EXIT→'),
   };
   const names = {} as Record<Name, Sign>;
-  for (const n of NAMES) names[n] = sign(`n.${n}`, n, 3, 1);
+  for (const n of NAMES)
+    names[n] = smallSign(
+      book,
+      pal,
+      n.length > 5 ? `  ${n.slice(0, 3)}|${n.slice(3)}  ` : n.padStart(n.length + Math.floor((5 - n.length) / 2)).padEnd(5),
+      false,
+    );
   paperize(book, pal);
   return { book, signs, names };
 }
@@ -82,7 +83,7 @@ export interface Level {
 }
 
 /** The top row of a sign standing on ground row `ground`. */
-const onGround = (ground: number, s: Sign) => ground - 1 - s.board.length;
+const onGround = (ground: number) => ground - 2;
 
 export const GROUND = 10;
 /** Where the monsters stand: the row above the ground. */
@@ -118,16 +119,19 @@ type World = { book: Book; signs: Record<SignName, Sign>; names: Record<Name, Si
 /** Where each level's signs stand, for tools/layoutCheck.ts: block rectangles (the board and its legs row). */
 export const PLACED = new WeakMap<StarterMap, { what: string; x: number; y: number; w: number; h: number }[]>();
 function note(m: StarterMap, what: string, x: number, y: number, s: Sign): void {
-  PLACED.set(m, [...(PLACED.get(m) ?? []), { what, x, y, w: s.board[0].length, h: s.board.length + 1 }]);
+  const posts = s.posts.map(([dx]) => ({ what: `${what} post`, x: x + dx, y: y + 1, w: 1, h: 1 }));
+  PLACED.set(m, [...(PLACED.get(m) ?? []), { what, x, y, w: s.board.length, h: 1 }, ...posts]);
 }
 const signAt = (m: StarterMap, w: World, x: number, which: SignName) => {
-  note(m, which, x, onGround(GROUND, w.signs[which]), w.signs[which]);
-  return m.sign(x, onGround(GROUND, w.signs[which]), w.signs[which]);
+  note(m, which, x, onGround(GROUND), w.signs[which]);
+  stampSign(m, x, onGround(GROUND), w.signs[which]);
 };
 /** A house with its name over the door (the name board is three wide, the house in the middle). */
 function named(m: StarterMap, w: World, kind: number, x: number, name: Name): void {
-  note(m, `name ${name}`, x - 1, STAND - 1, w.names[name]);
-  m.sign(x - 1, STAND - 1, w.names[name]);
+  // a five-letter name is one block over the house; a longer one is two, the house under their middle
+  const at = x - Math.floor(w.names[name].board.length / 2);
+  note(m, `name ${name}`, at, STAND - 1, w.names[name]);
+  stampSign(m, at, STAND - 1, w.names[name]);
   m.mon(kind, x, STAND);
 }
 
@@ -173,10 +177,10 @@ function mainStreet(w: World): StarterMap {
   scenery(g, [8, 22, 36, 50], [14, 30, 44, 58], [11, 26, 38, 52]);
   const m = new StarterMap(w.book, g.rows());
   signAt(m, w, 5, 'how');
-  signAt(m, w, 13, 'thx');
-  signAt(m, w, 22, 'far');
-  signAt(m, w, 29, 'readme');
-  signAt(m, w, 37, 'shed');
+  signAt(m, w, 11, 'thx');
+  signAt(m, w, 19, 'far');
+  signAt(m, w, 28, 'readme');
+  signAt(m, w, 36, 'shed');
   signAt(m, w, 57, 'exit');
   named(m, w, COTTAGE, L1.cottages[0], 'SOCKS');
   named(m, w, COTTAGE, L1.cottages[1], 'SOUP');
@@ -228,7 +232,8 @@ function starCount(w: World): StarterMap {
   m.set(L4.bonus, 5, 'pickstar');
   // the street past the Big Repo is already lit, and waves: a cottage and its fork, then the old original the Big Repo was forked from
   m.mon(LIT_COT, 65, STAND).mon(FORK_COT, 66, STAND).mon(OLD_BIG, 70, STAND).mon(LIT_TOW, 73, STAND);
-  signAt(m, w, 67, 'forked');
+  note(m, 'forked', 68, STAND - 1, w.signs.forked);
+  stampSign(m, 68, STAND - 1, w.signs.forked);
   return m;
 }
 
