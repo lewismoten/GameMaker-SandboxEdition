@@ -4,6 +4,7 @@ import { h, clear, toast } from '../core/ui';
 import { KIND_LABELS, type FileKind, type Project } from '../core/project';
 import { groupedKinds } from './assetGroups';
 import { scenesUsing, usedByShort, usedByText } from './assetUsedBy';
+import { sceneFileLabels } from './sceneFileLabels';
 import { assetNames } from './assetFiles';
 import { assetCommands } from './assetCommands';
 import { copiedAsset, onAssetCopy } from './assetClipboard';
@@ -174,6 +175,7 @@ export function assetBrowser(host: BrowserHost): { el: HTMLElement; dispose(): v
       { type: 'button', class: 'asset-open', title: `Edit ${file.toUpperCase()}`, onclick: () => host.open(file) },
       box,
       h('strong', null, file.toUpperCase()),
+      sceneFileLabels(project, file),
       h('small', null, `${(project.files.get(file)?.byteLength ?? 0).toLocaleString()} bytes`),
     );
     const more = h(

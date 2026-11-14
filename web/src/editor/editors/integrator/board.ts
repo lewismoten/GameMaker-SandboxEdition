@@ -151,7 +151,7 @@ export function drawCard(ctx: CanvasRenderingContext2D, i: number, forExport: bo
   // between scenes, or just a fade)
   const at = kind === 'adventure' ? arrival(v.game, i) : undefined;
   const pass = passesThrough(v.game, i);
-  const note = roleNote(v.game, i);
+  const note = roleNote(v.game, i, v.project.files);
   const pal = s.files[0] ? v.project.files.get(s.files[0]) : undefined;
   const page = pass ? (v.screenOf(s.files[9]) ?? v.screenOf(s.files[10])) : undefined;
   const color = pass ? TALK : COLORS[kind];
