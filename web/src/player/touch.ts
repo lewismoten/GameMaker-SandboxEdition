@@ -11,6 +11,7 @@ import type { Keyboard } from '@lewismoten/gamemaker-sandbox-engine/input/keyboa
 import { scanName } from '@lewismoten/gamemaker-sandbox-engine/input/scancodes';
 import type { Sequence } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 import { padPlan, type PadPlan, type Sector } from './moveKeys';
+import { actionPages } from './actionPages';
 
 const UP = 72;
 const LEFT = 75;
@@ -68,6 +69,8 @@ export class TouchControls {
   readonly el: HTMLElement;
   private actions: HTMLElement;
   private shown = '';
+  private page = 0;
+  private keys: number[] = [];
   private padDown = new Set<number>();
   private plan: PadPlan = ARROWS_ONLY;
   private planFor?: readonly Sequence[];
@@ -239,14 +242,43 @@ export class TouchControls {
       if (this.sector !== undefined) this.setPad(this.plan.press[this.sector]);
     }
     const covered = this.plan.covered;
-    // Leaves out the pad's keys, Esc, Enter and F1-F10 (only F1 and F2 have buttons, in the fixed row); at most six.
+    // Leaves out the pad's keys, Esc, Enter and F1-F10 (only F1 and F2 have buttons, in the fixed row).
     const scans = sequences.map((s) => s.key >> 8);
-    const list = [...new Set(scans.filter((s) => s && !covered.has(s) && s !== 1 && s !== 28 && !(s >= 59 && s <= 68)))].slice(0, 6);
-    const sig = list.join(',');
+    const list = [...new Set(scans.filter((s) => s && !covered.has(s) && s !== 1 && s !== 28 && !(s >= 59 && s <= 68)))];
+    if (list.join(',') !== this.keys.join(',')) this.page = 0;
+    this.keys = list;
+    this.drawActions();
+  }
+
+  /** The current page of buttons (see actionPages), and a More button that turns the page when there are several. */
+  private drawActions(): void {
+    const pages = actionPages(this.keys);
+    if (this.page >= pages.length) this.page = 0;
+    const sig = `${this.keys.join(',')}@${this.page}`;
     if (sig === this.shown) return;
     this.shown = sig;
-    this.actions.replaceChildren(...list.map((s) => this.button(s, touchLabel(s))));
-    this.actions.dataset.count = String(list.length);
+    // (a held button lets go of its key before it goes)
+    this.actions.querySelectorAll('button.down').forEach((b) => b.dispatchEvent(new Event('pointercancel')));
+    const buttons = pages[this.page].map((s) => this.button(s, touchLabel(s)));
+    if (pages.length > 1) buttons.push(this.more(this.page + 1, pages.length));
+    this.actions.replaceChildren(...buttons);
+    this.actions.dataset.count = String(buttons.length);
+  }
+
+  /** The button that turns to the next page of action buttons; it presses no key. */
+  private more(at: number, of: number): HTMLButtonElement {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'gm-more';
+    b.textContent = `More ${at}/${of}`;
+    b.setAttribute('aria-label', `More buttons, page ${at} of ${of}`);
+    b.addEventListener('pointerdown', (e) => e.preventDefault()); // the game keeps the focus
+    b.addEventListener('click', () => {
+      this.page += 1;
+      this.drawActions();
+      this.actions.querySelector<HTMLElement>('.gm-more')?.focus({ preventScroll: true });
+    });
+    return b;
   }
 }
 
