@@ -54,13 +54,25 @@ if [ -n "$dist" ] && [ -d "$dist" ]; then
   # assets/bonus-*.js is the egg system's own code (src/eggs/bonus.ts): it names the secret games' ids by design, is on no page and loads only once an egg is found
   skip=(--exclude=downloads.html --exclude='extra-*.json' --exclude='walk-*.json' --exclude='bonus-*.js')
   for i in "${ids[@]}"; do skip+=("--exclude-dir=$i"); done
+  # assets/phoneBook-*.js holds the regex text of a printable's path filter (src/manual/printables/phoneBook.ts); it is skipped for the .for-lewis pattern only
   for p in "$pat" "$homepat" '\.for-lewis' "${extra[@]}" 'sk-[A-Za-z0-9]{20,}' 'ghp_[A-Za-z0-9]{20,}'; do
-    grep -rIlE "${skip[@]}" "$p" "$dist" >"$tmp" 2>/dev/null
+    pskip=("${skip[@]}"); [ "$p" = '\.for-lewis' ] && pskip+=(--exclude='phoneBook-*.js')
+    grep -rIlE "${pskip[@]}" "$p" "$dist" >"$tmp" 2>/dev/null
     c=$(wc -l <"$tmp" | tr -d ' ')
     echo "-- $(echo "$p" | mask | cut -c1-30): $c file(s)"
     head -6 "$tmp" | mask | sed 's/^/     /'
     [ "$c" -gt 0 ] && bad=1
   done
+  # private network addresses and the developer's machine names, then emails (the fake ones are listed for a person to judge)
+  for p in '(^|[^0-9.])(192\.168|10\.[0-9]+|172\.(1[6-9]|2[0-9]|3[01]))\.[0-9]+\.[0-9]+' '[a-z0-9-]+\.ts\.net'; do
+    grep -rIlE "${skip[@]}" "$p" "$dist" >"$tmp" 2>/dev/null
+    c=$(wc -l <"$tmp" | tr -d ' ')
+    echo "-- network address $(echo "$p" | cut -c1-24): $c file(s)"
+    head -6 "$tmp" | mask | sed 's/^/     /'
+    [ "$c" -gt 0 ] && bad=1
+  done
+  echo "-- emails in the build (all should be made-up domains or noreply):"
+  grep -rIhoE '[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)*\.[a-z]{2,}' "${skip[@]}" "$dist" 2>/dev/null | grep -vE '@[0-9]+x?\.|noreply|example\.' | sort -u | head -20 | sed 's/^/     /'
 fi
 rm -f "$tmp"
 exit $bad
