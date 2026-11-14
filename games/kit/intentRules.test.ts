@@ -3,7 +3,7 @@ import { EventLog } from '@lewismoten/gamemaker-sandbox-tools/kit/eventLog';
 import { checkLog, parseIntent, winnableWithout, type LevelIntent } from './intentRules';
 
 const level = (rules: LevelIntent['rules']): LevelIntent => ({ scene: 2, teaches: 'a lesson', rules });
-const sim = (scene = 2) => ({ scene, ci: { score: 0 } });
+const sim = (scene = 2) => ({ scene, ci: { score: 0 } }) as never as { scene: number; ci: { score: number } } & ConstructorParameters<typeof EventLog>[0];
 
 describe('parseIntent', () => {
   it('reads the three rules', () => {

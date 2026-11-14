@@ -13,6 +13,8 @@ export type GameEvent =
   | { kind: 'death'; tick: number; scene: number }
   | { kind: 'end'; tick: number; scene: number };
 
+type Bare<E> = E extends unknown ? Omit<E, 'tick' | 'scene'> : never;
+
 /** Scan codes people name: the arrows, Space, Enter, Esc, letters and digits. */
 const KEYS: Record<string, number> = {
   Esc: 0x01,
@@ -45,7 +47,7 @@ export class EventLog {
   private tickNo = 0;
   constructor(private readonly sim: Pick<GameSim, 'scene' | 'ci'>) {}
 
-  private add(e: Omit<GameEvent, 'tick' | 'scene'> & { kind: GameEvent['kind'] }, scene = this.sim.scene): void {
+  private add(e: Bare<GameEvent>, scene = this.sim.scene): void {
     this.events.push({ ...e, tick: this.tickNo, scene } as GameEvent);
   }
   key(scan: number, down: boolean): void {
