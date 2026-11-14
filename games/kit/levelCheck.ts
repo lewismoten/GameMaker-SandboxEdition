@@ -1,6 +1,7 @@
 // The editor's Level check (web/src/editor/check), static part only (no playtest), on a game's
 // built disk, against a baseline of findings already looked at: only an error or warning that
-// is not in levelCheck.baseline.json fails, so known false alarms don't. Infos are not checked.
+// is not in levelCheck.baseline.json fails, so known false alarms don't. A suggestion (a taste
+// check's warning) is printed and never fails (levelCheckLines.ts). Infos are not checked.
 // A game's about.json "sameEverySide" lists heroes and monsters meant to look the same from
 // every side ("ship.chr", "hive.mon#0"), which the facing check leaves alone, as the editor's
 // own list does. Its "acceptedFindings" lists findings the designer looked at and kept on
@@ -28,6 +29,7 @@ import { readDisk } from '@lewismoten/gamemaker-sandbox-tools/kit/gameSim';
 import { readPlayer } from './player';
 import { measurePace } from '../../web/src/editor/check/walk/pace';
 import { STEADY_MS } from '../../web/src/editor/check/findings';
+import { splitLines } from './levelCheckLines';
 import type { Walkthrough } from '../../web/src/walkthrough/format';
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -39,7 +41,7 @@ interface About {
 }
 
 /** Each finding not accepted as a baseline line (severity, check, scene and title), and accepted keys no finding has now. */
-async function staticFindings(id: string): Promise<{ lines: string[]; stale: string[] }> {
+async function staticFindings(id: string): Promise<{ lines: string[]; advice: string[]; stale: string[] }> {
   const path = join(here, '..', id, 'about.json');
   const about = existsSync(path) ? (JSON.parse(readFileSync(path, 'utf8')) as About) : {};
   const r = await runChecks(new GameFiles(readDisk(join(here, '..', id, 'disk'))), {
@@ -50,9 +52,9 @@ async function staticFindings(id: string): Promise<{ lines: string[]; stale: str
   const accepted = about.acceptedFindings ?? [];
   const { open } = splitAccepted(r.findings, accepted);
   const keys = new Set(r.findings.map(findingKey));
-  const lines = open.filter((f) => f.severity !== 'info').map((f) => `${f.severity} ${f.check} s${f.where.scene ?? '-'} ${f.title}`);
+  const { hard, advice } = splitLines(open);
   // a play finding (one-way, softlock…) is only found by --play, so it is never stale here
-  return { lines: [...new Set(lines)].sort(), stale: accepted.filter((k) => !keys.has(k) && !PLAY_CHECKS.has(k.split(' ')[0])) };
+  return { lines: hard, advice, stale: accepted.filter((k) => !keys.has(k) && !PLAY_CHECKS.has(k.split(' ')[0])) };
 }
 
 function readBaseline(): Record<string, string[]> {
@@ -111,7 +113,7 @@ const opt = (name: string, def: number) => {
 };
 if (id && flag === '--play') await playReport(id, opt('--steady', STEADY_MS), opt('--budget', 10));
 else if (id) {
-  const { lines: now, stale } = await staticFindings(id);
+  const { lines: now, advice, stale } = await staticFindings(id);
   for (const k of stale) console.log(`${id}: about.json accepts "${k}", which is no longer found`);
   const base = readBaseline();
   if (flag === '--update') {
@@ -126,8 +128,10 @@ else if (id) {
   } else {
     const known = new Set(base[id] ?? []);
     const added = now.filter((l) => !known.has(l));
-    const gone = (base[id] ?? []).filter((l) => !now.includes(l)).length;
+    const gone = (base[id] ?? []).filter((l) => !now.includes(l) && !advice.includes(l)).length;
     for (const l of added) console.log(`${id}: new ${l}`);
+    // suggestions are advice an author can dismiss: listed when not in the baseline, never a failure
+    for (const l of advice.filter((l) => !known.has(l))) console.log(`${id}: suggestion (not a failure; accept it in about.json if it is on purpose) ${l}`);
     console.log(`${id}: ${now.length} errors and warnings, ${added.length} new${gone ? `, ${gone} gone from the baseline (--update to drop them)` : ''}`);
     process.exit(added.length ? 1 : 0);
   }
