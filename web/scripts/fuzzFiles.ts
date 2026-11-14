@@ -8,6 +8,7 @@
 import { spawn } from 'node:child_process';
 import { mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { basename, extname, join, resolve } from 'node:path';
+import { forLewis, mainCheckout } from './mainCheckout';
 import { fileURLToPath } from 'node:url';
 import { parseBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { parseCharacter } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
@@ -32,8 +33,8 @@ import { listZip, readZip } from '@lewismoten/gamemaker-sandbox-archives/project
 import { unpackGames } from '@lewismoten/gamemaker-sandbox-archives';
 
 const REPO = resolve(fileURLToPath(import.meta.url), '../../..');
-const CD = process.env.FUZZ_CD ?? '/Users/lewismoten/dev/GameMaker/cd';
-const ARCHIVE = process.env.FUZZ_ARCHIVE ?? '/Users/lewismoten/dev/GameMaker/.for-lewis/reference/archive';
+const CD = process.env.FUZZ_CD ?? join(mainCheckout, 'cd');
+const ARCHIVE = process.env.FUZZ_ARCHIVE ?? join(forLewis, 'reference/archive');
 
 type Run = (b: Uint8Array) => unknown;
 const stepFli = (b: Uint8Array) => {

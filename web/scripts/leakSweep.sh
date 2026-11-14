@@ -1,7 +1,9 @@
 #!/bin/bash
 # Leak sweep over tracked files, recent commit messages and (optionally) a production build.
-# Looks for: secret games' ids and titles outside their own folders, 1990s buyers' names ("Dowden"),
-# local paths (/Users/lewismoten), .for-lewis, and token/key shapes. Secret names are never printed:
+# Looks for: secret games' ids and titles outside their own folders,
+# local paths (your home folder), .for-lewis, token/key shapes, and any extra patterns (one extended regex
+# per line) in a git-ignored file: GM_LEAK_PATTERNS, else .leak-patterns.local at the repository root, else
+# .for-lewis/leak-patterns.local in the main checkout. Use it for names that must not appear, such as 1990s buyers' names. Secret names are never printed:
 # only counts and file paths (a path that holds a name is shown as <secret>).
 # Usage: npm run check:leaks -- [dist-folder] [since-rev]   (default: no build, last 300 commits)
 # downloads.html lists the secret games on purpose (Lewis's choice) and is skipped in the build.
@@ -24,6 +26,13 @@ excl=()
 for i in "${ids[@]}"; do excl+=(":(exclude)games/$i"); done
 tmp=$(mktemp)
 bad=0
+# Personal patterns stay out of the repository: this home folder, and the local file's lines.
+homepat=$(printf '%s' "$HOME" | sed 's/[][\.*^$(){}?+|/]/\\&/g')
+extra=()
+main=$(dirname "$(git rev-parse --path-format=absolute --git-common-dir)")
+lp=${GM_LEAK_PATTERNS:-}
+[ -z "$lp" ] && for c in .leak-patterns.local "$main/.for-lewis/leak-patterns.local"; do [ -f "$c" ] && lp=$c && break; done
+[ -n "$lp" ] && [ -f "$lp" ] && while IFS= read -r l; do [ -n "$l" ] && extra+=("$l"); done <"$lp"
 
 echo "== secret ids/titles in tracked files outside their own folders"
 git grep -ilE "\b($pat)\b" -- . "${excl[@]}" ':(exclude)cd' ':(exclude)code' ':(exclude)package-lock.json' >"$tmp"
@@ -34,7 +43,7 @@ echo "== secret ids/titles in commit messages since $since (history may name the
 git log "$since"..HEAD --format=%B | grep -icE "\b($pat)\b"
 
 echo "== other patterns in tracked files (not cd/, code/, tests, AGENTS.md, CLAUDE.md)"
-for p in 'Dowden' '/Users/lewismoten' '\.for-lewis' 'sk-[A-Za-z0-9]{20,}' 'ghp_[A-Za-z0-9]{20,}' 'AKIA[0-9A-Z]{16}' 'BEGIN (RSA |EC )?PRIVATE KEY'; do
+for p in "${extra[@]}" "$homepat" '\.for-lewis' 'sk-[A-Za-z0-9]{20,}' 'ghp_[A-Za-z0-9]{20,}' 'AKIA[0-9A-Z]{16}' 'BEGIN (RSA |EC )?PRIVATE KEY'; do
   git grep -lIE "$p" -- . ':(exclude)cd' ':(exclude)code' ':(exclude)package-lock.json' ':(exclude)*.test.ts' ':(exclude)AGENTS.md' ':(exclude)CLAUDE.md' ':(exclude).gitignore' ':(exclude).prettierignore' >"$tmp"
   echo "-- $p: $(wc -l <"$tmp" | tr -d ' ') file(s)"
   head -6 "$tmp" | mask | sed 's/^/     /'
@@ -45,7 +54,7 @@ if [ -n "$dist" ] && [ -d "$dist" ]; then
   # assets/bonus-*.js is the egg system's own code (src/eggs/bonus.ts): it names the secret games' ids by design, is on no page and loads only once an egg is found
   skip=(--exclude=downloads.html --exclude='extra-*.json' --exclude='walk-*.json' --exclude='bonus-*.js')
   for i in "${ids[@]}"; do skip+=("--exclude-dir=$i"); done
-  for p in "$pat" '/Users/lewismoten' '\.for-lewis' 'Dowden' 'sk-[A-Za-z0-9]{20,}' 'ghp_[A-Za-z0-9]{20,}'; do
+  for p in "$pat" "$homepat" '\.for-lewis' "${extra[@]}" 'sk-[A-Za-z0-9]{20,}' 'ghp_[A-Za-z0-9]{20,}'; do
     grep -rIlE "${skip[@]}" "$p" "$dist" >"$tmp" 2>/dev/null
     c=$(wc -l <"$tmp" | tr -d ' ')
     echo "-- $(echo "$p" | mask | cut -c1-30): $c file(s)"
