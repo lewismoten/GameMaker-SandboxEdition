@@ -9,7 +9,8 @@ import './checkReport.css';
 import { download, h, clear, modal, toast } from '../core/ui';
 import type { Project } from '../core/project';
 import { at, CHECKS, isHard, kindOf, type Finding, type Kind } from '../check/findings';
-import { acceptedFindings, findingKey, setAccepted } from '../check/accepted';
+import { reasonField, reasonNote } from './acceptReason';
+import { acceptedFindings, findingKey, reasonFor, setAccepted } from '../check/accepted';
 import { guideLink } from './guideLink';
 import { cellOf, csvName, findingRows, groupRows, guideSection, KIND_LABEL, KIND_PLURAL, KINDS, toCsv, type FindingRow } from './checkRows';
 
@@ -53,6 +54,12 @@ export async function openReport(src: ReportSource): Promise<void> {
   const plainItem = (f: Finding, accepted: boolean): HTMLElement => {
     const info = CHECKS[f.check];
     const taste = 'taste' in info;
+    const toggle = (why: string): void => {
+      setAccepted(project, findingKey(f), !accepted, why);
+      said.textContent = accepted ? 'The finding is back in the list.' : 'The finding is kept under accepted.';
+      render();
+    };
+    const reason = accepted ? null : reasonField(() => toggle(reason?.value() ?? ''));
     return h(
       'li',
       { class: `lc-item lc-${kindOf(f)}${accepted ? ' lc-is-accepted' : ''}` },
@@ -71,20 +78,16 @@ export async function openReport(src: ReportSource): Promise<void> {
           : null,
         isHard(f)
           ? h('p', { class: 'lc-why lc-hard' }, 'This will fail for players, so it can be fixed but not set aside.')
-          : h(
-              'button',
-              {
-                type: 'button',
-                class: 'lc-fix lc-accept',
-                onclick: () => {
-                  setAccepted(project, findingKey(f), !accepted);
-                  said.textContent = accepted ? 'The finding is back in the list.' : 'The finding is kept under accepted.';
-                  render();
-                },
-              },
-              accepted ? '↺ Not meant to be: list it again' : taste ? '✓ That’s on purpose' : '✓ Mark as checked: it’s meant to be',
-            ),
+          : [
+              reason?.el ?? null,
+              h(
+                'button',
+                { type: 'button', class: 'lc-fix lc-accept', onclick: () => toggle(reason?.value() ?? '') },
+                accepted ? '↺ Not meant to be: list it again' : taste ? '✓ That’s on purpose' : '✓ Mark as checked: it’s meant to be',
+              ),
+            ],
       ),
+      reasonNote(accepted ? reasonFor(acceptedFindings(project), findingKey(f)) : ''),
     );
   };
 

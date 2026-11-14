@@ -41,6 +41,7 @@ import { describe, readBounds } from '@lewismoten/gamemaker-sandbox-tools/kit/te
 import { pairsOfGame } from './colorCues';
 import { vocCuesOfGame } from './vocCues';
 import { hiddenMonstersOfGame } from './viewCheck';
+import { entriesWithoutReason, type AcceptedEntry } from '../../web/src/editor/check/accepted';
 import { inkFlagged, textPurpleOfGame } from './textPurple';
 
 const gamesDir = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -318,6 +319,19 @@ const offPurple = games.flatMap((id) => {
   }
 });
 console.log(`text ink (advisory): ${offPurple.length ? `text pages to look at in ${offPurple.join(', ')}` : 'none'}`);
+// Advisory, never a failure: accepted findings in about.json with no reason ({ "finding": ..., "why": ... }); authors can add one over time.
+const noWhy = games.flatMap((id) => {
+  try {
+    const about = JSON.parse(readFileSync(join(dirname(fileURLToPath(import.meta.url)), '..', id, 'about.json'), 'utf8')) as {
+      acceptedFindings?: AcceptedEntry[];
+    };
+    const n = entriesWithoutReason(about.acceptedFindings ?? []).length;
+    return n ? [`${id} ${n}`] : [];
+  } catch {
+    return [];
+  }
+});
+console.log(`accepted without a reason (advisory): ${noWhy.length ? noWhy.join(', ') : 'none'}`);
 const failed =
   [...rows.values()].filter((r) => COLS.some((c) => r[c] === 'FAIL')).length +
   (hearts === 'FAIL' ? 1 : 0) +

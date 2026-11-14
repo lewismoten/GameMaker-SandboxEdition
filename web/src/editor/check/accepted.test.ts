@@ -37,3 +37,19 @@ describe('accepted findings', () => {
     expect(r.open).toEqual([other, hold(5, 33)]);
   });
 });
+
+describe('accepted entries with a reason', () => {
+  it('reads strings and { finding, why } alike', async () => {
+    const { acceptedKeys, entriesWithoutReason, acceptedWhy } = await import('./accepted');
+    const list = ['a s1 x', { finding: 'b s2 y', why: 'on purpose' }, { finding: 'c s3 z', why: '  ' }];
+    expect(acceptedKeys(list)).toEqual(['a s1 x', 'b s2 y', 'c s3 z']);
+    expect(entriesWithoutReason(list)).toEqual(['a s1 x', 'c s3 z']);
+    expect(acceptedWhy(list[1])).toBe('on purpose');
+  });
+  it('leaves out the findings of either shape', () => {
+    const f = hold(2, 33);
+    const k = findingKey(f);
+    expect(splitAccepted([f], [{ finding: k, why: 'boss' }]).accepted).toEqual([f]);
+    expect(splitAccepted([f], [k]).accepted).toEqual([f]);
+  });
+});
