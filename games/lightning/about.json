@@ -6,7 +6,7 @@
   "hero": "MARA",
   "year": 1994,
   "price": "Free",
-  "version": "1.1",
+  "version": "1.2",
   "blurb": "A storm at night, made of blocks. Game-Maker has no flash, so every block that shows sky has a twin drawn on a lighter sky, and each turns into its twin for a moment and back, all on the same clock: the whole sky flashes at once. The bolt is five blocks that look like sky until then. A block can't make a sound, so the thunder is in the song, a beat after each flash. Level 1 is a field in the storm; in level 2 the stones over a dark ditch light up with the sky. The flash is kept gentle: one every 7 seconds, short and gray-blue. Play it, then open it in Game-Maker and look at the sky's blocks.",
   "exe": "LIGHTNIN.EXE",
   "dosName": "LIGHTNIN",
