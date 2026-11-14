@@ -70,7 +70,7 @@ export async function openReport(src: ReportSource): Promise<void> {
             )
           : null,
         isHard(f)
-          ? h('p', { class: 'meta lc-hard' }, 'This will fail for players, so it can be fixed but not set aside.')
+          ? h('p', { class: 'lc-why lc-hard' }, 'This will fail for players, so it can be fixed but not set aside.')
           : h(
               'button',
               {

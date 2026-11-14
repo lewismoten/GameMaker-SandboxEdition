@@ -336,7 +336,7 @@ export function checkPanel(host: CheckHost): {
       'details',
       { class: 'lc-gen' },
       h('summary', null, 'Make…'),
-      h('p', { class: 'meta' }, 'Select an area with the Select tool (S) first. The map’s Undo takes it back.'),
+      h('p', { class: 'lc-why' }, 'Select an area with the Select tool (S) first. The map’s Undo takes it back.'),
       h(
         'button',
         {
