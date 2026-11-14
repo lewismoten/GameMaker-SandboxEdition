@@ -7,6 +7,7 @@ Part of the [source map](../README.md). A self-contained player (canvas, input a
 - `hardwareSetup.ts`, `hardwarePrefs.ts`: optional first-run video/audio choices, kept in the browser and never written into a game's DOS files.
 - `speedPick.ts`: "Run like a..." slows the game loop to an older machine.
 - `touch.ts`, `moveKeys.ts`: the touch d-pad and which keys it sends.
+- `actionLabels.ts`: what a touch action button says. The game's controls.json name for the key (up to 12 characters, no word over 8, wrapping to two lines) with the key small beneath; a longer name or a key without an entry shows the key's own name. The aria-label always has both ("Throw a star (Enter)").
 - `screenKeys.ts`: a panel of on-screen keys (Esc, F1 to F10, Enter, Space...).
 - `snapshot.ts`: the full-window play page’s camera button; loads the PNG encoder on the first screenshot request and copies the visible palette indices and current VGA palette into an unscaled PNG. `Screen.dosCropped` follows PLAYGAME’s CropScreen/UnCropScreen boundaries, including full-size function-key screens.
 - `cursorHide.ts`: hides the mouse pointer once it rests.

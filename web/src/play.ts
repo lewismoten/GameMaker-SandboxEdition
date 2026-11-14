@@ -89,6 +89,8 @@ async function choose(): Promise<
       poster?: Promise<string | undefined>;
       /** Its DOS player look (dosPlayer/): a project's companion, an original game's player.json. */
       player?: PlayerPatches;
+      /** What its keys do (controls.json), for the touch buttons' names. */
+      controls?: unknown;
       /** An imported game's own player About page and first build (dosPlayer/playerOrigin.ts). */
       playerAbout?: PlayerAbout;
     }
@@ -119,7 +121,8 @@ async function choose(): Promise<
   if (gameId) {
     // the short catalog: the play page needs no manuals; a shareware game's notice comes on its own
     const listed = (await loadCatalogList()).find((g) => g.id === gameId && g.gam);
-    const entry = listed?.kind === 'shareware' ? await withDetails(listed) : listed;
+    // (its details hold the controls and player look, and a shareware game's notice)
+    const entry = listed ? await withDetails(listed) : listed;
     if (entry) {
       // a Special played here is kept once its window passes (specials/state.ts)
       if (entry.series === 'special') void import('./specials/state').then((m) => m.keepSpecial(entry.id, 'played'));
@@ -136,6 +139,7 @@ async function choose(): Promise<
         poster: posterOf(entry).catch(() => undefined),
         notice: entry.kind === 'shareware' ? entry.notice || 'This game is shareware, copyrighted by its author.' : undefined,
         player: catalogPatches(entry),
+        controls: entry.controls,
       };
     }
   }
@@ -185,6 +189,7 @@ async function main(): Promise<void> {
       title: game.title,
       notice: game.notice,
       player: game.player,
+      controls: game.controls,
       playerAbout: game.playerAbout,
       poster: game.poster,
       back: game.back ? { href: game.back, label: '← All games' } : undefined,
