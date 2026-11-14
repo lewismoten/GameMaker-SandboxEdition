@@ -6,12 +6,13 @@
 //   2. Pop and Lives: two mint gumdrops sit at the bottom of a pit. Drop onto them and they
 //      pop into stars. Game-Maker has no "top only" rule, so the pit is what makes the way in
 //      from above; a hurting gumdrop and another pit follow.
-import { Book } from '../../kit/starter/book';
+import { Book, PULL } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
-import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
-import { addSign, type Sign } from '../../kit/starter/sign';
+import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
+import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { MICRO_GLYPHS } from '@lewismoten/gamemaker-sandbox-tools/microFont';
 import { GRUMP, POP } from './monsters';
 
 export type SignName = 'path' | 'hurts' | 'over' | 'land' | 'lives' | 'exit';
@@ -20,14 +21,30 @@ export type SignName = 'path' | 'hurts' | 'over' | 'land' | 'lives' | 'exit';
 export function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
-  const signs = {
-    path: addSign(book, pal, 'path', 'MONSTERS WALK A PATH', 4, 2),
-    hurts: addSign(book, pal, 'hurts', 'TOUCHING HURTS', 4, 2),
-    over: addSign(book, pal, 'over', 'JUMP OVER IT', 4, 2),
-    land: addSign(book, pal, 'land', 'LAND ON TOP TO POP IT', 4, 2),
-    lives: addSign(book, pal, 'lives', 'WATCH YOUR LIVES', 4, 2),
-    exit: addSign(book, pal, 'exit', 'EXIT →', 3),
-  };
+  const { blocks, signs } = buildTiledSigns(
+    {
+      path: { rows: [['MONSTERS WALK A PATH']] },
+      hurts: { rows: [['TOUCHING HURTS']] },
+      over: { rows: [['JUMP OVER IT']] },
+      land: { rows: [['LAND ON TOP TO POP IT']] },
+      lives: { rows: [['WATCH YOUR LIVES']] },
+      exit: { rows: [['EXIT →']] },
+    },
+    {
+      colors: {
+        background: skyOf(pal),
+        paper: pal.c('parch', 3),
+        ink: pal.c('ink', 0),
+        wood: pal.c('wood', 2),
+        highlight: pal.c('wood', 4),
+        shadow: pal.c('wood', 0),
+      },
+      glyphs: { ...MICRO_GLYPHS, '→': '100110111110100' },
+      lettersPerBlock: 3,
+      maxBlocks: 100 - book.index.size,
+    },
+  );
+  for (const [name, pic] of blocks) book.add(name, pic, { grav: PULL.down });
   return { book, signs };
 }
 
@@ -37,6 +54,11 @@ export interface Level {
   /** What the level card says under the title. */
   hint: string;
   map: StarterMap;
+}
+
+/** Keep every board and its post clear of existing art and pickups. */
+function placeSign(m: StarterMap, x: number, y: number, sign: Sign, postHeight = 1): void {
+  stampTiledSign({ set: (sx, sy, block) => m.setOnSky(sx, sy, block) }, x, y, sign, postHeight);
 }
 
 /** The top row of a sign standing on ground row `ground`. */
@@ -78,10 +100,10 @@ function walkAndHurt(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [9, 19, 30],
   );
   const m = new StarterMap(book, g.rows());
-  m.sign(6, onGround(GROUND, signs.path), signs.path);
-  m.sign(18, onGround(GROUND, signs.over), signs.over);
-  m.sign(26, onGround(GROUND, signs.hurts), signs.hurts);
-  m.sign(38, onGround(GROUND, signs.exit), signs.exit);
+  placeSign(m, 7, onGround(GROUND, signs.path), signs.path);
+  placeSign(m, 18, onGround(GROUND, signs.over), signs.over);
+  placeSign(m, 26, onGround(GROUND, signs.hurts), signs.hurts);
+  placeSign(m, 37, onGround(GROUND, signs.exit) - 1, signs.exit, 2);
   return m;
 }
 
@@ -103,9 +125,9 @@ function popAndLives(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [8, 21, 33],
   );
   const m = new StarterMap(book, g.rows());
-  m.sign(5, onGround(GROUND, signs.land), signs.land);
-  m.sign(16, onGround(GROUND, signs.lives), signs.lives);
-  m.sign(38, onGround(GROUND, signs.exit), signs.exit);
+  placeSign(m, 5, onGround(GROUND, signs.land) - 1, signs.land, 2);
+  placeSign(m, 16, onGround(GROUND, signs.lives), signs.lives);
+  placeSign(m, 37, onGround(GROUND, signs.exit) - 1, signs.exit, 2);
   m.mon(GRUMP, 25, GROUND - 1);
   for (const x of [13, 14, 35, 36]) m.mon(POP, x, GROUND + 1);
   return m;
