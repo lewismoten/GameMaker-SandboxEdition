@@ -16,8 +16,8 @@ import { Book, PULL, SOLID as SOLID_ALL } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
-import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
-import { addSign, type Sign } from '../../kit/starter/sign';
+import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
+import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { MOODS, awning, back, flags, lantern, pole, roof, rug, slot, sock, tunnel, updraft, type Mood } from './props';
 import { CALM, FLUTTER, GUST } from './timing';
 
@@ -81,8 +81,21 @@ const SIGNS: Record<SignName, string> = {
 function startBook(pal: Pal, names: SignName[]): { book: Book; signs: Record<string, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
-  const signs: Record<string, Sign> = {};
-  for (const n of names) signs[n] = addSign(book, pal, `${n}.sign`, SIGNS[n], 4, 3);
+  const { blocks, signs } = buildTiledSigns(Object.fromEntries(Object.entries(SIGNS).map(([name, text]) => [name, { rows: [[text]] }])), {
+    include: names,
+    compact: true,
+    maxWidth: 5,
+    maxBlocks: Math.min(100, 150 - book.index.size),
+    colors: {
+      background: skyOf(pal),
+      paper: pal.c('parch', 3),
+      ink: pal.c('ink', 0),
+      wood: pal.c('wood', 2),
+      highlight: pal.c('wood', 4),
+      shadow: pal.c('wood', 0),
+    },
+  });
+  for (const [name, pic] of blocks) book.add(name, pic, { grav: PULL.down });
   return { book, signs };
 }
 
@@ -135,8 +148,8 @@ function waitForTheGust(pal: Pal): Level {
     [8, 22],
   );
   const m = new StarterMap(book, g.rows());
-  m.sign(4, onGround(G, signs.flutter), signs.flutter);
-  m.sign(9, onGround(G, signs.lift), signs.lift);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 4, onGround(G, signs.flutter), signs.flutter);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 9, onGround(G, signs.lift), signs.lift);
   for (let x = SHAFT[0]; x <= SHAFT[1]; x++) {
     m.set(x, G, 'slot');
     for (let y = LEDGE_ROW + 1; y < G; y++) m.set(x, y, ringBlock('up', 'calm'));
@@ -179,12 +192,13 @@ function windsocksAndShelter(pal: Pal): Level {
   );
   // the hill: a stone roof (G-4) with grass on top (G-5) over the tunnel, and the tunnel's flagstone floor
   const m = new StarterMap(book, g.rows());
-  m.sign(5, onGround(G, signs.socks), signs.socks);
-  m.sign(9, onGround(G, signs.shelter), signs.shelter);
+  // One row below the standing camera top; longer posts clear the entrance and flowers.
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 2, 6, signs.socks, G - 6 - signs.socks.board.length);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 7, 6, signs.shelter, G - 6 - signs.shelter.board.length);
   for (let x = TUNNEL[0]; x <= TUNNEL[1]; x++) {
     m.set(x, G, 'flags')
-      .set(x, G - 4, 'roof')
-      .set(x, G - 5, 'grass');
+      .setOnSky(x, G - 4, 'roof')
+      .setOnSky(x, G - 5, 'grass');
     const hut = HUTS.findIndex((h) => x >= h && x < h + HUT_W);
     if (hut < 0) for (let y = G - 3; y < G; y++) m.set(x, y, ringBlock('side', 'calm'));
     else {
