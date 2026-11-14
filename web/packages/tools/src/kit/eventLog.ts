@@ -48,7 +48,7 @@ export class EventLog {
   constructor(private readonly sim: Pick<GameSim, 'scene' | 'ci'>) {}
 
   private add(e: Bare<GameEvent>, scene = this.sim.scene): void {
-    this.events.push({ ...e, tick: this.tickNo, scene } as GameEvent);
+    this.events.push({ ...e, tick: this.tickNo, scene });
   }
   key(scan: number, down: boolean): void {
     this.add({ kind: 'key', scan, down });
