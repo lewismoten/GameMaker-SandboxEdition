@@ -92,7 +92,7 @@ export function quickOpen(project: Project): Promise<string | undefined> {
           try {
             thumb = fileThumb(file, project.files.get(file), {
               files: project.files,
-              palette: project.paletteFor(file).palette,
+              palette: project.shownPalette(file),
               patches: companionPatches(project.companion, project.gam),
             });
           } catch {

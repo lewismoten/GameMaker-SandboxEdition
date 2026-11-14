@@ -209,12 +209,28 @@ export class Project {
   /** The palette a block set/map/picture is shown with: the scene that uses it, else the first .pal. */
   paletteFor(file: string, used?: ArrayLike<number>): { palette: Palette; source: string } {
     const game = this.game();
+    // several scenes may use one file with different palettes: the palette most of them use wins, the first on a tie
+    const tally = new Map<string, { n: number; name: string }>();
     for (const u of this.usesOf(file)) {
       const scene = game.scenes[u.scene];
-      if (scene.gametype === 10 && scene.files[0] && this.files.has(scene.files[0]))
-        return { palette: parsePalette(this.files.get(scene.files[0])!), source: scene.files[0] };
+      const pal = scene.files[0];
+      if (scene.gametype !== 10 || !pal || !this.files.has(pal)) continue;
+      const hit = tally.get(normalize(pal));
+      if (hit) hit.n++;
+      else tally.set(normalize(pal), { n: 1, name: pal });
     }
-    // A map: the scene that uses its block set.
+    if (tally.size) {
+      const ranked = [...tally.values()].sort((a, b) => b.n - a.n); // stable: the first scene breaks a tie
+      // with the sprite's colors known, skip a scene palette that would show it dark on dark
+      const i = used
+        ? mostReadable(
+            ranked.map((t) => this.files.get(t.name)!),
+            used,
+          )
+        : 0;
+      return { palette: parsePalette(this.files.get(ranked[i].name)!), source: ranked[i].name };
+    }
+    // no scene uses the file: the palette the scenes use most (below)
     let pals = this.files.byExtension('pal');
     if (pals.length) {
       // a palette that is one solid color stands for nothing: use the others, the one the scenes use most first
@@ -246,6 +262,30 @@ export class Project {
       }
     }
     return { palette: defaultPalette(), source: 'default' };
+  }
+
+  /**
+   * What a preview of `file` is drawn in: the palette the author picked for it ("Show with palette",
+   * kept in the companion, restored while that .pal exists), else the scene's (paletteFor).
+   */
+  shownPalette(file: string, used?: ArrayLike<number>): Palette {
+    const saved = this.savedPalette(file);
+    return saved ? parsePalette(this.files.get(saved)!) : this.paletteFor(file, used).palette;
+  }
+
+  /** The .pal picked for a file that still exists. A map has no picker of its own: it follows its block set's. */
+  private savedPalette(file: string): string {
+    const keys = [file];
+    if (normalize(file).endsWith('.map'))
+      for (const u of this.usesOf(file)) {
+        const bbl = this.game().scenes[u.scene].files[2];
+        if (bbl) keys.push(bbl);
+      }
+    for (const k of keys) {
+      const saved = this.extras<string>(k, 'showPalette', '');
+      if (saved && this.files.has(saved)) return saved;
+    }
+    return '';
   }
 
   palette(name: string): Palette | undefined {
