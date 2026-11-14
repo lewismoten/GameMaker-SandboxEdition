@@ -23,6 +23,7 @@ existing `formats/*` API by re-exporting its declared engine dependency.
 npm run heavy -- npm ci       # links workspaces, builds SDKs and generates ignored game outputs through prepare
 npm run build:packages       # engine, archives, tools in dependency order
 npm run verify:packages      # builds isolated source copies and tests packed consumers
+npm run verify:consumer      # installs the packed (or published) SDKs in a fresh project, typechecks and Vite-builds every export
 npm run dev                  # app, http://localhost:5173 (serves at once; game disks and ZIPs refresh in the background)
 npm run typecheck
 npm run heavy -- npm test     # full default Vitest suite, including game-output preparation
