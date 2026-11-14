@@ -18,9 +18,14 @@ import { ORIGIN, type StarterMap } from '../../kit/starter/map';
 /** A little five-pointed star, 7 by 7 (a constellation's, and a twinkle's). */
 export const STAR7 = ['...#...', '..###..', '#######', '.#####.', '..###..', '.##.##.', '.#...#.'];
 
-/** The paper's own ramp: [0] the ruled line, [1] a crayon stroke, [2] the shadow along a taped seam. */
+/**
+ * The paper's own ramp: [0] the ruled line (graph paper's heavy horizontal), [1] a crayon stroke or fleck, [2] the shadow
+ * along a taped seam, [3] graph paper's fine grid, [4] graph paper's heavy vertical. A level's palette (moods.ts) gives each
+ * a color for its kind of paper, or the sheet's own color so it does not show: notebook paper uses [0] to [2], graph paper
+ * all of them, a post-it note and construction paper only [0] and [1].
+ */
 export function paperRamps(b: PaletteBuilder): void {
-  b.ramp('paper', 3, [60, 74, 140], [20, 24, 64], [26, 30, 78]);
+  b.ramp('paper', 5, [60, 74, 140], [20, 24, 64], [26, 30, 78]);
 }
 
 /** Gives the paper ramp the sky's own color (a level not drawn on paper). */
@@ -38,10 +43,12 @@ function stroke(x: number, y: number): boolean {
 /** The ruled line, one a block, 15 pixels down. */
 const RULE_Y = 15;
 
-/** The paper behind everything: ruled lines over crayon-colored sky. */
+/** The paper behind everything: ruled lines (and graph paper's grid) over crayon-colored sky. */
 function paperAt(pal: Pal, x: number, y: number): number {
   if (y === RULE_Y) return pal.c('paper', 0);
-  return stroke(x, y) ? pal.c('paper', 1) : skyOf(pal);
+  if (stroke(x, y)) return pal.c('paper', 1);
+  if (x === 10) return pal.c('paper', 4);
+  return x % 5 === 0 || y % 5 === 0 ? pal.c('paper', 3) : skyOf(pal);
 }
 
 /** Turns every sky pixel of every block in `book` into paper. */

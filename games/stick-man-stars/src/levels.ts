@@ -17,7 +17,7 @@ import { BIG3, BOT, COTTAGE, FORK_COT, FORK_TOW, LIT_COT, LIT_TOW, OLD_BIG, SHED
 import { addNightBlocks } from './nightSky';
 import { addPickStar, addStarGate } from './pickStar';
 import { paintNight } from './nightSky';
-import { paletteFor, type Mood } from './moods';
+import { paletteFor, type Mood, type PaperKind } from './moods';
 import { addPaperBlocks, hidePaper, hillAt, hillPastEdges, paperRamps, paperize, pencilAt, seamAt } from './paper';
 
 /** The signs the levels use, by name. */
@@ -41,7 +41,7 @@ function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign>; nam
   // the wording is cut in chunks of five letters, and a chunk two signs share is one block (signs.ts)
   const sign = (chunks: string): Sign => smallSign(book, pal, chunks);
   const signs = {
-    gaze: sign('PICK |STARS|: HIT |SPACE'),
+    gaze: sign('SPACE|: JUM|P UP!'),
     gate: sign('FIVE |STARS| OPEN| THE |GATE.'),
     how: sign('ENTER|: THR|OW A |STAR!'),
     far: sign('STARS| ONLY| GO S|O FAR'),
@@ -245,20 +245,20 @@ export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
   const pal = buildStarterPalette(paperRamps, 'stick-man-stars');
   hidePaper(pal.pal, skyOf(pal), pal.r('paper'));
   const w = buildBlocks(pal);
-  const level = (file: string, title: string, hint: string, mood: Mood, map: StarterMap, flat = false): Level => ({
+  const level = (file: string, title: string, hint: string, mood: Mood, map: StarterMap, paper: PaperKind, flat = false): Level => ({
     file,
     title,
     hint,
     mood,
     map,
-    pal: paletteFor(pal, mood, flat),
+    pal: paletteFor(pal, mood, paper),
     flat,
   });
   const levels: Level[] = [
-    level('one', 'Stargazing Hill', 'Pick the bright stars.', 'night', stargazingHill(w), true),
-    level('two', 'Main Street', 'Enter throws a star.', 'dawn', mainStreet(w)),
-    level('three', 'Shy Street', 'Houses wander. Wait and aim.', 'day', shyStreet(w)),
-    level('four', 'Spam Row', 'Pop the bots. Light three lanterns.', 'dusk', starCount(w)),
+    level('one', 'Stargazing Hill', 'Pick the bright stars.', 'night', stargazingHill(w), 'notebook', true),
+    level('two', 'Main Street', 'Enter throws a star.', 'dawn', mainStreet(w), 'graph'),
+    level('three', 'Shy Street', 'Houses wander. Wait and aim.', 'day', shyStreet(w), 'postit'),
+    level('four', 'Spam Row', 'Pop the bots. Light three lanterns.', 'dusk', starCount(w), 'construction'),
   ];
   return { book: w.book, pal, levels };
 }
