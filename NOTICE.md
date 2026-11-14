@@ -21,6 +21,14 @@ Windows and Linux players in `mac/`, `win/` and `linux/`) is released under the 
 License; see [LICENSE](LICENSE), whose original copyright notice is kept unchanged as the
 license requires.
 
+The MIT License covers the Stones' source and this fork's own code and content. It is not a
+grant from the authors of other people's work that happens to sit in the same repository or on
+the CD image: the shareware and sample games by other authors, the CD's pictures and
+animations, its bundled tools, and the third-party items listed below stay under their own
+authors' rights and terms (see "The sample and shareware games on the CD" and the third-party
+sections). Games a visitor imports are likewise their authors' own and are kept apart from this
+project's catalog. This is a plain statement of how the files are labeled, not legal advice.
+
 ## The name: Game-Maker: Sandbox Edition
 
 To keep this fork from being mistaken for RSD's own release, it goes by **Game-Maker:
