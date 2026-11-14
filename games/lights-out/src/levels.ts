@@ -15,7 +15,7 @@ import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { ORIGIN, StarterMap } from '../../kit/starter/map';
 import { skyOf, type Pal } from '../../kit/starter/palette';
-import { addSign, type Sign } from '../../kit/starter/sign';
+import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { AIR, air, drip, floor, lantern, post, rock } from './cave';
 import { type Timed } from './loops';
 import { cavePalette } from './palettes';
@@ -43,14 +43,14 @@ export interface Level {
 }
 
 const WORDS = {
-  shades: 'FIVE SHADES OF ONE BLOCK',
-  rings: 'RINGS GET DARKER AWAY FROM A LAMP',
-  fixed: 'THE LAMP STAYS PUT. MIA WALKS ON.',
-  touch: 'TOUCH A DARK BLOCK AND IT LIGHTS',
-  jump: 'A JUMP LIGHTS BLOCKS HIGHER UP',
-  trail: 'LIGHT STAYS WHERE YOU WALKED',
-  clock: 'WAIT FOR ALL SIX BULBS',
-  once: 'A CLOCK LIGHTS EVERY BLOCK AT ONCE',
+  shades: { rows: [['FIVE SHADES'], ['OF ONE BLOCK']] },
+  rings: { rows: [['RINGS GET DARKER'], ['AWAY FROM A LAMP']] },
+  fixed: { rows: [['THE LAMP STAYS'], ['PUT. MIA'], ['WALKS ON.']] },
+  touch: { rows: [['TOUCH A DARK'], ['BLOCK AND'], ['IT LIGHTS']] },
+  jump: { rows: [['A JUMP LIGHTS'], ['BLOCKS HIGHER UP']] },
+  trail: { rows: [['LIGHT STAYS'], ['WHERE YOU WALKED']] },
+  clock: { rows: [['WAIT FOR'], ['ALL SIX BULBS']] },
+  once: { rows: [['A CLOCK LIGHTS'], ['EVERY BLOCK'], ['AT ONCE']] },
 } as const;
 type SignName = keyof typeof WORDS;
 
@@ -103,7 +103,7 @@ interface Built {
 function lightSign(pal: Pal, pic: Pixels, k: number): Pixels {
   const sky = skyOf(pal);
   const bg = pal.r('cair')[k];
-  return pic.map((_x, _y, c) => (c === sky ? bg : c));
+  return new Pixels(pic.w, pic.h).blit(pic, 0, 0).map((_x, _y, c) => (c === sky ? bg : c));
 }
 
 /** A level's block set: the Starter blocks and its signs; the cave's own blocks are added as the level lays them. */
@@ -111,12 +111,23 @@ function start(names: SignName[]): Built {
   const pal = cavePalette();
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
-  const signs: Record<string, Sign> = {};
+
   // the signs' pictures are drawn in a scratch book; each placed block is added to the level's own book (signAt), on the
   // brightness of the air behind it, so a sign lights with its surroundings
-  const scratch = new Book('bbl');
-  for (const k of names) signs[k] = addSign(scratch, pal, k, WORDS[k], 4, 3);
-  return { book, pal, signs, pics: scratch.pics };
+  const { blocks: pics, signs } = buildTiledSigns(WORDS, {
+    colors: {
+      background: skyOf(pal),
+      paper: pal.c('parch', 3),
+      ink: pal.c('ink', 0),
+      wood: pal.c('wood', 2),
+      highlight: pal.c('wood', 4),
+      shadow: pal.c('wood', 0),
+    },
+    lettersPerBlock: 3,
+    maxWidth: 7,
+    include: names,
+  });
+  return { book, pal, signs, pics };
 }
 
 /** The picture of a cave block by name: `air.K`, `rock.K.V`, `floor.K.V`, `drip.K`, `post.K`, `lantern`, `lantern.off`. */
@@ -243,8 +254,9 @@ function lay(
   const signAt = (name: string, x: number): [number, number] => {
     const sign = built.signs[name];
     const y = onGround(sign);
-    const w = sign.board[0].length;
     const stamp = (pic: string, cx: number, cy: number): void => {
+      if (letters[cy][cx] !== ' ' || !['air', 'tunnel'].includes(cells[cy][cx].kind))
+        throw new Error(`Sign ${name} covers ${cells[cy][cx].kind} at ${cx},${cy}`);
       const src = built.pics.get(pic) as Pixels;
       const { kind: k, shade } = cells[cy][cx];
       const add = (id: string, p: Pixels, rules: Parameters<Book['add']>[2]): string => {
@@ -260,16 +272,14 @@ function lay(
       else {
         const on = add(`${pic}.l${shade}`, lightSign(pal, src, shade), {});
         if (o.dark) {
-          const fresh = !book.has(`${pic}.d`);
-          id = add(`${pic}.d`, src, {});
+          const fresh = !book.has(`${pic}.d${shade}`);
+          id = add(`${pic}.d${shade}`, src, {});
           if (fresh) timed.push({ name: id, next: on, ticks: LIGHTS_AT });
         } else id = on;
       }
       m.set(cx, cy, id);
     };
-    sign.board.forEach((row, dy) => row.forEach((pic, dx) => stamp(pic, x + dx, y + dy)));
-    stamp(sign.legs[0], x, y + sign.board.length);
-    stamp(sign.legs[1], x + w - 1, y + sign.board.length);
+    stampTiledSign({ set: (cx, cy, pic) => stamp(pic, cx, cy) }, x, y, sign);
     return [x, y];
   };
   return { map: m, timed, cells, signAt };

@@ -7,25 +7,26 @@
 //                fine for two; blue bubbles (boot charges, three in a row, one tap each) fill the boots up. A bubble
 //                is used up when touched. A ladder in the pit leads back out for anyone who falls.
 // Every edge is a hedge or a wall you can see, so Nova is never stopped by something she can't.
-import { Book } from '../../kit/starter/book';
+import { Book, PULL } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
-import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
-import { addSign, type Sign } from '../../kit/starter/sign';
+import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
+import { buildTiledSigns, stampTiledSign, type TiledSign as Sign, type TiledSignText } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { MICRO_GLYPHS } from '@lewismoten/gamemaker-sandbox-tools/microFont';
 import { addBootBlocks } from './bootBlocks';
 
 export type SignName = 'rise' | 'fly' | 'exit' | 'two' | 'third' | 'step' | 'gap';
 
-/** The signs' words and sizes. */
-const WORDS: Record<SignName, { text: string; w: number; h: number }> = {
-  rise: { text: 'TAP SPACE IN THE AIR AND NOVA RISES AGAIN', w: 4, h: 3 },
-  fly: { text: 'HOLD RIGHT, KEEP TAPPING, FLY ACROSS', w: 4, h: 3 },
-  exit: { text: 'EXIT →', w: 3, h: 1 },
-  two: { text: 'THESE BOOTS HOLD TWO JUMPS. EACH TAP USES ONE', w: 4, h: 3 },
-  third: { text: 'NO JUMPS LEFT? WALK INTO A BLUE BUBBLE', w: 4, h: 3 },
-  step: { text: 'TOO TALL FOR ONE JUMP. TAP AGAIN', w: 4, h: 3 },
-  gap: { text: 'TWO TAPS CROSS IT. FILL UP FIRST', w: 4, h: 3 },
+/** All sign words, with widths limited by the existing scenery. */
+const WORDS: Record<SignName, TiledSignText> = {
+  rise: { rows: [['TAP SPACE IN THE AIR AND NOVA RISES AGAIN']], maxWidth: 9 },
+  fly: { rows: [['HOLD RIGHT, KEEP TAPPING, FLY ACROSS']], maxWidth: 9 },
+  exit: { rows: [['EXIT →']], maxWidth: 5 },
+  two: { rows: [['THESE BOOTS HOLD TWO JUMPS. EACH TAP USES ONE']], maxWidth: 7 },
+  third: { rows: [['NO JUMPS LEFT?'], ['WALK INTO'], ['A BLUE BUBBLE']], maxWidth: 7 },
+  step: { rows: [['TOO TALL FOR ONE JUMP. TAP AGAIN']], maxWidth: 7 },
+  gap: { rows: [['TWO TAPS'], ['CROSS IT.'], ['FILL UP FIRST']], maxWidth: 7 },
 };
 
 /** The block set the levels share: the Starter blocks, the boot charges, then this game's signs. */
@@ -33,8 +34,17 @@ function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
   addBootBlocks(book, pal);
-  const signs = {} as Record<SignName, Sign>;
-  for (const n of Object.keys(WORDS) as SignName[]) signs[n] = addSign(book, pal, `${n}.sign`, WORDS[n].text, WORDS[n].w, WORDS[n].h);
+  const colors = {
+    background: skyOf(pal),
+    paper: pal.c('parch', 3),
+    ink: pal.c('ink', 0),
+    wood: pal.c('wood', 2),
+    highlight: pal.c('wood', 4),
+    shadow: pal.c('wood', 0),
+  };
+  const glyphs = { ...MICRO_GLYPHS, '→': '100110111110100' };
+  const { blocks, signs } = buildTiledSigns(WORDS, { colors, glyphs, lettersPerBlock: 3, maxBlocks: Math.min(100, 150 - book.index.size) });
+  for (const [name, pic] of blocks) book.add(name, pic, { grav: PULL.down });
   return { book, signs };
 }
 
@@ -131,9 +141,9 @@ function jetPack(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [9, 17],
   );
   const m = new StarterMap(book, g.rows());
-  m.sign(6, onTop(G, signs.rise), signs.rise);
-  m.sign(L1.cliff[0] + 2, onTop(T, signs.fly), signs.fly);
-  m.sign(L1.exit + 2, onTop(T, signs.exit), signs.exit);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 6, onTop(G, signs.rise), signs.rise);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, L1.cliff[0] + 2, onTop(T, signs.fly), signs.fly);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, L1.exit - 1, onTop(T, signs.exit) - 1, signs.exit, 2);
   return m;
 }
 
@@ -169,11 +179,11 @@ function boots(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [19, 34, 48],
   );
   const m = new StarterMap(book, g.rows());
-  m.sign(4, onTop(G, signs.two), signs.two);
-  m.sign(10, onTop(G, signs.third), signs.third);
-  m.sign(20, onTop(G, signs.step), signs.step);
-  m.sign(35, onTop(G, signs.gap), signs.gap);
-  m.sign(L2.stair2[0] + 2, onTop(G - 2 * L2.step, signs.exit), signs.exit);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 4, onTop(G, signs.two), signs.two);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 11, onTop(G, signs.third), signs.third);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 20, onTop(G, signs.step), signs.step);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 35, onTop(G, signs.gap), signs.gap);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, L2.stair2[0] + 1, onTop(G - 2 * L2.step, signs.exit) - 1, signs.exit, 2);
   for (const [a, b, y] of L2.pods) for (let x = a; x <= b; x++) m.set(x, y, 'pod');
   return m;
 }

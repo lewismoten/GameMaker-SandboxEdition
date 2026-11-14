@@ -142,6 +142,7 @@ Making the files:
   for rooms with more scenery). Sign tiles stay within 100; the complete `.bbl` stays within 150.
   For larger vocabularies, pass `include` to select each map’s signs from the full record, and
   save/load that map’s own `.bbl` (Beams, Smash It and Who Do You Want to Be? do this).
+  Pictures and Cartoons also selects each room’s vocabulary for its own block file.
   Their previews use the matching map’s book; gameplay block IDs stay consistent across maps.
   Existing `starter/sign.ts` remains for games not yet adopted. `Book`'s 50 default is for `.mbl`
   monster sets, not backgrounds; the engine currently declares 150 `.bbl` slots. Neither cap changed.

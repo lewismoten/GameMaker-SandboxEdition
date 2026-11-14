@@ -6,7 +6,7 @@
   "hero": "YANA",
   "year": 1994,
   "price": "Free",
-  "version": "1.1",
+  "version": "1.2",
   "blurb": "Two short levels about momentum. Every step Yana takes adds to their speed instead of moving them, so they get faster while a key is held and glides on after they let go. A wall stops them at once. In the second level, a hop made at speed carries across gaps a standing hop cannot. Nothing here hurts. Signs explain each idea, and every level has a page on how it is made.",
   "exe": "SLIDE.EXE",
   "dosName": "SLIDE",

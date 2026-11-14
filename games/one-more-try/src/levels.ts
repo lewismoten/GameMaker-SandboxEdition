@@ -6,30 +6,54 @@
 //   2. Ways Back: three pits, each with a way out built into it (a ladder, steps of planks, steps of
 //      solid blocks), so nobody needs a post. The better fix for a trap is not to build one.
 // Every room is closed in by hedges you can see, so Mia is never stopped by something she can't.
-import { Book } from '../../kit/starter/book';
+import { Book, PULL } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
-import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
-import { addSign, type Sign } from '../../kit/starter/sign';
+import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
+import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { MICRO_GLYPHS } from '@lewismoten/gamemaker-sandbox-tools/microFont';
 import { addPostBlocks } from './postBlocks';
 
-export type SignName = 'deep' | 'post' | 'again' | 'exit' | 'back' | 'ladder' | 'steps' | 'stairs';
+export type SignName = 'deep' | 'post' | 'again' | 'exit' | 'back' | 'ladder' | 'steps' | 'stairs' | 'largeExit';
 
 /** The block set the levels share: the Starter blocks, this game's signs, then the post. */
 function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
-  const signs = {
-    deep: addSign(book, pal, 'deep.sign', 'TOO DEEP TO CLIMB OUT. JUMP IT', 4, 3),
-    post: addSign(book, pal, 'post.sign', 'A POST AT THE BOTTOM STARTS THE LEVEL OVER', 4, 3),
-    again: addSign(book, pal, 'again.sign', 'THE LEVEL IS NEW AGAIN. YOUR SCORE STAYS', 4, 3),
-    back: addSign(book, pal, 'back.sign', 'LET THEM FALL. GIVE THEM A WAY BACK', 4, 3),
-    ladder: addSign(book, pal, 'ladder.sign', 'A LADDER IS A WAY BACK', 4, 3),
-    steps: addSign(book, pal, 'steps.sign', 'PLANKS ARE STEPS YOU JUMP UP THROUGH', 4, 3),
-    stairs: addSign(book, pal, 'stairs.sign', 'SO ARE SOLID BLOCKS', 4, 3),
-    exit: addSign(book, pal, 'exit.sign', 'EXIT →', 3),
+  const texts = {
+    deep: { rows: [['TOO DEEP TO CLIMB OUT.'], ['JUMP IT']] },
+    post: { rows: [['A POST AT THE BOTTOM'], ['STARTS THE LEVEL OVER']] },
+    again: { rows: [['THE LEVEL IS NEW AGAIN.'], ['YOUR SCORE STAYS']] },
+    back: { rows: [['LET THEM FALL.'], ['GIVE THEM A'], ['WAY BACK']] },
+    ladder: { rows: [['A LADDER IS'], ['A WAY BACK']] },
+    steps: { rows: [['PLANKS ARE STEPS'], ['YOU JUMP UP THROUGH']] },
+    stairs: { rows: [['SO ARE SOLID BLOCKS']] },
+    exit: { rows: [['EXIT →']] },
   };
+  const signs = {} as Record<SignName, Sign>;
+  // The close pair before the ladder needs compact letters; keep that whole level consistent.
+  for (const compact of [false, true]) {
+    const include: (keyof typeof texts)[] = compact ? ['back', 'ladder', 'steps', 'stairs', 'exit'] : ['deep', 'post', 'again', 'exit'];
+    const { blocks, signs: built } = buildTiledSigns(texts, {
+      colors: {
+        background: skyOf(pal),
+        paper: pal.c('parch', 3),
+        ink: pal.c('ink', 0),
+        wood: pal.c('wood', 2),
+        highlight: pal.c('wood', 4),
+        shadow: pal.c('wood', 0),
+      },
+      glyphs: { ...MICRO_GLYPHS, '→': '100110111110100' },
+      ...(compact ? { compact: true } : { lettersPerBlock: 3 as const }),
+      include,
+      prefix: compact ? 'compactSign' : 'largeSign',
+      maxBlocks: Math.min(100, 150 - book.index.size - 1),
+    });
+    for (const [name, pic] of blocks) book.add(name, pic, { grav: PULL.down });
+    Object.assign(signs, built);
+    if (!compact) signs.largeExit = built.exit;
+  }
   addPostBlocks(book, pal);
   return { book, signs };
 }
@@ -42,6 +66,11 @@ export interface Level {
   map: StarterMap;
   /** The posts that start the level over: the square of each (level blocks). */
   posts: [number, number][];
+}
+
+/** Refuse to cover scenery, pickups or another sign. */
+function placeSign(m: StarterMap, x: number, y: number, sign: Sign, postHeight = 1): void {
+  stampTiledSign({ set: (sx, sy, block) => m.setOnSky(sx, sy, block) }, x, y, sign, postHeight);
 }
 
 /** The top row of a sign standing on ground row `ground`. */
@@ -95,10 +124,11 @@ function aPostToStartOver(book: Book, signs: Record<SignName, Sign>): StarterMap
     [12, 31, 41],
   );
   const m = new StarterMap(book, g.rows());
-  m.sign(5, onGround(GROUND, signs.deep), signs.deep);
-  m.sign(17, onGround(GROUND, signs.post), signs.post);
-  m.sign(34, onGround(GROUND, signs.again), signs.again);
-  m.sign(44, onGround(GROUND, signs.exit), signs.exit);
+  placeSign(m, 6, onGround(GROUND, signs.deep), signs.deep);
+  // Raise this board above the pit coins, with its post on the bank.
+  placeSign(m, 18, 5, signs.post, 3);
+  placeSign(m, 30, onGround(GROUND, signs.again), signs.again);
+  placeSign(m, 42, onGround(GROUND, signs.largeExit), signs.largeExit);
   m.set(L1.post, GROUND + DEPTH - 1, 'post');
   return m;
 }
@@ -130,11 +160,11 @@ function waysBack(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [8, 21, 45],
   );
   const m = new StarterMap(book, g.rows());
-  m.sign(5, onGround(GROUND, signs.back), signs.back);
-  m.sign(9, onGround(GROUND, signs.ladder), signs.ladder);
-  m.sign(21, onGround(GROUND, signs.steps), signs.steps);
-  m.sign(33, onGround(GROUND, signs.stairs), signs.stairs);
-  m.sign(44, onGround(GROUND, signs.exit), signs.exit);
+  placeSign(m, 4, onGround(GROUND, signs.back), signs.back);
+  placeSign(m, 11, onGround(GROUND, signs.ladder), signs.ladder);
+  placeSign(m, 21, onGround(GROUND, signs.steps), signs.steps);
+  placeSign(m, 33, onGround(GROUND, signs.stairs), signs.stairs);
+  placeSign(m, 42, onGround(GROUND, signs.exit), signs.exit);
   // Two-block landings give a leftward jump from the cliff room to stop.
   // PLAYGAME.C:3682-3690 snaps partial edge landings toward a one-block gap.
   for (const x of steps.low) m.set(x, floor - 1, 'plank');
