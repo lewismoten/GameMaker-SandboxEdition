@@ -48,14 +48,19 @@ export async function makeBak(at = Date.now()): Promise<string> {
   return `${HEADER}\r\n${JSON.stringify(bak)}\r\n`;
 }
 
+/** About 300 years either way: far past any real TIME or DATE, far inside what a Date holds. */
+const MAX_CLOCK_OFFSET_MS = 1e13;
+
 /** The backup in `text`, or undefined when it isn't one of ours. */
 export function parseBak(text: string | null): Bak | undefined {
-  if (!text?.startsWith('FLAGS.BAK 1')) return undefined;
+  if (!text || !/^FLAGS\.BAK 1(?!\d)/.test(text)) return undefined;
   try {
     const o = JSON.parse(text.split(/\r?\n/)[1] ?? '') as Partial<Bak>;
     if (typeof o.at !== 'number' || !o.local || typeof o.local !== 'object') return undefined;
     const local: Record<string, string> = {};
     for (const k of BACKUP_KEYS) if (typeof o.local[k] === 'string') local[k] = o.local[k];
+    // A hand-edited clock offset must leave the room a real date (Date holds only ±8.64e15 ms).
+    if ('gm-desk-clock' in local && !(Math.abs(Number(local['gm-desk-clock'])) <= MAX_CLOCK_OFFSET_MS)) delete local['gm-desk-clock'];
     return { at: o.at, local, ach: parseRecord(new TextEncoder().encode(JSON.stringify(o.ach ?? {}))) };
   } catch {
     return undefined;

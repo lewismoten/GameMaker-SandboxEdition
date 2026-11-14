@@ -130,6 +130,14 @@ describe('FLAGS backup and keys', () => {
     expect(parseBak('hello')).toBeUndefined();
     expect(parseBak(null)).toBeUndefined();
   });
+  it('refuses a later format version and a clock offset a Date cannot hold', () => {
+    const body = (local: object) => `${JSON.stringify({ at: 5, local, ach: {} })}\r\n`;
+    expect(parseBak(`FLAGS.BAK 10\r\n${body({})}`)).toBeUndefined();
+    expect(parseBak(`FLAGS.BAK 12  (x)\r\n${body({})}`)).toBeUndefined();
+    expect(parseBak(`FLAGS.BAK 1\r\n${body({})}`)).toBeDefined();
+    expect(parseBak(`FLAGS.BAK 1\r\n${body({ 'gm-desk-clock': '9e15' })}`)!.local).toEqual({});
+    expect(parseBak(`FLAGS.BAK 1\r\n${body({ 'gm-desk-clock': '86400000' })}`)!.local).toEqual({ 'gm-desk-clock': '86400000' });
+  });
   it('help and BBS text fit 80 columns and carry the credits', () => {
     for (const l of [...FLAGS_HELP, ...FLAGS_DIZ, ...FLAGS_NFO]) expect(l.length).toBeLessThanOrEqual(79);
     expect(FLAGS_DIZ.at(-1)).toContain('Couriered by');
