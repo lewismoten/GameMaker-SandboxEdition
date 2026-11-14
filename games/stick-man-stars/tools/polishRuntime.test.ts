@@ -15,7 +15,7 @@ describe('built Stick Man Stars polish', () => {
     const files = new Map(new GameSim(undefined, 1).files);
     const name = [...files.keys()].find((n) => n.endsWith('.gam'))!;
     const game = parseGame(files.get(name)!);
-    game.scenes[0].links[0] = { toScene: 4, from: { x: 0, y: 0 }, to: { x: ORIGIN + 76, y: ORIGIN + STAND + shiftY(3) } };
+    game.scenes[0].links[0] = { toScene: 4, from: { x: 0, y: 0 }, to: { x: ORIGIN + 76, y: ORIGIN + STAND + shiftY(2) } };
     files.set(name, serializeGame(game));
     const sim = new GameSim(files, 1);
     const bot = new StarterBot(sim);
