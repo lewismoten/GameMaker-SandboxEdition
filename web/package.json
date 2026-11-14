@@ -30,6 +30,7 @@
     "check:games": "vite-node ../games/kit/checkGames.ts",
     "release:draft": "vite-node scripts/release/draft.ts",
     "release:cut": "vite-node scripts/release/cut.ts",
+    "release:sbom": "vite-node scripts/release/sbom.ts",
     "release:check": "vite-node scripts/release/check.ts",
     "verify:changed": "node ../scripts/verify-changed.mjs",
     "heavy": "node ../scripts/heavy.mjs",
