@@ -144,5 +144,5 @@ export function mapSceneLabels(game: Game, file: string, files?: SceneFiles): st
       ? [`${fromCp437(s.desc).trim() || `Scene ${i}`} · ${roleLabel(game, i, files)}`]
       : [],
   );
-  return labels;
+  return [...new Set(labels)];
 }
