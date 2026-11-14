@@ -57,3 +57,4 @@ __pycache__/
 .pio/
 .leak-patterns.local
 release-out/
+/web/public/pocket/fw/*/
