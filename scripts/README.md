@@ -99,6 +99,8 @@ A final consumer exercises engine, archives and tools together. Run this longer 
 and tarballs are removed afterwards. This catches hidden repository source dependencies
 that testing a package inside the workspace would miss.
 
+`verify-consumer.mjs` runs through root `npm run verify:consumer [-- --source tarball|registry]`. In a fresh project outside the repository it installs the three SDKs (the packed `web/packages/*` tarballs, or the published versions from npm), imports every export in Node, typechecks every export under `bundler` and `node16` resolution, and Vite-builds one browser-safe import per package (plus a check that the tools' Node-only `drawing` entry is rejected in a browser build, as its README says). Build the packages first (`npm run build:packages`); `--keep` leaves the scratch project. Needs network for `typescript` and `vite`.
+
 `build-games.mjs` rebuilds the ignored game outputs (root `npm run build:games`), caching a key and an
 output hash per game, written as each game lands so a build stopped partway keeps what it finished (CI
 caches these outputs between runs; `prune-render-cache.mjs` keeps only the current Depth frames there). `--timing` (or `GM_BUILD_TIMING=1`) prints each game's seconds, `--game <id>` builds
