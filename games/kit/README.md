@@ -135,7 +135,11 @@ Making the files:
   across tile boundaries with single spaces and centered alignment. One-line boards take one row;
   side borders/corners and identical letter tiles are shared. First Steps uses `lettersPerBlock: 3`
   for larger 5×10 letters; `4` and `5` retain the compact 3×5 font. Pass the remaining budget
-  (`100 - book.index.size` in First Steps), keeping the combined art within 100 named blocks.
+  (`100 - book.index.size` in First Steps, or `Math.min(100, 150 - book.index.size)`
+  for rooms with more scenery). Sign tiles stay within 100; the complete `.bbl` stays within 150.
+  For larger vocabularies, pass `include` to select each map’s signs from the full record, and
+  save/load that map’s own `.bbl` (Beams, Smash It and Who Do You Want to Be? do this).
+  Their previews use the matching map’s book; gameplay block IDs stay consistent across maps.
   Existing `starter/sign.ts` remains for games not yet adopted. `Book`'s 50 default is for `.mbl`
   monster sets, not backgrounds; the engine currently declares 150 `.bbl` slots. Neither cap changed.
 - `starter/book.ts` — `Book`, a block set built one named block at a time, with `SOLID`, `LEDGE` and `PULL`.

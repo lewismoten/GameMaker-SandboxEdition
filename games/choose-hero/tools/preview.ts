@@ -16,10 +16,8 @@ import { buildLevels } from '../src/levels';
 
 const out = process.argv[2] ?? join(tmpdir(), 'choose-hero-preview');
 mkdirSync(out, { recursive: true });
-const { book, pal, levels } = buildLevels();
+const { pal, levels } = buildLevels();
 const sky = pal.c('sky', 3);
-const bbl = book.finish();
-writePng(join(out, 'blocks.png'), blockSheet(bbl.slice(0, book.index.size), 12, 0), pal.pal, 3);
 
 const hero = buildHeroBlocks(pal);
 const poses: [string, string][] = [
@@ -40,6 +38,8 @@ writePng(join(out, 'heroes.png'), pair, pal.pal, 6);
 const mb = buildMonsterBlocks(pal);
 const mbl = mb.finish();
 for (const l of levels) {
+  const bbl = l.book.finish();
+  writePng(join(out, `blocks-${l.file}.png`), blockSheet(bbl.slice(0, l.book.index.size), 12, 0), pal.pal, 3);
   const m = l.map.done();
   const pic = renderRegion(m, bbl, mbl, buildMonsters(mb), ORIGIN, ORIGIN, l.map.width, l.map.height);
   writePng(join(out, `${l.file}.png`), pic, pal.pal, 1);

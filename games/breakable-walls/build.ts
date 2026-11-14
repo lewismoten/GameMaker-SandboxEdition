@@ -42,9 +42,9 @@ const cheer = heroPicture(heroBlocks, 'cheer.top', 'jump');
 // a crate as a picture to stand in the title
 const crate = heroPicture(book, 'sky', 'crate').map((_x, _y, c) => (c === skyOf(pal) ? 255 : c));
 
-// the game's shared data: one block set, one palette, one hero, an (empty) set of monsters, one song
+// the game's shared data: one block set per map, one palette, one hero, an (empty) set of monsters, one song
 disk.put('sm.pal', serializePalette(pal.pal));
-disk.put('sm.bbl', serializeBlocks(finishBlocks(book)));
+for (const l of levels) disk.put(`${l.file}.bbl`, serializeBlocks(finishBlocks(l.book)));
 disk.put('sm.mbl', serializeBlocks(monsterBlocks.finish()));
 disk.put('sm.mon', serializeMonsters(buildMonsters(monsterBlocks)));
 disk.put('hero.cbl', serializeBlocks(heroBlocks.finish()));
@@ -101,4 +101,4 @@ disk.put('sm.gam', serializeGame(buildGame(levels)));
 disk.put('license.txt', licenseText('Smash It'));
 clipEveryList(disk.files);
 disk.write();
-console.log(`${TITLE}: ${book.index.size} blocks, ${heroBlocks.index.size} hero blocks`);
+console.log(`${TITLE}: ${levels.map((l) => l.book.index.size).join('/')} blocks, ${heroBlocks.index.size} hero blocks`);

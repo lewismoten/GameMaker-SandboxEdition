@@ -3,33 +3,31 @@ import { withCreditPage } from '../../kit/license';
 import { wrap } from '../../kit/starter/text';
 import about from '../about.json';
 
-type Words = Record<string, [string, number, number]>;
-
-/** The signs of each room: name → [words, blocks wide, blocks high]. */
+/** The complete sign vocabulary, grouped by room; layout is in levels.ts. */
 export const SIGNS = {
   beams: {
-    start: ['GOAL: SEE HOW EACH BEAM IS MADE.', 4, 3],
-    solid: ['SOLID: THE BRICKS ARE GONE.', 4, 2],
-    checker: ['CHECKER: BRICKS STAY.', 4, 2],
-    soft: ['THREE CHECKERS: SOFT EDGE.', 4, 2],
-    next: ['NEXT: FOG.', 4, 2],
+    start: 'GOAL: SEE HOW EACH BEAM IS MADE.',
+    solid: 'SOLID: THE BRICKS ARE GONE.',
+    checker: 'CHECKER: BRICKS STAY.',
+    soft: 'THREE CHECKERS: SOFT EDGE.',
+    next: 'NEXT: FOG.',
   },
   fog: {
-    start: ['FOG, TWO WAYS.', 4, 2],
-    flat: ['SOLID FOG: NO TREES.', 4, 2],
-    dither: ['CHECKER FOG: TREES STAY.', 4, 2],
-    thick: ['FAR 75, MID 50, NEAR 25.', 4, 2],
-    drift: ['MOVING FOG IS A MONSTER.', 4, 2],
-    next: ['NEXT: GLOWS.', 4, 2],
+    start: 'FOG, TWO WAYS.',
+    flat: 'SOLID FOG: NO TREES.',
+    dither: 'CHECKER FOG: TREES STAY.',
+    thick: 'FAR 75, MID 50, NEAR 25.',
+    drift: 'MOVING FOG IS A MONSTER.',
+    next: 'NEXT: GLOWS.',
   },
   glow: {
-    start: ['LANTERNS THAT MOVE.', 4, 2],
-    solid: ['SOLID GLOW HIDES BRICKS.', 4, 2],
-    checker: ['CHECKER GLOW: BRICKS SHOW.', 4, 2],
-    soft: ['RINGS: 75, 50, 25.', 4, 2],
-    next: ['THAT IS IT.', 4, 2],
+    start: 'LANTERNS THAT MOVE.',
+    solid: 'SOLID GLOW HIDES BRICKS.',
+    checker: 'CHECKER GLOW: BRICKS SHOW.',
+    soft: 'RINGS: 75, 50, 25.',
+    next: 'THAT IS IT.',
   },
-} satisfies Record<string, Words>;
+} satisfies Record<string, Record<string, string>>;
 
 /** The card before each room: its name and a line. */
 export const CARDS = {
@@ -72,7 +70,7 @@ Made with GAME-MAKER 3.0 from Recreational Software Designs.
 
 One of the Starters: small games that each show one idea.
 
-Music re-scored with OpenAI Codex from the original tune and B section by Claude.
+Music and tiled signs by OpenAI Codex; original tune and B section by Claude.
 `),
 );
 

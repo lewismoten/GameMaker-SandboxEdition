@@ -39,9 +39,9 @@ const cheer = heroPicture(heroBlocks, 'cheer.top', 'jump');
 // the exit door as a picture to stand in the title: its sky made clear
 const door = heroPicture(book, 'doorTop', 'doorBottom').map((_x, _y, c) => (c === skyOf(pal) ? 255 : c));
 
-// the game's shared data: one block set, one palette, two heroes, an (empty) set of monsters, one song
+// the game's shared data: one block set per map, one palette, two heroes, an (empty) set of monsters, one song
 disk.put('pick.pal', serializePalette(pal.pal));
-disk.put('pick.bbl', serializeBlocks(book.finish()));
+for (const l of levels) disk.put(`${l.file}.bbl`, serializeBlocks(l.book.finish()));
 disk.put('pick.mbl', serializeBlocks(monsterBlocks.finish()));
 disk.put('pick.mon', serializeMonsters(buildMonsters(monsterBlocks)));
 // two heroes: the scenes name which pair of files they load (Fast Feet is Kit in his orange hoodie)
@@ -103,4 +103,4 @@ disk.put('pick.gam', serializeGame(buildGame(levels)));
 disk.put('license.txt', licenseText('Who Do You Want to Be?'));
 clipEveryList(disk.files);
 disk.write();
-console.log(`${TITLE}: ${book.index.size} blocks, ${heroBlocks.index.size} hero blocks`);
+console.log(`${TITLE}: ${levels.map((l) => l.book.index.size).join('/')} blocks, ${heroBlocks.index.size} hero blocks`);

@@ -39,6 +39,8 @@ Design, pixels, beeps and levels by Claude Sonnet 5.5, an AI model made by Anthr
 Made with GAME-MAKER 3.0 from Recreational Software Designs.
 
 One of the Starters: small games that each show one idea.
+
+Tiled signs by OpenAI Codex.
 `),
 );
 
