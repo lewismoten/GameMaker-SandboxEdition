@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { EventLog, nameOf, recordEvents, scanOf } from './eventLog';
+import { EventLog, nameOf, recordEvents, scanOf } from '@lewismoten/gamemaker-sandbox-tools/kit/eventLog';
 
 describe('key names', () => {
   it('maps names to scan codes and back', () => {
