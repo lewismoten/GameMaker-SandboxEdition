@@ -7,12 +7,13 @@
 //   2. Out of Step: the same V, but the two middle birds are gold and fly faster. They pull away
 //      and the V comes apart.
 // Both rooms are closed in by brick walls you can see, so Lian is never stopped by something he can't.
-import { Book } from '../../kit/starter/book';
+import { Book, PULL } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
-import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
-import { addSign, type Sign } from '../../kit/starter/sign';
+import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
+import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { MICRO_GLYPHS } from '@lewismoten/gamemaker-sandbox-tools/microFont';
 import { BIRD, QUICK } from './monsters';
 
 export type SignName = 'shape' | 'same' | 'quick' | 'apart' | 'exit';
@@ -21,13 +22,29 @@ export type SignName = 'shape' | 'same' | 'quick' | 'apart' | 'exit';
 function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
-  const signs = {
-    shape: addSign(book, pal, 'shape.sign', 'FIVE BIRDS KEEP ONE SHAPE', 4, 4),
-    same: addSign(book, pal, 'same.sign', 'SAME PATH, SAME SPEED', 4, 4),
-    quick: addSign(book, pal, 'quick.sign', 'GOLD BIRDS FLY FASTER', 4, 4),
-    apart: addSign(book, pal, 'apart.sign', 'NOW THE SHAPE COMES APART', 4, 4),
-    exit: addSign(book, pal, 'exit.sign', 'EXIT →', 3),
-  };
+  const { blocks, signs } = buildTiledSigns(
+    {
+      shape: { rows: [['FIVE BIRDS KEEP ONE SHAPE']] },
+      same: { rows: [['SAME PATH, SAME SPEED']] },
+      quick: { rows: [['GOLD BIRDS FLY FASTER']] },
+      apart: { rows: [['NOW THE SHAPE COMES APART']] },
+      exit: { rows: [['EXIT →']] },
+    },
+    {
+      colors: {
+        background: skyOf(pal),
+        paper: pal.c('parch', 3),
+        ink: pal.c('ink', 0),
+        wood: pal.c('wood', 2),
+        highlight: pal.c('wood', 4),
+        shadow: pal.c('wood', 0),
+      },
+      glyphs: { ...MICRO_GLYPHS, '→': '100110111110100' },
+      lettersPerBlock: 3,
+      maxBlocks: 100 - book.index.size,
+    },
+  );
+  for (const [name, pic] of blocks) book.add(name, pic, { grav: PULL.down });
   return { book, signs };
 }
 
@@ -91,9 +108,11 @@ function oneShape(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [10, 21, 35],
   );
   const m = new StarterMap(book, g.rows());
-  m.sign(6, onGround(GROUND, signs.shape), signs.shape);
-  m.sign(10, onGround(GROUND, signs.same), signs.same);
-  m.sign(38, onGround(GROUND, signs.exit), signs.exit);
+  const sky = { set: (x: number, y: number, name: string) => m.setOnSky(x, y, name) };
+  // Keep the boards above the birds’ flight rows, with posts clear of the scenery.
+  stampTiledSign(sky, 1, onGround(GROUND, signs.shape) - 3, signs.shape, 4);
+  stampTiledSign(sky, 13, onGround(GROUND, signs.same) - 3, signs.same, 4);
+  stampTiledSign(sky, 39, onGround(GROUND, signs.exit) - 1, signs.exit, 2);
   flock(m, [BIRD, BIRD, BIRD, BIRD, BIRD]);
   return m;
 }
@@ -112,9 +131,10 @@ function outOfStep(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [10, 22, 35],
   );
   const m = new StarterMap(book, g.rows());
-  m.sign(6, onGround(GROUND, signs.quick), signs.quick);
-  m.sign(10, onGround(GROUND, signs.apart), signs.apart);
-  m.sign(38, onGround(GROUND, signs.exit), signs.exit);
+  const sky = { set: (x: number, y: number, name: string) => m.setOnSky(x, y, name) };
+  stampTiledSign(sky, 1, onGround(GROUND, signs.quick) - 3, signs.quick, 4);
+  stampTiledSign(sky, 11, onGround(GROUND, signs.apart) - 3, signs.apart, 4);
+  stampTiledSign(sky, 39, onGround(GROUND, signs.exit) - 1, signs.exit, 2);
   flock(m, [BIRD, QUICK, BIRD, QUICK, BIRD]);
   return m;
 }

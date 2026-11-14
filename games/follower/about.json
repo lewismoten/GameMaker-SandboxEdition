@@ -6,7 +6,7 @@
   "hero": "LENA",
   "year": 1994,
   "price": "Free",
-  "version": "1.1",
+  "version": "1.2",
   "blurb": "Two short levels about a friend that follows. Puff, a little winged pup, flies straight after Lena, a bit slower than they run. In the second room Lena climbs a ledge and Puff, which plans no way around, waits under it. Signs in the levels say how. Play it, then open it in Game-Maker and change how fast Puff flies.",
   "exe": "FOLLOWME.EXE",
   "dosName": "FOLLOWME",
