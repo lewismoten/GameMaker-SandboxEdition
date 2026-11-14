@@ -38,6 +38,11 @@ export function openVideo(id: string, title: string, picture: string | undefined
     });
     /** Shows YouTube's player in place of the picture, playing from `at` seconds. */
     const play = (at = 0, focus = true) => {
+      // no connection: say so in place, instead of an empty player with the browser's error page
+      if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+        note.textContent = 'This video needs the internet: it plays from YouTube, and this page has no connection now.';
+        return;
+      }
       const start = at > 0 ? `&start=${Math.floor(at)}` : '';
       const player = h('iframe', {
         class: 'lib-video-player',
