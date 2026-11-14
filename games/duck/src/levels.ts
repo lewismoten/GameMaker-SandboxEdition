@@ -61,7 +61,10 @@ function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
   pole.rect(8, 0, 4, 20, wood[2]).rect(8, 0, 1, 20, wood[4]).rect(11, 0, 1, 20, wood[0]);
   book.add('pole', pole, { grav: 4 });
   const { blocks, signs } = buildTiledSigns(
-    Object.fromEntries(Object.entries(WORDS).map(([name, { text }]) => [name, { rows: [[text]] }])) as Record<SignName, { rows: string[][] }>,
+    Object.fromEntries(Object.entries(WORDS).map(([name, { text }]) => [name, { rows: [[text]], ...(name === 'duck' ? { maxWidth: 7 } : {}) }])) as Record<
+      SignName,
+      { rows: string[][] }
+    >,
     {
       compact: true,
       glyphs: { ...MICRO_GLYPHS, '→': '100110111110100' },
@@ -86,8 +89,8 @@ export interface Level {
 const onGround = (ground: number, s: Sign) => ground - 1 - s.board.length;
 
 /** Refuse to cover scenery, awnings, doors or coins with either the board or its post. */
-function putSign(m: StarterMap, x: number, y: number, sign: Sign): void {
-  stampTiledSign({ set: (col, row, block) => m.setOnSky(col, row, block) }, x, y, sign);
+function putSign(m: StarterMap, x: number, y: number, sign: Sign, post = 1): void {
+  stampTiledSign({ set: (col, row, block) => m.setOnSky(col, row, block) }, x, y, sign, post);
 }
 
 /**
@@ -174,7 +177,8 @@ function headHeight(book: Book, signs: Record<SignName, Sign>): StarterMap {
   awning(m, L1.roof[0], L1.roof[1], L1.roofRow, G);
   // birds fly in the row of Kit's head: his top block is row G-2
   for (const [x, kind] of L1.birds) m.mon(kind, x, G - 2);
-  putSign(m, 4, onGround(G, signs.duck), signs.duck);
+  // the first board is seven wide (three lines), raised a row so its post stands clear of the entrance door
+  putSign(m, 1, onGround(G, signs.duck) - 2, signs.duck, 3);
   putSign(m, 9, onGround(G, signs.roof), signs.roof);
   putSign(m, L1.roof[1] + 2, onGround(G, signs.walk), signs.walk);
   return m;

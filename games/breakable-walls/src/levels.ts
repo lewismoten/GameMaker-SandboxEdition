@@ -109,8 +109,8 @@ function bumpACrate(book: Book, signs: Record<SignName, Sign>): StarterMap {
   );
   const m = new StarterMap(book, g.rows());
   stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 5, 4, signs.bump, 5);
-  // Keep the board in camera rows 4–5, one column beyond the four-high wall; the post stops above the coins.
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 30, 4, signs.rubble, 3);
+  // Camera rows 4–5, as before; the post stands on the ground in column 32, the one gap in the coin row.
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 32 - (signs.rubble.post?.x ?? 0), 4, signs.rubble, 4);
   stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 40, 7, signs.exit, 2);
   crates(m, L1.wallA, 1, L1.rows);
   crates(m, L1.wallB, L1.wallBWidth, L1.rows);
