@@ -38,7 +38,5 @@
     "rating": "Everyone"
   },
   "acceptedFindings": [
-    "flashing s2 Block 0 flashes light and dark about 0.2 times a second over 160 blocks of one screen, from (0, 0)",
-    "flashing s3 Block 0 flashes light and dark about 0.2 times a second over 160 blocks of one screen, from (0, 0)"
   ]
 }
