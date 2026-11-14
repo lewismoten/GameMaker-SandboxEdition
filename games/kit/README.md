@@ -128,6 +128,16 @@ Making the files:
   Commands below run from `web/`; a game adds its songs, words, levels and route.
 
 - `starter/blocks.ts` — the shared sky, ground, platforms, ladders, doors, pickups and spikes, in a fixed block order.
+- Shared tiled signs live in the tools package's `kit/tiledSigns`: call `buildTiledSigns` once with all
+  signs across a game's levels, then add its deduplicated pictures to the game's `Book` with
+  `{ grav: PULL.down }`. `stampTiledSign` places the returned board and one centered post.
+  See `games/first-steps/src/levels.ts` for a complete adoption. Supply complete lines; text packs
+  across tile boundaries with single spaces and centered alignment. One-line boards take one row;
+  side borders/corners and identical letter tiles are shared. First Steps uses `lettersPerBlock: 3`
+  for larger 5×10 letters; `4` and `5` retain the compact 3×5 font. Pass the remaining budget
+  (`100 - book.index.size` in First Steps), keeping the combined art within 100 named blocks.
+  Existing `starter/sign.ts` remains for games not yet adopted. `Book`'s 50 default is for `.mbl`
+  monster sets, not backgrounds; the engine currently declares 150 `.bbl` slots. Neither cap changed.
 - `starter/book.ts` — `Book`, a block set built one named block at a time, with `SOLID`, `LEDGE` and `PULL`.
 - `starter/bot.ts` — `StarterBot`, walking, jumping and climbing with arrows and Space.
 - `starter/framesSvg.ts` — inline SVG block frames and captions for a manual’s “How this level is made” figures.
