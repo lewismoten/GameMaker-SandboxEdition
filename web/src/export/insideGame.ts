@@ -97,7 +97,7 @@ function vocPreview(bytes: Uint8Array): Uint8Array | undefined {
 
 /** A link only for http: and https: addresses; anything else (javascript:, data:) is plain text. */
 export function websiteLink(w: string): string {
-  let ok = false;
+  let ok: boolean;
   try {
     const p = new URL(w).protocol;
     ok = p === 'http:' || p === 'https:';

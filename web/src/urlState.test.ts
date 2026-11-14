@@ -11,6 +11,6 @@ describe('parseHash params', () => {
     expect(Object.keys(params).sort()).toEqual(['__proto__', 'constructor']);
     expect(params.constructor).toBe('b');
     expect(parseHash('#/x').params.constructor).toBeUndefined();
-    expect(parseHash('#/x').params.toString).toBeUndefined();
+    expect('toString' in parseHash('#/x').params).toBe(false);
   });
 });
