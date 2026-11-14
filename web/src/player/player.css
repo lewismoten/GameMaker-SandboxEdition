@@ -505,3 +505,41 @@
   outline: 2px solid #fff;
   outline-offset: 2px;
 }
+
+/* ---- before the start, upright on a touch screen ------------------------------------ */
+/* The poster sits where the game will draw (the top, 4:3), the buttons and the "Run like a"
+   menu under it (screenKeys.css), then the setup bar and the shareware notice in their own
+   rows: nothing lies over the poster or the touch pad. */
+.gm-player.has-touch.touch-portrait .gm-start {
+  inset: env(safe-area-inset-top) 0 auto;
+  height: calc(var(--screen-bottom) - env(safe-area-inset-top));
+}
+
+.gm-player.has-touch.touch-portrait .gm-start.has-poster {
+  background-position: center top;
+  background-size: 100% 100%; /* exactly where the game draws */
+}
+
+.gm-player.has-touch.touch-portrait .gm-hardware-launch {
+  top: calc(var(--screen-bottom) + 80px);
+  bottom: auto;
+}
+
+.gm-player.has-touch.touch-portrait .gm-notice-link {
+  top: calc(var(--screen-bottom) + 144px);
+  bottom: auto;
+  min-height: 44px;
+}
+
+/* a short phone (360x640): the rows tuck closer so the notice stays clear of the Esc/F1 keys */
+@media (max-height: 700px) {
+  .gm-player.has-touch.touch-portrait .gm-hardware-launch {
+    top: calc(var(--screen-bottom) + 73px);
+  }
+  .gm-player.has-touch.touch-portrait .gm-notice-link {
+    top: calc(var(--screen-bottom) + 123px);
+    min-height: 38px;
+    padding: 2px 12px;
+    white-space: nowrap;
+  }
+}
