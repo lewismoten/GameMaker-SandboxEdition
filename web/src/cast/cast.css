@@ -235,13 +235,15 @@ main.cast .lead {
 }
 
 .cast-appears summary {
+  min-height: 24px;
+  padding: 2px 0;
   cursor: pointer;
   font-size: 14px;
   font-weight: 600;
 }
 
-.cast-appears ul {
-  margin: 6px 0 0;
+.cast-does {
+  margin: 10px 0 0;
   padding: 0;
   list-style: none;
   font-size: 14px;
@@ -250,7 +252,7 @@ main.cast .lead {
   column-gap: 16px;
 }
 
-.cast-appears li {
+.cast-does li {
   padding: 2px 0 2px 10px;
   border-left: 3px solid var(--fam);
   margin-bottom: 3px;
@@ -399,10 +401,10 @@ main.cast .lead {
 
 .cast-mini {
   position: fixed;
-  top: 12px;
+  bottom: 12px;
   left: 12px;
   z-index: 20;
-  width: 208px;
+  width: 176px;
   border: 1px solid var(--border);
   border-radius: 8px;
   overflow: hidden;
@@ -426,14 +428,16 @@ main.cast .lead {
 
 .cast-mini-bar {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 4px;
   padding: 4px;
 }
 
 .cast-mini-who {
-  flex: 1;
+  flex: 1 0 100%;
   min-width: 0;
+  min-height: 18px;
   padding-left: 4px;
   overflow: hidden;
   font-size: 13px;
@@ -461,46 +465,67 @@ main.cast .lead {
 @keyframes cast-mini-in {
   from {
     opacity: 0;
-    transform: translateY(-8px);
+    transform: translateY(8px);
   }
 }
 
-/* a jump to a heading stops below the small stage */
-@media (min-width: 721px) {
-  main.cast:not(.cast-mini-closed) :is(h2, h3)[id]:not(#cast-stage-h) {
-    scroll-margin-top: 160px;
-  }
+/* room at the end so the last lines can scroll up past it; a jump to a heading stops above it */
+main.cast:not(.cast-mini-closed) {
+  padding-bottom: 170px;
 }
 
-@media (max-width: 720px) {
-  /* room at the end so the last lines can scroll up past it */
+main.cast:not(.cast-mini-closed) :is(h2, h3)[id]:not(#cast-stage-h) {
+  scroll-margin-bottom: 170px;
+}
+
+.cast-mini-bar {
+  justify-content: space-between;
+}
+
+/* the stage never covers what is pressed: a wide window leaves it a left gutter of its own
+   (the page column is centered, so only a window narrower than column + two gutters needs one) */
+@media (min-width: 760px) and (max-width: 1599px) {
   main.cast:not(.cast-mini-closed) {
-    padding-bottom: 140px;
+    padding-left: max(16px, calc(204px - max(0px, (100vw - 1180px) / 2)));
   }
+}
 
+/* a narrow window has no room for a gutter: the stage shrinks to its name and buttons, in the
+   corner away from the card toggles, which sit at the left */
+@media (max-width: 759px) {
   .cast-mini {
-    top: auto;
-    bottom: 12px;
-    width: 152px;
+    right: 12px;
+    left: auto;
+    width: auto;
   }
 
-  .cast-mini-who {
+  .cast-mini-canvas {
     display: none;
   }
 
   .cast-mini-bar {
-    justify-content: space-between;
+    flex-wrap: nowrap;
   }
 
-  @keyframes cast-mini-in {
-    from {
-      opacity: 0;
-      transform: translateY(8px);
-    }
+  .cast-mini-who {
+    flex: 0 1 auto;
+    max-width: 9rem;
+  }
+
+  main.cast:not(.cast-mini-closed) {
+    padding-bottom: 64px;
+  }
+
+  main.cast:not(.cast-mini-closed) :is(h2, h3)[id]:not(#cast-stage-h) {
+    scroll-margin-bottom: 64px;
   }
 }
 
 /* ---- seen in ---- */
+
+.cast-appears > .cast-seen {
+  margin-top: 10px;
+}
 
 .cast-seen-box {
   grid-column: 1 / -1;
@@ -555,4 +580,16 @@ main.cast .lead {
 /* Mystery Robot Joe is tin gray: he stands against the reading room's warm wood paneling */
 #cast-joe .cast-pic {
   background: repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.18) 0 2px, transparent 2px 26px), radial-gradient(circle at 50% 55%, #c98a4b 0%, #7a4a22 80%);
+}
+
+/* a short window (a phone on its side): the stage and its controls fit the screen height, and
+   the small stage shrinks so it hides less of the text */
+@media (max-height: 500px) {
+  .cast-stage-box {
+    max-width: min(720px, calc((100vh - 170px) * 160 / 70));
+  }
+
+  .cast-mini {
+    width: 168px;
+  }
 }

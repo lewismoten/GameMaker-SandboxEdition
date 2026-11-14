@@ -12,6 +12,8 @@ import { notesPlacer, onPlacerChange } from './notesPlacer';
 import { achievementById } from './catalog';
 
 const SHOW_MS = 7000;
+/** A phone (narrow or short window) has little to spare: the note goes sooner. */
+const showMs = () => (matchMedia('(max-width: 600px), (max-height: 500px)').matches ? 4000 : SHOW_MS);
 let host: HTMLElement | undefined;
 
 const isDesk = () => document.documentElement.dataset.ui === 'desk';
@@ -49,6 +51,24 @@ function raise(el: HTMLElement): void {
  * into the stack fans the older one out (toast.css). A narrow window, where the room is a
  * column, has them at the bottom of the window.
  */
+/**
+ * A phone held upright while a game plays: the notes sit in the gap above the touch pad, not
+ * over the game's screen (they were covering its top right).
+ */
+function placeAbovePad(el: HTMLElement): void {
+  const pad = document.querySelector<HTMLElement>('.gm-player:not(.gm-preview) .gm-touch');
+  if (!pad || innerHeight <= innerWidth) return;
+  // the pad's layer fills the player; its controls are its children
+  let top = innerHeight;
+  for (const c of pad.children) {
+    const r = c.getBoundingClientRect();
+    if (r.height > 0) top = Math.min(top, r.top);
+  }
+  if (top >= innerHeight) return;
+  el.style.top = 'auto';
+  el.style.bottom = `${Math.round(innerHeight - top + 8)}px`;
+}
+
 function place(el: HTMLElement): void {
   const placer = notesPlacer();
   el.classList.toggle('ach-placed', !!placer);
@@ -57,7 +77,11 @@ function place(el: HTMLElement): void {
   el.classList.toggle('ach-desk', desk);
   el.style.removeProperty('top');
   el.style.removeProperty('left');
-  if (!desk) return;
+  el.style.removeProperty('bottom');
+  if (!desk) {
+    placeAbovePad(el);
+    return;
+  }
   const width = Math.min(200, innerWidth - 32);
   const scene = document.querySelector<HTMLElement>('.desk[data-zoom="false"] .desk-scene');
   const s = scene?.getBoundingClientRect();
@@ -137,7 +161,7 @@ export function showUnlock(id: string): void {
   };
   const later = () => {
     clearTimeout(timer);
-    timer = setTimeout(close, SHOW_MS);
+    timer = setTimeout(close, showMs());
   };
   x.addEventListener('click', close);
   note.addEventListener('pointerenter', () => clearTimeout(timer));
