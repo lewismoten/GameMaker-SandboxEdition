@@ -105,6 +105,59 @@ function turkey(pal: Pal, face: Face, wings: Wings, legs: Legs, lean = 0): Pixel
   return stamp(pal, p);
 }
 
+type FrontFace = 'glare' | 'blink' | 'yell';
+type FrontWings = 'down' | 'guard' | 'out';
+type FrontLegs = 'stand' | 'wide' | 'split';
+
+/**
+ * Mr. Plume face on, for the poses that do not walk (standing still and the kick): Game-Maker shows one picture set
+ * for them whichever way he last walked, and his kick flies that way, so these face the player and the split kick
+ * reaches out both sides. Drawn on the left half and mirrored, so it is the same both ways round.
+ */
+function turkeyFront(pal: Pal, face: FrontFace, wings: FrontWings, legs: FrontLegs): Pixels {
+  const { ink } = press(pal);
+  const [brown, fan, red, beak, hat, gold] = ['tBrown', 'tFan', 'tRed', 'tBeak', 'tHat', 'tGold'].map((n) => pal.r(n));
+  const p = new Pixels(20, 40, T);
+  // the tail fan, behind him
+  for (let a = 0; a < 7; a++) {
+    const ang = Math.PI * (0.1 + (a / 6) * 0.8);
+    for (let t = 2; t <= 10; t++) p.rect(Math.round(10 + Math.cos(ang) * t), Math.round(25 - Math.sin(ang) * t), 2, 2, t > 8 ? fan[3] : fan[a % 3]);
+  }
+  // legs
+  if (legs === 'split') {
+    // a jumping split: each leg out and down to a foot flexed at the end
+    p.line(8, 31, 2, 36, beak[0]).line(8, 32, 3, 36, beak[0]);
+    p.rect(0, 34, 2, 5, beak[1]).set(2, 38, beak[1]);
+  } else {
+    const fx = legs === 'wide' ? 4 : 6;
+    p.line(8, 31, fx + 1, 38, beak[0]).rect(fx - 1, 38, 4, 1, beak[0]);
+  }
+  // the body, its scallops, the black belt with its knot in front
+  oval(p, 10, 25, 6, 7, brown[1]);
+  for (let y = 20; y < 31; y += 3) for (let x = 5 + ((y / 3) % 2); x < 10; x += 3) p.set(x, y, brown[3]).set(x + 1, y + 1, brown[2]);
+  p.rect(3, 26, 7, 2, hat[0]).rect(9, 25, 1, 4, hat[0]);
+  // wings
+  const W: Record<FrontWings, [number, number, number, number]> = { down: [5, 21, 3, 29], guard: [5, 22, 7, 17], out: [5, 21, 1, 18] };
+  const [w0, w1, w2, w3] = W[wings];
+  p.line(w0, w1, w2, w3, brown[0])
+    .line(w0 - 1, w1, w2 - 1, w3, brown[0])
+    .line(w0, w1 + 1, w2, w3 + 1, brown[2]);
+  // neck and head: eyes either side of the beak, the wattle under it
+  p.rect(9, 13, 1, 9, brown[2]);
+  oval(p, 10, 12, 3.5, 3.5, brown[3]);
+  if (face === 'blink') p.rect(7, 12, 2, 1, ink[0]);
+  else p.rect(8, 11, 1, 2, ink[0]).set(7, 10, ink[0]); // the eyebrows: lowered
+  p.rect(8, 13, 2, 1, beak[1]).set(9, 14, beak[0]);
+  if (face === 'yell') p.set(9, 14, ink[0]).set(9, 15, beak[0]);
+  p.rect(9, face === 'yell' ? 16 : 15, 1, 3, red[1]);
+  // the pilgrim hat: tall crown, brim, gold buckle on the band
+  p.rect(7, 1, 3, 7, hat[1]).rect(7, 1, 3, 1, hat[2]);
+  p.rect(4, 8, 6, 2, hat[0]).rect(7, 6, 3, 2, hat[0]);
+  p.rect(8, 5, 2, 4, gold[1]).rect(9, 6, 1, 2, hat[0]);
+  for (let y = 0; y < 40; y++) for (let x = 10; x < 20; x++) p.set(x, y, p.get(19 - x, y));
+  return stamp(pal, p);
+}
+
 /** Mr. Plume's character blocks (.CBL): the kit hero file's names, with throw0..2 as the kick. */
 export function buildPlumeBlocks(pal: Pal): Book {
   const book = new Book('cbl');
@@ -128,6 +181,16 @@ export function buildPlumeBlocks(pal: Pal): Book {
   add('kick0.top', 'throw0', 'glare', 'guard', 'chamber', 1);
   add('kick1.top', 'throw1', 'yell', 'flap', 'strike', 2);
   add('stand.top', 'throw2', 'glare', 'guard', 'stand');
+  // face on: standing still and the split kick (turkeyFront)
+  const front = (top: string, bottom: string, face: FrontFace, wings: FrontWings, legs: FrontLegs) => {
+    const f = turkeyFront(pal, face, wings, legs);
+    if (!book.has(top)) book.add(top, f.crop(0, 0, 20, 20));
+    if (!book.has(bottom)) book.add(bottom, f.crop(0, 20, 20, 20));
+  };
+  front('front.top', 'fstand', 'glare', 'down', 'stand');
+  front('fblink.top', 'fstand', 'blink', 'down', 'stand');
+  front('fkick0.top', 'fthrow0', 'glare', 'guard', 'wide');
+  front('fkick1.top', 'fthrow1', 'yell', 'out', 'split');
   add('back.top', 'climb0', 'back', 'up', 'climbA');
   add('back.top', 'climb1', 'back', 'flap', 'climbB');
   return book;
