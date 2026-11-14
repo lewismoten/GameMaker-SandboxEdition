@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { compareKeys } from './controlsAuditLogic';
+import { compareKeys } from '../../games/kit/controlsAuditLogic';
 
 describe('compareKeys', () => {
   it('buttons leave out the pad, Esc, Enter and F keys', () => {

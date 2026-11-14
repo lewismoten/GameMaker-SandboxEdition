@@ -50,7 +50,8 @@ describe('recordEvents', () => {
         return undefined;
       }
     }
-    const original = Fake.prototype.press;
+    const pressOf = (): unknown => Object.getOwnPropertyDescriptor(Fake.prototype, 'press')?.value;
+    const original = pressOf();
     const { logs } = await recordEvents(Fake as never, async () => {
       const f = new Fake();
       f.press(0x39);
@@ -60,8 +61,8 @@ describe('recordEvents', () => {
     });
     expect(logs).toHaveLength(1);
     expect(logs[0].events.map((e) => e.kind)).toEqual(['key', 'score', 'key']);
-    expect(Fake.prototype.press).toBe(original);
+    expect(pressOf()).toBe(original);
     await expect(recordEvents(Fake as never, async () => Promise.reject(new Error('x')))).rejects.toThrow('x');
-    expect(Fake.prototype.press).toBe(original);
+    expect(pressOf()).toBe(original);
   });
 });
