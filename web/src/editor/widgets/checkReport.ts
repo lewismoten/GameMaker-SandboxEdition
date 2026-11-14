@@ -8,7 +8,7 @@
 import './checkReport.css';
 import { download, h, clear, modal, toast } from '../core/ui';
 import type { Project } from '../core/project';
-import { at, CHECKS, kindOf, type Finding, type Kind } from '../check/findings';
+import { at, CHECKS, isHard, kindOf, type Finding, type Kind } from '../check/findings';
 import { acceptedFindings, findingKey, setAccepted } from '../check/accepted';
 import { guideLink } from './guideLink';
 import { cellOf, csvName, findingRows, groupRows, guideSection, KIND_LABEL, KIND_PLURAL, KINDS, toCsv, type FindingRow } from './checkRows';
@@ -69,19 +69,21 @@ export async function openReport(src: ReportSource): Promise<void> {
               `🗺 Open ${f.where.map}`,
             )
           : null,
-        h(
-          'button',
-          {
-            type: 'button',
-            class: 'lc-fix lc-accept',
-            onclick: () => {
-              setAccepted(project, findingKey(f), !accepted);
-              said.textContent = accepted ? 'The finding is back in the list.' : 'The finding is kept under accepted.';
-              render();
-            },
-          },
-          accepted ? '↺ Not meant to be: list it again' : taste ? '✓ That’s on purpose' : '✓ Mark as checked: it’s meant to be',
-        ),
+        isHard(f)
+          ? h('p', { class: 'lc-why lc-hard' }, 'This will fail for players, so it can be fixed but not set aside.')
+          : h(
+              'button',
+              {
+                type: 'button',
+                class: 'lc-fix lc-accept',
+                onclick: () => {
+                  setAccepted(project, findingKey(f), !accepted);
+                  said.textContent = accepted ? 'The finding is back in the list.' : 'The finding is kept under accepted.';
+                  render();
+                },
+              },
+              accepted ? '↺ Not meant to be: list it again' : taste ? '✓ That’s on purpose' : '✓ Mark as checked: it’s meant to be',
+            ),
       ),
     );
   };

@@ -20,7 +20,7 @@ import type { MapSelection } from '../tools/selection';
 import type { OverlayState } from '../tools/overlay';
 import { HEAT_COLORS } from '../tools/overlay';
 import { startCheck, type RunningCheck } from '../../../check/client';
-import { CHECKS, STEADY_MS, at, kindOf, type Finding, type Kind } from '../../../check/findings';
+import { CHECKS, STEADY_MS, at, isHard, kindOf, type Finding, type Kind } from '../../../check/findings';
 import type { Report, RunSummary } from '../../../check/report';
 import { guideLink } from '../../../widgets/guideLink';
 import { fixFor } from '../../../check/generators/fixes';
@@ -29,7 +29,7 @@ import { mazeFor } from '../../../check/generators/mazeFor';
 import { companionPatches } from '../../../../dosPlayer/playerRecord';
 import { paletteReservations } from '../../palette/paletteReservations';
 import { markSame, sameEverySide, sameKeyOf } from '../../../check/sameEverySide';
-import { acceptedFindings, findingKey, setAccepted, splitAccepted } from '../../../check/accepted';
+import { acceptedFindings, findingKey, setAccepted, splitAccepted, wasAcceptedButHard } from '../../../check/accepted';
 import type { LiveProgress } from '../../../check/live';
 import { MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { MARKS, describeCell, heatWords, type HeatView } from './markInfo';
@@ -336,7 +336,7 @@ export function checkPanel(host: CheckHost): {
       'details',
       { class: 'lc-gen' },
       h('summary', null, 'Make…'),
-      h('p', { class: 'meta' }, 'Select an area with the Select tool (S) first. The map’s Undo takes it back.'),
+      h('p', { class: 'lc-why' }, 'Select an area with the Select tool (S) first. The map’s Undo takes it back.'),
       h(
         'button',
         {
@@ -547,6 +547,7 @@ export function checkPanel(host: CheckHost): {
     const same = sameKeyOf(f);
     const kind = kindOf(f);
     const taste = 'taste' in info;
+    const hard = isHard(f);
     return h(
       'li',
       { class: `lc-item lc-${kind}${accepted ? ' lc-is-accepted' : ''}` },
@@ -609,20 +610,48 @@ export function checkPanel(host: CheckHost): {
             'Looks the same from every side',
           )
         : null,
-      h(
-        'button',
-        {
-          type: 'button',
-          class: 'lc-fix lc-accept',
-          title: accepted
-            ? 'Puts this finding back in the list and the counts.'
-            : taste
-              ? 'A design suggestion, not a rule: if you chose this on purpose, the list, the counts, the badges and Before You Upload leave it out.'
-              : 'You have looked at this and it is how you want it: the list, the counts, the badges and Before You Upload leave it out.',
-          onclick: () => accept(f, !accepted),
-        },
-        accepted ? '↺ Not meant to be: list it again' : taste ? '✓ That’s on purpose' : '✓ Mark as checked: it’s meant to be',
-      ),
+      hard
+        ? h(
+            'div',
+            { class: 'lc-hard' },
+            h(
+              'p',
+              { class: 'meta' },
+              wasAcceptedButHard(f, acceptedFindings(project)) ? 'An earlier version let this be marked as checked. ' : '',
+              'This will fail for players, so it can be fixed but not set aside.',
+            ),
+            h(
+              'button',
+              {
+                type: 'button',
+                class: 'lc-fix lc-goto',
+                disabled: cell === undefined,
+                title: cell === undefined ? 'It is in a file or a scene, not on one cell: see the place named above.' : `Show ${at(cell)} on the map`,
+                onclick: () => {
+                  if (cell === undefined) return;
+                  focus = cell;
+                  paint();
+                  host.goTo(cell);
+                  said.textContent = `${at(cell)}: ${describe(cell).join('. ')}.`;
+                },
+              },
+              '➜ Go to it',
+            ),
+          )
+        : h(
+            'button',
+            {
+              type: 'button',
+              class: 'lc-fix lc-accept',
+              title: accepted
+                ? 'Puts this finding back in the list and the counts.'
+                : taste
+                  ? 'A design suggestion, not a rule: if you chose this on purpose, the list, the counts, the badges and Before You Upload leave it out.'
+                  : 'You have looked at this and it is how you want it: the list, the counts, the badges and Before You Upload leave it out.',
+              onclick: () => accept(f, !accepted),
+            },
+            accepted ? '↺ Not meant to be: list it again' : taste ? '✓ That’s on purpose' : '✓ Mark as checked: it’s meant to be',
+          ),
     );
   }
 
