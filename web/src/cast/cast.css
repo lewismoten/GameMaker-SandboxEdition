@@ -482,6 +482,45 @@ main.cast:not(.cast-mini-closed) :is(h2, h3)[id]:not(#cast-stage-h) {
   justify-content: space-between;
 }
 
+/* the stage never covers what is pressed: a wide window leaves it a left gutter of its own
+   (the page column is centered, so only a window narrower than column + two gutters needs one) */
+@media (min-width: 760px) and (max-width: 1599px) {
+  main.cast:not(.cast-mini-closed) {
+    padding-left: max(16px, calc(204px - max(0px, (100vw - 1180px) / 2)));
+  }
+}
+
+/* a narrow window has no room for a gutter: the stage shrinks to its name and buttons, in the
+   corner away from the card toggles, which sit at the left */
+@media (max-width: 759px) {
+  .cast-mini {
+    right: 12px;
+    left: auto;
+    width: auto;
+  }
+
+  .cast-mini-canvas {
+    display: none;
+  }
+
+  .cast-mini-bar {
+    flex-wrap: nowrap;
+  }
+
+  .cast-mini-who {
+    flex: 0 1 auto;
+    max-width: 9rem;
+  }
+
+  main.cast:not(.cast-mini-closed) {
+    padding-bottom: 64px;
+  }
+
+  main.cast:not(.cast-mini-closed) :is(h2, h3)[id]:not(#cast-stage-h) {
+    scroll-margin-bottom: 64px;
+  }
+}
+
 /* ---- seen in ---- */
 
 .cast-appears > .cast-seen {
