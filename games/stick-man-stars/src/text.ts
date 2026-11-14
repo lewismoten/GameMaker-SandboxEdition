@@ -21,13 +21,13 @@ export const HOWTO = wrap(`
 |HOW TO PLAY
 
 |LEFT, RIGHT   walk
-|UP            jump
-|SPACE         throw a star
+|SPACE         jump
+|ENTER         throw a star
 |F2            lives, score
 
 On the hill, jump up to pick bright stars out of the sky. Leave five to light the path to town.
 
-In town, walk toward a house and press Space. A star flies the way you last walked, and only so far.
+In town, walk toward a house and press Enter. A star flies the way you last walked, and only so far.
 
 A lit house throws confetti. A shy one wanders, so wait for it. A sleepy shed in a tunnel wakes when a star says thanks. A spam bot bumps and hands out fake stars: pop it from a distance and its star fades.
 
@@ -68,5 +68,5 @@ export const LOST = wrap(`
 
 A spam bot bumped Stick Man over. They do that.
 
-Try again: pop each bot with a star before it rolls close. Walk toward it, stand back a little and press Space.
+Try again: pop each bot with a star before it rolls close. Walk toward it, stand back a little and press Enter.
 `);

@@ -1,8 +1,8 @@
 // STICK MAN STARS' four levels. Each is painted on a Grid (a block a character, see
 // games/kit/starter/map.ts for what the letters mean), then given its signs and its monsters.
 //
-//   1. Stargazing Hill (night): Stick Man picks bright stars out of the sky (Up jumps to the high ones). They are what he throws.
-//   2. Main Street (dawn): learn Space. Two cottages, one too far for a first throw; then a solid shed
+//   1. Stargazing Hill (night): Stick Man picks bright stars out of the sky (Space jumps to the high ones). They are what he throws.
+//   2. Main Street (dawn): learn Enter. Two cottages, one too far for a first throw; then a solid shed
 //      fills a brick tunnel, and the way opens when a star lights it.
 //   3. Shy Street (day): the towers wander up and down the street. Wait, aim, throw. A shed again.
 //   4. Spam Row (dusk): spam bots roll and bump, then the Big Repo, a shed that takes three stars, and the lit street beyond.
@@ -41,9 +41,9 @@ function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign>; nam
   // the wording is cut in chunks of five letters, and a chunk two signs share is one block (signs.ts)
   const sign = (chunks: string): Sign => smallSign(book, pal, chunks);
   const signs = {
-    gaze: sign('PICK |STARS|: UP |JUMPS'),
+    gaze: sign('PICK |STARS|: HIT |SPACE'),
     gate: sign('FIVE |STARS| OPEN| THE |GATE.'),
-    how: sign('SPACE|: THR|OW A |STAR!'),
+    how: sign('ENTER|: THR|OW A |STAR!'),
     far: sign('STARS| ONLY| GO S|O FAR'),
     shed: sign('SHEDS| NAP |HERE.'),
     shy: sign('SHY O|NES W|ANDER'),
@@ -94,7 +94,7 @@ function base(width: number, exitX: number): Grid {
   const g = new Grid(width, 15);
   g.row(GROUND, 0, width - 1, 'G').fill(0, GROUND + 1, width, 4, 'D');
   g.col(0, 0, 9, 'B').col(width - 1, 0, 9, 'B');
-  // a brick ceiling: Up can be pressed in the air again and again, so without it he climbs out over the walls and the tunnels
+  // a brick ceiling: Space can be pressed in the air again and again, so without it he climbs out over the walls and the tunnels
   g.row(0, 0, width - 1, 'B');
   g.put(3, 8, 's').put(3, 9, 'S');
   g.put(exitX, 8, 'e').put(exitX, 9, 'E');
@@ -151,7 +151,7 @@ function stargazingHill(w: World): StarterMap {
   const g = base(L0.width, L0.exit);
   tunnel(g, L0.tunnel[0], L0.tunnel[1]);
   // the screen never scrolls up or down here (game.ts), so the brick ceiling comes down to row 3, just above
-  // the top of the screen: however often Up is pressed in the air, Stick Man stays in sight
+  // the top of the screen: however often Space is pressed in the air, Stick Man stays in sight
   g.fill(1, 0, L0.width - 2, L0.ceiling + 1, 'B');
   for (const x of [24, 42]) g.put(x, GROUND - 1, 'b');
   const m = new StarterMap(w.book, g.rows());
@@ -256,7 +256,7 @@ export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
   });
   const levels: Level[] = [
     level('one', 'Stargazing Hill', 'Pick the bright stars.', 'night', stargazingHill(w), true),
-    level('two', 'Main Street', 'Space throws a star.', 'dawn', mainStreet(w)),
+    level('two', 'Main Street', 'Enter throws a star.', 'dawn', mainStreet(w)),
     level('three', 'Shy Street', 'Houses wander. Wait and aim.', 'day', shyStreet(w)),
     level('four', 'Spam Row', 'Pop the bots. Light three lanterns.', 'dusk', starCount(w)),
   ];

@@ -1,16 +1,15 @@
 // The way through the game, as orders for the bot (kit/starter/bot.ts): the keys a person would press,
-// level by level. On the hill it picks every star (walking under the low ones, hopping with Up for the
+// level by level. On the hill it picks every star (walking under the low ones, hopping with Space for the
 // high ones). In town it shows the mistake once, as the signs teach: the first throw at a house too far
 // away falls short. Moving houses and spam bots are popped when they are in range, never touched. Every
 // level ends by checking the score: coins, stars picked and pops all add up, so nothing was missed.
 import type { Result, StarterBot } from '../../kit/starter/bot';
 import { ORIGIN } from '../../kit/starter/map';
-import { SCAN } from '../../kit/starter/ids';
 import { L0, L1, L2, L4 } from '../src/levels';
 import { BIG1, BIG2, BIG3, BOT, BOT_SCORE, COTTAGE, POP_SCORE, SHED, STAR, TOWER } from '../src/monsters';
 import { GATE_STARS, PICK_SCORE } from '../src/pickStar';
 import { KEYS } from '../../kit/starter/blocks';
-import { SCAN_THROW } from '../src/hero';
+import { SCAN_JUMP, SCAN_THROW } from '../src/hero';
 
 async function must(bot: StarterBot, r: Promise<Result>, what: string): Promise<void> {
   const out = await r;
@@ -35,7 +34,7 @@ export function foes(bot: StarterBot, ...n: number[]): number[] {
 /** Ticks a star lives and the sparkle after it, so a throw has finished by then. */
 const THROW_WATCH = 45;
 
-/** Presses Space like a person (a tap), then waits for the star to land or fizzle. */
+/** Presses Enter like a person (a tap), then waits for the star to land or fizzle. */
 async function throwStar(bot: StarterBot, what: string): Promise<void> {
   bot.sim.press(SCAN_THROW);
   await must(bot, bot.wait(3), 'throwing');
@@ -90,11 +89,11 @@ function totals(bot: StarterBot, from: number, coins: number, picks: number, pop
     );
 }
 
-/** A hop with Up, in place, waiting for the landing. */
+/** A hop with Space, in place, waiting for the landing. */
 async function hop(bot: StarterBot): Promise<void> {
-  bot.sim.press(SCAN.up);
+  bot.sim.press(SCAN_JUMP);
   await must(bot, bot.wait(2), 'hopping');
-  bot.sim.release(SCAN.up);
+  bot.sim.release(SCAN_JUMP);
   await must(bot, bot.land(), 'landing');
 }
 
