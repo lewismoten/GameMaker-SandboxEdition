@@ -4,6 +4,10 @@ import { buildTiledSigns, stampTiledSign } from '@lewismoten/gamemaker-sandbox-t
 import { ORIGIN } from '../../games/kit/starter/map';
 import { MLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { buildLevels } from '../../games/first-steps/src/levels';
+import { buildLevels as smashLevels } from '../../games/breakable-walls/src/levels';
+import { buildGame as smashGame } from '../../games/breakable-walls/src/game';
+import { buildLevels as heroLevels } from '../../games/choose-hero/src/levels';
+import { buildGame as heroGame } from '../../games/choose-hero/src/game';
 import { CREDITS } from '../../games/first-steps/src/text';
 
 const options = { colors: { background: 0, paper: 1, ink: 2, wood: 3, highlight: 4, shadow: 5 } };
@@ -84,6 +88,38 @@ describe('game-wide tiled signs', () => {
     for (const rows of [[], [[]], [['   ']]]) expect(() => buildTiledSigns({ a: { rows } }, options)).toThrow('nonempty rows');
     expect(() => buildTiledSigns({ a: { rows: [['A']] } }, { ...options, maxBlocks: 2 })).toThrow('budget');
     expect(() => buildTiledSigns({ a: { rows: [['A']] } }, { ...options, maxBlocks: 101 })).toThrow('0 to 100');
+  });
+
+  it('allocates only a map’s selected vocabulary without relaxing its tile budget', () => {
+    const texts = { roomA: { rows: [['ONE']] }, roomB: { rows: [['TWO']] } };
+    const limited = { ...options, maxBlocks: 4 };
+    expect(() => buildTiledSigns(texts, limited)).toThrow('budget');
+    for (const key of ['roomA', 'roomB'] as const) {
+      const local = buildTiledSigns(texts, { ...limited, include: [key, key] });
+      expect(Object.keys(local.signs)).toEqual([key]);
+      expect(local.blocks.size).toBe(4);
+      expect(local).toEqual(buildTiledSigns({ [key]: texts[key] }, limited));
+      expect(() => buildTiledSigns(texts, { ...limited, maxBlocks: 3, include: [key] })).toThrow('budget');
+    }
+    expect(buildTiledSigns(texts, { ...limited, include: [] }).blocks.size).toBe(0);
+    expect(() => buildTiledSigns(texts, { ...limited, include: ['missing' as 'roomA'] })).toThrow('Unknown sign');
+  });
+
+  it('keeps pickups and gameplay block IDs intact when maps load separate sign books', () => {
+    for (const [build, game, coins] of [
+      [smashLevels, smashGame, [8, 9, 0]],
+      [heroLevels, heroGame, [4, 8, 6]],
+    ] as const) {
+      const { book, levels } = build();
+      for (const [i, level] of levels.entries()) {
+        expect(level.book.index.size).toBeLessThanOrEqual(100);
+        const cells = level.map.done().blocks;
+        expect(cells.filter((n) => n === level.book.n('coin'))).toHaveLength(coins[i]);
+        for (const name of ['sky', 'grass', 'dirt', 'coin', 'doorTop', 'doorBottom']) expect(level.book.n(name)).toBe(book.n(name));
+      }
+      const scenes = game(levels).scenes.slice(2);
+      for (const scene of scenes) expect(scene.files[2]).toBe(scene.files[1].replace('.map', '.bbl'));
+    }
   });
 
   it('keeps First Steps pickups, terrain and doors intact while sharing signs across both levels', () => {

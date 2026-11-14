@@ -14,8 +14,7 @@ import { L1, L2, L3, buildLevels } from '../src/levels';
 const out = process.argv[2];
 if (!out) throw new Error('usage: shots.ts <outDir>');
 mkdirSync(out, { recursive: true });
-const { book, pal, levels } = buildLevels();
-const bbl = book.finish();
+const { pal, levels } = buildLevels();
 const mb = buildMonsterBlocks(pal);
 const mbl = mb.finish();
 const set = buildMonsters(mb);
@@ -33,7 +32,7 @@ const stand = (hero: typeof fast, col: number, feet: number, top = 'stand.top', 
 const maps = levels.map((l) => l.map.done());
 /** One 16 by 10 block screen of level `i` with its top left at (col, row). */
 const screen = (i: number, col: number, row: number | null, ...sprites: ReturnType<typeof stand>[]) =>
-  renderRegion(maps[i], bbl, mbl, set, ORIGIN + col, row === null ? cameraTop(sprites.flat()) : ORIGIN + row, 16, 10, sprites.flat());
+  renderRegion(maps[i], levels[i].book.finish(), mbl, set, ORIGIN + col, row === null ? cameraTop(sprites.flat()) : ORIGIN + row, 16, 10, sprites.flat());
 
 const G1 = L1.ground - 1;
 const G2 = L2.ground - 1;
@@ -47,6 +46,6 @@ writePng(join(out, 'three-1-fast-feet-on-the-road.png'), screen(2, 0, null, stan
 writePng(join(out, 'three-2-big-hops-on-the-road.png'), screen(2, 0, null, stand(big, 12, G3)), pal.pal, 3);
 writePng(join(out, 'three-3-big-hops-on-the-hill.png'), screen(2, 12, null, stand(big, 20, G3 - L3.hill.height)), pal.pal, 3);
 levels.forEach((l, i) =>
-  writePng(join(out, `level-${i + 1}.png`), renderRegion(maps[i], bbl, mbl, set, ORIGIN, ORIGIN, l.map.width, l.map.height), pal.pal, 2),
+  writePng(join(out, `level-${i + 1}.png`), renderRegion(maps[i], levels[i].book.finish(), mbl, set, ORIGIN, ORIGIN, l.map.width, l.map.height), pal.pal, 2),
 );
 console.log(`shots in ${out}`);

@@ -1227,8 +1227,8 @@ maker "ZORP" is invented. The shell is untested: nothing has been printed.
 - **Kit 3D views and build notes (November 9 to 12, 2026)** (`web/src/desk/boxes/kitAssemblyViewer.ts`, `web/src/manual/printables/orbitCamera.ts`, `svgViewer.ts`, `balloonCubeFoldView.ts`, `feelieItems.ts`): **Claude** (Sonnet 5.5 and Opus 5.5, Anthropic), directed by Lewis Moten, wrote the sub-assembly views, orbit, zoom and reset camera, scrubber, die fold drag direction, in-page SVG viewer with fit and pan, and build notes. The camera and projection math is original code with no 3D library; no new third-party material was added.
 - **Offline copy as one archive (November 12, 2026)** (`web/src/offline/archiveStore.ts`, `offlineCopy.ts`, `web/scripts/offlineArchive.ts`): **Hermes Agent running OpenAI Codex GPT-6.1 Sol**, directed by Lewis Moten, prepared the atomic single-archive offline copy and its tests, using the browser's own storage and compression streams. No third-party code was added.
 - **Shared tiled-sign builder and Starter adoption (November 14, 2026)** (`web/packages/tools/src/kit/tiledSigns.ts`): **OpenAI Codex (GPT-6.1 Sol)**, directed by Lewis Moten,
-  implemented the game-wide tile builder, separate shared borders, centered post, tests and
+  implemented the game-wide tile builder, per-map vocabulary selection, separate shared borders, centered post, tests and
   documentation, and adopted the signs in First Steps; Lightning; Flicker and Flow;
-  Twinkle, Twinkle; Beat the Clock; and Big Bug, modeled on Stick Man Stars' signs by
+  Twinkle, Twinkle; Beat the Clock; Big Bug; Smash It; Beams and Fog; and Who Do You Want to Be?, modeled on Stick Man Stars' signs by
   Lewis Moten / Claude Sonnet 5.5.
   The letters reuse this project's existing MIT-licensed micro font; no third-party assets were added.

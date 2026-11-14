@@ -160,6 +160,9 @@ their top and bottom rails. Shared side tiles contain the edges and corners; the
 is the smallest that fits the text plus margins (rounded up to odd for one centered post).
 The result contains `blocks: Map<string, Pixels>` and `signs` with named-block boards and optional centered posts.
 Identical rendered tiles, including split letters, are deduplicated across all signs.
+`include: ["roomA.start", "roomA.exit"]` selects a map’s signs from the complete vocabulary.
+Call once per map when rooms have separate block sets; omitted signs allocate no tiles, and
+each call still enforces `maxBlocks`. Names and pixel deduplication are local to each call.
 `post: false` omits the post for a wall sign and allows even interior widths.
 
 Pass six palette indices in `colors` (`background`, `paper`, `ink`, `wood`, `highlight`, `shadow`),
@@ -167,5 +170,5 @@ optional `glyphs` for game-owned symbols, and `maxBlocks` for the remaining bloc
 Unsupported glyphs, empty rows and budget overflow throw errors.
 `lettersPerBlock: 5` (default) or `4` uses the project's 3×5 micro font; `3` enlarges it to
 5×10 pixels for readability at native game size. Centered fragments can cost more unique tiles.
-Add the returned pictures to your block set with the game's passable-background rules, once for the whole game.
+Add the returned pictures to your block set with the game's passable-background rules, once for the whole game or separately for each map selected by `include`.
 The stamp helper accepts any map with `set(x, y, blockName)`; taller posts reuse the same centered tile.

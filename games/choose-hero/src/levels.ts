@@ -8,33 +8,45 @@
 //   3. The Open Road: a short road with one hill and its scene sets NO character file: the hero you picked
 //                    last is still the hero. Nothing on it needs a particular hero; every one can finish it.
 // Every edge is a hedge or a wall you can see, so nobody is stopped by something they can't.
-import { Book } from '../../kit/starter/book';
+import { Book, PULL } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
-import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
-import { addSign, type Sign } from '../../kit/starter/sign';
+import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
+import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { MICRO_GLYPHS } from '@lewismoten/gamemaker-sandbox-tools/microFont';
 
-export type SignName = 'pick' | 'fast' | 'big' | 'steps' | 'hop' | 'high' | 'exit' | 'carry';
+export type SignName = 'pick' | 'fast' | 'big' | 'steps' | 'high' | 'exit' | 'carry';
 
-/** The signs' words and sizes. */
-const WORDS: Record<SignName, { text: string; w: number; h: number }> = {
-  pick: { text: 'TWO DOORS, TWO HEROES. THE SAME LEVEL BEHIND BOTH', w: 4, h: 4 },
-  fast: { text: 'FAST FEET. RUNS QUICKLY, JUMPS LIKE LIAN', w: 4, h: 4 },
-  big: { text: 'BIG HOPS. SLOW FEET, JUMPS SIX BLOCKS', w: 4, h: 4 },
-  steps: { text: 'STEPS UP. EVERY HERO CAN TAKE THEM', w: 4, h: 4 },
-  hop: { text: 'BIG HOPS CAN SKIP A STEP. FAST FEET TAKES THEM ALL', w: 4, h: 4 },
-  high: { text: 'HIGH COINS NEED BIG HOPS. TRY THE OTHER DOOR', w: 4, h: 4 },
-  carry: { text: 'NO HERO IS SET HERE: YOU ARE STILL THE ONE YOU PICKED', w: 4, h: 4 },
-  exit: { text: 'EXIT →', w: 3, h: 1 },
+/** Complete vocabulary, shared within each map's own block set. */
+const WORDS = {
+  pick: { rows: [['TWO DOORS, TWO HEROES.'], ['THE SAME LEVEL'], ['BEHIND BOTH']] },
+  fast: { rows: [['FAST FEET. RUNS QUICKLY,'], ['JUMPS LIKE LIAN']] },
+  big: { rows: [['BIG HOPS. SLOW FEET,'], ['JUMPS SIX BLOCKS']] },
+  steps: { rows: [['STEPS UP. EVERY'], ['HERO CAN TAKE THEM'], ['BIG HOPS CAN SKIP A STEP.'], ['FAST FEET TAKES THEM ALL']] },
+  high: { rows: [['HIGH COINS NEED BIG HOPS.'], ['TRY THE OTHER DOOR']] },
+  carry: { rows: [['NO HERO IS SET HERE:'], ['YOU ARE STILL THE'], ['ONE YOU PICKED']] },
+  exit: { rows: [['EXIT →']] },
 };
 
-/** The block set the levels share: the Starter blocks, then this game's signs. */
-function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
+function buildBlocks(pal: Pal, include: readonly SignName[]): { book: Book; signs: Record<SignName, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
-  const signs = {} as Record<SignName, Sign>;
-  for (const n of Object.keys(WORDS) as SignName[]) signs[n] = addSign(book, pal, `${n}.sign`, WORDS[n].text, WORDS[n].w, WORDS[n].h);
+  const { blocks, signs } = buildTiledSigns(WORDS, {
+    include,
+    colors: {
+      background: skyOf(pal),
+      paper: pal.c('parch', 3),
+      ink: pal.c('ink', 0),
+      wood: pal.c('wood', 2),
+      highlight: pal.c('wood', 4),
+      shadow: pal.c('wood', 0),
+    },
+    glyphs: { ...MICRO_GLYPHS, '→': '100110111110100' },
+    lettersPerBlock: 3,
+    maxBlocks: 100 - book.index.size,
+  });
+  for (const [name, pic] of blocks) book.add(name, pic, { grav: PULL.down });
   return { book, signs };
 }
 
@@ -44,10 +56,8 @@ export interface Level {
   /** What the level card says under the title. */
   hint: string;
   map: StarterMap;
+  book: Book;
 }
-
-/** The top row of a sign standing on ground row `ground`. */
-const onGround = (ground: number, s: Sign) => ground - 1 - s.board.length;
 
 /** Level 1: the ground row, the width, the two doors' columns and the coins. */
 export const L1 = {
@@ -129,9 +139,9 @@ function twoDoors(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [10, 21, 26],
   );
   const m = new StarterMap(book, g.rows());
-  m.sign(6, onGround(G, signs.fast), signs.fast);
-  m.sign(12, onGround(G, signs.pick), signs.pick);
-  m.sign(24, onGround(G, signs.big), signs.big);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 3, 8, signs.fast, 2);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 14, 6, signs.pick, 3);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 24, 8, signs.big, 2);
   return m;
 }
 
@@ -161,10 +171,9 @@ function theClimb(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [11, 36, 45, 48],
   );
   const m = new StarterMap(book, g.rows());
-  m.sign(5, onGround(G, signs.steps), signs.steps);
-  m.sign(9, onGround(G, signs.hop), signs.hop);
-  m.sign(21, onGround(G - L2.plateau.height, signs.high), signs.high);
-  m.sign(46, onGround(G, signs.exit), signs.exit);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 3, 11, signs.steps, 2);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 21, 9, signs.high, 2);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 45, 14, signs.exit, 2);
   return m;
 }
 
@@ -194,19 +203,22 @@ function openRoad(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [8, 30, 36],
   );
   const m = new StarterMap(book, g.rows());
-  m.sign(6, onGround(G, signs.carry), signs.carry);
-  m.sign(37, onGround(G, signs.exit), signs.exit);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 5, 9, signs.carry, 2);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 37, 11, signs.exit, 2);
   return m;
 }
 
 /** The levels in order. */
 export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
   const pal = buildStarterPalette(undefined, 'choose-hero');
-  const { book, signs } = buildBlocks(pal);
-  const levels: Level[] = [
-    { file: 'doors', title: 'Two Doors', hint: 'Pick a hero.', map: twoDoors(book, signs) },
-    { file: 'climb', title: 'The Same Climb', hint: 'Up the steps, or all at once.', map: theClimb(book, signs) },
-    { file: 'road', title: 'The Open Road', hint: 'Nobody is picked here.', map: openRoad(book, signs) },
+  const level = (file: string, title: string, hint: string, include: SignName[], map: (book: Book, signs: Record<SignName, Sign>) => StarterMap): Level => {
+    const { book, signs } = buildBlocks(pal, include);
+    return { file, title, hint, book, map: map(book, signs) };
+  };
+  const levels = [
+    level('doors', 'Two Doors', 'Pick a hero.', ['pick', 'fast', 'big'], twoDoors),
+    level('climb', 'The Same Climb', 'Up the steps, or all at once.', ['steps', 'high', 'exit'], theClimb),
+    level('road', 'The Open Road', 'Nobody is picked here.', ['carry', 'exit'], openRoad),
   ];
-  return { book, pal, levels };
+  return { book: levels[0].book, pal, levels };
 }

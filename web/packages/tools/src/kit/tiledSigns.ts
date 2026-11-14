@@ -26,19 +26,19 @@ export interface TiledSignOptions {
   prefix?: string;
 }
 
-/** Build once with every sign from every level. Returned names are local to this set. */
-export function buildTiledSigns<K extends string>(
+/** Build with every sign, optionally selecting one map’s vocabulary. Names are local to this set. */
+export function buildTiledSigns<K extends string, S extends K = K>(
   texts: Record<K, TiledSignText>,
-  options: TiledSignOptions,
+  options: TiledSignOptions & { /** Allocate only these signs for a map with its own block set. */ include?: readonly S[] },
 ): {
   blocks: Map<string, Pixels>;
-  signs: Record<K, TiledSign>;
+  signs: Record<S, TiledSign>;
 } {
   const { colors: c, lettersPerBlock: count = 5, glyphs = MICRO_GLYPHS, maxBlocks = 100, prefix = 'tiledSign' } = options;
   if (count !== 3 && count !== 4 && count !== 5) throw new Error('A sign block holds three, four or five letters');
   if (!Number.isInteger(maxBlocks) || maxBlocks < 0 || maxBlocks > 100) throw new Error('Sign block budget must be 0 to 100');
   const blocks = new Map<string, Pixels>();
-  const signs = {} as Record<K, TiledSign>;
+  const signs = {} as Record<S, TiledSign>;
   const pictures = new Map<string, string>();
   const add = (id: string, pic: Pixels) => {
     // Centering can split a glyph across tiles. Deduplicate actual pixels, including
@@ -55,7 +55,9 @@ export function buildTiledSigns<K extends string>(
   const glyphWidth = count === 3 ? 5 : 3;
   const glyphHeight = count === 3 ? 10 : 5;
   const pitch = count === 3 ? 6 : count === 4 ? 5 : 4;
-  for (const key of Object.keys(texts) as K[]) {
+  for (const key of options.include ?? (Object.keys(texts) as S[])) {
+    if (!Object.hasOwn(texts, key)) throw new Error(`Unknown sign ${key}`);
+    if (Object.hasOwn(signs, key)) continue;
     const { rows, post = true } = texts[key];
     const lines = rows.map((r) => r.join('').toUpperCase().replace(/\s+/g, ' ').trim());
     if (!lines.length || lines.some((r) => !r.length)) throw new Error(`Sign ${key} needs nonempty rows`);
