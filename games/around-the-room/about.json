@@ -6,7 +6,7 @@
   "hero": "YANA",
   "year": 1994,
   "price": "Free",
-  "version": "1.0",
+  "version": "1.1",
   "blurb": "Four short levels that go once around a room: the floor, up the left wall, along the ceiling upside down, and down the right wall. The hero is drawn turned on each one and jumps the same blocks and trenches every time. Nothing in Game-Maker turns a room. Each block has a setting for which way it pulls, and the arrows are the hero's own keys. Signs say how. Play it, then open it in Game-Maker and change one block's Gravity.",
   "exe": "ROOM.EXE",
   "dosName": "AROUNDRM",
