@@ -1,5 +1,5 @@
 // Level 5, KNOCK ON WOOD: up on the rooftops a crow keeps knocking on wood.
-//   - three crows bob up and down across the lane: wait for each to fly up, then slip under (a bump is 5 hit points);
+//   - three crows bob up and down across the lane: go as each lifts off and slip under (every tick it touches is bad luck); the middle watch is two crows wing to wing;
 //   - a wall of wooden boxes closes the lane: knock on them (touch them) and the boxes you touch open, leaving a
 //     doorway under the rest; a lucky feather waits behind;
 //   - a ladder up to a high roof with a rainbow.
@@ -23,8 +23,6 @@ export const FIVE = {
 } as const;
 
 const SIGNS = {
-  crow: ['CROW ON DUTY. WAIT TILL IT FLIES UP.', 4, 3],
-  knock: ['KNOCK ON WOOD: TOUCH THE BOXES.', 4, 3],
   roof: ["RAINBOW UP ON THE ROOF. DON'T ASK HOW.", 4, 3],
 } as const;
 
@@ -50,12 +48,10 @@ export function levelFive(pal: Pal): Level {
   for (let y = 6; y < GROUND; y++) m.set(FIVE.wood, y, 'woodBox');
   m.set(FIVE.feather, GROUND - 1, 'charm.feather').set(FIVE.rainbow, 4, 'charm.rainbow');
   m.mon(CROW.bobbing, FIVE.crowA, FIVE.crowRow);
-  m.mon(CROW.bobbing, FIVE.crowD, FIVE.crowRow);
+  m.mon(CROW.bobbing, FIVE.crowD, FIVE.crowRow).mon(CROW.bobbing, FIVE.crowD + 1, FIVE.crowRow);
   m.mon(CROW.bobbing, FIVE.crowC, FIVE.crowRow);
   for (const x of [70, 71, 72]) m.set(x, 9, 'fence');
   for (const x of [14, 34, 63]) m.set(x, 8, 'lampHead').set(x, 9, 'lampPost');
-  m.sign(5, onGround(GROUND, s.crow), s.crow);
-  m.sign(22, onGround(GROUND, s.knock), s.knock);
   m.sign(43, onGround(GROUND, s.roof), s.roof);
   return {
     file: 'five',

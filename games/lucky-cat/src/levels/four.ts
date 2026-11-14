@@ -28,9 +28,6 @@ export const METER_ROW = 4;
 
 const SIGNS = {
   race: ['THE GATE SHUTS ON THE 13TH CHIME. EACH BELL IS A CHIME LEFT.', 4, 4],
-  wall: ['A SHOOTING STAR. OVER THE WALL.', 4, 3],
-  seven: ['SEVEN IS LUCKY. TAKE THE DICE.', 4, 3],
-  gate: ['LAST BELL GOES DARK, GATE SHUTS.', 4, 3],
 } as const;
 
 export function levelFour(pal: Pal): Level {
@@ -68,14 +65,11 @@ export function levelFour(pal: Pal): Level {
   for (const y of [8, 9]) m.set(FOUR.ladder, y, 'stepL').set(FOUR.ladder + 3, y, 'stepR');
   m.set(FOUR.ladder + 2, 8, 'drip');
   m.set(FOUR.star, 6, 'charm.star');
-  for (const x of [FOUR.cracks, FOUR.cracks + 1, FOUR.cracks2, FOUR.cracks2 + 1]) m.set(x, GROUND - 1, 'crack');
+  for (const x of [FOUR.cracks, FOUR.cracks + 1, FOUR.cracks + 2, FOUR.cracks2, FOUR.cracks2 + 1, FOUR.cracks2 + 2]) m.set(x, GROUND - 1, 'crack');
   for (const y of [8, 9]) m.set(FOUR.crates, y, 'crate').set(FOUR.crates + 1, y, 'crate');
   m.set(FOUR.dice, GROUND - 1, 'charm.dice');
   for (const x of [72, 76]) m.set(x, 9, 'tentL').set(x + 1, 9, 'tentR');
   m.sign(5, onGround(GROUND, s.race), s.race);
-  m.sign(26, onGround(GROUND, s.wall), s.wall);
-  m.sign(64, onGround(GROUND, s.seven), s.seven);
-  m.sign(68, onGround(GROUND, s.gate), s.gate);
   return {
     file: 'four',
     title: 'Race to the Fair',

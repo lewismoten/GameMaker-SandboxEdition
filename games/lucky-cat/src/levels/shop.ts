@@ -26,20 +26,18 @@ const TOP = 3;
 
 const SIGNS = {
   window: ["SEVEN YEARS' LUCK. SOLD HERE. SEE SMALL PRINT.", 4, 4],
-  pillars: ['MIND THE DISPLAY. IT STEPS UP.', 4, 3],
-  gate: ['GATE ONE. MIRROR UP TOP.', 3, 4],
-  shelf: ['HIGH SHELF HAS ANOTHER HAND MIRROR. BROLLIES.', 4, 4],
-  gate2: ['GATE TWO. PLEASE. NO SMUDGES.', 4, 3],
 } as const;
 
 export function levelShop(pal: Pal): Level {
-  const book = startBook(pal, ['mirror', 'town', 'brolly'], []);
+  const book = startBook(pal, ['mirror', 'town', 'brolly', 'crack'], []);
   const s = addSigns(book, pal, SIGNS);
   const g = room(70, SHOP.exit);
   g.col(SHOP.ladder, 5, GROUND - 1, 'H');
   g.row(6, SHOP.mezzanine[0], SHOP.mezzanine[1], '=');
   const m = new StarterMap(book, g.rows());
   for (let x = 4; x < 66; x += 2) m.set(x, 1, 'bunting');
+  // a crack in the floor between each pair of pillars: hop pillar to pillar, not down between them
+  for (const x of [SHOP.pillars[0] + 2, SHOP.pillars[1] + 2]) m.set(x, GROUND - 1, 'crack');
   // the display: pillars one, two and one block high
   [1, 2, 1].forEach((h, i) => {
     for (let k = 0; k < h; k++) m.set(SHOP.pillars[i], GROUND - 1 - k, 'mirrorWall').set(SHOP.pillars[i] + 1, GROUND - 1 - k, 'mirrorWall2');
@@ -56,10 +54,6 @@ export function levelShop(pal: Pal): Level {
   for (let x = SHOP.shelf[0]; x <= SHOP.shelf[1]; x++) m.set(x, TOP + 1, x % 2 ? 'awning' : 'awning2');
   m.set(SHOP.key2, TOP, 'mirrorKey');
   m.sign(4, onGround(GROUND, s.window), s.window);
-  m.sign(8, onGround(GROUND, s.pillars), s.pillars);
-  m.sign(35, onGround(GROUND, s.gate), s.gate);
-  m.sign(47, onGround(TOP + 1, s.shelf), s.shelf);
-  m.sign(55, onGround(GROUND, s.gate2), s.gate2);
   return {
     file: 'shop',
     title: 'The Mirror Shop',

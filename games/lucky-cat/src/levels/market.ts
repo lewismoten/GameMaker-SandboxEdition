@@ -27,9 +27,6 @@ export const MARKET = {
 
 const SIGNS = {
   close: ['THE MARKET SHUTS AT THE 13TH CHIME. ALL THE SHUTTERS. AT ONCE.', 4, 4],
-  knock: ['STALL STOCK: KNOCK AND GO THROUGH.', 4, 3],
-  crow: ['WATCHMAN CROW. MIND HIS HOURS.', 4, 3],
-  last: ['LAST SHUTTER. THEN THE NIGHT IS YOURS.', 4, 3],
 } as const;
 
 export function levelMarket(pal: Pal): Level {
@@ -57,18 +54,16 @@ export function levelMarket(pal: Pal): Level {
   for (let x = 5; x < MARKET.width - 4; x += 2) m.set(x, 2, 'bunting');
   for (const x of MARKET.gates) for (let y = GROUND - 4; y < GROUND; y++) m.set(x, y, 'gateOpen');
   for (const x of MARKET.boxes) for (const y of [GROUND - 2, GROUND - 1]) m.set(x, y, 'woodBox');
-  for (const x of [MARKET.cracks, MARKET.cracks + 1, MARKET.cracks2, MARKET.cracks2 + 1]) m.set(x, GROUND - 1, 'crack');
+  for (const x of [MARKET.cracks, MARKET.cracks + 1, MARKET.cracks + 2, MARKET.cracks2, MARKET.cracks2 + 1, MARKET.cracks2 + 2]) m.set(x, GROUND - 1, 'crack');
   for (const y of [8, 9]) m.set(MARKET.crates, y, 'crate').set(MARKET.crates + 1, y, 'crate');
-  for (const x of MARKET.crows) m.mon(CROW.bobbing, x, MARKET.crowRow);
+  // each watch is two crows wing to wing, so the gap under them is a short one
+  for (const x of MARKET.crows) m.mon(CROW.bobbing, x, MARKET.crowRow).mon(CROW.bobbing, x + 1, MARKET.crowRow);
   for (const x of [22, 47, 78])
     m.set(x, 8, 'tentL')
       .set(x + 1, 8, 'tentR')
       .set(x, 9, 'tentL')
       .set(x + 1, 9, 'tentR');
   m.sign(5, onGround(GROUND, s.close), s.close);
-  m.sign(9, onGround(GROUND, s.knock), s.knock);
-  m.sign(30, onGround(GROUND, s.crow), s.crow);
-  m.sign(69, onGround(GROUND, s.last), s.last);
   return {
     file: 'market',
     title: 'The Night Market',

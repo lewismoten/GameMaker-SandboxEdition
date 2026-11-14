@@ -21,9 +21,6 @@ export const SIX = {
 } as const;
 
 const SIGNS = {
-  roof: ['ROPES AND PULLEYS. SOMEONE BUILT THIS.', 4, 3],
-  shaker: ['MORE SALT. SHAKER UP THERE.', 4, 3],
-  salt: ['MORE SPILLED SALT. TOSS A PINCH.', 4, 3],
   who: ['A CRATE OF SAUCERS. A STRIPED TAIL. THE CREAM WAS BAIT.', 4, 5],
 } as const;
 
@@ -47,7 +44,7 @@ export function levelSix(pal: Pal): Level {
   for (let x = SIX.lift - 1; x <= SIX.lift + 1; x++) m.set(x, 1, 'brick');
   const colors = ['brollyRed', 'brollyGold', 'brollyTeal'];
   for (let y = 3; y < GROUND; y++) m.set(SIX.lift, y, colors[y % 3]);
-  for (const x of [SIX.cracks, SIX.cracks + 1]) m.set(x, GROUND - 1, 'crack');
+  for (const x of [SIX.cracks, SIX.cracks + 1, SIX.cracks + 2]) m.set(x, GROUND - 1, 'crack');
   m.set(SIX.shaker, 3, 'shaker');
   for (let y = -10; y < GROUND - 2; y++) m.set(SIX.wall, y, 'brick');
   m.set(SIX.wall, GROUND - 2, 'saltArch').set(SIX.wall, GROUND - 1, 'saltPile');
@@ -55,9 +52,6 @@ export function levelSix(pal: Pal): Level {
   m.mon(CROW.bobbing, SIX.crow, 5);
   m.set(SIX.rascal, 8, 'rascalTop').set(SIX.rascal, 9, 'rascalBottom');
   for (const x of [11, 41, 72]) m.set(x, 8, 'lampHead').set(x, 9, 'lampPost');
-  m.sign(5, onGround(GROUND, s.roof), s.roof);
-  m.sign(34, onGround(GROUND, s.shaker), s.shaker);
-  m.sign(43, onGround(GROUND, s.salt), s.salt);
   m.sign(62, onGround(GROUND, s.who), s.who);
   return {
     file: 'six',

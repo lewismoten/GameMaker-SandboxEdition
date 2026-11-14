@@ -8,7 +8,7 @@ import { StarterMap } from '../../../kit/starter/map';
 import type { Pal } from '../print';
 import { Grid } from '../../../kit/starter/grid';
 import { CROW } from '../monsters';
-import { addSigns, onGround, startBook, type Level } from '../level';
+import { startBook, type Level } from '../level';
 
 /** The tower's size: 30 blocks wide, 33 tall, its street on row 30. */
 const W = 30;
@@ -28,17 +28,9 @@ export const TOWER = {
   exit: 6,
 } as const;
 
-const SIGNS = {
-  tower: ['CLOCK TOWER. 13TH BELL AT THE TOP.', 4, 3],
-  boxes: ['KNOCK ON WOOD TO GET THROUGH.', 4, 3],
-  crow: ['A CROW ON THE THIRD FLOOR. WAIT FOR IT.', 4, 3],
-  bell: ['RING IT. THEN OUT THE DOOR.', 4, 3],
-} as const;
-
 export function levelTower(pal: Pal): Level {
   const charms = ['bell'] as const;
   const book = startBook(pal, ['brolly', 'wood', 'town', 'clock'], charms);
-  const s = addSigns(book, pal, SIGNS);
   const g = new Grid(W, H);
   g.row(STREET, 0, W - 1, 'G').fill(0, STREET + 1, W, 2, 'D');
   g.col(0, 0, STREET - 1, 'X').col(W - 1, 0, STREET - 1, 'X');
@@ -71,10 +63,6 @@ export function levelTower(pal: Pal): Level {
   m.set(TOWER.bell, FLOORS[3] - 1, 'charm.bell');
   // the clock's face on the wall of the bell chamber
   m.set(18, 3, 'clockTL').set(19, 3, 'clockTR').set(18, 4, 'clockBL').set(19, 4, 'clockBR');
-  m.sign(8, onGround(FLOORS[0], s.tower), s.tower);
-  m.sign(17, onGround(FLOORS[1], s.boxes), s.boxes);
-  m.sign(8, onGround(FLOORS[2], s.crow), s.crow);
-  m.sign(21, onGround(FLOORS[3], s.bell), s.bell);
   return {
     file: 'tower',
     title: 'The Clock Tower',
