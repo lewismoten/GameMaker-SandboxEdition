@@ -1,6 +1,6 @@
 // The DAST tool (housekeeping 15b): renders everything a "what would a child point out?" pass has to look
 // at, so the pass is just looking, and searches tiled art for swastika-like shapes.
-//   npm run dast -- <id>... | --all [--out dir] [--no-search]   (from the root or web/; default dir
+//   npm run dast -- <id>... | --all [--out dir] [--no-search] [--sheet]   (from the root or web/; default dir
 //   .for-lewis/research/dast/renders/). Reads each game's built games/<id>/disk/ and never builds.
 // Per game, in <out>/<id>/: gif/ (every GIF at 1x and 3x), fli/ (a contact sheet of every frame, or 48 evenly
 // spaced), sheets/ (block, monster and character sheets at 3x), map/ (every map whole at 1x), turned/ (for each
@@ -19,9 +19,11 @@ import { parsePalette } from '@lewismoten/gamemaker-sandbox-engine/formats/palet
 import { GameFiles } from '@lewismoten/gamemaker-sandbox-engine/core/gameFiles';
 import { readDisk } from '@lewismoten/gamemaker-sandbox-tools/kit/gameSim';
 import { scenePixels } from '../../web/src/gfx/levelPicture';
-import { fromIndexed, grid, rotationSheet, silhouette, toPng, type Pix } from './dastImage';
+import { fromIndexed, grid, rotationSheet, shelfSheet, silhouette, toPng, type Pix } from './dastImage';
 import { findSwastikaLike, type Hit } from './dastSymmetry';
 
+// --sheet adds sheet.png per game: one contact sheet of every GIF, the middle frame of every FLI, the block, monster and
+// character sheets and the maps (shrunk to fit), block sheets with their silhouette beside them, so a first look is one picture.
 const here = dirname(fileURLToPath(import.meta.url));
 const gamesDir = join(here, '..');
 const MAGENTA = 0xff00ff;
@@ -159,13 +161,20 @@ async function searchMap(blocks: Pix[], cells: Uint8Array, ext: number[], where:
   }
 }
 
-async function renderGame(id: string, out: string, search: boolean): Promise<{ page: string; cands: Candidate[]; counts: Record<string, number> }> {
+async function renderGame(
+  id: string,
+  out: string,
+  search: boolean,
+  sheet: boolean,
+): Promise<{ page: string; cands: Candidate[]; counts: Record<string, number> }> {
   const dir = join(out, id);
   rmSync(dir, { recursive: true, force: true });
   mkdirSync(dir, { recursive: true });
   const disk = readDisk(join(gamesDir, id, 'disk'));
   const files = new GameFiles(disk);
   const col = new Collector(id, dir);
+  const withSil = new Set<Pix>(); // the ones whose silhouette goes on the sheet too
+  const sheetPics: Pix[] = []; // for --sheet, in the order looked at
   const sections: Record<string, string[]> = { gif: [], fli: [], sheets: [], map: [] };
   const counts: Record<string, number> = { gif: 0, fli: 0, sheets: 0, map: 0 };
   const note = (kind: string, rel: string, label: string, turned?: string, extra = '') => {
@@ -187,6 +196,7 @@ async function renderGame(id: string, out: string, search: boolean): Promise<{ p
       if (name.endsWith('.gif')) {
         const g = decodeGif(bytes);
         const p = fromIndexed(g.width, g.height, g.pixels, g.palette);
+        sheetPics.push(p);
         await save(join(dir, 'gif', `${name}.png`), p);
         await save(join(dir, 'gif', `${name}@3x.png`), p, 3);
         note('gif', `gif/${name}@3x.png`, name, await turnedSheet(`gif-${name}`, p));
@@ -205,6 +215,7 @@ async function renderGame(id: string, out: string, search: boolean): Promise<{ p
         }
         if (!shots.length) continue;
         const sheet = grid(shots, Math.max(1, Math.min(8, Math.floor(1600 / (anim.width + 2)))));
+        sheetPics.push(shots[Math.floor(shots.length / 2)]);
         await save(join(dir, 'fli', `${name}.png`), sheet);
         note(
           'fli',
@@ -245,6 +256,8 @@ async function renderGame(id: string, out: string, search: boolean): Promise<{ p
     if (count === BACKBL) bblPix.set(key, blocks);
     const { pic, sil } = sheetOf(blocks, count === BACKBL ? 15 : 20);
     const stem = `${what}-${bf}-${pf}`;
+    sheetPics.push(pic);
+    withSil.add(pic);
     await save(join(dir, 'sheets', `${stem}.png`), pic, 3);
     note('sheets', `sheets/${stem}.png`, `${what}: ${bf} in ${pf}`, await turnedSheet(`sheet-${stem}`, pic, sil));
     if (search && fresh) {
@@ -282,12 +295,14 @@ async function renderGame(id: string, out: string, search: boolean): Promise<{ p
     if (!pic) continue;
     const p = fromIndexed(pic.width, pic.height, pic.pixels, pic.palette);
     const stem = `scene${i}-${s.files[1]}`;
+    sheetPics.push(p);
     await save(join(dir, 'map', `${stem}.png`), p);
     note('map', `map/${stem}.png`, `scene ${i}: ${s.files[1]} (columns ${x0}-${x1}, rows ${y0}-${y1})`, await turnedSheet(`map-${stem}`, p));
     const blocks = bblPix.get(`${s.files[2]}/${s.files[0]}`);
     if (search && blocks) await searchMap(blocks, map.blocks, [x0, y0, x1, y1], `scene ${i} ${s.files[1]}`, col);
   }
 
+  if (sheet && sheetPics.length) await save(join(dir, 'sheet.png'), shelfSheet(sheetPics, 1800, withSil));
   const cands = col.list;
   writeFileSync(join(dir, 'swastika.json'), JSON.stringify(cands, null, 1));
   const head = {
@@ -314,12 +329,13 @@ async function main(): Promise<void> {
   const outAt = args.indexOf('--out');
   const out = resolve(outAt >= 0 ? args[outAt + 1] : join(gamesDir, '..', '.for-lewis', 'research', 'dast', 'renders'));
   const search = !args.includes('--no-search');
+  const sheet = args.includes('--sheet');
   const rest = args.filter((a, i) => !a.startsWith('--') && i !== outAt + 1);
   const ids = args.includes('--all')
     ? readdirSync(gamesDir).filter((id) => existsSync(join(gamesDir, id, 'about.json')) && existsSync(join(gamesDir, id, 'disk')))
     : rest;
   if (!ids.length) {
-    console.log('usage: npm run dast -- <id>... | --all [--out dir] [--no-search]');
+    console.log('usage: npm run dast -- <id>... | --all [--out dir] [--no-search] [--sheet]');
     process.exit(1);
   }
   mkdirSync(out, { recursive: true });
@@ -332,7 +348,7 @@ async function main(): Promise<void> {
       continue;
     }
     const t = Date.now();
-    const r = await renderGame(id, out, search);
+    const r = await renderGame(id, out, search, sheet);
     all.push(...r.cands);
     rows.push(`<tr><td><a href="${r.page}">${id}</a><td>${r.counts.gif}<td>${r.counts.fli}<td>${r.counts.sheets}<td>${r.counts.map}<td>${r.cands.length}`);
     console.log(
