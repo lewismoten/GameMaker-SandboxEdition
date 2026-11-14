@@ -6,12 +6,13 @@
 //      sees red and green alike can't tell which is which. Both levels use the simulated palette during play.
 //   2. Shape and Brightness: the same stretch with spikes (dark, pointed) in place of the red plates
 //      and light striped plates for the safe ones. Nothing depends on color any more.
-import { Book } from '../../kit/starter/book';
+import { Book, PULL } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
-import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
-import { addSign, type Sign } from '../../kit/starter/sign';
+import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
+import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { MICRO_GLYPHS } from '@lewismoten/gamemaker-sandbox-tools/microFont';
 import { addColorBlocks, addColorRamps } from './colorBlocks';
 
 export type SignName = 'sting' | 'alike' | 'shape' | 'stripe' | 'any' | 'exit' | 'exit2';
@@ -20,15 +21,31 @@ export type SignName = 'sting' | 'alike' | 'shape' | 'stripe' | 'any' | 'exit' |
 function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
-  const signs = {
-    sting: addSign(book, pal, 'sting.sign', 'SAME COLORS. SOME PLATES STING', 4, 4),
-    alike: addSign(book, pal, 'alike.sign', 'LOOK THE SAME TO YOU? THAT IS THE POINT', 4, 5),
-    shape: addSign(book, pal, 'shape.sign', 'SPIKES LOOK LIKE SPIKES, IN ANY COLOR', 4, 4),
-    stripe: addSign(book, pal, 'stripe.sign', 'LIGHT AND STRIPED MEANS SAFE', 4, 3),
-    any: addSign(book, pal, 'any.sign', 'NOW IT READS IN ANY COLOR', 4, 2),
-    exit: addSign(book, pal, 'exit.sign', 'EXIT →', 3),
-    exit2: addSign(book, pal, 'exit2.sign', 'EXIT →', 3),
-  };
+  const { blocks, signs } = buildTiledSigns(
+    {
+      sting: { rows: [['SAME COLORS.'], ['SOME PLATES'], ['STING']] },
+      alike: { rows: [['LOOK THE SAME'], ['TO YOU? THAT IS'], ['THE POINT']] },
+      shape: { rows: [['SPIKES LOOK'], ['LIKE SPIKES,'], ['IN ANY COLOR']] },
+      stripe: { rows: [['LIGHT AND'], ['STRIPED'], ['MEANS SAFE']] },
+      any: { rows: [['NOW IT READS'], ['IN ANY COLOR']] },
+      exit: { rows: [['EXIT →']] },
+      exit2: { rows: [['EXIT →']] },
+    },
+    {
+      colors: {
+        background: skyOf(pal),
+        paper: pal.c('parch', 3),
+        ink: pal.c('ink', 0),
+        wood: pal.c('wood', 2),
+        highlight: pal.c('wood', 4),
+        shadow: pal.c('wood', 0),
+      },
+      glyphs: { ...MICRO_GLYPHS, '→': '100110111110100' },
+      lettersPerBlock: 3,
+      maxBlocks: 100 - book.index.size,
+    },
+  );
+  for (const [name, pic] of blocks) book.add(name, pic, { grav: PULL.down });
   addColorBlocks(book, pal);
   return { book, signs };
 }
@@ -85,10 +102,10 @@ function redAndGreen(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [9, 31, 33],
   );
   const m = new StarterMap(book, g.rows());
-  m.sign(5, onGround(GROUND, signs.sting), signs.sting);
-  m.sign(10, onGround(GROUND, signs.alike), signs.alike);
-  m.sign(32, onGround(GROUND, signs.exit), signs.exit);
   lay(m, 'plateSafe', 'plateHot');
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 4, onGround(GROUND, signs.sting), signs.sting);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 12, onGround(GROUND, signs.alike), signs.alike);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 30, onGround(GROUND, signs.exit), signs.exit);
   return m;
 }
 
@@ -107,11 +124,11 @@ function shapeAndBrightness(book: Book, signs: Record<SignName, Sign>): StarterM
     [9, 31, 33],
   );
   const m = new StarterMap(book, g.rows());
-  m.sign(5, onGround(GROUND, signs.shape), signs.shape);
-  m.sign(10, onGround(GROUND, signs.stripe), signs.stripe);
-  m.sign(23, onGround(GROUND, signs.any), signs.any);
-  m.sign(32, onGround(GROUND, signs.exit2), signs.exit2);
   lay(m, 'plateStripe', 'spikeRed');
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 4, onGround(GROUND, signs.shape), signs.shape);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 13, onGround(GROUND, signs.stripe), signs.stripe);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 23, onGround(GROUND, signs.any), signs.any);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 30, onGround(GROUND, signs.exit2), signs.exit2);
   return m;
 }
 
