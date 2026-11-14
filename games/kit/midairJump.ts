@@ -7,8 +7,9 @@
 //   counted  the sequence has a finite counter (meter), so taps run out until a block refills them
 //   locked   uninterruptible (ground flag) for at least the flight (the hero cannot steer meanwhile)
 //   bounded  a held-rise jump (not momentum): it moves the hero straight up each tick the key is held while
-//            gravity's momentum keeps growing, so once he falls a new press cannot lift him (heroChar heldRise,
-//            Loaf, Mustard); heldRiseProof.ts plays it. Only if the push a tick is below gravity's cap
+//            gravity's momentum (already pixels a tick) keeps growing, so after push * gravity ticks in the air a new press
+//            cannot lift him (heroChar heldRise, Loaf, Mustard). Only if the push a tick is not above gravity's cap, 44
+//            (midairRule.ts has the reasoning with engine line numbers; heldRiseProof.ts sweeps it against the engine)
 //   allowed  games/kit/midairJump.allow.json says it is on purpose
 //   npx vite-node ../games/kit/midairJump.ts [--md] [--strict] [<id>...]
 // --md prints a markdown table. Exit is 0 unless --strict and a REJUMP is not allowed. A finding is a
@@ -16,60 +17,10 @@
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { CHARBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
-import { INF_REPEAT, parseCharacter } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import { INF_REPEAT } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import { jumpsIn, type Jump } from './midairRule';
 
 const gamesDir = join(dirname(fileURLToPath(import.meta.url)), '..');
-const MIN_PUSH = 3; // a smaller upward push (a sled's steering, say) is not a jump
-const RISE_RATE = 8; // a direct push upward of this many pixels a tick or more is a jump held up; less is walking, climbing or a nudge
-const GRAV_CAP = 44; // MAXGRAV*4 (playerLook.ts): the most momentum gravity builds
-const NO_FRAME = CHARBL + 1; // the end of a sequence
-
-type Verdict = 'REJUMP' | 'counted' | 'locked' | 'allowed' | 'bounded';
-interface Jump {
-  game: string;
-  file: string;
-  seq: number;
-  key: number;
-  push: number;
-  lock: number;
-  air: number;
-  meter: number;
-  verdict: Verdict;
-  reason: string;
-}
-
-/** The upward pushes in one character file's keyed momentum sequences. */
-function jumpsIn(game: string, file: string, bytes: Uint8Array, allow: Record<string, string>): Jump[] {
-  const ch = parseCharacter(bytes);
-  const out: Jump[] = [];
-  ch.sequences.forEach((s, seq) => {
-    if (!s.key) return;
-    let push = 0;
-    let dur = 0;
-    for (const f of s.frames) {
-      if (f.pic2 === NO_FRAME) break;
-      push -= f.y;
-      dur += f.pause;
-    }
-    // Not momentum: the frames move him directly, so only a strong push a tick counts as a jump held up.
-    const direct = !s.momentum;
-    if (direct ? dur === 0 || push / dur < RISE_RATE : push < MIN_PUSH) return;
-    const key = s.key >> 8;
-    const air = 2 * push; // gravity adds 1 a tick, 1 pixel per unit: up for `push` ticks, down for as many
-    const lock = s.ground ? dur : 0;
-    const meter = ch.meter[seq];
-    const name = `${game}/${file}/${key.toString(16)}`;
-    const reason = allow[name] ?? allow[`${game}/${file}`] ?? allow[game] ?? '';
-    let verdict: Verdict = 'REJUMP';
-    if (reason) verdict = 'allowed';
-    else if (direct) verdict = push / dur < GRAV_CAP ? 'bounded' : 'REJUMP';
-    else if (meter < INF_REPEAT) verdict = 'counted';
-    else if (lock >= air) verdict = 'locked';
-    out.push({ game, file, seq, key, push, lock, air, meter, verdict, reason });
-  });
-  return out;
-}
 
 function allJumps(ids: string[]): Jump[] {
   const allow = JSON.parse(readFileSync(join(gamesDir, 'kit', 'midairJump.allow.json'), 'utf8')) as Record<string, string>;
