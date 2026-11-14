@@ -55,6 +55,16 @@ async function fetchList(): Promise<GameList | Error | undefined> {
   }
 }
 
+/** A save the browser refused (storage full, or blocked mid-visit): said once in plain words, never over the game. */
+function saveFailed(): void {
+  if (document.querySelector('.wp-save-failed')) return;
+  const note = document.createElement('p');
+  note.className = 'wp-save-failed';
+  note.setAttribute('role', 'status');
+  note.textContent = 'Couldn’t save: the browser’s storage is full or blocked. Your progress from now on won’t be kept.';
+  document.body.append(note);
+}
+
 /** "Made with …" in the corner while the start screen shows, as on an exported page. */
 function showCredit(): void {
   const link = (href: string, text: string) => Object.assign(document.createElement('a'), { href, textContent: text, target: '_blank', rel: 'noopener' });
@@ -89,7 +99,7 @@ async function play(game: ListedGame): Promise<void> {
       hardwareId: `hosted:${game.id}`,
       notice,
       back: { href: listHref(listParam), label: '← All games' },
-      onFileWrite: (name, bytes) => void writeSave(game.id, name, bytes),
+      onFileWrite: (name, bytes) => void writeSave(game.id, name, bytes).catch(saveFailed),
       onQuit: () => false, // "Quit" shows the game's menu again
       onExit: start,
       autoStart,
