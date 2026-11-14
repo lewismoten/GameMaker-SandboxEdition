@@ -8,6 +8,7 @@ import { COURIER_KEY, loadCourier, saveCourier } from '../../courier/courierStor
 import { LETTERS } from '../../courier/tables';
 import { CHICKEN_KEY, chickenNow, setChicken } from '../../chicken/chickenState';
 import { SEEN_KEY, isDay, readSeen, writeSeen } from '../../tour/seenDay';
+import { clearHonorDates } from '../../achievements/honorDates';
 import { deskNow } from '../dos/deskClock';
 import { FlagError, type FlagItem } from './flagsTypes';
 
@@ -106,6 +107,7 @@ const gradesItem: FlagItem = {
   },
   async reset() {
     putGrades({});
+    clearHonorDates(); // the graduations go, so a re-earned one gets a new day
     return 'No Starter has a grade; the transcript is blank.';
   },
 };

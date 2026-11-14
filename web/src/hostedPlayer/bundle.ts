@@ -31,7 +31,9 @@ export async function importSaveZip(bytes: Uint8Array): Promise<Record<string, S
     const id = gameId(parts[0]);
     const file = safeFileName(parts[1]);
     if (!id || !file || id !== parts[0].toLowerCase()) continue;
-    (out[id] ??= {})[file.toLowerCase()] = data;
+    // Own properties only: "__proto__/x" or "constructor/x" must not write onto Object.prototype or Object.
+    if (!Object.hasOwn(out, id)) Object.defineProperty(out, id, { value: Object.create(null), enumerable: true, writable: true, configurable: true });
+    Object.defineProperty(out[id], file.toLowerCase(), { value: data, enumerable: true, writable: true, configurable: true });
   }
   return out;
 }
