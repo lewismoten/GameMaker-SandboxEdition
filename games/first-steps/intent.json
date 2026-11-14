@@ -1,0 +1,14 @@
+{
+  "levels": [
+    {
+      "scene": 2,
+      "teaches": "Space jumps over the wall before the exit",
+      "rules": [{ "rule": "uses", "move": "Space", "min": 1 }, { "rule": "needs", "move": "Space" }]
+    },
+    {
+      "scene": 3,
+      "teaches": "Up climbs the ladder to the island before the drops",
+      "rules": [{ "rule": "uses", "move": "Up", "min": 1 }, { "rule": "needs", "move": "Up" }]
+    }
+  ]
+}
