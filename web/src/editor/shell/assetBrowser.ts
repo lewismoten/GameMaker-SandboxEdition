@@ -15,13 +15,10 @@ import { assetSearch } from './assetSearch';
 import { SHORT_KIND_LABELS } from './assetShortNames';
 import { companionPatches } from '../../dosPlayer/playerRecord';
 import { companionOrigin, originText } from '../../dosPlayer/playerOrigin';
-import { parsePalette, type Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
+import type { Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 
-/** The palette a tile is drawn in: the one picked in the file's editor ("Show with palette", kept in the companion), else the scene's. */
-function shownPalette(project: Project, file: string): Palette {
-  const saved = project.extras<string>(file, 'showPalette', '');
-  return saved && project.files.has(saved) ? parsePalette(project.files.get(saved)!) : project.paletteFor(file).palette;
-}
+/** The palette a tile is drawn in: the one picked in the file's editor (kept in the companion), else the scene's. */
+const shownPalette = (project: Project, file: string): Palette => project.shownPalette(file);
 
 interface BrowserHost {
   project: Project;

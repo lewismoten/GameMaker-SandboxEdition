@@ -64,3 +64,89 @@ describe('readable palette', () => {
     expect(q.extras('hero.cbl', 'showPalette', '')).toBe('b.pal');
   });
 });
+
+describe('which palette a preview of a file uses', () => {
+  const build = () => {
+    const game = newGame('T');
+    const adv = (pal: string, ...rest: string[]) => {
+      const s = newGame('T').scenes[0];
+      s.gametype = 10;
+      s.files = [pal, 'm.map', 'b.bbl', ...rest];
+      game.scenes.push(s);
+    };
+    adv('x.pal');
+    adv('y.pal');
+    adv('y.pal');
+    const files = new GameFiles([
+      ['t.gam', serializeGame(game)],
+      ['x.pal', pal([40, 30, 20])],
+      ['y.pal', pal([10, 50, 20])],
+      ['z.pal', pal([60, 60, 20])],
+      ['m.map', new Uint8Array(4)],
+      ['b.bbl', new Uint8Array(4)],
+    ]);
+    return Project.fromFiles(files);
+  };
+  it('takes the palette most of the scenes using the file use', () => {
+    expect(build().paletteFor('b.bbl').source).toBe('y.pal');
+  });
+  it('a file no scene uses gets a usable palette, never a solid one', () => {
+    expect(build().paletteFor('lonely.bbl').source).not.toBe('');
+    expect(isTooDark(build().paletteFor('lonely.bbl').palette, new Uint8Array([1, 2, 3]))).toBe(false);
+  });
+  it('a tile shows the saved pick, a map follows its block set, and a vanished .pal falls back', () => {
+    const p = build();
+    const scene = p.paletteFor('b.bbl').palette;
+    expect(p.shownPalette('b.bbl')).toEqual(scene);
+    p.setExtras('b.bbl', 'showPalette', 'z.pal');
+    const z = p.palette('z.pal');
+    expect(p.shownPalette('b.bbl')).toEqual(z);
+    expect(p.shownPalette('m.map')).toEqual(z);
+    expect(p.shownPalette('other.cbl')).not.toEqual(z);
+    p.files.delete('z.pal');
+    expect(p.shownPalette('b.bbl')).toEqual(scene);
+  });
+});
+
+describe('a sprite used in scenes with several palettes', () => {
+  it('skips a scene palette that would show it dark on dark when its colors are known', () => {
+    const game = newGame('T');
+    for (const pn of ['a.pal', 'a.pal', 'b.pal']) {
+      const s = newGame('T').scenes[0];
+      s.gametype = 10;
+      s.files = [pn, 'm.map', 'b.bbl', '', 'x.cbl'];
+      game.scenes.push(s);
+    }
+    const p = Project.fromFiles(
+      new GameFiles([
+        ['t.gam', serializeGame(game)],
+        ['a.pal', dim],
+        ['b.pal', pal([40, 30, 20])],
+      ]),
+    );
+    expect(p.paletteFor('x.cbl').source).toBe('a.pal');
+    expect(p.paletteFor('x.cbl', used).source).toBe('b.pal');
+  });
+});
+
+describe('a scene with blank slots', () => {
+  it('counts what it inherits from the scene before it', () => {
+    const game = newGame('T');
+    const a = newGame('T').scenes[0];
+    a.gametype = 10;
+    a.files = ['a.pal', 'm.map', 'b.bbl'];
+    const b = newGame('T').scenes[0];
+    b.gametype = 10;
+    b.files = ['', 'n.map', ''];
+    game.scenes.push(a, b);
+    const p = Project.fromFiles(
+      new GameFiles([
+        ['t.gam', serializeGame(game)],
+        ['a.pal', pal([40, 30, 20])],
+        ['z.pal', pal([10, 50, 20])],
+      ]),
+    );
+    expect(p.paletteFor('n.map').source).toBe('a.pal');
+    expect(p.paletteFor('lonely.bbl').source).not.toBe('');
+  });
+});

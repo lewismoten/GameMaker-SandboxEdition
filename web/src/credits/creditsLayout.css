@@ -325,6 +325,19 @@ main.credits-page .credits-cards-small p {
 
 /* ---- tabs: one area at a time; print shows them all ---- */
 
+/* stuck under the top of the page while a long panel scrolls (not in a short window, where the
+   wrapped tabs would take a fifth of the screen) */
+@media (min-height: 560px) {
+  main.credits-page .credits-tabs-wrap {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    margin: 0 -16px;
+    padding: 0 16px;
+    background: var(--bg);
+  }
+}
+
 main.credits-page .credits-tabs {
   display: flex;
   flex-wrap: wrap;

@@ -1,9 +1,9 @@
 // What the tools share: reading the game and its files with a clear error when one is missing,
 // the schema pieces most tools take, and the palette a file is shown with.
 import { normalize } from '../../project/files';
-import { ADVTYPE, parseGame, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
-import { defaultPalette, parsePalette, type Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
-import { decodeGif, isGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
+import { newGame, parseGame, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import type { Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
+import { scenePalette } from '../../project/scenePalette';
 import { ToolError, type GameContext, type JsonSchema } from './types';
 
 export const FILE: JsonSchema = { type: 'string', description: 'A file name in the game, e.g. level1.map.' };
@@ -51,31 +51,15 @@ export function sceneOf(game: Game, n: unknown): Game['scenes'][number] {
   return s;
 }
 
-/** The palette a file is shown with: the first level scene using it (or its block set or map), else the first .pal, else a GIF's, else the default. */
+/** The palette a file is shown with: the editor's own choice (scenePalette.ts), the default when the game can't be read. */
 export function paletteFor(ctx: GameContext, file?: string): Palette {
-  const n = file ? normalize(file) : '';
+  let game: Game;
   try {
-    const game = gameOf(ctx);
-    for (const s of game.scenes)
-      if (s.gametype === ADVTYPE && s.files[0] && s.files.some((f) => f && normalize(f) === n)) {
-        const p = ctx.files.get(s.files[0]);
-        if (p) return parsePalette(p);
-      }
+    game = gameOf(ctx);
   } catch {
-    /* no game: the first palette there is */
+    game = newGame();
   }
-  const pal = ctx.files.byExtension('pal')[0];
-  if (pal) return parsePalette(ctx.files.get(pal)!);
-  for (const g of ctx.files.byExtension('gif')) {
-    const b = ctx.files.get(g)!;
-    if (isGif(b))
-      try {
-        return decodeGif(b).palette;
-      } catch {
-        /* the next */
-      }
-  }
-  return defaultPalette();
+  return scenePalette(ctx.files, game, file ?? '').palette;
 }
 
 /** Keeps an integer argument in range (with a default). */

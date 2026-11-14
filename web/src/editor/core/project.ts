@@ -3,10 +3,9 @@ import { GameFiles, normalize } from '../../project/files';
 import { saveProject, newId } from '../../project/storage';
 import { libraryDefaultPalette } from '@lewismoten/gamemaker-sandbox-tools/palettes';
 import { parseGame, serializeGame, newGame, type Game, gameTitle } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
-import { defaultPalette, parsePalette, type Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
-import { decodeGif, isGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
+import { parsePalette, type Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 import { debounce } from './ui';
-import { isSolidPalette, mostReadable } from './readablePalette';
+import { scenePalette } from '../../project/scenePalette';
 import { emptyCompanion, getSection, renameInCompanion, setExportPreviews, setMenuVersion, setSection, type Companion } from '../../project/companion';
 import { setAbout, type AboutGame } from '../../project/aboutGame';
 import { editedFile, unlockAchievement } from '../../achievements';
@@ -206,46 +205,33 @@ export class Project {
     return out;
   }
 
-  /** The palette a block set/map/picture is shown with: the scene that uses it, else the first .pal. */
+  /** The palette a block set/map/picture is shown with: the scene that uses it, else the first .pal (scenePalette.ts). */
   paletteFor(file: string, used?: ArrayLike<number>): { palette: Palette; source: string } {
-    const game = this.game();
-    for (const u of this.usesOf(file)) {
-      const scene = game.scenes[u.scene];
-      if (scene.gametype === 10 && scene.files[0] && this.files.has(scene.files[0]))
-        return { palette: parsePalette(this.files.get(scene.files[0])!), source: scene.files[0] };
-    }
-    // A map: the scene that uses its block set.
-    let pals = this.files.byExtension('pal');
-    if (pals.length) {
-      // a palette that is one solid color stands for nothing: use the others, the one the scenes use most first
-      const usable = pals.filter((p) => !isSolidPalette(this.files.get(p)!));
-      if (usable.length) {
-        const uses = (p: string) => game.scenes.filter((sc) => normalize(sc.files[0] ?? '') === normalize(p)).length;
-        pals = usable
-          .map((p, i) => ({ p, i }))
-          .sort((a, b) => uses(b.p) - uses(a.p) || a.i - b.i)
-          .map((x) => x.p);
+    return scenePalette(this.files, this.game(), file, used);
+  }
+
+  /**
+   * What a preview of `file` is drawn in: the palette the author picked for it ("Show with palette",
+   * kept in the companion, restored while that .pal exists), else the scene's (paletteFor).
+   */
+  shownPalette(file: string, used?: ArrayLike<number>): Palette {
+    const saved = this.savedPalette(file);
+    return saved ? parsePalette(this.files.get(saved)!) : this.paletteFor(file, used).palette;
+  }
+
+  /** The .pal picked for a file that still exists. A map has no picker of its own: it follows its block set's. */
+  private savedPalette(file: string): string {
+    const keys = [file];
+    if (normalize(file).endsWith('.map'))
+      for (const u of this.usesOf(file)) {
+        const bbl = this.game().scenes[u.scene].files[2];
+        if (bbl) keys.push(bbl);
       }
-      // with the sprite's colors known, skip a palette that would show it dark on dark
-      const i = used
-        ? mostReadable(
-            pals.map((p) => this.files.get(p)!),
-            used,
-          )
-        : 0;
-      return { palette: parsePalette(this.files.get(pals[i])!), source: pals[i] };
+    for (const k of keys) {
+      const saved = this.extras<string>(k, 'showPalette', '');
+      if (saved && this.files.has(saved)) return saved;
     }
-    for (const g of this.files.byExtension('gif')) {
-      const b = this.files.get(g)!;
-      if (isGif(b)) {
-        try {
-          return { palette: decodeGif(b).palette, source: g };
-        } catch {
-          /* try the next one */
-        }
-      }
-    }
-    return { palette: defaultPalette(), source: 'default' };
+    return '';
   }
 
   palette(name: string): Palette | undefined {
