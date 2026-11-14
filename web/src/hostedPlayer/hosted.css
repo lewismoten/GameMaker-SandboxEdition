@@ -253,3 +253,7 @@ body.wp-playing .gm-made-with {
   border-radius: 4px;
   pointer-events: none;
 }
+/* while the start screen shows, the "Made with" credit has the bottom left corner: sit above it */
+body:has(.gm-made-with:not([hidden])) .wp-save-failed {
+  bottom: 40px;
+}
