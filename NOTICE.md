@@ -274,7 +274,7 @@ game folder opens in the browser unchanged.
   shots and manual pages (`frames/`, `web/scripts/shotFrames.ts`); the 1200 × 630 social preview
   `og-image.png` (`web/scripts/ogImage.ts`); the app icons (`icon.svg` and the PNGs made from
   it, drawn for this project as a block grid); the magazine's screenshots of the site, its
-  editors and the desk (`magazine/`, `web-*.webp` and `desk-1994.webp`); and the demo recordings
+  editors and the desk (`magazine/`, `web-*.webp` and `desk-1994.webp`), its three turned box renders (`box-*.webp`) and its renders of made-up 1996 web pages (`oldweb-*.webp`, drawn by `web/scripts/oldWebPages.ts` and `oldWebShots.ts`, made with **Claude Sonnet 5.5**, directed by Lewis Moten); and the demo recordings
   for CD games that shipped without one (`extras/demos`, recorded and replayed by
   `games/kit/cdDemos/make.ts`; they are not part of the original games). The Credits page's
   small title-screen pictures (`credits/`) are frames of RSD's own Game-Maker title screen and
