@@ -58,6 +58,13 @@
   height: 6px;
 }
 
+/* a spine's button is 28 px wide at least (24 as seen, the desk is scaled) (a target), its neighbors' buttons overlapping a little;
+   the margin takes the extra back so the spines stand exactly where they did */
+.game-shelf .shelf-box:not(.face-out) {
+  width: max(28px, calc(2 * var(--shelf-u)));
+  margin-inline: calc((2 * var(--shelf-u) - max(28px, calc(2 * var(--shelf-u)))) / 2);
+}
+
 /* a box's slot is as wide as what shows: the spine, or the front when it stands face out */
 .game-shelf .shelf-box {
   position: relative;
@@ -100,7 +107,7 @@
 .game-shelf .shelf-box:not(.face-out)::after {
   content: '';
   position: absolute;
-  inset: 0;
+  inset: 0 calc((max(28px, calc(2 * var(--shelf-u))) - 2 * var(--shelf-u)) / 2);
   pointer-events: none;
   box-shadow:
     inset 2px 0 2px rgba(0, 0, 0, 0.35),

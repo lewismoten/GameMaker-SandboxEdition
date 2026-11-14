@@ -36,16 +36,21 @@
 /* the template's words are buttons: the same print, a pointer and a focus ring */
 .keyboard button.kt-label {
   margin: 0;
-  padding: 1px 2px;
+  /* the target is 24 px or more as seen (the board is tilted and scaled), the print stays small:
+     the word is centered in it and the hover tint is drawn only behind the word */
+  box-sizing: border-box;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0 2px;
   border: 0;
   border-radius: 2px;
-  background: none;
+  background: none no-repeat center / calc(100% - 8px) 10px;
   cursor: pointer;
   touch-action: none;
 }
 
 .keyboard button.kt-label:hover {
-  background: rgba(255, 255, 255, 0.16);
+  background-image: linear-gradient(rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.16));
 }
 
 .keyboard button.kt-label:focus-visible {
