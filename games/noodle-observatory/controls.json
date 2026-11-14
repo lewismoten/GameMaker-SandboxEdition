@@ -1,0 +1,58 @@
+{
+  "keys": {
+    "75": {
+      "short": "Walk left",
+      "long": "Walk left. Inside the pasta ring: roll up and left."
+    },
+    "77": {
+      "short": "Walk right",
+      "long": "Walk right. Inside the pasta ring: roll up and right."
+    },
+    "57": {
+      "short": "Jump",
+      "long": "Jump. Steer with Left and Right while you are in the air. Inside the pasta ring: roll up."
+    },
+    "72": {
+      "short": "Climb up",
+      "long": "Climb up a ladder. Inside the pasta ring: roll up, fast."
+    },
+    "80": {
+      "short": "Climb down",
+      "long": "Climb down a ladder. Inside the pasta ring: roll up, slowly."
+    },
+    "30": {
+      "short": "Walk left",
+      "long": "Same as the Left arrow."
+    },
+    "32": {
+      "short": "Walk right",
+      "long": "Same as the Right arrow."
+    },
+    "17": {
+      "short": "Climb up",
+      "long": "Same as the Up arrow."
+    },
+    "31": {
+      "short": "Climb down",
+      "long": "Same as the Down arrow."
+    }
+  },
+  "joystick": {
+    "1": {
+      "short": "Jump",
+      "long": "Jump."
+    }
+  },
+  "counters": {
+    "20": "Telescope parts, lenses, pads or place settings carried (first kind)",
+    "21": "The same, second kind",
+    "22": "The same, third kind",
+    "23": "The scope's first lens fitted",
+    "24": "The scope's second lens fitted"
+  },
+  "sounds": {
+    "9": "Nell's jump",
+    "10": "Getting hurt",
+    "11": "Falling over"
+  }
+}

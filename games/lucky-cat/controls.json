@@ -1,0 +1,56 @@
+{
+  "keys": {
+    "75": {
+      "short": "Walk left",
+      "long": "Walk left. In the funhouse and the mirror shop it walks right."
+    },
+    "77": {
+      "short": "Walk right",
+      "long": "Walk right. In the funhouse and the mirror shop it walks left."
+    },
+    "57": {
+      "short": "Jump",
+      "long": "Jump. Steer with Left and Right while you are in the air."
+    },
+    "72": {
+      "short": "Climb up",
+      "long": "Climb up a ladder."
+    },
+    "80": {
+      "short": "Climb down",
+      "long": "Climb down a ladder."
+    },
+    "30": {
+      "short": "Walk left",
+      "long": "Same as the Left arrow."
+    },
+    "32": {
+      "short": "Walk right",
+      "long": "Same as the Right arrow."
+    },
+    "17": {
+      "short": "Climb up",
+      "long": "Same as the Up arrow."
+    },
+    "31": {
+      "short": "Climb down",
+      "long": "Same as the Down arrow."
+    }
+  },
+  "joystick": {
+    "1": {
+      "short": "Jump",
+      "long": "Jump."
+    }
+  },
+  "counters": {
+    "20": "Keys carried: the salt shaker's and the bin key, one at a time",
+    "21": "The mirror key carried",
+    "22": "Lucky charms gathered, out of 13"
+  },
+  "sounds": {
+    "9": "Midnight's jump",
+    "10": "Getting hurt",
+    "11": "Falling over"
+  }
+}
