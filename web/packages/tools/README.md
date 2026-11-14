@@ -148,3 +148,24 @@ The tarball includes JavaScript, declarations, README, changelog,
 [LICENSE](https://github.com/lewismoten/GameMaker-SandboxEdition/blob/master/web/packages/tools/LICENSE)
 and [NOTICE.md](https://github.com/lewismoten/GameMaker-SandboxEdition/blob/master/web/packages/tools/NOTICE.md).
 Source is MIT licensed; no game assets or decoder binaries are bundled.
+
+## Tiled signs
+
+`kit/tiledSigns` exports `buildTiledSigns(texts, options)` and `stampTiledSign(map, x, y, sign, postHeight = 1)`.
+Supply every sign from every level together as a record of `{ rows: string[][], post?: boolean }`.
+Each row is a line: chunks are joined without tile padding, whitespace becomes single spaces,
+and lowercase becomes uppercase. Letters pack continuously across tile boundaries, with each
+line centered horizontally and vertically. One-line boards occupy one block row, including
+their top and bottom rails. Shared side tiles contain the edges and corners; the interior width
+is the smallest that fits the text plus margins (rounded up to odd for one centered post).
+The result contains `blocks: Map<string, Pixels>` and `signs` with named-block boards and optional centered posts.
+Identical rendered tiles, including split letters, are deduplicated across all signs.
+`post: false` omits the post for a wall sign and allows even interior widths.
+
+Pass six palette indices in `colors` (`background`, `paper`, `ink`, `wood`, `highlight`, `shadow`),
+optional `glyphs` for game-owned symbols, and `maxBlocks` for the remaining block budget (0–100; default 100).
+Unsupported glyphs, empty rows and budget overflow throw errors.
+`lettersPerBlock: 5` (default) or `4` uses the project's 3×5 micro font; `3` enlarges it to
+5×10 pixels for readability at native game size. Centered fragments can cost more unique tiles.
+Add the returned pictures to your block set with the game's passable-background rules, once for the whole game.
+The stamp helper accepts any map with `set(x, y, blockName)`; taller posts reuse the same centered tile.

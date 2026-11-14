@@ -74,6 +74,7 @@ const sources = {
   'kit/textBounds': 'kit/textBounds',
   'kit/tune': 'kit/tune',
   'kit/microText': 'kit/microText',
+  'kit/tiledSigns': 'kit/tiledSigns',
   'kit/transforms': 'kit/transforms',
   'kit/coverPaint': 'kit/coverPaint',
   'kit/palRamps': 'kit/palRamps',

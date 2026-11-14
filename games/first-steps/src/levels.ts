@@ -3,25 +3,43 @@
 //
 //   1. Walk, Jump, Fall: walk right, jump a wall, climb a step, and walk off the edge.
 //   2. Climb and Fall: up a ladder, across an island, and down two drops to the door.
-import { Book } from '../../kit/starter/book';
+import { Book, PULL } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
-import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
-import { addSign, type Sign } from '../../kit/starter/sign';
+import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
+import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { MICRO_GLYPHS } from '@lewismoten/gamemaker-sandbox-tools/microFont';
 
 /** The block set both levels share: the Starter blocks, then this game's six signs. */
 export function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
-  const signs = {
-    start: addSign(book, pal, 'start', 'YOU START HERE', 4, 2),
-    walk: addSign(book, pal, 'walk', '← → WALK', 4),
-    jump: addSign(book, pal, 'jump', 'SPACE JUMPS', 3, 2),
-    gravity: addSign(book, pal, 'gravity', 'GRAVITY PULLS YOU DOWN', 4, 2),
-    climb: addSign(book, pal, 'climb', 'CLIMB THE LADDER', 3, 2),
-    exit: addSign(book, pal, 'exit', 'EXIT →', 3),
-  };
+  // Pack complete lines, sharing identical rendered tiles across both levels.
+  const { blocks, signs } = buildTiledSigns(
+    {
+      start: { rows: [['YOU START HERE']] },
+      walk: { rows: [['← → WALK']] },
+      jump: { rows: [['SPACE JUMPS']] },
+      gravity: { rows: [['GRAVITY PULLS YOU DOWN']] },
+      climb: { rows: [['CLIMB THE LADDER']] },
+      exit: { rows: [['EXIT →']] },
+    },
+    {
+      colors: {
+        background: skyOf(pal),
+        paper: pal.c('parch', 3),
+        ink: pal.c('ink', 0),
+        wood: pal.c('wood', 2),
+        highlight: pal.c('wood', 4),
+        shadow: pal.c('wood', 0),
+      },
+      glyphs: { ...MICRO_GLYPHS, '←': '001011111011001', '→': '100110111110100' },
+      lettersPerBlock: 3,
+      maxBlocks: 100 - book.index.size,
+    },
+  );
+  for (const [name, pic] of blocks) book.add(name, pic, { grav: PULL.down });
   return { book, signs };
 }
 
@@ -66,11 +84,13 @@ function walkJumpFall(book: Book, signs: Record<SignName, Sign>): StarterMap {
   for (const x of [12, 38, 56]) g.put(x, GROUND - 1 + (x > 48 ? 2 : 0), 'b');
   for (const x of [19, 32, 47]) g.put(x, x === 47 ? 7 : GROUND - 1, 'f');
   const m = new StarterMap(book, g.rows());
-  m.sign(6, onGround(GROUND, signs.start), signs.start);
-  m.sign(14, onGround(GROUND, signs.walk), signs.walk);
-  m.sign(28, onGround(GROUND, signs.jump), signs.jump);
-  m.sign(41, 8 - 1 - signs.gravity.board.length, signs.gravity);
-  m.sign(52, onGround(12, signs.exit), signs.exit);
+  stampTiledSign(m, 6, onGround(GROUND, signs.start), signs.start);
+  stampTiledSign(m, 14, onGround(GROUND, signs.walk), signs.walk);
+  stampTiledSign(m, 26, onGround(GROUND, signs.jump), signs.jump);
+  // Keep the gravity board above the coins, with its post just to their left.
+  stampTiledSign(m, 40, 3, signs.gravity, 4);
+  // Keep the exit board above the doorway, with a taller centered post.
+  stampTiledSign(m, 52, onGround(12, signs.exit) - 1, signs.exit, 2);
   return m;
 }
 
@@ -103,8 +123,8 @@ function climbAndFall(book: Book, signs: Record<SignName, Sign>): StarterMap {
   ] as const)
     g.put(x, y, 'f');
   const m = new StarterMap(book, g.rows());
-  m.sign(6, onGround(GROUND, signs.climb), signs.climb);
-  m.sign(43, onGround(GROUND, signs.exit), signs.exit);
+  stampTiledSign(m, 6, onGround(GROUND, signs.climb), signs.climb);
+  stampTiledSign(m, 43, onGround(GROUND, signs.exit) - 1, signs.exit, 2);
   return m;
 }
 
