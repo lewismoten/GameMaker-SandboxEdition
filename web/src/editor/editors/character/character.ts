@@ -364,10 +364,12 @@ registerEditor(['chr'], (host, project, file) => {
 
   function drawStage(seq: Sequence, i: number, pos: { x: number; y: number }, burst: string): void {
     const ctx = stage.getContext('2d')!;
-    if (!backdrop.draw(ctx)) {
-      ctx.fillStyle = '#05061a';
+    const level = backdrop.draw(ctx);
+    const light = !level && backdrop.grid() === 'light';
+    if (!level) {
+      ctx.fillStyle = light ? '#f2f3f7' : '#05061a';
       ctx.fillRect(0, 0, STAGE_W, STAGE_H);
-      ctx.fillStyle = '#12163a';
+      ctx.fillStyle = light ? '#c9ccd8' : '#12163a';
       for (let x = 0; x < STAGE_W; x += BLEN) ctx.fillRect(x, 0, 1, STAGE_H);
       for (let y = 0; y < STAGE_H; y += BLEN) ctx.fillRect(0, y, STAGE_W, 1);
     }
@@ -383,7 +385,7 @@ registerEditor(['chr'], (host, project, file) => {
       if (shown.pic2 < CHARBL) at(shown.pic2, bottomOrient(shown), pos.x, pos.y);
     }
     if (burst) {
-      ctx.fillStyle = '#ff5';
+      ctx.fillStyle = light ? '#6b4e00' : '#ff5';
       ctx.font = '9px monospace';
       ctx.fillText(burst, Math.min(pos.x + 22, STAGE_W - 70), Math.max(10, pos.y - 4));
     }
