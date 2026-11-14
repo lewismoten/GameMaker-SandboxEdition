@@ -12,6 +12,10 @@ import { fileURLToPath } from 'node:url';
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const args = process.argv.slice(2);
 const source = args.includes('--source') ? args[args.indexOf('--source') + 1] : 'tarball';
+if (source !== 'tarball' && source !== 'registry') {
+  console.error(`--source must be tarball or registry (got ${source === undefined ? 'nothing' : `"${source}"`})`);
+  process.exit(2);
+}
 const keep = args.includes('--keep');
 const names = ['engine', 'archives', 'tools'];
 const pkgName = (n) => `@lewismoten/gamemaker-sandbox-${n}`;
