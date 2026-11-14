@@ -45,7 +45,7 @@
     },
     {
       "name": "@eslint/config-array",
-      "version": "0.23.5",
+      "version": "0.23.6",
       "license": "Apache-2.0",
       "runtime": false,
       "direct": false,
@@ -325,7 +325,7 @@
     },
     {
       "name": "@typescript-eslint/eslint-plugin",
-      "version": "8.72.1",
+      "version": "8.72.2",
       "license": "MIT",
       "runtime": false,
       "direct": false,
@@ -335,7 +335,7 @@
     },
     {
       "name": "@typescript-eslint/parser",
-      "version": "8.72.1",
+      "version": "8.72.2",
       "license": "MIT",
       "runtime": false,
       "direct": false,
@@ -345,7 +345,7 @@
     },
     {
       "name": "@typescript-eslint/project-service",
-      "version": "8.72.1",
+      "version": "8.72.2",
       "license": "MIT",
       "runtime": false,
       "direct": false,
@@ -355,7 +355,7 @@
     },
     {
       "name": "@typescript-eslint/scope-manager",
-      "version": "8.72.1",
+      "version": "8.72.2",
       "license": "MIT",
       "runtime": false,
       "direct": false,
@@ -365,7 +365,7 @@
     },
     {
       "name": "@typescript-eslint/tsconfig-utils",
-      "version": "8.72.1",
+      "version": "8.72.2",
       "license": "MIT",
       "runtime": false,
       "direct": false,
@@ -375,7 +375,7 @@
     },
     {
       "name": "@typescript-eslint/type-utils",
-      "version": "8.72.1",
+      "version": "8.72.2",
       "license": "MIT",
       "runtime": false,
       "direct": false,
@@ -385,7 +385,7 @@
     },
     {
       "name": "@typescript-eslint/types",
-      "version": "8.72.1",
+      "version": "8.72.2",
       "license": "MIT",
       "runtime": false,
       "direct": false,
@@ -395,7 +395,7 @@
     },
     {
       "name": "@typescript-eslint/typescript-estree",
-      "version": "8.72.1",
+      "version": "8.72.2",
       "license": "MIT",
       "runtime": false,
       "direct": false,
@@ -405,7 +405,7 @@
     },
     {
       "name": "@typescript-eslint/utils",
-      "version": "8.72.1",
+      "version": "8.72.2",
       "license": "MIT",
       "runtime": false,
       "direct": false,
@@ -415,7 +415,7 @@
     },
     {
       "name": "@typescript-eslint/visitor-keys",
-      "version": "8.72.1",
+      "version": "8.72.2",
       "license": "MIT",
       "runtime": false,
       "direct": false,
@@ -867,7 +867,7 @@
     },
     {
       "name": "eslint",
-      "version": "10.14.0",
+      "version": "10.15.0",
       "license": "MIT",
       "runtime": false,
       "direct": true,
@@ -1907,7 +1907,7 @@
     },
     {
       "name": "semver",
-      "version": "7.8.5",
+      "version": "7.8.6",
       "license": "ISC",
       "runtime": false,
       "direct": false,
@@ -2121,7 +2121,7 @@
     },
     {
       "name": "typescript-eslint",
-      "version": "8.72.1",
+      "version": "8.72.2",
       "license": "MIT",
       "runtime": false,
       "direct": true,
