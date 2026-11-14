@@ -1,0 +1,7 @@
+{
+  "_about": "Intentional mid-air re-jumps, judged from each game's about.json and manual. Keys: '<game>' (every hero in it), '<game>/<file>' or '<game>/<file>/<key scan hex>'. Values: the reason, in plain words.",
+  "jump-boots": "the jet pack lesson: a tap in the air lifts again, on purpose (level 2 then counts the taps)",
+  "kit-moves/hero.chr/48": "the lesson about Up: it keeps lifting while held, on purpose",
+  "kit-moves/hero.chr/11": "the same lesson on W",
+  "maximus/pod.chr": "a pod's Up is thrust, not a jump (a vehicle)"
+}
