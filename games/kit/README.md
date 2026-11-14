@@ -240,7 +240,8 @@ catalogPatches.ts`) and the DOS download writes it into XFERPLAY.EXE; it never g
   which the facing check leaves alone (the editor keeps the same list in the companion file). Its `"acceptedFindings"`
   (`["hurt-lock s2 Monster 9 holds the hero while it hurts"]`) lists findings kept on purpose, by the editor's stable key
   (check, scene and title without where it was first seen, `web/src/editor/check/accepted.ts`); they never fail, as
-  the map panel's "Mark as checked: it's meant to be" ("That's on purpose" on a suggestion) leaves them out.
+  the map panel's "Mark as checked: it's meant to be" ("That's on purpose" on a suggestion) leaves them out. An entry may also be
+  `{ "finding": "<key>", "why": "<reason>" }`; `levelCheck.ts` and `check:games` list entries with no reason as advice (never a failure).
   `levelCheck.ts <id> --play [--steady <ms>] [--budget <s>]` also plays the game with the Level check's bot (the
   whole game, once as it comes and once leaving behind all it can; then each level scene alone, heading for its links,
   and again with steady hands at 300 ms between keys unless told) and lists one-way spots, things left behind, steady
