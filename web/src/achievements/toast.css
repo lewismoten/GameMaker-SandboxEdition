@@ -263,3 +263,31 @@
     display: none;
   }
 }
+
+/* a short window (a phone on its side, a game playing): a compact note, clicks and touches go
+   through it to the game except on its close button and link; it goes after 4 s (toast.ts) */
+@media (max-height: 500px) {
+  .ach-toasts:not(.ach-desk):not(.ach-placed) {
+    top: 48px;
+    right: 6px;
+    width: 150px; /* the side gap beside a 4:3 game screen; the top row stays clear */
+  }
+
+  .ach-toasts:not(.ach-desk):not(.ach-placed) .ach-toast {
+    pointer-events: none;
+  }
+
+  .ach-toasts:not(.ach-desk):not(.ach-placed) .ach-toast-close,
+  .ach-toasts:not(.ach-desk):not(.ach-placed) .ach-toast-link {
+    pointer-events: auto;
+  }
+
+  .ach-toasts:not(.ach-desk):not(.ach-placed) .ach-toast {
+    grid-template-columns: 1fr auto;
+  }
+
+  .ach-toasts:not(.ach-desk):not(.ach-placed) .ach-toast-icon,
+  .ach-toasts:not(.ach-desk):not(.ach-placed) .ach-toast-desc {
+    display: none;
+  }
+}
