@@ -15,15 +15,15 @@ import { MICRO_GLYPHS } from '@lewismoten/gamemaker-sandbox-tools/microFont';
 export function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
-  // Chunks are planned together for both levels: the YOU tile and blank padding repeat.
+  // Pack complete lines, sharing identical rendered tiles across both levels.
   const { blocks, signs } = buildTiledSigns(
     {
-      start: { rows: [[' YOU ', 'START', ' HERE']] },
-      walk: { rows: [['← → ', 'WALK']] },
-      jump: { rows: [['SPACE', ' JUMP', 'S']] },
-      gravity: { rows: [['GRAVI', 'TY   ', 'PULLS', ' YOU ', ' DOWN']] },
-      climb: { rows: [['CLIMB', ' THE ', 'LADDE', 'R']] },
-      exit: { rows: [['EXIT ', '→']] },
+      start: { rows: [['YOU START HERE']] },
+      walk: { rows: [['← → WALK']] },
+      jump: { rows: [['SPACE JUMPS']] },
+      gravity: { rows: [['GRAVITY PULLS YOU DOWN']] },
+      climb: { rows: [['CLIMB THE LADDER']] },
+      exit: { rows: [['EXIT →']] },
     },
     {
       colors: {
@@ -35,6 +35,7 @@ export function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sig
         shadow: pal.c('wood', 0),
       },
       glyphs: { ...MICRO_GLYPHS, '←': '001011111011001', '→': '100110111110100' },
+      lettersPerBlock: 3,
       maxBlocks: 100 - book.index.size,
     },
   );
@@ -85,10 +86,10 @@ function walkJumpFall(book: Book, signs: Record<SignName, Sign>): StarterMap {
   const m = new StarterMap(book, g.rows());
   stampTiledSign(m, 6, onGround(GROUND, signs.start), signs.start);
   stampTiledSign(m, 14, onGround(GROUND, signs.walk), signs.walk);
-  stampTiledSign(m, 28, onGround(GROUND, signs.jump), signs.jump);
-  // Raise this wider board above the coins; its one post tile repeats down to the ground.
-  stampTiledSign(m, 41, 3, signs.gravity, 2);
-  // Keep the wider exit board above the doorway, with a taller centered post.
+  stampTiledSign(m, 26, onGround(GROUND, signs.jump), signs.jump);
+  // Keep the gravity board above the coins, with its post just to their left.
+  stampTiledSign(m, 40, 3, signs.gravity, 4);
+  // Keep the exit board above the doorway, with a taller centered post.
   stampTiledSign(m, 52, onGround(12, signs.exit) - 1, signs.exit, 2);
   return m;
 }

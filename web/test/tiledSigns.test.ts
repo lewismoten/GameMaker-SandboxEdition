@@ -9,58 +9,80 @@ import { CREDITS } from '../../games/first-steps/src/text';
 const options = { colors: { background: 0, paper: 1, ink: 2, wood: 3, highlight: 4, shadow: 5 } };
 
 describe('game-wide tiled signs', () => {
-  it('reuses chunks across signs and levels, with eight separate frame tiles and one post', () => {
+  it('shares repeated rendered letters, borders/corners and one post across levels', () => {
     const { blocks, signs } = buildTiledSigns(
-      {
-        first: { rows: [['PICK ', 'STARS']] },
-        nextLevel: { rows: [['STARS', 'PICK '], ['STARS']] },
-      },
+      { first: { rows: [['PICK STARS']] }, nextLevel: { rows: [['PICK ', 'STARS']] }, other: { rows: [['EXIT >']] } },
       options,
     );
-    expect(blocks.size).toBe(12); // eight borders, one post, two chunks and blank padding
-    expect(signs.first.board[1][1]).toBe(signs.nextLevel.board[1][2]);
-    expect(signs.first.board[1][2]).toBe(signs.nextLevel.board[2][2]);
-    expect(signs.first.board[0]).toEqual(signs.nextLevel.board[0]);
-    expect(signs.first.post).toEqual(signs.nextLevel.post);
-    const bottom = blocks.get(signs.first.board.at(-1)![signs.first.post!.x])!;
-    const post = blocks.get(signs.first.post!.block)!;
-    expect(bottom.get(9, 19)).toBe(options.colors.shadow);
-    expect(post.get(9, 0)).toBe(options.colors.wood);
-    for (const [id, p] of blocks) {
-      expect([p.w, p.h]).toEqual([20, 20]);
-      if (id.includes('letters:')) expect([...p.px].every((c) => c === 1 || c === 2)).toBe(true);
-    }
-    const star = blocks.get(signs.first.board[1][2])!;
-    expect([...star.px].filter((c) => c === 2).length).toBeGreaterThan(20);
+    expect(signs.first).toEqual(signs.nextLevel);
+    expect(signs.first.board).toHaveLength(1);
+    expect(signs.first.board[0][0]).toBe(signs.other.board[0][0]);
+    expect(signs.first.board[0].at(-1)).toBe(signs.other.board[0].at(-1));
+    expect(signs.first.post).toEqual(signs.other.post);
+    expect([...blocks.keys()].filter((k) => k.endsWith('.post'))).toHaveLength(1);
+    expect(new Set([...blocks.values()].map((p) => p.px.join(','))).size).toBe(blocks.size);
+    for (const p of blocks.values()) expect([p.w, p.h]).toEqual([20, 20]);
   });
 
-  it('stamps exactly one centered post column, including even chunk counts and taller posts', () => {
-    for (const row of [['ONE'], ['ONE', 'TWO'], ['ONE', 'TWO', 'THREE']]) {
-      const { signs } = buildTiledSigns({ sign: { rows: [row] } }, options);
+  it('packs letters across tile boundaries with single spaces and centers each line', () => {
+    for (const count of [3, 4, 5] as const) {
+      const { blocks, signs } = buildTiledSigns(
+        { packed: { rows: [['GRAVITY PULLS YOU DOWN'], ['EXIT >']] }, chunks: { rows: [['GRAVI', 'TY   ', 'PULLS', ' YOU ', ' DOWN'], ['EXIT >']] } },
+        { ...options, lettersPerBlock: count },
+      );
+      expect(signs.packed).toEqual(signs.chunks);
+      const board = signs.packed.board;
+      expect(board).toHaveLength(2);
+      const pitch = count === 3 ? 6 : count === 4 ? 5 : 4;
+      const glyphWidth = count === 3 ? 5 : 3;
+      const glyphHeight = count === 3 ? 10 : 5;
+      ['GRAVITY PULLS YOU DOWN', 'EXIT >'].forEach((line, y) => {
+        const ink: [number, number][] = [];
+        board[y].forEach((id, bx) => {
+          const p = blocks.get(id)!;
+          for (let py = 0; py < 20; py++) for (let px = 0; px < 20; px++) if (p.get(px, py) === options.colors.ink) ink.push([bx * 20 + px, py]);
+        });
+        const xs = ink.map(([x]) => x),
+          ys = ink.map(([, y]) => y);
+        // Every ink pixel stays on the continuous character grid, including tiles
+        // where a letter straddles the boundary. Text margins differ by at most 1 px.
+        const x0 = 20 + Math.floor(((board[y].length - 2) * 20 - ((line.length - 1) * pitch + glyphWidth)) / 2);
+        expect(Math.min(...xs)).toBe(x0);
+        expect(Math.abs(Math.min(...xs) - (board[y].length * 20 - 1 - Math.max(...xs)))).toBeLessThanOrEqual(1);
+        expect(Math.abs(Math.min(...ys) - (19 - Math.max(...ys)))).toBeLessThanOrEqual(1);
+        expect(Math.max(...ys) - Math.min(...ys) + 1).toBe(glyphHeight);
+        for (const [x] of ink) {
+          const index = Math.floor((x - x0) / pitch);
+          expect(line[index]).not.toBe(' ');
+          expect((x - x0) % pitch).toBeLessThan(glyphWidth);
+        }
+      });
+    }
+  });
+
+  it('uses the minimum odd interior width and stamps one centered post column', () => {
+    for (const text of ['ONE', 'ONE TWO', 'ONE TWO THREE']) {
+      const { signs } = buildTiledSigns({ sign: { rows: [[text]] } }, options);
       const writes: [number, number, string][] = [];
       stampTiledSign({ set: (...cell) => writes.push(cell) }, 10, 20, signs.sign, 2);
       const width = signs.sign.board[0].length;
-      expect(width % 2).toBe(1);
+      const needed = Math.ceil(((text.length - 1) * 4 + 3 + 4) / 20);
+      expect(width - 2).toBe(needed % 2 ? needed : needed + 1);
       expect(writes.slice(-2)).toEqual([
-        [10 + (width - 1) / 2, 23, 'tiledSign.post'],
-        [10 + (width - 1) / 2, 24, 'tiledSign.post'],
+        [10 + (width - 1) / 2, 21, 'tiledSign.post'],
+        [10 + (width - 1) / 2, 22, 'tiledSign.post'],
       ]);
     }
   });
 
-  it('omits posts for wall signs and supports four-letter tiles', () => {
+  it('omits posts for wall signs and rejects missing glyphs, empty rows and budget overflow', () => {
     const { blocks, signs } = buildTiledSigns({ wall: { rows: [['four']], post: false } }, { ...options, lettersPerBlock: 4 });
     expect(signs.wall.post).toBeUndefined();
     expect(blocks.has('tiledSign.post')).toBe(false);
-    expect(blocks.has('tiledSign.letters:FOUR')).toBe(true);
-  });
-
-  it('rejects overflow, unsupported letters, empty rows and insufficient block budgets', () => {
-    expect(() => buildTiledSigns({ a: { rows: [['SIXSIX']] } }, options)).toThrow('exceeds 5');
+    expect(signs.wall.board[0]).toHaveLength(4); // even interior: no post to center
     expect(() => buildTiledSigns({ a: { rows: [['☃']] } }, options)).toThrow('No tiny sign glyph');
-    expect(() => buildTiledSigns({ a: { rows: [] } }, options)).toThrow('nonempty rows');
-    expect(() => buildTiledSigns({ a: { rows: [[]] } }, options)).toThrow('nonempty rows');
-    expect(() => buildTiledSigns({ a: { rows: [['A']] } }, { ...options, maxBlocks: 9 })).toThrow('budget');
+    for (const rows of [[], [[]], [['   ']]]) expect(() => buildTiledSigns({ a: { rows } }, options)).toThrow('nonempty rows');
+    expect(() => buildTiledSigns({ a: { rows: [['A']] } }, { ...options, maxBlocks: 2 })).toThrow('budget');
     expect(() => buildTiledSigns({ a: { rows: [['A']] } }, { ...options, maxBlocks: 101 })).toThrow('0 to 100');
   });
 
@@ -74,6 +96,8 @@ describe('game-wide tiled signs', () => {
     const map = levels[0].map.done();
     const at = (x: number, y: number) => map.blocks[(ORIGIN + y) * MLEN + ORIGIN + x];
     for (const x of [45, 46, 47]) expect(at(x, 6)).toBe(book.n('coin'));
+    for (const x of [34, 35]) for (const y of [8, 9]) expect(at(x, y)).toBe(book.n('brick'));
+    for (let x = 40; x <= 48; x++) expect(at(x, 8)).toBe(book.n('grass'));
     expect(at(55, 10)).toBe(book.n('doorTop'));
     expect(at(55, 11)).toBe(book.n('doorBottom'));
     for (const level of levels) {

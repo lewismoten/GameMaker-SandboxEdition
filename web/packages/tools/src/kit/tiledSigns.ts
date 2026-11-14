@@ -4,7 +4,7 @@ import { MICRO_GLYPHS, type MicroGlyphs } from '../microFont';
 import { Pixels } from './pixels';
 
 export interface TiledSignText {
-  /** Rows of explicit chunks, e.g. [['PICK ', 'STARS']]. Plan repeated chunks across the game. */
+  /** Text lines split into optional chunks; joined without block padding, then whitespace normalized. */
   rows: readonly (readonly string[])[];
   post?: boolean;
 }
@@ -18,8 +18,8 @@ export interface TiledSign {
 
 export interface TiledSignOptions {
   colors: { background: number; paper: number; ink: number; wood: number; highlight: number; shadow: number };
-  /** Three-pixel letters with a one-pixel gap: four or five fit a 20-pixel block. */
-  lettersPerBlock?: 4 | 5;
+  /** Three uses larger 5×10 letters; four/five use the compact 3×5 font. */
+  lettersPerBlock?: 3 | 4 | 5;
   glyphs?: MicroGlyphs;
   /** Remaining budget in the game's block set, after its other art (default 100). */
   maxBlocks?: number;
@@ -35,72 +35,63 @@ export function buildTiledSigns<K extends string>(
   signs: Record<K, TiledSign>;
 } {
   const { colors: c, lettersPerBlock: count = 5, glyphs = MICRO_GLYPHS, maxBlocks = 100, prefix = 'tiledSign' } = options;
-  if (count !== 4 && count !== 5) throw new Error('A sign block holds four or five tiny letters');
+  if (count !== 3 && count !== 4 && count !== 5) throw new Error('A sign block holds three, four or five letters');
   if (!Number.isInteger(maxBlocks) || maxBlocks < 0 || maxBlocks > 100) throw new Error('Sign block budget must be 0 to 100');
   const blocks = new Map<string, Pixels>();
   const signs = {} as Record<K, TiledSign>;
-  const name = (id: string) => `${prefix}.${id}`;
+  const pictures = new Map<string, string>();
   const add = (id: string, pic: Pixels) => {
-    const key = name(id);
-    if (blocks.has(key)) return key;
+    // Centering can split a glyph across tiles. Deduplicate actual pixels, including
+    // blank tiles and repeated fragments, rather than assuming chunks align to blocks.
+    const pixels = pic.px.join(',');
+    const shared = pictures.get(pixels);
+    if (shared) return shared;
     if (blocks.size >= maxBlocks) throw new Error(`Signs exceed the ${maxBlocks}-block budget at ${id}`);
+    const key = `${prefix}.${id}`;
     blocks.set(key, pic);
+    pictures.set(pixels, key);
     return key;
   };
-  const frame = (id: string) => {
-    const key = name(id);
-    if (blocks.has(key)) return key;
-    const p = new Pixels(20, 20, c.background);
-    if (id === 'post') p.rect(8, 0, 4, 20, c.wood).rect(8, 0, 1, 20, c.highlight).rect(11, 0, 1, 20, c.shadow);
-    else {
-      // Vertical edges occupy the inner three pixels of their tiles. Horizontal edges
-      // include paper up to the next row, so the bottom meets the post without a gap.
-      const left = id.includes('left');
-      const right = id.includes('right');
-      const top = id.includes('top');
-      const bottom = id.includes('bottom');
-      if (left || right) {
-        const x = left ? 17 : 0;
-        p.rect(x, 0, 3, 20, c.wood);
-        p.rect(left ? 17 : 2, 0, 1, 20, left ? c.highlight : c.shadow);
-      } else {
-        p.rect(0, 0, 20, 20, c.paper);
-        p.rect(0, top ? 0 : 17, 20, 3, c.wood);
-      }
-      if (top) p.rect(left ? 17 : 0, 0, left || right ? 3 : 20, 1, c.highlight);
-      if (bottom) p.rect(left ? 17 : 0, 19, left || right ? 3 : 20, 1, c.shadow);
-    }
-    return add(id, p);
-  };
-  const letters = (raw: string) => {
-    const text = raw.toUpperCase();
-    if ([...text].length > count) throw new Error(`Sign chunk "${raw}" exceeds ${count} letters`);
-    const padded = text.padEnd(count, ' ');
-    const key = name(`letters:${padded}`);
-    if (blocks.has(key)) return key;
-    const p = new Pixels(20, 20, c.paper);
-    const x0 = Math.floor((20 - (count * 4 - 1)) / 2);
-    [...padded].forEach((ch, k) => {
-      const glyph = glyphs[ch];
-      if (glyph === undefined) throw new Error(`No tiny sign glyph for "${ch}"`);
-      for (let i = 0; i < 15; i++) if (glyph[i] === '1') p.set(x0 + k * 4 + (i % 3), 7 + Math.floor(i / 3), c.ink);
-    });
-    return add(`letters:${padded}`, p);
-  };
+  const glyphWidth = count === 3 ? 5 : 3;
+  const glyphHeight = count === 3 ? 10 : 5;
+  const pitch = count === 3 ? 6 : count === 4 ? 5 : 4;
   for (const key of Object.keys(texts) as K[]) {
     const { rows, post = true } = texts[key];
-    if (!rows.length || rows.some((r) => !r.length)) throw new Error(`Sign ${key} needs nonempty rows`);
-    let width = Math.max(...rows.map((r) => r.length));
-    // Odd interior width gives an exact center in one block, with no split post artwork.
-    if (width % 2 === 0) width++;
-    const edge = (side: string) => [frame(`${side}-left`), ...Array.from({ length: width }, () => frame(side)), frame(`${side}-right`)];
-    const board = [edge('top')];
-    for (const row of rows) {
-      const padding = Math.floor((width - row.length) / 2);
-      board.push([frame('left'), ...Array.from({ length: width }, (_, x) => letters(row[x - padding] ?? '')), frame('right')]);
-    }
-    board.push(edge('bottom'));
-    signs[key] = { board, ...(post ? { post: { x: (width + 1) / 2, block: frame('post') } } : {}) };
+    const lines = rows.map((r) => r.join('').toUpperCase().replace(/\s+/g, ' ').trim());
+    if (!lines.length || lines.some((r) => !r.length)) throw new Error(`Sign ${key} needs nonempty rows`);
+    const widths = lines.map((line) => ([...line].length - 1) * pitch + glyphWidth);
+    let width = Math.ceil((Math.max(...widths) + 4) / 20);
+    // Odd interior width puts the shared post exactly under the center block.
+    if (post && width % 2 === 0) width++;
+    const board: string[][] = [];
+    lines.forEach((line, row) => {
+      const top = row === 0;
+      const bottom = row === lines.length - 1;
+      const side = top && bottom ? 'single' : top ? 'top' : bottom ? 'bottom' : 'middle';
+      const edge = (left: boolean) => {
+        const p = new Pixels(20, 20, c.background);
+        const x = left ? 17 : 0;
+        p.rect(x, 0, 3, 20, c.wood).rect(left ? 17 : 2, 0, 1, 20, left ? c.highlight : c.shadow);
+        if (top) p.rect(x, 0, 3, 1, c.highlight);
+        if (bottom) p.rect(x, 19, 3, 1, c.shadow);
+        return add(`${side}-${left ? 'left' : 'right'}`, p);
+      };
+      const strip = new Pixels(width * 20, 20, c.paper);
+      if (top) strip.rect(0, 0, strip.w, 3, c.wood).rect(0, 0, strip.w, 1, c.highlight);
+      if (bottom) strip.rect(0, 17, strip.w, 3, c.wood).rect(0, 19, strip.w, 1, c.shadow);
+      const x0 = Math.floor((strip.w - widths[row]) / 2);
+      const y0 = Math.floor((20 - glyphHeight) / 2);
+      [...line].forEach((ch, k) => {
+        const glyph = glyphs[ch];
+        if (glyph === undefined) throw new Error(`No tiny sign glyph for "${ch}"`);
+        for (let y = 0; y < glyphHeight; y++)
+          for (let x = 0; x < glyphWidth; x++)
+            if (glyph[Math.floor((y * 5) / glyphHeight) * 3 + Math.floor((x * 3) / glyphWidth)] === '1') strip.set(x0 + k * pitch + x, y0 + y, c.ink);
+      });
+      board.push([edge(true), ...Array.from({ length: width }, (_, x) => add(`letters:${blocks.size}`, strip.crop(x * 20, 0, 20, 20))), edge(false)]);
+    });
+    const postBlock = () => add('post', new Pixels(20, 20, c.background).rect(8, 0, 4, 20, c.wood).rect(8, 0, 1, 20, c.highlight).rect(11, 0, 1, 20, c.shadow));
+    signs[key] = { board, ...(post ? { post: { x: (width + 1) / 2, block: postBlock() } } : {}) };
   }
   return { blocks, signs };
 }
