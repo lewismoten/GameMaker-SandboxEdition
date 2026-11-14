@@ -90,7 +90,7 @@
   fill: #f2f2f2;
 }
 
-.cw-sheet {
+.pp-cw-sheet {
   display: flex;
   flex-direction: column;
   gap: 2cqw;
@@ -103,13 +103,21 @@
   font-size: 2.4cqw;
 }
 
-.cw-sheet .cw-svg {
+.pp-cw-sheet .cw-svg {
   width: 82cqw;
   margin: 0 auto;
 }
 
-.cw-sheet .cw-howto,
-.cw-sheet .cw-steps {
+.pp-cw-sheet:has(.cw-howto) .cw-svg {
+  width: 72cqw; /* leaves the room a long how-to needs: it used to run off the bottom of the page */
+}
+
+.pp-cw-sheet .cw-howto p {
+  margin: 0 0 1cqw;
+}
+
+.pp-cw-sheet .cw-howto,
+.pp-cw-sheet .cw-steps {
   font-size: 2cqw;
   line-height: 1.4;
 }
