@@ -1,6 +1,6 @@
 // HOME KEYS' three levels. Each is painted on a Grid (a block a character, see games/kit/starter/map.ts
-// for what the letters mean), then given its signs, coins and jellies. No new blocks: what is new is in
-// the hero's character file (hero.ts) and in which keys the levels ask for.
+// for what the letters mean), then given its signs, coins and jellies. The hero's character
+// file (hero.ts) defines the keys each level asks for; each map allocates its own sign tiles.
 //
 //   1. Arrows, Space, Enter: the arrows walk, Space jumps a wall, Enter throws a star at the jellies that
 //                    block a tunnel. A sign stands before the first place each key is needed.
@@ -10,39 +10,67 @@
 //                    leaps up and left to a ledge higher still; Q also leaps up and left onto the other shelf.
 //                    They are extra: the way to the door is flat.
 // Every edge is a hedge or a wall you can see, so Mara is never stopped by something she can't.
-import { Book } from '../../kit/starter/book';
+import { Book, PULL } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
-import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
-import { addSign, type Sign } from '../../kit/starter/sign';
+import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
+import { buildTiledSigns, stampTiledSign, type TiledSign as Sign, type TiledSignText } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { MICRO_GLYPHS } from '@lewismoten/gamemaker-sandbox-tools/microFont';
 import { JELLY } from './monsters';
 
 export type SignName = 'walk' | 'jump' | 'throw' | 'exit' | 'arc' | 'higher' | 'shelves' | 'old';
 
-/** The signs' words and sizes. */
-const WORDS: Record<SignName, { text: string; w: number; h: number }> = {
-  walk: { text: 'THE ARROW KEYS WALK. A AND D WALK TOO', w: 4, h: 3 },
-  jump: { text: 'SPACE JUMPS. HOLD AN ARROW TOO, TO JUMP THAT WAY', w: 4, h: 4 },
-  throw: { text: 'A JELLY BLOCKS THE TUNNEL. ENTER THROWS A STAR', w: 4, h: 4 },
-  exit: { text: 'EXIT →', w: 3, h: 1 },
-  arc: { text: 'THE COINS CURVE UP AND RIGHT. NO DIAGONAL KEY NEEDED', w: 4, h: 4 },
-  higher: { text: 'SPACE, THEN HOLD RIGHT. THAT IS THE SAME CURVE', w: 4, h: 4 },
-  shelves: { text: 'EXTRA COINS UP HIGH. E LEAPS UP AND RIGHT, Q UP AND LEFT', w: 4, h: 4 },
-  // nine lines of at most 8 letters (a 9-letter line touches the frame), "7 AND 9" and "Q AND E" kept whole
-  old: { text: 'THE OLD NUMBER PAD KEYS 7 AND 9 MOVED ON A SLANT. Q AND E HERE, IF YOU LIKE', w: 4, h: 5 },
+/** All sign words, with widths limited by the existing scenery. */
+const WORDS: Record<SignName, TiledSignText> = {
+  walk: { rows: [['THE ARROW KEYS WALK. A AND D WALK TOO']], maxWidth: 5 },
+  jump: { rows: [['SPACE JUMPS. HOLD AN ARROW TOO, TO JUMP THAT WAY']], maxWidth: 7 },
+  throw: { rows: [['A JELLY BLOCKS'], ['THE TUNNEL.'], ['ENTER THROWS'], ['A STAR']], maxWidth: 7 },
+  exit: { rows: [['EXIT →']], maxWidth: 5 },
+  arc: { rows: [['THE COINS CURVE'], ['UP AND RIGHT.'], ['NO DIAGONAL'], ['KEY NEEDED']], maxWidth: 7 },
+  higher: { rows: [['SPACE, THEN HOLD RIGHT. THAT IS THE SAME CURVE']], maxWidth: 7 },
+  shelves: { rows: [['EXTRA COINS UP'], ['HIGH. E LEAPS UP'], ['AND RIGHT, Q UP'], ['AND LEFT']], maxWidth: 7 },
+  old: { rows: [['THE OLD NUMBER PAD KEYS 7 AND 9 MOVED ON A SLANT. Q AND E HERE, IF YOU LIKE']], maxWidth: 7 },
 };
 
-function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
+function buildBlocks(pal: Pal, include: SignName[]): { book: Book; signs: Record<SignName, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
-  const signs = {} as Record<SignName, Sign>;
-  for (const n of Object.keys(WORDS) as SignName[]) signs[n] = addSign(book, pal, `${n}.sign`, WORDS[n].text, WORDS[n].w, WORDS[n].h);
+  const colors = {
+    background: skyOf(pal),
+    paper: pal.c('parch', 3),
+    ink: pal.c('ink', 0),
+    wood: pal.c('wood', 2),
+    highlight: pal.c('wood', 4),
+    shadow: pal.c('wood', 0),
+  };
+  const glyphs = { ...MICRO_GLYPHS, '→': '100110111110100' };
+  // Each map shares the full vocabulary, allocating only its own signs.
+  // Compact letters keep the narrowest boards below the top visible row.
+  const compact = buildTiledSigns(WORDS, {
+    colors,
+    glyphs,
+    compact: true,
+    include: include.filter((n) => ['walk', 'old'].includes(n)),
+    maxBlocks: 100,
+  });
+  const large = buildTiledSigns(WORDS, {
+    colors,
+    glyphs,
+    lettersPerBlock: 3,
+    include: include.filter((n) => !['walk', 'old'].includes(n)),
+    prefix: 'largeSign',
+    maxBlocks: Math.min(100 - compact.blocks.size, 150 - book.index.size - compact.blocks.size),
+  });
+  for (const [name, pic] of [...compact.blocks, ...large.blocks]) book.add(name, pic, { grav: PULL.down });
+  const signs = { ...compact.signs, ...large.signs };
   return { book, signs };
 }
 
 export interface Level {
   file: string;
+  /** This map’s sign vocabulary; gameplay block numbers stay fixed across maps. */
+  book: Book;
   title: string;
   /** What the level card says under the title. */
   hint: string;
@@ -160,10 +188,10 @@ function arrowsSpaceEnter(book: Book, signs: Record<SignName, Sign>): StarterMap
   );
   const m = new StarterMap(book, g.rows());
   for (const x of L1.jellies) m.mon(JELLY, x, G - 1);
-  m.sign(6, onGround(G, signs.walk), signs.walk);
-  m.sign(12, onGround(G, signs.jump), signs.jump);
-  m.sign(25, onGround(G, signs.throw), signs.throw);
-  m.sign(53, onGround(G, signs.exit), signs.exit);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 5, onGround(G, signs.walk), signs.walk);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 10, onGround(G, signs.jump), signs.jump);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 23, onGround(G, signs.throw), signs.throw);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 52, onGround(G, signs.exit), signs.exit);
   return m;
 }
 
@@ -193,9 +221,9 @@ function noDiagonal(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [11, 33, 42],
   );
   const m = new StarterMap(book, g.rows());
-  m.sign(6, onGround(G, signs.arc), signs.arc);
-  m.sign(29, onGround(G, signs.higher), signs.higher);
-  m.sign(51, onGround(G, signs.exit), signs.exit);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 5, onGround(G, signs.arc), signs.arc);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 27, onGround(G, signs.higher), signs.higher);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 50, onGround(G, signs.exit), signs.exit);
   return m;
 }
 
@@ -222,20 +250,22 @@ function leapShelves(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [15, 34, 50],
   );
   const m = new StarterMap(book, g.rows());
-  m.sign(8, onGround(G, signs.shelves), signs.shelves);
-  m.sign(28, onGround(G, signs.old), signs.old);
-  m.sign(57, onGround(G, signs.exit), signs.exit);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 6, onGround(G, signs.shelves), signs.shelves);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 27, onGround(G, signs.old), signs.old);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 56, onGround(G, signs.exit), signs.exit);
   return m;
 }
 
 /** The levels in order. */
 export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
   const pal = buildStarterPalette(undefined, 'home-keys');
-  const { book, signs } = buildBlocks(pal);
+  const b0 = buildBlocks(pal, ['walk', 'jump', 'throw', 'exit']);
+  const b1 = buildBlocks(pal, ['arc', 'higher', 'exit']);
+  const b2 = buildBlocks(pal, ['shelves', 'old', 'exit']);
   const levels: Level[] = [
-    { file: 'one', title: 'Arrows, Space, Enter', hint: 'Walk, jump, throw.', map: arrowsSpaceEnter(book, signs) },
-    { file: 'two', title: 'No Diagonal Needed', hint: 'Space, then hold Right.', map: noDiagonal(book, signs) },
-    { file: 'three', title: 'Leap Shelves', hint: 'Q and E, only for extras.', map: leapShelves(book, signs) },
+    { file: 'one', title: 'Arrows, Space, Enter', hint: 'Walk, jump, throw.', book: b0.book, map: arrowsSpaceEnter(b0.book, b0.signs) },
+    { file: 'two', title: 'No Diagonal Needed', hint: 'Space, then hold Right.', book: b1.book, map: noDiagonal(b1.book, b1.signs) },
+    { file: 'three', title: 'Leap Shelves', hint: 'Q and E, only for extras.', book: b2.book, map: leapShelves(b2.book, b2.signs) },
   ];
-  return { book, pal, levels };
+  return { book: b0.book, pal, levels };
 }

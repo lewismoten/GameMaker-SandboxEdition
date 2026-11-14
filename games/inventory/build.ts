@@ -42,9 +42,8 @@ const cheer = heroPicture(heroBlocks, 'cheer.top', 'jump');
 // the exit door as a picture to stand in the scenes: its sky made clear
 const door = heroPicture(book, 'doorTop', 'doorBottom').map((_x, _y, c) => (c === skyOf(pal) ? 255 : c));
 
-// the game's shared data: one block set, one palette, one hero, one set of monsters, one song
+// The shared palette, hero, monsters and song; background tiles are written per level.
 disk.put('inv.pal', serializePalette(pal.pal));
-disk.put('inv.bbl', serializeBlocks(book.finish()));
 disk.put('inv.mbl', serializeBlocks(finishMonsterPictures(monsterBlocks)));
 disk.put('inv.mon', serializeMonsters(monsterSet(monsterBlocks)));
 disk.put('hero.cbl', serializeBlocks(heroBlocks.finish()));
@@ -56,8 +55,9 @@ disk.put('hero.chr', serializeCharacter(heroChar));
 disk.put('inv.snd', serializeSoundSet(itemSounds()));
 disk.put('inv.cmf', song());
 
-// each level's map and its card
+// Each level’s background tiles, map and card.
 levels.forEach((l, i) => {
+  disk.put(`${l.file}.bbl`, serializeBlocks(l.book.finish()));
   disk.put(`${l.file}.map`, serializeMap(l.map.done()));
   disk.put(`${l.file}.gif`, gif(cardPicture(pal, book, hero, i + 1, levels.length, l.title, l.hint), pal));
   disk.put(`${l.file}.lst`, serializeSlideList([{ name: `${l.file}.gif`, pause: 3 }]));
