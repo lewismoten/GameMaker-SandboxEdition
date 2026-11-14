@@ -1,4 +1,4 @@
-// What the character's preview stage shows behind the hero: the dark grid, or a level of the
+// What the character's preview stage shows behind the hero: a dark or light grid, or a level of the
 // game (the map around where the hero arrives, its monsters included), so a move can be
 // judged against real scenery. The choice is kept in the companion file, never in the .chr.
 import { h } from '../../core/ui';
@@ -13,9 +13,15 @@ import { BLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 
 interface StageBackdrop {
   el: HTMLElement;
-  /** Draws the chosen level onto the stage; false when the grid is chosen (or the level can't be drawn). */
+  /** Draws the chosen level onto the stage; false when a grid is chosen (or the level can't be drawn). */
   draw(ctx: CanvasRenderingContext2D): boolean;
+  /** Which grid to paint when no level is drawn. */
+  grid(): 'dark' | 'light';
 }
+
+/** The stage choices that aren't levels, kept as negative numbers in the companion file. */
+const DARK = -1;
+const LIGHT = -2;
 
 export function stageBackdrop(project: Project, file: string, w: number, h_: number, onChange: () => void): StageBackdrop {
   const game = project.game();
@@ -24,7 +30,7 @@ export function stageBackdrop(project: Project, file: string, w: number, h_: num
   const mine = (i: number) => normalize(game.scenes[i].files[5] ?? '') === file;
   levels.sort((a, b) => Number(mine(b)) - Number(mine(a)));
   let scene = project.extras<number>(file, 'stage', -1);
-  if (!levels.includes(scene)) scene = -1;
+  if (scene !== LIGHT && !levels.includes(scene)) scene = DARK;
   let shot: HTMLCanvasElement | undefined;
   const build = () => {
     shot = undefined;
@@ -44,20 +50,22 @@ export function stageBackdrop(project: Project, file: string, w: number, h_: num
     {
       onchange: () => {
         scene = Number(sel.value);
-        project.setExtras(file, 'stage', scene < 0 ? undefined : scene);
+        project.setExtras(file, 'stage', scene === DARK ? undefined : scene);
         build();
         onChange();
       },
     },
-    h('option', { value: '-1', selected: scene < 0 }, 'Dark grid'),
+    h('option', { value: String(DARK), selected: scene === DARK }, 'Dark grid'),
+    h('option', { value: String(LIGHT), selected: scene === LIGHT }, 'Light grid'),
     ...levels.map((i) => h('option', { value: String(i), selected: i === scene }, `${sceneName(project, i)}${mine(i) ? '' : ' (another hero)'}`)),
   );
   return {
-    el: levels.length ? h('label', { class: 'field chr-stage-bg', title: 'What the hero is shown in front of' }, h('span', null, 'Behind'), sel) : h('span'),
+    el: h('label', { class: 'field chr-stage-bg', title: 'What the hero is shown in front of' }, h('span', null, 'Behind'), sel),
     draw(ctx) {
       if (!shot) return false;
       ctx.drawImage(shot, 0, 0);
       return true;
     },
+    grid: () => (scene === LIGHT ? 'light' : 'dark'),
   };
 }
