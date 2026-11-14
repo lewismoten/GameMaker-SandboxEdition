@@ -138,10 +138,13 @@ export function roleLabel(game: Game, i: number, files?: SceneFiles): string {
 }
 
 /** A map can belong to several scenes, each with its own role. Never infer from its filename. */
+/** A plain level shows just its name, like the scene board; other roles add a tag. */
+const withRole = (name: string, role: string): string => (role === 'level' ? name : `${name} · ${role}`);
+
 export function mapSceneLabels(game: Game, file: string, files?: SceneFiles): string[] {
   const labels = game.scenes.flatMap((s, i) =>
     sceneKind(s) === 'adventure' && s.files[1]?.toLowerCase() === file.toLowerCase()
-      ? [`${fromCp437(s.desc).trim() || `Scene ${i}`} · ${roleLabel(game, i, files)}`]
+      ? [withRole(fromCp437(s.desc).trim() || `Scene ${i}`, roleLabel(game, i, files))]
       : [],
   );
   return [...new Set(labels)];
