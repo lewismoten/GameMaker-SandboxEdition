@@ -18,7 +18,7 @@ import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { skyOf, type Pal } from '../../kit/starter/palette';
-import { addSign, type Sign } from '../../kit/starter/sign';
+import { buildTiledSigns, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { MIRAGE } from './monsters';
 import { buildPalettes } from './palettes';
 import { BAND_W, CLEAR, bandCell, bandPicture, rockCell, stillCell } from './scene';
@@ -26,10 +26,8 @@ import { COLS, DOOR_COL, GROUND_ROW, HAZE_ROWS, LAG, LONG, LONG_SIGNS, PUDDLES, 
 
 export type SignName = 'jelly' | 'rises' | 'puddle' | 'mirage' | 'palette' | 'still';
 
-/** The sign boards' size in blocks: four across, three high, hung on two posts in the sky. */
-const SIGN = { w: 4, h: 3 } as const;
-/** Where a sign's top-left block is (its posts stand on row 3, above the hills). */
-const SIGN_AT = { left: [1, 0], right: [11, 0] } as const;
+/** Boards start below the top visible row; their centered posts end above the hills. */
+const SIGN_AT = { left: [1, 1], right: [9, 1] } as const;
 const SIGN_WORDS: Record<SignName, string> = {
   jelly: 'ALL ROWS SWAY TOGETHER. IT LOOKS LIKE JELLY',
   rises: 'EACH ROW SWAYS AFTER THE ROW UNDER IT, LIKE HOT AIR',
@@ -61,7 +59,23 @@ export class Stage {
   constructor(readonly pal: Pal) {
     addStarterBlocks(this.book, pal);
     this.band = bandPicture(pal);
-    for (const n of Object.keys(SIGN_WORDS) as SignName[]) this.signs[n] = addSign(this.scratch, pal, n, SIGN_WORDS[n], SIGN.w, SIGN.h);
+    const { blocks, signs } = buildTiledSigns(
+      Object.fromEntries((Object.keys(SIGN_WORDS) as SignName[]).map((n) => [n, { rows: [[SIGN_WORDS[n]]] }])) as Record<SignName, { rows: string[][] }>,
+      {
+        compact: true,
+        maxWidth: 7,
+        colors: {
+          background: skyOf(pal),
+          paper: pal.c('parch', 3),
+          ink: pal.c('ink', 0),
+          wood: pal.c('wood', 2),
+          highlight: pal.c('wood', 4),
+          shadow: pal.c('wood', 0),
+        },
+      },
+    );
+    Object.assign(this.signs, signs);
+    for (const [name, pic] of blocks) this.scratch.add(name, pic);
   }
 
   /** A block of this picture (the same picture is the same block), solid or air. */
@@ -114,11 +128,10 @@ export class Stage {
 
   /** The sign `n` stamped on the map with its top-left block at (x, y), and its posts under it. */
   sign(m: StarterMap, n: SignName, at: readonly [number, number]): void {
-    const { board, legs } = this.signs[n];
+    const { board, post } = this.signs[n];
     const put = (src: string, x: number, y: number) => m.set(x, y, this.plain(this.over(this.scratch.pics.get(src)!, this.under(x, y))));
     board.forEach((row, dy) => row.forEach((name, dx) => put(name, at[0] + dx, at[1] + dy)));
-    put(legs[0], at[0], at[1] + board.length);
-    put(legs[1], at[0] + SIGN.w - 1, at[1] + board.length);
+    if (post) put(post.block, at[0] + post.x, at[1] + board.length);
   }
 
   /** The exit door standing on the road at column `x`, its bottom on row 8. */
@@ -198,8 +211,8 @@ function theMirage(st: Stage): StarterMap {
   const m = paint(st, LONG.width, LONG.wall, LONG.door);
   lay(st, m, 1, LONG.wall - 1, rising);
   lay(st, m, LONG.wall + 1, LONG.width - 1, rising);
-  st.sign(m, 'puddle', [LONG_SIGNS.puddle, 0]);
-  st.sign(m, 'mirage', [LONG_SIGNS.mirage, 0]);
+  st.sign(m, 'puddle', [LONG_SIGNS.puddle, 1]);
+  st.sign(m, 'mirage', [LONG_SIGNS.mirage, 1]);
   for (const x of PUDDLES) m.mon(MIRAGE, x, GROUND_ROW - 1).mon(MIRAGE + 1, x + 1, GROUND_ROW - 1);
   return m;
 }

@@ -169,6 +169,15 @@ Pass six palette indices in `colors` (`background`, `paper`, `ink`, `wood`, `hig
 optional `glyphs` for game-owned symbols, and `maxBlocks` for the remaining block budget (0–100; default 100).
 Unsupported glyphs, empty rows and budget overflow throw errors.
 `lettersPerBlock: 5` (default) or `4` uses the project's 3×5 micro font; `3` enlarges it to
-5×10 pixels for readability at native game size. Centered fragments can cost more unique tiles.
+5×10 pixels for readability at native game size. `compact: true` instead uses four 4×8 letters
+per block with one-pixel stems and open counters, spaced five pixels across and nine down.
+Compact boards pack lines into the smallest whole-block height that leaves three-pixel rails;
+the same side borders and centered post are shared. Omit `lettersPerBlock` or set it to `4` in compact mode.
+`maxWidth` caps the **total** board width in blocks, including both side tiles and odd interior
+rounding for posts. Words wrap at spaces; explicit rows remain line breaks. A sign's own
+`maxWidth` overrides the option. A word too wide for the available interior throws instead of
+being clipped or split. Custom `glyphs` remain 3×5 patterns; compact punctuation and symbols
+scale to 4×8, while uppercase letters and digits use the compact letterforms.
+Centered fragments can cost more unique tiles.
 Add the returned pictures to your block set with the game's passable-background rules, once for the whole game or separately for each map selected by `include`.
 The stamp helper accepts any map with `set(x, y, blockName)`; taller posts reuse the same centered tile.

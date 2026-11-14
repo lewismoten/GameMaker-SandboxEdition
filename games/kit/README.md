@@ -134,7 +134,10 @@ Making the files:
   See `games/first-steps/src/levels.ts` for a complete adoption. Supply complete lines; text packs
   across tile boundaries with single spaces and centered alignment. One-line boards take one row;
   side borders/corners and identical letter tiles are shared. First Steps uses `lettersPerBlock: 3`
-  for larger 5×10 letters; `4` and `5` retain the compact 3×5 font. Pass the remaining budget
+  for larger 5×10 letters; `4` and `5` retain the old 3×5 font. Narrow rooms can use
+  `compact: true` for 4×8 letters and closely spaced lines, with `maxWidth` (also per sign)
+  limiting the total width including both sides. Gravity On, Gravity Off and Heat Waves use it.
+  Pass the remaining budget
   (`100 - book.index.size` in First Steps, or `Math.min(100, 150 - book.index.size)`
   for rooms with more scenery). Sign tiles stay within 100; the complete `.bbl` stays within 150.
   For larger vocabularies, pass `include` to select each map’s signs from the full record, and
