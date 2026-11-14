@@ -227,7 +227,7 @@ export function drawCard(ctx: CanvasRenderingContext2D, i: number, forExport: bo
     : kind === 'adventure'
       ? (() => {
           const a = at!;
-          return `${pass ? (page ? 'talk · ' : 'pass · ') : note ? `${note} · ` : ''}in at ${a.x},${a.y}`;
+          return `${pass ? (page ? 'talk · ' : 'pass · ') : note ? `${note} · ` : ''}${note && !pass ? '' : 'in at '}${a.x},${a.y}`;
         })()
       : kind === 'start'
         ? 'start'
