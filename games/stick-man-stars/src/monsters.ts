@@ -26,7 +26,7 @@ import { Book } from '../../kit/starter/book';
 import type { Pal } from '../../kit/starter/palette';
 import { sparkle } from '../../kit/starter/sparkle';
 import { drawStar } from './starArt';
-import { crayon, sketch } from './paper';
+import { STAR7, crayon, sketch } from './paper';
 
 export const STAR = 3;
 export const TWINKLE = 4;
@@ -209,11 +209,20 @@ function shed(p: Pixels, pal: Pal, lit: boolean, frame: 0 | 1, lanterns: number,
   }
 }
 
-/** A dinner fork on a pole, tines up: a fork's weathervane. Frame 0 faces us, frame 1 has turned edge-on in the wind. */
-function forkVane(p: Pixels, pal: Pal, cx: number, top: number, foot: number, frame: 0 | 1): void {
+/** A dinner fork on a pole, tines up: a fork's weathervane. Frame 0 faces us, frame 1 has turned edge-on in the wind. `small`: the little one a fork's small house carries (three tines, five pixels wide and high). */
+function forkVane(p: Pixels, pal: Pal, cx: number, top: number, foot: number, frame: 0 | 1, small = false): void {
   const { c } = pal;
   const hi = c('white', 3);
   const mid = c('white', 2);
+  if (small) {
+    px(p, cx, top + 3, 1, foot - top - 2, c('stone', 3));
+    if (frame === 1) px(p, cx, top, 1, 3, mid);
+    else {
+      for (const x of [-2, 0, 2]) px(p, cx + x, top, 1, 2, x < 0 ? hi : mid);
+      px(p, cx - 2, top + 2, 5, 1, mid);
+    }
+    return;
+  }
   px(p, cx, top + 4, 1, foot - top - 3, c('stone', 3));
   if (frame === 1) {
     px(p, cx, top, 1, 4, mid).set(cx, top, hi);
@@ -254,7 +263,7 @@ function forkHouse(pal: Pal, kind: 'cottage' | 'tower', frame: 0 | 1): Pixels {
   const n = 13;
   for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) p.set(4 + x, 20 - n + y, big.get(Math.floor((x * 20) / n), Math.floor((y * 20) / n)));
   // the peak: the cottage's gable tops out at row 3, the tower's cap at row 1 (two thirds of that, from row 7)
-  forkVane(p, pal, 8, 1, kind === 'cottage' ? 8 : 7, frame);
+  forkVane(p, pal, 8, 4, kind === 'cottage' ? 8 : 7, frame, true);
   p.set(17, 9 + frame * 2, pal.c('white', 3));
   return outline(crayon(p, pal, T), pal.c('ink', 0), { transparent: T });
 }
@@ -331,25 +340,26 @@ function fakeStar(pal: Pal, turn: 0 | 1): Pixels {
 
 /** A twinkle in the night sky: a small bright diamond with a gold heart (frame 0) that dims to a dot (frame 1). */
 function twink(pal: Pal, frame: 0 | 1): Pixels {
+  // drawn on the paper: a little yellow star outlined in marker that blinks a shade dimmer
   const p = new Pixels(20, 20, T);
-  if (frame === 0) {
-    for (let dy = -2; dy <= 2; dy++) px(p, 10 - (2 - Math.abs(dy)), 10 + dy, 1 + 2 * (2 - Math.abs(dy)), 1, pal.c('white', 2));
-    p.set(10, 10, pal.c('gold', 5)).set(10, 9, pal.c('white', 3));
-  } else px(p, 10, 10, 1, 1, pal.c('white', 1));
-  return p;
+  const fill = frame === 0 ? pal.c('gold', 5) : pal.c('gold', 3);
+  STAR7.forEach((row, dy) => [...row].forEach((ch, dx) => ch === '#' && p.set(7 + dx, 7 + dy, fill)));
+  return outline(p, pal.c('ink', 0), { transparent: T });
 }
 
 /** A shooting star: a bright head with a long tail trailing up and to the left. */
 function shooter(pal: Pal, frame: 0 | 1): Pixels {
+  // drawn on the paper: a yellow head outlined in marker, and three blue speed lines behind it (dashed, so they read as motion)
   const p = new Pixels(20, 20, T);
-  const w = pal.c('white', 3);
-  for (let i = 0; i < 12; i++) {
-    const c = i < 4 ? pal.c('white', 2) : i < 8 ? pal.c('white', 1) : pal.c('white', 0);
-    px(p, 12 - i, 11 - Math.floor(i / 2) - (frame && i % 3 === 0 ? 1 : 0), 1, 1 + (i < 6 ? 1 : 0), c);
-  }
-  p.disc(14.5, 13, 2.4, pal.c('gold', 4));
-  p.set(14, 12, w).set(15, 12, w);
-  return p;
+  p.disc(14.5, 13, 2.4, pal.c('gold', 4)).set(14, 12, pal.c('gold', 5));
+  const head = outline(p, pal.c('ink', 0), { transparent: T });
+  for (const [dy, len] of [
+    [-3, 7],
+    [0, 10],
+    [3, 6],
+  ] as const)
+    for (let i = 0; i < len; i++) if ((i + frame) % 4 !== 3) head.set(10 - i, 12 + dy - Math.floor(i / 2), pal.c('blue', i < 4 ? 2 : 3));
+  return head;
 }
 
 /** The monster pictures: the kit's, then the star's two turns, two sparkles, every house, the confetti and the bot. */

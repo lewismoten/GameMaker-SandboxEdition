@@ -18,7 +18,7 @@ import { addNightBlocks } from './nightSky';
 import { addPickStar, addStarGate } from './pickStar';
 import { paintNight } from './nightSky';
 import { paletteFor, type Mood } from './moods';
-import { addPaperBlocks, hidePaper, paperRamps, paperize, pencilAt, seamAt } from './paper';
+import { addPaperBlocks, hidePaper, hillAt, hillPastEdges, paperRamps, paperize, pencilAt, seamAt } from './paper';
 
 /** The signs the levels use, by name. */
 export type SignName = 'thx' | 'readme' | 'fake' | 'gaze' | 'gate' | 'how' | 'far' | 'shed' | 'shy' | 'bots' | 'three' | 'thanks' | 'forked' | 'exit';
@@ -42,7 +42,7 @@ function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign>; nam
   const sign = (chunks: string): Sign => smallSign(book, pal, chunks);
   const signs = {
     gaze: sign('PICK |STARS|: UP |JUMPS'),
-    gate: sign('FIVE |STARS|LIGHT| THE |PATH.'),
+    gate: sign('FIVE |STARS| OPEN| THE |GATE.'),
     how: sign('SPACE|: THR|OW A |STAR!'),
     far: sign('STARS| ONLY| GO S|O FAR'),
     shed: sign('SHEDS| NAP |HERE.'),
@@ -145,7 +145,7 @@ export const L0 = {
   width: 61,
   need: 5,
   ceiling: 3,
-  seams: [15, 38] as const,
+  seams: [1, 15, 38] as const,
 };
 function stargazingHill(w: World): StarterMap {
   const g = base(L0.width, L0.exit);
@@ -157,10 +157,13 @@ function stargazingHill(w: World): StarterMap {
   const m = new StarterMap(w.book, g.rows());
   paintNight(m, L0.width, L0.tunnel, L0.ceiling + 1);
   signAt(m, w, 5, 'gaze');
-  signAt(m, w, 45, 'gate');
-  // on paper: giant pencils for the end walls (their tips just under the ceiling), and two sheets taped on
+  signAt(m, w, 43, 'gate');
+  // on white notebook paper: the hill drawn in pencil, giant pencils for the end walls (their tips just under
+  // the ceiling), and three sheets taped edge to edge, each with its own binder holes and margin
+  hillAt(m, 0, L0.width - 1, GROUND, GROUND + 4);
+  hillPastEdges(m, w.book);
   for (const x of [0, L0.width - 1]) pencilAt(m, x, L0.ceiling + 1, STAND);
-  for (const x of L0.seams) seamAt(m, x, L0.ceiling + 1, STAND, [5, 8]);
+  for (const x of L0.seams) seamAt(m, x, L0.ceiling + 1, GROUND, GROUND + 4);
   m.set(L0.gate, STAND - 1, 'stargateTop').set(L0.gate, STAND, 'stargate');
   for (const x of L0.walk) m.set(x, 8, 'pickstar');
   const rows = [7, 6, 5, 6, 7, 5];

@@ -1,11 +1,13 @@
-// The night hill's sky: faint star dots, three constellations, a full moon, and on the grass a blanket and
-// a telescope. Ordinary blocks drawn over the sky (a copy of the game can edit them in the Blocks tab). The
+// The night hill's sky, drawn on white notebook paper: crayon star dots, three constellations of little marker
+// stars, a full moon colored in yellow, and on the hill a blanket and a telescope. Ordinary blocks drawn over the sky (a copy of the game can edit them in the Blocks tab). The
 // twinkling stars and the shooting stars are monsters (monsters.ts). No crescent: the moon is full.
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
+import { outline } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
 import { PULL, type Book } from '../../kit/starter/book';
 import { skyOf, type Pal } from '../../kit/starter/palette';
 import type { StarterMap } from '../../kit/starter/map';
 import { TWINK, SHOOT } from './monsters';
+import { STAR7 } from './paper';
 
 const VARIANTS = 4;
 
@@ -21,8 +23,9 @@ export const NIGHT_BLOCKS = ['dots0', 'cstar', 'moon', 'blanketL', 'blanketR', '
 export function addNightBlocks(book: Book, pal: Pal): void {
   const air = { grav: PULL.down };
   const sky = () => new Pixels(20, 20, skyOf(pal));
-  const w = pal.c('white', 3);
-  const dim = pal.c('white', 1);
+  const w = pal.c('gold', 3);
+  const dim = pal.c('blue', 3);
+  const ink = pal.c('ink', 0);
   // four starfield blocks with different dot layouts (one nearly empty), drawn from a seeded hash so a rebuild is byte for byte the same
   const DOTS = [1, 3, 5, 2];
   for (let v = 0; v < DOTS.length; v++) {
@@ -30,27 +33,28 @@ export function addNightBlocks(book: Book, pal: Pal): void {
     for (let i = 0; i < DOTS[v]; i++) {
       const x = 1 + (hash(v, i, 1) % 18);
       const y = 1 + (hash(v, i, 2) % 18);
-      p.set(x, y, hash(v, i, 3) % 4 === 0 ? w : dim);
+      if (hash(v, i, 3) % 4 === 0) p.rect(Math.min(x, 17), y, 2, 2, w);
+      else p.set(x, y, dim);
     }
     book.add(`dots${v}`, p, air);
   }
-  // a constellation star: the bright star shrunk to a small point of light
+  // a constellation star: a little yellow star outlined in black marker
   const c = sky();
-  const rows = ['..#..', '.###.', '#####', '.###.', '.#.#.'];
-  rows.forEach((row, dy) => [...row].forEach((ch, dx) => ch === '#' && c.rect(7 + dx, 7 + dy, 1, 1, pal.c('white', 2))));
-  c.set(9, 9, w);
-  book.add('cstar', c, air);
-  // the full moon, with a few craters
+  STAR7.forEach((row, dy) => [...row].forEach((ch, dx) => ch === '#' && c.rect(7 + dx, 7 + dy, 1, 1, pal.c('gold', 4))));
+  c.set(10, 9, pal.c('gold', 5));
+  book.add('cstar', outline(c, ink, { transparent: skyOf(pal) }), air);
+  // the full moon, colored in yellow crayon (a few strokes miss) with a few craters, outlined in pencil
   const m = sky();
-  m.disc(10, 10, 8.4, pal.c('white', 3)).disc(10, 10, 8.4, pal.c('white', 3));
+  m.disc(10, 10, 8.4, pal.c('gold', 4));
   for (const [x, y, r] of [
     [7, 8, 2],
     [13, 12, 2.4],
     [11, 6, 1.4],
     [6, 13, 1.2],
   ] as const)
-    m.disc(x, y, r, pal.c('white', 2));
-  m.ring(10, 10, 8, pal.c('white', 2));
+    m.disc(x, y, r, pal.c('gold', 3));
+  m.map((x, y, k) => (k === pal.c('gold', 4) && (x * 2 + y) % 7 === 0 ? pal.c('gold', 5) : k));
+  m.ring(10, 10, 8.4, pal.c('stone', 0));
   book.add('moon', m, air);
   // a picnic blanket: red and cream squares, two blocks wide, lying on the grass
   for (const side of ['L', 'R'] as const) {
@@ -61,7 +65,6 @@ export function addNightBlocks(book: Book, pal: Pal): void {
   }
   // a small telescope on a tripod, pointing up and to the right
   const t = sky();
-  const ink = pal.c('ink', 0);
   const tube = pal.c('teal', 2);
   t.line(10, 12, 5, 19, ink).line(10, 12, 15, 19, ink).line(10, 12, 10, 19, ink);
   for (let i = 0; i < 4; i++) t.line(5 + i, 12 - i, 14 + i, 3 - i + 2, tube);
@@ -74,7 +77,7 @@ export function addNightBlocks(book: Book, pal: Pal): void {
 /** `top`: the first row of sky under the ceiling. */
 export function paintNight(m: StarterMap, width: number, skip: readonly [number, number], top = 1): void {
   for (let x = 1; x < width - 1; x++)
-    for (let y = top; y < 8; y++) if (x < skip[0] || x > skip[1]) if (hash(x, y, 7) % 100 < 70) m.set(x, y, `dots${hash(x, y, 9) % VARIANTS}`);
+    for (let y = top; y < 8; y++) if (x < skip[0] || x > skip[1]) if (hash(x, y, 7) % 100 < 45) m.set(x, y, `dots${hash(x, y, 9) % VARIANTS}`);
   // The screen shows rows 4 to 7 over his head when he stands (and the jump reaches row 5), so the sky art lives there.
   const dipper = [
     [3, 4],
