@@ -10,6 +10,7 @@ import { BIG1, BIG2, BIG3, BOT, BOT_SCORE, COTTAGE, POP_SCORE, SHED, STAR, TOWER
 import { GATE_STARS, PICK_SCORE } from '../src/pickStar';
 import { KEYS } from '../../kit/starter/blocks';
 import { SCAN_JUMP, SCAN_THROW } from '../src/hero';
+import { BAND, shiftY } from '../src/pack';
 
 async function must(bot: StarterBot, r: Promise<Result>, what: string): Promise<void> {
   const out = await r;
@@ -26,7 +27,7 @@ export function foes(bot: StarterBot, ...n: number[]): number[] {
   const w = bot.sim.w;
   const out: number[] = [];
   w.mm.forEach((m, i) => {
-    if (n.includes(m.monnum)) out.push((w.mi[i].curx[0] - ORIGIN) * 20 + w.mi[i].curx[1]);
+    if (n.includes(m.monnum) && Math.floor(w.mi[i].cury[0] / BAND) === band) out.push((w.mi[i].curx[0] - ORIGIN) * 20 + w.mi[i].curx[1]);
   });
   return out;
 }
@@ -68,17 +69,21 @@ async function popWhenNear(bot: StarterBot, kinds: number[], what: string, lo = 
 }
 
 /** The score a level should add up to: its coins and the extras the route earned. */
-function coinCells(bot: StarterBot): number {
+/** The level whose band of the shared world the checks count in (set by coinCells). */
+let band = 0;
+function coinCells(bot: StarterBot, level: number): number {
+  band = level;
   const coin = bot.sim.w.bg.findIndex((b) => b.scorePts === 10);
   let n = 0;
-  for (let y = 0; y < 100; y++) for (let x = 0; x < 100; x++) if (bot.sim.w.map[y * 100 + x] === coin) n++;
+  for (let y = band * BAND; y < (band + 1) * BAND; y++) for (let x = 0; x < 100; x++) if (bot.sim.w.map[y * 100 + x] === coin) n++;
   return n;
 }
 /** Where coins are still lying, as "x,y" in level blocks. */
 function coinsLeft(bot: StarterBot): string {
   const coin = bot.sim.w.bg.findIndex((b) => b.scorePts === 10);
   const out: string[] = [];
-  for (let y = 0; y < 100; y++) for (let x = 0; x < 100; x++) if (bot.sim.w.map[y * 100 + x] === coin) out.push(`${x - ORIGIN},${y - ORIGIN}`);
+  for (let y = band * BAND; y < (band + 1) * BAND; y++)
+    for (let x = 0; x < 100; x++) if (bot.sim.w.map[y * 100 + x] === coin) out.push(`${x - ORIGIN},${y - ORIGIN - shiftY(band)}`);
   return out.join(' ');
 }
 function totals(bot: StarterBot, from: number, coins: number, picks: number, pops: number, bots: number, what: string): void {
@@ -99,6 +104,7 @@ async function hop(bot: StarterBot): Promise<void> {
 
 /** 1. Stargazing Hill: pick every star out of the night sky. */
 export async function stargazingHill(bot: StarterBot): Promise<void> {
+  band = 0;
   const start = bot.sim.ci.score;
   const stars = [...L0.walk.map((x) => [x, false] as const), ...L0.jump.map((x) => [x, true] as const)].sort((a, b) => a[0] - b[0]);
   for (const [x, high] of stars) {
@@ -108,7 +114,7 @@ export async function stargazingHill(bot: StarterBot): Promise<void> {
   }
   // the star counter holds one more than it shows: the kit's key counter, which the town gate spends
   if (bot.sim.ci.meter[KEYS] !== 1 + stars.length) throw new Error(`the star counter should hold ${1 + stars.length}, not ${bot.sim.ci.meter[KEYS]}`);
-  totals(bot, start, coinCells(bot), stars.length, 0, 0, 'the hill');
+  totals(bot, start, coinCells(bot, 0), stars.length, 0, 0, 'the hill');
   await must(bot, bot.walk(L0.gate + 2, 'through the town gate'), 'through the town gate');
   if (bot.sim.ci.meter[KEYS] !== 1 + stars.length - GATE_STARS)
     throw new Error(`the gate should cost ${GATE_STARS} stars; the counter is ${bot.sim.ci.meter[KEYS]}`);
@@ -117,8 +123,9 @@ export async function stargazingHill(bot: StarterBot): Promise<void> {
 
 /** 2. Main Street: pop a cottage; a throw from too far falls short, then closer; the shed lights; one more cottage. */
 export async function mainStreet(bot: StarterBot): Promise<void> {
+  band = 1;
   const start = bot.sim.ci.score;
-  const coins = coinCells(bot);
+  const coins = coinCells(bot, 1);
   const [a, b, c] = L1.cottages;
   await must(bot, bot.walk(a - 4, 'the first cottage'), 'to the first cottage');
   await throwAt(bot, [COTTAGE], 'at the near cottage');
@@ -143,8 +150,9 @@ export async function mainStreet(bot: StarterBot): Promise<void> {
 
 /** 3. Shy Street: three towers wander; pop each when it comes by, then a cottage and the shed. */
 export async function shyStreet(bot: StarterBot): Promise<void> {
+  band = 2;
   const start = bot.sim.ci.score;
-  const coins = coinCells(bot);
+  const coins = coinCells(bot, 2);
   for (const t of L2.towers) {
     await must(bot, bot.walk(t - 3, 'a shy tower'), 'to a tower');
     await popWhenNear(bot, [TOWER], 'at a shy tower');
@@ -168,8 +176,9 @@ export async function shyStreet(bot: StarterBot): Promise<void> {
 
 /** 4. Spam Row: pop each bot before it reaches him, light the houses, then three stars for the Big Repo. */
 export async function spamRow(bot: StarterBot): Promise<void> {
+  band = 3;
   const start = bot.sim.ci.score;
-  const coins = coinCells(bot);
+  const coins = coinCells(bot, 3);
   await must(bot, bot.walk(L4.cottages[0] - 4, 'the first cottage'), 'to the first cottage');
   await throwAt(bot, [COTTAGE], 'at the cottage');
   await must(bot, bot.walk(L4.tower - 3, 'the tower'), 'to the tower');
