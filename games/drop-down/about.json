@@ -6,7 +6,7 @@
   "hero": "LENA",
   "year": 1994,
   "price": "Free",
-  "version": "1.1",
+  "version": "1.2",
   "blurb": "Two short tunnels about a monster that falls. Monsters have no gravity in Game-Maker, so a friend sits on a crate until you hit the crate twice and it breaks, then its Movement, a step down walked again and again, takes it down. Plop is solid and drops into a dip fast; Pip is soft and drifts down slowly. Signs say how. Play it, then open it in Game-Maker and change how fast a friend falls.",
   "exe": "DROPDOWN.EXE",
   "dosName": "DROPDOWN",
