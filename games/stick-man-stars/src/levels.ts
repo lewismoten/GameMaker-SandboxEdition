@@ -11,44 +11,61 @@ import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
-import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
-import { addSign, type Sign } from '../../kit/starter/sign';
-import { BIG3, BOT, COTTAGE, LIT_COT, LIT_SHED, LIT_TOW, SHED, TOWER } from './monsters';
+import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
+import { smallSign, stampSign, type SmallSign as Sign } from './signs';
+import { BIG3, BOT, COTTAGE, FORK_COT, FORK_TOW, LIT_COT, LIT_TOW, OLD_BIG, SHED, TOWER } from './monsters';
 import { addNightBlocks } from './nightSky';
 import { addPickStar, addStarGate } from './pickStar';
 import { paintNight } from './nightSky';
 import { paletteFor, type Mood } from './moods';
+import { addPaperBlocks, hidePaper, hillAt, hillPastEdges, paperRamps, paperize, pencilAt, seamAt } from './paper';
 
 /** The signs the levels use, by name. */
-export type SignName = 'thx' | 'readme' | 'fake' | 'gaze' | 'gate' | 'how' | 'far' | 'shed' | 'shy' | 'bots' | 'three' | 'thanks' | 'exit';
+export type SignName = 'thx' | 'readme' | 'fake' | 'gaze' | 'gate' | 'how' | 'far' | 'shed' | 'shy' | 'bots' | 'three' | 'thanks' | 'forked' | 'exit';
 /** Repo names that go over a house's door (six letters fit). */
-const NAMES = ['SOCKS', 'SOUP', 'TEAPOT', 'MOTHS', 'NAPS', 'PUNS', 'PIE', 'KEYS'] as const;
+const NAMES = ['SOCKS', 'SOUP', 'TEAPOT', 'MOTHS', 'PIE', 'KEYS'] as const;
 type Name = (typeof NAMES)[number];
 
-/** The block set every level shares: the Starter blocks, then this game's signs. */
+/** The Starter blocks this game places (the rest of the kit's set stays out, to leave room for its own art). */
+const STARTER_KEEP = ['sky', 'cloudL', 'cloudR', 'grass', 'dirt', 'brick', 'bush', 'flower', 'doorTop', 'doorBottom', 'doorwayTop', 'doorwayBottom', 'coin'];
+/** The block set every level shares: the Starter blocks it uses, its own art, the paper, then the signs. */
 function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign>; names: Record<Name, Sign> } {
+  const kit = new Book('bbl');
+  addStarterBlocks(kit, pal);
   const book = new Book('bbl');
-  addStarterBlocks(book, pal);
+  for (const n of STARTER_KEEP) book.add(n, kit.pics.get(n)!, kit.rulesOf(n));
   addPickStar(book, pal);
   addStarGate(book, pal);
   addNightBlocks(book, pal);
+  addPaperBlocks(book, pal);
+  // the wording is cut in chunks of five letters, and a chunk two signs share is one block (signs.ts)
+  const sign = (chunks: string): Sign => smallSign(book, pal, chunks);
   const signs = {
-    gaze: addSign(book, pal, 'gaze', 'PICK STARS: JUMP WITH UP', 4, 2),
-    gate: addSign(book, pal, 'gate', 'LEAVE 5 STARS TO LIGHT THE PATH', 4, 2),
-    how: addSign(book, pal, 'how', 'SPACE THROWS A STAR', 4, 2),
-    far: addSign(book, pal, 'far', 'A STAR FLIES ONLY SO FAR', 4, 2),
-    shed: addSign(book, pal, 'shed', 'A SLEEPY SHED NAPS IN THE WAY', 4, 2),
-    shy: addSign(book, pal, 'shy', 'SHY ONES WANDER', 4, 2),
-    bots: addSign(book, pal, 'bots', 'SPAM BOTS BUMP. POP THEM', 4, 2),
-    three: addSign(book, pal, 'three', 'THREE LANTERNS: ONE THANK YOU EACH', 4, 2),
-    thanks: addSign(book, pal, 'thanks', 'LIKED A PROJECT? LEAVE IT A STAR', 4, 2),
-    thx: addSign(book, pal, 'thx', 'A STAR SAYS THANKS', 3, 2),
-    readme: addSign(book, pal, 'readme', 'SAYS WHAT IT IS', 3, 2),
-    fake: addSign(book, pal, 'fake', 'FAKE STARS FADE', 3, 2),
-    exit: addSign(book, pal, 'exit', 'EXIT →', 3),
+    gaze: sign('PICK |STARS|: UP |JUMPS'),
+    gate: sign('FIVE |STARS| OPEN| THE |GATE.'),
+    how: sign('SPACE|: THR|OW A |STAR!'),
+    far: sign('STARS| ONLY| GO S|O FAR'),
+    shed: sign('SHEDS| NAP |HERE.'),
+    shy: sign('SHY O|NES W|ANDER'),
+    bots: sign('SPAM |BOTS |BUMP.| POP |THEM!'),
+    three: sign('3 LAM|PS: O|NE TH|ANKS |EACH!'),
+    thanks: sign('LIKED| IT? |STAR!'),
+    // over the old original the Big Repo was forked from: a name board, resting on its roof
+    forked: smallSign(book, pal, ' THE |ORIGI|NAL  ', false),
+    thx: sign('A STA|R: TH|ANKS!'),
+    readme: sign('SAYS |WHAT |IT IS'),
+    fake: sign('FAKE |STARS| FADE'),
+    exit: sign('EXIT→'),
   };
   const names = {} as Record<Name, Sign>;
-  for (const n of NAMES) names[n] = addSign(book, pal, `n.${n}`, n, 3, 1);
+  for (const n of NAMES)
+    names[n] = smallSign(
+      book,
+      pal,
+      n.length > 5 ? `  ${n.slice(0, 3)}|${n.slice(3)}  ` : n.padStart(n.length + Math.floor((5 - n.length) / 2)).padEnd(5),
+      false,
+    );
+  paperize(book, pal);
   return { book, signs, names };
 }
 
@@ -61,10 +78,12 @@ export interface Level {
   map: StarterMap;
   /** This level's palette: the shared one with its sky (and grass) swapped. */
   pal: Pal;
+  /** Drawn on paper, with no climbing: its scene never scrolls up or down (game.ts). */
+  flat: boolean;
 }
 
 /** The top row of a sign standing on ground row `ground`. */
-const onGround = (ground: number, s: Sign) => ground - 1 - s.board.length;
+const onGround = (ground: number) => ground - 2;
 
 export const GROUND = 10;
 /** Where the monsters stand: the row above the ground. */
@@ -100,29 +119,51 @@ type World = { book: Book; signs: Record<SignName, Sign>; names: Record<Name, Si
 /** Where each level's signs stand, for tools/layoutCheck.ts: block rectangles (the board and its legs row). */
 export const PLACED = new WeakMap<StarterMap, { what: string; x: number; y: number; w: number; h: number }[]>();
 function note(m: StarterMap, what: string, x: number, y: number, s: Sign): void {
-  PLACED.set(m, [...(PLACED.get(m) ?? []), { what, x, y, w: s.board[0].length, h: s.board.length + 1 }]);
+  const posts = s.posts.map(([dx]) => ({ what: `${what} post`, x: x + dx, y: y + 1, w: 1, h: 1 }));
+  PLACED.set(m, [...(PLACED.get(m) ?? []), { what, x, y, w: s.board.length, h: 1 }, ...posts]);
 }
 const signAt = (m: StarterMap, w: World, x: number, which: SignName) => {
-  note(m, which, x, onGround(GROUND, w.signs[which]), w.signs[which]);
-  return m.sign(x, onGround(GROUND, w.signs[which]), w.signs[which]);
+  note(m, which, x, onGround(GROUND), w.signs[which]);
+  stampSign(m, x, onGround(GROUND), w.signs[which]);
 };
 /** A house with its name over the door (the name board is three wide, the house in the middle). */
 function named(m: StarterMap, w: World, kind: number, x: number, name: Name): void {
-  note(m, `name ${name}`, x - 1, STAND - 1, w.names[name]);
-  m.sign(x - 1, STAND - 1, w.names[name]);
+  // a five-letter name is one block over the house; a longer one is two, the house under their middle
+  const at = x - Math.floor(w.names[name].board.length / 2);
+  note(m, `name ${name}`, at, STAND - 1, w.names[name]);
+  stampSign(m, at, STAND - 1, w.names[name]);
   m.mon(kind, x, STAND);
 }
 
 /** Level 1: a night hill with a starfield, and bright stars (hung from a walk to a jump high) to pick. The town gate wants five. */
-export const L0 = { walk: [20, 24, 40] as const, jump: [17, 28, 33, 37, 44, 48] as const, gate: 52, tunnel: [50, 54] as const, exit: 57, width: 61, need: 5 };
+export const L0 = {
+  walk: [20, 24, 40] as const,
+  jump: [17, 28, 33, 37, 44, 48] as const,
+  gate: 52,
+  tunnel: [50, 54] as const,
+  exit: 57,
+  width: 61,
+  need: 5,
+  ceiling: 3,
+  seams: [1, 15, 38] as const,
+};
 function stargazingHill(w: World): StarterMap {
   const g = base(L0.width, L0.exit);
   tunnel(g, L0.tunnel[0], L0.tunnel[1]);
+  // the screen never scrolls up or down here (game.ts), so the brick ceiling comes down to row 3, just above
+  // the top of the screen: however often Up is pressed in the air, Stick Man stays in sight
+  g.fill(1, 0, L0.width - 2, L0.ceiling + 1, 'B');
   for (const x of [24, 42]) g.put(x, GROUND - 1, 'b');
   const m = new StarterMap(w.book, g.rows());
-  paintNight(m, L0.width, L0.tunnel);
+  paintNight(m, L0.width, L0.tunnel, L0.ceiling + 1);
   signAt(m, w, 5, 'gaze');
-  signAt(m, w, 45, 'gate');
+  signAt(m, w, 43, 'gate');
+  // on white notebook paper: the hill drawn in pencil, giant pencils for the end walls (their tips just under
+  // the ceiling), and three sheets taped edge to edge, each with its own binder holes and margin
+  hillAt(m, 0, L0.width - 1, GROUND, GROUND + 4);
+  hillPastEdges(m, w.book);
+  for (const x of [0, L0.width - 1]) pencilAt(m, x, L0.ceiling + 1, STAND);
+  for (const x of L0.seams) seamAt(m, x, L0.ceiling + 1, GROUND, GROUND + 4);
   m.set(L0.gate, STAND - 1, 'stargateTop').set(L0.gate, STAND, 'stargate');
   for (const x of L0.walk) m.set(x, 8, 'pickstar');
   const rows = [7, 6, 5, 6, 7, 5];
@@ -139,10 +180,10 @@ function mainStreet(w: World): StarterMap {
   scenery(g, [8, 22, 36, 50], [14, 30, 44, 58], [11, 26, 38, 52]);
   const m = new StarterMap(w.book, g.rows());
   signAt(m, w, 5, 'how');
-  signAt(m, w, 13, 'thx');
-  signAt(m, w, 22, 'far');
-  signAt(m, w, 29, 'readme');
-  signAt(m, w, 37, 'shed');
+  signAt(m, w, 11, 'thx');
+  signAt(m, w, 19, 'far');
+  signAt(m, w, 28, 'readme');
+  signAt(m, w, 36, 'shed');
   signAt(m, w, 57, 'exit');
   named(m, w, COTTAGE, L1.cottages[0], 'SOCKS');
   named(m, w, COTTAGE, L1.cottages[1], 'SOUP');
@@ -158,7 +199,7 @@ function shyStreet(w: World): StarterMap {
   const g = base(L2.width, L2.exit);
   tunnel(g, L2.tunnel[0], L2.tunnel[1]);
   g.row(9, 10, 14, 'c').row(9, 27, 29, 'c').row(9, 40, 42, 'c').row(9, 50, 52, 'c').row(9, 69, 70, 'c');
-  scenery(g, [7, 18, 30, 42, 54, 73], [12, 25, 38, 51, 62, 72, 79], [9, 17, 35, 48, 58, 74, 78]);
+  scenery(g, [7, 18, 30, 42, 54, 73], [12, 25, 38, 51, 62, 72, 79], [9, 17, 35, 48, 58, 75, 80]);
   const m = new StarterMap(w.book, g.rows());
   signAt(m, w, 5, 'shy');
   signAt(m, w, 50, 'shed');
@@ -169,11 +210,12 @@ function shyStreet(w: World): StarterMap {
   m.mon(SHED, L2.gate, STAND);
   // A safe garden after the last task, before Spam Row: no pickups, hazards or timer.
   // The already-lit, passable houses are company, not another aiming test. Stay or walk on.
-  m.mon(LIT_COT, 73, STAND).mon(LIT_TOW, 77, STAND);
+  // Each has a fork beside it: a smaller copy with a fork for a weathervane.
+  m.mon(LIT_COT, 73, STAND).mon(FORK_COT, 74, STAND).mon(LIT_TOW, 77, STAND).mon(FORK_TOW, 78, STAND);
   return m;
 }
 
-/** Level 4: a cottage, a tower, a bot, a cottage, a bot, then the Big Repo in its tunnel and the lit street. */
+/** Level 4: a cottage, a tower, a bot, a cottage, a bot, then the Big Repo (a fork) in its tunnel, and the lit street with its old original. */
 export const L4 = { bonus: 44, cottages: [14, 40] as const, tower: 24, bots: [32, 47] as const, tunnel: [52, 59] as const, gate: 56, exit: 74, width: 78 };
 function starCount(w: World): StarterMap {
   const g = base(L4.width, L4.exit);
@@ -191,25 +233,29 @@ function starCount(w: World): StarterMap {
   named(m, w, COTTAGE, L4.cottages[1], 'PIE');
   m.mon(BIG3, L4.gate, STAND);
   m.set(L4.bonus, 5, 'pickstar');
-  // the street past the Big Repo is already lit, and waves
-  m.mon(LIT_COT, 65, STAND).mon(LIT_TOW, 67, STAND).mon(LIT_SHED, 69, STAND);
+  // the street past the Big Repo is already lit, and waves: a cottage and its fork, then the old original the Big Repo was forked from
+  m.mon(LIT_COT, 65, STAND).mon(FORK_COT, 66, STAND).mon(OLD_BIG, 70, STAND).mon(LIT_TOW, 73, STAND);
+  note(m, 'forked', 68, STAND - 1, w.signs.forked);
+  stampSign(m, 68, STAND - 1, w.signs.forked);
   return m;
 }
 
 /** The levels in order. */
 export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
-  const pal = buildStarterPalette(undefined, 'stick-man-stars');
+  const pal = buildStarterPalette(paperRamps, 'stick-man-stars');
+  hidePaper(pal.pal, skyOf(pal), pal.r('paper'));
   const w = buildBlocks(pal);
-  const level = (file: string, title: string, hint: string, mood: Mood, map: StarterMap): Level => ({
+  const level = (file: string, title: string, hint: string, mood: Mood, map: StarterMap, flat = false): Level => ({
     file,
     title,
     hint,
     mood,
     map,
-    pal: paletteFor(pal, mood),
+    pal: paletteFor(pal, mood, flat),
+    flat,
   });
   const levels: Level[] = [
-    level('one', 'Stargazing Hill', 'Pick the bright stars.', 'night', stargazingHill(w)),
+    level('one', 'Stargazing Hill', 'Pick the bright stars.', 'night', stargazingHill(w), true),
     level('two', 'Main Street', 'Space throws a star.', 'dawn', mainStreet(w)),
     level('three', 'Shy Street', 'Houses wander. Wait and aim.', 'day', shyStreet(w)),
     level('four', 'Spam Row', 'Pop the bots. Light three lanterns.', 'dusk', starCount(w)),

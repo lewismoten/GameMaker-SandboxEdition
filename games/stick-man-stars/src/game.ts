@@ -31,6 +31,8 @@ export function buildGame(levels: Level[]): Game {
   levels.forEach((l, i) => {
     const scene = emptyScene(ADVTYPE);
     scene.desc = l.title.slice(0, 19);
+    // a level with no climbing never scrolls up or down (PLAYGAME scrolls a direction only when its byte is 0xFF)
+    if (l.flat) Object.assign(scene.scroll, { up: 0, down: 0 });
     scene.pos = { x: 60 + i * 80, y: 110 };
     scene.files = [
       `${l.file}.pal`,

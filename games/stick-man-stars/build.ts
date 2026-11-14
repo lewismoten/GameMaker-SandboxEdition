@@ -25,6 +25,7 @@ import { houseLitVoc, throwSounds } from './src/sounds';
 import { demoRecording } from './src/demo';
 import { TITLE, buildGame } from './src/game';
 import { buildLevels } from './src/levels';
+import { paletteFor } from './src/moods';
 import { HERO_HIT_POINTS, finishMonsterPictures, monsterPictures, monsterSet } from './src/monsters';
 import { song } from './src/song';
 import { titlePicture } from './src/title';
@@ -76,8 +77,8 @@ const text = (base: string, heading: string, body: string) => {
   disk.put(`${base}.txt`, body);
   disk.put(`${base}.lst`, serializeSlideList([{ name: `${base}.gif`, pause: 0 }, { name: `${base}.txt` }]));
 };
-// the title is a night scene, so it carries the night hill's palette
-disk.put('title.gif', gif(titlePicture(pal, book, monsterBlocks, lookUp, TITLE, 'A STARGAZING SPECIAL'), levels[0].pal));
+// the title is a night scene under a dark sky (the hill itself is drawn on white paper, which would wash out its moon and words)
+disk.put('title.gif', gif(titlePicture(pal, book, monsterBlocks, lookUp, TITLE, 'A STARGAZING SPECIAL'), paletteFor(pal, 'night')));
 disk.put(SANDLOGO, sandLogoFli());
 disk.put(
   'title.lst',

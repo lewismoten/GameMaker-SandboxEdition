@@ -9,6 +9,8 @@ import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { Book } from '../../kit/starter/book';
 import type { Pal } from '../../kit/starter/palette';
 
+import { addPaperPoses } from './erase';
+
 const T = 255;
 type Pt = [number, number];
 
@@ -131,5 +133,6 @@ export function buildStickBlocks(pal: Pal): Book {
   // ladders are not in this game; the poses stay so the kit's character file is whole
   add('back.top', 'climb0', head(pal, 'back'), body(pal, { back: [5, 0], front: [15, 4], legBack: [6, 17], legFront: [14, 19] }));
   add('back.top', 'climb1', head(pal, 'back'), body(pal, { back: [5, 4], front: [15, 0], legBack: [6, 19], legFront: [14, 17] }));
+  addPaperPoses(book, pal);
   return book;
 }

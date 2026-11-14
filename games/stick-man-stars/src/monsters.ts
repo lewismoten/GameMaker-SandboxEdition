@@ -1,4 +1,4 @@
-// STICK MAN STARS' monsters. The kit's gumdrop 0, buzzer 1 and shelly 2 stay in the file (unused), then:
+// STICK MAN STARS' monsters. Slots 0 to 2 are empty (the game draws none of the Starter monsters), then:
 //   STAR      the gold star Stick Man throws: born from a frame of his Throw sequence (hero.ts), it flies
 //             the way he last walked until it hits something or runs out of range. Power 200.
 //   TWINKLE   the sparkle a star leaves
@@ -9,6 +9,9 @@
 //   CONF_*    the party: the house lights on impact, under a burst of confetti for about a second
 //   LIT_*     the lit house, with a gold star on its flag and gold windows; power 250 so a star can't pop it
 //             again, passable so a lit gate lets Stick Man walk on through
+//   FORK_*    forks: smaller lit copies of a cottage and a tower with a spinning dinner-fork weathervane (scenery)
+//   CONF_BIG, LIT_BIG   the Big Repo lighting up: it is a fork too, so its fork weathervane is back once the confetti clears
+//   OLD_BIG   the old original the Big Repo was forked from: the same shed, weathered gray and long since starred (scenery)
 //   BOT       a spam bot: a rolling little fake-star farm that pops with one star and bumps (it hurts a little); it leaves a gray fake star that fades
 // A pop is the engine's own collision rule (code/GM/PLAYGAME.C, DoCollision): the weaker monster dies and
 // leaves its `newmon`, and the character is paid the dead monster's score; a star born from him is used up too.
@@ -18,11 +21,12 @@ import { corner, mon, pace } from '@lewismoten/gamemaker-sandbox-tools/kit/actor
 import { outline } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';
-import type { Book } from '../../kit/starter/book';
-import { buildMonsterBlocks, buildMonsters } from '../../kit/starter/monsters';
+import { newMonsterSet } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
+import { Book } from '../../kit/starter/book';
 import type { Pal } from '../../kit/starter/palette';
 import { sparkle } from '../../kit/starter/sparkle';
 import { drawStar } from './starArt';
+import { STAR7, crayon, sketch } from './paper';
 
 export const STAR = 3;
 export const TWINKLE = 4;
@@ -42,6 +46,11 @@ export const BOT = 17;
 export const TWINK = 18;
 export const SHOOT = 19;
 export const FAKE = 20;
+export const FORK_COT = 21;
+export const FORK_TOW = 22;
+export const CONF_BIG = 23;
+export const LIT_BIG = 24;
+export const OLD_BIG = 25;
 
 export const HERO_HIT_POINTS = 50;
 /** Pixels a star flies a tick, and how many ticks: the range is the product, about 6 blocks. */
@@ -200,21 +209,82 @@ function shed(p: Pixels, pal: Pal, lit: boolean, frame: 0 | 1, lanterns: number,
   }
 }
 
+/** A dinner fork on a pole, tines up: a fork's weathervane. Frame 0 faces us, frame 1 has turned edge-on in the wind. `small`: the little one a fork's small house carries (three tines, five pixels wide and high). */
+function forkVane(p: Pixels, pal: Pal, cx: number, top: number, foot: number, frame: 0 | 1, small = false): void {
+  const { c } = pal;
+  const hi = c('white', 3);
+  const mid = c('white', 2);
+  if (small) {
+    px(p, cx, top + 3, 1, foot - top - 2, c('stone', 3));
+    if (frame === 1) px(p, cx, top, 1, 3, mid);
+    else {
+      for (const x of [-2, 0, 2]) px(p, cx + x, top, 1, 2, x < 0 ? hi : mid);
+      px(p, cx - 2, top + 2, 5, 1, mid);
+    }
+    return;
+  }
+  px(p, cx, top + 4, 1, foot - top - 3, c('stone', 3));
+  if (frame === 1) {
+    px(p, cx, top, 1, 4, mid).set(cx, top, hi);
+    return;
+  }
+  for (const x of [-3, -1, 1, 3]) px(p, cx + x, top, 1, 3, x < 0 ? hi : mid);
+  px(p, cx - 3, top + 3, 7, 1, mid).set(cx - 3, top + 3, hi);
+  px(p, cx - 1, top + 4, 3, 1, mid);
+}
+
 /** A little repo house, `lit` or dark, in one of two frames. The Big Repo (`lanterns` 3) shows how many of its lanterns are lit. */
-function house(pal: Pal, kind: Kind, lit: boolean, frame: 0 | 1, lanterns = 0, litLanterns = 0): Pixels {
+function house(pal: Pal, kind: Kind, lit: boolean, frame: 0 | 1, lanterns = 0, litLanterns = 0, vane = false): Pixels {
   const ink = pal.c('ink', 0);
   const p = new Pixels(20, 20, T);
   if (kind === 'cottage') cottage(p, pal, lit, frame);
   else if (kind === 'tower') tower(p, pal, lit, frame);
   else shed(p, pal, lit, frame, lit ? 3 : lanterns, litLanterns);
   flag(p, pal, 18, lit, frame);
+  // the Big Repo is a fork: a fork weathervane on its roof (the roof is 6 rows down there)
+  if (vane) forkVane(p, pal, 6, 0, 5, frame);
   if (lit)
     for (const [sx, sy] of [
       [0, 5],
       [19, 13],
     ] as const)
       p.set(sx, sy + frame * 2, pal.c('white', 3));
-  return outline(p, ink, { transparent: T });
+  // on paper: a dark house is a pencil drawing, a lit one is colored in with crayon
+  if (lit) return outline(crayon(p, pal, T), ink, { transparent: T });
+  return outline(sketch(p, pal, T), pal.c('stone', 0), { transparent: T });
+}
+
+/** A fork: a lit house drawn two thirds the size, standing on the ground, with a fork weathervane on its peak. */
+function forkHouse(pal: Pal, kind: 'cottage' | 'tower', frame: 0 | 1): Pixels {
+  const big = new Pixels(20, 20, T);
+  if (kind === 'cottage') cottage(big, pal, true, frame);
+  else tower(big, pal, true, frame);
+  const p = new Pixels(20, 20, T);
+  const n = 13;
+  for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) p.set(4 + x, 20 - n + y, big.get(Math.floor((x * 20) / n), Math.floor((y * 20) / n)));
+  // the peak: the cottage's gable tops out at row 3, the tower's cap at row 1 (two thirds of that, from row 7)
+  forkVane(p, pal, 8, 4, kind === 'cottage' ? 8 : 7, frame, true);
+  p.set(17, 9 + frame * 2, pal.c('white', 3));
+  return outline(crayon(p, pal, T), pal.c('ink', 0), { transparent: T });
+}
+
+/** The old original: the Big Repo's shed, lit long ago, its planks gone gray, its roof faded and patched, and no weathervane. */
+function oldRepo(pal: Pal, frame: 0 | 1): Pixels {
+  const { c, r } = pal;
+  const p = house(pal, 'shed', true, frame);
+  const wood = r('wood');
+  const stone = r('stone');
+  const green = r('green');
+  p.map((_x, y, k) => {
+    const w = wood.indexOf(k);
+    if (w >= 0 && y > 8) return stone[Math.min(stone.length - 1, w)];
+    const g = green.indexOf(k);
+    return g >= 0 ? green[Math.max(0, g - 1)] : k;
+  });
+  // a patched roof and one loose board
+  px(p, 11, 8, 3, 2, c('wood', 2)).set(11, 8, c('wood', 3));
+  p.line(15, 10, 14, 17, c('stone', 1));
+  return p;
 }
 
 /** A burst of confetti, two frames. */
@@ -270,39 +340,44 @@ function fakeStar(pal: Pal, turn: 0 | 1): Pixels {
 
 /** A twinkle in the night sky: a small bright diamond with a gold heart (frame 0) that dims to a dot (frame 1). */
 function twink(pal: Pal, frame: 0 | 1): Pixels {
+  // drawn on the paper: a little yellow star outlined in marker that blinks a shade dimmer
   const p = new Pixels(20, 20, T);
-  if (frame === 0) {
-    for (let dy = -2; dy <= 2; dy++) px(p, 10 - (2 - Math.abs(dy)), 10 + dy, 1 + 2 * (2 - Math.abs(dy)), 1, pal.c('white', 2));
-    p.set(10, 10, pal.c('gold', 5)).set(10, 9, pal.c('white', 3));
-  } else px(p, 10, 10, 1, 1, pal.c('white', 1));
-  return p;
+  const fill = frame === 0 ? pal.c('gold', 5) : pal.c('gold', 3);
+  STAR7.forEach((row, dy) => [...row].forEach((ch, dx) => ch === '#' && p.set(7 + dx, 7 + dy, fill)));
+  return outline(p, pal.c('ink', 0), { transparent: T });
 }
 
 /** A shooting star: a bright head with a long tail trailing up and to the left. */
 function shooter(pal: Pal, frame: 0 | 1): Pixels {
+  // drawn on the paper: a yellow head outlined in marker, and three blue speed lines behind it (dashed, so they read as motion)
   const p = new Pixels(20, 20, T);
-  const w = pal.c('white', 3);
-  for (let i = 0; i < 12; i++) {
-    const c = i < 4 ? pal.c('white', 2) : i < 8 ? pal.c('white', 1) : pal.c('white', 0);
-    px(p, 12 - i, 11 - Math.floor(i / 2) - (frame && i % 3 === 0 ? 1 : 0), 1, 1 + (i < 6 ? 1 : 0), c);
-  }
-  p.disc(14.5, 13, 2.4, pal.c('gold', 4));
-  p.set(14, 12, w).set(15, 12, w);
-  return p;
+  p.disc(14.5, 13, 2.4, pal.c('gold', 4)).set(14, 12, pal.c('gold', 5));
+  const head = outline(p, pal.c('ink', 0), { transparent: T });
+  for (const [dy, len] of [
+    [-3, 7],
+    [0, 10],
+    [3, 6],
+  ] as const)
+    for (let i = 0; i < len; i++) if ((i + frame) % 4 !== 3) head.set(10 - i, 12 + dy - Math.floor(i / 2), pal.c('blue', i < 4 ? 2 : 3));
+  return head;
 }
 
 /** The monster pictures: the kit's, then the star's two turns, two sparkles, every house, the confetti and the bot. */
 export function monsterPictures(pal: Pal): Book {
-  const mb = buildMonsterBlocks(pal);
+  const mb = new Book('mbl');
   mb.add('star0', drawStar(pal, 0), {});
   mb.add('star1', drawStar(pal, 1), {});
   mb.add('twinkle0', sparkle(pal, false), {});
   mb.add('twinkle1', sparkle(pal, true), {});
   const kinds: Kind[] = ['cottage', 'tower', 'shed'];
   for (const k of kinds) for (const f of [0, 1] as const) mb.add(`${k}${f}`, house(pal, k, false, f), {});
-  for (const n of [3, 2, 1]) for (const f of [0, 1] as const) mb.add(`big${n}${f}`, house(pal, 'shed', false, f, 3, 3 - n), {});
+  for (const n of [3, 2, 1]) for (const f of [0, 1] as const) mb.add(`big${n}${f}`, house(pal, 'shed', false, f, 3, 3 - n, true), {});
   for (const k of kinds) for (const f of [0, 1] as const) mb.add(`lit${k}${f}`, house(pal, k, true, f), {});
   for (const k of kinds) for (const f of [0, 1] as const) mb.add(`confetti${k}${f}`, confetti(pal, k, f), {});
+  for (const f of [0, 1] as const) mb.add(`litbig${f}`, house(pal, 'shed', true, f, 0, 0, true), {});
+  for (const f of [0, 1] as const) mb.add(`forkcot${f}`, forkHouse(pal, 'cottage', f), {});
+  for (const f of [0, 1] as const) mb.add(`forktow${f}`, forkHouse(pal, 'tower', f), {});
+  for (const f of [0, 1] as const) mb.add(`oldbig${f}`, oldRepo(pal, f), {});
   for (const f of [0, 1] as const) mb.add(`bot${f}`, bot(pal, f), {});
   for (const f of [0, 1] as const) mb.add(`fake${f}`, fakeStar(pal, f), {});
   for (const f of [0, 1] as const) mb.add(`twk${f}`, twink(pal, f), {});
@@ -313,10 +388,6 @@ export function monsterPictures(pal: Pal): Book {
 /** The finished .MBL: houses that can block a way are solid on every side, and the bot bumps like the kit's monsters (solid on three sides, hurts a little). */
 export function finishMonsterPictures(mb: Book): Block[] {
   const blocks = mb.finish();
-  for (const n of ['gumdrop0', 'gumdrop1', 'buzzer0', 'buzzer1', 'shelly0', 'shelly1']) {
-    blocks[mb.n(n)].solid = 0;
-    blocks[mb.n(n)].chHitPt = 0;
-  }
   for (const n of ['shed', 'big3', 'big2', 'big1']) for (const f of [0, 1]) blocks[mb.n(`${n}${f}`)].solid = SOLBOT | SOLLEF | SOLRIG | SOLTOP;
   for (const f of [0, 1]) {
     blocks[mb.n(`bot${f}`)].solid = SOLBOT | SOLLEF | SOLRIG;
@@ -325,9 +396,9 @@ export function finishMonsterPictures(mb: Book): Block[] {
   return blocks;
 }
 
-/** The .MON: the kit's three, then everything above. */
+/** The .MON: three empty slots, then everything above. */
 export function monsterSet(mb: Book): Monster[] {
-  const set = buildMonsters(mb);
+  const set = newMonsterSet();
   const anim = (name: string, t: number): [number, number][] => [
     [mb.n(`${name}0`), t],
     [mb.n(`${name}1`), t],
@@ -341,8 +412,10 @@ export function monsterSet(mb: Book): Monster[] {
   set[SHED] = mon(anim('shed', 9), { ...dark, newmon: CONF_SHED });
   set[BIG3] = mon(anim('big3', 9), { ...dark, newmon: BIG2 });
   set[BIG2] = mon(anim('big2', 9), { ...dark, newmon: BIG1 });
-  set[BIG1] = mon(anim('big1', 9), { ...dark, newmon: CONF_SHED });
+  set[BIG1] = mon(anim('big1', 9), { ...dark, newmon: CONF_BIG });
   const party = (kind: Kind, newmon: number) => mon(anim(`confetti${kind}`, 4), { power: 250, thru: 1, end: PARTY, newmon });
+  // the Big Repo's party is the shed's (the .MBL holds 50 pictures); its fork weathervane is back up when the confetti clears
+  set[CONF_BIG] = party('shed', LIT_BIG);
   set[CONF_COT] = party('cottage', LIT_COT);
   set[CONF_TOW] = party('tower', LIT_TOW);
   set[CONF_SHED] = party('shed', LIT_SHED);
@@ -350,6 +423,11 @@ export function monsterSet(mb: Book): Monster[] {
   set[LIT_COT] = lit('litcottage');
   set[LIT_TOW] = lit('littower');
   set[LIT_SHED] = lit('litshed');
+  set[LIT_BIG] = lit('litbig');
+  // forks and the old original are scenery, like the lit houses: a star can't pop them and Stick Man walks past
+  set[FORK_COT] = lit('forkcot');
+  set[FORK_TOW] = lit('forktow');
+  set[OLD_BIG] = lit('oldbig');
   // a popped bot leaves a dull gray fake star that fades away (no points: fake stars are worth nothing)
   set[FAKE] = mon(anim('fake', 4), { power: 250, thru: 1, end: 18 });
   set[BOT] = mon(anim('bot', 4), { power: 150, thru: 1, newmon: FAKE, upscore: BOT_SCORE }, pace(5, 1));
