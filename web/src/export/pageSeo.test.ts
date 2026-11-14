@@ -1,12 +1,14 @@
 // An exported page carries the player's MIT notice, and a Bard game's page names its voice clips.
 import { describe, expect, it } from 'vitest';
 import { exportAbout, exportHead } from './pageSeo';
+import { GAME_OWNERSHIP } from './notices';
 import { recordedAudioNotice } from './recordedAudio';
 
 describe('an exported page’s notices', () => {
   it('keeps the MIT License in the head, as a comment', () => {
     const head = exportHead({ title: 'T' });
     expect(head).toMatch(/<!--[^]*MIT License[^]*Copyright \(c\) 2014 gandrewstone[^]*Permission is hereby granted[^]*-->/);
+    expect(head).toContain(GAME_OWNERSHIP);
     expect(head.slice(4, head.indexOf('-->'))).not.toContain('--');
   });
 
@@ -17,5 +19,6 @@ describe('an exported page’s notices', () => {
     expect(about).toContain('HEY, YAY');
     expect(exportAbout({ title: 'T' })).not.toContain('non-commercial');
     expect(about).toContain('MIT licensed');
+    expect(about).toContain(GAME_OWNERSHIP.replace("'", '&#39;'));
   });
 });

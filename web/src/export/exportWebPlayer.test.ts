@@ -3,6 +3,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { GameFiles } from '../project/files';
 import { readZip } from '@lewismoten/gamemaker-sandbox-archives/zip';
 import { exportWebPlayer, playerGameList } from './exportWebPlayer';
+import { GAME_OWNERSHIP } from './notices';
 
 const page = '<!doctype html><title>Game-Maker web player</title><p>“player”</p>';
 
@@ -32,5 +33,6 @@ describe('the web player download', () => {
     const entries = await readZip(zip);
     expect(entries.map((e) => e.name).sort()).toEqual(['LICENSE.txt', 'README.txt', 'games.json', 'index.html', 'nebula/NEBULA.GAM', 'nebula/SPACE.MAP']);
     expect(new TextDecoder().decode(entries.find((e) => e.name === 'index.html')!.data)).toBe(page);
+    expect(new TextDecoder().decode(entries.find((e) => e.name === 'LICENSE.txt')!.data)).toContain(GAME_OWNERSHIP);
   });
 });

@@ -2,7 +2,7 @@
 import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { thirdPartyNotices } from './notices';
+import { GAME_OWNERSHIP, thirdPartyNotices } from './notices';
 import { readResources, RT } from './peResources';
 import { winExe, winExeZip } from './winApp';
 import { linuxAppFiles } from './linuxApp';
@@ -14,6 +14,11 @@ const html = '<!doctype html><title>T</title>';
 const dec = new TextDecoder('utf-8', { ignoreBOM: true }); // keep the Windows text's byte order mark
 
 describe('third-party notices', () => {
+  it('say the game stays its author’s, on every platform', () => {
+    expect(GAME_OWNERSHIP).toContain('remains its author');
+    for (const p of ['mac', 'windows', 'linux'] as const) expect(thirdPartyNotices(p).replace(/\r\n/g, '\n')).toContain(GAME_OWNERSHIP);
+  });
+
   it('name what each player contains', () => {
     const win = thirdPartyNotices('windows');
     expect(win.startsWith('﻿')).toBe(true);
