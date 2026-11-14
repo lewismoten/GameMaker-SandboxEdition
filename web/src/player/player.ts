@@ -175,6 +175,14 @@ export function mountPlayer(container: HTMLElement, files: GameFiles, gamFile: s
     corner.append(keys);
     if (opts.snapshotId) snapshotButton(corner, machine.screen, opts.snapshotId, canvas);
     container.append(corner);
+    // on a touch screen the way back already sits in the row under the picture, as it does
+    // while playing, so the start poster is left clear (player.css)
+    if (back && matchMedia('(pointer: coarse)').matches) {
+      back.textContent = '← Games';
+      back.title = opts.back!.label.replace(/^←\s*/, '');
+      back.classList.add('gm-back-small');
+      corner.prepend(back);
+    }
     speedPick(corner, speed, canvas);
     unkeys = screenKeys(container, corner, canvas);
   }

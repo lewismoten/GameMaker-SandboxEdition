@@ -231,7 +231,7 @@ export class TouchControls {
       // (a space between, so the visible text reads "Throw a star (Enter)", which the aria-label repeats exactly)
       b.append(main, ' ', key);
     } else b.textContent = named ? l.main : label;
-    b.setAttribute('aria-label', l.aria);
+    b.setAttribute('aria-label', named ? l.aria : l.plainAria);
     const down = (e: PointerEvent) => {
       e.preventDefault();
       b.setPointerCapture?.(e.pointerId);
