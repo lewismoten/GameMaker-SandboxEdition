@@ -10,6 +10,7 @@ Builds Home and the project workspace, including asset browsing, import/save act
 - [`homeDemoStart.ts`](homeDemoStart.ts): Gates demo inspection, notes and playback behind a painted title picture, viewport visibility and an idle callback (with a timeout). Pointer or keyboard interest can start sooner; Save-Data and reduced-data visitors use Watch demo. Replacing the game or leaving Home cancels pending work.
 - [`workspace.ts`](workspace.ts): Owns project navigation, file operations, editor mounting/disposal, Overview, and copy-based play tests.
 - [`overview.ts`](overview.ts): Hosts Files, Controls, DOS player, and Tools tabs; loads non-Files panels dynamically.
+- [`sceneFileLabels.ts`](sceneFileLabels.ts): Adds scene names and read-only role labels to map files in Overview and the sidebar.
 - [`assetBrowser.ts`](assetBrowser.ts): Builds category/file galleries with viewport-triggered thumbnails, asset commands, search, and scoped cleanup.
 - [`searchIndex.ts`](searchIndex.ts): Indexes native filenames/text, companion strings, and DOS player fields in asynchronous slices.
 - [`deepIndexWorker.ts`](deepIndexWorker.ts): Extracts one supplied game’s searchable text and returns request-ID-tagged results, or an empty result on failure.

@@ -1,4 +1,5 @@
 // The project workspace: file list on the left, the selected file's editor on the right.
+import { sceneFileLabels, refreshSceneFileLabels } from './sceneFileLabels';
 import { onPatchesChanged } from '../../dosPlayer/patchesChanged';
 import { companionOrigin, originText } from '../../dosPlayer/playerOrigin';
 import { currentRoute, formatHash, setHashParams } from '../../urlState';
@@ -150,6 +151,7 @@ export class Workspace implements AssistantHost {
     clear(root, h('div', { class: 'workspace' }, this.sidebar, this.main));
     if (storedFolded()) root.querySelector('.workspace')?.classList.add('rail-folded');
     this.unlisten = project.onChange((name) => {
+      if (/\.(gam|map|bbl|lst)$/i.test(name)) refreshSceneFileLabels(project, this.sidebar);
       if (this.listed.has(name) !== project.files.has(name)) this.renderSidebar();
       // links changed (the map's markers, the integrator): Play Level's menu follows
       else if (name === project.gam) this.playEl?.replaceWith((this.playEl = this.playButton()));
@@ -549,7 +551,7 @@ export class Workspace implements AssistantHost {
         h(
           'div',
           { class: `file-row ${n === this.current ? 'active' : ''}`, 'data-name': n },
-          h('button', { class: 'file', onclick: () => this.open(n), title: `Edit ${n}` }, ...fileLabel(n, k)),
+          h('button', { class: 'file', onclick: () => this.open(n), title: `Edit ${n}` }, ...fileLabel(n, k), sceneFileLabels(p, n)),
           // a pointer shortcut to the same action as the file button beside it: out of the Tab order and the reading order
           h('button', { class: 'icon-btn', title: `Edit ${n}`, tabindex: '-1', 'aria-hidden': 'true', onclick: () => this.open(n) }, '✎'),
           n === p.gam || this.looking
