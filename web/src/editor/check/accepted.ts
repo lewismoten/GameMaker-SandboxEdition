@@ -7,7 +7,7 @@
 // list and counts, the badges and the Before You Upload checklist leave accepted findings out;
 // a built game's about.json "acceptedFindings" is the same list (games/kit/levelCheck.ts).
 import type { Project } from '../core/project';
-import type { Finding } from './findings';
+import { isHard, type Finding } from './findings';
 
 const SECTION = 'acceptedFindings';
 
@@ -30,13 +30,23 @@ export function setAccepted(project: Project, key: string, on = true): void {
   project.setExtras(project.gam, SECTION, list.length ? list.sort() : undefined);
 }
 
-/** The findings not accepted, and those that are. */
-export function splitAccepted(findings: Finding[], accepted: Iterable<string>): { open: Finding[]; accepted: Finding[] } {
+/**
+ * The findings not accepted, and those that are. A hard finding (findings.ts isHard) is never accepted: an old
+ * companion that lists one still loads, but the finding stays open, and `reopened` names those so the panel can say why.
+ */
+export function splitAccepted(findings: Finding[], accepted: Iterable<string>): { open: Finding[]; accepted: Finding[]; reopened: Finding[] } {
   const keys = new Set(accepted);
-  const out = { open: [] as Finding[], accepted: [] as Finding[] };
-  for (const f of findings) (keys.has(findingKey(f)) ? out.accepted : out.open).push(f);
+  const out = { open: [] as Finding[], accepted: [] as Finding[], reopened: [] as Finding[] };
+  for (const f of findings) {
+    const listed = keys.has(findingKey(f));
+    if (listed && isHard(f)) out.reopened.push(f);
+    (listed && !isHard(f) ? out.accepted : out.open).push(f);
+  }
   return out;
 }
+
+/** True when a companion's old accepted list still holds this hard finding (it is shown again, with a note). */
+export const wasAcceptedButHard = (f: Finding, accepted: Iterable<string>): boolean => isHard(f) && new Set(accepted).has(findingKey(f));
 
 /** The findings not accepted. */
 export const openFindings = (findings: Finding[], accepted: Iterable<string>): Finding[] => splitAccepted(findings, accepted).open;

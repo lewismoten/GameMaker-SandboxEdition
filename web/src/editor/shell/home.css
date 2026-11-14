@@ -1008,25 +1008,27 @@ a.button.with-ico {
   }
 }
 
-/* narrower: the tabs three to a row, then two, in even columns */
-@container library (max-width: 680px) {
+/* narrower: no icons, so the names and counts share as few rows as fit (flex wrap down to 481);
+   on a phone the tabs sit three to a row in even columns */
+@container library (max-width: 480px) {
   .lib-cats {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
-}
-
-@container library (max-width: 480px) {
-  .lib-cats {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
 
   .lib-cat {
-    justify-content: flex-start;
+    gap: 5px;
+    padding: 5px 6px;
+  }
+
+  .lib-cat .ico {
+    display: none;
   }
 
   .lib-cat-count {
     margin-left: auto;
+    padding: 0 4px;
+    min-width: 18px;
   }
 }
 

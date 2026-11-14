@@ -83,6 +83,12 @@ export interface CheckInfo {
    * calls its warnings suggestions and offers “That’s on purpose” to dismiss one.
    */
   taste?: true;
+  /**
+   * A proven failure, not a judgment: when this check reports an error (a file the game needs that isn't there,
+   * a link that can never fire, a number past what PLAYGAME keeps), it will fail for players, so the panel offers
+   * no way to dismiss it. See checkClass.ts for the reason each check is classed as it is.
+   */
+  hard?: true;
 }
 
 const L = (section: string): GuideRef => ({ chapter: 'levels', section });
@@ -155,6 +161,7 @@ export const CHECKS = {
     guide: G,
   },
   'link-shadow': {
+    hard: true,
     name: 'Two links on one cell',
     why: 'PLAYGAME takes the first link on a cell the hero touches, so a second link there never fires, and wherever it leads may never be seen.',
     guide: LINKS,
@@ -175,16 +182,19 @@ export const CHECKS = {
     guide: LINKS,
   },
   'off-map': {
+    hard: true,
     name: 'Links off the map',
     why: 'The hero is always on one of the map’s 100 × 100 cells, so a link off it never fires, and a landing spot off it reads past the map.',
     guide: LINKS,
   },
   'won-route': {
+    hard: true,
     name: 'No way to the won screen',
     why: 'If no chain of links leads from the start to the game won scene, nobody can finish the game, however well they play.',
     guide: LINKS,
   },
   'missing-file': {
+    hard: true,
     name: 'Files a level needs',
     why: 'PLAYGAME stops at a scene whose files it can’t find, so nobody gets past it.',
     guide: { chapter: 'testing', section: 'A play-test checklist' },
@@ -205,6 +215,7 @@ export const CHECKS = {
     guide: { chapter: 'sounds', section: 'Two sounds in every slot' },
   },
   'out-of-range': {
+    hard: true,
     name: 'Blocks and monsters that aren’t there',
     why: 'A number past the end of a block set or the counters makes DOS read stray memory; a monster from an empty slot never appears.',
     guide: { chapter: 'blocks', section: 'The 150-block budget' },
@@ -220,6 +231,7 @@ export const CHECKS = {
     guide: { chapter: 'tricks', section: 'Cameos that say hello once' },
   },
   counters: {
+    hard: true,
     name: 'Counters that run out',
     why: 'Running out of breath, keys or faith before the gate that needs them is a trap.',
     guide: { chapter: 'logic', section: 'Counters, Gates and Puzzles' },
@@ -487,6 +499,9 @@ export type Kind = Severity | 'suggestion';
 
 export const kindOf = (f: Pick<Finding, 'check' | 'severity'>): Kind =>
   f.severity === 'warning' && (CHECKS[f.check] as CheckInfo).taste ? 'suggestion' : f.severity;
+
+/** A finding that will fail for players: a hard check at error severity. It can be fixed but not dismissed. */
+export const isHard = (f: Pick<Finding, 'check' | 'severity'>): boolean => f.severity === 'error' && !!(CHECKS[f.check] as CheckInfo).hard;
 
 const SEVERITY_ORDER: Record<Severity, number> = { error: 0, warning: 1, info: 2 };
 
