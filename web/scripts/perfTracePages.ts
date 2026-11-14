@@ -15,7 +15,9 @@ export const TRACE_PAGES: [name: string, path: string, ready?: string][] = [
   ['desk', '/#/desk'],
   ['magazine', '/#/magazine'],
   ['dos.html', '/dos.html'],
-  ['play.html', '/play.html'],
+  // With no game, play.html shows the desk; the real full-window player needs ?game=.
+  ['play.html no game', '/play.html'],
+  ['play.html blaster', '/play.html?game=blaster'],
 ];
 
 /** The map is built and drawn synchronously after its game files load; shell tabs are too early. */
