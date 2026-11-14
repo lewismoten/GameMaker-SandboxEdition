@@ -259,6 +259,10 @@ Palette facts include the canonical 768 VGA bytes in base64 for previews, so bro
 a palette list needs no game archive download. These library-only facts are omitted
 from the slim home-page catalog. Copying a selected file still reads its original ZIP.
 
+- `playedFiles.ts` is `dosbox.ts`'s save safety: before the DOS folder is emptied, played files (CONFIG.DAT, GAME0-9.SAV, SAVNAMES.DAT,
+  NAME.SAV, .HIS; the names PLAYGAME and PLAYBACK write) are copied to `dosbox-saves/<stamp>/` and put back, and any other
+  file a person changed or added (a game made in Game-Maker there) goes to `dosbox-edits/<stamp>/`. Both sit beside the folder, are
+  never overwritten, and are printed. `games/<id>/disk`, the MCP's `~/GameMakerWork` and `pocket-out/` hold no play saves.
 - `phoneBoardPhotos.ts`: renders the Phone of the Future's front and back as top-down PNGs (a small z-buffer
   rasterizer over `games/year2000/phone/viewer/parts.json` + `parts.bin`) into
   `src/manual/printables/dexReport/`, for Dex Dynamo's science report. `npx vite-node scripts/phoneBoardPhotos.ts`.
