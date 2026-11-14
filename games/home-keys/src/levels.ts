@@ -47,23 +47,16 @@ function buildBlocks(pal: Pal, include: SignName[]): { book: Book; signs: Record
   const glyphs = { ...MICRO_GLYPHS, '→': '100110111110100' };
   // Each map shares the full vocabulary, allocating only its own signs.
   // Compact letters keep the narrowest boards below the top visible row.
-  const compact = buildTiledSigns(WORDS, {
+  // One size per level: if any board here needs the compact letters, every board here uses them.
+  const compact = include.some((n) => ['walk', 'old'].includes(n));
+  const { blocks, signs } = buildTiledSigns(WORDS, {
     colors,
     glyphs,
-    compact: true,
-    include: include.filter((n) => ['walk', 'old'].includes(n)),
-    maxBlocks: 100,
+    ...(compact ? { compact: true } : { lettersPerBlock: 3, prefix: 'largeSign' }),
+    include,
+    maxBlocks: Math.min(100, 150 - book.index.size),
   });
-  const large = buildTiledSigns(WORDS, {
-    colors,
-    glyphs,
-    lettersPerBlock: 3,
-    include: include.filter((n) => !['walk', 'old'].includes(n)),
-    prefix: 'largeSign',
-    maxBlocks: Math.min(100 - compact.blocks.size, 150 - book.index.size - compact.blocks.size),
-  });
-  for (const [name, pic] of [...compact.blocks, ...large.blocks]) book.add(name, pic, { grav: PULL.down });
-  const signs = { ...compact.signs, ...large.signs };
+  for (const [name, pic] of blocks) book.add(name, pic, { grav: PULL.down });
   return { book, signs };
 }
 
