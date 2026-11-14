@@ -412,12 +412,24 @@ function levelTiles(l: Level) {
   return tiles(l.area.w * FULL, l.area.h * FULL, AREA.w, AREA.h - CAPTION, OVERLAP);
 }
 
+/** Pass the Pie's opening pair is just taller than a sheet. Keep a consistent near-full-size
+ * print scale for its maps rather than leaving the opening sheet half empty. Other pieces,
+ * oversized maps and the on-screen reader keep their existing size and layout. */
+function printScale(entry: CatalogEntry, game: Game, levels: Level[]): number {
+  if (entry.id !== 'pass-the-pie' || levels.length < 2) return 1;
+  const [a, b] = levels.slice(0, 2).map((l) => levelBox(game, l));
+  if (a.w > AREA.w || b.w > AREA.w || a.w + GAP + b.w <= AREA.w) return 1;
+  const scale = Math.min(1, (AREA.h - GAP) / (a.h + b.h));
+  return scale >= 0.9 ? scale : 1;
+}
+
 /** How many pages the maps print on: overviews only, and with the big ones full size too. */
-function pageCounts(game: Game, levels: Level[]): { overviews: number; full: number } {
+function pageCounts(entry: CatalogEntry, game: Game, levels: Level[]): { overviews: number; full: number } {
   const placed = packPages(
     levels.map((l) => levelBox(game, l)),
     AREA,
     GAP,
+    printScale(entry, game, levels),
   );
   const overviews = placed.length ? Math.max(...placed.map((p) => p.page)) + 1 : 0;
   const extra = levels.reduce((n, l) => n + (l.course ? courseTiles(l).length : tiled(l) ? levelTiles(l).length : 0), 0);
@@ -511,7 +523,8 @@ async function printSheets(
 ): Promise<Sheet[]> {
   const urls = new Map<Level, string>();
   const boxes = levels.map((l) => levelBox(game, l));
-  const placed = packPages(boxes, AREA, GAP);
+  const scale = printScale(entry, game, levels);
+  const placed = packPages(boxes, AREA, GAP, scale);
   // a first-sheet picture paints only the levels on page 0
   for (const [i, l] of levels.entries())
     if (!l.course && (!firstOnly || placed[i].page === 0)) {
@@ -537,11 +550,13 @@ async function printSheets(
       if (fits(l)) {
         const x = MARGIN + p.x;
         const y = HEAD + p.y;
-        body.push(
-          captionSvg(game, l, x, y, Math.max(levelWidth(l), captionWidth(game, l))),
-          levelSvg(game, l, url, x, y + CAPTION + labelRoom(game, l).above, FULL),
+        const group = el('g', { transform: `translate(${x} ${y}) scale(${scale})` });
+        group.append(
+          captionSvg(game, l, 0, 0, Math.max(levelWidth(l), captionWidth(game, l))),
+          levelSvg(game, l, url, 0, CAPTION + labelRoom(game, l).above, FULL),
         );
-        if (l.cast) body.push(await castSvg(game, l, x + l.area.w * FULL + GAP, y + CAPTION, paint, crop));
+        if (l.cast) group.append(await castSvg(game, l, l.area.w * FULL + GAP, CAPTION, paint, crop));
+        body.push(group);
         continue;
       }
       // a big level: fitted to the page (its atlas grid over it when it also prints full size)
@@ -728,7 +743,7 @@ export function levelMaps(ctx: PrintContext):
         paint: painter(x.game, x.files, minter(keep)),
         paintCourse: coursePainter(x.game, x.files, minter(keep)),
         crop: cropper(),
-        full: pageCounts(x.game, seen).full <= MOST_PAGES,
+        full: pageCounts(ctx.entry, x.game, seen).full <= MOST_PAGES,
         all: false,
       };
     });
@@ -757,7 +772,7 @@ export function levelMaps(ctx: PrintContext):
       const x = await load();
       if (!x?.seen.length) return { el: h('p', { class: 'gmb-loading' }, 'This game has no levels to map.'), view: () => {} };
       dispatchEvent(new CustomEvent('gm-achievement', { detail: { id: 'print-level-maps' } }));
-      return levelViewer(x, o);
+      return levelViewer(ctx.entry, x, o);
     },
     /** The first level's picture, cropped as printed, for a small picture of the Level Maps (the Library's card). */
     async preview() {
@@ -806,7 +821,7 @@ interface Loaded {
 }
 
 /** On screen: the maps listed beside the one picked, in a view to zoom and drag (Pages); or every map in one column (Scroll, readView.ts). */
-function levelViewer(opts: Loaded, o: ReaderOptions): Reader {
+function levelViewer(entry: CatalogEntry, opts: Loaded, o: ReaderOptions): Reader {
   const { game, paint, crop } = opts;
   const { root } = o;
   let view = o.view;
@@ -817,7 +832,7 @@ function levelViewer(opts: Loaded, o: ReaderOptions): Reader {
   const stage = h('div', { class: 'lm-stage' });
   const printNote = h('p', { class: 'lm-print' });
   const notePrint = () => {
-    const counts = pageCounts(game, levels());
+    const counts = pageCounts(entry, game, levels());
     const fullBox = h('input', {
       type: 'checkbox',
       id: 'lm-full',

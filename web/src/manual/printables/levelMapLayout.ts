@@ -481,15 +481,17 @@ interface Placed {
 /**
  * Boxes (`w` x `h`) packed onto pages `area` large, in order, in rows (shelves) with `gap`
  * between them; one too big for a page gets a page of its own (the caller tiles it).
+ * `scale` packs consistently reduced artwork; the caller draws it at that same scale.
  */
-export function packPages(boxes: { w: number; h: number }[], area: { w: number; h: number }, gap: number): Placed[] {
+export function packPages(boxes: { w: number; h: number }[], area: { w: number; h: number }, gap: number, scale = 1): Placed[] {
   const out: Placed[] = [];
   let page = -1;
   let x = 0;
   let y = 0;
   let row = 0;
   let open = false;
-  for (const b of boxes) {
+  for (const box of boxes) {
+    const b = { w: box.w * scale, h: box.h * scale };
     const big = b.w > area.w || b.h > area.h;
     if (big) {
       page += 1;

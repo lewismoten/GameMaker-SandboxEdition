@@ -39,6 +39,28 @@ const game = {
 const blank = (fill = 0) => new Uint8Array(MLEN * MWID).fill(fill);
 
 describe('Level Maps layout', () => {
+  it('shares the opening map page at a measured near-full-size scale', () => {
+    // Pass the Pie: Pumpkin Yard (35 blocks) and Payback (27), plus their captions.
+    const boxes = [
+      { w: 100, h: 38 },
+      { w: 100, h: 30 },
+      { w: 100, h: 29 },
+    ];
+    const area = { w: 101, h: 67 };
+    const gap = 2.4;
+    const scale = (area.h - gap) / (boxes[0].h + boxes[1].h);
+    const placed = packPages(boxes, area, gap, scale);
+    expect(placed.map((p) => p.page)).toEqual([0, 0, 1]);
+    expect(placed[1].y).toBeCloseTo(boxes[0].h * scale + gap);
+    expect(placed[1].y + boxes[1].h * scale).toBeCloseTo(area.h);
+    expect(scale).toBeGreaterThanOrEqual(0.9);
+    expect(boxes).toEqual([
+      { w: 100, h: 38 },
+      { w: 100, h: 30 },
+      { w: 100, h: 29 },
+    ]);
+  });
+
   it('makes one map of the scenes that share a map and block set', () => {
     expect(mapGroups(game)).toEqual([
       { map: 'a.map', bbl: 'a.bbl', scenes: [2, 3] },

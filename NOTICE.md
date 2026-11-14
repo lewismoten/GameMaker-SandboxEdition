@@ -64,6 +64,8 @@ game folder opens in the browser unchanged.
 
 ## Credits
 
+- **Printables pagination polish (November 14, 2026)**: **OpenAI Codex (GPT-6.1 Sol) via Hermes Agent**, directed by Lewis Moten, added Maximus's printed Module keys column headings and adjusted Pass the Pie's printed Level Maps packing, with regression tests and real Chromium print checks. Existing game content and artwork retain their credits.
+
 - **Source documentation review (part 16)**: **Hermes Agent running OpenAI Codex GPT-6.1 Sol**, directed by Lewis Moten, checked the desk-buddy, disk-box, phone-viewer and outside-window READMEs against the source and corrected disk entry points, label-loading scope, Eject ownership and phone-thumbnail imports. The desk-buddy and outside-window READMEs needed no correction. No implementation or third-party material changed.
 
 - **Source documentation review (part 14)**: **Hermes Agent running OpenAI Codex GPT-6.1 Sol**, directed by Lewis Moten, checked the shared VGA, Integrator, Block Designer and Monster Maker READMEs against the source and clarified that the Block Designer loads palettes and remaps block pixels rather than editing palette files, and removed an incorrect XOR claim about Integrator links. The shared VGA and Monster Maker READMEs needed no correction. No implementation or third-party material changed.
