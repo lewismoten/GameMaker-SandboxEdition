@@ -4,27 +4,43 @@
 //
 //   1. The High Ledge: the door is on a ledge five blocks up. A jump falls short; the stars give high jumps.
 //   2. The Wide Gap: a canyon too wide to jump. The sneakers (back the way you came) make a run and a jump reach.
-import { Book } from '../../kit/starter/book';
+import { Book, PULL } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
-import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
-import { addSign, type Sign } from '../../kit/starter/sign';
+import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
+import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { addPowers } from './powers';
 
 export type SignName = 'ledge' | 'stars' | 'gap' | 'sneakers';
 
-/** The block set the levels share: the Starter blocks, this game's signs, then the power-ups. */
+/** The block set the levels share: the Starter blocks, power-ups and tiled signs. */
 function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
-  const signs = {
-    ledge: addSign(book, pal, 'ledge.sign', 'THE EXIT IS UP ON THAT LEDGE. TRY A JUMP.', 4, 3),
-    stars: addSign(book, pal, 'stars.sign', 'A STAR GIVES 4 HIGH JUMPS. TAKE ONE.', 4, 3),
-    gap: addSign(book, pal, 'gap.sign', 'TOO WIDE TO JUMP? LOOK BACK THE WAY YOU CAME.', 4, 3),
-    sneakers: addSign(book, pal, 'sneakers.sign', 'SNEAKERS RUN AND JUMP FAR. 50 STRIDES.', 4, 3),
-  };
   addPowers(book, pal);
+  // Share centered lettering, borders and posts across every level's vocabulary.
+  const { blocks, signs } = buildTiledSigns(
+    {
+      ledge: { rows: [['THE EXIT IS UP'], ['ON THAT LEDGE.'], ['TRY A JUMP.']], maxWidth: 7 },
+      stars: { rows: [['A STAR GIVES'], ['4 HIGH JUMPS.'], ['TAKE ONE.']], maxWidth: 7 },
+      gap: { rows: [['TOO WIDE TO JUMP?'], ['LOOK BACK THE'], ['WAY YOU CAME.']], maxWidth: 9 },
+      sneakers: { rows: [['SNEAKERS RUN'], ['AND JUMP FAR.'], ['50 STRIDES.']], maxWidth: 7 },
+    },
+    {
+      colors: {
+        background: skyOf(pal),
+        paper: pal.c('parch', 3),
+        ink: pal.c('ink', 0),
+        wood: pal.c('wood', 2),
+        highlight: pal.c('wood', 4),
+        shadow: pal.c('wood', 0),
+      },
+      lettersPerBlock: 3,
+      maxBlocks: Math.min(100, 150 - book.index.size),
+    },
+  );
+  for (const [name, pic] of blocks) book.add(name, pic, { grav: PULL.down });
   return { book, signs };
 }
 
@@ -80,8 +96,9 @@ function highLedge(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [9, 26, 41],
   );
   const m = new StarterMap(book, g.rows());
-  m.sign(6, onGround(GROUND, signs.ledge), signs.ledge);
-  m.sign(29, onGround(GROUND, signs.stars), signs.stars);
+  const signMap = { set: (x: number, y: number, block: string) => m.setOnSky(x, y, block) };
+  stampTiledSign(signMap, 7, onGround(GROUND, signs.ledge), signs.ledge);
+  stampTiledSign(signMap, 29, onGround(GROUND, signs.stars), signs.stars);
   m.set(35, GROUND - 1, 'star').set(37, GROUND - 1, 'star');
   return m;
 }
@@ -103,8 +120,9 @@ function wideGap(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [12, 24, 49],
   );
   const m = new StarterMap(book, g.rows());
-  m.sign(8, onGround(GROUND, signs.sneakers), signs.sneakers);
-  m.sign(26, onGround(GROUND, signs.gap), signs.gap);
+  const signMap = { set: (x: number, y: number, block: string) => m.setOnSky(x, y, block) };
+  stampTiledSign(signMap, 8, onGround(GROUND, signs.sneakers), signs.sneakers);
+  stampTiledSign(signMap, 25, onGround(GROUND, signs.gap), signs.gap);
   m.set(3, GROUND - 1, 'sneakerL').set(4, GROUND - 1, 'sneakerR');
   return m;
 }
