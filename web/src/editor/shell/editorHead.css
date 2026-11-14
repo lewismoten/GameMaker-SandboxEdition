@@ -1,0 +1,86 @@
+/* A phone's header above every editor (workspace.ts): the breadcrumb, one line with the ⋯ menu
+   (and the Read-only chip), the Used by / Uses button and the tip, so the working area starts on
+   the first screen. Wide screens and tablets keep the full header. */
+.refs-toggle,
+.file-more-menu > .phone-only {
+  display: none;
+}
+
+/* Used by / Uses sit in the title row but take a line of their own, as they did below it */
+.file-head > .file-refs {
+  order: 9;
+  flex: 1 1 100%;
+  margin-bottom: -8px;
+}
+
+@media (max-width: 600px) {
+  /* the breadcrumb already names the file */
+  html .file-head > h1.file-title {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  html .file-head {
+    flex-wrap: nowrap;
+    margin-bottom: 4px;
+    gap: 6px;
+  }
+  /* Assets, find, shortcuts and the assistant are in the ⋯ menu, which rides on the breadcrumb's line */
+  html .file-head {
+    position: relative;
+    row-gap: 0;
+  }
+  html .file-head > .toolbar {
+    position: absolute;
+    top: -48px;
+    right: 0;
+  }
+  html .file-head > .toolbar > button {
+    display: none;
+  }
+  html .file-more-menu > .phone-only {
+    display: block;
+  }
+  html .crumbs {
+    padding-right: 52px;
+  }
+  /* Read-only stays: a chip and Edit a copy, without the sentence */
+  html .file-head > .released-bar.released-inline {
+    flex: 0 1 auto;
+    margin: 0;
+    min-width: 0;
+  }
+  html .file-head .released-text:has(.released-title) {
+    display: none;
+  }
+  html .file-head > .file-refs {
+    order: 0;
+    flex: 0 1 auto;
+    margin: 0;
+  }
+  html .refs-toggle {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 10px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--panel);
+    color: inherit;
+    font: inherit;
+    font-size: 13px;
+    cursor: pointer;
+  }
+  html .file-refs:not(.refs-open) > .used-by {
+    display: none;
+  }
+  html .file-refs.refs-open {
+    flex: 1 1 100%;
+  }
+  html .file-refs.refs-open > .used-by {
+    margin-top: 4px;
+  }
+}
