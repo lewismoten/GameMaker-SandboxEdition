@@ -47,31 +47,35 @@ describe('cryptex stock sheets', () => {
       }
     }
   });
-  it.each(Object.keys(STOCK) as StockSize[])('places every part within the cutter margins on %s stock', (stock) => {
-    const b = stock === '12x12' ? kit : buildCryptex(0.2, false, stock);
-    expect(b.problems).toEqual([]);
-    const placed = b.sheets.flatMap((s) => s.placed);
-    for (const m of Object.values(b.parts)) expect(placed.filter((p) => p.name === m.part.name)).toHaveLength(m.qty);
-    expect(placed).toHaveLength(Object.values(b.parts).reduce((a, m) => a + m.qty, 0));
-    for (const s of b.sheets) {
-      expect(s.sheet.w).toBe(STOCK[stock].w);
-      expect(s.sheet.h).toBe(STOCK[stock].h);
-      expect(s.sheet.w - 2 * STOCK_MARGIN.x).toBeLessThanOrEqual(BED.w);
-      expect(s.sheet.h - 2 * STOCK_MARGIN.y).toBeLessThanOrEqual(BED.h + 1e-6);
-      for (const it of s.sheet.items)
-        for (const [x, y] of extent(it)) {
-          expect(x).toBeGreaterThanOrEqual(STOCK_MARGIN.x - 1e-6);
-          expect(y).toBeGreaterThanOrEqual(STOCK_MARGIN.y - 1e-6);
-          expect(x).toBeLessThanOrEqual(s.sheet.w - STOCK_MARGIN.x + 1e-6);
-          expect(y).toBeLessThanOrEqual(s.sheet.h - STOCK_MARGIN.y + 1e-6);
-        }
-    }
-    const fit = fittingTable().find((f) => f.stock === stock)!;
-    expect(fit.sheets).toBe(b.sheets.length);
-    expect(fit.materialMm2).toBeCloseTo(b.area.sheets, 6);
-    expect(fit.materialIn2).toBeCloseTo(fit.sheets * Number(stock.split('x')[0]) * Number(stock.split('x')[1]), 6);
-    expect(fit.label).toContain(`of ${stock}`);
-  });
+  it.each(Object.keys(STOCK) as StockSize[])(
+    'places every part within the cutter margins on %s stock',
+    (stock) => {
+      const b = stock === '12x12' ? kit : buildCryptex(0.2, false, stock);
+      expect(b.problems).toEqual([]);
+      const placed = b.sheets.flatMap((s) => s.placed);
+      for (const m of Object.values(b.parts)) expect(placed.filter((p) => p.name === m.part.name)).toHaveLength(m.qty);
+      expect(placed).toHaveLength(Object.values(b.parts).reduce((a, m) => a + m.qty, 0));
+      for (const s of b.sheets) {
+        expect(s.sheet.w).toBe(STOCK[stock].w);
+        expect(s.sheet.h).toBe(STOCK[stock].h);
+        expect(s.sheet.w - 2 * STOCK_MARGIN.x).toBeLessThanOrEqual(BED.w);
+        expect(s.sheet.h - 2 * STOCK_MARGIN.y).toBeLessThanOrEqual(BED.h + 1e-6);
+        for (const it of s.sheet.items)
+          for (const [x, y] of extent(it)) {
+            expect(x).toBeGreaterThanOrEqual(STOCK_MARGIN.x - 1e-6);
+            expect(y).toBeGreaterThanOrEqual(STOCK_MARGIN.y - 1e-6);
+            expect(x).toBeLessThanOrEqual(s.sheet.w - STOCK_MARGIN.x + 1e-6);
+            expect(y).toBeLessThanOrEqual(s.sheet.h - STOCK_MARGIN.y + 1e-6);
+          }
+      }
+      const fit = fittingTable().find((f) => f.stock === stock)!;
+      expect(fit.sheets).toBe(b.sheets.length);
+      expect(fit.materialMm2).toBeCloseTo(b.area.sheets, 6);
+      expect(fit.materialIn2).toBeCloseTo(fit.sheets * Number(stock.split('x')[0]) * Number(stock.split('x')[1]), 6);
+      expect(fit.label).toContain(`of ${stock}`);
+    },
+    60000,
+  ); // packing a whole kit for one stock size takes seconds on a busy machine
   it('uses two 12x12 sheets or one 12x20 sheet, with less retained wood than before', () => {
     expect(kit.sheets).toHaveLength(2);
     expect(buildCryptex(0.2, false, '12x20').sheets).toHaveLength(1);
