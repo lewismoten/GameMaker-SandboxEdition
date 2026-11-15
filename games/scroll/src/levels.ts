@@ -109,7 +109,9 @@ function theViewFollows(book: Book, signs: Record<SignName, Sign>): StarterMap {
   const g = new Grid(L2.width, 15);
   g.row(G, 0, L2.width - 1, 'G').fill(0, G + 1, L2.width, 4, 'D');
   g.col(0, 0, 9, 'X').col(L2.width - 1, 0, 9, 'X');
-  g.put(3, G - 2, 's').put(3, G - 1, 'S');
+  // The long path starts on a two-row turf step; the one-screen room stays exact.
+  g.put(3, G - 2, 'G').put(3, G - 1, 'D');
+  g.put(3, G - 4, 's').put(3, G - 3, 'S');
   g.put(L2.exit, G - 2, 'e').put(L2.exit, G - 1, 'E');
   for (const x of L2.coins) g.put(x, G - 1, 'c');
   scenery(

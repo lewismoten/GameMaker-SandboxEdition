@@ -90,7 +90,9 @@ function base(width: number, exitX: number, encoreX: number): Grid {
   const g = new Grid(width, 15);
   g.row(GROUND, 0, width - 1, 'G').fill(0, GROUND + 1, width, 4, 'D');
   g.col(0, 0, 9, 'B').col(width - 1, 0, 9, 'B');
-  g.put(3, 8, 's').put(3, 9, 'S');
+  // One-way boards leave the return walk to the encore door open below.
+  g.put(3, 8, '=').put(3, 9, '=');
+  g.put(3, 6, 's').put(3, 7, 'S');
   g.put(encoreX, 8, 'e').put(encoreX, 9, 'E');
   g.put(exitX, 8, 'e').put(exitX, 9, 'E');
   return g;
