@@ -47,7 +47,7 @@ disk.put('tokens.bbl', serializeBlocks(book.finish()));
 disk.put('tokens.mbl', serializeBlocks(monsterBlocks.finish()));
 disk.put('tokens.mon', serializeMonsters(buildMonsters(monsterBlocks)));
 disk.put('hero.cbl', serializeBlocks(heroBlocks.finish()));
-const heroChar = buildHero(heroBlocks);
+const heroChar = buildHero(heroBlocks, { heldRise: { push: 12 } });
 heroChar.meter[KEYS] = INF_REPEAT; // no keys in this game
 heroChar.meter[TOKENS] = 1; // tokens carried (a counter shows one less than it holds)
 disk.put('hero.chr', serializeCharacter(heroChar));
