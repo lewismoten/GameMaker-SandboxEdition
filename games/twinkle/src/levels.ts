@@ -88,7 +88,7 @@ function blocks(pal: Pal, level: 1 | 2): Built {
 }
 
 /**
- * Lays stars on the sky cells of columns x0..x1, rows 0..rowMax. With `set` 'sync' every star is a slot-0 block of the
+ * Lays stars on the sky cells of columns x0..x1, rows 2..rowMax. With `set` 'sync' every star is a slot-0 block of the
  * same-time set; with 'star' each is of one of the six loops, started at any of its four frames, and no two stars within
  * 4 blocks share a picture (and so a loop).
  */
@@ -96,7 +96,7 @@ function scatter(m: StarterMap, book: Book, set: 'sync' | 'star', x0: number, x1
   const rand = rng(seed);
   const sky = book.n('sky');
   const cells: [number, number][] = [];
-  for (let y = 0; y <= rowMax; y++) for (let x = x0; x <= x1; x++) if (m.map.blocks[(y + ORIGIN) * MLEN + x + ORIGIN] === sky) cells.push([x, y]);
+  for (let y = 2; y <= rowMax; y++) for (let x = x0; x <= x1; x++) if (m.map.blocks[(y + ORIGIN) * MLEN + x + ORIGIN] === sky) cells.push([x, y]);
   for (let i = cells.length - 1; i > 0; i--) {
     const j = Math.floor(rand() * (i + 1));
     [cells[i], cells[j]] = [cells[j], cells[i]];
@@ -122,7 +122,9 @@ function allAtOnce(pal: Pal): Level {
   const g = new Grid(56, 15);
   g.row(GROUND, 0, 55, 'G').fill(0, GROUND + 1, 56, 3, 'D');
   g.col(0, 0, GROUND - 1, 'X').col(55, 0, GROUND - 1, 'X');
-  g.put(3, GROUND - 2, 's').put(3, GROUND - 1, 'S');
+  // A three-row turf ledge opens the view onto the night sky.
+  g.put(3, GROUND - 3, 'G').fill(3, GROUND - 2, 1, 2, 'D');
+  g.put(3, GROUND - 5, 's').put(3, GROUND - 4, 'S');
   g.put(52, GROUND - 2, 'e').put(52, GROUND - 1, 'E');
   for (const x of [13, 21, 38]) g.put(x, GROUND - 1, 'b');
   for (const x of [11, 17, 33, 47]) g.put(x, GROUND - 1, 'f');
@@ -140,7 +142,9 @@ function nightSky(pal: Pal): Level {
   const g = new Grid(60, 15);
   g.row(GROUND, 0, 59, 'G').fill(0, GROUND + 1, 60, 3, 'D');
   g.col(0, 0, GROUND - 1, 'X').col(59, 0, GROUND - 1, 'X');
-  g.put(3, GROUND - 2, 's').put(3, GROUND - 1, 'S');
+  // A three-row turf ledge opens the view onto the night sky.
+  g.put(3, GROUND - 3, 'G').fill(3, GROUND - 2, 1, 2, 'D');
+  g.put(3, GROUND - 5, 's').put(3, GROUND - 4, 'S');
   g.put(56, GROUND - 2, 'e').put(56, GROUND - 1, 'E');
   for (const x of [12, 33, 50]) g.put(x, GROUND - 1, 'b');
   for (const x of [10, 28, 38, 53]) g.put(x, GROUND - 1, 'f');

@@ -126,7 +126,9 @@ function rumbleThenPuff(pal: Pal): Level {
   const g = new Grid(WIDTH_ONE, 15);
   g.row(GROUND, 0, WIDTH_ONE - 1, 'G').fill(0, GROUND + 1, WIDTH_ONE, 4, 'D');
   g.col(0, 0, 9, 'X').col(WIDTH_ONE - 1, 0, 9, 'X');
-  g.put(3, 8, 's').put(3, 9, 'S').put(36, 8, 'e').put(36, 9, 'E');
+  // A narrow turf ledge supports the hero at entry, with dirt down to the path.
+  g.put(3, 8, 'G').put(3, 9, 'D');
+  g.put(3, 6, 's').put(3, 7, 'S').put(36, 8, 'e').put(36, 9, 'E');
   for (const x of [15, 21, 29, 35]) g.put(x, GROUND - 1, 'c');
   scenery(
     g,
