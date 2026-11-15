@@ -48,7 +48,7 @@ disk.put('dice.pal', serializePalette(pal.pal));
 disk.put('dice.mbl', serializeBlocks(monsterBlocks.finish()));
 disk.put('dice.mon', serializeMonsters(buildMonsters(monsterBlocks)));
 disk.put('hero.cbl', serializeBlocks(heroBlocks.finish()));
-const heroChar = buildHero(heroBlocks);
+const heroChar = buildHero(heroBlocks, { heldRise: { push: 12 } });
 heroChar.meter[KEYS] = 1; // gold keys carried (a counter shows one less than it holds)
 heroChar.meter[SILVER_KEYS] = 1; // and silver keys
 heroChar.meter[0] = HERO_HIT_POINTS;

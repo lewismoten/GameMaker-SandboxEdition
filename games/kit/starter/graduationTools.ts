@@ -38,12 +38,12 @@ export const aisle: Route = walkAisle(
 
 export const SEED = 1;
 
-/** The game's play loop: the bot plays `routes` in a row on the sim (a GameSim class for the game's disk). */
-export function makePlay<S extends new (files?: undefined, seed?: number) => unknown>(GameSim: S, routes: Route[], jumpHold = 2) {
+/** The game's play loop; an optional hold time matches this graduation's held-rise hero. */
+export function makePlay<S extends new (files?: undefined, seed?: number) => unknown>(GameSim: S, routes: Route[], jumpHold?: number) {
   return async function play(seed = SEED, upTo = routes.length): Promise<{ sim: InstanceType<S>; bot: StarterBot }> {
     const sim = new GameSim(undefined, seed) as InstanceType<S>;
     const bot = new StarterBot(sim as never);
-    bot.jumpHold = jumpHold;
+    if (jumpHold !== undefined) bot.jumpHold = jumpHold;
     await playLevels(bot, routes, upTo);
     return { sim, bot };
   };

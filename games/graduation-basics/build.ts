@@ -8,4 +8,4 @@ import { buildLevels } from '../kit/starter/graduationLevel';
 import { cfg } from './src/config';
 import { demoRecording } from './src/demo';
 
-buildGraduation(dirname(fileURLToPath(import.meta.url)), cfg, buildLevels(cfg), demoRecording());
+buildGraduation(dirname(fileURLToPath(import.meta.url)), cfg, buildLevels(cfg), demoRecording(), { heldRise: { push: 12 } });

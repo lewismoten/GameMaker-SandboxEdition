@@ -29,7 +29,7 @@ import { finishBlocks } from './graduationHall';
 import type { buildLevels } from './graduationLevel';
 import { HOWTO, LOST } from './graduationText';
 
-/** Writes the game's disk: `dir` is the game's folder, `built` its levels (buildLevels), `demo` its DEMO.REC bytes. */
+/** Writes the game's disk; optional hero settings apply only to this graduation. */
 export function buildGraduation(dir: string, cfg: Graduation, built: ReturnType<typeof buildLevels>, demo: Uint8Array, heroOptions: HeroOptions = {}): void {
   const disk = new Disk(join(dir, 'disk'));
   const { book, pal, levels } = built;
