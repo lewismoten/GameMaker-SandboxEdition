@@ -95,6 +95,8 @@ function safeNow(lights: Light[], from: number, to: number, fromTrench: boolean)
 
 /** Waits (ticks go by, Kit holds still) until the hop is safe, then walks to `toBlock` (jumping out of a trench first when `fromTrench`). */
 async function hop(bot: StarterBot, lights: Light[], toBlock: number, fromTrench: boolean, what: string): Promise<void> {
+  // Walk to the right wall while safely below the light, then jump from there.
+  if (fromTrench) await must(bot, bot.walk(Math.floor(bot.px.x / 20) + 1, 'the trench wall'), 'inside the trench');
   const to = toBlock * 20;
   for (let waited = 0; ; waited += 2) {
     if (waited > 1600) throw new Error(`${what}: the hop never became safe`);

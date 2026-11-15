@@ -8,11 +8,11 @@
  "segments": [
   {
    "scene": 2,
-   "keys": "AU0jzQNNHs2xAk0OzQBLBDkCuQg5ArkOyzhNH82FAjkCuQBNCM0MTRDNCTkCuQBNCM0MTQrNA008zQNN"
+   "keys": "AU0jzQNNHs2xAk0OzQBLBDkIuQg5CLkSyydNH80JTQLN8wE5CLkATQrNA00LzQlNAs0DOQi5AE0KzQNNBc0DTTzNA00="
   },
   {
    "scene": 3,
-   "keys": "AU0jzQNNKM0DTRrNrwE5ArkATQjNDE0LzQk5ArkATQjNDE0KzR1NH81xOQK5AE0IzQxNC80JOQK5AE0IzQxND80DTQ/NA00="
+   "keys": "AU0jzQNNKM0DTRrNCU0CzZ0BOQi5AE0KzQNNBs0JTQLNAzkIuQBNCs0DTQXNK00fzQlNAs1hOQi5AE0KzQNNBs0JTQLNAzkIuQBNCs0DTQrNA00PzQNN"
   }
  ],
  "chapters": [
@@ -27,7 +27,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 11319,
+  "frames": 11711,
   "chapters": [
    {
     "title": "Opening",
@@ -46,18 +46,18 @@
    },
    {
     "title": "Level 2: Two Lights",
-    "frame": 5543,
-    "time": 92383.33333333733
+    "frame": 5493,
+    "time": 91550.00000000375
    },
    {
     "title": "Ending",
-    "frame": 8033,
-    "time": 133883.33333334696
+    "frame": 7944,
+    "time": 132400.0000000145
    },
    {
     "title": "Credits",
-    "frame": 10245,
-    "time": 170749.99999999217
+    "frame": 10156,
+    "time": 169266.6666666597
    }
   ]
  }
