@@ -46,7 +46,7 @@ disk.put('gate.pal', serializePalette(pal.pal));
 disk.put('gate.bbl', serializeBlocks(finishBlocks(book)));
 disk.put('gate.mbl', serializeBlocks(finishMonsterPictures(monsterBlocks)));
 disk.put('hero.cbl', serializeBlocks(heroBlocks.finish()));
-const heroChar = buildHero(heroBlocks);
+const heroChar = buildHero(heroBlocks, { heldRise: { push: 12 } });
 heroChar.meter[KEYS] = INF_REPEAT; // no keys in this game
 heroChar.meter[0] = HERO_HIT_POINTS; // nothing here takes any
 heroChar.meter[LIGHTS] = 1; // lights carried (a counter shows one less than it holds)

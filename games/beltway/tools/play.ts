@@ -11,6 +11,7 @@ const LEVELS = [roadGoesBy, roundTheLoop];
 export async function play(seed = SEED, upTo = LEVELS.length): Promise<{ sim: GameSim; bot: StarterBot }> {
   const sim = new GameSim(undefined, seed);
   const bot = new StarterBot(sim);
+  bot.jumpHold = 8; // Hold Space for the held-rise jump, then steer after releasing it.
   await playLevels(bot, LEVELS, upTo);
   return { sim, bot };
 }

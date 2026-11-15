@@ -61,10 +61,10 @@ async function until(bot: StarterBot, done: () => boolean, max: number, what: st
 /** The highest Kit has jumped so far in this run, as the top of his head in level pixels (the lamp's bottom edge is at 40). */
 let apexTop = Infinity;
 
-/** Jumps up under the dial hanging above the hero (a hop of Space, held for two ticks), noting how high he got. */
+/** Jumps up under the dial hanging above the hero (Space held for the bot's jump duration), noting how high he got. */
 async function bump(bot: StarterBot, what: string): Promise<void> {
   bot.sim.press(SCAN.space);
-  await must(bot, bot.wait(2), what);
+  await must(bot, bot.wait(bot.jumpHold), what);
   bot.sim.release(SCAN.space);
   for (let i = 0; i < 60; i++) {
     await must(bot, bot.wait(1), what);
