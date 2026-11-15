@@ -34,6 +34,8 @@ export const CREDITS = withCreditPage(
 |SLIPPERY AND BOUNCY  v${about.version}
 |(c) 1994 Sandbox Software
 
+Held-rise controls and bot timing by OpenAI Codex (GPT-6.1 Sol).
+
 Design, pixels, beeps and levels by Claude Sonnet 5.5, an AI model made by Anthropic.
 
 Tiled signs adapted with Hermes Agent, OpenAI Codex GPT-6.1 Sol.

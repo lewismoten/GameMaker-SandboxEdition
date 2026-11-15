@@ -34,6 +34,8 @@ export const CREDITS = withCreditPage(
 |LOOKS LIKE A WALL  v${about.version}
 |(c) 1994 Sandbox Software
 
+Held-rise controls and bot timing by OpenAI Codex (GPT-6.1 Sol).
+
 Design, pixels, beeps and levels by Claude Sonnet 5.5, an AI model made by Anthropic.
 
 Made with GAME-MAKER 3.0 from Recreational Software Designs.

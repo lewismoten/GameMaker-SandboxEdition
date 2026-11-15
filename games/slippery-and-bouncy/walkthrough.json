@@ -8,7 +8,7 @@
  "segments": [
   {
    "scene": 2,
-   "keys": "AU0jzStND80DTQ7NggFND80rTRnNAzkCuSRNF80OTSPNA00="
+   "keys": "AU0jzStND80DTQ7NggFND80rTRnNAzkIuRdNF80OTSPNA00="
   },
   {
    "scene": 3,
@@ -16,7 +16,7 @@
   },
   {
    "scene": 4,
-   "keys": "AU0UzStNBc0DTR3NF00WzQ1NDM0rTQzNA00JzT1NDTkCuQnNN00hzQNN"
+   "keys": "AU0UzStNBc0DTR3NF00WzQ1NDM0rTQzNA00JzT1NDTkIuQnNK00hzQNN"
   }
  ],
  "chapters": [
@@ -35,7 +35,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 10808,
+  "frames": 10766,
   "chapters": [
    {
     "title": "Opening",
@@ -54,23 +54,23 @@
    },
    {
     "title": "Level 2: The Belt",
-    "frame": 3974,
-    "time": 66233.33333332972
+    "frame": 3951,
+    "time": 65849.99999999627
    },
    {
     "title": "Level 3: Wind",
-    "frame": 5324,
-    "time": 88733.33333333627
+    "frame": 5301,
+    "time": 88350.00000000282
    },
    {
     "title": "Ending",
-    "frame": 7043,
-    "time": 117383.3333333446
+    "frame": 7001,
+    "time": 116683.3333333444
    },
    {
     "title": "Credits",
-    "frame": 9253,
-    "time": 154216.66666666846
+    "frame": 9211,
+    "time": 153516.66666666887
    }
   ]
  }

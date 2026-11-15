@@ -16,7 +16,7 @@
   },
   {
    "scene": 4,
-   "keys": "FU0ozVNNKM1TTSjNUzkCuQBNFM0ETQ=="
+   "keys": "FU0ozVNNKM1TTSjNUzkIuQBNFM0DTQ=="
   },
   {
    "scene": 5,
@@ -43,7 +43,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 10999,
+  "frames": 11016,
   "chapters": [
    {
     "title": "Opening",
@@ -72,18 +72,18 @@
    },
    {
     "title": "The hover",
-    "frame": 6801,
-    "time": 113350.0000000101
+    "frame": 6818,
+    "time": 113633.33333334351
    },
    {
     "title": "Ending",
-    "frame": 8194,
-    "time": 136566.66666667874
+    "frame": 8211,
+    "time": 136850.0000000119
    },
    {
     "title": "Credits",
-    "frame": 9925,
-    "time": 165416.66666666194
+    "frame": 9942,
+    "time": 165699.9999999951
    }
   ]
  }

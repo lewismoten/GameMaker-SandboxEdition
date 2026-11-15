@@ -47,7 +47,7 @@ disk.put('meter.bbl', serializeBlocks(book.finish()));
 disk.put('meter.mbl', serializeBlocks(monsterBlocks.finish()));
 disk.put('meter.mon', serializeMonsters(buildMonsters(monsterBlocks)));
 disk.put('hero.cbl', serializeBlocks(heroBlocks.finish()));
-const heroChar = buildHero(heroBlocks);
+const heroChar = buildHero(heroBlocks, { heldRise: { push: 12 } });
 heroChar.meter[KEYS] = INF_REPEAT; // no keys in this game
 heroChar.meter[COUNT] = 1; // bulbs lit (a counter shows one less than it holds)
 disk.put('hero.chr', serializeCharacter(heroChar));

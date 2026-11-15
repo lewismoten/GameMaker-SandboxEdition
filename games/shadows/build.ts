@@ -45,7 +45,7 @@ const cheer = heroPicture(assets.plain, 'cheer.top', 'jump');
 // the game's shared data: one palette, one monster file, one character, one song, the sounds
 disk.put('shadows.pal', serializePalette(pal.pal));
 disk.put('shadows.mon', serializeMonsters(buildCritters(assets.dither.critters)));
-const heroChar = buildHero(assets.plain);
+const heroChar = buildHero(assets.plain, { heldRise: { push: 12 } });
 heroChar.meter[0] = 3; // nothing here takes any
 disk.put('hero.chr', serializeCharacter(heroChar));
 disk.put('shadows.snd', serializeSoundSet(buildSounds()));
