@@ -1,7 +1,9 @@
 // Plays the phone's recorded clips (public/phone/voice, phoneClips.ts) down one shared "phone line":
 // a 300 to 3400 Hz band-pass with a little hiss, live in Web Audio, so the clips stay clean files.
 // They follow the Voice channel (sound settings) like every voice. A line with no clip, or a clip
-// that won't load or decode, is spoken by the browser (audio/voices.ts) instead.
+// that won't load or decode, uses browser speech online. Offline, missing recordings keep
+// their written captions and reading time, without a substituted voice.
+import { availableOffline } from '../../offline/availability';
 import { audioContext } from '@lewismoten/gamemaker-sandbox-engine/audio/context';
 import { channelGain, onMix } from '@lewismoten/gamemaker-sandbox-engine/audio/mix';
 import { output } from '@lewismoten/gamemaker-sandbox-engine/audio/output';
@@ -119,10 +121,27 @@ async function playClips(groups: string[][], pause: number, signal: AbortSignal)
 }
 
 /** Says a caption piece of `whole` (the line `say` was given): its recorded clips, else the browser's speech. */
-export async function speakLine(piece: string, whole: string, v: Voice, signal: AbortSignal): Promise<void> {
+export async function speakLine(piece: string, whole: string, v: Voice, signal: AbortSignal, missing?: () => void): Promise<void> {
   const groups = clipGroupsFor(piece, whole);
   const cast = castOf(whole);
   const pause = (cast ? CAST[cast]?.pause : undefined) ?? SENTENCE_GAP;
+  if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+    const available = groups && (await Promise.all(groups.flat().map((clip) => availableOffline(`./phone/voice/${clip}.ogg`)))).every(Boolean);
+    if (available && (await playClips(groups, pause, signal))) return;
+    missing?.();
+    // Keep captions readable without substituting a different voice for absent recordings.
+    await new Promise<void>((resolve) => {
+      const finish = () => {
+        clearTimeout(timer);
+        signal.removeEventListener('abort', finish);
+        resolve();
+      };
+      const timer = setTimeout(finish, Math.min(8000, Math.max(1200, piece.length * 45)));
+      if (signal.aborted) finish();
+      else signal.addEventListener('abort', finish, { once: true });
+    });
+    return;
+  }
   if (groups && (await playClips(groups, pause, signal))) return;
   if (!signal.aborted) await speak(piece, v, signal);
 }

@@ -1,11 +1,12 @@
 // OFFLINE.EXE on the desk PC (C:\DOS): the web's "Play offline" (offlineDialog.ts) as a 1995
 // text-mode program in Game-Maker's colors. It says what a copy of the whole site costs,
-// downloads and unpacks one archive (Esc stops; the previous complete copy stays), and once it is all in
+// downloads selected files (Esc stops; the previous complete copy stays), and once it is all in
 // says so, with R to remove it again.
 import { attr } from '../retro/text/textScreen';
 import { MENUATTR, SHADATTR, TITLEATTR, BARATTR, type Ui } from '../retro/text/textUi';
 import { toCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
-import { gameCount, hasRoom, makeOffline, offlineStatus, removeOffline, sizeText, type OfflineProgress, type OfflineStatus } from './offlineCopy';
+import { hasRoom, makeOffline, offlineStatus, removeOffline, sizeText, type OfflineProgress, type OfflineStatus } from './offlineCopy';
+import { offlineTiers, type OfflineTier } from './tiers';
 
 const X = 9;
 const W = 62;
@@ -44,7 +45,6 @@ export async function runOfflineExe(ui: Ui): Promise<void> {
     for (const [text, a] of rows)
       for (const l of text ? wrap(text, W - 4) : ['']) if (y < TOP + H - 1) s.write(X + 2, y++, a ?? TEXT, toCp437(l.padEnd(W - 4)));
   };
-  const games = gameCount;
   const space = (st: OfflineStatus) =>
     st.quota !== undefined && st.usage !== undefined ? `Room for the site here: about ${sizeText(Math.max(0, st.quota - st.usage))} free.` : '';
 
@@ -61,57 +61,37 @@ export async function runOfflineExe(ui: Ui): Promise<void> {
         if (k.key === 'Escape' || k.key === 'Enter' || k.key.toUpperCase() === 'Q') return;
         continue;
       }
-      if (st.ready) {
-        frame('READY OFFLINE', ' R Remove offline copies   Esc Quit');
-        lines([
-          [
-            `√ Ready offline. All ${games(st)} games, this desk, Game-Maker, the editors, the manuals and the boxes are on this computer (${sizeText(st.wireTotal)}).`,
-          ],
-          [''],
-          ['Everything works with no connection.'],
-          [''],
-          [note, DIM],
-          [space(st), DIM],
-        ]);
-        const k = (await ui.keys.next()).key.toUpperCase();
-        if (k === 'ESCAPE' || k === 'Q' || k === 'ENTER') return;
-        if (k === 'R') {
-          frame('READY OFFLINE', ' Please wait...');
-          lines([['Removing the offline copy...']]);
-          await removeOffline(st).catch(() => undefined);
-          note = 'Removed. Parts you use are kept again as you use them.';
-          st = await offlineStatus();
-        }
-        continue;
-      }
-
+      const tiers = Object.entries(offlineTiers) as [OfflineTier, string][];
       const room = hasRoom(st, st.storedMissing);
-      frame('TAKE IT ALONG', room ? ' Y Download   N or Esc Quit' : ' Esc Quit');
+      frame(st.ready ? 'READY OFFLINE' : 'TAKE IT ALONG', ' 1-4 Toggle tier   Y Save selection   R Remove   Esc Quit');
       lines([
-        [
-          st.copy === 'outdated'
-            ? `Download one replacement archive. The old copy stays until it is ready.`
-            : st.copy === 'unfinished'
-              ? `Your offline copy is unfinished. Download the archive again.`
-              : `Copies the whole site to this computer, so it runs with no connection: all ${games(st)} games, this desk, Game-Maker, the editors, the manuals and the boxes.`,
-        ],
-        [''],
-        [`Download: ${sizeText(st.wireMissing)}   Kept on disk: about ${sizeText(st.storedMissing)}`],
+        ['Core is always included. Video needs the internet.'],
+        ...tiers.slice(1).map(([id, label], i): [string] => [`${i + 1} [${st.tiers.includes(id) ? 'X' : ' '}] ${label}`]),
+        [`Download: ${sizeText(st.wireMissing)}   Free space needed: ${sizeText(st.storedMissing)}`],
         [space(st), DIM],
-        [room ? '' : 'Not enough room left on this computer for it.'],
-        [note, DIM],
-        [room ? 'Download it now? (Y/N)' : ''],
+        [st.ready ? 'Ready offline. Selected tiers are kept here.' : 'Verified files resume. The old copy stays until ready.'],
+        [room ? note : 'Not enough room for the replacement.', DIM],
       ]);
       note = '';
       const k = (await ui.keys.next()).key.toUpperCase();
       if (k === 'ESCAPE' || k === 'N' || k === 'Q') return;
-      if (k !== 'Y' || !room) continue;
+      if (/^[1-4]$/.test(k)) {
+        const id = tiers[Number(k)][0];
+        st = await offlineStatus(st.tiers.includes(id) ? st.tiers.filter((t) => t !== id) : [...st.tiers, id]);
+        continue;
+      }
+      if (k === 'R') {
+        await removeOffline(st);
+        st = await offlineStatus();
+        continue;
+      }
+      if (k !== 'Y' || !room || st.ready) continue;
 
       // the download, with a bar of blocks; Esc stops it
       const stop = new AbortController();
-      let p: OfflineProgress = { done: 0, total: st.missing.length, bytes: 0, totalBytes: st.wireMissing };
+      let p: OfflineProgress = { done: 0, total: st.missing.length, bytes: 0, totalBytes: st.wireTotal };
       const draw = () => {
-        frame(p.phase === 'extract' ? 'UNPACKING' : 'DOWNLOADING', ' Esc Stop');
+        frame('VERIFYING FILES', ' Esc Stop');
         const bar = W - 4;
         const filled = Math.round((p.bytes / Math.max(1, p.totalBytes)) * bar);
         lines([['Copying the site to this computer...'], ['']]);
@@ -129,7 +109,7 @@ export async function runOfflineExe(ui: Ui): Promise<void> {
       }
       const result = await run;
       if (!result.ok) note = result.message;
-      st = await offlineStatus();
+      st = await offlineStatus(st.tiers);
     }
   } finally {
     s.resetPalette();

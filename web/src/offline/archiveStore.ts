@@ -1,16 +1,10 @@
-// Explicit offline ZIP acquisition: stage in a separate cache, publish its pointer last.
-import { listZip } from '@lewismoten/gamemaker-sandbox-archives';
+// Resumable per-file acquisition: stage separately, verify content, publish its pointer last.
 import type { OfflineProgress } from './offlineCopy';
-
-export interface OfflineManifest {
-  version: string;
-  shell: string[];
-  files: [string, number, number][];
-  archive?: { path: string; bytes: number; sha256: string };
-}
+import { selectedFiles, type OfflineFile, type OfflineManifest, type OfflineTier } from './tiers';
 interface Copy {
   version: string;
   cache: string;
+  tiers?: OfflineTier[];
 }
 // Also embedded in siteWorker.ts; its lifecycle tests exercise the generated worker.
 export const offlineNames = (base: string) => ({
@@ -18,142 +12,111 @@ export const offlineNames = (base: string) => ({
   prefix: `gm-offline-copy:${base}:`,
   pointer: `${base}__gm-offline.json`,
 });
-
 export async function readOfflineCopy(base: string): Promise<Copy | undefined> {
   const names = offlineNames(base);
   const res = await (await caches.open(names.control)).match(names.pointer);
   const copy = res ? ((await res.json()) as Copy) : undefined;
   return copy && (copy.cache === 'gm-site' || copy.cache.startsWith(names.prefix)) && (await caches.has(copy.cache)) ? copy : undefined;
 }
-
-/** Serializes publication/removal across tabs; modern service-worker browsers have Web Locks. */
+/** Serializes publication/removal across tabs. */
 export async function offlineLock<T>(base: string, run: () => Promise<T>): Promise<T> {
   if (!navigator.locks) throw new Error('This browser needs Web Locks to safely replace an offline copy.');
   return navigator.locks.request(`gm-offline:${base}`, run);
 }
-
-function mime(path: string): string {
-  const ext = path.split('.').pop() ?? '';
-  return (
-    (
-      {
-        html: 'text/html',
-        js: 'text/javascript',
-        css: 'text/css',
-        json: 'application/json',
-        webmanifest: 'application/manifest+json',
-        svg: 'image/svg+xml',
-        png: 'image/png',
-        avif: 'image/avif',
-        jpg: 'image/jpeg',
-        jpeg: 'image/jpeg',
-        webp: 'image/webp',
-        gif: 'image/gif',
-        ico: 'image/x-icon',
-        ogg: 'audio/ogg',
-        mp3: 'audio/mpeg',
-        wav: 'audio/wav',
-        woff: 'font/woff',
-        woff2: 'font/woff2',
-        wasm: 'application/wasm',
-        txt: 'text/plain',
-        zip: 'application/zip',
-        gz: 'application/gzip',
-      } as Record<string, string>
-    )[ext] ?? 'application/octet-stream'
-  );
-}
 const siteUrl = (base: string, path: string) => {
   const url = new URL(path, base);
-  if (url.href !== base + path || /[?#\\]|(^|\/)\.\.?($|\/)/.test(path)) throw new Error('Invalid offline path');
+  if (!path || url.href !== base + path || /[?#\\]|(^|\/)\.\.?($|\/)/.test(path)) throw new Error('Invalid offline path');
   return url.href;
 };
-
-/** Caller holds offlineLock. Only the single public archive and already-revealed extra games are fetched. */
-export async function installArchive(
+export async function contentHash(bytes: ArrayBuffer): Promise<string> {
+  return [...new Uint8Array(await crypto.subtle.digest('SHA-256', bytes))].map((b) => b.toString(16).padStart(2, '0')).join('');
+}
+export async function verified(response: Response | undefined, file: OfflineFile): Promise<boolean> {
+  if (!response?.ok || !/^[a-f0-9]{64}$/.test(file.sha256)) return false;
+  const bytes = await response.arrayBuffer();
+  return bytes.byteLength === file.stored && (await contentHash(bytes)) === file.sha256;
+}
+/** Bounded work, also used for checking cached bodies without allocating the whole site at once. */
+export async function fourWorkers<T>(items: T[], run: (item: T) => Promise<void>): Promise<void> {
+  let cursor = 0;
+  let failure: unknown;
+  await Promise.all(
+    Array.from({ length: Math.min(4, items.length) }, async () => {
+      while (cursor < items.length && !failure) {
+        const item = items[cursor++];
+        try {
+          await run(item);
+        } catch (e) {
+          failure = e;
+        }
+      }
+    }),
+  );
+  if (failure) throw failure instanceof Error ? failure : new Error('Offline operation failed', { cause: failure });
+}
+export async function reusableStores(base: string): Promise<Cache[]> {
+  const names = offlineNames(base);
+  const keys = await caches.keys();
+  return Promise.all(keys.filter((k) => k.startsWith(names.prefix) || k === 'gm-site' || k === 'gm-site-v2').map((k) => caches.open(k)));
+}
+export async function findVerified(base: string, file: OfflineFile, stores: Cache[]): Promise<Response | undefined> {
+  const url = siteUrl(base, file.path);
+  for (const store of stores) {
+    const response = await store.match(url, { ignoreSearch: true, ignoreVary: true });
+    if (response && (await verified(response.clone(), file))) return response;
+  }
+  return undefined;
+}
+export async function stageName(base: string, version: string, wanted: OfflineFile[]): Promise<string> {
+  return offlineNames(base).prefix + (await contentHash(new TextEncoder().encode(JSON.stringify([version, wanted])).buffer));
+}
+/** Caller holds offlineLock. Failed stages remain resumable but invisible to the worker. */
+export async function installFiles(
   base: string,
   m: OfflineManifest,
-  extras: [string, number, number][],
+  extras: OfflineFile[],
+  tiers: OfflineTier[],
   progress: (p: OfflineProgress) => void,
   signal: AbortSignal,
 ): Promise<void> {
-  if (!m.archive) throw new Error('Offline copies are coming back in a later update.');
   const names = offlineNames(base);
   const previous = await readOfflineCopy(base);
-  const wanted = [...m.files, ...extras];
-  if (previous?.version === m.version) {
-    const old = await caches.open(previous.cache);
-    if ((await Promise.all(wanted.map(([path]) => old.match(siteUrl(base, path))))).every(Boolean)) return;
+  const wanted = [...selectedFiles(m.files, tiers), ...extras];
+  if (new Set(wanted.map((f) => f.path)).size !== wanted.length) throw new Error('Duplicate offline path');
+  for (const file of wanted) {
+    siteUrl(base, file.path);
+    if (!/^[a-f0-9]{64}$/.test(file.sha256) || file.stored < 0) throw new Error('Invalid offline integrity metadata');
   }
-  // Clear abandoned staging from a closed tab, never the last committed copy.
-  for (const name of await caches.keys()) if (name.startsWith(names.prefix) && name !== previous?.cache) await caches.delete(name);
-  signal.throwIfAborted();
-  const name = names.prefix + m.version + ':' + crypto.randomUUID();
-  let published = false;
-  const p: OfflineProgress = { phase: 'download', done: 0, total: wanted.length, bytes: 0, totalBytes: m.archive.bytes + extras.reduce((n, f) => n + f[1], 0) };
+  const name = await stageName(base, m.version, wanted);
+  const stores = await reusableStores(base);
+  const stage = await caches.open(name);
+  const p: OfflineProgress = { done: 0, total: wanted.length, bytes: 0, totalBytes: wanted.reduce((n, f) => n + f.wire, 0) };
   progress({ ...p });
-  try {
-    const res = await fetch(siteUrl(base, m.archive.path), { cache: 'no-store', signal });
-    if (!res.ok || !res.body) throw new Error('Offline archive download failed');
-    const reader = res.body.getReader();
-    const parts: Uint8Array[] = [];
-    let length = 0;
-    for (;;) {
-      signal.throwIfAborted();
-      const { done, value } = await reader.read();
-      if (done) break;
-      length += value.length;
-      if (length > m.archive.bytes) {
-        await reader.cancel();
-        throw new Error('Offline archive is too large');
-      }
-      parts.push(value);
-      p.bytes = length;
-      progress({ ...p });
-    }
-    if (length !== m.archive.bytes) throw new Error('Incomplete offline archive');
-    const bytes = new Uint8Array(length);
-    let offset = 0;
-    for (const part of parts) {
-      bytes.set(part, offset);
-      offset += part.length;
-    }
-    const hash = [...new Uint8Array(await crypto.subtle.digest('SHA-256', bytes))].map((b) => b.toString(16).padStart(2, '0')).join('');
-    if (hash !== m.archive.sha256) throw new Error('Offline archive checksum mismatch');
-    const entries = listZip(bytes, { maxEntries: m.files.length, maxBytes: m.files.reduce((n, f) => n + f[2], 0) });
-    const expected = new Map(m.files.map(([path, , stored]) => [path, stored]));
-    if (entries.length !== expected.size || new Set(entries.map((e) => e.name)).size !== expected.size) throw new Error('Offline archive file list mismatch');
-    p.phase = 'extract';
-    const stage = await caches.open(name);
-    for (const entry of entries) {
-      signal.throwIfAborted();
-      if (!expected.has(entry.name) || entry.size !== expected.get(entry.name)) throw new Error('Unexpected offline entry');
-      const url = siteUrl(base, entry.name);
-      const data = await entry.read();
-      if (!data || data.length !== entry.size) throw new Error('Incomplete offline entry');
-      const response = new Response(data as BodyInit, { headers: { 'content-type': mime(entry.name) } });
-      await stage.put(url, response.clone());
-      if (entry.name === 'index.html') await stage.put(base, response);
-      p.done++;
-      progress({ ...p });
-    }
-    // Secret games cannot be named in a public ZIP; only a browser that revealed them adds these.
-    for (const [path, wire] of extras) {
-      signal.throwIfAborted();
-      const response = await fetch(siteUrl(base, path), { cache: 'no-store', signal });
-      if (!response.ok) throw new Error('Extra game download failed');
-      await stage.put(siteUrl(base, path), response);
-      p.done++;
-      p.bytes += wire;
-      progress({ ...p });
-    }
-    await stage.put(base + 'offline.json', new Response(JSON.stringify(m), { headers: { 'content-type': 'application/json' } }));
+  // no-store acquisition bypasses snapshot/browsing caches in the worker, including an old
+  // unversioned response. Every reused response is checked against the NEW manifest hash.
+  await fourWorkers(wanted, async (file) => {
     signal.throwIfAborted();
-    // A single Cache.put is the commit point. Failure anywhere before it leaves previous untouched.
-    await (await caches.open(names.control)).put(names.pointer, new Response(JSON.stringify({ version: m.version, cache: name })));
-    published = true;
-    if (previous) await caches.delete(previous.cache).catch(() => false);
-  } finally {
-    if (!published) await caches.delete(name);
+    const url = siteUrl(base, file.path);
+    let response = await findVerified(base, file, stores);
+    if (!response) {
+      response = await fetch(url, { cache: 'no-store', signal });
+      if (!(await verified(response.clone(), file))) throw new Error(`Offline file checksum or size mismatch: ${file.path} (HTTP ${response.status})`);
+    }
+    signal.throwIfAborted();
+    await stage.put(url, response.clone());
+    if (file.path === 'index.html') await stage.put(base, response);
+    p.done++;
+    p.bytes += file.wire;
+    progress({ ...p });
+  });
+  // Save the complete public inventory for offline tier selection, not private game names.
+  await stage.put(base + 'offline.json', new Response(JSON.stringify(m), { headers: { 'content-type': 'application/json' } }));
+  signal.throwIfAborted();
+  await (
+    await caches.open(names.control)
+  ).put(names.pointer, new Response(JSON.stringify({ version: m.version, cache: name, tiers: [...new Set(['core', ...tiers])] })));
+  // Cleanup after the commit point cannot turn a successful publication into a failed result.
+  for (const key of await caches.keys().catch(() => [])) {
+    if ((key.startsWith(names.prefix) || key === previous?.cache) && key !== name) await caches.delete(key).catch(() => false);
   }
 }

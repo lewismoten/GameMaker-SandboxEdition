@@ -11,6 +11,7 @@
 // "Showing: <game> · All games" line says what is picked and goes back to everything.
 // Below the shelves, your imported games' ratings and notes (imported/notesShelf.ts).
 import './library.css';
+import { availableOffline, markOfflineAction } from '../offline/availability';
 import { h, clear, modal } from '../editor/core/ui';
 import { viewState } from '../urlState';
 import { loadHostedGame, type CatalogEntry } from '../project/files';
@@ -170,6 +171,12 @@ function card(item: ShelfItem, shelf: Shelf, order: ShelfOrder, oneGame: boolean
     item.open.via === 'href'
       ? h('a', { class: 'lib-card', href: item.open.href, onclick: () => tally('library-kinds', item.type) }, ...body)
       : h('button', { type: 'button', class: 'lib-card', onclick: () => (closeDialog(), void openPiece(item, shelf.games, el)) }, ...body);
+  if (item.open.via === 'href' && item.open.href.startsWith('./')) markOfflineAction(el, item.open.href);
+  else if (item.picture && navigator.onLine === false) {
+    void availableOffline(item.picture).then((available) => {
+      if (!available) el.append(h('small', null, 'Not in your offline copy'));
+    });
+  }
   return h('li', null, el);
 }
 

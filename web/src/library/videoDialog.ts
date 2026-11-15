@@ -7,6 +7,7 @@
 // so they work offline. Closing (the button, or Esc) removes the dialog and the player with it,
 // which stops the video. Without a connection it says the video needs the internet.
 import './videoDialog.css';
+import { availableOffline } from '../offline/availability';
 import { h } from '../editor/core/ui';
 import { hms } from './shelf';
 import { videoById } from './videos';
@@ -53,7 +54,7 @@ export function openVideo(id: string, title: string, picture: string | undefined
         referrerpolicy: 'strict-origin-when-cross-origin',
       });
       screen.replaceChildren(player);
-      note.textContent = 'Playing from YouTube (youtube-nocookie.com).';
+      note.textContent = 'Playing from YouTube (youtube-nocookie.com); needs the internet.';
       if (focus) player.focus();
     };
     /** A button that plays from `at`: a chapter's (with its title) or a transcript paragraph's. */
@@ -86,7 +87,7 @@ export function openVideo(id: string, title: string, picture: string | undefined
       { class: 'lib-video-note' },
       offline
         ? 'This video needs the internet: it plays from YouTube, and this page has no connection now.'
-        : 'It plays from YouTube (youtube-nocookie.com). Nothing loads from YouTube until you press Play, a chapter or a time.',
+        : 'This video needs the internet. It plays from YouTube (youtube-nocookie.com). Nothing loads from YouTube until you press Play, a chapter or a time.',
     );
 
     // the transcript: fetched the first time it is opened
@@ -112,15 +113,22 @@ export function openVideo(id: string, title: string, picture: string | undefined
       loaded = true;
       words.replaceChildren();
       transcriptStatus.textContent = 'Loading the transcript…';
-      fetch(`./videos/${encodeURIComponent(id)}.transcript.json`)
+      availableOffline(`./videos/${encodeURIComponent(id)}.transcript.json`)
+        .then((available) => {
+          if (!available) throw new Error('Not in your offline copy');
+          return fetch(`./videos/${encodeURIComponent(id)}.transcript.json`);
+        })
         .then((r) => (r.ok ? (r.json() as Promise<{ t: number; text: string }[]>) : Promise.reject(new Error(String(r.status)))))
         .then((paras) => {
           words.replaceChildren(...paras.map((p) => h('p', null, timeButton(p.t), ' ', p.text)));
           transcriptStatus.textContent = 'Transcript loaded. Choose a time to play from there.';
         })
-        .catch(() => {
+        .catch((error: unknown) => {
           loaded = false;
-          transcriptStatus.textContent = 'The transcript could not be loaded. Close and reopen Transcript to try again.';
+          transcriptStatus.textContent =
+            error instanceof Error && error.message === 'Not in your offline copy'
+              ? error.message
+              : 'The transcript could not be loaded. Close and reopen Transcript to try again.';
         });
     });
 

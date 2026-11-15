@@ -3,6 +3,8 @@
 // group (shell, dial, board, components, battery), and which groups each view shows. Pure, so tests read
 // the real files. A part may carry its own "group" in the JSON; the rest are told apart by kind and id.
 
+import { availableOffline, requireOfflineFile } from '../../../offline/availability';
+
 export type Vec3 = [number, number, number];
 
 interface PartMeta {
@@ -116,13 +118,15 @@ export const variantBase = (v: PhoneVariant): string => (v === 'deluxe' ? `${pho
 /** A variant's parts, fetched once (about 2 MB each), or rejected when the site has no files for them. */
 export function loadPhone(v: PhoneVariant = 'cheap'): Promise<PhoneSet> {
   const base = variantBase(v);
-  const p = (loading[v] ??= fetch(`${base}parts.json`).then(async (j) => {
-    if (!j.ok || !j.headers.get('content-type')?.includes('json')) throw new Error('no phone files');
-    const file = (await j.json()) as PartsFile;
-    const b = await fetch(`${base}${file.packed ?? 'parts.bin'}`);
-    if (!b.ok) throw new Error('no phone files');
-    return { meta: file.variant, parts: parseParts(file, file.packed ? await unpack(b) : await b.arrayBuffer()) };
-  }));
+  const p = (loading[v] ??= requireOfflineFile(`${base}parts.json`)
+    .then(() => fetch(`${base}parts.json`))
+    .then(async (j) => {
+      if (!j.ok || !j.headers.get('content-type')?.includes('json')) throw new Error('no phone files');
+      const file = (await j.json()) as PartsFile;
+      const b = await fetch(`${base}${file.packed ?? 'parts.bin'}`);
+      if (!b.ok) throw new Error('no phone files');
+      return { meta: file.variant, parts: parseParts(file, file.packed ? await unpack(b) : await b.arrayBuffer()) };
+    }));
   p.catch(() => delete loading[v]);
   return p;
 }
@@ -141,6 +145,7 @@ export function phoneSize(parts: Pick<Part, 'bbox'>[]): [number, number, number]
 
 /** True when the site serves the phone files (a dev server answers a missing file with the page, so the type is checked). */
 export async function hasPhone(): Promise<boolean> {
+  if (typeof navigator !== 'undefined' && navigator.onLine === false) return availableOffline(`${phoneBase}parts.json`);
   try {
     const res = await fetch(`${phoneBase}parts.json`, { method: 'HEAD' });
     return res.ok && !!res.headers.get('content-type')?.includes('json');
@@ -151,6 +156,7 @@ export async function hasPhone(): Promise<boolean> {
 
 /** The kit's printer-parts ZIP (both builds' shell STLs), zipped here from the site's pack of them (games/kit/phoneDownloads.ts). */
 export async function phonePrinterZip(): Promise<Uint8Array> {
+  await requireOfflineFile(`${phoneBase}phone-3d-printer-parts.pack`);
   const res = await fetch(`${phoneBase}phone-3d-printer-parts.pack`);
   if (!res.ok || !res.body) throw new Error(`printer parts: ${res.status}`);
   const [{ unpackFiles }, { createZip }, data] = await Promise.all([

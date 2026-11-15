@@ -4,6 +4,7 @@
 // until the sound is turned on), or shows its first level; beside it are the title, who
 // made it, a few lines about it, and everything that can be done with it.
 import './homeShowcase.css';
+import { availableOffline } from '../../offline/availability';
 import { h, clear, promptText, toast } from '../core/ui';
 import { withDetails } from '../../project/files';
 import { demoDialogButton, demoInPicture, gameActions, type HomeGame, type GameKind } from './homeCards';
@@ -283,12 +284,19 @@ export function showcase(nav: HomeNav, refresh: () => Promise<void>, life?: Abor
     if (game.gam) {
       playBtn.hidden = false;
       setPlaying(false);
-      cancelDemoStart = deferHomeDemo(
-        screen,
-        shown,
-        () => mayStartHomeDemo() && !demosStopped() && ((!how.featured && !how.resume) || (game.entry?.bytes ?? 0) <= AUTOPLAY_BYTES),
-        () => void prepareDemo(false),
-      );
+      void (async () => {
+        if (game.entry && !game.project && !(await availableOffline(`./${game.entry.path}${game.entry.parts ?? game.entry.pack}`))) {
+          if (gen === generation) playBtn.hidden = true;
+          return;
+        }
+        if (gen !== generation) return;
+        cancelDemoStart = deferHomeDemo(
+          screen,
+          shown,
+          () => mayStartHomeDemo() && !demosStopped() && ((!how.featured && !how.resume) || (game.entry?.bytes ?? 0) <= AUTOPLAY_BYTES),
+          () => void prepareDemo(false),
+        );
+      })();
     }
   };
 

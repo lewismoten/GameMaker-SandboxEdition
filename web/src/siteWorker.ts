@@ -117,7 +117,7 @@ self.addEventListener('activate', (event) => {
       const res = await legacy.match(SCOPE + 'offline.json');
       const m = res && await res.json().catch(() => undefined);
       if (m && typeof m.version === 'string' && Array.isArray(m.files) && Array.isArray(m.shell)) {
-        const paths = [...m.files.map((f) => f[0]), ...m.shell.map((f) => f === './' ? '' : f.replace(/^\\.\\//, ''))];
+        const paths = [...m.files.map((f) => Array.isArray(f) ? f[0] : f.path), ...m.shell.map((f) => f === './' ? '' : f.replace(/^\\.\\//, ''))];
         if (paths.length && (await Promise.all(paths.map((p) => legacy.match(SCOPE + p)))).every(Boolean)) {
           await (await caches.open(OFFLINE_CONTROL)).put(SCOPE + '__gm-offline.json', new Response(JSON.stringify({ version: m.version, cache: 'gm-site' })));
         }
@@ -152,9 +152,11 @@ self.addEventListener('message', (event) => {
   const urls = data.cacheUrls;
   if (!Array.isArray(urls)) return;
   // files the page loaded before this worker was running
-  event.waitUntil(caches.open(CACHE).then((cache) => Promise.all(urls.map(async (u) => {
+  event.waitUntil(Promise.all([caches.open(CACHE), offlineCopy()]).then(([cache, copy]) => Promise.all(urls.map(async (u) => {
     if (typeof u !== 'string' || sitePath(u) === undefined) return;
     if (await cache.match(u, { ignoreSearch: true })) return;
+    // the offline copy already holds it: no network request (none can succeed offline)
+    if (copy && (await copy.store.match(u, { ignoreSearch: true }))) return;
     const res = await fetch(u).catch(() => undefined);
     if (res && res.ok && res.type === 'basic') await cache.put(u, res);
   }))));
@@ -166,6 +168,8 @@ self.addEventListener('fetch', (event) => {
   const path = sitePath(req.url);
   if (path === undefined || path === 'sw.js' || /^offline\\.[a-f0-9]+\\.zip$/.test(path)) return;
   event.respondWith((async () => {
+    // Explicit acquisition must reach this deployment, never an older snapshot.
+    if (req.cache === 'no-store') return fetch(req);
     const copy = await offlineCopy();
     const snapshot = copy && await copy.store.match(req, { ignoreSearch: true, ignoreVary: true });
     if (copy && copy.version === VERSION && snapshot) return snapshot;
@@ -198,6 +202,9 @@ self.addEventListener('fetch', (event) => {
         const page = (await cache.match(SCOPE)) || (await cache.match(SCOPE + 'index.html'));
         if (page) return page;
       }
+      // A failed network request AND no cached body establish actual unavailability.
+      const client = event.clientId && await self.clients.get(event.clientId);
+      if (client) client.postMessage({ type: 'offline-missing' });
       throw err;
     }
   })());

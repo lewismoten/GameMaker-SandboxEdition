@@ -1,4 +1,5 @@
 // Catalog and site loading for game files; the portable file container lives in gameFiles.ts.
+import { requireOfflineFile } from '../offline/availability';
 import { GameFiles, cdName, IGNORED_FILE } from '@lewismoten/gamemaker-sandbox-engine/core/gameFiles';
 export { GameFiles, cdName, normalize, IGNORED_FILE, type FileStream } from '@lewismoten/gamemaker-sandbox-engine/core/gameFiles';
 
@@ -314,8 +315,10 @@ function packUrl(entry: Pick<CatalogEntry, 'path' | 'pack'>, base = './'): strin
 }
 
 /** A game's ZIP (or legacy pack) at `url`: a split one is joined (sharedZip.ts, loaded only for those). */
-const fetchPack = async (entry: Pick<CatalogEntry, 'path' | 'pack' | 'parts'>, url: string, base: string, init?: RequestInit): Promise<Response> =>
-  entry.parts ? (await import('./sharedZip')).fetchGameZip(entry, base, init) : fetchArchive(url, init);
+const fetchPack = async (entry: Pick<CatalogEntry, 'path' | 'pack' | 'parts'>, url: string, base: string, init?: RequestInit): Promise<Response> => {
+  await requireOfflineFile(entry.parts ? `${base}${entry.path}${entry.parts}` : url);
+  return entry.parts ? (await import('./sharedZip')).fetchGameZip(entry, base, init) : fetchArchive(url, init);
+};
 
 function startPack(url: string, entry: Pick<CatalogEntry, 'path' | 'pack' | 'parts'>, base: string): Pack {
   const pack: Pack = {
@@ -547,6 +550,7 @@ export async function peekGameFile(entry: FiledEntry, name: string, base = './')
  * has one. ZIP failures are reported; only legacy catalogs fall back to loose files.
  */
 export async function loadHostedGame(entry: CatalogEntry, base = './', onProgress?: (done: number, total: number) => void): Promise<GameFiles> {
+  if (entry.pack) await requireOfflineFile(`${base}${entry.path}${entry.parts ?? entry.pack}`);
   const files = new GameFiles();
   const names = (await withFiles(entry, `${base}games/`)).files;
   const total = names.length;

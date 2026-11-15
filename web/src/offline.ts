@@ -18,6 +18,9 @@ export function registerServiceWorker(): void {
   watchLoadFailures(showNotice);
   if (!('serviceWorker' in navigator) || !import.meta.env.PROD) return;
   const sw = navigator.serviceWorker;
+  sw.addEventListener('message', (event: MessageEvent) => {
+    if (event.data?.type === 'offline-missing') showNotice('Not in your offline copy. Connect and choose Play offline to add this content.', true);
+  });
   // there was a worker before this one: a newer one taking over is a new version
   const hadController = !!sw.controller;
   let reloading = false;
