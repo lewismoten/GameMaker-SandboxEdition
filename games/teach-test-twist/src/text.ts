@@ -44,6 +44,7 @@ Made with GAME-MAKER 3.0 from Recreational Software Designs.
 
 One of the Starters: small games that each show one idea. This one shows how a level is built: teach it, test it, twist it.
 Music arranged: OpenAI Codex.
+Tiled signs: OpenAI Codex (GPT-6.1 Sol), via Hermes Agent.
 `),
 );
 
