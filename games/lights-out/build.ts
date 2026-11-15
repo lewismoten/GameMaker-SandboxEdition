@@ -47,7 +47,7 @@ disk.put(levels[0].palFile, serializePalette(cave.pal)); // every level uses the
 disk.put('lo.mbl', serializeBlocks(monsterBlocks.finish()));
 disk.put('lo.mon', serializeMonsters(buildMonsters(monsterBlocks)));
 disk.put('hero.cbl', serializeBlocks(heroBlocks.finish()));
-disk.put('hero.chr', serializeCharacter(buildHero(heroBlocks)));
+disk.put('hero.chr', serializeCharacter(buildHero(heroBlocks, { heldRise: { push: 12 } })));
 disk.put('lo.snd', serializeSoundSet(buildSounds()));
 disk.put('lo.cmf', song());
 

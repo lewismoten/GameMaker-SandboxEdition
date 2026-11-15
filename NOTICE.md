@@ -64,6 +64,8 @@ game folder opens in the browser unchanged.
 
 ## Credits
 
+- **Starter held-rise rollout (batch E, November 15, 2026)**: OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, applied the approved First Steps jump and bot timing to Kit's Shop, Leaves in the Wind, Lightning, Lightning Bugs, Lights Out, Rooms on One Map, Parallax, and Pictures and Cartoons, and refreshed their walkthroughs and level metadata. No new third-party material was added.
+
 - **Starter held-rise rollout (batch B, November 15, 2026)**: OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, applied the approved First Steps jump and bot timing to Smash It, Coins and Score, Color Doors, Countdown, Cutscenes, Day and Night, and Everybody Talks, and refreshed their walkthroughs and level-view metadata. No new third-party material was added.
 
 - **Source documentation review (part 16)**: **Hermes Agent running OpenAI Codex GPT-6.1 Sol**, directed by Lewis Moten, checked the desk-buddy, disk-box, phone-viewer and outside-window READMEs against the source and corrected disk entry points, label-loading scope, Eject ownership and phone-thumbnail imports. The desk-buddy and outside-window READMEs needed no correction. No implementation or third-party material changed.
