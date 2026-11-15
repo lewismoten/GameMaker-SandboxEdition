@@ -7,12 +7,13 @@
 //   2. A Third Face: the same tunnel, five hits: calm, calm, hurried, hurried, and for the last hit a
 //      tiny quick bug with a bow. When it falls the way opens.
 // Both rooms are closed in by brick walls you can see, so Nova is never stopped by something she can't.
-import { Book } from '../../kit/starter/book';
+import { Book, PULL } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
-import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
-import { addSign, type Sign } from '../../kit/starter/sign';
+import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
+import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { MICRO_GLYPHS } from '@lewismoten/gamemaker-sandbox-tools/microFont';
 import { CHAINS } from './monsters';
 
 export type SignName = 'half' | 'sting' | 'third' | 'wait' | 'exit';
@@ -21,13 +22,29 @@ export type SignName = 'half' | 'sting' | 'third' | 'wait' | 'exit';
 function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
-  const signs = {
-    half: addSign(book, pal, 'half.sign', 'HALF WAY IT SPEEDS UP', 4, 3),
-    sting: addSign(book, pal, 'sting.sign', 'TOUCHING ONLY STINGS', 4, 3),
-    third: addSign(book, pal, 'third.sign', 'THE LAST HIT IS A NEW FACE', 4, 3),
-    wait: addSign(book, pal, 'wait.sign', 'THROW WHEN IT COMES CLOSE', 4, 3),
-    exit: addSign(book, pal, 'exit.sign', 'EXIT →', 3),
-  };
+  const { signs, blocks } = buildTiledSigns(
+    {
+      half: { rows: [['HALF WAY'], ['IT SPEEDS UP']] },
+      sting: { rows: [['TOUCHING'], ['ONLY STINGS']] },
+      third: { rows: [['THE LAST HIT'], ['IS A NEW FACE']] },
+      wait: { rows: [['THROW WHEN'], ['IT COMES'], ['CLOSE']] },
+      exit: { rows: [['EXIT →']] },
+    },
+    {
+      colors: {
+        background: skyOf(pal),
+        paper: pal.c('parch', 3),
+        ink: pal.c('ink', 0),
+        wood: pal.c('wood', 2),
+        highlight: pal.c('wood', 4),
+        shadow: pal.c('wood', 0),
+      },
+      glyphs: { ...MICRO_GLYPHS, '→': '100110111110100' },
+      lettersPerBlock: 3,
+      maxBlocks: Math.min(100, 150 - book.index.size),
+    },
+  );
+  for (const [name, pic] of blocks) book.add(name, pic, { grav: PULL.down });
   return { book, signs };
 }
 
@@ -88,9 +105,10 @@ function halfWay(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [11, 30, 40],
   );
   const m = new StarterMap(book, g.rows());
-  m.sign(6, onGround(GROUND, signs.half), signs.half);
-  m.sign(11, onGround(GROUND, signs.sting), signs.sting);
-  m.sign(38, onGround(GROUND, signs.exit), signs.exit);
+  const sky = { set: (x: number, y: number, block: string) => m.setOnSky(x, y, block) };
+  stampTiledSign(sky, 5, onGround(GROUND, signs.half), signs.half);
+  stampTiledSign(sky, 12, onGround(GROUND, signs.sting), signs.sting);
+  stampTiledSign(sky, 36, onGround(GROUND, signs.exit), signs.exit);
   m.mon(CHAINS[0].first, BUG_X[0], STAND);
   return m;
 }
@@ -112,9 +130,10 @@ function aThirdFace(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [8, 34, 36],
   );
   const m = new StarterMap(book, g.rows());
-  m.sign(6, onGround(GROUND, signs.third), signs.third);
-  m.sign(16, onGround(GROUND, signs.wait), signs.wait);
-  m.sign(39, onGround(GROUND, signs.exit), signs.exit);
+  const sky = { set: (x: number, y: number, block: string) => m.setOnSky(x, y, block) };
+  stampTiledSign(sky, 6, onGround(GROUND, signs.third), signs.third);
+  stampTiledSign(sky, 14, onGround(GROUND, signs.wait), signs.wait);
+  stampTiledSign(sky, 37, onGround(GROUND, signs.exit), signs.exit);
   m.mon(CHAINS[1].first, BUG_X[1], STAND);
   return m;
 }

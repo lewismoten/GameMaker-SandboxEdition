@@ -6,7 +6,7 @@
   "hero": "YANA",
   "year": 1994,
   "price": "Free",
-  "version": "1.2",
+  "version": "1.3",
   "blurb": "Two short levels about colors that everyone can tell apart. In the first, a plate that stings and a plate that is safe differ only by red against green, and the playable palette makes those colors look alike. In the second level, spikes look like spikes and the safe path is light and striped, so it reads in any color. Signs in the levels say how. Play it, then open it in Game-Maker and change a plate.",
   "exe": "COLORS.EXE",
   "dosName": "COLORS",

@@ -6,6 +6,37 @@ changelog: [engine](web/packages/engine/CHANGELOG.md), [archives](web/packages/a
 
 ## [Unreleased]
 
+## [3.7.0] - 2026-11-15
+
+Stick Man Stars moves onto paper, Lucky Cat 4.0 plays harder, First Steps gets a jump you can steer, the Starters' signs are centered and easier to read, the editor fits phones better, and the big offline download is paused while it is rebuilt.
+
+### Added
+
+- Stick Man Stars, a short Special: a stick figure picks stars out of the night sky and tosses them at little repo houses, on notebook, graph, sticky-note and construction paper, with a night title and an animated ending.
+- The Level check lets you type a short reason when you mark a finding as checked or on purpose.
+- FLAGS.EXE on the desk's PC can list, set and reset more of your progress, such as Starter course grades and Scoot's mail.
+
+### Changed
+
+- Lucky Cat 4.0 plays harder: cracks and paint cost luck that does not come back between levels, crows fly faster and some keep watch in pairs.
+- First Steps: hold Space to rise and let go to steer in the air; a jump cannot be repeated until you land.
+- Signs in 59 Starters are centered, with larger letters, shared frames and one post, placed clear of scenery and pickups.
+- On a phone the editors give the work area more room: a compact header, and the map editor folds its pickers behind one Blocks & palette button.
+- The web player's touch buttons say what each key does in that game ("Throw a star", "Pick up").
+- The Pi remote connects in one step, remembers the Pi, and shows a readable log.
+- New offline copies are paused until a later update; existing offline copies stay available.
+
+### Fixed
+
+- Several games now play start to finish with only the arrows, Space and Enter (A Fly Named Carl, Loaf #13, Ohm Sweet Ohm).
+- The "Achievement unlocked" note no longer covers the game, the header or the editor toolbar.
+
+### Security
+
+- Importing a saves zip with a folder named like a built-in object no longer alters the page, and an exported game page links its About website only when it is an http or https address.
+
+Full list: [changes/release/pages/3.7.0.md](https://github.com/lewismoten/GameMaker-SandboxEdition/blob/pages-v3.7.0/changes/release/pages/3.7.0.md)
+
 ## [3.6.0] - 2026-11-12
 
 The 3D kit views on the Feelies shelf turn and zoom on every step, three more laser kits fit four library sheet sizes, In The Year 2000! reaches 1.9 with gates in front of THE CHEZ, and the guides say what the code does.
@@ -152,7 +183,8 @@ for every Game-Maker file type; the web player; and the set of new games built i
 - Exports to a web page, a DOS ZIP and native players, and opening a game another site links to.
 - Achievements, a guided tour with voice clips, and offline use as an installable app.
 
-[Unreleased]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/pages-v3.6.0...HEAD
+[Unreleased]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/pages-v3.7.0...HEAD
+[3.7.0]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/pages-v3.6.0...pages-v3.7.0
 [3.6.0]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/pages-v3.5.0...pages-v3.6.0
 [3.5.0]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/pages-v3.4.0...pages-v3.5.0
 [3.4.0]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/pages-v3.3.0...pages-v3.4.0

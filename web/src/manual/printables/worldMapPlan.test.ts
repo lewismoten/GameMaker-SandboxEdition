@@ -68,7 +68,7 @@ describe('World Map plans', () => {
       expect(overlaps(p.boxes), id).toEqual([]);
       expect(p.paths.length, id).toBe(graphOf(player).pairs.length);
     }
-  });
+  }, 30_000); // 1 to 2 s alone, over 5 s when the machine is loaded
 
   it('runs no path under a place it doesn’t join, and crosses paths at most once', () => {
     for (const { id, player, hints } of ALL) {

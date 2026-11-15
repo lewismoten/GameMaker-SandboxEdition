@@ -14,7 +14,7 @@ Displays the phone kit as assembled parts, an exploded view, electronics or a ba
 
 ## Loading
 
-[`trinketShelf.ts`](../trinketShelf.ts) dynamically imports the viewer on first use. [`feelieThumbs.ts`](../feelieThumbs.ts) dynamically imports the data and renderer for thumbnails. Availability and download callers also import data helpers statically; mesh files are fetched on demand.
+[`trinketShelf.ts`](../trinketShelf.ts) dynamically imports the viewer on first use. [`feelieThumbs.ts`](../feelieThumbs.ts) imports the data helper statically and dynamically imports the renderer for phone thumbnails. Availability and download callers also import data helpers statically; mesh files are fetched on demand.
 
 ## Tests
 

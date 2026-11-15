@@ -29,5 +29,5 @@ if (manifest && json) writeFileSync(manifest, `${JSON.stringify(json, null, 2)}\
 
 consumeFragments(fragments);
 console.log(
-  `${target.changelog}: ${version} cut${target.manifest ? `, ${target.manifest} set to ${version}` : ''}. Review, commit, merge to master, then tag ${target.prefix}-v${version}.`,
+  `${target.changelog}: ${version} cut${target.manifest ? `, ${target.manifest} set to ${version}` : ''}. Review, commit, merge to master, then tag ${target.prefix}-v${version}. For the release's SBOM: npm run release:sbom -- ${target.name} ${version}`,
 );

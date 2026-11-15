@@ -822,12 +822,12 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
         'p',
         { class: 'hint' },
         sprites ? 'Color 255 is transparent. ' : '',
-        'Pick a block, paint it, then set how it behaves. Shift- or Ctrl-click blocks to group them.',
+        'Pick a block, paint it, then set how it behaves. Shift- or Ctrl-click blocks to group them. ',
+        h('span', { class: 'limit-note', role: 'note' }, blockCapacityText(kind, blocks.length)),
       ),
       names.el,
       chooser.el,
     ),
-    h('p', { class: 'hint limit-note', role: 'note' }, blockCapacityText(kind, blocks.length)),
     h('div', { class: 'blk' }, columns[0], columns[1], columns[2]),
   );
   // Keep the running preview near the painter on phones, beside it on desktop.

@@ -70,6 +70,8 @@ export function buildLoaf(cb: ReturnType<typeof buildCharBlocks>, form: Form): C
   set(S[SEQ.riseRight], side(RISE_STEP, false), { key: KEY.e, jstkMov: JOY.upRight, sound: SND.rise });
   set(S[SEQ.riseLeft7], side(-RISE_STEP, true), { key: KEY.home, sound: SND.rise });
   set(S[SEQ.riseRight9], side(RISE_STEP, false), { key: KEY.pgup, sound: SND.rise });
+  // The ordinary spare slot keeps all original keyboard and joystick bindings intact.
+  set(S[SEQ.riseEnter], side(RISE_STEP, false), { key: 0x1c0d, sound: SND.rise });
   // Down: hunker down (and climb down the weave)
   const down = [f({ pic: 'hunker', y: DOWN_STEP, pause: 2 }), f({ pic: 'front', y: DOWN_STEP, pause: 2 })];
   set(S[SEQ.down], down, { key: KEY.down, jstkMov: JOY.down, sound: SND.roll });

@@ -6,7 +6,8 @@ import { assertNoInvisibleWalls } from '../../kit/starter/invisibleWalls';
 import { buildLevels } from '../src/levels';
 import { play } from './play';
 
-assertNoInvisibleWalls(buildLevels());
+const { pal, levels } = buildLevels();
+for (const level of levels) assertNoInvisibleWalls({ pal, book: level.book, levels: [level] });
 const { sim } = await play();
 console.log(
   `smash it: the bot played all three levels; ${sim.deaths} lives lost, ${sim.ci.lives} left, score ${sim.ci.score}, ${sim.trail.length} scenes entered`,

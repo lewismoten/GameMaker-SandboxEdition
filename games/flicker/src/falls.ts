@@ -3,8 +3,10 @@
 //   body   a pattern of white and blue streaks that slides down 5 pixels each frame. The pattern repeats every 20
 //          pixels, the height of a block, so a block of it joins the block below without a seam, and sliding it by a
 //          quarter of its height four times is a loop that never shows where it starts. 3 ticks a frame, all even.
-//   lip    the top of the fall: water slides over the edge, so its streaks start short and slide faster than the body's.
-//   splash the foot of the fall: foam that boils up out of the pool in four frames with uneven times.
+//   lip    the top of the fall: a lit surface with ripples, then the body's own streaks (same columns, same 5 pixels a frame,
+//          same 3 ticks), so every streak runs on from the lip into the body without a jump.
+//   splash the foot of the fall: the body's streaks again down to the pool, where foam boils up in a different place each
+//          frame; its times are the body's too, or the streaks above the foam would speed up and slow down.
 // Everything is drawn on a rock backdrop where it meets the cliff, so the fall reads as water running down a rock face.
 import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import type { Pal } from '../../kit/starter/palette';
@@ -14,8 +16,8 @@ export type Col = 'L' | 'M' | 'N' | 'R';
 export const COLS: Col[] = ['L', 'M', 'N', 'R'];
 
 export const BODY_TICKS = [3, 3, 3, 3];
-export const LIP_TICKS = [2, 2, 2, 2];
-export const SPLASH_TICKS = [4, 2, 5, 3];
+export const LIP_TICKS = [3, 3, 3, 3];
+export const SPLASH_TICKS = [3, 3, 3, 3];
 
 /** A streak of the pattern: where it starts across the block, where down it starts, how long and wide, and its shade (0 white, 1 pale blue, 2 blue). */
 interface Streak {
@@ -77,7 +79,9 @@ export function lipFrame(pal: Pal, col: Col, k: number, bg: number): Pixels {
   p.rect(0, top, 20, 20 - top, base);
   for (let x = 0; x < 20; x++) p.set(x, top, c('white', 3)); // the lit surface
   for (let r = 0; r < 2; r++) for (let x = 0; x < 20; x++) if ((x + 5 * k + r * 8) % 11 < 4) p.set(x, top + 2 + r * 2, shade[r === 0 ? 0 : 1]); // ripples slide across
-  for (const s of streaks(col)) for (let i = 0; i < s.len && i < 9; i++) p.set(s.x, top + 6 + ((s.y + i + 7 * k) % 14), shade[s.shade]);
+  // below the ripples the body's own pattern, so a streak leaves the lip at the pixel it enters the body
+  const body = bodyFrame(pal, col, k);
+  for (let y = top + 4; y < 20; y++) for (let x = 0; x < 20; x++) p.set(x, y, body.get(x, y));
   edges(p, pal, col);
   // the rock's edge on each outer side, so the water sits in a notch in the cliff top
   if (col === 'L') p.rect(0, top - 2, 2, 3, c('stone', 2));

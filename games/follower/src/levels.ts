@@ -8,12 +8,13 @@
 //      flies straight at Lena, hits the underside of the ledge and stays there, below her, until
 //      she steps off the end. It plans no way around.
 // Both rooms are closed in by brick walls you can see, so Lena is never stopped by something she can't.
-import { Book } from '../../kit/starter/book';
+import { Book, PULL } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
-import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
-import { addSign, type Sign } from '../../kit/starter/sign';
+import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
+import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { MICRO_GLYPHS } from '@lewismoten/gamemaker-sandbox-tools/microFont';
 import { PUFF } from './monsters';
 
 export type SignName = 'follows' | 'behind' | 'under' | 'around' | 'exit';
@@ -22,13 +23,29 @@ export type SignName = 'follows' | 'behind' | 'under' | 'around' | 'exit';
 function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
-  const signs = {
-    follows: addSign(book, pal, 'follows.sign', 'PUFF FLIES AFTER YOU', 4, 4),
-    behind: addSign(book, pal, 'behind.sign', 'RUN AND PUFF FALLS BEHIND', 4, 4),
-    under: addSign(book, pal, 'under.sign', 'PUFF IS STUCK UNDER THE LEDGE', 4, 4),
-    around: addSign(book, pal, 'around.sign', 'IT FLIES STRAIGHT, NOT AROUND', 4, 4),
-    exit: addSign(book, pal, 'exit.sign', 'EXIT →', 3),
-  };
+  const { blocks, signs } = buildTiledSigns(
+    {
+      follows: { rows: [['PUFF FLIES AFTER YOU']] },
+      behind: { rows: [['RUN AND PUFF FALLS BEHIND']] },
+      under: { rows: [['PUFF IS STUCK UNDER THE LEDGE']] },
+      around: { rows: [['IT FLIES STRAIGHT, NOT AROUND']] },
+      exit: { rows: [['EXIT →']] },
+    },
+    {
+      colors: {
+        background: skyOf(pal),
+        paper: pal.c('parch', 3),
+        ink: pal.c('ink', 0),
+        wood: pal.c('wood', 2),
+        highlight: pal.c('wood', 4),
+        shadow: pal.c('wood', 0),
+      },
+      glyphs: { ...MICRO_GLYPHS, '→': '100110111110100' },
+      lettersPerBlock: 3,
+      maxBlocks: 100 - book.index.size,
+    },
+  );
+  for (const [name, pic] of blocks) book.add(name, pic, { grav: PULL.down });
   return { book, signs };
 }
 
@@ -86,9 +103,10 @@ function puffFollows(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [10, 21, 35],
   );
   const m = new StarterMap(book, g.rows());
-  m.sign(6, onGround(GROUND, signs.follows), signs.follows);
-  m.sign(14, onGround(GROUND, signs.behind), signs.behind);
-  m.sign(38, onGround(GROUND, signs.exit), signs.exit);
+  const sky = { set: (x: number, y: number, name: string) => m.setOnSky(x, y, name) };
+  stampTiledSign(sky, 1, onGround(GROUND, signs.follows) - 3, signs.follows, 4);
+  stampTiledSign(sky, 11, onGround(GROUND, signs.behind) - 3, signs.behind, 4);
+  stampTiledSign(sky, 39, onGround(GROUND, signs.exit) - 1, signs.exit, 2);
   m.mon(PUFF, PUFF_START_1, STAND);
   return m;
 }
@@ -116,9 +134,10 @@ function outOfReach(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [29, 34],
   );
   const m = new StarterMap(book, g.rows());
-  m.sign(6, onGround(LEDGE, signs.under), signs.under);
-  m.sign(14, onGround(LEDGE, signs.around), signs.around);
-  m.sign(38, onGround(GROUND, signs.exit), signs.exit);
+  const sky = { set: (x: number, y: number, name: string) => m.setOnSky(x, y, name) };
+  stampTiledSign(sky, 6, onGround(LEDGE, signs.under), signs.under);
+  stampTiledSign(sky, 18, onGround(LEDGE, signs.around), signs.around, GROUND - LEDGE + 1);
+  stampTiledSign(sky, 39, onGround(GROUND, signs.exit) - 1, signs.exit, 2);
   m.mon(PUFF, PUFF_START_2, STAND);
   return m;
 }

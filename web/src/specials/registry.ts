@@ -56,6 +56,13 @@ export const SPECIALS: readonly Special[] = [
     arrival: 'floppy',
     theme: 'Monkey Day: Nell builds a kitchen observatory to look at a very odd moon',
   },
+  {
+    id: 'stick-man-stars',
+    window: { day: { on: 'date', month: 12, day: 21 }, days: 3 },
+    arrival: 'bbs',
+    linger: 3,
+    theme: 'The longest night: a stick figure picks stars out of the sky and tosses them at little repo houses',
+  },
 ];
 
 /** The Special with this catalog id, or undefined. */

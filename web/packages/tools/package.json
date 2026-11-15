@@ -1,6 +1,6 @@
 {
   "name": "@lewismoten/gamemaker-sandbox-tools",
-  "version": "3.6.0",
+  "version": "3.7.0",
   "description": "Development tools for building and checking games in RSD Game-Maker formats",
   "type": "module",
   "license": "MIT",
@@ -82,6 +82,11 @@
       "types": "./dist/types/kit/laserLayout.d.ts",
       "gamemaker-source": "./src/kit/laserLayout.ts",
       "import": "./dist/kit/laserLayout.js"
+    },
+    "./kit/laserNest": {
+      "types": "./dist/types/kit/laserNest.d.ts",
+      "gamemaker-source": "./src/kit/laserNest.ts",
+      "import": "./dist/kit/laserNest.js"
     },
     "./kit/laserSvg": {
       "types": "./dist/types/kit/laserSvg.d.ts",

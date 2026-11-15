@@ -62,11 +62,7 @@ export function pack(entries: [string, Uint8Array][]): { files: [string, number]
 }
 
 /** The files of a record: those in the blob, then those kept in the page (`external`, element id -> bytes). */
-export function withExternal(
-  blobFiles: [string, Uint8Array][],
-  ext: External[] | undefined,
-  external: Map<string, Uint8Array> | undefined,
-): [string, Uint8Array][] {
+function withExternal(blobFiles: [string, Uint8Array][], ext: External[] | undefined, external: Map<string, Uint8Array> | undefined): [string, Uint8Array][] {
   const out = [...blobFiles];
   for (const [name, id, length] of ext ?? []) {
     const bytes = external?.get(id);

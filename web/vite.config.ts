@@ -131,6 +131,7 @@ function offlineFiles(bundle: Bundle, forArchive = false): [string, number, numb
         : /^(og\/|og-image\.|robots\.txt$|sitemap\.xml$|llms\.txt$|sw\.js$|index\.html$|archive\.html$|web-player\.html$|player\/|trinkets\/|laser\/|pocket\/)/
     ).test(f) &&
     !DEV_ONLY.test(f) &&
+    !/^(offline\.[a-f0-9]+\.zip$|offline\.json$|archive\.json$|games\/extra-\d+\.json$)/.test(f) &&
     (!/^games\/(gameware|shareware|originals)\//.test(f) || /\.(zip|zpart|gmpak)$|\/walkthrough\.json\.gz$/.test(f));
   return [...sources]
     .filter(([f]) => wanted(f))
@@ -165,7 +166,22 @@ function offline(): Plugin {
         const assets = built.filter(isHashed).sort();
         const version = hashText(JSON.stringify([groups, assets]));
         this.emitFile({ type: 'asset', fileName: 'sw.js', source: siteWorkerSource({ version, precache, groups, assets }) });
-        this.emitFile({ type: 'asset', fileName: 'offline.json', source: JSON.stringify({ version, shell: precache, files: offlineFiles(bundle) }) });
+        const files = offlineFiles(bundle);
+        const read = (path: string): Uint8Array => {
+          const item = bundle[path];
+          const source = item ? (item.type === 'chunk' ? item.code : item.source) : readFileSync(resolve(publicDir, path));
+          return typeof source === 'string' ? new TextEncoder().encode(source) : source;
+        };
+        // Include the complete shell, especially index.html, in the replacement snapshot.
+        for (const path of precache.map((f) => (f === './' ? 'index.html' : f.replace(/^\.\//, '')))) {
+          if (!files.some(([f]) => f === path)) {
+            const data = read(path);
+            files.push([path, TEXT_FILE.test(path) ? gzipSync(data, { level: 6 }).length : data.length, data.length]);
+          }
+        }
+        files.sort(([a], [b]) => (a < b ? -1 : 1));
+        // Full offline ZIPs are paused until per-file downloads with selectable tiers land.
+        this.emitFile({ type: 'asset', fileName: 'offline.json', source: JSON.stringify({ version, shell: precache, files }) });
         // every file for archive.html: the offline copy's list and what it leaves out (previews, firmware, crawler files)
         this.emitFile({ type: 'asset', fileName: 'archive.json', source: JSON.stringify({ version, shell: precache, files: offlineFiles(bundle, true) }) });
         const player = playerGraph(bundle);

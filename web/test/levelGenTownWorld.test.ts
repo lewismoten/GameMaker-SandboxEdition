@@ -58,7 +58,7 @@ describe('overworld', () => {
         expect(r.links.length, `seed ${seed}`).toBeGreaterThanOrEqual(3);
         expect(r.terrainCells.water!.length).toBeGreaterThan(500);
       }
-  });
+  }, 30_000); // a few seconds alone, over 5 s when the machine is loaded
   it('lines the land up across the seam more when wrapping than when not', () => {
     const match = (wrap: boolean) => {
       let same = 0;

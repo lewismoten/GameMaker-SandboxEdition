@@ -6,7 +6,7 @@
   "hero": "LIAN",
   "year": 1994,
   "price": "Free",
-  "version": "1.2",
+  "version": "1.3",
   "blurb": "Three short levels about hit points, hearts and lives. A spike takes ten hit points, a heart gives ten back, and at zero a life is gone and the room starts again with a full 30. A smiling face adds a life. Press F2 to see the numbers. Signs say how. Play it, then open it in Game-Maker and change a heart.",
   "exe": "HEARTS.EXE",
   "dosName": "HEALTH",
@@ -31,21 +31,9 @@
       "Made to be copied and taken apart"
     ],
     "shots": [
-      [
-        "one.map",
-        16,
-        6
-      ],
-      [
-        "two.map",
-        16,
-        6
-      ],
-      [
-        "three.map",
-        22,
-        6
-      ]
+      ["one.map", 16, 6],
+      ["two.map", 16, 6],
+      ["three.map", 22, 6]
     ],
     "rating": "Everyone"
   }

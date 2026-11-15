@@ -1,10 +1,11 @@
 // The heroes' character files. Both walk, jump and climb like any hero (the kit's heroChar.ts); Enter is each one's
 // move. A frame whose second picture is MONBL gives birth to monster number "first picture", the way every
 // Game-Maker hero shoots (code/GM/PLAYGAME.C CharBirthMon), flying off the way the hero last moved.
-//   PLUME.CHR  Enter is a combo: wind-up and a WHAP, a turn and the POW that reaches further, each striking high and
+//   PLUME.CHR  Enter is a split-kick combo: wind-up and a WHAP, a reset and the POW that reaches further, each striking high and
 //              low, so a thing on the street takes two hits a press. One combo a press (norepeat), on the ground.
 //   RORY.CHR   Enter tosses a dinner roll from the basket: a vacuum that catches it stalls (a step to stand on), a
 //              squirrel catches it and scampers off.
+// Both stand, kick and toss face on (standFaceOn), since those pictures cannot know which way the move will fly.
 import { MONBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { MAXFRAME, emptyFrame, type Character, type Frame } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 import type { Book } from '../../kit/starter/book';
@@ -35,23 +36,38 @@ function enterMove(ch: Character, frames: Frame[], sound: number): void {
   Object.assign(s, { key: KEY_ENTER, sound, norepeat: 1, ground: 1, jstkMov: 9, jstkBut: 2 });
 }
 
+/**
+ * Standing still, a hero faces the player. Game-Maker has one idle sequence whichever way he last walked
+ * (code/GM/PLAYGAME.C PopKey falls back to IDLESEQ), while the kick flies the way he last moved (CharBirthMon,
+ * ci.netx), so a side view at rest would face right with the kick or roll about to fly left.
+ */
+function standFaceOn(ch: Character, cb: Book): void {
+  const swap: Record<string, string> = { 'stand.top': 'front.top', 'look.top': 'front.top', 'blink.top': 'fblink.top', stand: 'fstand' };
+  const swapped = (n: number) => {
+    const name = Object.keys(swap).find((k) => cb.n(k) === n);
+    return name ? cb.n(swap[name]) : n;
+  };
+  for (const fr of ch.sequences[SEQ.idle].frames) Object.assign(fr, { pic1: swapped(fr.pic1), pic2: swapped(fr.pic2) });
+}
+
 /** PLUME.CHR: the kit's hero with Enter for the combo. */
 export function buildPlume(cb: Book): Character {
   const ch = buildHero(cb);
+  standFaceOn(ch, cb);
   const f = frame(cb);
   enterMove(
     ch,
     [
-      f('kick0.top', 'throw0', 2),
-      f('kick1.top', 'throw1', 2),
+      f('fkick0.top', 'fthrow0', 2),
+      f('fkick1.top', 'fthrow1', 2),
       birth(MONS.whap, HIGH),
       birth(MONS.whap, LOW),
-      f('kick0.top', 'throw0', 2),
-      f('stand.top', 'dig0', 1),
-      f('kick1.top', 'throw1', 2),
+      f('fkick0.top', 'fthrow0', 2),
+      f('front.top', 'fstand', 1),
+      f('fkick1.top', 'fthrow1', 2),
       birth(MONS.pow, LOW),
       birth(MONS.pow, HIGH),
-      f('kick1.top', 'throw1', 4),
+      f('fkick1.top', 'fthrow1', 4),
     ],
     SND.kick,
   );
@@ -61,10 +77,11 @@ export function buildPlume(cb: Book): Character {
 /** RORY.CHR: the kit's hero with Enter tossing a roll. */
 export function buildRory(cb: Book): Character {
   const ch = buildHero(cb);
+  standFaceOn(ch, cb);
   const f = frame(cb);
   enterMove(
     ch,
-    [f('stand.top', 'throw0', 2), f('cheer.top', 'throw1', 1), birth(MONS.roll), f('cheer.top', 'throw1', 2), f('stand.top', 'throw2', 3)],
+    [f('front.top', 'fstand', 2), f('fcheer.top', 'fthrow1', 1), birth(MONS.roll), f('fcheer.top', 'fthrow1', 2), f('front.top', 'fstand', 3)],
     SND.toss,
   );
   return ch;

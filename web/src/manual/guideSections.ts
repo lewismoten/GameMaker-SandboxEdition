@@ -233,7 +233,7 @@ export const GUIDE_SECTIONS: [id: string, title: string, html: string][] = [
     something, choose <b>Edit a copy</b> on the bar above the map.</p>
     <div class="guide-how-do-i"><p>The searchable list shows here once the page has loaded.</p></div>
     <h3>Moving and jumping</h3>
-    <p>The hero walks with the arrow keys and jumps with Space. A wall two blocks high is too tall to
+    <p>The hero walks with the arrow keys and jumps with Space (hold it to rise, then steer in the air). A wall two blocks high is too tall to
     walk through, so the level asks for a jump.</p>
     <aside class="try-it" data-try="first-steps/walls"><strong>Try it:</strong> First Steps, level 1.</aside>
     <h3>Gravity</h3>

@@ -55,12 +55,14 @@ Game-Maker site itself.
   `.BAT` and the like) are left out.
 - **A .gam file**, with the game's other files in the same folder on your server. Game-Maker
   reads the .gam and fetches each file it names, plus the files those name in turn (a slide
-  list's pictures, a sound set's samples, the high score file). Names are tried as the game
-  writes them, then in upper case. A file that isn't there is skipped, as DOS would.
+  list's pictures, a sound set's samples, the high score file). Names are tried in lower case,
+  then in upper case; use one of those spellings on a case-sensitive host. A file that returns
+  404 in both cases is skipped, as DOS would; other fetch errors stop the request.
 - **A game pack** (`.gmpak`, gzipped or not): the format the site uses for its own games.
 - **A web page made by "Export as one web page".** It carries the whole game inside it.
 
-The first .gam found is played, unless the export or message names one.
+The first .gam in alphabetical order (after DOS file-name normalization) is played, unless
+the export or message names one.
 
 ### CORS: what your server must send
 
@@ -192,7 +194,9 @@ than its directory says is refused.
 
 ## Safety and privacy
 
-- **The visitor decides.** Nothing opens until they press "Open to play" or "Open to edit" in a
+- **The visitor decides.** A link first asks permission to fetch from the other site's host,
+  before contacting it. Once the files are checked, nothing opens until the visitor presses
+  "Open to play" or "Open to edit" in a
   dialog that names where the game came from (your site's host), the game, and how many files
   and bytes it has.
 - **Nothing is uploaded.** The files go from your page, or your server, into the visitor's

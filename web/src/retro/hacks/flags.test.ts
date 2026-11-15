@@ -5,6 +5,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { parseFlags, runFlags } from './flags';
 import { BACKUP_KEYS, FlagError, HINT_CENTS_PER_MINUTE, ITEMS, overridesForCount, parseCount, parseTier } from './flagsItems';
 import { parseBak } from './flagsBackup';
+import { courseScope, parseGradeWord, withGrades } from './flagsDesk';
 import { FLAGS_DIZ, FLAGS_NFO } from './flagsText';
 import { FLAGS_HELP } from './flagsHelp';
 import { sectionOfKey } from '../../backup/inventory';
@@ -129,6 +130,14 @@ describe('FLAGS backup and keys', () => {
     expect(parseBak('hello')).toBeUndefined();
     expect(parseBak(null)).toBeUndefined();
   });
+  it('refuses a later format version and a clock offset a Date cannot hold', () => {
+    const body = (local: object) => `${JSON.stringify({ at: 5, local, ach: {} })}\r\n`;
+    expect(parseBak(`FLAGS.BAK 10\r\n${body({})}`)).toBeUndefined();
+    expect(parseBak(`FLAGS.BAK 12  (x)\r\n${body({})}`)).toBeUndefined();
+    expect(parseBak(`FLAGS.BAK 1\r\n${body({})}`)).toBeDefined();
+    expect(parseBak(`FLAGS.BAK 1\r\n${body({ 'gm-desk-clock': '9e15' })}`)!.local).toEqual({});
+    expect(parseBak(`FLAGS.BAK 1\r\n${body({ 'gm-desk-clock': '86400000' })}`)!.local).toEqual({ 'gm-desk-clock': '86400000' });
+  });
   it('help and BBS text fit 80 columns and carry the credits', () => {
     for (const l of [...FLAGS_HELP, ...FLAGS_DIZ, ...FLAGS_NFO]) expect(l.length).toBeLessThanOrEqual(79);
     expect(FLAGS_DIZ.at(-1)).toContain('Couriered by');
@@ -154,5 +163,78 @@ describe('FLAGS and the bonus games', () => {
     const text = lines.join('');
     expect(text).toContain('Don\'t know "BONUS"');
     expect(text).not.toMatch(/felt egg|tin heart/i);
+  });
+});
+
+describe('FLAGS desk state (grades, courier, buddy, chicken, tour)', () => {
+  beforeEach(() => {
+    vi.stubGlobal('localStorage', memory());
+    vi.stubGlobal('window', { dispatchEvent: () => true });
+  });
+  it('grades the first n Starters of a stage, from none to all, and only that stage', async () => {
+    const stage1 = courseScope('1');
+    const stage2 = courseScope('2');
+    await item('GRADES').set!(['2', '1', 'B']);
+    for (let n = 0; n <= stage1.length; n++) {
+      await item('GRADES').set!(['1', String(n), 'B']);
+      const g = JSON.parse(localStorage.getItem('gm-course-grades') ?? '{}') as Record<string, string>;
+      expect(stage1.filter((id) => g[id]).length).toBe(n);
+      expect(stage2.filter((id) => g[id]).length).toBe(1);
+    }
+    expect(await item('GRADES').show()).toContain(`${stage1.length + 1} of`);
+  });
+  it('shows a middle tier: B counts toward a graduation, C does not', async () => {
+    await item('GRADES').set!(['1', '3', 'B']);
+    expect(await item('GRADES').show()).toMatch(/GPA 3[;,]/);
+    expect(await item('GRADES').show()).toContain('1:3/');
+    await item('GRADES').set!(['1', '3', 'C']);
+    expect(await item('GRADES').show()).toContain('1:0/');
+    expect(await item('GRADES').show()).toMatch(/GPA 2[;,]/);
+    await item('GRADES').clear!(['1']);
+    expect(await item('GRADES').show()).toContain('0 of');
+    expect(withGrades({ a: 'A', b: 'B' }, ['a', 'b'], 1, 'C')).toEqual({ a: 'C' });
+  });
+  it('refuses a bad stage, count or grade in plain words', async () => {
+    for (const bad of [[], ['9', '1'], ['1', '999'], ['1', 'x'], ['1', '1', 'F']]) await expect(item('GRADES').set!(bad)).rejects.toBeInstanceOf(FlagError);
+    expect(parseGradeWord('b-')).toBe('B-');
+  });
+  it('puts 1 of 2 letters in the mail, then none, then all', async () => {
+    await item('COURIER').set!(['MAIL', '1']);
+    expect(await item('COURIER').show()).toContain('1 of 2 letters in the mail (1 unread)');
+    await item('COURIER').set!(['MAIL', 'ALL']);
+    expect(await item('COURIER').show()).toContain('2 of 2');
+    await item('COURIER').clear!([]);
+    expect(await item('COURIER').show()).toContain('0 of 2');
+    await expect(item('COURIER').set!(['STAMPS', '1'])).rejects.toBeInstanceOf(FlagError);
+    await expect(item('COURIER').set!(['MAIL', '3'])).rejects.toBeInstanceOf(FlagError);
+    await item('COURIER').reset!();
+    expect(localStorage.getItem('gm-courier')).toBeNull();
+  });
+  it('buddy keeps its other fields when set quiet, chicken flips, tour day validates', async () => {
+    localStorage.setItem('gm-desk-buddy', JSON.stringify({ met: true, helloDay: '2026-11-01' }));
+    await item('BUDDY').set!(['quiet']);
+    expect(await item('BUDDY').show()).toBe('quiet; met, last hello 2026-11-01');
+    await expect(item('BUDDY').set!(['loud'])).rejects.toBeInstanceOf(FlagError);
+    await item('BUDDY').reset!();
+    expect(await item('BUDDY').show()).toBe('chatty; not met yet');
+    await item('CHICKEN').set!(['lady']);
+    expect(await item('CHICKEN').show()).toContain('Lady Regina');
+    await item('CHICKEN').reset!();
+    expect(await item('CHICKEN').show()).toBe('Sir Reginald');
+    await item('TOUR').set!(['2026-10-01']);
+    expect(await item('TOUR').show()).toBe('2026-10-01');
+    await expect(item('TOUR').set!(['2026-13-40'])).rejects.toBeInstanceOf(FlagError);
+    await item('TOUR').clear!([]);
+    expect(await item('TOUR').show()).toBe('no visit recorded');
+  });
+  it('RESET GRADES also forgets the days the honors were earned', async () => {
+    localStorage.setItem('gm-honors-dates', JSON.stringify({ x: '2026-01-02' }));
+    await item('GRADES').reset!();
+    expect(localStorage.getItem('gm-honors-dates')).toBeNull();
+  });
+  it('is in the backup, and RESET ALL reaches it; Specials point to their own program', () => {
+    for (const k of ['gm-course-grades', 'gm-courier', 'gm-desk-buddy', 'gm-chicken', 'gm-tour-seen']) expect(BACKUP_KEYS).toContain(k);
+    for (const id of ['GRADES', 'COURIER', 'BUDDY', 'CHICKEN', 'TOUR']) expect(item(id).reset, id).toBeDefined();
+    expect(item('SPECIALS').elsewhere).toContain('SPECIALS.EXE');
   });
 });

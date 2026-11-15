@@ -181,8 +181,8 @@ registerEditor(['map'], (host, project, file) => {
   // undo: a snapshot of the whole map (about 22 KB) before each stroke, fill or monster change,
   // and with it the .gam's bytes before a link marker's change (links/linkMarkers.ts)
   const history = new History<{ map: Uint8Array; gam?: Uint8Array }>();
-  const undoBtn = h('button', { title: 'Undo (Ctrl+Z)', disabled: true, onclick: () => step(true) }, '↶ Undo');
-  const redoBtn = h('button', { title: 'Redo (Ctrl+Y)', disabled: true, onclick: () => step(false) }, '↷ Redo');
+  const undoBtn = h('button', { title: 'Undo (Ctrl+Z)', disabled: true, onclick: () => step(true) }, '↶', h('span', { class: 'mt-hist-text' }, ' Undo'));
+  const redoBtn = h('button', { title: 'Redo (Ctrl+Y)', disabled: true, onclick: () => step(false) }, '↷', h('span', { class: 'mt-hist-text' }, ' Redo'));
   const syncHistory = () => {
     undoBtn.disabled = !history.canUndo;
     redoBtn.disabled = !history.canRedo;
@@ -1259,6 +1259,25 @@ registerEditor(['map'], (host, project, file) => {
   // visible + and − beside the menu: a finger has no wheel (44 px on touch, mapTools.css)
   const zoomStep = (label: string, name: string, factor: number) =>
     h('button', { type: 'button', class: 'mt-zoom-step', 'aria-label': name, title: name, onclick: () => setZoom(zoom * factor) }, label);
+  // phones: the block-set, monster and palette pickers and Download picture fold behind one button, so the tools and the map
+  // come first (mapTools.css); wider screens show them all and the button is hidden
+  const filesToggle = h(
+    'button',
+    {
+      type: 'button',
+      class: 'mt-files-toggle',
+      'aria-expanded': 'false',
+      'aria-controls': 'mt-files-body',
+      onclick: () => setFilesOpen(filesToggle.getAttribute('aria-expanded') !== 'true'),
+    },
+    'Blocks & palette ▸',
+  );
+  function setFilesOpen(open: boolean): void {
+    filesToggle.setAttribute('aria-expanded', String(open));
+    filesToggle.textContent = open ? 'Blocks & palette ▾' : 'Blocks & palette ▸';
+    filesToggle.parentElement?.classList.toggle('mt-files-open', open);
+    requestAnimationFrame(() => window.dispatchEvent(new Event('resize')));
+  }
   const zoomRow = h('div', { class: 'mt-zoom-row' });
   zoomSelect.replaceWith(zoomRow);
   zoomRow.append(zoomSelect, zoomStep('−', 'Zoom out', 1 / 1.5), zoomStep('+', 'Zoom in', 1.5));
@@ -1463,32 +1482,37 @@ registerEditor(['map'], (host, project, file) => {
       : null,
     h(
       'div',
-      { class: 'toolbar', style: 'margin-bottom:8px' },
-      fileSelect(
-        'Background blocks',
-        'bbl',
-        () => bblName,
-        (v) => ((bblName = v), (bg = loadBlocks(v, 'bbl')), tools.renderPanel()),
-      ),
-      fileSelect(
-        'Monsters',
-        'mon',
-        () => monName,
-        (v) => ((monName = v), (mons = parseMonsters(project.files.get(v)!))),
-      ),
-      fileSelect(
-        'Monster blocks',
-        'mbl',
-        () => mblName,
-        (v) => ((mblName = v), (mblk = loadBlocks(v, 'mbl'))),
-      ),
-      chooser.el,
-      zoomControl,
+      { class: 'toolbar mt-filebar', style: 'margin-bottom:8px' },
+      filesToggle,
       h(
-        'button',
-        { class: 'mt-big', onclick: () => void exportImage(), title: 'Save the map, just the level, or one game screen as a picture' },
-        '🖼 Download map picture',
+        'div',
+        { class: 'mt-files-body', id: 'mt-files-body' },
+        fileSelect(
+          'Background blocks',
+          'bbl',
+          () => bblName,
+          (v) => ((bblName = v), (bg = loadBlocks(v, 'bbl')), tools.renderPanel()),
+        ),
+        fileSelect(
+          'Monsters',
+          'mon',
+          () => monName,
+          (v) => ((monName = v), (mons = parseMonsters(project.files.get(v)!))),
+        ),
+        fileSelect(
+          'Monster blocks',
+          'mbl',
+          () => mblName,
+          (v) => ((mblName = v), (mblk = loadBlocks(v, 'mbl'))),
+        ),
+        chooser.el,
+        h(
+          'button',
+          { class: 'mt-big', onclick: () => void exportImage(), title: 'Save the map, just the level, or one game screen as a picture' },
+          '🖼 Download picture',
+        ),
       ),
+      zoomControl,
     ),
     h('div', { class: 'row' }, h('div', { class: 'stack', style: 'flex:1 1 480px;min-width:0' }, modeBar, marksUi.panel, scroller, status), sideCol),
   );

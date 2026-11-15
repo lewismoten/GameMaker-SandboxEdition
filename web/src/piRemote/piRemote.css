@@ -262,3 +262,52 @@ main.pi-remote .pi-sound-status {
   margin: -6px 0 10px;
   color: var(--muted);
 }
+
+main.pi-remote .pi-hint,
+main.pi-remote .pi-state,
+main.pi-remote .pi-hidden-note {
+  margin: 6px 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+main.pi-remote .pi-state {
+  color: inherit;
+  font-weight: 600;
+}
+
+main.pi-remote .pi-log-tools {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+main.pi-remote .pi-log-lines .pi-level-warn {
+  color: inherit;
+  border-left: 3px solid #c58a00;
+  padding-left: 6px;
+  background: color-mix(in srgb, var(--warning, #c58a00) 14%, transparent);
+}
+
+main.pi-remote .pi-log-lines .pi-level-error {
+  color: var(--danger);
+  border-left: 3px solid var(--danger);
+  padding-left: 6px;
+  background: color-mix(in srgb, var(--danger) 12%, transparent);
+}
+
+main.pi-remote .pi-level-tag {
+  text-transform: uppercase;
+  font-size: 11px;
+}
+
+main.pi-remote .pi-count {
+  color: var(--muted);
+  font-weight: 700;
+}
+
+main.pi-remote .pi-key.echo {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}

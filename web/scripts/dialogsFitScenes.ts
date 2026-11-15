@@ -40,12 +40,14 @@ const homeButton = (id: string, label: string | RegExp, route = '/#/game/cd:nebu
 });
 
 /** A button on the home page's Starters tab (the How do I…? questions, How it works). */
-const startersButton = (id: string, label: string | RegExp): Scene => ({
+const startersButton = (id: string, label: string | RegExp, unhide?: string): Scene => ({
   id,
   open: async (p) => {
     await web(p);
     await p.getByRole('tab', { name: /Starters/ }).click({ timeout: 8000 });
     await p.waitForTimeout(1500);
+    // How it works is hidden while Getting started fits inline (a wide window, 844x390 included); show it so its dialog can be measured
+    if (unhide) await p.evaluate((sel) => document.querySelectorAll<HTMLElement>(sel).forEach((b) => (b.hidden = false)), unhide);
     await p.getByRole('button', { name: label }).first().click({ timeout: 8000 });
   },
 });
@@ -134,7 +136,7 @@ export const scenes: Scene[] = [
   homeButton('saves-and-scores', /Saves/),
   homeButton('walkthrough', 'Walkthrough'),
   startersButton('how-do-i', /How do I/),
-  startersButton('how-it-works', /How it works/),
+  startersButton('how-it-works', /How it works/, '.lib-how'),
   startersButton('transcript', /^Transcript$/),
   {
     id: 'transcript-honors',

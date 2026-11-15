@@ -50,7 +50,7 @@ describe('placing a layout', () => {
       const seen = openFrom(blocks, bg, [entry]);
       for (let i = 0; i < blocks.length; i++) expect(seen[i] === 1, `seed ${seed} cell ${i}`).toBe(!solid[i]);
     }
-  });
+  }, 30_000); // 1 to 2 s alone, over 5 s when the machine is loaded
 
   it('forest with tree edges and a path stays reachable', () => {
     for (let seed = 1; seed <= 30; seed++) {

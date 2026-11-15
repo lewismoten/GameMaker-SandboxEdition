@@ -9,7 +9,7 @@ import { cdCatalog, cdSecretCatalog } from '../../scripts/cdGames';
 import { gamePageHtml, guidePageHtml, seoPages, staticPageHtml } from '../../scripts/seoBuild';
 import { staticPages } from '../../scripts/seoStaticPages';
 import { GUIDE_SECTIONS } from '../manual/guideSections';
-import { gamePage, SITE_URL } from './site';
+import { gamePage, ROUTES, SITE_URL } from './site';
 import { isStarterGame } from '../project/starter';
 
 const cdRoot = join(__dirname, '../../../cd');
@@ -252,6 +252,13 @@ describe('seoBuild', () => {
       const game = jsonLd(html).find((n) => n['@type'] === 'VideoGame');
       expect(game?.name).toBe(g.title);
       expect(game?.url).toBe(url);
+    }
+  });
+
+  it('writes each route description whole (at most 160 characters before any clipping) in one voice', () => {
+    for (const [name, route] of Object.entries(ROUTES)) {
+      expect(route.description.length, name).toBeLessThanOrEqual(160);
+      expect(route.description, name).not.toMatch(/\b(we|our|us)\b/i);
     }
   });
 });

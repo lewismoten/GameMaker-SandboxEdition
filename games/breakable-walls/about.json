@@ -6,7 +6,7 @@
   "hero": "YANA",
   "year": 1994,
   "price": "Free",
-  "version": "1.2",
+  "version": "1.3",
   "blurb": "Three short levels about blocks that break. Bump a crate and it turns to rubble, and only the crates you touch break. A coin that turns into itself pays again and again, so a coin must become air to pay once. A spinning gem is four blocks in a loop, and each frame has to turn to air too. Signs say how. Play it, then open it in Game-Maker and change what a block becomes.",
   "exe": "SMASH.EXE",
   "dosName": "SMASHIT",
@@ -36,5 +36,5 @@
     ],
     "rating": "Everyone"
   },
-  "acceptedFindings": ["every-tick s3 Block 129 gives 2 points on every tick the hero touches it"]
+  "acceptedFindings": ["every-tick s3 Block 20 gives 2 points on every tick the hero touches it"]
 }

@@ -59,6 +59,8 @@ async function run<T>(mode: IDBTransactionMode, work: (store: IDBObjectStore) =>
     });
   } catch (e) {
     console.warn('Saves: storage failed', e);
+    // a write that did not land is the caller's to hear about; a read just finds nothing
+    if (mode === 'readwrite') throw e;
     return undefined;
   }
 }
@@ -87,30 +89,33 @@ export async function loadSaves(id: string): Promise<SaveFiles> {
 
 /** Keeps one file the game wrote. Writes one game at a time, in order. */
 let queue: Promise<void> = Promise.resolve();
+/** Runs `job` after the earlier ones; its failure rejects its own promise, and the queue goes on. */
+function enqueue(job: () => Promise<void>): Promise<void> {
+  const mine = queue.then(job);
+  queue = mine.catch(() => undefined);
+  return mine;
+}
 export function writeSave(id: string, name: string, bytes: Uint8Array): Promise<void> {
-  queue = queue.then(async () => {
+  return enqueue(async () => {
     const rec = (await getRecord(id)) ?? { id, files: {}, when: 0 };
     await putRecord({ id, files: { ...rec.files, [name]: bytes.slice() }, when: Date.now() });
   });
-  return queue;
 }
 
 /** Puts `files` into the game's saves, each replacing the file of its name. */
 export function mergeSaves(id: string, files: SaveFiles): Promise<void> {
-  queue = queue.then(async () => {
+  return enqueue(async () => {
     const rec = (await getRecord(id)) ?? { id, files: {}, when: 0 };
     await putRecord({ id, files: { ...rec.files, ...files }, when: Date.now() });
   });
-  return queue;
 }
 
 /** Forgets every save of the game. */
 export function deleteSaves(id: string): Promise<void> {
-  queue = queue.then(async () => {
+  return enqueue(async () => {
     if (!(await db())) memory.delete(id);
     else await run('readwrite', (s) => s.delete(id));
   });
-  return queue;
 }
 
 /** Every game's saves. */

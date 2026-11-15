@@ -99,6 +99,8 @@ A final consumer exercises engine, archives and tools together. Run this longer 
 and tarballs are removed afterwards. This catches hidden repository source dependencies
 that testing a package inside the workspace would miss.
 
+`verify-consumer.mjs` runs through root `npm run verify:consumer [-- --source tarball|registry]`. In a fresh project outside the repository it installs the three SDKs (the packed `web/packages/*` tarballs, or the published versions from npm), imports every export in Node, typechecks every export under `bundler` and `node16` resolution, and Vite-builds one browser-safe import per package (plus a check that the tools' Node-only `drawing` entry is rejected in a browser build, as its README says). Build the packages first (`npm run build:packages`); `--keep` leaves the scratch project. Needs network for `typescript` and `vite`.
+
 `build-games.mjs` rebuilds the ignored game outputs (root `npm run build:games`), caching a key and an
 output hash per game, written as each game lands so a build stopped partway keeps what it finished (CI
 caches these outputs between runs; `prune-render-cache.mjs` keeps only the current Depth frames there). `--timing` (or `GM_BUILD_TIMING=1`) prints each game's seconds, `--game <id>` builds
@@ -181,6 +183,6 @@ and errors stay visible in the console. `web/test/devGames.test.mjs` checks both
 fresh and existing disks; `web/test/buildGames.test.mjs` checks progress before completion. The development page labels generated disk,
 walk-path and printable updates as rebuilt game files, with source updates labeled separately.
 
-`decl-preflight.mjs` compares each SDK package's newest `src` mtime (plus `package.json` and `tsconfig.json`; test files ignored) with the newest `dist/types/*.d.ts`, in build order (engine, archives, tools; a stale package makes the later ones stale). It exits 1 with "run `npm run build:packages`" when any is stale or missing, or rebuilds only those with `--fix`. It runs as web's `pretypecheck` and `prelint` and as the merge gate's `declarations` step before `tsc`. A checkout or merge touches source mtimes, so it can report stale when nothing changed; rebuilding is harmless. Tests: `web/test/declPreflight.test.mjs`.
+`decl-preflight.mjs` compares each SDK package's newest `src` mtime (plus `package.json` and `tsconfig.json`; test files ignored) with the newest `dist/types/*.d.ts`, in build order (engine, archives, tools; a stale package makes the later ones stale). It exits 1 with "run `npm run build:packages`" when any is stale or missing, or rebuilds only those with `--fix`. It runs as web's `pretypecheck` and `prelint` and as the merge gate's `declarations` step before `tsc`. The gate's `release-check` step (`npm run release:check`) runs just before it, so a malformed `changes/unreleased` fragment fails the gate and the message names the file. A checkout or merge touches source mtimes, so it can report stale when nothing changed; rebuilding is harmless. Tests: `web/test/declPreflight.test.mjs`.
 
 `backup-restore.mjs` authenticates a local encrypted backup into a private temporary file before invoking tar, extracts into a staging folder, and publishes the folder only after success. Failed restores remove their temporary files and leave the destination untouched. `backup-local.mjs restore` uses it.

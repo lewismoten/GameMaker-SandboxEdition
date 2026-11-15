@@ -16,9 +16,10 @@ the desk and SCOOT.EXE on the PC, so it loads nothing from `src/desk/` (the PC i
 - `courierText.ts`: the words both faces show (sections, empty notes, dates, stamps, and
   `stampRows`, SCOOT.EXE's two stamps to a row).
 - `stamps.ts`: what earns a stamp on this device's own postcard (one world name, rolled once
-  from the table): a public catalog game played to its ending stamps its title; any Starter is
-  the one Sample CD stamp; any graduation the one "Attended a graduation" stamp (never grades or
-  honors); a secret game, a game of your own or one the catalog does not know is the same plain
+  from the table): a public catalog game played to its ending stamps its title; any Starter
+  played to its ending earns the one Sample CD stamp; any graduation played to its ending earns
+  the one "Attended a graduation" stamp (never grades or honors); a secret game, a game of your
+  own or one the catalog does not know is the same plain
   mystery stamp, given once it is played, with no id kept. `achievements/index.ts`
   `playAchievements` calls `earnStamp` for the web player, play.html, the desk and the DOS page.
   `catalogTitles` gives the card and SCOOT.EXE the games' titles (never a secret game's).
@@ -40,24 +41,27 @@ the desk and SCOOT.EXE on the PC, so it loads nothing from `src/desk/` (the PC i
   Setup (the Quiet switch, and Send Scoot on a trip / Scoot is back, which save and open SCOOT.SCT
   through the browser, as the card does).
 
-Letters come from BBS calls: `retro/bbs/courierMail.ts` sends a board's letter as a mail packet
-the first time a call to it connects. The card is `desk/buddy/courierCard.ts`.
+Letters come from BBS calls: `retro/bbs/courierMail.ts` offers an undelivered board letter as a
+mail packet on a connected call. It arrives only after the transfer completes; Esc leaves it
+for the next call. The card is `desk/buddy/courierCard.ts`.
 
 Ids (`courierId.ts`): the home id, the id of the screen that wrote a capsule and the trip id are
 courier ids, UUID version 4 in shape so ordinary UUID tools accept them: 128 bits from
 `crypto.randomUUID` or `crypto.getRandomValues`, then the version digit `4`, a `c` mark right after
-it (`xxxxxxxx-xxxx-4cxx-...`, so an eye can spot one of ours), the variant (8 to b), and a check
+it (`xxxxxxxx-xxxx-4cxx-...`, so an eye can spot a courier id), the variant (8 to b), and a check
 digit at the 5th group's fifth place, Luhn mod 16 over the other 31 digits. That leaves 114 random
 bits, derived from nothing (no time, MAC, hardware or serial number, user agent or world name), so
-screens in one household cannot be linked by them; other UUID versions are refused (v1 holds a time
+the ids do not encode household or hardware details. The same stored home id travels on later trips,
+so repeated appearances of that id can still be matched. Other UUID versions are refused (v1 holds a time
 and a MAC, v6/v7 a time, v3/v5 a hash of a name). `isCourierId` checks the shape and mark, then the
 check digit, which catches every single-digit typo and most swapped neighbors when an id is read
-aloud or typed. It is a typo and damage check and a "one of ours" mark, not security: the code is
-open, so anyone can make a valid id; the capsule's CRC-32 and the store's guards do the real
-checking. The CYD and Pi ports use the same algorithm in C, with their bits from the hardware random
+aloud or typed. It is a typo and damage check and a courier mark, not authentication: anyone can
+make a valid id and recompute a capsule's CRC-32. The checksum and format/store guards check damage
+and accepted structure, not who sent it. The CYD and Pi ports use the same algorithm in C, with their bits from the hardware random
 number generator (ESP32: `esp_random()` with the radio on, or `bootloader_random_enable()`; Pi: its
-hardware RNG), never from the efuse MAC or a serial number. A capsule carries only the courier's home
-id and world (a curated id), its postcards and the trip id.
+hardware RNG), never from the efuse MAC or a serial number. A capsule carries the home, writer and
+trip ids, the home world (a curated id), package hashes (empty for now), and postcards with their
+origin ids, world ids and stamps; it carries no free-text fields.
 
 Must not: name a secret game or keep its id (the store turns a secret game's stamp into the
 mystery stamp as it writes and as it reads), count what is missing, or push play. Letters arrive only because of

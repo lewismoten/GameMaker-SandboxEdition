@@ -2,7 +2,7 @@
 
 Part of [`retro/`](../README.md) and the [source map](../../README.md). CHK.EXE (`code/GM/CHK.C`): what GM ran before its menu, the unregistered copy's copy protection, and the paper around it on the desk.
 
-Entry points: `retro/computer.ts` runs `chk.ts`; `regDesk.ts` tells the desk what is being asked.
+Entry points: `retro/computer.ts` loads `retro/gm.ts` for Game-Maker; `runGameMaker` there calls `chk.ts` on the main startup path, not when resuming MENU.EXE. `regDesk.ts` tells the desk what is being asked.
 
 - `chk.ts`: CHK.EXE; `GM REGISTER` asks for the name and number.
 - `copyCheck.ts`: CHK.C manualcheck(): asking for a word from the manual.

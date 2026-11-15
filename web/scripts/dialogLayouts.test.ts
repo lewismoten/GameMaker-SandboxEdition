@@ -1,7 +1,7 @@
 // Real-page regressions for dialogs that used to need portrait scrolling.
 import { expect, it } from 'vitest';
 import { launch, target } from './perfLib';
-import { forceTheme } from './forceTheme';
+import { assertTheme, forceTheme } from './forceTheme';
 import { extraScenes } from './dialogsExtraScenes';
 import { measure } from './dialogsFitMeasure';
 
@@ -20,6 +20,7 @@ it('fits the Community proposal form on both small portrait phones', async () =>
       await page.goto(server.base);
       await extraScenes.find((scene) => scene.id === 'community-submit')!.open(page);
       await page.waitForSelector('dialog[open]');
+      await assertTheme(page, 'light');
       const result = await measure(page);
       expect(
         result.problems.filter((problem) => problem.includes('scrolls') && !problem.includes('[allowed list]')),

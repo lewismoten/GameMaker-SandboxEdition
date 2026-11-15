@@ -1,13 +1,14 @@
 # `engine/`: the game engine
 
-Integration tests remain here. The implementation now belongs to the [engine workspace](../../packages/engine/README.md), under `src/engine/`. Part of the [source map](../README.md).
+Integration tests remain here. The implementation belongs to the [engine workspace](../../packages/engine/README.md); filenames below are relative to that package's `src/engine/`. Part of the [source map](../README.md).
 
 The game engine, a TypeScript port of `PLAYGAME.C`: `game.ts` (`DoGame`),
 `scene.ts` (`playscene`), `character.ts`, `monsters.ts`, `scroll.ts`, `world.ts`, `touch.ts`,
 `render.ts`, menus (`menus.ts`), function keys (`funcKeys.ts`), the key stack (`keys.ts`),
 recordings (`recorder.ts`), the between-scene screens (`showGraphic.ts`) and the "machine"
-(`machine.ts`: screen, keyboard, timers). `slowPc.ts` is the slow PC behind the desk's TURBO
-button. `playGain.ts` is the points a play scored itself, leaving out those an F6 load brought
+(`machine.ts`: screen, keyboard, timers). `slowPc.ts` supplies deterministic cost estimates
+for the slow PC behind the desk's TURBO button, not measurements of the visitor's hardware.
+`playGain.ts` is the points a play scored itself, leaving out those an F6 load brought
 (for the score trophies). `playerLook.ts` is what XFERPLAY's own screens show (words, matched colors, frames,
 positions, times, F-keys) from a project's DOS player patches (`RunOptions.player`), the CD
 player's with none; its `playTuning` gives a scene's `World.tune` (the experimental gameplay

@@ -19,13 +19,12 @@ if (!out) throw new Error('usage: shots.ts <outDir>');
 mkdirSync(out, { recursive: true });
 
 // each level's whole map
-const { book, pal, levels } = buildLevels();
+const { pal, levels } = buildLevels();
 const mb = monsterPictures(pal);
-const bbl = book.finish();
 const mbl = finishMonsterPictures(mb);
 const set = monsterSet(mb);
 levels.forEach((l, i) =>
-  writePng(join(out, `level-${i + 1}.png`), renderRegion(l.map.done(), bbl, mbl, set, ORIGIN, ORIGIN, l.map.width, l.map.height), pal.pal, 2),
+  writePng(join(out, `level-${i + 1}.png`), renderRegion(l.map.done(), l.book.finish(), mbl, set, ORIGIN, ORIGIN, l.map.width, l.map.height), pal.pal, 2),
 );
 
 // the real engine's screen at the key moments of the walkthrough

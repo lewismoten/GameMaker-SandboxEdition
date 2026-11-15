@@ -81,7 +81,7 @@ export async function lightYourWay(bot: StarterBot): Promise<void> {
   const dark = (x: number, y: number) => shown(bot, 1, x, y).startsWith('tdark');
   await must(bot, bot.wait(20), 'a beat');
   for (const [x, y] of [
-    [10, 6],
+    [13, 6],
     [10, 7],
     [24, 7],
   ])
@@ -90,7 +90,7 @@ export async function lightYourWay(bot: StarterBot): Promise<void> {
   await must(bot, bot.wait(LOOK), 'reading');
   await must(bot, bot.walk(15, 'a walk in the dark'), 'to the dark');
   for (const [x, y] of [
-    [12, 6],
+    [13, 6],
     [12, 7],
     [14, 7],
   ])
@@ -101,7 +101,7 @@ export async function lightYourWay(bot: StarterBot): Promise<void> {
     [24, 7],
   ])
     if (!dark(x, y)) throw new Error(`the tunnel at ${x},${y} should still be dark ahead of him, not ${shown(bot, 1, x, y)}`);
-  if (!dark(12, 4)) throw new Error('the air above his head should not light while he only walks');
+  if (!dark(13, 4)) throw new Error('the air above his head should not light while he only walks');
   bot.say('behind him the tunnel is lit, ahead it is dark, and above his head it is still dark');
   // a jump: the blocks he reaches higher up light too
   await must(bot, bot.jump(), 'a jump');

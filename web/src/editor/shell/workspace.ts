@@ -1,4 +1,5 @@
 // The project workspace: file list on the left, the selected file's editor on the right.
+import { sceneFileLabels, refreshSceneFileLabels } from './sceneFileLabels';
 import { onPatchesChanged } from '../../dosPlayer/patchesChanged';
 import { companionOrigin, originText } from '../../dosPlayer/playerOrigin';
 import { currentRoute, formatHash, setHashParams } from '../../urlState';
@@ -38,6 +39,8 @@ import type { FirstStepsPanel } from './firstStepsPanel';
 import { readOnlyBar } from './released';
 import { saveNote } from './saveNote';
 import { crumbs } from './crumbs';
+import { foldRefs } from './refsFold';
+import './editorHead.css';
 import { keepScroll } from './keepScroll';
 import { restoreScroll, savedScroll, stampEntry, watchScroll } from './scrollMemory';
 import { assistantHost, setAssistantHost, type AssistantHost } from '../../assistant/hostSlot';
@@ -150,6 +153,7 @@ export class Workspace implements AssistantHost {
     clear(root, h('div', { class: 'workspace' }, this.sidebar, this.main));
     if (storedFolded()) root.querySelector('.workspace')?.classList.add('rail-folded');
     this.unlisten = project.onChange((name) => {
+      if (/\.(gam|map|bbl|lst)$/i.test(name)) refreshSceneFileLabels(project, this.sidebar);
       if (this.listed.has(name) !== project.files.has(name)) this.renderSidebar();
       // links changed (the map's markers, the integrator): Play Level's menu follows
       else if (name === project.gam) this.playEl?.replaceWith((this.playEl = this.playButton()));
@@ -549,7 +553,7 @@ export class Workspace implements AssistantHost {
         h(
           'div',
           { class: `file-row ${n === this.current ? 'active' : ''}`, 'data-name': n },
-          h('button', { class: 'file', onclick: () => this.open(n), title: `Edit ${n}` }, ...fileLabel(n, k)),
+          h('button', { class: 'file', onclick: () => this.open(n), title: `Edit ${n}` }, ...fileLabel(n, k), sceneFileLabels(p, n)),
           // a pointer shortcut to the same action as the file button beside it: out of the Tab order and the reading order
           h('button', { class: 'icon-btn', title: `Edit ${n}`, tabindex: '-1', 'aria-hidden': 'true', onclick: () => this.open(n) }, '✎'),
           n === p.gam || this.looking
@@ -714,6 +718,10 @@ export class Workspace implements AssistantHost {
     const body = h('div');
     const isGam = file === this.project.gam;
     const changes = !this.looking;
+    // beside the title row's other parts, so a phone puts it next to the Read-only chip (editorHead.css)
+    const refs = isGam
+      ? null
+      : foldRefs(h('div', { class: 'file-refs' }, usedByLine(this.project, file), kindOf(file) === 'map' ? mapUsesLine(this.project, file) : null));
     this.bar?.classList.add('released-inline'); // beside the file's title
     clear(
       this.main,
@@ -725,7 +733,7 @@ export class Workspace implements AssistantHost {
       }),
       h(
         'div',
-        { class: 'row', style: 'justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:8px' },
+        { class: 'row file-head', style: 'justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:8px' },
         h('h1', { class: 'file-title' }, file),
         this.bar,
         h(
@@ -757,6 +765,11 @@ export class Workspace implements AssistantHost {
           ),
           this.assistantButton(),
           fileActions([
+            // the phone's header keeps only this menu; the buttons beside it move in
+            { label: 'Assets', title: 'Browse this file category', phone: true, run: () => this.openAssets(kindOf(file)) },
+            { label: 'Open a file by name', phone: true, run: () => void this.quickOpen() },
+            { label: 'Keyboard shortcuts', phone: true, run: () => void showShortcuts(kindOf(file)) },
+            { label: 'Assistant', phone: true, run: () => void import('../../assistant/chat/panel').then((m) => m.toggleChat()) },
             ...(isGam || !changes ? [] : [{ label: 'Rename', run: () => void this.rename(file) }]),
             ...(changes ? [{ label: 'Duplicate', run: () => void this.duplicate(file) }] : []),
             {
@@ -767,9 +780,9 @@ export class Workspace implements AssistantHost {
             ...(isGam || !changes ? [] : [{ label: 'Delete', run: () => void this.remove(file), danger: true }]),
           ]),
         ),
+        refs,
       ),
-      isGam ? this.nextSteps() : usedByLine(this.project, file),
-      kindOf(file) === 'map' ? mapUsesLine(this.project, file) : null,
+      isGam ? this.nextSteps() : null,
       body,
     );
     void this.mountEditor(body, file);
@@ -923,7 +936,7 @@ export class Workspace implements AssistantHost {
       this.bar,
       h(
         'div',
-        { class: 'row', style: 'justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:8px' },
+        { class: 'row file-head', style: 'justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:8px' },
         h('h1', { class: 'file-title' }, level ? `Playing ${where}` : `Playing ${this.project.name}`),
         h(
           'div',

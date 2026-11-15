@@ -4,18 +4,22 @@
 import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { writePng } from '@lewismoten/gamemaker-sandbox-tools/kit/png';
+import { recordCamera } from '@lewismoten/gamemaker-sandbox-tools/kit/cameraLog';
 import { renderRegion } from '@lewismoten/gamemaker-sandbox-tools/kit/levelPicture';
 import { buildHeroBlocks, heroPicture } from '../../kit/starter/hero';
 import { ORIGIN } from '../../kit/starter/map';
 import { buildMonsterBlocks, buildMonsters } from '../../kit/starter/monsters';
 import { bigBlocks } from '../src/hero';
 import { L1, L2, L3, buildLevels } from '../src/levels';
+import { play } from './play';
+import { GameSim } from './sim';
 
+// where the screen really was on the bot's way through the game (it rests in a new place after a climb or a drop)
+const cam = await recordCamera(GameSim, () => play());
 const out = process.argv[2];
 if (!out) throw new Error('usage: shots.ts <outDir>');
 mkdirSync(out, { recursive: true });
-const { book, pal, levels } = buildLevels();
-const bbl = book.finish();
+const { pal, levels } = buildLevels();
 const mb = buildMonsterBlocks(pal);
 const mbl = mb.finish();
 const set = buildMonsters(mb);
@@ -32,21 +36,21 @@ const stand = (hero: typeof fast, col: number, feet: number, top = 'stand.top', 
 };
 const maps = levels.map((l) => l.map.done());
 /** One 16 by 10 block screen of level `i` with its top left at (col, row). */
-const screen = (i: number, col: number, row: number, ...sprites: ReturnType<typeof stand>[]) =>
-  renderRegion(maps[i], bbl, mbl, set, ORIGIN + col, ORIGIN + row, 16, 10, sprites.flat());
+const screen = (i: number, col: number, row: number | null, ...sprites: ReturnType<typeof stand>[]) =>
+  renderRegion(maps[i], levels[i].book.finish(), mbl, set, ORIGIN + col, row === null ? cam.top(i, sprites.flat()) : ORIGIN + row, 16, 10, sprites.flat());
 
 const G1 = L1.ground - 1;
 const G2 = L2.ground - 1;
-writePng(join(out, 'one-1-fast-feet-door.png'), screen(0, 0, 3, stand(fast, 5, G1)), pal.pal, 3);
-writePng(join(out, 'one-2-big-hops-door.png'), screen(0, 20, 3, stand(big, 29, G1)), pal.pal, 3);
-writePng(join(out, 'two-1-fast-feet-on-the-steps.png'), screen(1, 10, 6, stand(fast, 17, G2 - L2.steps[1].height)), pal.pal, 3);
+writePng(join(out, 'one-1-fast-feet-door.png'), screen(0, 0, null, stand(fast, 5, G1)), pal.pal, 3);
+writePng(join(out, 'one-2-big-hops-door.png'), screen(0, 20, null, stand(big, 29, G1)), pal.pal, 3);
+writePng(join(out, 'two-1-fast-feet-on-the-steps.png'), screen(1, 10, null, stand(fast, 17, G2 - L2.steps[1].height)), pal.pal, 3);
 writePng(join(out, 'two-2-big-hops-skips-a-step.png'), screen(1, 10, 3, stand(big, 15, G2 - L2.steps[1].height - 3, 'cheer.top', 'jump')), pal.pal, 3);
 writePng(join(out, 'two-3-big-hops-high-coins.png'), screen(1, 17, 0, stand(big, 25, G2 - L2.plateau.height - 5, 'cheer2.top', 'cheer')), pal.pal, 3);
 const G3 = L3.ground - 1;
-writePng(join(out, 'three-1-fast-feet-on-the-road.png'), screen(2, 0, 4, stand(fast, 12, G3)), pal.pal, 3);
-writePng(join(out, 'three-2-big-hops-on-the-road.png'), screen(2, 0, 4, stand(big, 12, G3)), pal.pal, 3);
-writePng(join(out, 'three-3-big-hops-on-the-hill.png'), screen(2, 12, 3, stand(big, 20, G3 - L3.hill.height)), pal.pal, 3);
+writePng(join(out, 'three-1-fast-feet-on-the-road.png'), screen(2, 0, null, stand(fast, 12, G3)), pal.pal, 3);
+writePng(join(out, 'three-2-big-hops-on-the-road.png'), screen(2, 0, null, stand(big, 12, G3)), pal.pal, 3);
+writePng(join(out, 'three-3-big-hops-on-the-hill.png'), screen(2, 12, null, stand(big, 20, G3 - L3.hill.height)), pal.pal, 3);
 levels.forEach((l, i) =>
-  writePng(join(out, `level-${i + 1}.png`), renderRegion(maps[i], bbl, mbl, set, ORIGIN, ORIGIN, l.map.width, l.map.height), pal.pal, 2),
+  writePng(join(out, `level-${i + 1}.png`), renderRegion(maps[i], levels[i].book.finish(), mbl, set, ORIGIN, ORIGIN, l.map.width, l.map.height), pal.pal, 2),
 );
 console.log(`shots in ${out}`);

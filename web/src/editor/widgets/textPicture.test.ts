@@ -1,6 +1,6 @@
 // The text-screen thumbnail's ink: the player's preferred color if it reads against color 0, else the nearest that does, else white on black.
 import { describe, expect, it } from 'vitest';
-import { textColors } from './textPicture';
+import { TEXT_TILE, textColors, textPicture, textTilePicture } from './textPicture';
 
 describe('textColors', () => {
   it('keeps the stock purple when it shows against the background', () => {
@@ -20,5 +20,16 @@ describe('textColors', () => {
     const c = textColors(new Uint8Array(768));
     expect(c.ink).toBe(1);
     expect(Array.from(c.palette.slice(3, 6))).toEqual([63, 63, 63]);
+  });
+});
+
+describe('textTilePicture', () => {
+  it('shows the top left of the first page at full size, with the first glyphs inside the tile', () => {
+    const bytes = new TextEncoder().encode('HELLO WORLD\r\nSECOND LINE');
+    const tile = textTilePicture(bytes, 3);
+    expect(tile.length).toBe(TEXT_TILE.width * TEXT_TILE.height);
+    const page = textPicture(bytes, 3);
+    expect(tile[4 * TEXT_TILE.width + 4 + 1]).toBe(page[40 * 320 + 40 + 1]);
+    expect(tile.some((v) => v === 3)).toBe(true);
   });
 });

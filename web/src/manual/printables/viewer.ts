@@ -14,6 +14,7 @@ import { readView, viewToggle, type Reader, type ReaderOptions, type ReadView } 
 import { percentOf, pinchZoom, readSize, sizeControl, widthAt, zoomKey, type ReadSize, type Room } from '../readSize';
 import { scrollPages, type ScrollPages } from '../scrollPages';
 import { epubControl, type EpubSource } from '../epub/save';
+import { titleAfterPrint, titleForPrint } from '../printTitle';
 import { gamePicker, type PickerGame } from './gamePicker';
 
 /** A thing in the box. */
@@ -478,10 +479,12 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[], opti
       flushRedCode(); // the hidden answers are drawn one per task otherwise
       document.documentElement.classList.add('gmb-printing');
       await Promise.all([...printRoot.querySelectorAll('img')].map((i) => i.decode().catch(() => undefined)));
+      titleForPrint(title);
       window.print();
     };
     // the browser's own Print command prints the manual, page by page
     const afterPrint = () => {
+      titleAfterPrint();
       document.documentElement.classList.remove('gmb-printing');
       printRoot.replaceChildren(...manualSingle());
     };
@@ -542,6 +545,8 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[], opti
         : undefined;
     const onKey = (e: KeyboardEvent) => {
       if (zoomOpen()) return; // an enlarged screen shot takes the keys
+      // a dialog opened over the box's contents (the kit viewer, the build notes) owns its keys, Esc included, and closes first
+      if (document.querySelector('dialog[open]')) return;
       // a control that turns with these keys (a code wheel's disc, any slider) has them while it has the focus
       if (/^(Arrow|Home$|End$)/.test(e.key) && (e.target as Element | null)?.closest?.('[role="slider"]')) return;
       e.stopImmediatePropagation(); // not for the PC underneath

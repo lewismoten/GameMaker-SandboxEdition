@@ -9,12 +9,13 @@
 //      two hits. After the first a part blinks red for about two seconds, and a star goes straight
 //      through it; then it is cracked and the second hit pops it.
 // Both rooms are closed in by brick walls you can see, so Rima is never stopped by something she can't.
-import { Book } from '../../kit/starter/book';
+import { MICRO_GLYPHS } from '@lewismoten/gamemaker-sandbox-tools/microFont';
+import { Book, PULL } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
-import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
-import { addSign, type Sign } from '../../kit/starter/sign';
+import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
+import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { addCeiling } from './ceilingArt';
 import { FRESH, ROCKY } from './monsters';
 
@@ -24,13 +25,30 @@ export type SignName = 'four' | 'head' | 'ouch' | 'wait' | 'exit';
 function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
-  const signs = {
-    four: addSign(book, pal, 'four.sign', 'THE GIANT IS 4 MONSTERS', 4, 3),
-    head: addSign(book, pal, 'head.sign', 'STAND ON THE STEP FOR ITS HEAD', 4, 3),
-    ouch: addSign(book, pal, 'ouch.sign', 'A HIT PART BLINKS RED', 4, 3),
-    wait: addSign(book, pal, 'wait.sign', 'WAIT FOR IT TO STOP', 4, 3),
-    exit: addSign(book, pal, 'exit.sign', 'EXIT →', 3),
-  };
+  const { blocks, signs } = buildTiledSigns(
+    {
+      four: { rows: [['THE GIANT IS 4 MONSTERS']] },
+      head: { rows: [['STAND ON THE STEP FOR ITS HEAD']] },
+      ouch: { rows: [['A HIT PART BLINKS RED']] },
+      wait: { rows: [['WAIT FOR IT TO STOP']] },
+      exit: { rows: [['EXIT →']] },
+    },
+    {
+      compact: true,
+      glyphs: { ...MICRO_GLYPHS, '→': '100110111110100' },
+      maxWidth: 5,
+      maxBlocks: Math.min(100, 150 - book.index.size),
+      colors: {
+        background: skyOf(pal),
+        paper: pal.c('parch', 3),
+        ink: pal.c('ink', 0),
+        wood: pal.c('wood', 2),
+        highlight: pal.c('wood', 4),
+        shadow: pal.c('wood', 0),
+      },
+    },
+  );
+  for (const [name, pic] of blocks) book.add(name, pic, { grav: PULL.down });
   addCeiling(book, pal);
   return { book, signs };
 }
@@ -122,9 +140,9 @@ function theGiant(book: Book, signs: Record<SignName, Sign>): StarterMap {
   );
   const m = new StarterMap(book, g.rows());
   ceiling(m, WALL[0]);
-  m.sign(6, onGround(GROUND, signs.four), signs.four);
-  m.sign(11, onGround(GROUND, signs.head), signs.head);
-  m.sign(38, onGround(GROUND, signs.exit), signs.exit);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 6, onGround(GROUND, signs.four), signs.four);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 11, onGround(GROUND, signs.head), signs.head);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 36, onGround(GROUND, signs.exit), signs.exit);
   giant(m, GIANT_X[0], ROCKY);
   return m;
 }
@@ -147,9 +165,9 @@ function ouchWait(book: Book, signs: Record<SignName, Sign>): StarterMap {
   );
   const m = new StarterMap(book, g.rows());
   ceiling(m, WALL[1]);
-  m.sign(6, onGround(GROUND, signs.ouch), signs.ouch);
-  m.sign(12, onGround(GROUND, signs.wait), signs.wait);
-  m.sign(39, onGround(GROUND, signs.exit), signs.exit);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 5, onGround(GROUND, signs.ouch), signs.ouch);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 11, onGround(GROUND, signs.wait), signs.wait);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 37, onGround(GROUND, signs.exit), signs.exit);
   giant(m, GIANT_X[1], FRESH);
   return m;
 }

@@ -8,13 +8,13 @@ import './deskBuddy.css';
 import { h } from '../../editor/core/ui';
 import { ACHIEVEMENTS_CHANGED, ACHIEVEMENT_UNLOCKED } from '../../achievements/store';
 import { stillMotion } from '../props/propKit';
-import { newMind, react, type BuddyEvent, type Pose } from './buddyLines';
+import { adoptStored, newMind, react, type BuddyKept, type BuddyEvent, type Pose } from './buddyLines';
 import { buddySvg } from './buddyArt';
 import { loadBuddy, saveBuddy } from './buddyStore';
 import { buddySummary } from './buddyStats';
 import { DESK_PLAY, type DeskPlay } from './deskPlay';
 import { courierCard } from './courierCard';
-import { COURIER_CHANGED, hasNewMail, loadQuiet } from '../../courier/courierStore';
+import { COURIER_CHANGED, hasNewMail } from '../../courier/courierStore';
 
 /** A small envelope (a letter is new): paper, a flap, and a red seal. */
 const ENVELOPE =
@@ -28,7 +28,11 @@ const POSE_MS = 4000;
 export function deskBuddy(place: (el: HTMLElement) => void): () => void {
   const saved = loadBuddy();
   const mind = newMind(saved);
-  const remember = () => saveBuddy({ quiet: mind.quiet, met: mind.met, helloDay: mind.helloDay });
+  let known: BuddyKept = { quiet: mind.quiet, met: mind.met, helloDay: mind.helloDay };
+  const remember = () => {
+    known = { quiet: mind.quiet, met: mind.met, helloDay: mind.helloDay };
+    saveBuddy(known);
+  };
   let playing: string | undefined;
   let pose: Pose = 'idle';
 
@@ -148,7 +152,9 @@ export function deskBuddy(place: (el: HTMLElement) => void): () => void {
   // SCOOT.EXE (or another tab) changed the mail or the Quiet switch
   const onCourier = () => {
     mailed();
-    mind.quiet = quiet.checked = loadQuiet();
+    const stored = loadBuddy();
+    if (adoptStored(mind, known, stored)) known = stored;
+    quiet.checked = mind.quiet;
     if (mind.quiet) bubble.textContent = '';
   };
   const close = h('button', { class: 'buddy-close', 'aria-label': 'Close Scoot’s card' }, '×');

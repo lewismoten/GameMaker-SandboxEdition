@@ -11,14 +11,14 @@
 // steering to the side gets it moving again. The exits are many links (one for each open block of the last
 // row), so touching any of them takes the vehicle on.
 import { type GameMap, MLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
-import { Book } from '../../kit/starter/book';
+import { Book, PULL } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { ORIGIN, StarterMap } from '../../kit/starter/map';
-import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
+import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
 import { heroName } from './heroName';
-import { addPlaque, addRideBlocks, addSpaceRamp } from './rideBlocks';
-import { addSign, type Sign } from '../../kit/starter/sign';
+import { addRideBlocks, addSpaceRamp } from './rideBlocks';
+import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 
 export interface Level {
   file: string;
@@ -42,6 +42,14 @@ class RideMap extends StarterMap {
     super(bk, rows);
   }
 
+  /** Plaques replace only the shaft's open background, never gates, scenery or pickups. */
+  setOnBackdrop(x: number, y: number, name: string): this {
+    const tile = this.map.blocks[(y + ORIGIN) * MLEN + x + ORIGIN];
+    const prefix = this.outside === 'bank' ? 'water' : 'space';
+    if (x < 1 || x >= this.width - 1 || ![0, 1, 2].some((i) => tile === this.bk.n(`${prefix}${i}`))) throw new Error(`Plaque covers art at ${x},${y}`);
+    return this.set(x, y, name);
+  }
+
   override done(): GameMap {
     const m = super.done();
     const wall = this.bk.n(this.outside);
@@ -58,26 +66,23 @@ const NAME = heroName().toUpperCase();
 
 // ---------------------------------------------------------------------------------------------- signs
 const WORDS = {
-  // level 1
-  walk: [`ON FOOT, ${NAME} WALKS AND JUMPS`, 2],
-  ledge: ['SPACE JUMPS UP TO THE LEDGE', 2],
-  rocket: ['A ROCKET WAITS AT THE END', 2],
-  into: ['WALK INTO THE ROCKET TO CLIMB IN', 3],
-  // level 2
-  newfile: ['THE ROCKET IS A NEW CHARACTER FILE', 3],
-  rises: ['IT RISES BY ITSELF', 2],
-  steer: ['LEFT AND RIGHT STEER', 2],
-  speed: ['UP IS FASTER, DOWN IS SLOWER', 3],
-  rocks: ['A ROCK STOPS YOU. STEER AROUND IT', 3],
-  stars: ['STARS ARE 10 POINTS', 2],
-  bay: ['THE BAY IS A LINK, LIKE A DOOR', 3],
-  // level 3
-  boat: ['A CANOE IS ANOTHER CHARACTER FILE', 3],
-  river: ['THE RIVER CARRIES YOU', 2],
-  paddle: ['SPACE IS A PADDLE STROKE', 3],
-  logs: ['A LOG STOPS YOU. STEER AROUND IT', 3],
-  lilies: ['LILIES ARE 10 POINTS', 2],
-  dock: ['THE DOCK IS A LINK TOO', 2],
+  walk: { rows: [[`ON FOOT, ${NAME}`], [`WALKS AND JUMPS`]] },
+  ledge: { rows: [[`SPACE JUMPS UP TO THE LEDGE`]] },
+  rocket: { rows: [[`A ROCKET WAITS`], [`AT THE END`]] },
+  into: { rows: [[`WALK INTO THE`], [`ROCKET TO CLIMB IN`]] },
+  newfile: { rows: [[`THE ROCKET IS A`], [`NEW CHARACTER FILE`]], post: false },
+  rises: { rows: [[`IT RISES`], [`BY ITSELF`]], post: false },
+  steer: { rows: [[`LEFT AND`], [`RIGHT STEER`]], post: false },
+  speed: { rows: [[`UP IS FASTER,`], [`DOWN IS SLOWER`]], post: false },
+  rocks: { rows: [[`A ROCK STOPS YOU.`], [`STEER AROUND IT`]], post: false },
+  stars: { rows: [[`STARS ARE`], [`10 POINTS`]], post: false },
+  bay: { rows: [[`THE BAY IS A LINK,`], [`LIKE A DOOR`]], post: false },
+  boat: { rows: [[`A CANOE IS ANOTHER`], [`CHARACTER FILE`]], post: false },
+  river: { rows: [[`THE RIVER`], [`CARRIES YOU`]], post: false },
+  paddle: { rows: [[`SPACE IS A`], [`PADDLE STROKE`]], post: false },
+  logs: { rows: [[`A LOG STOPS YOU.`], [`STEER AROUND IT`]], post: false },
+  lilies: { rows: [[`LILIES ARE`], [`10 POINTS`]], post: false },
+  dock: { rows: [[`THE DOCK IS`], [`A LINK TOO`]], post: false },
 } as const;
 export type SignName = keyof typeof WORDS;
 
@@ -88,6 +93,20 @@ const SIGNS: SignName[][] = [
   ['boat', 'river', 'paddle', 'logs', 'lilies', 'dock'],
 ];
 
+/** Allocate each map's part of the complete vocabulary, preserving its air or water behind the frame. */
+function signBlocks(book: Book, pal: Pal, which: number, ground?: string): Record<string, Sign> {
+  const sky = skyOf(pal);
+  const { blocks, signs } = buildTiledSigns(WORDS, {
+    include: SIGNS[which],
+    ...(which === 0 ? { lettersPerBlock: 3 as const } : { compact: true }),
+    colors: { background: sky, paper: pal.c('parch', 3), ink: pal.c('ink', 0), wood: pal.c('wood', 2), highlight: pal.c('wood', 4), shadow: pal.c('wood', 0) },
+    maxBlocks: Math.min(100, 150 - book.index.size),
+  });
+  for (const [name, pic] of blocks)
+    book.add(name, ground ? pic.map((x, y, c) => (c === sky ? book.pics.get(ground)!.get(x, y) : c)) : pic, { grav: ground ? PULL.none : PULL.down });
+  return signs;
+}
+
 const GROUND = 10;
 
 // ---------------------------------------------------------------------------------------------- level 1
@@ -96,7 +115,7 @@ function footBlocks(pal: Pal): { book: Book; signs: Record<string, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
   addRideBlocks(book, pal);
-  const signs = Object.fromEntries(SIGNS[0].map((n) => [n, addSign(book, pal, n, WORDS[n][0], 4, WORDS[n][1])]));
+  const signs = signBlocks(book, pal, 0);
   return { book, signs };
 }
 
@@ -125,10 +144,10 @@ function climbIn(pal: Pal): Level {
   for (const x of [17, 18, 19, 20]) g.put(x, 6, 'c');
   const m = new RideMap(book, g.rows(), 'brick');
   m.set(EXIT, 8, 'rocketTop').set(EXIT, 9, 'rocketBottom');
-  m.sign(5, onTop(GROUND, signs.walk), signs.walk);
-  m.sign(13, onTop(GROUND, signs.ledge), signs.ledge);
-  m.sign(23, onTop(GROUND, signs.rocket), signs.rocket);
-  m.sign(30, onTop(GROUND, signs.into), signs.into);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 5, onTop(GROUND, signs.walk), signs.walk);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 11, 5, signs.ledge);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 23, onTop(GROUND, signs.rocket), signs.rocket);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 30, 6, signs.into, 2);
   return { file: 'one', title: 'Climb In', hint: 'Walk into the rocket.', book, map: m, exits: [[EXIT + ORIGIN, 9 + ORIGIN]] };
 }
 
@@ -232,8 +251,7 @@ function flyBlocks(pal: Pal, which: 1 | 2, ground: string): { book: Book; signs:
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
   addRideBlocks(book, pal);
-  const bg = book.pics.get(ground)!;
-  const signs = Object.fromEntries(SIGNS[which].map((n) => [n, addPlaque(book, pal, bg, n, WORDS[n][0], 4, WORDS[n][1])]));
+  const signs = signBlocks(book, pal, which, ground);
   return { book, signs };
 }
 
@@ -246,8 +264,8 @@ function shaftRows(h: number, start: [number, number]): string[] {
 }
 
 /** Plaque `name` at level (x, y), its board's top-left. */
-function plaque(m: StarterMap, signs: Record<string, Sign>, name: string, x: number, y: number): void {
-  signs[name].board.forEach((row, dy) => row.forEach((n, dx) => m.set(x + dx, y + dy, n)));
+function plaque(m: RideMap, signs: Record<string, Sign>, name: string, x: number, y: number): void {
+  stampTiledSign({ set: (x, y, block) => m.setOnBackdrop(x, y, block) }, x, y, signs[name]);
 }
 
 /** A level 2 (night) or level 3 (river) filled in: `fill(x, y)` is the open block there. */
@@ -293,10 +311,10 @@ function liftOff(pal: Pal): Level {
   for (const [x, y] of STARS) m.set(x, y, 'star');
   for (const x of TOP_GAP) m.set(x, 2, 'bayTop').set(x, 3, 'bayBottom');
   plaque(m, signs, 'newfile', 1, 63);
-  plaque(m, signs, 'rises', 11, 58);
+  plaque(m, signs, 'rises', 10, 58);
   plaque(m, signs, 'steer', 1, 53);
-  plaque(m, signs, 'speed', 11, 48);
-  plaque(m, signs, 'rocks', 11, 43);
+  plaque(m, signs, 'speed', 8, 48);
+  plaque(m, signs, 'rocks', 8, 43);
   plaque(m, signs, 'stars', 1, 20);
   plaque(m, signs, 'bay', 1, 13);
   return { file: 'two', title: 'Lift Off', hint: 'The rocket never stops rising.', book, map: m, exits: TOP_GAP.map((x) => [x + ORIGIN, 3 + ORIGIN]) };
@@ -320,11 +338,11 @@ function downTheRiver(pal: Pal): Level {
   for (const [x, y] of LILIES) m.set(x, y, 'lily');
   for (const x of TOP_GAP) m.set(x, 2, 'dockTop').set(x, 3, 'dockBottom');
   plaque(m, signs, 'boat', 1, 56);
-  plaque(m, signs, 'river', 11, 52);
+  plaque(m, signs, 'river', 10, 52);
   plaque(m, signs, 'paddle', 1, 47);
-  plaque(m, signs, 'logs', 11, 42);
-  plaque(m, signs, 'lilies', 11, 33);
-  plaque(m, signs, 'dock', 11, 17);
+  plaque(m, signs, 'logs', 8, 42);
+  plaque(m, signs, 'lilies', 10, 33);
+  plaque(m, signs, 'dock', 10, 17);
   return { file: 'three', title: 'Down the River', hint: 'The river carries the canoe.', book, map: m, exits: TOP_GAP.map((x) => [x + ORIGIN, 3 + ORIGIN]) };
 }
 

@@ -200,6 +200,8 @@ export async function theWalls(bot: Bot): Promise<void> {
         [33, 3],
         [27, 3],
         [27, 2],
+        // With arrows, descend before crossing: the swatter is at (30, 2).
+        ...(bot.basicKeys ? [[27, 6] as Pt] : []),
         [33, 6],
         [35, 10],
       ],
@@ -218,13 +220,23 @@ export async function theWalls(bot: Bot): Promise<void> {
     await rollAhead(bot, 'right');
     await go(bot, [[41, 1]], 'over the fridge');
   });
-  await carefully(bot, 'the far wall', 10, () =>
-    go(
+  await carefully(bot, 'the far wall', 10, async () => {
+    await go(
       bot,
       [
         [46, 2],
         [43, 4],
         [44, 7],
+      ],
+      'sugar, a clock, a picture',
+    );
+    if (bot.basicKeys) {
+      await must(bot, bot.hold('right', 1), 'face the clap');
+      await must(bot, bot.tap('space', 6), 'roll past the clap');
+    }
+    await go(
+      bot,
+      [
         [45, 7],
         [44, 9],
         [42, 9],
@@ -232,9 +244,9 @@ export async function theWalls(bot: Bot): Promise<void> {
         [48, 5],
         [48, 9],
       ],
-      'sugar, a clock, a picture, a calendar, sugar',
-    ),
-  );
+      'a picture, a calendar, sugar',
+    );
+  });
   need(bot, SMILES, 6, 'smiles');
   await carefully(bot, 'the kitchen door', 10, () => leave(bot, bot.fly(50, 9, 'the door'), 'the door'));
 }
@@ -370,17 +382,7 @@ export async function theWild(bot: Bot): Promise<void> {
   await carefully(bot, 'the grass and the pond', 12, () =>
     go(
       bot,
-      [
-        [2, 2],
-        [4, 3],
-        [8, 5],
-        [12, 10],
-        [12, 11],
-        [13, 6],
-        [15, 2],
-        [17, 7],
-        [22, 9],
-      ],
+      [[2, 2], [4, 3], [8, 5], ...(bot.basicKeys ? [[12, 5] as Pt] : []), [12, 10], [12, 11], [13, 6], [15, 2], [17, 7], [22, 9]],
       'hourglasses by the pond',
     ),
   );
@@ -397,19 +399,7 @@ export async function theWild(bot: Bot): Promise<void> {
     ),
   );
   await carefully(bot, 'by the spider', 12, () =>
-    go(
-      bot,
-      [
-        [37, 6],
-        [38, 4],
-        [43, 7],
-        [42, 10],
-        [42, 11],
-        [47, 9],
-        [47, 2],
-      ],
-      'hourglasses by the web',
-    ),
+    go(bot, [[37, 6], [38, 4], [43, 7], [42, 10], [42, 11], ...(bot.basicKeys ? [[42, 9] as Pt] : []), [47, 9], [47, 2]], 'hourglasses by the web'),
   );
   await carefully(bot, 'the desert', 12, () =>
     go(
@@ -443,7 +433,19 @@ export async function theAux(bot: Bot): Promise<void> {
         [17, 6],
         [19, 3],
         [26, 2],
+        ...(bot.basicKeys
+          ? ([
+              [28, 2],
+              [28, 8],
+            ] as Pt[])
+          : []),
         [26, 8],
+        ...(bot.basicKeys
+          ? ([
+              [28, 8],
+              [28, 2],
+            ] as Pt[])
+          : []),
         [27, 2],
         [30, 3],
         [36, 2],

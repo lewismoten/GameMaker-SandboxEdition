@@ -1,0 +1,62 @@
+{
+  "repo": "lewismoten/gamemaker-pocket",
+  "tag": "fw-2026-11-14-bf5b417",
+  "files": [
+    {
+      "board": "cyd-2432s028",
+      "file": "bootloader.bin",
+      "asset": "cyd-2432s028-bootloader.bin",
+      "sha256": "3d234a7471f67b013686dabd4dee7c1fa915c9928463616a94bc9297acf1abf8",
+      "size": 17536
+    },
+    {
+      "board": "cyd-2432s028",
+      "file": "partitions.bin",
+      "asset": "cyd-2432s028-partitions.bin",
+      "sha256": "f15cccf9a71963ceba8369ffbb341534f77a00ee6659ca737a23e733b5724abf",
+      "size": 3072
+    },
+    {
+      "board": "cyd-2432s028",
+      "file": "firmware.bin",
+      "asset": "cyd-2432s028-firmware.bin",
+      "sha256": "9ab4476fb9be41534740f340b0d57abed927db9bd8c4c724f389ea3b5e720cc8",
+      "size": 635856
+    },
+    {
+      "board": "cyd-2432s028",
+      "file": "littlefs.bin",
+      "asset": "cyd-2432s028-littlefs.bin",
+      "sha256": "703de2c6f19ddec34c5374b5885f3a5aa66da71cacbb4c7098b7959e30e4e496",
+      "size": 3080192
+    },
+    {
+      "board": "esp32-3248s035",
+      "file": "bootloader.bin",
+      "asset": "esp32-3248s035-bootloader.bin",
+      "sha256": "3d234a7471f67b013686dabd4dee7c1fa915c9928463616a94bc9297acf1abf8",
+      "size": 17536
+    },
+    {
+      "board": "esp32-3248s035",
+      "file": "partitions.bin",
+      "asset": "esp32-3248s035-partitions.bin",
+      "sha256": "f15cccf9a71963ceba8369ffbb341534f77a00ee6659ca737a23e733b5724abf",
+      "size": 3072
+    },
+    {
+      "board": "esp32-3248s035",
+      "file": "firmware.bin",
+      "asset": "esp32-3248s035-firmware.bin",
+      "sha256": "60be2830a5453ff0b59da689e74077559a2563accf9854043ee085dc4e8da49a",
+      "size": 633632
+    },
+    {
+      "board": "esp32-3248s035",
+      "file": "littlefs.bin",
+      "asset": "esp32-3248s035-littlefs.bin",
+      "sha256": "3fb2ed37f3529c79898fb552f6e8f9e2525b593ef69b5d7589c76e657bdb1d91",
+      "size": 3080192
+    }
+  ]
+}

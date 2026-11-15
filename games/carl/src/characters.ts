@@ -101,6 +101,19 @@ export function buildCarl(cb: ReturnType<typeof buildCharBlocks>): Character {
     },
   );
 
+  // Enter is the basic-key buzz; keep B and its joystick binding untouched.
+  const buzz = S[SEQ.buzz];
+  set(
+    S[SEQ.buzzEnter],
+    buzz.frames.filter((f) => f.pic2 !== 51),
+    {
+      key: KEY.enter,
+      sound: buzz.sound,
+      norepeat: buzz.norepeat,
+      ground: buzz.ground,
+    },
+  );
+
   ch.meter.fill(INF_REPEAT);
   ch.meter[0] = 100; // patience (health)
   ch.meter[1] = 3; // lives

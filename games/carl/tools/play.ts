@@ -8,9 +8,9 @@ import { GameSim } from './sim';
 export const SEED = 1;
 const LEVELS = [theCouch, theWalls, theBed, theWindow, theWild, theAux];
 
-export async function play(seed = SEED, upTo = LEVELS.length): Promise<{ sim: GameSim; bot: Bot }> {
+export async function play(seed = SEED, upTo = LEVELS.length, basicKeys = false): Promise<{ sim: GameSim; bot: Bot }> {
   const sim = new GameSim(undefined, seed);
-  const bot = new Bot(sim);
+  const bot = new Bot(sim, basicKeys);
   await playLevels(bot, LEVELS, upTo);
   return { sim, bot };
 }

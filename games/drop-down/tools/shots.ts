@@ -14,7 +14,6 @@ const out = process.argv[2];
 if (!out) throw new Error('usage: shots.ts <outDir>');
 mkdirSync(out, { recursive: true });
 const { book, pal, levels } = buildLevels();
-const bbl = book.finish();
 const mb = monsterPictures(pal);
 const mbl = finishMonsterPictures(mb);
 const set = monsterSet(mb);
@@ -42,7 +41,7 @@ const empty = (level: number) => {
   return m;
 };
 const region = (map: ReturnType<typeof empty>, col: number, w: number, extra: Sprite[]) =>
-  renderRegion(map, bbl, mbl, set, ORIGIN + col, ORIGIN + 4, w, 8, extra);
+  renderRegion(map, levels.find((l) => l.map.map === map)!.book.finish(), mbl, set, ORIGIN + col, ORIGIN + 4, w, 8, extra);
 const save = (name: string, pic: ReturnType<typeof region>) => writePng(join(out, name), pic, pal.pal, 3);
 
 /** The map with the crates at (x, rows) turned to rubble and the monsters taken out. */

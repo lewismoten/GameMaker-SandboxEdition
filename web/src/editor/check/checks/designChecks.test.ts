@@ -160,6 +160,19 @@ describe('exits, music and flashing', () => {
     d.bbl[40].ntime = d.bbl[41].ntime = 8;
     expect(flashing(d)).toEqual([]);
   });
+
+  it('does not call one quick change among slow pictures flashing', () => {
+    const t = testGame(ROWS);
+    const d = sceneOf(t);
+    // dark for 2 ticks, then light for a long while: one change a long time apart (about 0.0 a second), not a flash
+    Object.assign(d.bbl[40], { nextBl: 41, ntime: 2 });
+    Object.assign(d.bbl[41], { nextBl: 40, ntime: 250 });
+    d.bbl[40].pixels.fill(0);
+    d.bbl[41].pixels.fill(15);
+    d.palette.set([63, 63, 63], 15 * 3);
+    for (let y = 10; y < 20; y++) for (let x = 10; x < 26; x++) d.map.blocks[y * 100 + x] = 40;
+    expect(flashing(d)).toEqual([]);
+  });
 });
 
 describe('the stakes', () => {

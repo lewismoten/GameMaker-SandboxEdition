@@ -14,13 +14,14 @@
 // (the author's heat map and a play for the walkthrough, in one session), and watching the
 // bot's route or the author's play.
 import './checkPanel.css';
+import { passesThrough } from '../../integrator/sceneRole';
 import { h, clear, checkField, numberField, selectField, toast } from '../../../core/ui';
 import type { Project } from '../../../core/project';
 import type { MapSelection } from '../tools/selection';
 import type { OverlayState } from '../tools/overlay';
 import { HEAT_COLORS } from '../tools/overlay';
 import { startCheck, type RunningCheck } from '../../../check/client';
-import { CHECKS, STEADY_MS, at, kindOf, type Finding, type Kind } from '../../../check/findings';
+import { CHECKS, STEADY_MS, at, isHard, kindOf, type Finding, type Kind } from '../../../check/findings';
 import type { Report, RunSummary } from '../../../check/report';
 import { guideLink } from '../../../widgets/guideLink';
 import { fixFor } from '../../../check/generators/fixes';
@@ -29,7 +30,8 @@ import { mazeFor } from '../../../check/generators/mazeFor';
 import { companionPatches } from '../../../../dosPlayer/playerRecord';
 import { paletteReservations } from '../../palette/paletteReservations';
 import { markSame, sameEverySide, sameKeyOf } from '../../../check/sameEverySide';
-import { acceptedFindings, findingKey, setAccepted, splitAccepted } from '../../../check/accepted';
+import { reasonField, reasonNote } from '../../../widgets/acceptReason';
+import { acceptedFindings, findingKey, reasonFor, setAccepted, splitAccepted, wasAcceptedButHard } from '../../../check/accepted';
 import type { LiveProgress } from '../../../check/live';
 import { MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { MARKS, describeCell, heatWords, type HeatView } from './markInfo';
@@ -336,7 +338,7 @@ export function checkPanel(host: CheckHost): {
       'details',
       { class: 'lc-gen' },
       h('summary', null, 'Make…'),
-      h('p', { class: 'meta' }, 'Select an area with the Select tool (S) first. The map’s Undo takes it back.'),
+      h('p', { class: 'lc-why' }, 'Select an area with the Select tool (S) first. The map’s Undo takes it back.'),
       h(
         'button',
         {
@@ -471,12 +473,24 @@ export function checkPanel(host: CheckHost): {
     said.textContent = `${at(c)}: ${describe(c).join('. ')}.`;
   }
 
+  /** A scene the hero leaves at once (a talk page or a fade) has no level to check: say so beside the status. */
+  const passNote = (): string => {
+    if (host.scene === undefined) return '';
+    try {
+      return passesThrough(project.game(), host.scene)
+        ? ' This scene is a talk page or fade: the hero arrives on one of its own links and leaves at once, so findings about getting through a level don’t apply to it.'
+        : '';
+    } catch {
+      return '';
+    }
+  };
+
   /** The saved findings, those still open and those accepted as meant to be. */
   const split = () => splitAccepted(saved?.findings ?? [], acceptedFindings(project));
 
   function render(): void {
     if (!saved) {
-      status.textContent = host.scene === undefined ? 'No scene plays this map yet, so only its files can be checked.' : 'Not checked yet.';
+      status.textContent = host.scene === undefined ? 'No scene plays this map yet, so only its files can be checked.' : `Not checked yet.${passNote()}`;
       clear(list);
       clear(counts);
       clear(acceptedBox);
@@ -486,7 +500,7 @@ export function checkPanel(host: CheckHost): {
     }
     toggles.hidden = false;
     const when = new Date(saved.when);
-    status.textContent = `Checked ${when.toLocaleString()}: ${saved.places} places tried in ${(saved.ms / 1000).toFixed(0)} s${saved.complete ? ', every move from every one' : ', then the time ran out'}.`;
+    status.textContent = `Checked ${when.toLocaleString()}: ${saved.places} places tried in ${(saved.ms / 1000).toFixed(0)} s${saved.complete ? ', every move from every one' : ', then the time ran out'}.${passNote()}`;
     const { open, accepted } = split();
     const by = (s: Kind) => open.filter((f) => kindOf(f) === s).length;
     clear(
@@ -530,8 +544,8 @@ export function checkPanel(host: CheckHost): {
   }
 
   /** Accepts a finding as meant to be, or (with `on` false) brings it back to the list. */
-  function accept(f: Finding, on: boolean): void {
-    setAccepted(project, findingKey(f), on);
+  function accept(f: Finding, on: boolean, why = ''): void {
+    setAccepted(project, findingKey(f), on, why);
     render();
     toast(
       on
@@ -541,12 +555,15 @@ export function checkPanel(host: CheckHost): {
   }
 
   function item(f: Finding, accepted = false): HTMLElement {
+    const reason = !accepted ? reasonField(() => accept(f, true, reason?.value() ?? '')) : null;
+    const why = accepted ? reasonFor(acceptedFindings(project), findingKey(f)) : '';
     const info = CHECKS[f.check];
     const cell = f.where.cell ?? f.where.cells?.[0];
     const fix = fixFor(f, project);
     const same = sameKeyOf(f);
     const kind = kindOf(f);
     const taste = 'taste' in info;
+    const hard = isHard(f);
     return h(
       'li',
       { class: `lc-item lc-${kind}${accepted ? ' lc-is-accepted' : ''}` },
@@ -609,20 +626,52 @@ export function checkPanel(host: CheckHost): {
             'Looks the same from every side',
           )
         : null,
-      h(
-        'button',
-        {
-          type: 'button',
-          class: 'lc-fix lc-accept',
-          title: accepted
-            ? 'Puts this finding back in the list and the counts.'
-            : taste
-              ? 'A design suggestion, not a rule: if you chose this on purpose, the list, the counts, the badges and Before You Upload leave it out.'
-              : 'You have looked at this and it is how you want it: the list, the counts, the badges and Before You Upload leave it out.',
-          onclick: () => accept(f, !accepted),
-        },
-        accepted ? '↺ Not meant to be: list it again' : taste ? '✓ That’s on purpose' : '✓ Mark as checked: it’s meant to be',
-      ),
+      hard
+        ? h(
+            'div',
+            { class: 'lc-hard' },
+            h(
+              'p',
+              { class: 'meta' },
+              wasAcceptedButHard(f, acceptedFindings(project)) ? 'An earlier version let this be marked as checked. ' : '',
+              'This will fail for players, so it can be fixed but not set aside.',
+            ),
+            h(
+              'button',
+              {
+                type: 'button',
+                class: 'lc-fix lc-goto',
+                disabled: cell === undefined,
+                title: cell === undefined ? 'It is in a file or a scene, not on one cell: see the place named above.' : `Show ${at(cell)} on the map`,
+                onclick: () => {
+                  if (cell === undefined) return;
+                  focus = cell;
+                  paint();
+                  host.goTo(cell);
+                  said.textContent = `${at(cell)}: ${describe(cell).join('. ')}.`;
+                },
+              },
+              '➜ Go to it',
+            ),
+          )
+        : [
+            reason?.el ?? null,
+            h(
+              'button',
+              {
+                type: 'button',
+                class: 'lc-fix lc-accept',
+                title: accepted
+                  ? 'Puts this finding back in the list and the counts.'
+                  : taste
+                    ? 'A design suggestion, not a rule: if you chose this on purpose, the list, the counts, the badges and Before You Upload leave it out.'
+                    : 'You have looked at this and it is how you want it: the list, the counts, the badges and Before You Upload leave it out.',
+                onclick: () => accept(f, !accepted, reason?.value() ?? ''),
+              },
+              accepted ? '↺ Not meant to be: list it again' : taste ? '✓ That’s on purpose' : '✓ Mark as checked: it’s meant to be',
+            ),
+          ],
+      reasonNote(why),
     );
   }
 

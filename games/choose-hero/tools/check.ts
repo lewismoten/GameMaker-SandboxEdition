@@ -5,7 +5,8 @@ import { assertNoInvisibleWalls } from '../../kit/starter/invisibleWalls';
 import { buildLevels } from '../src/levels';
 import { play } from './play';
 
-assertNoInvisibleWalls(buildLevels());
+const { pal, levels } = buildLevels();
+for (const level of levels) assertNoInvisibleWalls({ pal, book: level.book, levels: [level] });
 for (const hero of ['fast', 'big'] as const) {
   const { sim } = await play(1, hero);
   console.log(

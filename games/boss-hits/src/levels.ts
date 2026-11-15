@@ -7,12 +7,13 @@
 //   2. Count the Lights: the same bug in a tunnel again, now with five lights on its shell. Each hit
 //      puts one out, so the picture is a meter. When the last goes out it poofs and the way opens.
 // Both rooms are closed in by brick walls you can see, so Kit is never stopped by something he can't.
-import { Book } from '../../kit/starter/book';
+import { Book, PULL } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
-import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
-import { addSign, type Sign } from '../../kit/starter/sign';
+import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
+import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { MICRO_GLYPHS } from '@lewismoten/gamemaker-sandbox-tools/microFont';
 import { LAMPED, PLAIN } from './monsters';
 
 export type SignName = 'meet' | 'sting' | 'lights' | 'poof' | 'exit';
@@ -21,13 +22,29 @@ export type SignName = 'meet' | 'sting' | 'lights' | 'poof' | 'exit';
 function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
-  const signs = {
-    meet: addSign(book, pal, 'meet.sign', 'BIG BUG TAKES FIVE HITS', 4, 3),
-    sting: addSign(book, pal, 'sting.sign', 'TOUCHING IT ONLY STINGS', 4, 3),
-    lights: addSign(book, pal, 'lights.sign', 'A LIGHT GOES OUT EACH HIT', 4, 3),
-    poof: addSign(book, pal, 'poof.sign', 'THE LAST ONE MAKES IT POOF', 4, 3),
-    exit: addSign(book, pal, 'exit.sign', 'EXIT →', 3),
-  };
+  const { blocks, signs } = buildTiledSigns(
+    {
+      meet: { rows: [['BIG BUG TAKES'], ['FIVE HITS']] },
+      sting: { rows: [['TOUCHING IT'], ['ONLY STINGS']] },
+      lights: { rows: [['A LIGHT GOES'], ['OUT EACH HIT']] },
+      poof: { rows: [['THE LAST ONE'], ['MAKES IT POOF']] },
+      exit: { rows: [['EXIT →']] },
+    },
+    {
+      colors: {
+        background: skyOf(pal),
+        paper: pal.c('parch', 3),
+        ink: pal.c('ink', 0),
+        wood: pal.c('wood', 2),
+        highlight: pal.c('wood', 4),
+        shadow: pal.c('wood', 0),
+      },
+      glyphs: { ...MICRO_GLYPHS, '→': '100110111110100' },
+      lettersPerBlock: 3,
+      maxBlocks: 100 - book.index.size,
+    },
+  );
+  for (const [name, pic] of blocks) book.add(name, pic, { grav: PULL.down });
   return { book, signs };
 }
 
@@ -91,9 +108,9 @@ function fiveHits(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [11, 31, 40],
   );
   const m = new StarterMap(book, g.rows());
-  m.sign(6, onGround(GROUND, signs.meet), signs.meet);
-  m.sign(11, onGround(GROUND, signs.sting), signs.sting);
-  m.sign(38, onGround(GROUND, signs.exit), signs.exit);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 5, onGround(GROUND, signs.meet), signs.meet);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 12, onGround(GROUND, signs.sting), signs.sting);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 39, 6, signs.exit, 3);
   m.mon(PLAIN, BUG_X[0], STAND);
   return m;
 }
@@ -115,9 +132,9 @@ function countTheLights(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [8, 24, 28],
   );
   const m = new StarterMap(book, g.rows());
-  m.sign(6, onGround(GROUND, signs.lights), signs.lights);
-  m.sign(16, onGround(GROUND, signs.poof), signs.poof);
-  m.sign(39, onGround(GROUND, signs.exit), signs.exit);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 6, onGround(GROUND, signs.lights), signs.lights);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 16, onGround(GROUND, signs.poof), signs.poof);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 40, 6, signs.exit, 3);
   m.mon(LAMPED, BUG_X[1], STAND);
   return m;
 }

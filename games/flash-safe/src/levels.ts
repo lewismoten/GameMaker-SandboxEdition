@@ -18,7 +18,8 @@ import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
-import { addSign, type Sign } from '../../kit/starter/sign';
+import type { Sign as Panel } from '../../kit/starter/sign';
+import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { BURR } from './monsters';
 import { STORM, bolt, lamp, lampPost, nope, onSky } from './props';
 import { BLINK_OFF, BLINK_ON, PULSE_STEP, SKY_CALM, SKY_FIRST, SKY_HOLD, SKY_STEP } from './timing';
@@ -77,13 +78,26 @@ const SIGNS: Record<SignName, string> = {
 function startBook(pal: Pal, names: SignName[]): { book: Book; signs: Record<string, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
-  const signs: Record<string, Sign> = {};
-  for (const n of names) signs[n] = addSign(book, pal, `${n}.sign`, SIGNS[n], 4, 3);
+  const { blocks, signs } = buildTiledSigns(Object.fromEntries(Object.entries(SIGNS).map(([name, text]) => [name, { rows: [[text]] }])), {
+    include: names,
+    compact: true,
+    maxWidth: 5,
+    maxBlocks: Math.min(100, 150 - book.index.size),
+    colors: {
+      background: skyOf(pal),
+      paper: pal.c('parch', 3),
+      ink: pal.c('ink', 0),
+      wood: pal.c('wood', 2),
+      highlight: pal.c('wood', 4),
+      shadow: pal.c('wood', 0),
+    },
+  });
+  for (const [name, pic] of blocks) book.add(name, pic, AIR);
   return { book, signs };
 }
 
 /** A 4x3 picture board for the still "not this" panels, stamped like a sign (it stands on the sign's posts). */
-function addPanel(book: Book, pal: Pal, name: string, kind: 'white' | 'red', legs: Sign['legs']): Sign {
+function addPanel(book: Book, pal: Pal, name: string, kind: 'white' | 'red'): Panel {
   const pic = nope(pal, kind, 80, 60);
   const board: string[][] = [];
   for (let row = 0; row < 3; row++) {
@@ -94,11 +108,21 @@ function addPanel(book: Book, pal: Pal, name: string, kind: 'white' | 'red', leg
       book.add(id, pic.crop(col * 20, row * 20, 20, 20), AIR);
     }
   }
+  const legs: Panel['legs'] = [`panel.${name}.left`, `panel.${name}.right`];
+  for (const [i, x] of [3, 13].entries())
+    book.add(
+      legs[i],
+      new Pixels(20, 20, skyOf(pal))
+        .rect(x, 0, 4, 20, pal.c('wood', 2))
+        .rect(x, 0, 1, 20, pal.c('wood', 4))
+        .rect(x + 3, 0, 1, 20, pal.c('wood', 1)),
+      AIR,
+    );
   return { board, legs };
 }
 
 /** The top row of a sign standing on ground row `ground`. */
-const onGround = (ground: number, s: Sign) => ground - 1 - s.board.length;
+const onGround = (ground: number, s: Pick<Sign, 'board'>) => ground - 1 - s.board.length;
 
 /**
  * A ring of blocks that go round on one clock: each state shows its picture for its ticks, then the
@@ -137,7 +161,7 @@ function room(exitX: number): Grid {
 /** Level 1: three burrs. */
 function hitWithoutAFlash(pal: Pal): Level {
   const { book, signs } = startBook(pal, ['cues', 'hit', 'nope']);
-  const panel = addPanel(book, pal, 'white', 'white', signs.nope.legs);
+  const panel = addPanel(book, pal, 'white', 'white');
   const g = room(40);
   for (const x of [15, 20, 25, 29]) g.put(x, GROUND - 1, 'c');
   scenery(
@@ -151,9 +175,9 @@ function hitWithoutAFlash(pal: Pal): Level {
     [12, 16],
   );
   const m = new StarterMap(book, g.rows());
-  m.sign(5, onGround(GROUND, signs.cues), signs.cues);
-  m.sign(10, onGround(GROUND, signs.hit), signs.hit);
-  m.sign(28, onGround(GROUND, signs.nope), signs.nope);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 5, onGround(GROUND, signs.cues), signs.cues);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 11, onGround(GROUND, signs.hit), signs.hit);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 28, onGround(GROUND, signs.nope), signs.nope);
   m.sign(33, onGround(GROUND, panel), panel);
   for (const x of BURR_X) m.mon(BURR, x, GROUND - 1);
   return { file: 'one', title: 'Hit Without a Flash', hint: 'Show a hit some other way.', map: m, book, timed: [] };
@@ -162,7 +186,7 @@ function hitWithoutAFlash(pal: Pal): Level {
 /** Level 2: two lamps on posts. */
 function slowAndSmall(pal: Pal): Level {
   const { book, signs } = startBook(pal, ['slow', 'soft', 'noper', 'fade']);
-  const panel = addPanel(book, pal, 'red', 'red', signs.noper.legs);
+  const panel = addPanel(book, pal, 'red', 'red');
   const timed: Timed[] = [];
   const [upper, lower] = lampPost(pal);
   book.add('post.upper', upper, AIR);
@@ -200,15 +224,15 @@ function slowAndSmall(pal: Pal): Level {
     [7, 22, 26],
   );
   const m = new StarterMap(book, g.rows());
-  m.sign(5, onGround(GROUND, signs.slow), signs.slow);
-  m.sign(14, onGround(GROUND, signs.soft), signs.soft);
-  m.sign(24, onGround(GROUND, signs.noper), signs.noper);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 4, onGround(GROUND, signs.slow), signs.slow);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 13, onGround(GROUND, signs.soft), signs.soft);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 23, onGround(GROUND, signs.noper), signs.noper);
   m.sign(28, onGround(GROUND, panel), panel);
-  m.sign(34, onGround(GROUND, signs.fade), signs.fade);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 34, onGround(GROUND, signs.fade), signs.fade);
   LAMP_X.forEach((x, k) => {
-    m.set(x, GROUND - 1, 'post.lower')
-      .set(x, GROUND - 2, 'post.upper')
-      .set(x, GROUND - 3, `lamp${k ? 'B' : 'A'}.start`);
+    m.setOnSky(x, GROUND - 1, 'post.lower')
+      .setOnSky(x, GROUND - 2, 'post.upper')
+      .setOnSky(x, GROUND - 3, `lamp${k ? 'B' : 'A'}.start`);
   });
   return { file: 'two', title: 'Slow and Small', hint: 'Blink slowly. Keep it small.', map: m, book, timed };
 }
@@ -246,39 +270,26 @@ function stormHeld(pal: Pal): Level {
   ];
   const on = (name: string, rules?: Parameters<Book['add']>[2]) =>
     states.map((s) => ({ key: s.key, pic: onSky(book.pics.get(name)!, skyOf(pal), s.sky), rules: rules ?? AIR, ticks: s.ticks }));
-  // the signs: boards with a solid wooden rim (so they need no sky), and posts that ring like the sky
-  const legs: Sign['legs'] = ['st.legL.start', 'st.legR.start'];
-  const post = (x: number) => (s: { sky: number }) =>
-    onSky(
-      new Pixels(20, 20, skyOf(pal))
-        .rect(x, 0, 4, 20, pal.r('wood')[2])
-        .rect(x, 0, 1, 20, pal.r('wood')[4])
-        .rect(x + 3, 0, 1, 20, pal.r('wood')[1]),
-      skyOf(pal),
-      s.sky,
-    );
-  ring(
-    book,
-    timed,
-    'st.legL',
-    states.map((s) => ({ key: s.key, pic: post(3)(s), rules: AIR, ticks: s.ticks })),
-    SKY_FIRST,
-  );
-  ring(
-    book,
-    timed,
-    'st.legR',
-    states.map((s) => ({ key: s.key, pic: post(13)(s), rules: AIR, ticks: s.ticks })),
-    SKY_FIRST,
-  );
-  const signs = Object.fromEntries(
-    (['storm', 'bolt'] as const).map((n) => {
-      const tmp = new Book('bbl');
-      const sign = addSign(tmp, pal, `${n}.sign`, SIGNS[n], 4, 3);
-      for (const [name, pic] of tmp.pics) if (name.startsWith('sign.')) book.add(name, onSky(pic, skyOf(pal), pal.c('wood', 1)), AIR);
-      return [n, { board: sign.board, legs }];
-    }),
-  ) as Record<'storm' | 'bolt', Sign>;
+  // The side borders and centered posts follow the storm sky on the same clock.
+  const { book: signBook, signs } = startBook(pal, ['storm', 'bolt']);
+  const skyTiles = new Set<string>();
+  for (const [name, pic] of signBook.pics) {
+    if (!name.startsWith('tiledSign.')) continue;
+    if (pic.px.includes(skyOf(pal))) {
+      skyTiles.add(name);
+      ring(
+        book,
+        timed,
+        name,
+        states.map((s) => ({ key: s.key, pic: onSky(pic, skyOf(pal), s.sky), rules: AIR, ticks: s.ticks })),
+        SKY_FIRST,
+      );
+    } else book.add(name, pic, AIR);
+  }
+  for (const sign of Object.values(signs)) {
+    sign.board = sign.board.map((row) => row.map((name) => (skyTiles.has(name) ? `${name}.start` : name)));
+    sign.post!.block += '.start';
+  }
   ring(
     book,
     timed,
@@ -299,8 +310,8 @@ function stormHeld(pal: Pal): Level {
   const g = room(40);
   for (const x of [15, 24, 28, 31]) g.put(x, GROUND - 1, 'c');
   const m = new StormMap(book, g.rows());
-  m.sign(5, onGround(GROUND, signs.storm), signs.storm);
-  m.sign(10, onGround(GROUND, signs.bolt), signs.bolt);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 5, onGround(GROUND, signs.storm), signs.storm);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 10, onGround(GROUND, signs.bolt), signs.bolt);
   for (const x of [15, 24, 28, 31]) m.set(x, GROUND - 1, 'st.coin.start');
   m.set(3, 8, 'st.doorwayTop.start').set(3, 9, 'st.doorwayBottom.start').set(40, 8, 'st.doorTop.start').set(40, 9, 'st.doorBottom.start');
   for (let row = 0; row < 3; row++) m.set(BOLT_X, BOLT_TOP + row, `st.bolt${row}.start`);

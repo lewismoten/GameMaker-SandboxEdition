@@ -16,7 +16,7 @@ set(5, 0, 0, 255);
 
 describe('look-alike colors', () => {
   it('flags orange-brown and olive for red-green only', () => {
-    expect(alikeUnder([170, 90, 20], [110, 130, 20], warnVisions('rg'))).toBeTruthy();
+    expect(['protan', 'deutan']).toContain(alikeUnder([170, 90, 20], [110, 130, 20], warnVisions('rg')));
     expect(alikeUnder([170, 90, 20], [110, 130, 20], warnVisions('by'))).toBeUndefined();
   });
   it('flags green and teal for blue-yellow only', () => {

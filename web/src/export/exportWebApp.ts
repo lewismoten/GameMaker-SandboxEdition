@@ -12,7 +12,7 @@ import { gameAbout } from './gameAbout';
 import { gameDescription, REPO_URL, SITE_URL } from '../seo/site';
 import { PRODUCT } from '../edition';
 import { recordedAudioNotice, recordedClips } from './recordedAudio';
-import { PROJECT } from './notices';
+import { GAME_OWNERSHIP, PROJECT } from './notices';
 import { withoutExtensions } from '@lewismoten/gamemaker-sandbox-engine/player/fileExtensions';
 
 export interface ExportOptions {
@@ -165,6 +165,6 @@ The game folder
 
 License
   The player (index.html, sw.js) is MIT licensed: see LICENSE.txt, which
-  must stay with it when you share or publish it.
+  must stay with it when you share or publish it. ${GAME_OWNERSHIP}
 ${audio ? `\nThe game's voice clips\n${audio}\n` : ''}`;
 }

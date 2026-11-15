@@ -14,6 +14,8 @@ export const TWO = {
   ladybug: 27,
   key: 31,
   planksEnd: 33,
+  /** Two cracks before the gate, hopped on the swapped keys. */
+  cracks: 36,
   wall: 40,
   ladder2: 47,
   wishbone: 53,
@@ -22,15 +24,11 @@ export const TWO = {
 
 const SIGNS = {
   swap: ['MIRRORS SWAP LEFT AND RIGHT. SO DO YOU.', 4, 3],
-  hop: ['MIRROR PILLARS. HOP THEM. GENTLY.', 4, 3],
-  key: ['A HAND MIRROR OPENS THE GATE. FOUND UP TOP.', 4, 3],
-  gate: ['MIRROR GATE. HAND MIRROR ONLY.', 4, 3],
-  wish: ['WISHES ARE UP THERE.', 3, 3],
 } as const;
 
 export function levelTwo(pal: Pal): Level {
   const charms = ['ladybug', 'wishbone'] as const;
-  const book = startBook(pal, ['mirror', 'town'], charms);
+  const book = startBook(pal, ['mirror', 'town', 'crack'], charms);
   const s = addSigns(book, pal, SIGNS);
   const g = room(62, TWO.exit);
   g.col(TWO.ladder, 4, GROUND - 1, 'H');
@@ -38,6 +36,7 @@ export function levelTwo(pal: Pal): Level {
   g.col(TWO.ladder2, 4, GROUND - 1, 'H');
   g.row(5, TWO.ladder2 + 1, TWO.wishbone + 3, '=');
   const m = new StarterMap(book, g.rows());
+  for (const x of [TWO.cracks, TWO.cracks + 1]) m.set(x, GROUND - 1, 'crack');
   for (let x = 4; x < 58; x += 2) m.set(x, 1, 'bunting');
   for (const y of [8, 9]) m.set(TWO.pillars, y, 'mirrorWall').set(TWO.pillars + 1, y, 'mirrorWall2');
   m.set(TWO.ladybug, 4, 'charm.ladybug').set(TWO.key, 4, 'mirrorKey');
@@ -48,10 +47,6 @@ export function levelTwo(pal: Pal): Level {
   // a few mirror pillars after the gate for the look and one more hop
   for (const y of [8, 9]) m.set(43, y, 'mirrorWall2').set(44, y, 'mirrorWall');
   m.sign(5, onGround(GROUND, s.swap), s.swap);
-  m.sign(10, onGround(GROUND, s.hop), s.hop);
-  m.sign(18, onGround(GROUND, s.key), s.key);
-  m.sign(35, onGround(GROUND, s.gate), s.gate);
-  m.sign(49, onGround(GROUND, s.wish), s.wish);
   return {
     file: 'two',
     title: 'Mirror Maze',

@@ -7,33 +7,48 @@
 //   2. Once Per Press: ENTER is a dash to the right, once per press. Holding it gives one dash; to go
 //                    farther, let go and press again. Three gaps, each wider than the last.
 // Every edge is a hedge or a wall you can see, so Kit is never stopped by something he can't.
-import { Book } from '../../kit/starter/book';
+import { Book, PULL } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
-import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
-import { addSign, type Sign } from '../../kit/starter/sign';
+import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
+import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { MICRO_GLYPHS } from '@lewismoten/gamemaker-sandbox-tools/microFont';
 
 export type SignName = 'hop' | 'hold' | 'lift' | 'top' | 'exit' | 'dash' | 'again' | 'last';
 
-/** The signs' words and sizes. */
-const WORDS: Record<SignName, { text: string; w: number; h: number }> = {
-  hop: { text: 'SPACE HOPS ONCE PER PRESS. HOLD IT AND KIT STILL HOPS ONCE', w: 4, h: 4 },
-  hold: { text: 'TOO TALL TO HOP. THE UP KEY IS DIFFERENT', w: 4, h: 4 },
-  lift: { text: 'HOLD UP. KIT KEEPS LIFTING WHILE THE KEY IS DOWN', w: 4, h: 4 },
-  top: { text: 'LET GO OF UP AND KIT FALLS. NOW WALK RIGHT', w: 4, h: 4 },
-  exit: { text: 'EXIT →', w: 3, h: 1 },
-  dash: { text: 'ENTER DASHES RIGHT, ONCE PER PRESS. HOLDING IT DASHES ONCE', w: 4, h: 4 },
-  again: { text: 'A WIDER GAP. HOP, KEEP RIGHT HELD, PRESS ENTER', w: 4, h: 4 },
-  last: { text: 'THE WIDEST GAP. HOP, KEEP RIGHT HELD, ENTER TWICE', w: 4, h: 4 },
+/** Complete phrases wrap within the gaps beside the walls and under the roof. */
+const texts = {
+  hop: { rows: [['SPACE HOPS ONCE'], ['PER PRESS. HOLD IT'], ['AND KIT STILL'], ['HOPS ONCE']] },
+  hold: { rows: [['TOO TALL TO HOP.'], ['THE UP KEY'], ['IS DIFFERENT']] },
+  lift: { rows: [['HOLD UP. KIT KEEPS'], ['LIFTING WHILE'], ['THE KEY IS DOWN']] },
+  top: { rows: [['LET GO OF UP AND KIT FALLS. NOW WALK RIGHT']], maxWidth: 9 },
+  exit: { rows: [['EXIT →']], maxWidth: 5 },
+  dash: { rows: [['ENTER DASHES'], ['RIGHT, ONCE PER'], ['PRESS. HOLDING IT'], ['DASHES ONCE']] },
+  again: { rows: [['A WIDER GAP. HOP,'], ['KEEP RIGHT HELD,'], ['PRESS ENTER']] },
+  last: { rows: [['THE WIDEST GAP.'], ['HOP, KEEP RIGHT'], ['HELD, ENTER TWICE']] },
 };
 
 /** The block set the levels share: the Starter blocks, then this game's signs. */
 function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
-  const signs = {} as Record<SignName, Sign>;
-  for (const n of Object.keys(WORDS) as SignName[]) signs[n] = addSign(book, pal, `${n}.sign`, WORDS[n].text, WORDS[n].w, WORDS[n].h);
+  // Both levels have shallow spaces: above the cliff, and below the dash course's roof.
+  const { blocks, signs } = buildTiledSigns(texts, {
+    colors: {
+      background: skyOf(pal),
+      paper: pal.c('parch', 3),
+      ink: pal.c('ink', 0),
+      wood: pal.c('wood', 2),
+      highlight: pal.c('wood', 4),
+      shadow: pal.c('wood', 0),
+    },
+    glyphs: { ...MICRO_GLYPHS, '→': '100110111110100' },
+    compact: true,
+    maxWidth: 7,
+    maxBlocks: Math.min(100, 150 - book.index.size),
+  });
+  for (const [name, pic] of blocks) book.add(name, pic, { grav: PULL.down });
   return { book, signs };
 }
 
@@ -47,6 +62,10 @@ export interface Level {
 
 /** The top row of a sign standing on ground row `ground`. */
 const onGround = (ground: number, s: Sign) => ground - 1 - s.board.length;
+
+/** Guard every board and post against overwriting the course or scenery. */
+const place = (m: StarterMap, x: number, y: number, sign: Sign, postHeight = 1) =>
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, x, y, sign, postHeight);
 
 /** Level 1: the ground row, the width, the low wall's columns and top row, the cliff's first column and top row, the exit column and the coins. */
 export const L1 = {
@@ -120,11 +139,13 @@ function tapAndHold(book: Book, signs: Record<SignName, Sign>): StarterMap {
   );
   scenery(g, L1.cliffTop, [], [34, 47], [37, 42]);
   const m = new StarterMap(book, g.rows());
-  m.sign(6, onGround(G, signs.hop), signs.hop);
-  m.sign(18, onGround(G, signs.hold), signs.hold);
-  m.sign(23, onGround(G, signs.lift), signs.lift);
-  m.sign(33, onGround(L1.cliffTop, signs.top), signs.top);
-  m.sign(41, onGround(L1.cliffTop, signs.exit), signs.exit);
+  // Keep the existing roof joining the hedges above the cliff.
+  for (let x = 0; x < L1.width; x++) m.set(x, -1, 'brick');
+  place(m, 4, onGround(G, signs.hop), signs.hop);
+  place(m, 15, onGround(G, signs.hold), signs.hold);
+  place(m, 23, 9, signs.lift, 3);
+  place(m, 32, onGround(L1.cliffTop, signs.top), signs.top);
+  place(m, 44, 1, signs.exit, 3);
   return m;
 }
 
@@ -152,11 +173,15 @@ function oncePerPress(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [20, 38, 56],
     [18, 40, 58],
   );
+  // A visible roof keeps repeated lifts from clearing the dash course, and the whole low
+  // section between the first two gaps (world x520-600) has a solid ceiling.
+  g.row(5, 0, L2.width - 1, 'B');
+  g.fill(16, 6, 4, 3, 'B');
   const m = new StarterMap(book, g.rows());
-  m.sign(6, onGround(G, signs.dash), signs.dash);
-  m.sign(20, onGround(G, signs.again), signs.again);
-  m.sign(36, onGround(G, signs.last), signs.last);
-  m.sign(60, onGround(G, signs.exit), signs.exit);
+  place(m, 4, onGround(G, signs.dash), signs.dash);
+  place(m, 20, onGround(G, signs.again), signs.again);
+  place(m, 36, onGround(G, signs.last), signs.last);
+  place(m, 59, onGround(G, signs.exit), signs.exit);
   return m;
 }
 

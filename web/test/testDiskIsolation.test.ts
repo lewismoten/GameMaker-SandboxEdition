@@ -91,12 +91,14 @@ it('neither serves guessed test-disk URLs nor emits them into a production catal
     }
     for (const path of ['games/originals/sound-stress/soundtst.zip', 'games/kit/testdisks/sound-stress/disk/soundtst.gam', 'games/details/sound-stress.json'])
       expect((await fetch(base + path)).status).toBe(404);
-    for (let tries = 0; tries < 200; tries++) {
+    // The archive builds in the background on the real clock (no timers to fake); under a
+    // loaded Mac it can take well over the old 20 s, so the bound is 60 s.
+    for (let tries = 0; tries < 600; tries++) {
       const response = await fetch(base + 'games/originals/control/control.zip');
       if (response.status === 200) break;
       expect(response.status).toBe(202);
       await new Promise((done) => setTimeout(done, 100));
-      if (tries === 199) throw new Error('Control archive never ready');
+      if (tries === 599) throw new Error('Control archive never ready');
     }
   } finally {
     await server.close();
@@ -116,7 +118,7 @@ it('neither serves guessed test-disk URLs nor emits them into a production catal
   expect(outputs.some((o) => o.fileName.includes('sound-stress') || o.fileName.includes('testdisks'))).toBe(false);
   const cat = outputs.find((o) => o.fileName === 'games/catalog.json');
   expect(cat && 'source' in cat ? String(cat.source) : '').toContain('control');
-}, 30000);
+}, 90000);
 
 it('leaves the diagnostic out of actual Pocket output files in default, any, card, GMP, only and force modes', () => {
   const cli = join(repo, 'web/scripts/pocketData.ts');

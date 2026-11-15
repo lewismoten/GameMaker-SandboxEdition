@@ -28,9 +28,6 @@ export const GLASS = {
 
 const SIGNS = {
   back: ['THE OTHER SIDE. EXIT ON THE LEFT. LEFT IS THE RIGHT KEY.', 4, 4],
-  up: ['A HAND MIRROR UP THE LADDER. ALL OF THIS IS REVERSED.', 4, 4],
-  gate: ['GATE. ONE HAND MIRROR, PLEASE. FROM THIS SIDE.', 4, 3],
-  home: ['ALMOST HOME. IT LOOKS THE SAME BOTH WAYS.', 4, 3],
 } as const;
 
 export function levelGlass(pal: Pal): Level {
@@ -58,9 +55,6 @@ export function levelGlass(pal: Pal): Level {
   }
   m.mon(CROW.bobbing, GLASS.crow, GLASS.crowRow);
   m.sign(62, onGround(GROUND, s.back), s.back);
-  m.sign(50, onGround(GROUND, s.up), s.up);
-  m.sign(34, onGround(GROUND, s.gate), s.gate);
-  m.sign(6, onGround(GROUND, s.home), s.home);
   return {
     file: 'glass',
     title: 'The Other Side',

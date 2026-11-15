@@ -831,8 +831,9 @@ a.button.with-ico {
   left: 0;
   /* kept inside its tile: a hidden tip still counts toward the page's width, and one past the
      last tile's edge made the page scroll sideways (844 x 390) */
+  box-sizing: border-box; /* the cap includes the padding: a wider font once ran 6px past the last tile (850 in 844) */
   width: max-content;
-  max-width: 128px;
+  max-width: 108px;
   white-space: normal;
 }
 
@@ -1007,25 +1008,27 @@ a.button.with-ico {
   }
 }
 
-/* narrower: the tabs three to a row, then two, in even columns */
-@container library (max-width: 680px) {
+/* narrower: no icons, so the names and counts share as few rows as fit (flex wrap down to 481);
+   on a phone the tabs sit three to a row in even columns */
+@container library (max-width: 480px) {
   .lib-cats {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
-}
-
-@container library (max-width: 480px) {
-  .lib-cats {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
 
   .lib-cat {
-    justify-content: flex-start;
+    gap: 5px;
+    padding: 5px 6px;
+  }
+
+  .lib-cat .ico {
+    display: none;
   }
 
   .lib-cat-count {
     margin-left: auto;
+    padding: 0 4px;
+    min-width: 18px;
   }
 }
 

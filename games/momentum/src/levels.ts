@@ -7,32 +7,45 @@
 //   2. Run-Up: three gaps, each wider than the last, too wide for a hop from standing. Her speed from a run
 //             carries the hop across.
 // Every edge is a hedge or a wall you can see, so Yana is never stopped by something she can't.
-import { Book } from '../../kit/starter/book';
+import { Book, PULL } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
-import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
-import { addSign, type Sign } from '../../kit/starter/sign';
+import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
+import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { MICRO_GLYPHS } from '@lewismoten/gamemaker-sandbox-tools/microFont';
 
 export type SignName = 'glide' | 'faster' | 'turn' | 'exit' | 'run' | 'longer' | 'last';
-
-/** The signs' words and sizes. */
-const WORDS: Record<SignName, { text: string; w: number; h: number }> = {
-  glide: { text: 'TAP RIGHT AND LET GO. YANA GLIDES ON', w: 4, h: 4 },
-  faster: { text: 'HOLD IT LONGER AND THEY GO FASTER', w: 4, h: 4 },
-  turn: { text: 'LET GO AND THEY SLOW. LEFT TURNS THEM AROUND', w: 4, h: 4 },
-  exit: { text: 'EXIT →', w: 3, h: 1 },
-  run: { text: 'A STANDING HOP GOES NOWHERE. HOLD RIGHT TOO', w: 4, h: 4 },
-  longer: { text: 'A WIDER GAP NEEDS A RUN-UP FIRST', w: 4, h: 4 },
-  last: { text: 'THE WIDEST. RUN, THEN HOP AT THE EDGE', w: 4, h: 4 },
-};
 
 /** The block set the levels share: the Starter blocks, then this game's signs. */
 function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
-  const signs = {} as Record<SignName, Sign>;
-  for (const n of Object.keys(WORDS) as SignName[]) signs[n] = addSign(book, pal, `${n}.sign`, WORDS[n].text, WORDS[n].w, WORDS[n].h);
+  const { blocks, signs } = buildTiledSigns(
+    {
+      glide: { rows: [['TAP RIGHT AND LET GO.'], ['YANA GLIDES ON']] },
+      faster: { rows: [['HOLD IT LONGER AND'], ['THEY GO FASTER']] },
+      turn: { rows: [['LET GO AND THEY SLOW.'], ['LEFT TURNS THEM AROUND']] },
+      exit: { rows: [['EXIT →']] },
+      run: { rows: [['A STANDING HOP GOES'], ['NOWHERE. HOLD RIGHT TOO']] },
+      longer: { rows: [['A WIDER GAP NEEDS'], ['A RUN-UP FIRST']] },
+      last: { rows: [['THE WIDEST. RUN, THEN'], ['HOP AT THE EDGE']] },
+    },
+    {
+      colors: {
+        background: skyOf(pal),
+        paper: pal.c('parch', 3),
+        ink: pal.c('ink', 0),
+        wood: pal.c('wood', 2),
+        highlight: pal.c('wood', 4),
+        shadow: pal.c('wood', 0),
+      },
+      glyphs: { ...MICRO_GLYPHS, '→': '100110111110100' },
+      lettersPerBlock: 3,
+      maxBlocks: Math.min(100, 150 - book.index.size),
+    },
+  );
+  for (const [name, pic] of blocks) book.add(name, pic, { grav: PULL.down });
   return { book, signs };
 }
 
@@ -42,6 +55,11 @@ export interface Level {
   /** What the level card says under the title. */
   hint: string;
   map: StarterMap;
+}
+
+/** Keep every board and its post clear of existing art and pickups. */
+function placeSign(m: StarterMap, x: number, y: number, sign: Sign, postHeight = 1): void {
+  stampTiledSign({ set: (sx, sy, block) => m.setOnSky(sx, sy, block) }, x, y, sign, postHeight);
 }
 
 /** The top row of a sign standing on ground row `ground`. */
@@ -102,10 +120,10 @@ function glide(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [20, 37],
   );
   const m = new StarterMap(book, g.rows());
-  m.sign(6, onGround(G, signs.glide), signs.glide);
-  m.sign(16, onGround(G, signs.faster), signs.faster);
-  m.sign(33, onGround(G, signs.turn), signs.turn);
-  m.sign(55, onGround(G, signs.exit), signs.exit);
+  placeSign(m, 5, onGround(G, signs.glide), signs.glide);
+  placeSign(m, 17, onGround(G, signs.faster), signs.faster);
+  placeSign(m, 32, onGround(G, signs.turn), signs.turn);
+  placeSign(m, 54, onGround(G, signs.exit), signs.exit);
   return m;
 }
 
@@ -133,10 +151,10 @@ function runUp(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [14, 38, 58, 86],
   );
   const m = new StarterMap(book, g.rows());
-  m.sign(6, onGround(G, signs.run), signs.run);
-  m.sign(36, onGround(G, signs.longer), signs.longer);
-  m.sign(60, onGround(G, signs.last), signs.last);
-  m.sign(91, onGround(G, signs.exit), signs.exit);
+  placeSign(m, 6, onGround(G, signs.run), signs.run);
+  placeSign(m, 36, onGround(G, signs.longer), signs.longer);
+  placeSign(m, 60, onGround(G, signs.last), signs.last);
+  placeSign(m, 83, onGround(G, signs.exit), signs.exit);
   return m;
 }
 

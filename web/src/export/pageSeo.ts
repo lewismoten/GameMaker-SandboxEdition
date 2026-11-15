@@ -6,7 +6,7 @@
 // player is MIT licensed, so its notice rides in the <head> as a comment, and a Bard game's
 // voice clips, which aren't MIT, are named in the readable text (recordedAudio.ts).
 import { PRODUCT } from '../edition';
-import { PROJECT } from './notices';
+import { GAME_OWNERSHIP, PROJECT } from './notices';
 import { gameLd } from './gameLd';
 import type { AboutGame } from '../project/aboutGame';
 import { escapeHtml, gameDescription, jsonLdScript, metaTags, REPO_URL, SITE_URL, type GameSeo } from '../seo/site';
@@ -70,6 +70,7 @@ export function exportAbout(m: ExportMeta): string {
         ` · <a style="color:#9cf" href="${REPO_URL}">source code</a>` +
         ` · the player is <a style="color:#9cf" href="${REPO_URL}/blob/master/LICENSE">MIT licensed</a></small>`,
     ),
+    p(`<small>${escapeHtml(GAME_OWNERSHIP)}</small>`),
     `</main>`,
   ].join('');
 }

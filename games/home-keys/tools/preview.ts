@@ -34,7 +34,7 @@ const mb = monsterPictures(pal);
 const mbl = finishMonsterPictures(mb);
 for (const l of levels) {
   const m = l.map.done();
-  const pic = renderRegion(m, bbl, mbl, monsterSet(mb), ORIGIN, ORIGIN, l.map.width, l.map.height);
+  const pic = renderRegion(m, l.book.finish(), mbl, monsterSet(mb), ORIGIN, ORIGIN, l.map.width, l.map.height);
   writePng(join(out, `${l.file}.png`), pic, pal.pal, 1);
 }
 const disk = new URL('../disk/', import.meta.url);

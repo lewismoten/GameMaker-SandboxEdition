@@ -28,7 +28,9 @@ Findings are suggestions, not proof of playability. Disabling exploration does n
 
 ## Tests
 
-Colocated coverage includes [`accepted.test.ts`](accepted.test.ts), [`checks.test.ts`](checks.test.ts), [`course.test.ts`](course.test.ts).
+`checkClass.ts` classes every check as hard (a proven failure that can be fixed but not dismissed), judged or taste, with a reason.
+
+Colocated coverage includes [`checkClass.test.ts`](checkClass.test.ts), [`accepted.test.ts`](accepted.test.ts), [`checks.test.ts`](checks.test.ts), [`course.test.ts`](course.test.ts).
 
 From `web/`:
 

@@ -10,7 +10,7 @@
 //               ticks, so the ripples slide up the screen the way the river flows (finishRide sets the timing)
 //   bank        a grassy bank, solid; reeds, a log (two blocks), a lily pad (10 points) and the dock (exit)
 //   rocketTop + rocketBottom   the parked rocket that is level 1's exit
-// Plaques (addPlaque) are the signs of the two flying levels: a board with no posts, on the night sky or the water.
+// Tiled plaques in levels.ts have no posts, on the night sky or the water.
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { outline } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
 import type { PaletteBuilder } from '@lewismoten/gamemaker-sandbox-tools/kit/palette';
@@ -18,7 +18,6 @@ import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';
 import { Book, PULL, SOLID } from '../../kit/starter/book';
 import type { Pal } from '../../kit/starter/palette';
-import { addSign, type Sign } from '../../kit/starter/sign';
 import { onGround, rocket } from './shipArt';
 
 const T = 255;
@@ -232,23 +231,4 @@ export function finishRide(book: Book): Block[] {
     b.ntime = 3;
   });
   return blocks;
-}
-
-/**
- * A plaque: a sign's board without its posts, standing on `ground` (a 20x20 picture: the night sky or the water),
- * so it floats where the ship or boat flies past. Not solid, and no pull.
- */
-export function addPlaque(book: Book, pal: Pal, ground: Pixels, name: string, text: string, w: number, h: number): Sign {
-  const scratch = new Book('bbl');
-  const sign = addSign(scratch, pal, name, text, w, h);
-  const sky = pal.c('sky', 3);
-  const wanted = new Set(sign.board.flat());
-  for (const [n, pic] of scratch.pics)
-    if (wanted.has(n))
-      book.add(
-        n,
-        pic.crop(0, 0, 20, 20).map((x, y, col) => (col === sky ? ground.get(x, y) : col)),
-        none,
-      );
-  return sign;
 }

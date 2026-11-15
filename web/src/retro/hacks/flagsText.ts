@@ -8,8 +8,9 @@ export const FLAGS_DIZ = [
   '---------------------------------------------',
   'List, set, clear and reset what the PC',
   'remembers: badges, eggs, hearts, trophies,',
-  'phone bill, mail and caller file. Backs up',
-  'to FLAGS.BAK first. Never touches saves.',
+  'grades, phone bill, mail, caller file, the',
+  'courier. Backs up to FLAGS.BAK first.',
+  'Never touches saves.',
   warezSignoff(),
 ];
 
@@ -21,6 +22,7 @@ export const FLAGS_NFO = [
   '',
   '  FLAGS SET HEARTS 3        three tin hearts found, the rest not',
   '  FLAGS SET TROPHY BEST 2   show the bronze trophy',
+  '  FLAGS SET GRADES 1 3      three Starters of stage 1 graded A',
   '  FLAGS /BACKUP             keep it all in C:\\DOS\\FLAGS.BAK',
   '  FLAGS /RESTORE            put it back as it was',
   '',
