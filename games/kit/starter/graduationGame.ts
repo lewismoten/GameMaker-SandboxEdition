@@ -31,6 +31,7 @@ export function buildGame(levels: Level[], name = TITLE): Game {
   levels.forEach((l, i) => {
     const scene = emptyScene(ADVTYPE);
     scene.desc = l.title.slice(0, 19);
+    if (l.lockVertical) scene.scroll = { ...scene.scroll, up: 0, down: 0 };
     scene.pos = { x: 60 + i * 80, y: 110 };
     scene.files = [
       'grad.pal',

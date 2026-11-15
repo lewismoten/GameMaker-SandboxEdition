@@ -8,6 +8,8 @@ export interface Graduation {
   id: string;
   /** The stage's name: "First Steps". */
   stage: string;
+  /** Raised two-row entrances and a fixed vertical view for flat campus and aisle walks. */
+  raisedStart?: boolean;
   /** Names of the STARTER_GROUPS whose helpers sit in the audience. */
   groups: string[];
   /** Guests from the Cast who sit in the audience beside the helpers. */

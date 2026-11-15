@@ -2,7 +2,7 @@
 // banners on poles and the hall's front at the far end, and along it a few nods (graduationNods.ts), small friendly
 // moments that echo the stage's Starters, each with a sign naming its course. Nothing hurts and nothing traps.
 // It has its own block set (arrive.bbl) beside the hall's, on the same palette. 13 rows high: the path is row 10.
-//   x  2        where you start, with a welcome sign at x 4
+//   x  2        the entrance (raised starts stand beside it), with a welcome sign at x 4
 //   x 10 ...    the nods, one after another (each takes `width` columns, its sign first)
 //   at the end  the hall: its door is the way out, under a banner with the stage's name
 import { courseNumber } from '../../../web/src/project/ceremonies';
@@ -68,9 +68,11 @@ export function buildArrival(cfg: Graduation, pal: Pal) {
   for (const p of placed) p.nod.blocks(ctx);
 
   const g = new Grid(width, ARRIVE_H);
-  g.put(2, 9, 'S');
+  g.put(2, cfg.raisedStart ? 7 : 9, 'S');
   const m = new StarterMap(book, g.rows());
-  m.set(2, 9, 'sky');
+  // The raised entrance gets a complete doorway; older arrivals keep their open path.
+  if (cfg.raisedStart) m.set(2, 6, 'doorwayTop');
+  else m.set(2, 9, 'sky');
   // the path, the earth under it and the hedges at both ends
   for (let x = 0; x < width; x++) {
     const end = x === 0 || x === width - 1;
@@ -78,6 +80,11 @@ export function buildArrival(cfg: Graduation, pal: Pal) {
       .set(x, 11, 'dirt')
       .set(x, 12, 'dirt');
     if (end) for (let y = 0; y < ARRIVE_FLOOR; y++) m.set(x, y, 'edge');
+  }
+  // The path's own paving makes a two-row step without covering the welcome board.
+  if (cfg.raisedStart) {
+    for (const x of [2, 3]) m.set(x, 8, 'paving').set(x, 9, 'dirt');
+    m.start[0] += 1; // Stand beside the door, on the right half of the step.
   }
   // scenery first (a nod may stamp over it): a tree and a banner pole in each stretch, a cloud now and then
   placed.forEach((p, i) => {

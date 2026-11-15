@@ -7,6 +7,7 @@ import { song } from './song';
 
 export const cfg: Graduation = {
   id: 'graduation-wiring',
+  raisedStart: true,
   stage: 'Wiring and Worlds',
   groups: ['Wiring and Puzzles', 'Bigger Worlds'],
   cameos: ['gwinn', 'watt', 'loaf', 'chicken', 'teddy', 'joe', 'seed', 'goat'],
@@ -50,6 +51,6 @@ The next stage is waiting whenever you are ready.
     credits:
       creditsPage('GRADUATION: WIRING AND WORLDS', about.version, 'A graduation: it comes after Wiring and Puzzles and Bigger Worlds.') +
       '\n' +
-      wrap('Held-rise jump: OpenAI Codex (GPT-6.1 Sol).'),
+      wrap('Held-rise jump and raised starts: OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten.'),
   },
 };

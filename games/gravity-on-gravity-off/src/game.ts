@@ -34,6 +34,8 @@ export function buildGame(levels: Level[]): Game {
     scene.pos = { x: 60 + i * 80, y: 110 };
     // level 1 is the side view (side.bbl, hero.chr); level 2 is the same scene from above (top.bbl, top.chr)
     const top = i === 1;
+    // The side-view route stays within one band; the top-down room keeps four-way scrolling.
+    if (!top) scene.scroll = { ...scene.scroll, up: 0, down: 0 };
     scene.files = [
       'grav.pal',
       `${l.file}.map`,

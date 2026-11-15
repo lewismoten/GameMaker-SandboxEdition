@@ -387,7 +387,7 @@ Maximus has a machine-embroidery patch as a feelie (`games/maximus/patch/`: `des
 
 Colors That Work plays both lessons with a simulated scene palette (`alike.pal`); its cards still compare the original and simulated colors. Beat the Clock writes valid empty monster and monster-block sets because its maps place no monsters.
 
-- `starter/graduationLevel.ts` — builds the aisle level, with the hall, audience, stage and certificate.
+- `starter/graduationLevel.ts` — builds the aisle level, with the hall, audience, stage and certificate. A graduation can opt into `raisedStart` for two-row entrance steps and fixed vertical views on its flat campus and aisle walks.
 - `starter/graduationLevel.test.ts` — replays the graduation walkthroughs and checks every guest’s complete bounds during the ceremony pause.
 - `starter/graduationTools.ts` — shared arrival and aisle routes, play checks, demo recording and walkthrough writing.
 
