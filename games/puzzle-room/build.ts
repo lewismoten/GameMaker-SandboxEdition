@@ -47,7 +47,7 @@ disk.put('pr.bbl', serializeBlocks(book.finish()));
 disk.put('pr.mbl', serializeBlocks(monsterBlocks.finish()));
 disk.put('pr.mon', serializeMonsters(buildMonsters(monsterBlocks)));
 disk.put('hero.cbl', serializeBlocks(heroBlocks.finish()));
-const heroChar = buildHero(heroBlocks);
+const heroChar = buildHero(heroBlocks, { heldRise: { push: 12 } });
 heroChar.meter[KEYS] = INF_REPEAT; // no keys in this game
 heroChar.meter[ONE] = 1; // planks the levers have paid for (a counter shows one less than it holds)
 heroChar.meter[TWO] = 1;

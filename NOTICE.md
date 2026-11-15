@@ -64,6 +64,8 @@ game folder opens in the browser unchanged.
 
 ## Credits
 
+- **Starter held-rise jumps, batch F (November 15, 2026)**: OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, adapted the approved First Steps jump and bot timing for Score Popups, Stronger Keys, Wired Room, Quicksand, Rain on the Path, Room to Room, The Same House, Say Something, and refreshed their walkthroughs and level metadata. No new third-party material was added.
+
 - **Starter held-rise jumps, batch D (November 15, 2026)**: OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, adapted the approved First Steps jump and bot timing for *Graduation: Story and Finish*, *Graduation: Wiring and Worlds*, *Gravity On, Gravity Off*, *Gusts*, *Health and Hearts*, *Heat Waves*, *To the Horizon*, and *Keys and Doors*.
 
 - **Starter held-rise rollout (batch B, November 15, 2026)**: OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, applied the approved First Steps jump and bot timing to Smash It, Coins and Score, Color Doors, Countdown, Cutscenes, Day and Night, and Everybody Talks, and refreshed their walkthroughs and level-view metadata. No new third-party material was added.

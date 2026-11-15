@@ -44,7 +44,7 @@ disk.put('power.bbl', serializeBlocks(book.finish()));
 disk.put('power.mbl', serializeBlocks(monsterBlocks.finish()));
 disk.put('power.mon', serializeMonsters(buildMonsters(monsterBlocks)));
 disk.put('hero.cbl', serializeBlocks(heroBlocks.finish()));
-const heroChar = buildHero(heroBlocks);
+const heroChar = buildHero(heroBlocks, { heldRise: { push: 12 } });
 disk.put('hero.chr', serializeCharacter(heroChar));
 disk.put('power.snd', serializeSoundSet(buildSounds()));
 disk.put('power.cmf', song());
