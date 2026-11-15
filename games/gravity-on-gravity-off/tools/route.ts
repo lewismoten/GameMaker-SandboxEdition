@@ -57,7 +57,7 @@ export async function gravityOn(bot: StarterBot): Promise<void> {
   bot.sim.press(SCAN.space);
   let top = y0;
   for (let t = 0; t < 30; t++) {
-    if (t === 2) bot.sim.release(SCAN.space);
+    if (t === bot.jumpHold) bot.sim.release(SCAN.space);
     const r = await bot.tick();
     if (r) throw new Error(`jumping: ${r}`);
     top = Math.min(top, bot.px.y);
@@ -78,8 +78,8 @@ export async function gravityOn(bot: StarterBot): Promise<void> {
   if (bot.px.x < (WALL_X + 1) * 20) throw new Error(`still behind the wall at x ${bot.px.x}`);
   bot.say(`over the wall at x ${bot.px.x}`);
   // up to the ledge, along it for the five coins, and off the end: gravity pulls him down
-  await must(bot, bot.walk(LEDGE_X[0] - 2, 'below the ledge'), 'to the ledge');
-  await must(bot, bot.jump('right', LEDGE_X[0] + 1), 'up onto the ledge');
+  await must(bot, bot.walk(LEDGE_X[0], 'below the ledge'), 'to the ledge');
+  await must(bot, bot.jump(), 'up onto the ledge');
   if (bot.px.y >= (GROUND - 1) * 20) throw new Error(`he should be on the ledge, not at y ${bot.px.y}`);
   const onLedge = bot.px.y;
   await must(bot, bot.walk(LEDGE_X[1], 'the end of the ledge'), 'along the ledge');

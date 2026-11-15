@@ -47,6 +47,9 @@ You can wire counters and switches into puzzles, link many rooms and scroll a bi
 
 The next stage is waiting whenever you are ready.
 `),
-    credits: creditsPage('GRADUATION: WIRING AND WORLDS', about.version, 'A graduation: it comes after Wiring and Puzzles and Bigger Worlds.'),
+    credits:
+      creditsPage('GRADUATION: WIRING AND WORLDS', about.version, 'A graduation: it comes after Wiring and Puzzles and Bigger Worlds.') +
+      '\n' +
+      wrap('Held-rise jump: OpenAI Codex (GPT-6.1 Sol).'),
   },
 };

@@ -6,7 +6,7 @@
   "hero": "LAMI",
   "year": 1994,
   "price": "Free",
-  "version": "1.0",
+  "version": "1.1",
   "blurb": "Two short levels about driving to the horizon. The road is one picture that narrows to a point; beach balls roll out of the hill and grow as they come, born by blocks nobody can see. In the second level a finish arch grows closer until the barred door opens. Signs in the levels say how. Play it, then open it in Game-Maker and change when the balls come.",
   "exe": "HORIZON.EXE",
   "dosName": "HORIZON",

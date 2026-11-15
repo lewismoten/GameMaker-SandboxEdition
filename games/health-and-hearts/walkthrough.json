@@ -8,15 +8,15 @@
  "segments": [
   {
    "scene": 2,
-   "keys": "AU03zQNNDjkCuQ7NMk03zQNN"
+   "keys": "AU03zQNNDjkIuQ7NK003zQNN"
   },
   {
    "scene": 3,
-   "keys": "AU0ozQNNCTkCuQ7NMk0PzStND80rTTLNA00="
+   "keys": "AU0ozQNNCTkIuQ7NK00PzStND80rTTLNA00="
   },
   {
    "scene": 4,
-   "keys": "AU0tzQNNLDkCuRc5ArkcOQK5EzkCuTBNLc0DOQK5AE0PzQVNFM0rTQjNBk0KzQNNBDkCuQ7NCk0EOQK5Ds0KTQQ5ArkOzTJND80DOQK5AE0PzQVNCs0rTQ3NB00="
+   "keys": "AU0tzQNNLDkIuRI5CLkSOQi5EzksTTzNAzkIuQZNFM0rTQjNBk0KzQNNBDkIuQ7NA00EOQi5Ds0DTQQ5CLkOzStNHs0DOQi5Bk0KzStNDc0HTQ=="
   }
  ],
  "chapters": [
@@ -35,7 +35,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 10651,
+  "frames": 11153,
   "chapters": [
    {
     "title": "Opening",
@@ -54,23 +54,23 @@
    },
    {
     "title": "Level 2: Hearts Heal",
-    "frame": 3223,
-    "time": 53716.666666664576
+    "frame": 3220,
+    "time": 53666.66666666458
    },
    {
     "title": "Level 3: Lives",
-    "frame": 4587,
-    "time": 76449.99999999936
+    "frame": 4581,
+    "time": 76349.99999999933
    },
    {
     "title": "Ending",
-    "frame": 7366,
-    "time": 122766.6666666795
+    "frame": 7387,
+    "time": 123116.66666667961
    },
    {
     "title": "Credits",
-    "frame": 9577,
-    "time": 159616.66666666532
+    "frame": 9598,
+    "time": 159966.6666666651
    }
   ]
  }

@@ -18,7 +18,7 @@
     },
     "57": {
       "short": "Jump",
-      "long": "Jump. With a star it is a high jump (4 per star). Steer with Left and Right in the air."
+      "long": "Hold Space to rise. Release, then steer with Left and Right. Land before jumping again."
     },
     "72": {
       "short": "Climb up",

@@ -4,4 +4,4 @@ import { arrivalRoute } from '../../kit/starter/graduationNodRoutes';
 import { cfg } from '../src/config';
 import { GameSim } from './sim';
 
-export const play = makePlay(GameSim, [arrivalRoute(cfg.arrive.nods), aisle]);
+export const play = makePlay(GameSim, [arrivalRoute(cfg.arrive.nods), aisle], 8);

@@ -8,7 +8,7 @@
  "segments": [
   {
    "scene": 2,
-   "keys": "AU08zRtNHs0DTRTNG00jzQNNFM0bTRTNJ00DOQK5H80DTQrNA00="
+   "keys": "AU08zRtNHs0DTRTNG00jzQNNFM0bTRTNJ00DOQi5Fc0DTQrNA00="
   },
   {
    "scene": 3,
@@ -27,7 +27,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 7315,
+  "frames": 7782,
   "chapters": [
    {
     "title": "Opening",
@@ -46,18 +46,18 @@
    },
    {
     "title": "The Theater",
-    "frame": 3218,
-    "time": 53633.333333331255
+    "frame": 3205,
+    "time": 53416.66666666462
    },
    {
     "title": "Ending",
-    "frame": 4516,
-    "time": 75266.66666666568
+    "frame": 4503,
+    "time": 75049.99999999895
    },
    {
     "title": "Credits",
-    "frame": 6243,
-    "time": 104050.00000000739
+    "frame": 6230,
+    "time": 103833.33333334066
    }
   ]
  }
