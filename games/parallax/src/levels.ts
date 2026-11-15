@@ -173,6 +173,19 @@ export class Stage {
     if (leg) for (let y = at[1] + board.length; y < GROUND_ROW; y++) post(leg.block, at[0] + leg.x, y);
   }
 
+  /** The raised doorway over the bands, with its clear corners kept in step with them. */
+  entrance(m: StarterMap, bands: Partial<Record<number, BandName>>): void {
+    for (const [y, name] of [
+      [START[1] - 1, 'doorwayTop'],
+      [START[1], 'doorwayBottom'],
+    ] as const) {
+      this.scratch.pics.set(name, this.book.pics.get(name)!);
+      const b = bands[y];
+      const band = b && this.sliding.get(b);
+      m.set(START[0], y, b && band ? this.ringOver(name, b, band) : this.plain(this.over(this.book.pics.get(name)!, this.under(y, bands))));
+    }
+  }
+
   /** A copy of a door block with two red and white bars across it. */
   barred(door: Pixels, top: boolean): Pixels {
     const { c } = this.pal;
@@ -253,6 +266,9 @@ function paint(st: Stage, resting: Partial<Record<number, BandName>>): StarterMa
   g.put(DOOR_COL, GROUND_ROW - 2, 'e').put(DOOR_COL, GROUND_ROW - 1, 'E');
   const m = new StarterMap(st.book, g.rows());
   for (let y = 0; y < ROWS; y++) for (let x = 0; x < COLS; x++) m.set(x, y, st.plain(st.under(y, resting), y === GROUND_ROW));
+  // A three-row path ledge supports the existing landing cell, keeping every band aligned.
+  m.set(START[0], START[1] + 1, st.plain(st.still(GROUND_ROW), true));
+  for (let y = START[1] + 2; y < GROUND_ROW; y++) m.set(START[0], y, 'dirt');
   // hedges close the room in at both sides, from row 4 down to the path (the path's own row runs under them)
   for (const x of [0, COLS - 1]) for (let y = 4; y < GROUND_ROW; y++) m.set(x, y, 'edge');
   return m;
@@ -273,6 +289,7 @@ function threeSpeeds(st: Stage): StarterMap {
   slide(st, m, 'fence', FENCE);
   st.sign(m, 'speeds', SIGN_AT.left, here);
   st.sign(m, 'ring', SIGN_AT.right, here);
+  st.entrance(m, here);
   st.door(m, DOOR_COL);
   return m;
 }
@@ -286,6 +303,7 @@ function driftingClouds(st: Stage): StarterMap {
   slide(st, m, 'hills', HILLS);
   st.sign(m, 'sky', SIGN_AT.left, { 0: 'wisps', 1: 'clouds', ...here });
   st.sign(m, 'suns', SIGN_AT.right, { 0: 'wisps', 1: 'clouds', ...here });
+  st.entrance(m, here);
   // the suns: each fills at its time
   SUN_COLS.forEach((x, i) => m.set(x, 2, st.chain([0, 1, 2, 3].map((s) => ({ pic: st.sun(s > i), solid: false })))));
   // the door is barred (solid, red and white bars across it) until the last sun is full, then it opens

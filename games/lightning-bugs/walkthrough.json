@@ -8,11 +8,11 @@
  "segments": [
   {
    "scene": 2,
-   "keys": "KU1LzZkBTUvNK00tzd8BTTzNK00="
+   "keys": "KU1JzZkBTUvNK00tzd8BTTzNK00="
   },
   {
    "scene": 3,
-   "keys": "KU1azY8BTS3NK00tzY8BTS3NK00="
+   "keys": "KU1YzY8BTS3NK00tzY8BTS3NK00="
   }
  ],
  "chapters": [
@@ -27,7 +27,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 10990,
+  "frames": 11457,
   "chapters": [
    {
     "title": "Opening",
@@ -46,18 +46,18 @@
    },
    {
     "title": "Level 2: Dusk Meadow",
-    "frame": 5039,
-    "time": 83983.33333333489
+    "frame": 5032,
+    "time": 83866.66666666818
    },
    {
     "title": "Ending",
-    "frame": 7704,
-    "time": 128400.00000001448
+    "frame": 7690,
+    "time": 128166.66666668108
    },
    {
     "title": "Credits",
-    "frame": 9916,
-    "time": 165266.66666666203
+    "frame": 9902,
+    "time": 165033.33333332883
    }
   ]
  }

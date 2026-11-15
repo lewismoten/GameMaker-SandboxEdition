@@ -26,7 +26,7 @@ async function leave(bot: StarterBot, r: Promise<Result>, what: string, room: [n
   if (room === 'end') return;
   if (here(bot) === from) throw new Error(`${what} did not change the scene`);
   await must(bot, bot.land(), `landing after ${what}`);
-  const want = { x: (room[0] + LAND_X) * 20, y: (room[1] + FLOOR - 1) * 20 };
+  const want = { x: (room[0] + LAND_X) * 20, y: (room[1] + FLOOR - 3) * 20 };
   const got = bot.px;
   if (got.x !== want.x || got.y !== want.y) throw new Error(`after ${what} the hero stood at ${got.x},${got.y}, not at the room's middle ${want.x},${want.y}`);
 }
