@@ -3,6 +3,9 @@
 Vitest runs the tests here and beside the source modules. From `web/`, use
 `../node_modules/.bin/vitest run <test paths>` for a focused check without the
 `npm test` game-build lifecycle hook. Full suites go through `npm run heavy --`.
+`web/vitest.config.ts` also includes `../games/**/*.test.ts`, so builder and bot
+regressions beside game source run in the normal suite. Use `vitest run ../games`
+from `web/` to run those tests alone.
 
 `editorBrowser.ts` supplies a minimal DOM fixture for real editor integration
 regressions. It starts its own loopback Vite server on an OS-assigned port (never

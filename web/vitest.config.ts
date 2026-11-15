@@ -11,6 +11,8 @@ export default mergeConfig(
   viteConfig,
   defineConfig({
     test: {
+      // Game builders keep regression tests beside their source, outside Vite's web/ root.
+      include: [...configDefaults.include, '../games/**/*.test.ts'],
       // Keep successful runs quiet, but retain a failing test's console diagnostics.
       silent: 'passed-only',
       // The fast run uses vitest's default workers (cores - 1). It was capped at 2 for GitHub's

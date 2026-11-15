@@ -52,7 +52,8 @@ describe('graduation hall framing', () => {
       const hall = build().levels[1];
       const audience = new Set([...hall.book.index].filter(([n]) => n.startsWith('hall.') || n.startsWith('cameo.')).map(([, n]) => n));
       const seats = [...hall.map.done().blocks].flatMap((n, i) => (audience.has(n) ? [{ n, x: i % MLEN, y: Math.floor(i / MLEN) }] : []));
-      expect(seats).toHaveLength(id === 'graduation-diploma' ? 22 : 16);
+      // 1c0437817 moved the eight balcony helpers into the aisle in gowns; the Cast guests stay here.
+      expect(seats).toHaveLength(id === 'graduation-diploma' ? 14 : 8);
       expect(new Set(seats.map((s) => s.n)).size).toBe(seats.length);
       let checkedDisk = false;
       const frames: { frame: number; bounds: number[][]; heroX: string }[] = [];
@@ -113,8 +114,9 @@ describe('graduation hall framing', () => {
       }
     }
     for (const ys of observed) {
-      expect(Math.min(...ys)).toBe(14 * 20);
-      expect(Math.max(...ys)).toBe(18 * 20);
+      // ab64313c5 starts the paper at world row 13 and extends its fall to six rows.
+      expect(Math.min(...ys)).toBe(13 * 20);
+      expect(Math.max(...ys)).toBe(19 * 20);
       expect(ys.some((y, i) => i > 0 && y > ys[i - 1])).toBe(true);
       expect(ys.some((y, i) => i > 0 && y < ys[i - 1])).toBe(true);
     }
