@@ -46,25 +46,35 @@ export function legend(kerf: number): { id: string; what: string; where: string;
     const marked = m.part.texts.some((t) => t.text === key);
     return {
       id: marked ? key : `(${key})`,
-      what: m.note,
-      where: marked ? WHERE(key) : m.hidden.length ? `${m.face} face: hidden artwork, no ID` : 'unmarked: glue face or no hidden space for an ID',
+      what: key === 'E2' ? 'E2: the remaining digit slice, no ID' : m.note,
+      where: marked
+        ? WHERE(key)
+        : key === 'E2'
+          ? 'ring 1: the only digit slice left after B2, C2 and D2 are placed'
+          : m.hidden.length
+            ? `${m.face} face: hidden artwork, no ID`
+            : 'unmarked: glue face or no hidden space for an ID',
       qty: m.qty,
     };
   });
   return rows;
 }
 const WHERE = (key: string) =>
-  key === 'A1'
-    ? 'center of the floor, under the core'
-    : /^A\dR$/.test(key)
-      ? 'top of the rim, under the loose ring'
-      : /^A\dC$/.test(key)
-        ? 'top of the collar, under the loose washers'
-        : /^G/.test(key)
-          ? 'top of the upper washer; blank reverse takes glue'
-          : key.endsWith('1')
-            ? 'underside of the rim; blank reverse takes glue'
-            : 'under the next ring up';
+  /^A[234][RC]$/.test(key)
+    ? 'upper glued face, covered by the next base layer'
+    : /^G[1-4]B$/.test(key)
+      ? 'upper glued face, covered by the upper washer'
+      : key === 'A1'
+        ? 'center of the floor, under the core'
+        : /^A\dR$/.test(key)
+          ? 'top of the rim, under the loose ring'
+          : /^A\dC$/.test(key)
+            ? 'top of the collar, under the loose washers'
+            : /^G/.test(key)
+              ? 'top of the upper washer; blank reverse takes glue'
+              : key.endsWith('1')
+                ? 'underside of the rim; blank reverse takes glue'
+                : 'under the next ring up';
 
 interface Card {
   title: string;
@@ -146,7 +156,7 @@ export function assemblySvg(kerf = 0.2): string {
   });
   y += Math.ceil(legend(kerf).length / 2) * 14 + 8;
   const [note, ny] = wrap(
-    'IDs and hidden pictures use only unglued faces. Cut and engrave face up in one pass. During assembly orient ring bottoms, head and lid artwork down; other art faces up. Unmarked parts are in (brackets). Leave glue faces blank.',
+    'IDs use covered faces, including small marks on glue faces. Hidden pictures use unglued faces. Cut and engrave face up in one pass. During assembly orient ring bottoms, head and lid artwork down; other art faces up. Unmarked parts are in (brackets). Spread glue across the small ID marks too.',
     20,
     y,
     150,

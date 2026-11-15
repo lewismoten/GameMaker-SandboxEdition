@@ -93,7 +93,7 @@ export const GROUPS: Group[] = [
       ],
       at: [[230, 170, 110, 50][n - 1], 270],
       spin: 0,
-      build: `Glue blank G${n}B below engraved G${n}, artwork up and notches aligned (${(2 * T).toFixed(2)} mm). Glue only blank mating faces; keep bore and notch clean.`,
+      build: `Glue ID-marked G${n}B below artwork G${n}, artwork up and notches aligned (${(2 * T).toFixed(2)} mm). Glue the mating faces, including the small lower ID; keep bore and notch clean.`,
       why: 'Two washers make a part as thick as its ring, and the pair stays loose so it can be lifted out and turned.',
       done: `Sub-assembly G${n} is one solid washer for ring ${n}.`,
       fit: `Drop washer pair G${n} into the socket of ring ${n}, notch to the marker. Do not glue it.`,

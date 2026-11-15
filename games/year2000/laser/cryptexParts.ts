@@ -98,12 +98,14 @@ export function makeParts(kerf: number): Parts {
   for (let n = 2; n <= 5; n++) {
     const o = disc(`A${n}R`, RINGS[3], 1, `base stack A, layer ${n}, outer ring (glue on the layer below, edges flush)`);
     o.holeRound('hollow', RINGS[3], RINGS[3], SLICE_HOLE[3]);
+    if (n < 5) o.text(`A${n}R`, 'micro', RINGS[3], (RINGS[3] - SLICE_HOLE[3]) / 2, 0.7);
     if (n === 5)
       hidden(o, 'top of the base rim, under ring 4', RINGS[3], RINGS[3], SLICE_HOLE[3], RINGS[3], () => {
         circuitBand(o, RINGS[3], SLICE_HOLE[3], RINGS[3], `A${n}R`, 0, false);
       });
     const i = disc(`A${n}C`, COLLAR_R, 1, `base stack A, layer ${n}, collar round the ridge slot (ridge slots lined up, on the marker side)`);
     i.hole('ridge slot', at(pocketHole(), COLLAR_R, COLLAR_R));
+    if (n < 5) i.text(`A${n}C`, 'micro', COLLAR_R, COLLAR_R + (12.3 + COLLAR_R) / 2, 0.7);
     if (n === 5)
       hidden(i, 'top of the collar, under the loose washers', COLLAR_R, COLLAR_R, 12.3, COLLAR_R, () => {
         circuitBand(i, COLLAR_R, 12.3, COLLAR_R, `A${n}C`);
@@ -130,8 +132,10 @@ export function makeParts(kerf: number): Parts {
         p.holeRound('hollow', R, R, SLICE_HOLE[k]);
         parts[id].face = 'down';
         hidden(p, 'inside of ring, downward face; glue only the blank reverse', R, R, SLICE_HOLE[k], R, () => {
-          if (k === 0) starfield(p, R, SLICE_HOLE[k], R);
-          else ringScene(p, R, SLICE_HOLE[k], R, (['suburb', 'moon', 'teleporter'] as const)[k - 1], id);
+          if (k === 0) {
+            starfield(p, R, SLICE_HOLE[k], R);
+            p.text(id, 'micro', R, 2, 0.5);
+          } else ringScene(p, R, SLICE_HOLE[k], R, (['suburb', 'moon', 'teleporter'] as const)[k - 1], id);
         });
       } else {
         p.hole('washer socket', at(decagon(WASHER.apothem + SOCKET_FIT), R, R));
@@ -157,10 +161,11 @@ export function makeParts(kerf: number): Parts {
         2 * wr,
         2 * wr,
         1,
-        `washer pair G${n}: ${bottom ? 'blank lower' : 'engraved upper'} washer; glue blank faces together, notch aligned`,
+        `washer pair G${n}: ${bottom ? 'ID-marked lower' : 'artwork upper'} washer; glue mating faces together, notch aligned`,
       );
       wash.outline(at(decagon(WASHER.apothem), wr, wr));
       wash.hole('bore and notch', at(washerHole(), wr, wr));
+      if (bottom) wash.text(id, 'micro', wr, wr + (WASHER.bore + WASHER.apothem) / 2 + 0.2, 0.6);
       if (!bottom)
         hidden(wash, 'upper washer face; glue only the blank reverse', wr, wr, WASHER.bore, WASHER.apothem, () => {
           circuitBand(wash, wr, WASHER.bore, WASHER.apothem, `G${n}`, n);

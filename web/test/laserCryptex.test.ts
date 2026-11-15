@@ -40,6 +40,13 @@ describe('cryptex stock sheets', () => {
       expect(svg).not.toMatch(/<text|font-family|transform=|#ff00ff|id="score"/);
     }
   });
+  it('emits every cut sheet with vector glyphs and no SVG text elements', () => {
+    for (const stock of ['12x12', '12x20'] as const) {
+      for (const s of (stock === '12x12' ? kit : buildCryptex(0.2, false, stock)).sheets) {
+        expect(s.sheet.svg(s.title)).not.toMatch(/<(?:[\w-]+:)?text(?:\s|>)/i);
+      }
+    }
+  });
   it.each(Object.keys(STOCK) as StockSize[])('places every part within the cutter margins on %s stock', (stock) => {
     const b = stock === '12x12' ? kit : buildCryptex(0.2, false, stock);
     expect(b.problems).toEqual([]);
@@ -224,10 +231,47 @@ describe('cryptex hollow and hidden engraving', () => {
     expect(words('A1')).toContain('TELEPORT-A-PHONE');
     expect(words('CORE0')).toContain('YOU FOUND IT. BZZZT!');
     expect(words('HEAD')).toContain('2000');
-    for (const id of ['A1', 'A5R', 'A5C', 'B1', 'C1', 'D1', 'B2', 'C2', 'D2', 'G1', 'G2', 'G3', 'G4']) expect(words(id)).toContain(id);
+    expect(words('E2')).not.toContain('E2');
+    for (const id of ['A1', 'A5R', 'A5C', 'B1', 'C1', 'D1', 'E1', 'B2', 'C2', 'D2', 'G1', 'G2', 'G3', 'G4']) expect(words(id)).toContain(id);
   });
-  it('leaves every buried glue face blank, including the lower washer layers and core wall slices', () => {
-    for (const key of ['A2R', 'A3R', 'A4R', 'A2C', 'A3C', 'A4C', 'G1B', 'G2B', 'G3B', 'G4B', 'CORER', 'COREC', 'LIDP']) {
+  it('engraves every required group part ID as filled paths in the packed build output', () => {
+    // Core slices, plugs, head and lid remain shape-distinct; every other group part needs an ID.
+    // E2 is ring 1's remaining digit slice after B2–D2 are placed; the legend identifies it without an ID.
+    const exempt = new Set(['CORE0', 'CORER', 'COREC', 'HEAD', 'LID', 'LIDP', 'E2']);
+    const keys = new Set(GROUPS.flatMap((g) => g.pieces.map((p) => p.key)));
+    for (const key of keys) {
+      if (exempt.has(key)) continue;
+      const p = kit.parts[key].part;
+      const label = p.elements.find((e) => e.name === `text ${key}`);
+      expect.soft(label, key).toBeDefined();
+      if (!label) continue;
+      expect(label.to - label.from, key).toBeGreaterThan(0);
+      // Serialize just the ID through the same placement as the real sheet, then parse the
+      // engraving paths. A metadata-only ID, missing packed label or wrong operation fails.
+      const id = new LaserSheet(p.sheet.w, p.sheet.h);
+      for (const item of p.sheet.items.slice(label.from, label.to)) {
+        expect(item.op, key).toBe('engrave');
+        expect(item.k, key).toBe('poly');
+        id.add(item);
+      }
+      for (const sheet of kit.sheets) {
+        for (const at of sheet.placed.filter((at) => at.name === key)) {
+          const placed = new LaserSheet(sheet.sheet.w, sheet.sheet.h);
+          placed.place(id, at.x + (at.turn === 90 ? p.h + 2 : -2), at.y - 2, undefined, at.turn);
+          const paths = (svg: string) => {
+            const engraving = svg.match(/<g id="engrave"[^>]*>([\s\S]*?)<\/g>/)![1];
+            return [...engraving.matchAll(/d="([^"]*)"/g)].flatMap((m) => m[1].match(/M[^M]+/g) ?? []);
+          };
+          const actual = new Set(paths(sheet.sheet.svg(sheet.title)));
+          const expected = paths(placed.svg(key));
+          expect(expected.length, key).toBeGreaterThan(0);
+          for (const path of expected) expect(actual.has(path), `${key}: ${path}`).toBe(true);
+        }
+      }
+    }
+  });
+  it('keeps core wall glue faces blank and allows small covered assembly IDs', () => {
+    for (const key of ['CORER', 'COREC', 'LIDP']) {
       expect(
         kit.parts[key].part.sheet.items.filter((i) => i.op === 'engrave'),
         key,
@@ -238,7 +282,7 @@ describe('cryptex hollow and hidden engraving', () => {
       expect(kit.parts[`G${n}B`].qty).toBe(1);
     }
     for (const [key, m] of Object.entries(kit.parts)) {
-      if (key === 'A1' || /^[BCDE]2$/.test(key)) continue; // exposed title and digits
+      if (key === 'A1' || /^[BCDE]2$/.test(key) || /^A[234][RC]$|^G[1-4]B$/.test(key)) continue; // exposed title/digits or small IDs on covered glue faces
       m.part.sheet.items.forEach((it, i) => {
         if (it.op === 'engrave')
           expect(
@@ -266,7 +310,11 @@ describe('cryptex hollow and hidden engraving', () => {
     const svg = assemblySvg();
     for (const t of ['Stack A: the base', 'Stack F: the core', 'G1 to G4', 'Final assembly', 'Set your own code', 'Part IDs']) expect(svg).toContain(t);
     expect(svg).toContain('artwork down');
-    for (const r of legend(0.2)) expect(r.where).not.toContain('glued face');
+    expect(legend(0.2).find((r) => r.id === '(E2)')).toMatchObject({
+      what: 'E2: the remaining digit slice, no ID',
+      where: 'ring 1: the only digit slice left after B2, C2 and D2 are placed',
+    });
+    for (const r of legend(0.2).filter((r) => /^A[234][RC]$|^G[1-4]B$/.test(r.id))) expect(r.where).toContain('glued face');
   });
 });
 

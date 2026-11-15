@@ -121,11 +121,12 @@ function idSpace(id: string, y: number): Box {
   return [-half - 1.5, y - 2.75, half + 1.5, y + 2.75];
 }
 
-/** Narrowest ring: tangent-aligned pixel twinkles and comet trails around the entire 4 mm rim. */
+/** Narrowest ring: tangent-aligned pixel twinkles and comet trails around the 4 mm rim, with a clear top gap for E1. */
 export function starfield(p: Part, c: number, inner: number, outer: number) {
   const radius = (inner + outer) / 2 + 0.2;
   const shapes: Pt[][] = [];
   for (let i = 0; i < 32; i++) {
+    if (i === 24) continue; // Reserve the top tangent for E1, clear of the neighboring artwork.
     const a = (i * Math.PI) / 16;
     const rows = i % 3 ? ['.#.', '###'] : ['.....#', '######'];
     for (const [x, y, w, h] of mergeRuns({ w: rows[0].length, h: rows.length, on: (x, y) => rows[y][x] === '#' })) {

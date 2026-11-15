@@ -101,7 +101,15 @@ export function buildCryptex(kerf = 0.2, checks = true, stock: StockSize = '12x1
   const clearance: Built['clearance'] = {};
   for (const m of Object.values(parts)) {
     const { part } = m;
-    clearance[part.name] = checks ? part.close() : [];
+    // E1's 4 mm rim carries 2.5 mm lettering: allow 0.5 mm to cuts for this ID only.
+    // Keep the normal cut/artwork and artwork/ID checks for everything else.
+    clearance[part.name] = checks
+      ? part.close().filter((c) => {
+          const other = c.a === 'text E1' ? c.b : c.b === 'text E1' ? c.a : '';
+          if (part.name !== 'E1' || (other !== 'outline' && other !== 'hole hollow')) return true;
+          return c.mm < 0.5;
+        })
+      : [];
     problems.push(...engravingProblems(part));
     for (const zone of m.hidden) {
       const pad = (part.size.w - part.w) / 2;

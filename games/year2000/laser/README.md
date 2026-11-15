@@ -51,9 +51,12 @@ area; a smaller share means a bigger reusable offcut. Sheet 1 is filled first.
   wood instead of 82,000.
 - **IDs.** The letter is the sub-assembly (A base stack, B to E rings 4 to 1, F core, G1 to G4 washer pairs, H head, I lid); the
   number counts layers from the bottom, with R (ring) and C (collar) for the two parts on a base layer (A2R, A2C). An ID is engraved
-  only on a face that ends up covered: the floor under the core, the glued face of a plain slice, a digit slice under the next ring up,
-  the glued face of a washer, a plate or a collar. The core slices, the plugs, ring 1's digit slice, the head and the lid have none
-  (too narrow, or bare on top). `cryptexGroups.ts` is the one list the assembly sheet and the desk's 3D view both read.
+  only on a face that ends up covered (never visible with the cryptex closed). Prefer a small, shallow ID on a covered glue
+  face, away from cut edges; otherwise use a clear spot on the hidden art face without overlapping artwork. Base layers
+  A2R–A4R and A2C–A4C use their upper glue faces, as do lower washers G1B–G4B. Other existing IDs use the floor under the
+  core or clear spaces on covered art faces. E1 has a small ID beside its artwork on the face that points down in assembly.
+  E2: the remaining digit slice, no ID. It is ring 1's only digit slice left after B2–D2 are placed.
+  The core slices, the plugs, the head and the lid have none (too narrow, or bare on top). `cryptexGroups.ts` is the one list the assembly sheet and the desk's 3D view both read.
 - **Sub-assemblies**, built apart and glued where they cure, then put together: the base stack A (slowest, carries the rest; a dry
   core lines up its collars), each ring B to E (glued to nothing else so it turns), the core F (it must be straight to slide), the
   washer pairs G (loose, so they lift and turn) and the lid I. Only the head H is glued onto the finished stack.
@@ -88,8 +91,9 @@ with continuous closed loops rather than unsupported tongues. Each core wall joi
 about 251 mm² of uninterrupted annular glue area. The core's 12-layer tube, paired ring
 slices, and four-layer base support the thin individual slices once cured. Alternate
 plywood grain between layers, support the loose pieces on their waste carrier, and glue
-on a flat surface under a weight. MDF needs that support too. No hidden decoration
-removes material from these glue lands. The washer's existing 3.1 mm notch ligament is
+on a flat surface under a weight. MDF needs that support too. Hidden decoration stays off
+these glue lands; small assembly IDs may be shallowly engraved on them. The washer's
+existing 3.1 mm notch ligament is
 unchanged and supported by its two-layer laminate.
 
 This is a design rationale, **not a measured breaking load or a guarantee for every sheet**.
@@ -118,34 +122,38 @@ radius includes the diagonal distance to the slot corners, so even there the wal
 Red `#FF0000` is cut stroke only. Blue `#0000FF` is engrave fill only; there is no score
 on wood. All art is on the face lying **up on the sheet**, engraved before cutting.
 There is no second laser pass or registration flip. Some parts are turned over **during
-assembly** so their engraved faces point down. Their blank reverse faces take the glue.
+assembly** so their engraved faces point down. Their reverse faces take the glue. Small
+covered IDs are allowed on glue faces; hidden artwork stays off them.
 
 | Part       | Engraved face in assembly | Hidden design and glue exclusion                                                                                                                                                                                       |
 | ---------- | ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | A1 floor   | Up                        | Large phone-booth teleporter, 32 radiating beams, pulse rings, stars and TELEPORT-A-PHONE in the hollow. Arrival booth and A1 beneath the removable core. Both regions avoid the collar and outer rim glue footprints. |
 | A5R, A5C   | Up                        | Circuit bands with nodes and stars on the last base layer, beneath loose rings/washers. The wide outer rim adds chip outlines, branches and parallel traces; the collar clears the ridge slot.                         |
 | B1, C1, D1 | Down                      | Full bands of teleporter booths and beams (B1), cratered moons (C1), and a suburb skyline with houses and stars (D1). IDs occupy a reserved gap; only the blank reverse glues to the digit slice.                      |
-| E1         | Down                      | A band of 32 pixel twinkles and comet trails in the narrow ring; no ID squeezed into its 4 mm wall.                                                                                                                    |
+| E1         | Down                      | A band of 31 pixel twinkles and comet trails in the narrow ring; E1 sits in a clear gap beside the artwork on this hidden face.                                                                                        |
 | B2, C2, D2 | Up                        | Larger teleporter, lunar and suburb panoramas under the next loose ring, inside the unchanged digit band.                                                                                                              |
-| G1–G4      | Up                        | Small circuit and star bands, IDs and clear notches on the upper washers. Glue blank G1B–G4B underneath, with notches aligned.                                                                                         |
+| G1–G4      | Up                        | Small circuit and star bands, IDs and clear notches on the upper washers. Glue ID-marked G1B–G4B underneath, with notches aligned; their IDs face up into the glue joint.                                              |
 | CORE0      | Up                        | YOU FOUND IT. BZZZT! on the inside floor, with BZZZT! curved along the bottom. The entire wall glue annulus stays blank.                                                                                               |
 | HEAD       | Down                      | Cratered moon, pixel stars, a segmented medallion rim and 2000 outside the core's glue annulus.                                                                                                                        |
 | LID        | Down                      | Cratered moon and stars with a segmented medallion rim around the central plug footprint; the lid top is blank.                                                                                                        |
 
 The A1 center picture is uncovered when the core is out; the other inner pictures appear
 as the unlocked kit is taken apart. CORE0 provides the core-slice picture. CORER and
-COREC wall slices, intermediate base layers and lower washer slices stay blank because
-their flat faces are glue joints. There is no engraving on a laser-inaccessible vertical
+COREC wall slices stay blank. Intermediate base layers A2R–A4R and A2C–A4C carry 3.5 mm
+IDs on their upper glue faces; lower washers G1B–G4B carry 3 mm IDs on their upper glue
+faces. There is no engraving on a laser-inaccessible vertical
 bore wall. Shapes are checked in their entirety against explicit unglued regions, including
 edges and filled interiors, not just vertices. Cut-to-engraving gaps remain at least 1 mm,
-or 1.5 mm at holes. IDs are omitted where hidden unglued space is too narrow; the assembly
+or 1.5 mm at holes, except E1's 2.5 mm ID on its 4 mm rim: its 0.5 mm pixels keep at
+least 0.5 mm from both cuts, with the neighboring artwork clear. IDs are omitted where hidden unglued space is too narrow; the assembly
 legend lists these parts in parentheses. Keep each unmarked piece with its labeled sheet
 position until assembly.
 
 `cryptexArt.ts` draws these hidden scenes separately from the cut geometry in
 `cryptexParts.ts`. Art uses filled square pixels at least **0.5 mm** wide, merged into
-rectangles with the shared laser bitmap helper. Hidden IDs use the existing micro font
-at 0.5 mm per pixel (2.5 mm capitals). Whole pixels stay inside the safe region; no clipped
+rectangles with the shared laser bitmap helper. IDs use the existing micro font at
+0.5–0.7 mm per pixel (2.5–3.5 mm capitals), with no SVG text or fonts on cut sheets.
+Whole pixels stay inside the safe region; no clipped
 slivers, strokes or fine outlined details are generated. The narrow starfield uses rotated
 rectangles to keep its pixels full width. The core message is one text block with 0.5 mm
 line gaps, like its letter gaps. There are no people or vehicles in the hidden pictures.
@@ -160,7 +168,8 @@ Measure stock thickness with calipers: all layers must use the same thickness. T
 assembly dimensions scale together if the stock measures closer to 3 mm.
 
 Build the base from A1 and four ring/collar layers, slots aligned to the reading marker.
-Glue only blank mating faces; keep the floor pictures clear. Build the four two-slice
+Glue the mating faces, including the small covered IDs; keep the floor pictures clear.
+Build the four two-slice
 rings, washer pairs, core and lid separately. CORE0 art faces into the bore. With the
 sub-assemblies dry, put core F in the base, slide rings and their loose washers down over
 it, largest first, and glue the head last, artwork down. Glue plugs only to the blank
