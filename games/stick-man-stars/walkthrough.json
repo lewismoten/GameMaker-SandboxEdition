@@ -8,19 +8,19 @@
  "segments": [
   {
    "scene": 2,
-   "keys": "AU1GzQM5ArkYTQ/NA00UzQNNFM0DOQK5GE0ZzQM5ArkYTRTNAzkCuRhND80DTRTNAzkCuRhNFM0DOQK5GE0ezQNN"
+   "keys": "AU1GzQM5CLkJTQ/NA00UzQNNFM0DOQi5CU0ZzQM5CLkJTRTNAzkIuQlND80DTRTNAzkIuQlNFM0DOQi5CU0ezQNN"
   },
   {
    "scene": 3,
-   "keys": "AU0yzQMcA5wtTSjNAxwDnC1NDTkCuQrNDU0FzQNNBc0DTQPNCU0KzQMcA5wtTTfNAxwDnEtNMs0DHAOcLU0jzQNLGcsDOQK5GE0="
+   "keys": "AU0yzQMcA5wtTSjNAxwDnC1NDTkIuQrNA00FzQNNBc0DTQPNCU0KzQMcA5wtTTfNAxwDnEtNMs0DHAOcLU0jzQNLGcsDOQi5CU0="
   },
   {
    "scene": 4,
-   "keys": "AU1GzRgcA5wtTTzNAxwDnC1NPM0DHAOcVBwDnC1NI80DOQK5GE0UzQMcA5wtTSPNAxwDnEtNU80wTSDNA00="
+   "keys": "AU1GzRgcA5wtTTzNAxwDnC1NPM0DHAOcVBwDnC1NI80DOQi5CU0UzQMcA5wtTSPNAxwDnEtNU80wTSDNA00="
   },
   {
    "scene": 5,
-   "keys": "AU0jzQMcA5wtTTfNNhwDnC1NHs17HAOcLU0tzQMcA5wtTR7NHhwDnC1NCs0DOQK5GE0ezQMcA5wtHAOcLRwDnEtNbs0DTQ=="
+   "keys": "AU0jzQMcA5wtTTfNNhwDnC1NHs17HAOcLU0tzQMcA5wtTR7NHhwDnC1NCs0DOQi5CU0ezQMcA5wtHAOcLRwDnEtNbs0DTQ=="
   }
  ],
  "chapters": [
@@ -43,7 +43,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 17076,
+  "frames": 17278,
   "chapters": [
    {
     "title": "Opening",
@@ -62,28 +62,28 @@
    },
    {
     "title": "Level 2: Main Street",
-    "frame": 3983,
-    "time": 66383.33333332976
+    "frame": 3805,
+    "time": 63416.666666663165
    },
    {
     "title": "Level 3: Shy Street",
-    "frame": 6457,
-    "time": 107616.6666666751
+    "frame": 6236,
+    "time": 103933.33333334069
    },
    {
     "title": "Level 4: Spam Row",
-    "frame": 9573,
-    "time": 159549.9999999987
+    "frame": 9323,
+    "time": 155383.33333333445
    },
    {
     "title": "Ending",
-    "frame": 13147,
-    "time": 219116.66666663068
+    "frame": 12868,
+    "time": 214466.6666666334
    },
    {
     "title": "Credits",
-    "frame": 15524,
-    "time": 258733.3333332743
+    "frame": 15245,
+    "time": 254083.333333277
    }
   ]
  }
