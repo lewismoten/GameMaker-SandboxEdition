@@ -63,12 +63,14 @@ function wall(g: Grid, x: number, ground: number, top: string, gate: string, fro
 }
 
 /** The ground, the hedges at both ends, the entrance at x 3 and the exit at x `exitX`. */
-function frame(width: number, exitX: number): { g: Grid; GROUND: number } {
+function frame(width: number, exitX: number, raised = true): { g: Grid; GROUND: number } {
   const g = new Grid(width, 15);
   const GROUND = 10;
   g.row(GROUND, 0, width - 1, 'G').fill(0, GROUND + 1, width, 4, 'D');
   g.col(0, 0, 9, 'X').col(width - 1, 0, 9, 'X');
-  g.put(3, 8, 's').put(3, 9, 'S');
+  // The tall green-key route keeps its original opening; flat paths start on turf.
+  if (raised) g.put(3, 8, 'G').put(3, 9, 'D');
+  g.put(3, raised ? 6 : 8, 's').put(3, raised ? 7 : 9, 'S');
   g.put(exitX, 8, 'e').put(exitX, 9, 'E');
   return { g, GROUND };
 }
@@ -121,7 +123,7 @@ function spareFits(book: Book, signs: Record<SignName, Sign>): StarterMap {
 
 /** Level 3: not that key. 46 blocks wide. A green door (counter 22) met first; the green key on a ledge over it; later a gold door. */
 function notThat(book: Book, signs: Record<SignName, Sign>): StarterMap {
-  const { g, GROUND } = frame(46, 42);
+  const { g, GROUND } = frame(46, 42, false);
   // the green door in a wall (the arch and door are put below); the key on a ledge in sight, a ladder on the near side
   g.col(24, 0, GROUND - 3, 'B');
   g.row(3, 16, 23, 'G').fill(16, 4, 8, 1, 'D');

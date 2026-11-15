@@ -121,7 +121,9 @@ export const BOARD = {
 function board(book: Book, signs: Record<SignName, Sign>): StarterMap {
   const { jump } = BOARD;
   const g = base(50);
-  g.put(BOARD.start, 8, 's').put(BOARD.start, 9, 'S');
+  // One-way entrance planks let Kit walk back underneath to the replay door.
+  g.put(BOARD.start, 8, '=').put(BOARD.start, 9, '=');
+  g.put(BOARD.start, 6, 's').put(BOARD.start, 7, 'S');
   g.put(BOARD.again, 8, 'e').put(BOARD.again, 9, 'E');
   g.put(BOARD.exit, 8, 'e').put(BOARD.exit, 9, 'E');
   scenery(
@@ -167,7 +169,9 @@ export const FEEDBACK = {
 function feedback(book: Book, signs: Record<SignName, Sign>): StarterMap {
   const f = FEEDBACK;
   const g = base(62);
-  g.put(3, 8, 's').put(3, 9, 'S');
+  // A two-row turf step supports Kit at the raised entrance, clear of the signs.
+  g.put(3, 8, 'G').put(3, 9, 'D');
+  g.put(3, 6, 's').put(3, 7, 'S');
   g.put(f.exit, 8, 'e').put(f.exit, 9, 'E');
   for (const x of f.coins) g.put(x, 9, 'c');
   g.put(f.key, 9, 'k');
