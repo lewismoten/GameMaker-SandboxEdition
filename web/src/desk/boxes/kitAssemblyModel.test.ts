@@ -1,6 +1,7 @@
 // Regressions for physical inventory, sliding poses, cut holes and the builders' assembly text.
 import { describe, expect, it } from 'vitest';
 import { assemblyModel, poseAt } from './kitAssemblyModel';
+import { T } from '../../../../games/year2000/laser/cryptexDims';
 import { makeParts as cryptexParts } from '../../../../games/year2000/laser/cryptexParts';
 import { makeParts as plowedParts } from '../../../../games/snowbound/laser/plowedParts';
 import { assemblySvg as cryptexInstructions } from '../../../../games/year2000/laser/cryptexSteps';
@@ -66,10 +67,12 @@ describe('cryptex sub-assemblies', () => {
   const m = assemblyModel('cryptex');
   const at = (name: string) => m.parts.find((p) => p.name === name)!;
   it('seats the base layers, rings and head at the heights of the lock', () => {
-    expect(m.parts.filter((p) => /^A\dR$/.test(p.name)).map((p) => p.origin[2])).toEqual([3, 6, 9, 12]);
-    expect(at('B1').origin[2]).toBe(15);
-    expect(at('E2').origin[2]).toBe(36);
-    expect(at('HEAD').origin[2]).toBe(39);
+    // Heights are whole layers of the cryptex stock (T mm each).
+    const layers = (z: number) => Math.round((z / T) * 1000) / 1000;
+    expect(m.parts.filter((p) => /^A\dR$/.test(p.name)).map((p) => layers(p.origin[2]))).toEqual([1, 2, 3, 4]);
+    expect(layers(at('B1').origin[2])).toBe(5);
+    expect(layers(at('E2').origin[2])).toBe(12);
+    expect(layers(at('HEAD').origin[2])).toBe(13);
     expect(at('CORE0').cut).toHaveLength(1);
     expect(m.parts.filter((p) => p.name === 'COREC').every((p) => p.cut.length === 2)).toBe(true);
   });
