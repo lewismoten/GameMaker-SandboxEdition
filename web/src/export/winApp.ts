@@ -13,6 +13,7 @@
 // It comes as the .exe itself, or in a .zip. It is not code-signed (that needs a paid
 // certificate and the author's private key), so Windows SmartScreen asks to confirm the
 // first time (the Download chooser, editor/shell/download.ts, and the #/windows page say how).
+import { requireOfflineFile } from '../offline/availability';
 import { createZip } from '@lewismoten/gamemaker-sandbox-archives/zip';
 import { SITE_URL } from '../seo/site';
 import { readResources, writeResources, RT, type PeResource } from './peResources';
@@ -221,6 +222,7 @@ export async function preferredArch(): Promise<WinArch> {
 
 /** The player program, from where the web app is served. */
 export async function fetchWinPlayer(arch: WinArch = 'x64', appBase = new URL('./', location.href).href): Promise<Uint8Array> {
+  await requireOfflineFile(new URL(WIN_PLAYER_PATHS[arch], appBase).href);
   const res = await fetch(new URL(WIN_PLAYER_PATHS[arch], appBase)).catch(() => undefined);
   if (!res?.ok) throw new Error('Could not load the Windows player. Reload Game-Maker: Sandbox Edition while online and try again.');
   return new Uint8Array(await res.arrayBuffer());

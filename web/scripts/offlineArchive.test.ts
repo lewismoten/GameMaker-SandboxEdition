@@ -33,7 +33,15 @@ it('emits a production manifest without an archive and no offline ZIP', () => {
   expect(JSON.parse(String(manifest.source))).toEqual({
     version: expect.any(String),
     shell: expect.arrayContaining(['./']),
-    files: expect.arrayContaining([['index.html', expect.any(Number), expect.any(Number)]]),
+    files: expect.arrayContaining([
+      expect.objectContaining({
+        path: 'index.html',
+        tier: 'core',
+        stored: expect.any(Number),
+        wire: expect.any(Number),
+        sha256: expect.stringMatching(/^[a-f0-9]{64}$/),
+      }),
+    ]),
   });
   expect(emitted.some((file) => /^offline\..*\.zip$/.test(file.fileName ?? ''))).toBe(false);
 });

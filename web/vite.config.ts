@@ -12,6 +12,7 @@ import { singlePagePlayer } from './scripts/singlePageBuild';
 import { hostedPlayer } from './scripts/hostedPlayerBuild';
 import { seoPages } from './scripts/seoBuild';
 import { devLog } from './scripts/devLog';
+import { offlineInventory } from './scripts/offlineManifest';
 
 const publicDir = resolve(__dirname, 'public');
 
@@ -166,22 +167,21 @@ function offline(): Plugin {
         const assets = built.filter(isHashed).sort();
         const version = hashText(JSON.stringify([groups, assets]));
         this.emitFile({ type: 'asset', fileName: 'sw.js', source: siteWorkerSource({ version, precache, groups, assets }) });
-        const files = offlineFiles(bundle);
         const read = (path: string): Uint8Array => {
           const item = bundle[path];
           const source = item ? (item.type === 'chunk' ? item.code : item.source) : readFileSync(resolve(publicDir, path));
           return typeof source === 'string' ? new TextEncoder().encode(source) : source;
         };
-        // Include the complete shell, especially index.html, in the replacement snapshot.
-        for (const path of precache.map((f) => (f === './' ? 'index.html' : f.replace(/^\.\//, '')))) {
-          if (!files.some(([f]) => f === path)) {
-            const data = read(path);
-            files.push([path, TEXT_FILE.test(path) ? gzipSync(data, { level: 6 }).length : data.length, data.length]);
-          }
-        }
-        files.sort(([a], [b]) => (a < b ? -1 : 1));
-        // Full offline ZIPs are paused until per-file downloads with selectable tiers land.
+        const { files, extras } = offlineInventory(
+          [...publicTree(), ...Object.keys(bundle)],
+          read,
+          cdSecretCatalog(resolve(__dirname, '../cd')).map((e) => e.path),
+        );
         this.emitFile({ type: 'asset', fileName: 'offline.json', source: JSON.stringify({ version, shell: precache, files }) });
+        for (const [dir, privateFiles] of extras) {
+          // Only an already-revealed catalog entry tells a browser where to request this.
+          this.emitFile({ type: 'asset', fileName: `${dir}offline.json`, source: JSON.stringify(privateFiles) });
+        }
         // every file for archive.html: the offline copy's list and what it leaves out (previews, firmware, crawler files)
         this.emitFile({ type: 'asset', fileName: 'archive.json', source: JSON.stringify({ version, shell: precache, files: offlineFiles(bundle, true) }) });
         const player = playerGraph(bundle);

@@ -65,6 +65,7 @@ game folder opens in the browser unchanged.
 ## Credits
 
 - **Starter held-rise rollout (batch B, November 15, 2026)**: OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, applied the approved First Steps jump and bot timing to Smash It, Coins and Score, Color Doors, Countdown, Cutscenes, Day and Night, and Everybody Talks, and refreshed their walkthroughs and level-view metadata. No new third-party material was added.
+- **Offline download tiers (November 15, 2026)**: OpenAI Codex, directed by Lewis Moten, wrote the per-file manifest, resumable verified downloads, tier selection, offline availability messages, tests and documentation. No new third-party code or assets were added.
 
 - **Source documentation review (part 16)**: **Hermes Agent running OpenAI Codex GPT-6.1 Sol**, directed by Lewis Moten, checked the desk-buddy, disk-box, phone-viewer and outside-window READMEs against the source and corrected disk entry points, label-loading scope, Eject ownership and phone-thumbnail imports. The desk-buddy and outside-window READMEs needed no correction. No implementation or third-party material changed.
 

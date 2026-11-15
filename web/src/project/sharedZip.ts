@@ -1,6 +1,7 @@
 // A hosted game's ZIP when the build split it (project/zipParts.ts, catalog "parts"): its .zpart
 // file and the shared data it names (games/shared/<name>.bin), fetched and joined back into the
 // very same bytes the ZIP had. Every reader of a game's ZIP comes here through fetchGameZip.
+import { requireOfflineFile } from '../offline/availability';
 import { fetchArchive } from './archiveWait';
 import { decodePart, joinPart } from './zipParts';
 
@@ -39,6 +40,7 @@ function fetchBlob(url: string, name: string, signal?: AbortSignal | null): Prom
  * joined here; a missing or wrong piece gives a failed Response (status 502), as a missing ZIP would.
  */
 export async function fetchGameZip(entry: { path: string; pack?: string; parts?: string }, base = './', init?: RequestInit): Promise<Response> {
+  await requireOfflineFile(`${base}${entry.path}${entry.parts ?? entry.pack}`);
   if (!entry.parts) return fetchArchive(`${base}${entry.path}${entry.pack}`, init);
   const res = await fetchArchive(`${base}${entry.path}${entry.parts}`, init);
   if (!res.ok) return res;

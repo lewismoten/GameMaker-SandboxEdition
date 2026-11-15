@@ -1,22 +1,31 @@
-// "Make available offline": the whole site in the service worker's cache at once, for a
-// visitor who asks (the web's Offline dialog, offlineDialog.ts; OFFLINE.EXE on the desk PC).
-// Otherwise everything is cached the first time it is used (siteWorker.ts).
-//
-// When enabled, the build packs the files into one ZIP (offline.json names it, vite.config.ts offlineFiles): the code for every
-// part of the site, every listed game as its one-file pack, the boxes', manuals' and desk's
-// data and pictures. A secret game is in no list: once it is revealed in this browser its pack
-// is added from the catalog, and nothing here ever names it.
+// Explicit offline tier selection, storage estimates and resumable installation for both interfaces.
 import { loadCatalogList } from '../project/files';
 import { unlockAchievement } from '../achievements';
-import { installArchive, offlineLock, offlineNames, readOfflineCopy, type OfflineManifest } from './archiveStore';
+import {
+  installFiles,
+  offlineLock,
+  offlineNames,
+  readOfflineCopy,
+  findVerified,
+  reusableStores,
+  fourWorkers,
+  verified,
+  stageName,
+  contentHash,
+} from './archiveStore';
+import { offlineTiers, selectedFiles, type OfflineFile, type OfflineManifest, type OfflineTier } from './tiers';
 
 /** localStorage: the copy was asked for: "started", or the version (offline.json) it was finished for. */
 const WANTED_KEY = 'gm-offline';
+const SELECTION_KEY = 'gm-offline-tiers';
 
-interface OfflineFile {
-  path: string;
-  wire: number;
-  stored: number;
+function savedTiers(): OfflineTier[] | undefined {
+  try {
+    const value: unknown = JSON.parse(localStorage.getItem(SELECTION_KEY) ?? 'null');
+    return Array.isArray(value) ? value.filter((t: unknown): t is OfflineTier => typeof t === 'string' && Object.hasOwn(offlineTiers, t)) : undefined;
+  } catch {
+    return undefined;
+  }
 }
 
 export interface OfflineStatus {
@@ -27,9 +36,9 @@ export interface OfflineStatus {
   files: OfflineFile[];
   /** offline.json's version. */
   version?: string;
-  archive?: OfflineManifest['archive'];
-  /** Public manifest entries; additional files are already-revealed private games. */
-  archiveFiles?: OfflineManifest['files'];
+  manifest?: OfflineManifest;
+  tiers: OfflineTier[];
+  tierFiles: OfflineFile[];
   /** The app shell (offline.json shell): kept when the copy is removed. */
   shell: string[];
   /** Files not in the cache yet, and what they cost. */
@@ -62,17 +71,26 @@ async function loadManifest(): Promise<OfflineManifest | undefined> {
 }
 
 /** The list, with the pack of a secret game revealed in this browser (the full catalog has it then; the list never does). */
-async function wantedFiles(m: OfflineManifest): Promise<OfflineFile[]> {
-  const files = m.files.map(([path, wire, stored]) => ({ path, wire, stored }));
-  const listed = new Set(files.map((f) => f.path));
+async function wantedFiles(m: OfflineManifest, tiers: OfflineTier[]): Promise<OfflineFile[]> {
+  const files = selectedFiles(m.files, tiers);
+  if (!tiers.includes('games')) return files;
+  const listed = new Set(m.files.map((f) => f.path));
   const catalog = await loadCatalogList().catch(() => []);
   for (const g of catalog) {
-    if (!g.pack) continue;
-    // a game shipped split lists its .zpart file and shared data in offline.json already (project/sharedZip.ts)
-    const path = `${g.path}${g.parts ?? g.pack}`;
-    if (!listed.has(path)) files.push({ path, wire: g.packBytes ?? g.bytes ?? 0, stored: g.packBytes ?? g.bytes ?? 0 });
-    const walk = g.walkthrough && `${g.walkthrough}.gz`;
-    if (walk && !listed.has(walk)) files.push({ path: walk, wire: 0, stored: 0 });
+    if (!g.pack || listed.has(`${g.path}${g.parts ?? g.pack}`)) continue;
+    // This descriptor is never linked by the public inventory; only revealed entries reach it.
+    const res = await fetch(urlOf(`${g.path}offline.json`), { cache: 'no-cache' });
+    if (!res.ok) throw new Error('Could not read the revealed game inventory.');
+    const descriptor = await res.arrayBuffer();
+    const extra = JSON.parse(new TextDecoder().decode(descriptor)) as OfflineFile[];
+    files.push({
+      path: `${g.path}offline.json`,
+      wire: descriptor.byteLength,
+      stored: descriptor.byteLength,
+      sha256: await contentHash(descriptor),
+      tier: 'games',
+    });
+    for (const f of extra) if (!files.some((old) => old.path === f.path)) files.push(f);
   }
   return files;
 }
@@ -89,8 +107,10 @@ function copyBefore(version: string): OfflineStatus['copy'] {
 /** `version`: the copy is finished for it; true: started; false: removed. */
 function rememberCopy(state: string | boolean): void {
   try {
-    if (state === false) localStorage.removeItem(WANTED_KEY);
-    else localStorage.setItem(WANTED_KEY, state === true ? 'started' : state);
+    if (state === false) {
+      localStorage.removeItem(WANTED_KEY);
+      localStorage.removeItem(SELECTION_KEY);
+    } else localStorage.setItem(WANTED_KEY, state === true ? 'started' : state);
   } catch {
     /* private mode: only the wording changes */
   }
@@ -100,20 +120,6 @@ async function storageEstimate(): Promise<{ usage?: number; quota?: number; pers
   const s = navigator.storage;
   const [est, persisted] = await Promise.all([s?.estimate?.().catch(() => undefined), s?.persisted?.().catch(() => undefined)]);
   return { usage: est?.usage, quota: est?.quota, persisted };
-}
-
-/** Paths in the site's cache now. */
-async function cachedPaths(version: string): Promise<Set<string>> {
-  const base = siteBase().href;
-  const copy = await readOfflineCopy(base);
-  if (copy?.version !== version) return new Set();
-  const cache = await caches.open(copy.cache);
-  return new Set(
-    (await cache.keys())
-      .map((r) => r.url.split('?')[0])
-      .filter((u) => u.startsWith(base))
-      .map((u) => decodeURIComponent(u.slice(base.length))),
-  );
 }
 
 const empty = (reason: string): OfflineStatus => ({
@@ -127,39 +133,54 @@ const empty = (reason: string): OfflineStatus => ({
   ready: false,
   copy: 'none',
   shell: [],
+  tiers: ['core'],
+  tierFiles: [],
 });
 
 /** What a copy would cost, and how much of it is here already. */
-export async function offlineStatus(): Promise<OfflineStatus> {
+export async function offlineStatus(selection?: OfflineTier[]): Promise<OfflineStatus> {
   if (typeof caches === 'undefined' || !('serviceWorker' in navigator) || !navigator.locks) return empty('This browser cannot keep the site for offline use.');
   const m = await loadManifest();
-  if (!m) return empty(navigator.onLine === false ? 'You are offline: connect to make an offline copy.' : 'Offline copies are made on the published site.');
-  if (!m.archive) return empty('Offline copies are coming back in a later update.');
-  const [files, have, est] = await Promise.all([wantedFiles(m), cachedPaths(m.version), storageEstimate()]);
+  if (!m || !m.files.every((f) => typeof f.path === 'string' && typeof f.sha256 === 'string'))
+    return empty(navigator.onLine === false ? 'You are offline: connect to update the offline inventory.' : 'Offline copies are made on the published site.');
+  const base = siteBase().href;
+  const copy = await readOfflineCopy(base);
+  const tiers = [...new Set<OfflineTier>(['core', ...(selection ?? savedTiers() ?? copy?.tiers ?? ['core'])])];
+  const [files, stores, est] = await Promise.all([wantedFiles(m, tiers), reusableStores(base), storageEstimate()]);
+  const have = new Set<string>();
+  const committed = new Set<string>();
+  const pending = new Set<string>();
+  const current = copy ? await caches.open(copy.cache) : undefined;
+  const target = await stageName(base, m.version, files);
+  const staged = (await caches.keys()).filter((k) => k === target);
+  const stages = await Promise.all(staged.map((k) => caches.open(k)));
+  await fourWorkers(files, async (file) => {
+    if (await findVerified(base, file, stores)) have.add(file.path);
+    if (current && (await verified(await current.match(urlOf(file.path)), file))) committed.add(file.path);
+    if (await findVerified(base, file, stages)) pending.add(file.path);
+  });
   const missing = files.filter((f) => !have.has(f.path));
-  const sum = (list: OfflineFile[], k: 'wire' | 'stored') => list.reduce((a, f) => a + f[k], 0);
+  const sum = (list: OfflineFile[], k: 'wire' | 'stored') => list.reduce((n, f) => n + f[k], 0);
+  const sameSelection = copy?.tiers && tiers.length === copy.tiers.length && tiers.every((t) => copy.tiers!.includes(t));
+  const ready = copy?.version === m.version && committed.size === files.length && !!sameSelection;
   return {
     supported: true,
     files,
-    shell: m.shell.map((f) => (f === './' ? '' : f.replace(/^\.\//, ''))),
+    manifest: m,
+    tiers,
+    tierFiles: m.files,
+    shell: m.shell,
     missing,
-    wireTotal:
-      m.archive.bytes +
-      sum(
-        files.filter((f) => !m.files.some(([path]) => path === f.path)),
-        'wire',
-      ),
-    wireMissing: missing.length
-      ? m.archive.bytes +
-        sum(
-          files.filter((f) => !m.files.some(([path]) => path === f.path)),
-          'wire',
-        )
-      : 0,
-    storedMissing: missing.length ? sum(files, 'stored') : 0,
-    archive: m.archive,
-    archiveFiles: m.files,
-    ready: missing.length === 0,
+    wireTotal: sum(files, 'wire'),
+    wireMissing: sum(missing, 'wire'),
+    // Cache API snapshots duplicate reused bodies while the old complete copy is protected.
+    storedMissing: ready
+      ? 0
+      : sum(
+          files.filter((f) => !pending.has(f.path)),
+          'stored',
+        ),
+    ready,
     version: m.version,
     copy: copyBefore(m.version),
     ...est,
@@ -167,7 +188,7 @@ export async function offlineStatus(): Promise<OfflineStatus> {
 }
 
 export interface OfflineProgress {
-  phase?: 'download' | 'extract';
+  phase?: 'download';
   done: number;
   total: number;
   bytes: number;
@@ -177,7 +198,7 @@ export interface OfflineProgress {
 type OfflineResult = { ok: true } | { ok: false; reason: 'canceled' | 'quota' | 'network' | 'space'; message: string };
 
 /** How many games the copy holds: each is one pack (.zip, or a split one's .zpart; .gmpak for older builds) under games/. */
-export function gameCount(status: Pick<OfflineStatus, 'files'>): number {
+export function gameCount(status: { files: { path: string }[] }): number {
   return status.files.filter((f) => /^games\/.*\.(zip|zpart|gmpak)$/.test(f.path)).length;
 }
 
@@ -188,24 +209,28 @@ export function hasRoom(status: Pick<OfflineStatus, 'usage' | 'quota'>, bytes: n
 
 const isQuota = (e: unknown) => e instanceof DOMException && (e.name === 'QuotaExceededError' || e.name === 'NS_ERROR_DOM_QUOTA_REACHED');
 
-/** Downloads the single public ZIP and atomically replaces the prepared copy. */
+/** Downloads selected files and atomically replaces the prepared copy. */
 export async function makeOffline(status: OfflineStatus, onProgress: (p: OfflineProgress) => void, signal: AbortSignal): Promise<OfflineResult> {
   if (!hasRoom(status, status.storedMissing)) return { ok: false, reason: 'space', message: 'There is not enough storage space for this browser to keep it.' };
-  if (!status.archive || !status.version) return { ok: false, reason: 'network', message: 'Reload the published site before making an offline copy.' };
+  if (!status.manifest || !status.version) return { ok: false, reason: 'network', message: 'Reload the published site before making an offline copy.' };
   await navigator.storage?.persist?.().catch(() => false);
   if (status.copy !== 'outdated') rememberCopy(true);
-  const files = status.archiveFiles ?? status.files.map((f): [string, number, number] => [f.path, f.wire, f.stored]);
-  const listed = new Set(files.map(([path]) => path));
-  const extras = status.files.filter((f) => !listed.has(f.path)).map((f): [string, number, number] => [f.path, f.wire, f.stored]);
-  const manifest: OfflineManifest = { version: status.version, shell: status.shell, files, archive: status.archive };
   try {
-    await offlineLock(siteBase().href, () => installArchive(siteBase().href, manifest, extras, onProgress, signal));
+    localStorage.setItem(SELECTION_KEY, JSON.stringify(status.tiers));
+  } catch {
+    /* storage may be disabled */
+  }
+  const listed = new Set(status.manifest.files.map((f) => f.path));
+  const extras = status.files.filter((f) => !listed.has(f.path));
+  try {
+    await offlineLock(siteBase().href, () => installFiles(siteBase().href, status.manifest!, extras, status.tiers, onProgress, signal));
     rememberCopy(status.version);
     unlockAchievement('offline-copy');
     return { ok: true };
   } catch (e) {
+    console.warn('Offline copy stopped:', e);
     const kept = 'Any previous complete offline copy is still kept.';
-    if (signal.aborted) return { ok: false, reason: 'canceled', message: `Stopped. ${kept} Try again to download the archive from the start.` };
+    if (signal.aborted) return { ok: false, reason: 'canceled', message: `Stopped. ${kept} Try again to resume the verified files.` };
     if (isQuota(e)) return { ok: false, reason: 'quota', message: `The browser ran out of room. ${kept}` };
     return { ok: false, reason: 'network', message: `The offline download could not finish. ${kept} Try again when connected.` };
   }
@@ -226,6 +251,7 @@ export async function removeOffline(_status: OfflineStatus): Promise<void> {
 
 /** "31.2 MB" */
 export function sizeText(bytes: number): string {
+  if (bytes === 0) return '0 KB';
   if (bytes < 1024 * 1024) return `${Math.max(1, Math.round(bytes / 1024))} KB`;
   if (bytes < 1024 ** 3) return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
   return `${(bytes / 1024 ** 3).toFixed(1)} GB`;

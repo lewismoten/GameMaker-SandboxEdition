@@ -43,10 +43,10 @@ function harness(version: string) {
     Set,
   });
   const lifecycle = (type: string) => new Promise<void>((resolve, reject) => handlers.get(type)!({ waitUntil: (p: Promise<void>) => p.then(resolve, reject) }));
-  const request = (path: string, mode = 'cors') =>
+  const request = (path: string, mode = 'cors', cache = 'default') =>
     new Promise<Response>((resolve, reject) =>
       handlers.get('fetch')!({
-        request: { url: base + path, method: 'GET', mode, headers: new Headers() },
+        request: { url: base + path, method: 'GET', mode, cache, headers: new Headers() },
         respondWith: (p: Promise<Response>) => p.then(resolve, reject),
       }),
     );
@@ -102,5 +102,15 @@ it('falls back to the old complete snapshot after a deployment when offline', as
   await seed(h, 'one');
   await (await h.caches.open('gm-site-v2')).put(base, new Response('new shell'));
   expect(await (await h.request('', 'navigate')).text()).toBe('old home');
+  expect(await (await h.request('assets/old.js')).text()).toBe('old code');
+});
+
+it('bypasses both the committed copy and browsing cache for verified update acquisition', async () => {
+  const h = harness('one');
+  await seed(h, 'one');
+  await (await h.caches.open('gm-site-v2')).put(base + 'assets/old.js', new Response('stale browsing'));
+  h.fetcher.mockImplementation(async () => new Response('changed deployment'));
+  expect(await (await h.request('assets/old.js', 'cors', 'no-store')).text()).toBe('changed deployment');
+  expect(h.fetcher).toHaveBeenCalledTimes(1);
   expect(await (await h.request('assets/old.js')).text()).toBe('old code');
 });
