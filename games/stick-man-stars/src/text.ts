@@ -21,9 +21,11 @@ export const HOWTO = wrap(`
 |HOW TO PLAY
 
 |LEFT, RIGHT   walk
-|SPACE         jump
+|SPACE         hold to rise
 |ENTER         throw a star
 |F2            lives, score
+
+Hold Space to rise. Release to steer. Land before jumping again.
 
 On the hill, jump up to pick bright stars out of the sky. Leave five to light the path to town.
 
@@ -46,6 +48,8 @@ Design, pixels, beeps, music and levels by Claude Sonnet 5.5, an AI model made b
 Lighting chime, confetti, ending cartoon and quiet garden by Hermes / OpenAI Codex GPT-6.1 Sol, directed by Lewis Moten.
 
 Longer fork, paper openings and pencil gate surrounds by OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten.
+
+Held-rise controls and bot timing by OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten.
 
 Made with GAME-MAKER 3.0 from Recreational Software Designs.
 

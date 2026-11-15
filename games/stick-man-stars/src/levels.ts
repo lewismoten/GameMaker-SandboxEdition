@@ -96,7 +96,7 @@ function base(width: number, exitX: number): Grid {
   const g = new Grid(width, 15);
   g.row(GROUND, 0, width - 1, 'G').fill(0, GROUND + 1, width, 4, 'D');
   g.col(0, 0, 9, 'B').col(width - 1, 0, 9, 'B');
-  // a crosshatched pencil ceiling: Space can be pressed in the air again and again, so without it he climbs out over the walls and the tunnels
+  // The existing crosshatched pencil ceiling encloses the walls and tunnels.
   g.row(0, 0, width - 1, 'B');
   g.put(3, 8, 's').put(3, 9, 'S');
   g.put(exitX, 8, 'e').put(exitX, 9, 'E');
@@ -153,7 +153,7 @@ function stargazingHill(w: World): StarterMap {
   const g = base(L0.width, L0.exit);
   tunnel(g, L0.tunnel[0], L0.tunnel[1]);
   // the screen never scrolls up or down here (game.ts), so the crosshatched pencil ceiling comes down to row 3, just above
-  // the top of the screen: however often Space is pressed in the air, Stick Man stays in sight
+  // the top of the screen, keeping the pencil border out of the visible sky
   g.fill(1, 0, L0.width - 2, L0.ceiling + 1, 'B');
   for (const x of [24, 42]) g.put(x, GROUND - 1, 'b');
   const m = new StarterMap(w.book, g.rows());
