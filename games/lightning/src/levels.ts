@@ -101,7 +101,9 @@ function flashAndRumble(pal: Pal): Level {
   const g = new Grid(44, 15);
   g.row(GROUND, 0, 43, 'G').fill(0, GROUND + 1, 44, 3, 'D');
   g.col(0, 0, GROUND - 1, 'X').col(43, 0, GROUND - 1, 'X');
-  g.put(3, GROUND - 2, 's').put(3, GROUND - 1, 'S');
+  // A two-row turf ledge lifts the opening sky before the walk across the field.
+  g.put(3, GROUND - 2, 'G').put(3, GROUND - 1, 'D');
+  g.put(3, GROUND - 4, 's').put(3, GROUND - 3, 'S');
   g.put(40, GROUND - 2, 'e').put(40, GROUND - 1, 'E');
   for (const x of [10, 31]) g.put(x, GROUND - 1, 'b');
   for (const x of [17, 28, 36]) g.put(x, GROUND - 1, 'f');
@@ -128,6 +130,7 @@ function lightTheWay(pal: Pal): Level {
   g.row(GROUND + 2, ditch[0], ditch[1], 'G').fill(ditch[0], GROUND + 3, ditch[1] - ditch[0] + 1, 1, 'D');
   g.put(ditch[0], GROUND + 1, 'D'); // the step out, on the left
   g.col(0, 0, GROUND - 1, 'X').col(45, 0, GROUND - 1, 'X');
+  // Keep this entrance low: raising the fixed view clips Mia in the two-row ditch.
   g.put(2, GROUND - 2, 's').put(2, GROUND - 1, 'S');
   g.put(42, GROUND - 2, 'e').put(42, GROUND - 1, 'E');
   for (const x of [30, 39]) g.put(x, GROUND - 1, 'f');

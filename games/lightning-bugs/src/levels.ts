@@ -111,12 +111,14 @@ function meadow(pal: Pal, book: Book, signBook: Book, width: number, exit: numbe
   const g = new Grid(width, HEIGHT);
   g.row(GROUND, 0, width - 1, 'G').fill(0, GROUND + 1, width, HEIGHT - GROUND - 1, 'D');
   g.col(0, 0, GROUND - 1, 'X').col(width - 1, 0, GROUND - 1, 'X');
-  g.put(3, GROUND - 2, 's').put(3, GROUND - 1, 'S');
+  // A two-row bank of the meadow's turf lifts the fixed view without moving a firefly.
+  g.put(3, GROUND - 2, 'G').put(3, GROUND - 1, 'D');
+  g.put(3, GROUND - 4, 's').put(3, GROUND - 3, 'S');
   g.put(exit, GROUND - 2, 'e').put(exit, GROUND - 1, 'E');
   const m = new DuskMap(book, pal, signBook, g.rows());
   for (const [x, y, name] of [
-    [3, GROUND - 2, 'doorwayTop'],
-    [3, GROUND - 1, 'doorwayBottom'],
+    [3, GROUND - 4, 'doorwayTop'],
+    [3, GROUND - 3, 'doorwayBottom'],
     [exit, GROUND - 2, 'doorTop'],
     [exit, GROUND - 1, 'doorBottom'],
   ] as const)
