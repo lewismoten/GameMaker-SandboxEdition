@@ -8,12 +8,13 @@
 //   3. Let It Finish: one voice is cut off when another starts or the scene changes, so the
 //      speaker stands far enough from the door for the whole line.
 // Every room is closed in by hedges you can see, so Lena is never stopped by something she can't.
-import { Book } from '../../kit/starter/book';
+import { Book, PULL } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
-import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
-import { addSign, type Sign } from '../../kit/starter/sign';
+import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
+import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { MICRO_GLYPHS } from '@lewismoten/gamemaker-sandbox-tools/microFont';
 import { addSpeakerBlocks } from './speakerBlocks';
 
 export type SignName = 'enter' | 'key' | 'again' | 'walkin' | 'counter' | 'one' | 'cut' | 'room' | 'exit';
@@ -22,18 +23,34 @@ export type SignName = 'enter' | 'key' | 'again' | 'walkin' | 'counter' | 'one' 
 function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
-  const signs = {
-    enter: addSign(book, pal, 'enter.sign', 'PRESS ENTER AND LENA SAYS HELLO', 4, 3),
-    key: addSign(book, pal, 'key.sign', 'A KEY CAN PLAY A SOUND', 4, 3),
-    again: addSign(book, pal, 'again.sign', 'ENTER AGAIN AND THE VOICE RESTARTS', 4, 3),
-    walkin: addSign(book, pal, 'walkin.sign', 'WALK INTO A SPEAKER AND IT TALKS', 4, 3),
-    counter: addSign(book, pal, 'counter.sign', 'COUNTER UP PLAYS THE UP VOICE', 4, 3),
-    one: addSign(book, pal, 'one.sign', 'COUNTER DOWN PLAYS THE OTHER VOICE', 4, 3),
-    cut: addSign(book, pal, 'cut.sign', 'A NEW SCENE CUTS A VOICE OFF', 4, 3),
-    room: addSign(book, pal, 'room.sign', 'THE DOOR IS FAR ENOUGH FOR THE LINE', 4, 3),
-    exit: addSign(book, pal, 'exit.sign', 'EXIT →', 3),
-  };
   addSpeakerBlocks(book, pal);
+  const { blocks, signs } = buildTiledSigns(
+    {
+      enter: { rows: [['PRESS ENTER AND LENA SAYS HELLO']] },
+      key: { rows: [['A KEY CAN PLAY A SOUND']] },
+      again: { rows: [['ENTER AGAIN AND THE VOICE RESTARTS']] },
+      walkin: { rows: [['WALK INTO A SPEAKER AND IT TALKS']] },
+      counter: { rows: [['COUNTER UP PLAYS THE UP VOICE']] },
+      one: { rows: [['COUNTER DOWN PLAYS'], ['THE OTHER VOICE']] },
+      cut: { rows: [['A NEW SCENE CUTS A VOICE OFF']] },
+      room: { rows: [['THE DOOR IS FAR ENOUGH FOR THE LINE']] },
+      exit: { rows: [['EXIT →']] },
+    },
+    {
+      colors: {
+        background: skyOf(pal),
+        paper: pal.c('parch', 3),
+        ink: pal.c('ink', 0),
+        wood: pal.c('wood', 2),
+        highlight: pal.c('wood', 4),
+        shadow: pal.c('wood', 0),
+      },
+      lettersPerBlock: 3,
+      glyphs: { ...MICRO_GLYPHS, '→': '100110111110100' },
+      maxBlocks: Math.min(100, 150 - book.index.size),
+    },
+  );
+  for (const [name, pic] of blocks) book.add(name, pic, { grav: PULL.down });
   return { book, signs };
 }
 
@@ -46,7 +63,11 @@ export interface Level {
 }
 
 /** The top row of a sign standing on ground row `ground`. */
-const onGround = (ground: number, s: Sign) => ground - 1 - s.board.length;
+const onGround = (ground: number, s: Sign, postHeight = 1) => ground - postHeight - s.board.length;
+
+/** Boards and their single posts replace only sky, never scenery, coins or speakers. */
+const place = (m: StarterMap, x: number, sign: Sign, postHeight = 1) =>
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, x, onGround(GROUND, sign, postHeight), sign, postHeight);
 
 export const GROUND = 10;
 /** Where the speakers stand (columns): level 2's two and level 3's one. */
@@ -87,10 +108,10 @@ function sayHello(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [9, 24, 43],
   );
   const m = new StarterMap(book, g.rows());
-  m.sign(5, onGround(GROUND, signs.enter), signs.enter);
-  m.sign(12, onGround(GROUND, signs.key), signs.key);
-  m.sign(29, onGround(GROUND, signs.again), signs.again);
-  m.sign(44, onGround(GROUND, signs.exit), signs.exit);
+  place(m, 4, signs.enter);
+  place(m, 18, signs.key);
+  place(m, 29, signs.again);
+  place(m, 43, signs.exit);
   return m;
 }
 
@@ -110,10 +131,10 @@ function twoSpeakers(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [9, 25, 40],
   );
   const m = new StarterMap(book, g.rows());
-  m.sign(5, onGround(GROUND, signs.walkin), signs.walkin);
-  m.sign(16, onGround(GROUND, signs.counter), signs.counter);
-  m.sign(30, onGround(GROUND, signs.one), signs.one);
-  m.sign(44, onGround(GROUND, signs.exit), signs.exit);
+  place(m, 4, signs.walkin);
+  place(m, 18, signs.counter);
+  place(m, 30, signs.one);
+  place(m, 43, signs.exit);
   m.set(L2.up, GROUND - 1, 'speaker');
   m.set(L2.down, GROUND - 1, 'lower');
   return m;
@@ -135,9 +156,9 @@ function letItFinish(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [9, 31, 41],
   );
   const m = new StarterMap(book, g.rows());
-  m.sign(5, onGround(GROUND, signs.cut), signs.cut);
-  m.sign(32, onGround(GROUND, signs.room), signs.room);
-  m.sign(44, onGround(GROUND, signs.exit), signs.exit);
+  place(m, 6, signs.cut);
+  place(m, 30, signs.room);
+  place(m, 44, signs.exit, 2);
   m.set(L3.speaker, GROUND - 1, 'speaker');
   return m;
 }
