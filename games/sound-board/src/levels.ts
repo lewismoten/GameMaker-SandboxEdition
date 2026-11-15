@@ -8,13 +8,14 @@
 //   2. Sounds That Tell You: a coin, a key, a gate, a jump, a spike and a wrong gate, so you
 //      hear what just happened.
 // Every room is closed in by hedges you can see, so Rima is never stopped by something she can't.
-import { Book } from '../../kit/starter/book';
+import { Book, PULL } from '../../kit/starter/book';
+import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { MICRO_GLYPHS } from '@lewismoten/gamemaker-sandbox-tools/microFont';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { addLockBlocks } from '../../kit/starter/locks';
 import { StarterMap } from '../../kit/starter/map';
-import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
-import { addSign, type Sign } from '../../kit/starter/sign';
+import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
 import { SLOT } from './sounds';
 import { PADS, addBoardBlocks } from './pads';
 
@@ -42,12 +43,28 @@ export type SignName = keyof typeof SIGNS;
 function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
-  const signs = Object.fromEntries(Object.entries(SIGNS).map(([name, [text, w, h]]) => [name, addSign(book, pal, `${name}.sign`, text, w, h)])) as Record<
-    SignName,
-    Sign
-  >;
   addLockBlocks(book, pal);
   addBoardBlocks(book, pal);
+  // The five-block pad bays need compact lettering; use it throughout both rooms.
+  const texts = Object.fromEntries(
+    Object.entries(SIGNS).map(([name, [text]]) => [name, { rows: [[text]], maxWidth: name === 'hello' || name === 'hello2' ? 7 : 5 }]),
+  ) as Record<SignName, { rows: string[][]; maxWidth: number }>;
+  texts.hello2.rows = [['A SOUND SAYS'], ['WHAT HAPPENED']];
+  texts.gate.rows = [['A GATE'], ['CREAKS'], ['NO. 8']];
+  const { blocks, signs } = buildTiledSigns(texts, {
+    colors: {
+      background: skyOf(pal),
+      paper: pal.c('parch', 3),
+      ink: pal.c('ink', 0),
+      wood: pal.c('wood', 2),
+      highlight: pal.c('wood', 4),
+      shadow: pal.c('wood', 0),
+    },
+    compact: true,
+    glyphs: { ...MICRO_GLYPHS, '→': '100110111110100' },
+    maxBlocks: Math.min(100, 150 - book.index.size),
+  });
+  for (const [name, pic] of blocks) book.add(name, pic, { grav: PULL.down });
   return { book, signs };
 }
 
@@ -114,17 +131,18 @@ function board(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [10, 18, 28, 35],
   );
   const m = new StarterMap(book, g.rows());
-  m.sign(BOARD.again - 1, onGround(GROUND, signs.again), signs.again);
-  m.sign(9, onGround(GROUND, signs.hello), signs.hello);
+  const sky = { set: m.setOnSky.bind(m) };
+  stampTiledSign(sky, BOARD.again - 1, 7, signs.again, 2);
+  stampTiledSign(sky, 8, onGround(GROUND, signs.hello), signs.hello);
   for (const [pad, x0, sign, slot] of BOARD.units) {
-    m.sign(x0, onGround(GROUND, signs[sign]), signs[sign]);
+    stampTiledSign(sky, x0, onGround(GROUND, signs[sign]), signs[sign]);
     m.set(x0 + 1, GROUND - 1, `pad.${pad}`);
     m.set(x0 + 0, GROUND - 4, `wave.${slot}`);
   }
-  m.sign(BOARD.chuteSign, onGround(GROUND, signs.chute), signs.chute);
+  stampTiledSign(sky, BOARD.chuteSign - 1, onGround(GROUND, signs.chute), signs.chute);
   m.set(BOARD.chuteSign, GROUND - 4, `wave.${SLOT.fanfare}`).set(BOARD.chuteSign + 2, GROUND - 4, `wave.${SLOT.ping}`);
   for (let i = 0; i < jump.width; i++) m.set(jump.x + i, jump.long, `pad.${PADS.long.name}`).set(jump.x + i, jump.short, `pad.${PADS.short.name}`);
-  m.sign(43, onGround(GROUND, signs.exit), signs.exit);
+  stampTiledSign(sky, 43, 7, signs.exit, 2);
   return m;
 }
 
@@ -165,17 +183,23 @@ function feedback(book: Book, signs: Record<SignName, Sign>): StarterMap {
   );
   const m = new StarterMap(book, g.rows());
   const at = (x: number, s: Sign, wave?: number) => {
-    m.sign(x, onGround(GROUND, s), s);
+    stampTiledSign({ set: m.setOnSky.bind(m) }, x, onGround(GROUND, s), s);
     if (wave !== undefined) m.set(x + 1, GROUND - 4, `wave.${wave}`);
   };
-  at(6, signs.hello2);
-  at(11, signs.coin2, SLOT.ping);
+  at(5, signs.hello2);
+  at(12, signs.coin2);
+  m.set(12, GROUND - 4, `wave.${SLOT.ping}`);
   at(18, signs.key, SLOT.blip);
-  at(24, signs.gate, SLOT.creak);
-  at(30, signs.jump, SLOT.jump);
-  at(39, signs.spike, SLOT.hurt);
-  at(46, signs.wrong, SLOT.nope);
-  at(53, signs.exit);
+  at(23, signs.gate);
+  m.set(25, GROUND - 4, `wave.${SLOT.creak}`);
+  // The jump label stands beyond the ledge; the notes remain at their original columns.
+  at(37, signs.jump);
+  m.set(31, GROUND - 4, `wave.${SLOT.jump}`);
+  at(42, signs.spike);
+  m.set(40, GROUND - 4, `wave.${SLOT.hurt}`);
+  at(47, signs.wrong);
+  m.set(47, GROUND - 4, `wave.${SLOT.nope}`);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 54, 7, signs.exit, 2);
   m.set(f.spike, GROUND - 1, 'spike');
   m.set(f.wrong, GROUND - 1, 'wrong');
   return m;

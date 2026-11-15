@@ -6,7 +6,7 @@
   "hero": "RIMA",
   "year": 1994,
   "price": "Free",
-  "version": "1.0",
+  "version": "1.1",
   "blurb": "Two short rooms about what a sound is. In the first, a row of pads each plays a sound, with a sign and a picture of the sound's notes. Step on every one, even the silent one, then drop through the pit where a short sound cuts off a long one. In the second, a coin, a key, a gate, a jump, a spike and a wrong gate each say what just happened. Play it with the sound up, then open it in Game-Maker and swap a sound's number.",
   "exe": "SNDBOARD.EXE",
   "dosName": "SNDBOARD",
