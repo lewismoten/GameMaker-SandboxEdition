@@ -8,12 +8,13 @@
 //   3. A Quiet Room: this scene names no song at all. Jumping has a sound of its own, and five coins
 //      in a row show that a new sound cuts off the last.
 // Every room is closed in by hedges you can see, so Nova is never stopped by something she can't.
-import { Book } from '../../kit/starter/book';
+import { Book, PULL } from '../../kit/starter/book';
+import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { MICRO_GLYPHS } from '@lewismoten/gamemaker-sandbox-tools/microFont';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
-import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
-import { addSign, type Sign } from '../../kit/starter/sign';
+import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
 import { addPickups } from './pickups';
 
 export type SignName = 'room' | 'loop' | 'next' | 'score' | 'money' | 'hurt' | 'heal' | 'quiet' | 'jump' | 'one' | 'exit';
@@ -22,20 +23,37 @@ export type SignName = 'room' | 'loop' | 'next' | 'score' | 'money' | 'hurt' | '
 function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
-  const signs = {
-    room: addSign(book, pal, 'room.sign', 'EACH ROOM HAS ITS OWN SONG', 4, 2),
-    loop: addSign(book, pal, 'loop.sign', 'A SONG REPEATS UNTIL YOU LEAVE', 4, 2),
-    next: addSign(book, pal, 'next.sign', 'THE NEXT ROOM PLAYS A NEW SONG', 4, 2),
-    score: addSign(book, pal, 'score.sign', 'COINS PLAY THE SCORE SOUND', 4, 2),
-    money: addSign(book, pal, 'money.sign', 'A BAG PLAYS THE MONEY SOUND', 4, 2),
-    hurt: addSign(book, pal, 'hurt.sign', 'A SPIKE PLAYS THE HURT SOUND', 4, 2),
-    heal: addSign(book, pal, 'heal.sign', 'A HEART PLAYS THE HELP SOUND', 4, 2),
-    quiet: addSign(book, pal, 'quiet.sign', 'THIS ROOM HAS NO SONG', 4, 2),
-    jump: addSign(book, pal, 'jump.sign', 'JUMPING HAS A SOUND TOO', 4, 2),
-    one: addSign(book, pal, 'one.sign', 'A NEW SOUND CUTS OFF THE LAST ONE', 4, 3),
-    exit: addSign(book, pal, 'exit.sign', 'EXIT →', 3),
-  };
   addPickups(book, pal);
+  const { blocks, signs } = buildTiledSigns(
+    {
+      room: { rows: [['EACH ROOM HAS'], ['ITS OWN SONG']] },
+      loop: { rows: [['A SONG REPEATS'], ['UNTIL YOU LEAVE']] },
+      next: { rows: [['THE NEXT ROOM'], ['PLAYS A NEW SONG']] },
+      score: { rows: [['COINS PLAY THE'], ['SCORE SOUND']] },
+      money: { rows: [['A BAG PLAYS THE'], ['MONEY SOUND']] },
+      hurt: { rows: [['A SPIKE PLAYS'], ['THE HURT SOUND']] },
+      heal: { rows: [['A HEART PLAYS'], ['THE HELP SOUND']] },
+      quiet: { rows: [['THIS ROOM'], ['HAS NO SONG']] },
+      jump: { rows: [['JUMPING HAS'], ['A SOUND TOO']] },
+      one: { rows: [['A NEW SOUND CUTS'], ['OFF THE LAST ONE']] },
+      exit: { rows: [['EXIT →']], maxWidth: 5 },
+    },
+    {
+      colors: {
+        background: skyOf(pal),
+        paper: pal.c('parch', 3),
+        ink: pal.c('ink', 0),
+        wood: pal.c('wood', 2),
+        highlight: pal.c('wood', 4),
+        shadow: pal.c('wood', 0),
+      },
+      lettersPerBlock: 3,
+      maxWidth: 7,
+      glyphs: { ...MICRO_GLYPHS, '→': '100110111110100' },
+      maxBlocks: Math.min(100, 150 - book.index.size),
+    },
+  );
+  for (const [name, pic] of blocks) book.add(name, pic, { grav: PULL.down });
   return { book, signs };
 }
 
@@ -89,10 +107,11 @@ function songRoom(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [9, 17, 20, 29],
   );
   const m = new StarterMap(book, g.rows());
-  m.sign(5, onGround(GROUND, signs.room), signs.room);
-  m.sign(12, onGround(GROUND, signs.loop), signs.loop);
-  m.sign(25, onGround(GROUND, signs.next), signs.next);
-  m.sign(32, onGround(GROUND, signs.exit), signs.exit);
+  const sky = { set: m.setOnSky.bind(m) };
+  stampTiledSign(sky, 5, onGround(GROUND, signs.room), signs.room);
+  stampTiledSign(sky, 12, onGround(GROUND, signs.loop), signs.loop);
+  stampTiledSign(sky, 25, onGround(GROUND, signs.next), signs.next);
+  stampTiledSign(sky, 32, 7, signs.exit, 2);
   return m;
 }
 
@@ -118,11 +137,12 @@ function pickupRoom(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [13, 21, 30, 36],
   );
   const m = new StarterMap(book, g.rows());
-  m.sign(5, onGround(GROUND, signs.score), signs.score);
-  m.sign(14, onGround(GROUND, signs.money), signs.money);
-  m.sign(22, onGround(GROUND, signs.hurt), signs.hurt);
-  m.sign(31, onGround(GROUND, signs.heal), signs.heal);
-  m.sign(42, onGround(GROUND, signs.exit), signs.exit);
+  const sky = { set: m.setOnSky.bind(m) };
+  stampTiledSign(sky, 5, onGround(GROUND, signs.score), signs.score);
+  stampTiledSign(sky, 14, onGround(GROUND, signs.money), signs.money);
+  stampTiledSign(sky, 22, onGround(GROUND, signs.hurt), signs.hurt);
+  stampTiledSign(sky, 31, onGround(GROUND, signs.heal), signs.heal);
+  stampTiledSign(sky, 42, 7, signs.exit, 2);
   for (const x of BAGS) m.set(x, GROUND - 1, 'bag');
   m.set(SPIKE_X, GROUND - 1, 'spikeUp');
   for (const x of HEARTS) m.set(x, GROUND - 1, 'heart');
@@ -151,10 +171,11 @@ function quietRoom(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [10, 17, 31, 43],
   );
   const m = new StarterMap(book, g.rows());
-  m.sign(5, onGround(GROUND, signs.quiet), signs.quiet);
-  m.sign(11, onGround(GROUND, signs.jump), signs.jump);
-  m.sign(27, onGround(GROUND, signs.one), signs.one);
-  m.sign(38, onGround(GROUND, signs.exit), signs.exit);
+  const sky = { set: m.setOnSky.bind(m) };
+  stampTiledSign(sky, 4, onGround(GROUND, signs.quiet), signs.quiet);
+  stampTiledSign(sky, 11, onGround(GROUND, signs.jump), signs.jump);
+  stampTiledSign(sky, 27, onGround(GROUND, signs.one), signs.one);
+  stampTiledSign(sky, 38, 7, signs.exit, 2);
   return m;
 }
 
