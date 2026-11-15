@@ -6,7 +6,7 @@
   "hero": "LENA",
   "year": 1994,
   "price": "Free",
-  "version": "1.0",
+  "version": "1.1",
   "blurb": "Two short levels about showing a count. Game-Maker cannot print a counter as a number, so each bulb adds one to the count and lights up: the row of lit bulbs is the count as pictures. A gate takes the whole count, and in the second level the gate is the exit. Signs in the levels say how. Play it, then open it in Game-Maker and add a bulb.",
   "exe": "SHOWCNT.EXE",
   "dosName": "SHOWCNT",

@@ -6,12 +6,13 @@
 //      shown as pictures (the game cannot print a number). A gate on the ground takes five.
 //   2. The Full Meter: six bulbs, three on the ground and three on a ledge, and the level's only
 //      way out is a six-slot gate. No other door: the link is on the gate's own block.
-import { Book } from '../../kit/starter/book';
+import { Book, PULL } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { ORIGIN, StarterMap } from '../../kit/starter/map';
-import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
-import { addSign, type Sign } from '../../kit/starter/sign';
+import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
+import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { MICRO_GLYPHS } from '@lewismoten/gamemaker-sandbox-tools/microFont';
 import { addMeterBlocks } from './meterBlocks';
 
 export type SignName = 'shows' | 'walk' | 'takes5' | 'exit' | 'full' | 'isExit';
@@ -21,14 +22,30 @@ export function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sig
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
   addMeterBlocks(book, pal);
-  const signs = {
-    shows: addSign(book, pal, 'shows', 'LIT BULBS SHOW YOUR COUNT', 4, 2),
-    walk: addSign(book, pal, 'walk', 'CLIMB. WALK THE BULBS', 4, 2),
-    takes5: addSign(book, pal, 'takes5', 'THIS GATE TAKES FIVE', 4, 2),
-    exit: addSign(book, pal, 'exit', 'EXIT →', 3),
-    full: addSign(book, pal, 'full', 'SIX BULBS. FILL THE METER', 4, 2),
-    isExit: addSign(book, pal, 'isExit', 'FULL METER OPENS EXIT', 4, 2),
-  };
+  const { blocks, signs } = buildTiledSigns(
+    {
+      shows: { rows: [['LIT BULBS SHOW'], ['YOUR COUNT']] },
+      walk: { rows: [['CLIMB. WALK'], ['THE BULBS']] },
+      takes5: { rows: [['THIS GATE'], ['TAKES FIVE']] },
+      exit: { rows: [['EXIT →']] },
+      full: { rows: [['SIX BULBS.'], ['FILL THE METER']] },
+      isExit: { rows: [['FULL METER'], ['OPENS EXIT']] },
+    },
+    {
+      colors: {
+        background: skyOf(pal),
+        paper: pal.c('parch', 3),
+        ink: pal.c('ink', 0),
+        wood: pal.c('wood', 2),
+        highlight: pal.c('wood', 4),
+        shadow: pal.c('wood', 0),
+      },
+      lettersPerBlock: 3,
+      glyphs: { ...MICRO_GLYPHS, '→': '100110111110100' },
+      maxBlocks: 100 - book.index.size,
+    },
+  );
+  for (const [name, pic] of blocks) book.add(name, pic, { grav: PULL.down });
   return { book, signs };
 }
 
@@ -40,8 +57,8 @@ export interface Level {
   map: StarterMap;
 }
 
-/** The top row of a sign standing on ground row `ground`. */
-const onGround = (ground: number, s: Sign) => ground - 1 - s.board.length;
+/** Two post rows hold the boards above doors and the unchanged ground art. */
+const onGround = (ground: number, s: Sign) => ground - 2 - s.board.length;
 
 /** A wall of brick from the top down to a gate: the gate and its arch are set after. */
 function wall(g: Grid, x: number, ground: number): void {
@@ -73,10 +90,10 @@ function lightTheMeter(book: Book, signs: Record<SignName, Sign>): StarterMap {
   const m = new StarterMap(book, g.rows());
   for (const x of [20, 22, 24, 26, 28]) m.set(x, 2, 'bulbOff');
   m.set(31, GROUND - 2, 'meterTop').set(31, GROUND - 1, 'gateFive');
-  m.sign(5, onGround(GROUND, signs.shows), signs.shows);
-  m.sign(12, onGround(GROUND, signs.walk), signs.walk);
-  m.sign(26, onGround(GROUND, signs.takes5), signs.takes5);
-  m.sign(38, onGround(GROUND, signs.exit), signs.exit);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 3, onGround(GROUND, signs.shows), signs.shows, 2);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 10, onGround(GROUND, signs.walk), signs.walk, 2);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 24, onGround(GROUND, signs.takes5), signs.takes5, 2);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 38, onGround(GROUND, signs.exit), signs.exit, 2);
   return m;
 }
 
@@ -114,8 +131,8 @@ function fullMeter(book: Book, signs: Record<SignName, Sign>): StarterMap {
   // the gate is the door out: its block is the level's only link
   m.set(41, GROUND - 2, 'meterTop').set(41, GROUND - 1, 'gateSix');
   m.exits.push({ from: [41 + ORIGIN, GROUND - 1 + ORIGIN] });
-  m.sign(5, onGround(GROUND, signs.full), signs.full);
-  m.sign(35, onGround(GROUND, signs.isExit), signs.isExit);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 4, onGround(GROUND, signs.full), signs.full, 2);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 34, onGround(GROUND, signs.isExit), signs.isExit, 2);
   return m;
 }
 
