@@ -11,6 +11,7 @@ const LEVELS = [journey];
 export async function play(seed = SEED, upTo = LEVELS.length): Promise<{ sim: GameSim; bot: StarterBot }> {
   const sim = new GameSim(undefined, seed);
   const bot = new StarterBot(sim);
+  bot.jumpHold = 8; // hold Space for the bounded held-rise jump
   await playLevels(bot, LEVELS, upTo);
   return { sim, bot };
 }

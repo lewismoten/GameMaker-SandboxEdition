@@ -47,7 +47,7 @@ const leafBlocks = buildLeafBlocks(pal);
 disk.put('leaves.pal', serializePalette(pal.pal));
 disk.put('leaves.mon', serializeMonsters(buildLeaves(leafBlocks)));
 disk.put('leaves.mbl', serializeBlocks(leafBlocks.finish()));
-const heroChar = buildHero(plain);
+const heroChar = buildHero(plain, { heldRise: { push: 12 } });
 heroChar.meter[0] = 3; // nothing here takes any
 disk.put('hero.chr', serializeCharacter(heroChar));
 disk.put('hero.cbl', serializeBlocks(plain.finish()));

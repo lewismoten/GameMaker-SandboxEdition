@@ -46,7 +46,7 @@ disk.put('ltng.pal', serializePalette(pal.pal));
 disk.put('ltng.mbl', serializeBlocks(monsterBlocks.finish()));
 disk.put('ltng.mon', serializeMonsters(buildMonsters(monsterBlocks)));
 disk.put('hero.cbl', serializeBlocks(heroBlocks.finish()));
-disk.put('hero.chr', serializeCharacter(buildHero(heroBlocks)));
+disk.put('hero.chr', serializeCharacter(buildHero(heroBlocks, { heldRise: { push: 12 } })));
 disk.put('ltng.snd', serializeSoundSet(buildSounds()));
 disk.put('ltng.cmf', song());
 

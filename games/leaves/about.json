@@ -6,7 +6,7 @@
   "hero": "MIA",
   "year": 1994,
   "price": "Free",
-  "version": "1.2",
+  "version": "1.3",
   "blurb": "Autumn leaves, made of monsters. A leaf is a few pictures that turn it and a path that carries it down. Level 1 has three maples side by side: one drops a leaf of one picture straight down, one drops a leaf that spins on eight frames but still goes straight down, and one drops a leaf that rocks and swoops on a zigzag path, slow at each turn, and only that one floats. Level 2 has a maple, an oak and a birch, each dropping its own kind of leaf on its own timers, and a gust that bends every crown at once and blows leaves far across the meadow. Play it, then open it in Game-Maker and change a path.",
   "exe": "LEAVES.EXE",
   "dosName": "LEAVES",
