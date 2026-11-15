@@ -74,7 +74,9 @@ const onGround = (ground: number, s: Sign) => ground - 1 - s.board.length;
 function frame(width: number, exit: number): Grid {
   const g = new Grid(width, 15);
   g.row(GROUND, 0, width - 1, 'G').fill(0, GROUND + 1, width, 4, 'D');
-  g.put(3, 8, 's').put(3, 9, 'S');
+  // A narrow turf ledge supports the hero at entry, with dirt down to the path.
+  g.put(3, 8, 'G').put(3, 9, 'D');
+  g.put(3, 6, 's').put(3, 7, 'S');
   g.put(exit, 8, 'e').put(exit, 9, 'E');
   for (const x of [9, 14, 19]) g.put(x, GROUND - 1, 'c');
   return g;

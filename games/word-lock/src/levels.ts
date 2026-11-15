@@ -54,7 +54,9 @@ function payToPass(book: Book, signs: Record<SignName, Sign>): StarterMap {
   const GROUND = 10;
   g.row(GROUND, 0, 47, 'G').fill(0, GROUND + 1, 48, 4, 'D');
   g.col(0, 0, 9, 'X').col(47, 0, 9, 'X');
-  g.put(3, 8, 's').put(3, 9, 'S');
+  // A narrow turf ledge supports the hero at entry, with dirt down to the path.
+  g.put(3, 8, 'G').put(3, 9, 'D');
+  g.put(3, 6, 's').put(3, 7, 'S');
   g.put(44, 8, 'e').put(44, 9, 'E');
   wall(g, 19, GROUND);
   wall(g, 35, GROUND);

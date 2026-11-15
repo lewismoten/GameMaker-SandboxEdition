@@ -65,7 +65,9 @@ function hall(book: Book, door: number, signs: { x: number; sign: Sign }[], mura
   const g = new Grid(WIDTH, 15);
   g.row(GROUND, 0, WIDTH - 1, 'G').fill(0, GROUND + 1, WIDTH, 4, 'D');
   g.col(0, 0, 9, 'B').col(WIDTH - 1, 0, 9, 'B');
-  g.put(2, 8, 's').put(2, 9, 'S');
+  // Keep the entrance clear of the first sign, on a turf ledge joined to the path.
+  g.put(2, 8, 'G').put(2, 9, 'D');
+  g.put(2, 6, 's').put(2, 7, 'S');
   g.put(door, 8, 'e').put(door, 9, 'E');
   for (const [x, y] of [
     [8, 1],

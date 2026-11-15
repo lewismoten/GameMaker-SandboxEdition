@@ -39,6 +39,7 @@ export function buildGame(scenes: Scene[]): Game {
 
   scenes.forEach((s, i) => {
     const scene = emptyScene(ADVTYPE);
+    scene.scroll.up = scene.scroll.down = 0;
     scene.desc = s.title.slice(0, 19);
     scene.pos = { x: 60 + i * 80, y: 110 };
     scene.files = [
