@@ -47,7 +47,7 @@ disk.put('sounds.bbl', serializeBlocks(book.finish()));
 disk.put('sounds.mbl', serializeBlocks(monsterBlocks.finish()));
 disk.put('sounds.mon', serializeMonsters(buildMonsters(monsterBlocks)));
 disk.put('hero.cbl', serializeBlocks(heroBlocks.finish()));
-const heroChar = buildHero(heroBlocks);
+const heroChar = buildHero(heroBlocks, { heldRise: { push: 12 } });
 heroChar.meter[KEYS] = INF_REPEAT; // no keys in this game
 heroChar.meter[MONEY] = 1; // money is counter 3 (a counter shows one less than it holds): the bag adds to it
 heroChar.meter[0] = HERO_HIT_POINTS; // three spikes' worth of hit points

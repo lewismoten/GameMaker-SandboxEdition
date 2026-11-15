@@ -46,7 +46,7 @@ disk.put('three.bbl', serializeBlocks(book.finish())); // level 3's own copy: th
 disk.put('notkey.mbl', serializeBlocks(monsterBlocks.finish()));
 disk.put('notkey.mon', serializeMonsters(buildMonsters(monsterBlocks)));
 disk.put('hero.cbl', serializeBlocks(heroBlocks.finish()));
-const heroChar = buildHero(heroBlocks);
+const heroChar = buildHero(heroBlocks, { heldRise: { push: 12 } });
 heroChar.meter[GREEN_KEYS] = 1; // green keys carried (a counter shows one less than it holds)
 disk.put('hero.chr', serializeCharacter(heroChar));
 disk.put('notkey.snd', serializeSoundSet(buildSounds()));

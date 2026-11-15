@@ -10,7 +10,7 @@
     },
     "57": {
       "short": "Jump",
-      "long": "Jump. Steer with Left and Right while you are in the air."
+      "long": "Hold Space to rise; release to steer with Left and Right. Land before jumping again."
     },
     "72": {
       "short": "Climb up",
