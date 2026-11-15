@@ -5,6 +5,18 @@ Changes to `@lewismoten/gamemaker-sandbox-tools`, released as `tools-v*` tags. T
 
 ## [Unreleased]
 
+## [3.7.0] - 2026-11-15
+
+### Added
+
+- `kit/cameraLog`: `recordCamera` logs where PLAYGAME's screen really is at every tick of a bot's run, so level pictures frame the hero where the player saw him.
+- `kit/eventLog`: `recordEvents` logs a headless game run's key presses, score changes and scene changes as an `EventLog`, without changing the engine.
+- `kit/laserNest`: first-fit circle nesting of small laser parts inside the empty middles of hollow ones, with a re-check of every placed pair.
+- `cameraTop` in `kit/levelPicture` gives the map row the DOS screen starts at while the hero stands, so progress pictures show what a player sees.
+- Build a game's tiled signs together with centered text packed across reusable tiles, compact shared borders, one centered post, larger-letter and block-budget options.
+- Tiled signs support compact 4×8 letters and word wrapping to a maximum board width.
+- Select a map’s sign vocabulary when building tiled signs, keeping separate room block sets within the tile budget.
+
 ## [3.6.0] - 2026-11-12
 
 Laser kits pack onto library stock sheets, with cutter-margin checks and fitting tables.
@@ -65,7 +77,8 @@ The first release of the development tools as an npm package: drawing, palettes,
 - CP437 and micro text drawn as indexed game pixels, with documented font, text-effect and lighting APIs.
 - Reusable color ramps and time-of-day VGA lighting.
 
-[Unreleased]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/tools-v3.6.0...HEAD
+[Unreleased]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/tools-v3.7.0...HEAD
+[3.7.0]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/tools-v3.6.0...tools-v3.7.0
 [3.6.0]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/tools-v3.5.0...tools-v3.6.0
 [3.5.0]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/tools-v3.4.0...tools-v3.5.0
 [3.4.0]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/tools-v3.1.0...tools-v3.4.0
