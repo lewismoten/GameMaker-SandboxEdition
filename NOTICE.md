@@ -64,6 +64,10 @@ game folder opens in the browser unchanged.
 
 ## Credits
 
+- **Source documentation review (part 17, recovery)**: **Hermes Agent running OpenAI Codex GPT-6.1 Sol**, directed by Lewis Moten, recovered the earlier documentation corrections and checked the same retail-box, painted-cover, desk-PC and room-prop READMEs against the current source. The painted-cover README still needed no correction. No implementation or third-party material changed.
+
+- **Source documentation review (part 17)**: **Hermes Agent running Claude Opus 5.5** (Anthropic), directed by Lewis Moten, checked the retail-box, painted-cover, desk-PC and room-prop READMEs against the source and corrected their import boundaries, kit-tile and kit-camera descriptions and test lists, and added the two props `index.ts` installs that the props list left out. The painted-cover README needed no correction. No implementation or third-party material changed.
+
 - **Starter held-rise rollout (batch B, November 15, 2026)**: OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, applied the approved First Steps jump and bot timing to Smash It, Coins and Score, Color Doors, Countdown, Cutscenes, Day and Night, and Everybody Talks, and refreshed their walkthroughs and level-view metadata. No new third-party material was added.
 
 - **Source documentation review (part 16)**: **Hermes Agent running OpenAI Codex GPT-6.1 Sol**, directed by Lewis Moten, checked the desk-buddy, disk-box, phone-viewer and outside-window READMEs against the source and corrected disk entry points, label-loading scope, Eject ownership and phone-thumbnail imports. The desk-buddy and outside-window READMEs needed no correction. No implementation or third-party material changed.
