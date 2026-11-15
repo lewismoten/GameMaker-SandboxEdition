@@ -47,7 +47,7 @@ disk.put('hood.pal', serializePalette(pal.pal));
 disk.put('hood.mbl', serializeBlocks(monsterBlocks.finish()));
 disk.put('hood.mon', serializeMonsters(buildMonsters(monsterBlocks)));
 disk.put('hero.cbl', serializeBlocks(heroBlocks.finish()));
-const heroChar = buildHero(heroBlocks);
+const heroChar = buildHero(heroBlocks, { heldRise: { push: 12 } });
 heroChar.meter[KEYS] = INF_REPEAT; // no keys in this game
 heroChar.meter[BYTES] = 1; // bytes carried (a counter shows one less than it holds)
 heroChar.meter[BACKUP] = 1; // the backup copy

@@ -45,7 +45,7 @@ disk.put('twin.pal', serializePalette(pal.pal));
 disk.put('twin.mbl', serializeBlocks(monsterBlocks.finish()));
 disk.put('twin.mon', serializeMonsters(buildMonsters(monsterBlocks)));
 disk.put('hero.cbl', serializeBlocks(heroBlocks.finish()));
-disk.put('hero.chr', serializeCharacter(buildHero(heroBlocks)));
+disk.put('hero.chr', serializeCharacter(buildHero(heroBlocks, { heldRise: { push: 12 } })));
 disk.put('twin.snd', serializeSoundSet(buildSounds()));
 disk.put('twin.cmf', song());
 

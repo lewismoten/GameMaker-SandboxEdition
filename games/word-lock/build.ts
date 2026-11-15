@@ -47,7 +47,7 @@ disk.put('words.bbl', serializeBlocks(book.finish()));
 disk.put('words.mbl', serializeBlocks(monsterBlocks.finish()));
 disk.put('words.mon', serializeMonsters(buildMonsters(monsterBlocks)));
 disk.put('hero.cbl', serializeBlocks(heroBlocks.finish()));
-const heroChar = buildHero(heroBlocks);
+const heroChar = buildHero(heroBlocks, { heldRise: { push: 12 } });
 heroChar.meter[KEYS] = INF_REPEAT; // no keys in this game
 heroChar.meter[WORDS] = 1; // words carried (a counter shows one less than it holds)
 disk.put('hero.chr', serializeCharacter(heroChar));
