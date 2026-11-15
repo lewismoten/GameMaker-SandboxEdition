@@ -145,7 +145,9 @@ function street(pal: Pal): Level['hub'] {
   const g = new Grid(W, 15);
   g.row(GROUND, 0, W - 1, 'G').fill(0, GROUND + 1, W, 4, 'D');
   g.col(0, 0, 9, 'B').col(W - 1, 0, 9, 'B');
-  g.put(1, 8, 's').put(1, 9, 'S');
+  // A turf doorstep at the outside entrance leaves the house fronts and labels clear.
+  g.put(1, 8, 'G').put(1, 9, 'D');
+  g.put(1, 6, 's').put(1, 7, 'S');
   for (const [x, y] of [
     [4, 3],
     [20, 2],
@@ -244,7 +246,9 @@ function plaza(pal: Pal): Level['hub'] {
   const g = new Grid(W, 15);
   g.row(GROUND, 0, W - 1, 'G').fill(0, GROUND + 1, W, 4, 'D');
   g.col(0, 0, 9, 'B').col(W - 1, 0, 9, 'B');
-  g.put(1, 8, 's').put(1, 9, 'S');
+  // A turf doorstep at the outside entrance leaves the house fronts and labels clear.
+  g.put(1, 8, 'G').put(1, 9, 'D');
+  g.put(1, 6, 's').put(1, 7, 'S');
   for (const [x, y] of [
     [6, 3],
     [22, 2],

@@ -30,6 +30,8 @@ export function buildGame(levels: Level[]): Game {
 
   levels.forEach((l, i) => {
     const scene = emptyScene(ADVTYPE);
+    // The seven-row ladder route fits in the three-row entrance's fixed view.
+    scene.scroll.up = scene.scroll.down = 0;
     scene.desc = l.title.slice(0, 19);
     scene.pos = { x: 60 + i * 80, y: 110 };
     scene.files = [

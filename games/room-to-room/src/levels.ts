@@ -158,9 +158,12 @@ function start(book: Book, s: Record<SignName, Sign>): Room {
     [6, 16],
     [12, 21],
   );
+  // A two-row turf step under the arrival doorway, clear of signs and prizes.
+  g.put(3, 8, 'G').put(3, 9, 'D');
+  g.put(3, 6, 's').put(3, 7, 'S');
   const m = built(book, g);
   place(m, 12, s.door);
-  return room('start', 'Out the Door', m, { door: at(19, 9) }, { start: at(3, 9) });
+  return room('start', 'Out the Door', m, { door: at(19, 9) }, { start: at(3, 7) });
 }
 
 /** Level 1, room 2: you came in by a door; the way out is an open archway in the right-hand wall (a gap, no door). */
@@ -181,10 +184,13 @@ function inside(book: Book, s: Record<SignName, Sign>): Room {
     [10, 17],
     [8, 23],
   );
+  // A two-row turf step under the arrival doorway, clear of signs and prizes.
+  g.put(3, 8, 'G').put(3, 9, 'D');
+  g.put(3, 6, 's').put(3, 7, 'S');
   const m = built(book, g);
   place(m, 6, s.came);
   place(m, 17, s.out);
-  return room('inside', 'Inside', m, { archway: at(26, 9) }, { door: at(3, 9) });
+  return room('inside', 'Inside', m, { archway: at(26, 9) }, { door: at(3, 7) });
 }
 
 /** Level 2, the hall: a kitchen door on the left, a bedroom door on the right, and a gold door on the ledge above. */
@@ -241,10 +247,12 @@ function kitchen(book: Book, s: Record<SignName, Sign>): Room {
     [15],
     [8, 23],
   );
+  // One-way entrance planks support the arrival while the return walk passes underneath.
+  g.put(6, 8, '=').put(6, 9, '=');
   const m = built(book, g);
   place(m, 7, s.back);
   place(m, 13, s.carry);
-  return room('kitchen', 'The Kitchen', m, { back: at(3, 9) }, { hall: at(6, 9) });
+  return room('kitchen', 'The Kitchen', m, { back: at(3, 9) }, { hall: at(6, 7) });
 }
 
 /** Level 2, the bedroom: coins that come back when you come back. */
@@ -282,10 +290,13 @@ function fork(book: Book, s: Record<SignName, Sign>): Room {
     [12, 17],
     [11, 19],
   );
+  // A two-row turf step under the arrival doorway, clear of signs and prizes.
+  g.put(14, 8, 'G').put(14, 9, 'D');
+  g.put(14, 6, 's').put(14, 7, 'S');
   const m = built(book, g);
   place(m, 6, s.left);
   place(m, 20, s.right, GROUND, 2);
-  return room('fork', 'The Fork', m, { left: at(4, 9), right: at(26, 9) }, { in: at(14, 9) });
+  return room('fork', 'The Fork', m, { left: at(4, 9), right: at(26, 9) }, { in: at(14, 7) });
 }
 
 /** Level 3, behind the left door: a garden with an exit. */
@@ -303,10 +314,13 @@ function garden(book: Book, s: Record<SignName, Sign>): Room {
     [7, 12, 20],
     [6, 10, 14, 18, 22],
   );
+  // A two-row turf step under the arrival doorway, clear of signs and prizes.
+  g.put(3, 8, 'G').put(3, 9, 'D');
+  g.put(3, 6, 's').put(3, 7, 'S');
   const m = built(book, g);
   place(m, 5, s.tookLeft);
   place(m, 19, s.exit);
-  return room('garden', 'The Garden', m, { out: at(24, 9) }, { in: at(3, 9) });
+  return room('garden', 'The Garden', m, { out: at(24, 9) }, { in: at(3, 7) });
 }
 
 /** Level 3, behind the right door: an attic with a plank to jump up to, and an exit. */
@@ -326,10 +340,13 @@ function attic(book: Book, s: Record<SignName, Sign>): Room {
     [8],
     [10, 22],
   );
+  // A two-row turf step under the arrival doorway, clear of signs and prizes.
+  g.put(3, 8, 'G').put(3, 9, 'D');
+  g.put(3, 6, 's').put(3, 7, 'S');
   const m = built(book, g);
   place(m, 4, s.tookRight);
   place(m, 19, s.exit);
-  return room('attic', 'The Attic', m, { out: at(24, 9) }, { in: at(3, 9) });
+  return room('attic', 'The Attic', m, { out: at(24, 9) }, { in: at(3, 7) });
 }
 
 /** One scene link: leave `from`'s exit, arrive at `to`'s way in. `to` is the room's file name, or 'end' for the ending. */

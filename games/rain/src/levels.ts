@@ -40,7 +40,9 @@ function lesson(pal: Pal, pools: boolean): Level {
   const g = new Grid(width, 15);
   g.row(GROUND, 0, width - 1, 'G').fill(0, GROUND + 1, width, 4, 'D');
   g.col(0, 0, GROUND - 1, 'X').col(width - 1, 0, GROUND - 1, 'X');
-  g.put(2, GROUND - 2, 's').put(2, GROUND - 1, 'S');
+  // The entrance's turf step is clear of the boards, puddles and house.
+  g.put(2, GROUND - 2, 'G').put(2, GROUND - 1, 'D');
+  g.put(2, GROUND - 4, 's').put(2, GROUND - 3, 'S');
   g.put(width - 3, GROUND - 2, 'e').put(width - 3, GROUND - 1, 'E');
   const map = new StarterMap(book, g.rows());
   // One vocabulary for both lessons; the crowded house lesson uses compact letters throughout.
