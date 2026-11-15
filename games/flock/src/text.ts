@@ -43,6 +43,8 @@ Tiled signs adapted with OpenAI Codex (OpenAI).
 Made with GAME-MAKER 3.0 from Recreational Software Designs.
 
 One of the Starters: small games that each show one idea.
+
+Held-rise controls and bot timing by OpenAI Codex (GPT-6.1 Sol).
 `),
 );
 

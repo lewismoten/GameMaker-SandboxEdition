@@ -60,6 +60,10 @@ Game Maker, first class.
 Everyone is cheering, Teddy has a diploma of his own, and Doc Leo is grinning.
 
 Now go and make something of your own.`),
-    credits: creditsPage('THE SANDBOX DIPLOMA', about.version, 'The last graduation: it comes after the other six.'),
+    credits: creditsPage(
+      'THE SANDBOX DIPLOMA',
+      about.version,
+      'The last graduation: it comes after the other six. Held-rise controls and bot timing by OpenAI Codex (GPT-6.1 Sol).',
+    ),
   },
 };

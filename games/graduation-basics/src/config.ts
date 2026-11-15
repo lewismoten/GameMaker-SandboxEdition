@@ -47,6 +47,10 @@ You can walk, open doors, meet monsters, collect coins and break walls. The help
 
 The next stage is waiting whenever you are ready.
 `),
-    credits: creditsPage('GRADUATION: FIRST STEPS', about.version, 'A graduation: it comes after The Basics.'),
+    credits: creditsPage(
+      'GRADUATION: FIRST STEPS',
+      about.version,
+      'A graduation: it comes after The Basics. Held-rise controls and bot timing by OpenAI Codex (GPT-6.1 Sol).',
+    ),
   },
 };

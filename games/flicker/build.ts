@@ -45,7 +45,7 @@ for (const l of levels) disk.put(l.palFile, serializePalette(l.pal.pal));
 disk.put('flk.mbl', serializeBlocks(monsterBlocks.finish()));
 disk.put('flk.mon', serializeMonsters(buildMonsters(monsterBlocks)));
 disk.put('hero.cbl', serializeBlocks(heroBlocks.finish()));
-disk.put('hero.chr', serializeCharacter(buildHero(heroBlocks)));
+disk.put('hero.chr', serializeCharacter(buildHero(heroBlocks, { heldRise: { push: 12 } })));
 disk.put('flk.snd', serializeSoundSet(buildSounds()));
 disk.put('flk.cmf', song());
 

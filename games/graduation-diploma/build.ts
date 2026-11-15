@@ -7,4 +7,4 @@ import { cfg } from './src/config';
 import { demoRecording } from './src/demo';
 import { buildLevels } from './src/levels';
 
-buildGraduation(dirname(fileURLToPath(import.meta.url)), cfg, buildLevels(), demoRecording());
+buildGraduation(dirname(fileURLToPath(import.meta.url)), cfg, buildLevels(), demoRecording(), { heldRise: { push: 12 } });
