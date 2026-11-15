@@ -35,6 +35,8 @@ export function buildGame(levels: { beams: Level; fog: Level; glow: Level }): Ga
   const blank = () => Array.from({ length: MAXSCENELINKS }, () => ({ toScene: NOSCENE, from: { x: 0, y: 0 }, to: { x: 0, y: 0 } }));
   const scene = (desc: string, level: Level, x: number, y: number, to: number, toCell: [number, number]) => {
     const s = emptyScene(ADVTYPE);
+    // Every room has one flat floor; keep the lamps, fog and lanterns in the raised opening view.
+    s.scroll.up = s.scroll.down = 0;
     s.desc = desc.slice(0, 19);
     s.pos = { x, y };
     s.files = [
