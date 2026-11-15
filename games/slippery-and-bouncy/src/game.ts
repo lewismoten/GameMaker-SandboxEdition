@@ -30,6 +30,8 @@ export function buildGame(levels: Level[]): Game {
 
   levels.forEach((l, i) => {
     const scene = emptyScene(ADVTYPE);
+    // Wind climbs seven rows to its exit; Ice and The Belt fit one vertical view.
+    if (i < 2) scene.scroll.up = scene.scroll.down = 0;
     scene.desc = l.title.slice(0, 19);
     scene.pos = { x: 60 + i * 80, y: 110 };
     scene.files = [

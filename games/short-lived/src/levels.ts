@@ -58,7 +58,9 @@ function base(width: number, exitX: number): Grid {
   const g = new Grid(width, 15);
   g.row(GROUND, 0, width - 1, 'G').fill(0, GROUND + 1, width, 4, 'D');
   g.col(0, 0, 9, 'B').col(width - 1, 0, 9, 'B');
-  g.put(ENTRANCE, 8, 's').put(ENTRANCE, 9, 'S');
+  // A narrow turf step supports the hero before walking down onto the path.
+  g.put(ENTRANCE, 8, 'G').put(ENTRANCE, 9, 'D');
+  g.put(ENTRANCE, 6, 's').put(ENTRANCE, 7, 'S');
   g.put(exitX, 8, 'e').put(exitX, 9, 'E');
   return g;
 }

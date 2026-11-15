@@ -30,6 +30,8 @@ export function buildGame(levels: Level[]): Game {
 
   levels.forEach((l, i) => {
     const scene = emptyScene(ADVTYPE);
+    // The stage and the path fit below the raised entrance camera.
+    scene.scroll.up = scene.scroll.down = 0;
     scene.desc = l.title.slice(0, 19);
     scene.pos = { x: 60 + i * 80, y: 110 };
     scene.files = [

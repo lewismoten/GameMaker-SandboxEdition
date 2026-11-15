@@ -8,15 +8,15 @@
  "segments": [
   {
    "scene": 2,
-   "keys": "AU1GzQNNAzkIuQ3NL01BzStND80DTSPNA00="
+   "keys": "AU1EzQNNAzkIuQ3NL01BzStND80DTSPNA00="
   },
   {
    "scene": 3,
-   "keys": "AU1GzQNND80rTUHNA00UzQNNHs0DTQ=="
+   "keys": "AU1EzQNND80rTUHNA00UzQNNHs0DTQ=="
   },
   {
    "scene": 4,
-   "keys": "AU2CAc0rTR7NA00="
+   "keys": "AU2AAc0rTR7NA00="
   }
  ],
  "chapters": [
@@ -35,7 +35,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 9827,
+  "frames": 9806,
   "chapters": [
    {
     "title": "Opening",
@@ -54,23 +54,23 @@
    },
    {
     "title": "Level 2: Bump, Then Bump",
-    "frame": 3576,
-    "time": 59599.99999999705
+    "frame": 3569,
+    "time": 59483.3333333304
    },
    {
     "title": "Level 3: Coins in the Wall",
-    "frame": 4835,
-    "time": 80583.3333333339
+    "frame": 4821,
+    "time": 80350.0000000005
    },
    {
     "title": "Ending",
-    "frame": 6063,
-    "time": 101050.00000000652
+    "frame": 6043,
+    "time": 100716.66666667309
    },
    {
     "title": "Credits",
-    "frame": 8272,
-    "time": 137866.66666667798
+    "frame": 8251,
+    "time": 137516.66666667818
    }
   ]
  }
