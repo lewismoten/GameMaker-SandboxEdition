@@ -43,7 +43,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 17896,
+  "frames": 17076,
   "chapters": [
    {
     "title": "Opening",
@@ -62,28 +62,28 @@
    },
    {
     "title": "Level 2: Main Street",
-    "frame": 4096,
-    "time": 68266.66666666364
+    "frame": 3983,
+    "time": 66383.33333332976
    },
    {
     "title": "Level 3: Shy Street",
-    "frame": 6806,
-    "time": 113433.33333334346
+    "frame": 6457,
+    "time": 107616.6666666751
    },
    {
     "title": "Level 4: Spam Row",
-    "frame": 10158,
-    "time": 169299.99999999302
+    "frame": 9573,
+    "time": 159549.9999999987
    },
    {
     "title": "Ending",
-    "frame": 13969,
-    "time": 232816.6666666227
+    "frame": 13147,
+    "time": 219116.66666663068
    },
    {
     "title": "Credits",
-    "frame": 16344,
-    "time": 272399.99999995093
+    "frame": 15524,
+    "time": 258733.3333332743
    }
   ]
  }
