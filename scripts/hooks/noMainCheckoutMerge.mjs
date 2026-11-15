@@ -10,7 +10,7 @@ export async function decide({ command, cwd }, probe = listening) {
   const m = GIT.exec(command);
   if (!m) return null;
   if (!(await probe(5173))) return null;
-  return `Blocked: git ${m[2]} in the main checkout (${MAIN_CHECKOUT}) while Lewis's dev server listens on 5173 would reload his page. Work in your own worktree and branch instead.`;
+  return `Blocked: git ${m[2]} in the main checkout (${MAIN_CHECKOUT}) while a dev server listens on 5173 would reload its page. Work in your own worktree and branch instead.`;
 }
 
 if (isMain(import.meta.url)) await runHook((c) => decide(c));

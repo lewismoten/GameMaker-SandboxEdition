@@ -31,9 +31,7 @@ export const MORNING = {
 } as const;
 
 const SIGNS = {
-  chain: ['NOTICE: ALL BINS LOCKED TODAY. FOR LUCK. - THE COMMITTEE', 4, 4],
   todo: ['TO DO: TIE ROPES. SET OUT CREAM. GET KEY.', 4, 3],
-  crow: ['CROWS TELL THE COMMITTEE ALL. LET IT PASS.', 4, 3],
 } as const;
 
 export function levelMorning(pal: Pal): Level {
@@ -59,16 +57,14 @@ export function levelMorning(pal: Pal): Level {
   m.set(MORNING.cleat2, 5, 'cleat').set(MORNING.key, 5, 'binKey');
   for (const x of [MORNING.step1, MORNING.step2, MORNING.step3]) m.set(x, GROUND - 1, 'step');
   for (const y of [8, 9]) m.set(MORNING.crates, y, 'crate').set(MORNING.crates + 1, y, 'crate');
-  for (const x of [MORNING.cracks, MORNING.cracks + 1]) m.set(x, GROUND - 1, 'crack');
+  for (const x of [MORNING.cracks, MORNING.cracks + 1, MORNING.cracks + 2]) m.set(x, GROUND - 1, 'crack');
   m.mon(CROW.bobbing, MORNING.crow, MORNING.crowRow);
   // the bins' wall: brick to the top of the world, an arch, and the padlock
   for (let y = -10; y < GROUND - 2; y++) m.set(MORNING.wall, y, 'brick');
   m.set(MORNING.wall, GROUND - 2, 'saltArch').set(MORNING.wall, GROUND - 1, 'padlock');
   for (const x of [64, 65]) m.set(x, GROUND - 2, 'binTop').set(x, GROUND - 1, 'bin');
   for (const x of [9, 33]) m.set(x, 8, 'lampHead').set(x, 9, 'lampPost');
-  m.sign(4, onGround(GROUND, s.chain), s.chain);
   m.sign(13, onGround(GROUND, s.todo), s.todo);
-  m.sign(46, onGround(GROUND, s.crow), s.crow);
   return {
     file: 'rascal',
     title: 'Earlier That Morning',

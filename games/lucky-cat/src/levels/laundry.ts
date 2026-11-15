@@ -26,8 +26,6 @@ export const STAIR_W = 3;
 
 const SIGNS = {
   banner: ['WASH DAY. THE COMMITTEE HAS HUNG OUT ITS BANNER.', 4, 4],
-  line: ['THE KEY IS PINNED TO THE BANNER.', 4, 3],
-  gate: ['THE STEPS WANT CREAM. THEN THE BINS.', 4, 3],
 } as const;
 
 export function levelLaundry(pal: Pal): Level {
@@ -45,14 +43,12 @@ export function levelLaundry(pal: Pal): Level {
   m.set(LAUNDRY.cleatLine, 2, 'cleat');
   m.set(LAUNDRY.key, 2, 'binKey');
   for (const x of [LAUNDRY.step1, LAUNDRY.step2, LAUNDRY.step3]) m.set(x, GROUND - 1, 'step');
-  for (const x of [LAUNDRY.cracks, LAUNDRY.cracks + 1, LAUNDRY.cracks2, LAUNDRY.cracks2 + 1]) m.set(x, GROUND - 1, 'crack');
+  for (const x of [LAUNDRY.cracks, LAUNDRY.cracks + 1, LAUNDRY.cracks + 2, LAUNDRY.cracks2, LAUNDRY.cracks2 + 1]) m.set(x, GROUND - 1, 'crack');
   // the padlocked gate, with the bins beside it
   for (let y = -10; y < GROUND - 2; y++) m.set(LAUNDRY.wall, y, 'brick');
   m.set(LAUNDRY.wall, GROUND - 2, 'saltArch').set(LAUNDRY.wall, GROUND - 1, 'padlock');
   for (const x of [69, 70]) m.set(x, GROUND - 2, 'binTop').set(x, GROUND - 1, 'bin');
   m.sign(4, onGround(GROUND, s.banner), s.banner);
-  m.sign(40, onGround(3, s.line), s.line);
-  m.sign(58, onGround(GROUND, s.gate), s.gate);
   return {
     file: 'wash',
     title: 'Wash Day',

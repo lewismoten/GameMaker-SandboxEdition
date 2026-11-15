@@ -9,12 +9,12 @@
 // the same map and blocks and differ in one slot, the palette (game.ts). So the same blocks are drawn in
 // five sets of colors, and the way back from each lands you at the door you came through.
 import { ORIGIN, StarterMap } from '../../kit/starter/map';
-import { Book } from '../../kit/starter/book';
+import { Book, PULL } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
-import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
-import { addSign, type Sign } from '../../kit/starter/sign';
-import { SWATCHES, addColorBlocks, swatchBlock, swatchRamps, wallColor } from './colorBlocks';
+import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
+import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { SWATCHES, addColorBlocks, swatchBlock, swatchRamps } from './colorBlocks';
 import { VIEWS } from './views';
 
 export const GROUND = 10;
@@ -27,33 +27,79 @@ export const SIGN_ROW = 6;
 
 export type SignName = 'welcome' | 'door0' | 'door1' | 'door2' | 'door3' | 'door4' | 'finish' | 'same' | 'light' | 'fruit' | 'back' | `name${number}`;
 
-// (A background block file holds 150 blocks, so the boards are as small as their words allow.)
-const WORDS: Record<string, [string, number, number]> = {
-  welcome: ['COLOR LOOKS DIFFERENT TO SOME.', 4, 2],
-  door0: ['AS YOU SEE IT', 4, 2],
-  door1: ['RED-GREEN ONE KIND', 4, 2],
-  door2: ['RED-GREEN THE OTHER', 4, 2],
-  door3: ['BLUE AND YELLOW', 4, 2],
-  door4: ['NO COLOR', 4, 2],
-  finish: ['ALL DONE?', 4, 1],
-  same: ['SAME ROOM', 4, 1],
-  light: ['RED TOP. GREEN BELOW.', 4, 2],
-  fruit: ['SHAPES HELP TOO.', 4, 2],
-  back: ['TO HALL', 4, 1],
+/** Complete sign vocabulary, with wall boards sized to the fixed gaps between doors. */
+const WORDS = {
+  welcome: { rows: [['COLOR LOOKS'], ['DIFFERENT'], ['TO SOME.']], post: false },
+  door0: { rows: [['AS YOU SEE IT']], post: false },
+  door1: { rows: [['RED-GREEN'], ['ONE KIND']], post: false },
+  door2: { rows: [['RED-GREEN'], ['THE OTHER']], post: false },
+  door3: { rows: [['BLUE AND YELLOW']], post: false },
+  door4: { rows: [['NO COLOR']], post: false },
+  finish: { rows: [['ALL DONE?']], post: false },
+  same: { rows: [['SAME ROOM']] },
+  light: { rows: [['RED TOP. GREEN BELOW.']] },
+  fruit: { rows: [['SHAPES HELP TOO.']] },
+  back: { rows: [['TO HALL']] },
+  ...Object.fromEntries(SWATCHES.map((s) => [`name${s.word}`, { rows: [[s.word]], post: false }])),
 };
 
 function buildBlocks(pal: Pal): { book: Book; signs: Record<string, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
   addColorBlocks(book, pal);
-  const signs: Record<string, Sign> = {};
-  // the boards that hang on the stone wall are drawn with the wall's color around their frames, not sky (the first sign, on the grass, adds the posts)
-  const onWall = { ...pal, c: (n: string, k: number) => (n === 'sky' && k === 3 ? wallColor(pal) : pal.c(n, k)) };
-  const grass = ['same', 'light', 'fruit', 'back'];
-  for (const [k, [text, w, h]] of Object.entries(WORDS).sort((a, b) => Number(grass.includes(b[0])) - Number(grass.includes(a[0]))))
-    signs[k] = addSign(book, grass.includes(k) ? pal : onWall, `${k}.sign`, text, w, h);
-  // each swatch's name, on a small board of its own
-  for (const s of SWATCHES) signs[`name${s.word}`] = addSign(book, onWall, `${s.word.toLowerCase()}.name`, s.word, 3, 1);
+  const { blocks, signs } = buildTiledSigns(WORDS, {
+    colors: {
+      background: skyOf(pal),
+      paper: pal.c('parch', 3),
+      ink: pal.c('ink', 0),
+      wood: pal.c('wood', 2),
+      highlight: pal.c('wood', 4),
+      shadow: pal.c('wood', 0),
+    },
+    lettersPerBlock: 3,
+    maxBlocks: Math.min(100, 150 - book.index.size),
+  });
+  // A three-pixel sky-blue surround on every side of each wall board. The old
+  // boards sat directly on stone; these are decorative surrounds, not color samples.
+  // Copy shared tiles before painting: Pixels.map mutates, and grass signs reuse them.
+  const pictures = new Map([...book.pics].map(([name, pic]) => [pic.px.join(','), name]));
+  for (const [key, sign] of Object.entries(signs)) {
+    if (sign.post) {
+      for (const name of [...sign.board.flat(), sign.post.block]) if (!book.has(name)) book.add(name, blocks.get(name)!, { grav: PULL.down });
+      continue;
+    }
+    const width = sign.board[0].length * 20;
+    const height = sign.board.length * 20;
+    sign.board = sign.board.map((row, dy) =>
+      Array.from({ length: key.startsWith('name') ? 3 : row.length }, (_, dx) => {
+        // The gallery's samples stay three tiles wide; center labels of either
+        // tile parity underneath them, including the longer color names.
+        const offset = key.startsWith('name') ? (width - 60) / 2 : 0;
+        const pic = blocks
+          .get(row[0])!
+          .crop(0, 0, 20, 20)
+          .map((x, y) => {
+            const bx = dx * 20 + x + offset;
+            const c = blocks.get(row[Math.floor(bx / 20)])!.get(bx % 20, y);
+            const by = dy * 20 + y;
+            if (bx < 14 || bx >= width - 14) return book.pics.get('wall')!.get(x, y);
+            if (bx < 17 || bx >= width - 17 || by < 3 || by >= height - 3) return skyOf(pal);
+            if (by === 3) return pal.c('wood', 4);
+            if (by === 4) return pal.c('wood', 2);
+            if (by === height - 5) return pal.c('wood', 2);
+            if (by === height - 4) return pal.c('wood', 0);
+            return c;
+          });
+        const pixels = pic.px.join(',');
+        const shared = pictures.get(pixels);
+        if (shared) return shared;
+        const wallName = `${key}.wall.${dx}.${dy}`;
+        book.add(wallName, pic, { grav: PULL.down });
+        pictures.set(pixels, wallName);
+        return wallName;
+      }),
+    );
+  }
   return { book, signs };
 }
 
@@ -79,10 +125,21 @@ function hall(book: Book, signs: Record<string, Sign>): Level {
   for (let y = 0; y < GROUND; y++) for (let x = 1; x < HALL_W - 1; x++) if (g.rows()[y][x] === ' ') m.set(x, y, 'wall');
   m.set(3, 8, 'doorwayTopW').set(3, 9, 'doorwayBottomW');
   for (const x of [...HALL_DOORS, HALL_FINISH]) m.set(x, 8, 'doorTopW').set(x, 9, 'doorBottomW');
-  const board = (s: Sign, x: number, y: number) => s.board.forEach((row, dy) => row.forEach((name, dx) => m.set(x + dx, y + dy, name)));
-  board(signs.welcome, 5, SIGN_ROW);
-  HALL_DOORS.forEach((x, i) => board(signs[`door${i}`], x - 1, SIGN_ROW));
-  board(signs.finish, HALL_FINISH - 1, SIGN_ROW + 1);
+  const board = (s: Sign, x: number, y: number) =>
+    stampTiledSign(
+      {
+        set: (bx, by, name) => {
+          if (m.map.blocks[(by + ORIGIN) * 100 + bx + ORIGIN] !== book.n('wall')) throw new Error(`Sign would cover hall art at ${bx},${by}`);
+          m.set(bx, by, name);
+        },
+      },
+      x,
+      y,
+      s,
+    );
+  board(signs.welcome, 4, SIGN_ROW);
+  HALL_DOORS.forEach((x, i) => board(signs[`door${i}`], x - Math.floor(signs[`door${i}`].board[0].length / 2), SIGN_ROW));
+  board(signs.finish, HALL_FINISH - 2, SIGN_ROW + 1);
   return { file: 'hall', title: 'The Hall', map: m };
 }
 
@@ -118,23 +175,33 @@ function gallery(book: Book, signs: Record<string, Sign>): Level {
   SWATCHES.forEach((s, i) => {
     const x = SWATCH_X + i * SWATCH_STRIDE - 1;
     for (let dy = 0; dy < 2; dy++) for (let dx = 0; dx < 3; dx++) m.set(x + dx, SIGN_ROW + dy, swatchBlock(s.word));
-    signs[`name${s.word}`].board[0].forEach((name, dx) => m.set(x + dx, SIGN_ROW + 2, name));
+    stampTiledSign(
+      {
+        set: (bx, by, name) => {
+          if (m.map.blocks[(by + ORIGIN) * 100 + bx + ORIGIN] !== book.n('wall')) throw new Error(`Label would cover gallery art at ${bx},${by}`);
+          m.set(bx, by, name);
+        },
+      },
+      x,
+      SIGN_ROW + 2,
+      signs[`name${s.word}`],
+    );
   });
-  m.sign(5, onGround(signs.same), signs.same);
   // the traffic light, on its pole (the lamps are one block each: red, amber, green from the top)
   m.set(LIGHT_X, SIGN_ROW, 'lampTop')
     .set(LIGHT_X, SIGN_ROW + 1, 'lampMid')
     .set(LIGHT_X, SIGN_ROW + 2, 'lampBottom');
   for (let y = SIGN_ROW + 3; y < GROUND; y++) m.set(LIGHT_X, y, 'pole');
-  m.sign(LIGHT_X + 2, onGround(signs.light), signs.light);
   // the table and its fruit
   for (let i = 0; i < 5; i++) m.set(TABLE_X + i, GROUND - 2, 'tableTop');
   m.set(TABLE_X, GROUND - 1, 'tableLeg').set(TABLE_X + 4, GROUND - 1, 'tableLeg');
   ['apple', 'banana', 'lime', 'grapes', 'orange'].forEach((f, i) => m.set(TABLE_X + i, GROUND - 3, f));
-  m.sign(TABLE_X + 6, onGround(signs.fruit), signs.fruit);
   // the garden bed
   ['rose', 'sun', 'iris', 'bluebell'].forEach((f, i) => m.set(FLOWERS_X + i, GROUND - 1, f));
-  m.sign(GALLERY_END - 6, onGround(signs.back), signs.back);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 5, onGround(signs.same), signs.same);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, LIGHT_X + 3, SIGN_ROW, signs.light, 3);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, TABLE_X + 6, onGround(signs.fruit), signs.fruit);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, GALLERY_END - 6, onGround(signs.back), signs.back);
   return { file: 'gallery', title: 'The Gallery', map: m };
 }
 
@@ -151,7 +218,7 @@ export { VIEWS };
 
 /** Rows (map rows, first and last) that must stay on screen. */
 export const LANDMARK_ROWS = {
-  hall: [['welcome and door signs', SIGN_ROW, SIGN_ROW + 1]] as [string, number, number][],
+  hall: [['welcome and door signs', SIGN_ROW, GROUND - 1]] as [string, number, number][],
   gallery: [
     ['swatches and names', SIGN_ROW, SIGN_ROW + 2],
     ['traffic light', SIGN_ROW, SIGN_ROW + 2],

@@ -5,6 +5,18 @@ Changes to `@lewismoten/gamemaker-sandbox-tools`, released as `tools-v*` tags. T
 
 ## [Unreleased]
 
+## [3.6.0] - 2026-11-12
+
+Laser kits pack onto library stock sheets, with cutter-margin checks and fitting tables.
+
+### Added
+
+- Add Proofgrade stock packing, cutter-margin checks and fitting tables for laser kits.
+
+### Fixed
+
+- Apply large text deltas without passing every inserted line as a function argument.
+
 ## [3.5.0] - 2026-11-11
 
 A browser-safe ISO 9660 writer, exports for the laser-kit helpers and the Level check's animation check, and a level-generator jump fix.
@@ -53,7 +65,8 @@ The first release of the development tools as an npm package: drawing, palettes,
 - CP437 and micro text drawn as indexed game pixels, with documented font, text-effect and lighting APIs.
 - Reusable color ramps and time-of-day VGA lighting.
 
-[Unreleased]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/tools-v3.5.0...HEAD
+[Unreleased]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/tools-v3.6.0...HEAD
+[3.6.0]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/tools-v3.5.0...tools-v3.6.0
 [3.5.0]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/tools-v3.4.0...tools-v3.5.0
 [3.4.0]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/tools-v3.1.0...tools-v3.4.0
 [3.1.0]: https://github.com/lewismoten/GameMaker-SandboxEdition/releases/tag/tools-v3.1.0

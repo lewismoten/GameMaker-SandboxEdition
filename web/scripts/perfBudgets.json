@@ -20,6 +20,10 @@
     "dos.html": {
       "kb": 301,
       "requests": 54
+    },
+    "play.html blaster": {
+      "kb": 1576,
+      "requests": 33
     }
   },
   "clicks": {

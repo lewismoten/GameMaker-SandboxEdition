@@ -6,7 +6,23 @@ import net from 'node:net';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-export const MAIN_CHECKOUT = '/Users/lewismoten/dev/GameMaker';
+/** The main checkout: GM_MAIN_CHECKOUT, else the folder holding the .git directory that this repository
+ * (or the worktree this file is in) belongs to. */
+function findMainCheckout() {
+  if (process.env.GM_MAIN_CHECKOUT) return process.env.GM_MAIN_CHECKOUT.replace(/\/+$/, '');
+  try {
+    const root = repoRoot(path.dirname(fileURLToPath(import.meta.url)));
+    if (!root) return '';
+    const dot = path.join(root, '.git');
+    if (fs.statSync(dot).isDirectory()) return root;
+    const m = /^gitdir:\s*(.+)$/m.exec(fs.readFileSync(dot, 'utf8'));
+    // <main>/.git/worktrees/<name>
+    return m ? path.resolve(root, m[1].trim(), '..', '..', '..') : root;
+  } catch {
+    return '';
+  }
+}
+export const MAIN_CHECKOUT = findMainCheckout();
 
 /** Parses the hook JSON; returns { command, cwd } for a Bash call, else null. */
 export function parseCall(text) {

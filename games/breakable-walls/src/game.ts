@@ -35,7 +35,7 @@ export function buildGame(levels: Level[]): Game {
     scene.files = [
       'sm.pal',
       `${l.file}.map`,
-      'sm.bbl',
+      `${l.file}.bbl`,
       'sm.mon',
       'sm.mbl',
       'hero.chr',

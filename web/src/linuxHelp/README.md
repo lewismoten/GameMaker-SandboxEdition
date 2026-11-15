@@ -7,7 +7,10 @@ browser fallback, adding it to the applications menu and removing it. Siblings: 
 Entry point: `main.ts` loads `linuxPage.ts` (`renderLinuxHelp`) dynamically when the hash is `#/linux`.
 The Download chooser (`editor/shell/download.ts`) links to it.
 
-- `linuxPage.ts`: the page's text and layout, and its tags from `seo/`.
+- `linuxPage.ts`: the page's text and layout. It shares `../macHelp/macPage.css`, builds a
+  table of contents with `../pageToc.ts` and records the Linux help visit with `tally`.
+- `../seo/route.ts` observes the route and updates its metadata; `linuxPage.ts` imports only
+  the repository URL from `seo/site.ts`.
 
 Must not: be imported statically (it is its own chunk). Text is one voice, US English, no "we".
 

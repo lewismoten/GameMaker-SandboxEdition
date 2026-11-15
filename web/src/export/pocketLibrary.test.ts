@@ -123,7 +123,9 @@ it('keeps generated flash previews and metadata inside their budgets, with no se
   }
 });
 
-it('keeps served firmware and filesystem headroom for both boards', () => {
+// The images are fetched at production build time (scripts/pocketFirmware.ts), so a plain checkout has none.
+const haveFirmware = existsSync(new URL('../../public/pocket/fw/cyd-2432s028/littlefs.bin', import.meta.url));
+it.skipIf(!haveFirmware)('keeps served firmware and filesystem headroom for both boards (needs the downloaded images)', () => {
   for (const env of ['esp32-3248s035', 'cyd-2432s028']) {
     const fw = new URL(`../../public/pocket/fw/${env}/`, import.meta.url);
     const app = readFileSync(new URL('firmware.bin', fw));

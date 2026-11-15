@@ -53,3 +53,17 @@ export function textPicture(bytes: Uint8Array, ink: number): Uint8Array {
     });
   return pixels;
 }
+
+/** Tile size of the cropped text thumbnail: the first 16 characters of the first 12 lines. */
+export const TEXT_TILE = { width: 128, height: 96 } as const;
+
+/**
+ * A thumbnail-sized corner of the first page: whole lines shrunk to a tile are too small to read,
+ * so the tile shows the page's top left corner at full size (about 1:1 on a tile).
+ */
+export function textTilePicture(bytes: Uint8Array, ink: number): Uint8Array {
+  const page = textPicture(bytes, ink);
+  const tile = new Uint8Array(TEXT_TILE.width * TEXT_TILE.height);
+  for (let y = 0; y < TEXT_TILE.height; y++) tile.set(page.subarray((36 + y) * 320 + 36, (36 + y) * 320 + 36 + TEXT_TILE.width), y * TEXT_TILE.width);
+  return tile;
+}

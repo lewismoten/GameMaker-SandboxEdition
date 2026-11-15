@@ -151,3 +151,46 @@ export function rotationSheet(p: Pix, bg?: number | Pix, maxWidth = 2400): Pix {
   const pic = shrink(p, f);
   return grid([pic, rotate(pic, 1), rotate(pic, 2), sil, rotate(sil, 1), rotate(sil, 2)], 3);
 }
+
+/** Whole-number enlargement (nearest neighbor). */
+function enlarge(p: Pix, f: number): Pix {
+  if (f <= 1) return p;
+  const w = p.w * f;
+  const px = new Uint32Array(w * p.h * f);
+  for (let y = 0; y < p.h * f; y++) for (let x = 0; x < w; x++) px[y * w + x] = p.px[Math.floor(y / f) * p.w + Math.floor(x / f)];
+  return { w, h: p.h * f, px };
+}
+
+/**
+ * A contact sheet: every picture on shelves of `width` pixels, big ones shrunk and small ones enlarged to a
+ * readable size, each followed by its silhouette (black on white) for the pictures in `sil`. The tiles keep their order.
+ */
+export function shelfSheet(pics: Pix[], width = 1800, sil: Set<Pix> = new Set()): Pix {
+  const tiles: Pix[] = [];
+  for (const p of pics) {
+    const f = Math.max(1, Math.ceil(p.w / (width / 2 - 4)));
+    const small = p.w < 200 ? Math.min(3, Math.floor(200 / p.w)) : 1;
+    const pic = small > 1 ? enlarge(p, small) : shrink(p, f);
+    tiles.push(pic);
+    if (sil.has(p) && p.w <= width / 2) tiles.push(small > 1 ? enlarge(silhouette(p), small) : shrink(silhouette(p), f, true));
+  }
+  const gap = 4;
+  const rows: { y: number; h: number; items: [Pix, number][] }[] = [];
+  let x = gap;
+  let cur = { y: gap, h: 0, items: [] as [Pix, number][] };
+  for (const t of tiles) {
+    if (x + t.w + gap > width && cur.items.length) {
+      rows.push(cur);
+      cur = { y: cur.y + cur.h + gap, h: 0, items: [] };
+      x = gap;
+    }
+    cur.items.push([t, x]);
+    cur.h = Math.max(cur.h, t.h);
+    x += t.w + gap;
+  }
+  rows.push(cur);
+  const h = cur.y + cur.h + gap;
+  const px = new Uint32Array(width * h).fill(GAP);
+  for (const r of rows) for (const [t, ox] of r.items) for (let y = 0; y < t.h; y++) px.set(t.px.subarray(y * t.w, (y + 1) * t.w), (r.y + y) * width + ox);
+  return { w: width, h, px };
+}

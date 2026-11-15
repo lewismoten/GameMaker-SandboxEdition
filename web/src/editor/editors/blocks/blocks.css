@@ -462,3 +462,12 @@ dialog.modal label.recolor-check {
     grid-column: 1 / -1;
   }
 }
+
+/* A narrow portrait phone: the edge preview is a little shorter so the form fits without scrolling. */
+@media (max-width: 400px) and (orientation: portrait) {
+  .edge-preview {
+    width: min(100%, 220px);
+    height: auto;
+    margin-inline: auto;
+  }
+}

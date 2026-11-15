@@ -33,8 +33,19 @@ interface F {
   mirror?: boolean;
 }
 
+/** Options for the hero's character file. */
+export interface HeroOptions {
+  /**
+   * A held-rise jump (like Loaf's and Mustard's rise): while Space is held the hero moves straight up
+   * `push` pixels a tick, not as momentum, so gravity keeps growing meanwhile and soon outweighs it. Once
+   * he is falling, a new press cannot lift him: one jump per flight. Letting go hands the keys back, so
+   * the arrows steer in the air. The default (off) is the momentum push, which stacks when tapped in the air.
+   */
+  heldRise?: { push: number };
+}
+
 /** The hero's character file, using the pictures in `cb` (hero.ts buildHeroBlocks). */
-export function buildHero(cb: Book): Character {
+export function buildHero(cb: Book, opts: HeroOptions = {}): Character {
   const ch = newCharacter();
   const S = ch.sequences;
   const f = (o: F): Frame => ({
@@ -76,22 +87,31 @@ export function buildHero(cb: Book): Character {
 
   // Space: one push upward (momentum, so gravity can take it back), then poses in the air: arms up
   // on the way up, arms out as he comes down. The three pauses add up to the old single pose's 6.
-  set(
-    S[SEQ.jump],
-    [
-      f({ top: 'up.top', bottom: 'jumpup', y: -JUMP_PUSH, pause: 2 }),
-      f({ top: 'cheer.top', bottom: 'jump', pause: 2 }),
-      f({ top: 'oh.top', bottom: 'fall', pause: 2 }),
-    ],
-    {
+  // With `heldRise`, a single frame that moves him straight up each tick Space is held instead.
+  if (opts.heldRise) {
+    set(S[SEQ.jump], [f({ top: 'up.top', bottom: 'jumpup', y: -opts.heldRise.push })], {
       key: KEY.space,
       sound: SND.jump,
-      norepeat: 1,
-      momentum: 1,
       jstkMov: JOY.any,
       jstkBut: 1,
-    },
-  );
+    });
+  } else
+    set(
+      S[SEQ.jump],
+      [
+        f({ top: 'up.top', bottom: 'jumpup', y: -JUMP_PUSH, pause: 2 }),
+        f({ top: 'cheer.top', bottom: 'jump', pause: 2 }),
+        f({ top: 'oh.top', bottom: 'fall', pause: 2 }),
+      ],
+      {
+        key: KEY.space,
+        sound: SND.jump,
+        norepeat: 1,
+        momentum: 1,
+        jstkMov: JOY.any,
+        jstkBut: 1,
+      },
+    );
 
   const climb = (dy: number) => [f({ top: 'back.top', bottom: 'climb0', y: dy, pause: 2 }), f({ top: 'back.top', bottom: 'climb1', y: dy, pause: 2 })];
   set(S[SEQ.up], climb(-CLIMB_STEP), { key: KEY.up, jstkMov: JOY.up });

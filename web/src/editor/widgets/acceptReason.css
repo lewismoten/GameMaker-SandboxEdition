@@ -1,0 +1,18 @@
+/* the optional reason beside the accept button */
+.lc-why-field {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1 1 12rem;
+  min-width: 0;
+  font-size: 0.85em;
+}
+.lc-why-input {
+  min-height: 28px;
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+.lc-why-note {
+  margin: 4px 0 0;
+}

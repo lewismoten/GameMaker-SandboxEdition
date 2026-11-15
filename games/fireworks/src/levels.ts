@@ -8,12 +8,12 @@
 //   2. The Big Show: the same field at the edge of a sleeping town, with three big fireworks (a ring, a peony and a
 //      willow), each nine monsters in a square that turn from rocket into burst and back for as long as you watch,
 //      and two small launchers between them.
-import { Book } from '../../kit/starter/book';
+import { Book, PULL } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
-import type { Pal } from '../../kit/starter/palette';
-import { addSign, type Sign } from '../../kit/starter/sign';
+import { skyOf, type Pal } from '../../kit/starter/palette';
+import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { BIGS, CELLS, CLIMB, ROCKET, ROCKET_TEAL, bigMonsters } from './monsters';
 import { nightPalette } from './night';
 import { addScenery, houseRows } from './town';
@@ -22,13 +22,13 @@ import { addScenery, houseRows } from './town';
 export const EVERY = { pink: 70, teal: 97 } as const;
 
 const WORDS = {
-  launcher: 'LAUNCHERS ARE BLOCKS THAT MAKE ROCKETS',
-  top: 'AT THE TOP THE ROCKET TURNS INTO A BURST',
-  own: 'EACH LAUNCHER KEEPS ITS OWN TIME',
-  enter: 'PRESS ENTER TO LAUNCH ONE',
-  nine: '9 MONSTERS IN STEP MAKE 1 BIG BURST',
-  back: 'THE BURST TURNS BACK INTO ITS ROCKET',
-  shapes: 'ALL THREE WORK THE SAME. ONLY THE PICTURES DIFFER',
+  launcher: { rows: [['LAUNCHERS ARE'], ['BLOCKS THAT'], ['MAKE ROCKETS']] },
+  top: { rows: [['AT THE TOP THE'], ['ROCKET TURNS'], ['INTO A BURST']] },
+  own: { rows: [['EACH LAUNCHER'], ['KEEPS ITS'], ['OWN TIME']] },
+  enter: { rows: [['PRESS ENTER'], ['TO LAUNCH ONE']] },
+  nine: { rows: [['9 MONSTERS IN'], ['STEP MAKE'], ['1 BIG BURST']] },
+  back: { rows: [['THE BURST TURNS'], ['BACK INTO'], ['ITS ROCKET']] },
+  shapes: { rows: [['ALL THREE WORK'], ['THE SAME. ONLY'], ['THE PICTURES'], ['DIFFER']] },
 } as const;
 export type SignName = keyof typeof WORDS;
 
@@ -53,8 +53,19 @@ function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
   addScenery(book, pal);
-  const signs = {} as Record<SignName, Sign>;
-  for (const k of Object.keys(WORDS) as SignName[]) signs[k] = addSign(book, pal, k, WORDS[k], 4, 3);
+  const { blocks, signs } = buildTiledSigns(WORDS, {
+    colors: {
+      background: skyOf(pal),
+      paper: pal.c('parch', 3),
+      ink: pal.c('ink', 0),
+      wood: pal.c('wood', 2),
+      highlight: pal.c('wood', 4),
+      shadow: pal.c('wood', 0),
+    },
+    lettersPerBlock: 3,
+    maxBlocks: Math.min(100, 150 - book.index.size),
+  });
+  for (const [name, pic] of blocks) book.add(name, pic, { grav: PULL.down });
   return { book, signs };
 }
 
@@ -80,6 +91,11 @@ function stars(m: StarterMap, at: [number, number][]): void {
   at.forEach(([x, y], i) => m.set(x, y, `star.${i % 2}`));
 }
 
+/** Keep the town, launchers and doors intact beneath and beside the signs. */
+function board(m: StarterMap, x: number, y: number, s: Sign, postHeight = 1): void {
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, x, y, s, postHeight);
+}
+
 /** Level 1: 44 blocks wide; two launchers with their own times. */
 function launch(book: Book, signs: Record<SignName, Sign>): Level {
   const g = field(44, 40);
@@ -91,10 +107,10 @@ function launch(book: Book, signs: Record<SignName, Sign>): Level {
     { x: 24, color: 'teal' as const },
   ];
   for (const l of launchers) m.set(l.x, GROUND - 1, `launch.${l.color}`);
-  m.sign(8, onGround(signs.launcher), signs.launcher);
-  m.sign(16, onGround(signs.top), signs.top);
-  m.sign(26, onGround(signs.own), signs.own);
-  m.sign(34, onGround(signs.enter), signs.enter);
+  board(m, 8, onGround(signs.launcher), signs.launcher);
+  board(m, 16, onGround(signs.top), signs.top);
+  board(m, 26, onGround(signs.own), signs.own);
+  board(m, 36, onGround(signs.enter) - 1, signs.enter, 2);
   stars(m, [
     [2, 1],
     [11, 2],
@@ -136,9 +152,9 @@ function bigShow(book: Book, signs: Record<SignName, Sign>): Level {
   for (const l of launchers) m.set(l.x, GROUND - 1, `launch.${l.color}`);
   // the big fireworks start as their flights, where a burst ends: `fall` blocks under the top of the climb
   BIGS.forEach((big, b) => CELLS.forEach(([dx, dy], cell) => m.mon(bigMonsters(b, cell).flight, bigs[b] + dx, GROUND - 1 - CLIMB + big.fall + dy)));
-  m.sign(8, onGround(signs.nine), signs.nine);
-  m.sign(29, onGround(signs.back), signs.back);
-  m.sign(47, onGround(signs.shapes), signs.shapes);
+  board(m, 5, onGround(signs.nine) - 1, signs.nine, 2);
+  board(m, 27, onGround(signs.back), signs.back);
+  board(m, 45, onGround(signs.shapes), signs.shapes);
   stars(m, [
     [3, 1],
     [10, 2],

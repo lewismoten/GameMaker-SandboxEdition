@@ -1,7 +1,7 @@
 // The platform generator: every layout over many seeds is proven by the reach model built from the hero's real
 // jump, with margin at the default difficulty; the same seed gives the same blocks; roles that are missing
 // leave their parts out.
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import type { RoleMap } from '@lewismoten/gamemaker-sandbox-tools/kit/blockRoles';
 import { generate, generatePlatform, proveResult, type GenResult } from '@lewismoten/gamemaker-sandbox-tools/kit/levelGen';
 import { heroPhysics, weaker } from '@lewismoten/gamemaker-sandbox-tools/kit/levelGen/jumpModel';
@@ -10,6 +10,10 @@ import { reachFrom } from '@lewismoten/gamemaker-sandbox-tools/kit/levelGen/plat
 import { newArea, type Area } from '@lewismoten/gamemaker-sandbox-tools/kit/levelGen/grid';
 import { newCharacter } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 import { starterHero } from './platformTestHero';
+
+// Every case here generates whole levels: a few seconds alone, over 5 s on a loaded machine (gate and
+// Linux failures 2026-11-12), so the whole file gets one generous limit instead of per-test patches.
+vi.setConfig({ testTimeout: 60_000 });
 
 const ROLES: RoleMap = {
   0: { roles: ['sky'] },
@@ -130,7 +134,7 @@ describe('platform generator', () => {
     expect(coins).toBeGreaterThan(SEEDS.length * 3);
     expect(ledges).toBeGreaterThan(0);
     expect(doors).toBeGreaterThan(0);
-  });
+  }, 30_000); // 1 to 2 s alone, over 5 s when the machine is loaded
 
   it('proposes the entry on the left and the exit on the right, on the ground', () => {
     const r = make(ROLES, 99);

@@ -20,8 +20,9 @@ import { Book, PULL, SOLID } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
-import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
-import { addSign, type Sign } from '../../kit/starter/sign';
+import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
+import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { MICRO_GLYPHS } from '@lewismoten/gamemaker-sandbox-tools/microFont';
 import { face, gate, lamp, restartDoor, segment, type Fill } from './clockArt';
 import { HAND, LOOP_OPEN, LOOP_ROUND, LOOP_SEG, RACE_SEG, RACE_TOTAL, SEGMENTS, WARN } from './timing';
 
@@ -78,13 +79,13 @@ export const RESTART_X = 1;
 export const goesOutAt = (i: number, seg: number): number => (SEGMENTS - i) * seg;
 
 export type SignName = 'bar' | 'redo' | 'gate' | 'loop' | 'wait' | 'exit';
-const SIGNS: Record<SignName, [string, number, number]> = {
-  bar: ['THE BAR IS YOUR TIME. WHEN IT IS EMPTY, THE GATE SHUTS', 4, 4],
-  redo: ['TOO SLOW? WALK BACK TO THE CLOCK DOOR TO TRY AGAIN', 4, 4],
-  gate: ['RUN TO THE GATE BEFORE IT SHUTS', 4, 3],
-  loop: ['THIS CLOCK STARTS OVER BY ITSELF', 4, 3],
-  wait: ['GATE SHUT? WAIT FOR THE BAR TO FILL AGAIN', 4, 4],
-  exit: ['EXIT →', 3, 1],
+const SIGNS = {
+  bar: { rows: [['THE BAR IS YOUR'], ['TIME. WHEN IT IS'], ['EMPTY, THE'], ['GATE SHUTS']] },
+  redo: { rows: [['TOO SLOW? WALK'], ['BACK TO THE'], ['CLOCK DOOR TO'], ['TRY AGAIN']] },
+  gate: { rows: [['RUN TO THE GATE'], ['BEFORE IT SHUTS']] },
+  loop: { rows: [['THIS CLOCK'], ['STARTS OVER'], ['BY ITSELF']] },
+  wait: { rows: [['GATE SHUT?'], ['WAIT FOR'], ['THE BAR TO'], ['FILL AGAIN']] },
+  exit: { rows: [['EXIT →']] },
 };
 
 /** One level's block set: the Starter blocks, its signs and its clock blocks. `loop` is the repeating clock. */
@@ -92,11 +93,7 @@ function buildBlocks(pal: Pal, loop: boolean, names: SignName[]): { book: Book; 
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
   const timed: Timed[] = [];
-  const signs: Partial<Record<SignName, Sign>> = {};
-  for (const n of names) {
-    const [text, w, h] = SIGNS[n];
-    signs[n] = addSign(book, pal, `${n}.sign`, text, w, h);
-  }
+
   const seg = loop ? LOOP_SEG : RACE_SEG;
   const round = loop ? LOOP_ROUND : 0;
   // the clock face: its hand moves a quarter turn every second, round and round
@@ -136,6 +133,21 @@ function buildBlocks(pal: Pal, loop: boolean, names: SignName[]): { book: Book; 
     book.add('restartTop', door.crop(0, 0, 20, 20), AIR);
     book.add('restartBottom', door.crop(0, 20, 20, 20), AIR);
   }
+  const { blocks, signs } = buildTiledSigns(SIGNS, {
+    colors: {
+      background: skyOf(pal),
+      paper: pal.c('parch', 3),
+      ink: pal.c('ink', 0),
+      wood: pal.c('wood', 2),
+      highlight: pal.c('wood', 4),
+      shadow: pal.c('wood', 0),
+    },
+    glyphs: { ...MICRO_GLYPHS, '→': '100110111110100' },
+    lettersPerBlock: 3,
+    maxBlocks: 100,
+  });
+  const needed = new Set(names.flatMap((k) => [...signs[k].board.flat(), signs[k].post!.block]));
+  for (const [name, pic] of blocks) if (needed.has(name)) book.add(name, pic, AIR);
   return { book, timed, signs };
 }
 
@@ -184,7 +196,7 @@ function race(pal: Pal): Level {
     g,
     [
       [2, 6],
-      [18, 5],
+      [22, 5],
       [31, 6],
       [44, 6],
     ],
@@ -192,10 +204,10 @@ function race(pal: Pal): Level {
     [19, 26, 34],
   );
   const m = new StarterMap(book, g.rows());
-  m.sign(6, onGround(GROUND, s.bar), s.bar);
-  m.sign(13, onGround(GROUND, s.redo), s.redo);
-  m.sign(26, onGround(GROUND, s.gate), s.gate);
-  m.sign(39, onGround(GROUND, s.exit), s.exit);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 6, onGround(GROUND, s.bar), s.bar);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 14, onGround(GROUND, s.redo), s.redo);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 26, onGround(GROUND, s.gate), s.gate);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 39, 6, s.exit, 3);
   m.set(RESTART_X, 8, 'restartTop').set(RESTART_X, 9, 'restartBottom');
   for (const x of RACE_BARS) stampBar(m, x);
   stampGate(m, RACE_GATE);
@@ -221,7 +233,7 @@ function loopLevel(pal: Pal): Level {
   scenery(
     g,
     [
-      [10, 6],
+      [10, 5],
       [28, 5],
       [33, 6],
       [44, 6],
@@ -230,9 +242,9 @@ function loopLevel(pal: Pal): Level {
     [14, 28, 36],
   );
   const m = new StarterMap(book, g.rows());
-  m.sign(5, onGround(GROUND, s.loop), s.loop);
-  m.sign(17, onGround(GROUND, s.wait), s.wait);
-  m.sign(39, onGround(GROUND, s.exit), s.exit);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 4, onGround(GROUND, s.loop), s.loop);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 14, onGround(GROUND, s.wait), s.wait);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 39, 6, s.exit, 3);
   for (const x of LOOP_BARS) stampBar(m, x);
   stampGate(m, LOOP_GATE);
   return { file: 'two', title: 'Round and Round', hint: 'The clock starts itself over.', map: m, book, timed, gateX: LOOP_GATE };

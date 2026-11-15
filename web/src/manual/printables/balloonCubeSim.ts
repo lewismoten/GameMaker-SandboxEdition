@@ -11,7 +11,7 @@ export type Aff = [number, number, number, number, number, number];
 export const ID: Aff = [1, 0, 0, 1, 0, 0];
 export const ap = (m: Aff, p: V2): V2 => [m[0] * p[0] + m[1] * p[1] + m[4], m[2] * p[0] + m[3] * p[1] + m[5]];
 /** a after b. */
-export const compose = (a: Aff, b: Aff): Aff => [
+const compose = (a: Aff, b: Aff): Aff => [
   a[0] * b[0] + a[1] * b[2],
   a[0] * b[1] + a[1] * b[3],
   a[2] * b[0] + a[3] * b[2],
@@ -33,7 +33,7 @@ export function reflectOver(a: V2, b: V2): Aff {
 }
 
 /** Which side of the line a-b a point is on (positive to the left), scaled by the line's length. */
-export const sideOf = (a: V2, b: V2, p: V2): number => (b[0] - a[0]) * (p[1] - a[1]) - (b[1] - a[1]) * (p[0] - a[0]);
+const sideOf = (a: V2, b: V2, p: V2): number => (b[0] - a[0]) * (p[1] - a[1]) - (b[1] - a[1]) * (p[0] - a[0]);
 
 export const area = (poly: V2[]): number =>
   Math.abs(poly.reduce((s, p, i) => s + p[0] * poly[(i + 1) % poly.length][1] - poly[(i + 1) % poly.length][0] * p[1], 0)) / 2;

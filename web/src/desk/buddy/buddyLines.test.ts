@@ -1,6 +1,6 @@
 // The desk buddy's reaction rules: who speaks when, how often, and that nothing it says pushes play.
 import { describe, expect, it } from 'vitest';
-import { FIRST_HELLO, LINE_GAP, LINES, newMind, react } from './buddyLines';
+import { adoptStored, FIRST_HELLO, LINE_GAP, LINES, newMind, react } from './buddyLines';
 
 describe('desk buddy reactions', () => {
   it('meets you once, then says hello at most once a day', () => {
@@ -66,5 +66,21 @@ describe('desk buddy reactions', () => {
       /\b(should|must|more|try|come back|don't forget|tomorrow|daily|streak|perfect|grade|gpa|4\.0|percent|left|remaining|of \d|hurry|miss(ed)? you|lost|lose|die|died|sad|hungry|lonely)\b|%/i;
     for (const line of all) expect(line, line).not.toMatch(pushy);
     for (const line of all) expect(line.length, line).toBeLessThanOrEqual(60);
+  });
+});
+
+describe('desk buddy and stored state (FLAGS RESET BUDDY)', () => {
+  it('takes all of what was stored, so its next write cannot undo a reset', () => {
+    const mind = newMind({ quiet: true, met: true, helloDay: '2026-11-13' });
+    const known = { quiet: true, met: true, helloDay: '2026-11-13' };
+    expect(adoptStored(mind, known, {})).toBe(true); // FLAGS RESET BUDDY
+    expect({ quiet: mind.quiet, met: mind.met, helloDay: mind.helloDay }).toEqual({ quiet: false, met: false, helloDay: undefined });
+  });
+  it('leaves unsaved memory alone when the store did not change', () => {
+    const mind = newMind({ met: false });
+    const known = { quiet: false, met: false, helloDay: undefined };
+    mind.met = true;
+    expect(adoptStored(mind, known, { quiet: false, met: false })).toBe(false);
+    expect(mind.met).toBe(true);
   });
 });

@@ -18,6 +18,8 @@
 // --list shows each Starter and why it is left out; --force packs a game anyway (for the host check).
 import { deflateRawSync } from 'node:zlib';
 import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { forLewis } from './mainCheckout';
 import { FONT8X8 } from '@lewismoten/gamemaker-sandbox-engine/gfx/font8x8';
 import { GameFiles } from '@lewismoten/gamemaker-sandbox-engine/core/gameFiles';
 import { newCards, packPocketGame, shortHash, type PocketStore } from '../src/export/pocketPack';
@@ -104,7 +106,7 @@ if (gmpDir && existsSync(outDir))
   }
 
 // A checkout-independent optional research input; --scores overrides the local maintainer path.
-const scoresFile = opt('--scores')[0] ?? '/Users/lewismoten/dev/GameMaker/.for-lewis/research/pocket/cyd-friendly.json';
+const scoresFile = opt('--scores')[0] ?? join(forLewis, 'research/pocket/cyd-friendly.json');
 const scores = new Map<string, number>(
   existsSync(scoresFile)
     ? JSON.parse(readFileSync(scoresFile, 'utf8'))

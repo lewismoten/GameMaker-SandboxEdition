@@ -76,6 +76,7 @@ const iso = createIso([
 - `fli-check`: `fliCheck(files)` accepts engine `GameFiles`' `get` and `byExtension`
   methods and returns warning findings for PLAYGAME animation decoder limits. It works
   in Node and browsers, reads no project metadata, and leaves accepting suggestions to callers.
+- `kit/eventLog`: `recordEvents(SimClass, run)` logs a headless `GameSim`'s key edges, score changes, scene changes and deaths as an `EventLog` (`presses(scan, scene?)`), patching the class only while `run` runs; `scanOf`/`nameOf` map key names ("Enter") and scan codes. Rules over the log live in `games/kit/intentRules.ts`.
 - `kit/blockRoles` and `kit/levelGen`: role-based seeded map generation. The latter
   exports `generate`, `generatePlatform`, `heroPhysics`, `capability`, `proveResult` and
   `reachFrom(area, physics, start, locksOpen, options?)`. The reach model tracks touched
@@ -93,6 +94,7 @@ const iso = createIso([
 Laser helpers use millimeters and take caller-supplied designs:
 
 - `kit/laserJoints`: `jointOutline`, `outlineFromRects`, `offsetPoly`, rectangle and rotation helpers.
+- `kit/laserNest`: `nest` and `nestProblems` cut small parts from the empty middles of hollow ones (first-fit circle packing with a 2 mm wood gap), `boundingRadius`.
 - `kit/laserLayout`: kerf-adjusted `Part` with compensated `cutBounds`, `BED`, `PART_GAP`, `packRows`,
   and `STOCK`/`STOCK_MARGIN` for Proofgrade 6 × 12, 8 × 12, 12 × 12 and 12 × 20 inch sheets.
   `packStock` packs with quarter turns inside the cutter margins; `placePart` copies a placement without SVG transforms.
@@ -146,3 +148,36 @@ The tarball includes JavaScript, declarations, README, changelog,
 [LICENSE](https://github.com/lewismoten/GameMaker-SandboxEdition/blob/master/web/packages/tools/LICENSE)
 and [NOTICE.md](https://github.com/lewismoten/GameMaker-SandboxEdition/blob/master/web/packages/tools/NOTICE.md).
 Source is MIT licensed; no game assets or decoder binaries are bundled.
+
+## Tiled signs
+
+`kit/tiledSigns` exports `buildTiledSigns(texts, options)` and `stampTiledSign(map, x, y, sign, postHeight = 1)`.
+Supply every sign from every level together as a record of `{ rows: string[][], post?: boolean }`.
+Each row is a line: chunks are joined without tile padding, whitespace becomes single spaces,
+and lowercase becomes uppercase. Letters pack continuously across tile boundaries, with each
+line centered horizontally and vertically. One-line boards occupy one block row, including
+their top and bottom rails. Shared side tiles contain the edges and corners; the interior width
+is the smallest that fits the text plus margins (rounded up to odd for one centered post).
+The result contains `blocks: Map<string, Pixels>` and `signs` with named-block boards and optional centered posts.
+Identical rendered tiles, including split letters, are deduplicated across all signs.
+`include: ["roomA.start", "roomA.exit"]` selects a map’s signs from the complete vocabulary.
+Call once per map when rooms have separate block sets; omitted signs allocate no tiles, and
+each call still enforces `maxBlocks`. Names and pixel deduplication are local to each call.
+`post: false` omits the post for a wall sign and allows even interior widths.
+
+Pass six palette indices in `colors` (`background`, `paper`, `ink`, `wood`, `highlight`, `shadow`),
+optional `glyphs` for game-owned symbols, and `maxBlocks` for the remaining block budget (0–100; default 100).
+Unsupported glyphs, empty rows and budget overflow throw errors.
+`lettersPerBlock: 5` (default) or `4` uses the project's 3×5 micro font; `3` enlarges it to
+5×10 pixels for readability at native game size. `compact: true` instead uses four 4×8 letters
+per block with one-pixel stems and open counters, spaced five pixels across and nine down.
+Compact boards pack lines into the smallest whole-block height that leaves three-pixel rails;
+the same side borders and centered post are shared. Omit `lettersPerBlock` or set it to `4` in compact mode.
+`maxWidth` caps the **total** board width in blocks, including both side tiles and odd interior
+rounding for posts. Words wrap at spaces; explicit rows remain line breaks. A sign's own
+`maxWidth` overrides the option. A word too wide for the available interior throws instead of
+being clipped or split. Custom `glyphs` remain 3×5 patterns; compact punctuation and symbols
+scale to 4×8, while uppercase letters and digits use the compact letterforms.
+Centered fragments can cost more unique tiles.
+Add the returned pictures to your block set with the game's passable-background rules, once for the whole game or separately for each map selected by `include`.
+The stamp helper accepts any map with `set(x, y, blockName)`; taller posts reuse the same centered tile.

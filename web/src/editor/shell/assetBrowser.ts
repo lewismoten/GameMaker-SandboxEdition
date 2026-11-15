@@ -4,6 +4,7 @@ import { h, clear, toast } from '../core/ui';
 import { KIND_LABELS, type FileKind, type Project } from '../core/project';
 import { groupedKinds } from './assetGroups';
 import { scenesUsing, usedByShort, usedByText } from './assetUsedBy';
+import { sceneFileLabels } from './sceneFileLabels';
 import { assetNames } from './assetFiles';
 import { assetCommands } from './assetCommands';
 import { copiedAsset, onAssetCopy } from './assetClipboard';
@@ -15,13 +16,10 @@ import { assetSearch } from './assetSearch';
 import { SHORT_KIND_LABELS } from './assetShortNames';
 import { companionPatches } from '../../dosPlayer/playerRecord';
 import { companionOrigin, originText } from '../../dosPlayer/playerOrigin';
-import { parsePalette, type Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
+import type { Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 
-/** The palette a tile is drawn in: the one picked in the file's editor ("Show with palette", kept in the companion), else the scene's. */
-function shownPalette(project: Project, file: string): Palette {
-  const saved = project.extras<string>(file, 'showPalette', '');
-  return saved && project.files.has(saved) ? parsePalette(project.files.get(saved)!) : project.paletteFor(file).palette;
-}
+/** The palette a tile is drawn in: the one picked in the file's editor (kept in the companion), else the scene's. */
+const shownPalette = (project: Project, file: string): Palette => project.shownPalette(file);
 
 interface BrowserHost {
   project: Project;
@@ -177,6 +175,7 @@ export function assetBrowser(host: BrowserHost): { el: HTMLElement; dispose(): v
       { type: 'button', class: 'asset-open', title: `Edit ${file.toUpperCase()}`, onclick: () => host.open(file) },
       box,
       h('strong', null, file.toUpperCase()),
+      sceneFileLabels(project, file),
       h('small', null, `${(project.files.get(file)?.byteLength ?? 0).toLocaleString()} bytes`),
     );
     const more = h(

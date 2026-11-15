@@ -51,6 +51,15 @@
 .used-by {
   margin: -4px 0 8px;
 }
+/* "Used by" and "Uses" share a row when there is room, so the editor below keeps its height */
+.file-refs {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 20px;
+}
+.file-refs > .used-by {
+  margin-bottom: 4px;
+}
 .used-by-link {
   min-height: 24px;
   padding: 0 6px;

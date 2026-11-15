@@ -2,25 +2,16 @@
 // visitor who asks (the web's Offline dialog, offlineDialog.ts; OFFLINE.EXE on the desk PC).
 // Otherwise everything is cached the first time it is used (siteWorker.ts).
 //
-// The build lists the files (offline.json, vite.config.ts offlineFiles): the code for every
+// The build packs the files into one ZIP (offline.json names it, vite.config.ts offlineFiles): the code for every
 // part of the site, every listed game as its one-file pack, the boxes', manuals' and desk's
 // data and pictures. A secret game is in no list: once it is revealed in this browser its pack
 // is added from the catalog, and nothing here ever names it.
 import { loadCatalogList } from '../project/files';
 import { unlockAchievement } from '../achievements';
+import { installArchive, offlineLock, offlineNames, readOfflineCopy, type OfflineManifest } from './archiveStore';
 
-/** The cache the site's service worker serves from (siteWorker.ts CACHE). */
-const CACHE = 'gm-site';
 /** localStorage: the copy was asked for: "started", or the version (offline.json) it was finished for. */
 const WANTED_KEY = 'gm-offline';
-
-interface OfflineManifest {
-  version: string;
-  /** Installed by the service worker anyway: never removed by removeOffline. */
-  shell: string[];
-  /** [path, bytes on the wire, bytes stored]. */
-  files: [string, number, number][];
-}
 
 interface OfflineFile {
   path: string;
@@ -36,6 +27,9 @@ export interface OfflineStatus {
   files: OfflineFile[];
   /** offline.json's version. */
   version?: string;
+  archive?: OfflineManifest['archive'];
+  /** Public manifest entries; additional files are already-revealed private games. */
+  archiveFiles?: OfflineManifest['files'];
   /** The app shell (offline.json shell): kept when the copy is removed. */
   shell: string[];
   /** Files not in the cache yet, and what they cost. */
@@ -60,7 +54,8 @@ async function loadManifest(): Promise<OfflineManifest | undefined> {
   try {
     const res = await fetch(urlOf('offline.json'), { cache: 'no-cache' });
     if (!res.ok || !res.headers.get('content-type')?.includes('json')) return undefined;
-    return (await res.json()) as OfflineManifest;
+    const m = (await res.json()) as OfflineManifest;
+    return m.archive ? m : undefined;
   } catch {
     return undefined;
   }
@@ -108,9 +103,11 @@ async function storageEstimate(): Promise<{ usage?: number; quota?: number; pers
 }
 
 /** Paths in the site's cache now. */
-async function cachedPaths(): Promise<Set<string>> {
-  const cache = await caches.open(CACHE);
+async function cachedPaths(version: string): Promise<Set<string>> {
   const base = siteBase().href;
+  const copy = await readOfflineCopy(base);
+  if (copy?.version !== version) return new Set();
+  const cache = await caches.open(copy.cache);
   return new Set(
     (await cache.keys())
       .map((r) => r.url.split('?')[0])
@@ -134,10 +131,10 @@ const empty = (reason: string): OfflineStatus => ({
 
 /** What a copy would cost, and how much of it is here already. */
 export async function offlineStatus(): Promise<OfflineStatus> {
-  if (typeof caches === 'undefined' || !('serviceWorker' in navigator)) return empty('This browser cannot keep the site for offline use.');
+  if (typeof caches === 'undefined' || !('serviceWorker' in navigator) || !navigator.locks) return empty('This browser cannot keep the site for offline use.');
   const m = await loadManifest();
   if (!m) return empty(navigator.onLine === false ? 'You are offline: connect to make an offline copy.' : 'Offline copies are made on the published site.');
-  const [files, have, est] = await Promise.all([wantedFiles(m), cachedPaths(), storageEstimate()]);
+  const [files, have, est] = await Promise.all([wantedFiles(m), cachedPaths(m.version), storageEstimate()]);
   const missing = files.filter((f) => !have.has(f.path));
   const sum = (list: OfflineFile[], k: 'wire' | 'stored') => list.reduce((a, f) => a + f[k], 0);
   return {
@@ -145,9 +142,22 @@ export async function offlineStatus(): Promise<OfflineStatus> {
     files,
     shell: m.shell.map((f) => (f === './' ? '' : f.replace(/^\.\//, ''))),
     missing,
-    wireTotal: sum(files, 'wire'),
-    wireMissing: sum(missing, 'wire'),
-    storedMissing: sum(missing, 'stored'),
+    wireTotal:
+      m.archive.bytes +
+      sum(
+        files.filter((f) => !m.files.some(([path]) => path === f.path)),
+        'wire',
+      ),
+    wireMissing: missing.length
+      ? m.archive.bytes +
+        sum(
+          files.filter((f) => !m.files.some(([path]) => path === f.path)),
+          'wire',
+        )
+      : 0,
+    storedMissing: missing.length ? sum(files, 'stored') : 0,
+    archive: m.archive,
+    archiveFiles: m.files,
     ready: missing.length === 0,
     version: m.version,
     copy: copyBefore(m.version),
@@ -156,6 +166,7 @@ export async function offlineStatus(): Promise<OfflineStatus> {
 }
 
 export interface OfflineProgress {
+  phase?: 'download' | 'extract';
   done: number;
   total: number;
   bytes: number;
@@ -176,55 +187,40 @@ export function hasRoom(status: Pick<OfflineStatus, 'usage' | 'quota'>, bytes: n
 
 const isQuota = (e: unknown) => e instanceof DOMException && (e.name === 'QuotaExceededError' || e.name === 'NS_ERROR_DOM_QUOTA_REACHED');
 
-/**
- * Downloads every missing file into the cache, a few at a time. Stops at `signal`, at the
- * first quota error, or when the network fails; what came in stays (a later run picks up
- * where it stopped).
- */
+/** Downloads the single public ZIP and atomically replaces the prepared copy. */
 export async function makeOffline(status: OfflineStatus, onProgress: (p: OfflineProgress) => void, signal: AbortSignal): Promise<OfflineResult> {
   if (!hasRoom(status, status.storedMissing)) return { ok: false, reason: 'space', message: 'There is not enough storage space for this browser to keep it.' };
-  // ask the browser not to clear it when space runs low (it may say no; it still works)
+  if (!status.archive || !status.version) return { ok: false, reason: 'network', message: 'Reload the published site before making an offline copy.' };
   await navigator.storage?.persist?.().catch(() => false);
   if (status.copy !== 'outdated') rememberCopy(true);
-  const cache = await caches.open(CACHE);
-  const queue = [...status.missing];
-  const p: OfflineProgress = { done: 0, total: queue.length, bytes: 0, totalBytes: status.wireMissing };
-  onProgress({ ...p });
-  let failure: OfflineResult | undefined;
-  const worker = async () => {
-    while (!failure && queue.length) {
-      if (signal.aborted) {
-        failure = { ok: false, reason: 'canceled', message: 'Stopped. What came in so far is kept.' };
-        return;
-      }
-      const f = queue.shift()!;
-      try {
-        const res = await fetch(urlOf(f.path), { cache: 'no-cache', signal });
-        if (!res.ok) throw new Error(`${res.status}`);
-        await cache.put(urlOf(f.path), res);
-      } catch (e) {
-        if (signal.aborted) failure ??= { ok: false, reason: 'canceled', message: 'Stopped. What came in so far is kept.' };
-        else if (isQuota(e)) failure ??= { ok: false, reason: 'quota', message: 'The browser ran out of room to keep it. What came in so far is kept.' };
-        else failure ??= { ok: false, reason: 'network', message: 'A download failed (are you still online?). Try again to finish.' };
-        return;
-      }
-      p.done++;
-      p.bytes += f.wire;
-      onProgress({ ...p });
-    }
-  };
-  await Promise.all([worker(), worker(), worker(), worker()]);
-  if (!failure && status.version) rememberCopy(status.version);
-  if (!failure) unlockAchievement('offline-copy');
-  return failure ?? { ok: true };
+  const files = status.archiveFiles ?? status.files.map((f): [string, number, number] => [f.path, f.wire, f.stored]);
+  const listed = new Set(files.map(([path]) => path));
+  const extras = status.files.filter((f) => !listed.has(f.path)).map((f): [string, number, number] => [f.path, f.wire, f.stored]);
+  const manifest: OfflineManifest = { version: status.version, shell: status.shell, files, archive: status.archive };
+  try {
+    await offlineLock(siteBase().href, () => installArchive(siteBase().href, manifest, extras, onProgress, signal));
+    rememberCopy(status.version);
+    unlockAchievement('offline-copy');
+    return { ok: true };
+  } catch (e) {
+    const kept = 'Any previous complete offline copy is still kept.';
+    if (signal.aborted) return { ok: false, reason: 'canceled', message: `Stopped. ${kept} Try again to download the archive from the start.` };
+    if (isQuota(e)) return { ok: false, reason: 'quota', message: `The browser ran out of room. ${kept}` };
+    return { ok: false, reason: 'network', message: `The offline download could not finish. ${kept} Try again when connected.` };
+  }
 }
 
-/** Takes the offline copy out of the cache (not the app shell, which the site keeps anyway). Parts used later are cached again as they are used. */
-export async function removeOffline(status: OfflineStatus): Promise<void> {
-  rememberCopy(false);
-  const cache = await caches.open(CACHE);
-  const keep = new Set(status.shell);
-  await Promise.all(status.files.filter((f) => !keep.has(f.path)).map((f) => cache.delete(urlOf(f.path), { ignoreSearch: true })));
+/** Removes prepared copies, not the shell or files cached through ordinary browsing. */
+export async function removeOffline(_status: OfflineStatus): Promise<void> {
+  const base = siteBase().href;
+  await offlineLock(base, async () => {
+    const names = offlineNames(base);
+    const previous = await readOfflineCopy(base);
+    await caches.delete(names.control);
+    if (previous) await caches.delete(previous.cache);
+    for (const name of await caches.keys()) if (name.startsWith(names.prefix)) await caches.delete(name);
+    rememberCopy(false);
+  });
 }
 
 /** "31.2 MB" */

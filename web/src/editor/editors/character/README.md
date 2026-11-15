@@ -9,7 +9,7 @@ Edits a CHR’s starting values and key sequences, with CBL frame pictures, moti
 - [`character.ts`](character.ts): Registers CHR editing for initial meters/inventory and sequences, coordinates previews, sound, mirroring, serialization, and Undo snapshots.
 - [`characterLogic.ts`](characterLogic.ts): Supplies orientation composition, frame-list edits preserving end markers/trailing slots, birth-frame detection, and travel totals.
 - [`characterFrames.ts`](characterFrames.ts): Builds sequence key capture and editable frame cards for pictures/orientations, monster birth, motion, timing, and ordering.
-- [`characterStage.ts`](characterStage.ts): Supplies a cached arrival-area map backdrop or dark-grid choice for character previews.
+- [`characterStage.ts`](characterStage.ts): Supplies a cached arrival-area map backdrop or a dark- or light-grid choice for character previews.
 
 ## Loading and development
 

@@ -19,7 +19,8 @@ export function parseHash(hash: string): HashRoute {
   const raw = hash.replace(/^#/, '');
   const q = raw.indexOf('?');
   const pathPart = q < 0 ? raw : raw.slice(0, q);
-  const params: Record<string, string> = {};
+  // No prototype, so a key such as __proto__ or constructor is just a key.
+  const params: Record<string, string> = Object.create(null);
   if (q >= 0) for (const [k, v] of new URLSearchParams(raw.slice(q + 1))) params[k] = v;
   const path = pathPart
     .split('/')

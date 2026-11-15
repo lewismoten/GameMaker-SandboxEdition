@@ -518,6 +518,7 @@ main.home {
 }
 
 .check {
+  min-height: 24px;
   display: inline-flex;
   gap: 6px;
   align-items: center;
@@ -1480,4 +1481,11 @@ main:focus,
     min-height: 44px;
     margin: -10px 0;
   }
+}
+
+/* Scene roles are text alongside map names, wrapping within the file rail. */
+.sidebar .scene-file-roles {
+  display: block;
+  white-space: normal;
+  overflow-wrap: anywhere;
 }

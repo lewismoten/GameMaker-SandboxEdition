@@ -261,10 +261,10 @@ RSD Game-Maker was created by G. Andrew Stone, G. Oliver Stone, Oliver Stone Jr.
 Stone. This fork is by Lewis Moten; the web port was written with Claude Opus 5.5, with AI
 assistance doing most of the porting and code generation. The Bard of Bizarre songs'
 lyrics were shaped with ChatGPT from Lewis's prompts and their music made with Riffusion
-(now Google Flow Music). The CD's games belong to their authors. See [NOTICE.md](NOTICE.md)
+(now Google Flow Music). The CD's games belong to their authors, as shareware or samples distributed on the RSD CD, and are not covered by the MIT License; neither are games you import. See [NOTICE.md](NOTICE.md)
 for full credits, the story behind this fork and third-party trademarks.
 
-Released under the [MIT License](LICENSE).
+Released under the [MIT License](LICENSE). It covers the original source Andy Stone released and this fork's own code and content; third-party material and other authors' games keep their own terms (NOTICE.md lists them).
 
 The [native SDL host prototype](hardware/pi-player/README.md) compiles the [Pocket Player](https://github.com/lewismoten/gamemaker-pocket) core (its own repository) for macOS and prepares the Raspberry Pi OS Lite player.
 

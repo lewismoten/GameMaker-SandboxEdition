@@ -1,11 +1,11 @@
-// The hill the fire sits on (level 3): a dome ten blocks wide and four high, drawn once as one picture in the dark of
+// The hill the fire sits on (level 3): a dome ten blocks wide and two high (low, so the fire on it shows on screen), drawn once as one picture in the dark of
 // the night, then cut into blocks. Blocks of it that came out the same (the plain middle) are one block used again.
 import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { Book, PULL } from '../../kit/starter/book';
 import type { Pal } from '../../kit/starter/palette';
 
 export const HILL_W = 10;
-export const HILL_H = 4;
+export const HILL_H = 2;
 
 /** Adds the hill's blocks to `book` (names `hill.<col><row>`, sharing equal pictures) and returns the name for each cell, row by row. */
 export function addHill(book: Book, pal: Pal, bg: number): string[][] {
@@ -16,7 +16,7 @@ export function addHill(book: Book, pal: Pal, bg: number): string[][] {
   const rand = rng(77);
   for (let x = 0; x < W; x++) {
     const t = (x - (W - 1) / 2) / (W / 2);
-    const top = Math.round(0 + 62 * (1 - Math.sqrt(Math.max(0, 1 - t * t))) * 0.9);
+    const top = Math.round(0 + 38 * (1 - Math.sqrt(Math.max(0, 1 - t * t))) * 0.9);
     p.rect(x, top, 1, H - top, c('grass', 0));
     p.set(x, top, c('grass', 1));
   }

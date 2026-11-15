@@ -5,7 +5,7 @@
 
 export type Vec3 = [number, number, number];
 
-export interface PartMeta {
+interface PartMeta {
   id: string;
   kind: string;
   side?: 'front' | 'back';
@@ -24,7 +24,7 @@ export interface PartMeta {
 export type PhoneVariant = 'cheap' | 'deluxe';
 export const VARIANTS: PhoneVariant[] = ['cheap', 'deluxe'];
 
-export interface VariantMeta {
+interface VariantMeta {
   id: PhoneVariant;
   name: string;
   subtitle: string;

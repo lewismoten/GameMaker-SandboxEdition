@@ -5,7 +5,7 @@
       "id": "duck",
       "q": "How do I make the hero duck?",
       "scene": 2,
-      "x": 5,
+      "x": 4,
       "y": 6,
       "level": 1
     },
@@ -14,7 +14,7 @@
       "q": "How do I make a flying monster miss the hero?",
       "scene": 2,
       "x": 9,
-      "y": 6,
+      "y": 7,
       "level": 1
     },
     {
@@ -37,8 +37,8 @@
       "id": "both",
       "q": "How do I ask for a duck and then a hop?",
       "scene": 3,
-      "x": 44,
-      "y": 6,
+      "x": 42,
+      "y": 7,
       "level": 2
     }
   ],

@@ -31,4 +31,4 @@ export const DATABASES: Record<string, string> = {
 export const KNOWN_DATABASES: string[] = [...new Set([...Object.values(STORES).map((s) => s.db), ...Object.keys(DATABASES_NOT_BACKED_UP)])];
 
 /** Caches: the site's own files for playing offline. */
-export const CACHE_NAMES = ['gm-site'];
+export const CACHE_NAMES = ['gm-site-v2', 'gm-offline-control:<site URL>', 'gm-offline-copy:<site URL>:<version>:<id>', 'gm-site (older offline copy)'];

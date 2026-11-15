@@ -1,10 +1,10 @@
-// Build the cryptex and validate its lock, unglued hidden engraving, hole nesting and selected library stock.
+// "In The Year 2000!" cryptex: builds the parts, the sheets and the checks (lock, unglued hidden engraving, hole nesting via kit/laserNest, library stock).
 import { placePart, STOCK, STOCK_MARGIN, type Part, type Placed, type StockSize } from '@lewismoten/gamemaker-sandbox-tools/kit/laserLayout';
 import { cutSpacingProblems, engravingRegionProblems } from '@lewismoten/gamemaker-sandbox-tools/kit/laserClearance';
 import type { LaserSheet } from '@lewismoten/gamemaker-sandbox-tools/kit/laserSvg';
 import { engravingProblems } from '../../sleuth/laser/stageBoxBuild';
 import { COLLAR_R, POCKET, RINGS, SLICE_HOLE, WASHER, SOCKET_FIT, checkLock } from './cryptexDims';
-import { NEST_GAP, boundingRadius, nest, nestProblems, type Guest, type Hole } from './cryptexNest';
+import { NEST_GAP, boundingRadius, nest, nestProblems, type Guest, type Hole } from '@lewismoten/gamemaker-sandbox-tools/kit/laserNest';
 import { packCryptex } from './cryptexPack';
 import { makeParts, type Parts } from './cryptexParts';
 

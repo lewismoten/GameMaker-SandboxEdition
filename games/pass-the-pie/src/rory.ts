@@ -6,7 +6,8 @@ import type { Pal } from '@lewismoten/gamemaker-sandbox-tools/kit/palRamps';
 import { Book } from '../../kit/starter/book';
 import { oval, paperBlock, press, stamp, T } from './print';
 
-type Face = 'smile' | 'blink' | 'look' | 'ouch' | 'cheer' | 'oh' | 'back';
+/** front, fblink and fcheer face the player (standing still and the toss, which flies the way Rory last walked). */
+type Face = 'smile' | 'blink' | 'look' | 'ouch' | 'cheer' | 'oh' | 'back' | 'front' | 'fblink' | 'fcheer';
 type Arms = 'down' | 'swingA' | 'swingB' | 'high' | 'out' | 'flail' | 'upA' | 'upB' | 'carry';
 /** Each leg as [knee dx, foot dx, foot lift], from the hip. */
 type Legs = [[number, number, number], [number, number, number]];
@@ -55,6 +56,7 @@ function figure(pal: Pal, face: Face, arms: Arms, legs: Legs): Pixels {
   const [skin, hair, cap, scarf, coat, jeans] = ['rSkin', 'rHair', 'rCap', 'rScarf', 'rCoat', 'rJeans'].map((n) => pal.r(n));
   const p = new Pixels(20, 40, T);
   const back = face === 'back';
+  const front = face === 'front' || face === 'fblink' || face === 'fcheer';
   // legs: two jeans strokes from the hips, shoes at the bottom
   const hips = back ? [8, 11] : [8, 11];
   legs.forEach(([knee, foot, lift], i) => {
@@ -66,7 +68,8 @@ function figure(pal: Pal, face: Face, arms: Arms, legs: Legs): Pixels {
   });
   // coat
   p.rect(7, 19, 8, 11, coat[1]).rect(7, 28, 8, 2, coat[0]);
-  if (!back) p.rect(12, 20, 1, 9, coat[0]).set(13, 23, cap[2]).set(13, 26, cap[2]);
+  if (front) p.rect(10, 20, 2, 9, coat[0]).set(12, 23, cap[2]).set(12, 26, cap[2]);
+  else if (!back) p.rect(12, 20, 1, 9, coat[0]).set(13, 23, cap[2]).set(13, 26, cap[2]);
   else p.rect(10, 20, 1, 9, coat[0]);
   // arms
   const arm = (x0: number, y0: number, x1: number, y1: number, col: number) => {
@@ -114,11 +117,18 @@ function figure(pal: Pal, face: Face, arms: Arms, legs: Legs): Pixels {
   A[arms].forEach(([a, b, c, d], i) => arm(a, b, c, d, coat[i ? 2 : 0]));
   // scarf round the neck, its tail down the back
   for (let x = 7; x < 15; x++) for (let y = 17; y < 20; y++) p.set(x, y, (x + y) % 4 < 2 ? scarf[1] : scarf[2]);
-  for (let y = 20; y < 27; y++) p.rect(back ? 10 : 6, y, 2, 1, y % 3 ? scarf[1] : scarf[2]);
+  if (!front) for (let y = 20; y < 27; y++) p.rect(back ? 10 : 6, y, 2, 1, y % 3 ? scarf[1] : scarf[2]);
   // head
   oval(p, 11, 12, 4, 5, skin[1]);
   if (back) oval(p, 11, 12, 4, 5, hair[1]);
-  else {
+  else if (front) {
+    // face on: eyes either side of the nose
+    if (face === 'front') p.rect(9, 10, 1, 2, ink[0]).rect(13, 10, 1, 2, ink[0]);
+    else p.rect(8, 11, 2, 1, ink[0]).rect(13, 11, 2, 1, ink[0]);
+    p.set(11, 12, skin[0]).set(11, 13, skin[0]);
+    if (face === 'fcheer') p.rect(10, 14, 3, 2, ink[0]).set(11, 15, scarf[1]);
+    else p.rect(10, 15, 3, 1, ink[0]);
+  } else {
     p.rect(7, 9, 3, 5, hair[1]);
     p.set(15, 12, skin[0]).set(16, 12, skin[1]); // nose
     const ey = face === 'look' ? 11 : 11;
@@ -137,10 +147,13 @@ function figure(pal: Pal, face: Face, arms: Arms, legs: Legs): Pixels {
   p.rect(7, 5, 9, 4, cap[1]).rect(6, 8, 11, 2, cap[0]);
   for (let x = 8; x < 16; x += 2) p.set(x, 6, cap[2]);
   oval(p, 11, 4, 2, 1.5, cap[2]);
-  p.rect(back ? 13 : 8, 10, 2, 5, cap[1])
-    .set(back ? 14 : 9, 15, cap[0])
-    .set(back ? 14 : 9, 16, cap[0]);
-  if (back) p.rect(6, 10, 2, 5, cap[1]);
+  if (front) p.rect(6, 10, 2, 5, cap[1]).set(6, 15, cap[0]).set(6, 16, cap[0]).rect(15, 10, 2, 5, cap[1]).set(16, 15, cap[0]).set(16, 16, cap[0]);
+  else {
+    p.rect(back ? 13 : 8, 10, 2, 5, cap[1])
+      .set(back ? 14 : 9, 15, cap[0])
+      .set(back ? 14 : 9, 16, cap[0]);
+    if (back) p.rect(6, 10, 2, 5, cap[1]);
+  }
   return stamp(pal, p);
 }
 
@@ -166,6 +179,10 @@ export function buildRoryBlocks(pal: Pal): Book {
   add('stand.top', 'throw0', 'smile', 'carry', LEGS.stand);
   add('cheer.top', 'throw1', 'cheer', 'out', LEGS.stand);
   add('stand.top', 'throw2', 'smile', 'down', LEGS.stand);
+  // face on: standing still and the toss
+  add('front.top', 'fstand', 'front', 'down', LEGS.stand);
+  add('fblink.top', 'fstand', 'fblink', 'down', LEGS.stand);
+  add('fcheer.top', 'fthrow1', 'fcheer', 'out', LEGS.stand);
   add('back.top', 'climb0', 'back', 'upA', LEGS.climbA);
   add('back.top', 'climb1', 'back', 'upB', LEGS.climbB);
   return book;

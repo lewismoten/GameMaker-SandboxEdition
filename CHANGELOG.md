@@ -6,6 +6,24 @@ changelog: [engine](web/packages/engine/CHANGELOG.md), [archives](web/packages/a
 
 ## [Unreleased]
 
+## [3.6.0] - 2026-11-12
+
+The 3D kit views on the Feelies shelf turn and zoom on every step, three more laser kits fit four library sheet sizes, In The Year 2000! reaches 1.9 with gates in front of THE CHEZ, and the guides say what the code does.
+
+### Added
+
+- The Feelies shelf's 3D kit views (the cryptex, the puzzle box and the paper die) turn and zoom on every step, with Zoom in, Zoom out and Reset view buttons; the step slider shows the in-between frame and pauses the animation; the die opens its fold view above the shelf; a kit's SVG drawings open large in the page, with pan, zoom and a Download button.
+- Fit the Plowed Street box, Stage Box and paper THE CHEZ laser sheets to four library stock sizes, with sheet counts in the build notes and manifests.
+
+### Changed
+
+- The embedding, web player and editor guides now say what the code does: the 60-second wait sends no reply, game files are fetched from each folder, mixed-case names are not found on case-sensitive hosts, and recording and the AI game builder have limits.
+- In The Year 2000! (1.9): the CitiCar is fully visible again, with three gates in front of it (all seven pages, then the Zapper, then the keys), each with its own sign.
+
+### Security
+
+- Check MCP file access and read-only recording, authenticate local backups before extraction, keep restored API keys bound to their endpoints, bound HTML imports, keep backup sections separate, save slots atomically, and honor linked-download consent and cancellation.
+
 ## [3.5.0] - 2026-11-11
 
 The wrong-number die, the cryptex and the Snowbound puzzle box assemble in 3D on the desk, In The Year 2000! reaches 1.8, the map editor and home get finger-sized controls, dialogs fit small and sideways phones, and the DOS page, Library and home download less.
@@ -134,7 +152,8 @@ for every Game-Maker file type; the web player; and the set of new games built i
 - Exports to a web page, a DOS ZIP and native players, and opening a game another site links to.
 - Achievements, a guided tour with voice clips, and offline use as an installable app.
 
-[Unreleased]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/pages-v3.5.0...HEAD
+[Unreleased]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/pages-v3.6.0...HEAD
+[3.6.0]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/pages-v3.5.0...pages-v3.6.0
 [3.5.0]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/pages-v3.4.0...pages-v3.5.0
 [3.4.0]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/pages-v3.3.0...pages-v3.4.0
 [3.3.0]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/pages-v3.2.0...pages-v3.3.0

@@ -34,7 +34,21 @@ describe('merge gate', () => {
     expect(result.inputs[0].revision).toBe(revision);
     expect(git(f.root, 'ls-remote', 'origin', 'refs/heads/develop').split(/\s/)[0]).toBe(result.testedRevision);
     expect(result.pushedRevision).toBe(result.testedRevision);
-    expect(result.steps.map((s) => s.name)).toEqual(['packages', 'disks', 'levelViews', 'declarations', 'tsc', 'lint', 'vitest', 'game-sample', 'push']);
+    expect(result.steps.map((s) => s.name)).toEqual([
+      'packages',
+      'disks',
+      'levelViews',
+      'release-check',
+      'declarations',
+      'tsc',
+      'lint',
+      'vitest',
+      'game-sample',
+      'push',
+      'delete-feature-task',
+    ]);
+    // the merged branch is gone from origin, at the revision tested
+    expect(git(f.root, 'ls-remote', 'origin', 'refs/heads/feature/task')).toBe('');
     expect(JSON.parse(readFileSync(join(f.output, 'result.json'))).candidateTree).toBe(git(f.integration, 'rev-parse', 'HEAD^{tree}'));
     expect(existsSync(`${f.integration}.gate-lock`)).toBe(false);
   });
@@ -48,6 +62,20 @@ describe('merge gate', () => {
     expect(result.tests.failures[0].allowed).toBe(false);
     expect(result.steps.at(-1).name).toBe('vitest');
     expect(git(f.root, 'rev-parse', 'origin/develop')).toBe(before);
+  });
+
+  it('fails on a badly formatted release fragment, naming the file, before tsc or tests', () => {
+    const f = setup();
+    change(f.root, 'feature/task', 'new.txt', 'feature\n');
+    const result = run(f, { push: true }, (cwd, argv) =>
+      argv.includes('release:check')
+        ? { code: 1, stdout: '', stderr: 'Error: /x/changes/unreleased/pages/bad-1112.md: expected one ### category, a blank line and one bullet.' }
+        : fakeChecks()(cwd, argv),
+    );
+    expect(result.exitCode).toBe(4);
+    expect(result.error).toMatch(/release-check failed: .*bad-1112\.md/);
+    expect(result.steps.at(-1).name).toBe('release-check');
+    expect(result.pushedRevision).toBeUndefined();
   });
 
   it('propagates a build failure before running tsc or tests', () => {

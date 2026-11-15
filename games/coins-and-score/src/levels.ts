@@ -7,12 +7,13 @@
 //   3. Points Are Not Lives: a row of coins changes the score and nothing else; a heart on a
 //      ledge adds a life. Game-Maker has no "extra life at a score": a block that adds to the
 //      lives counter does it.
-import { Book } from '../../kit/starter/book';
+import { Book, PULL } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
-import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
-import { addSign, type Sign } from '../../kit/starter/sign';
+import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
+import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { MICRO_GLYPHS } from '@lewismoten/gamemaker-sandbox-tools/microFont';
 import { addPickupBlocks } from './pickups';
 
 /** The block set the levels share: the Starter blocks, this game's pickups, then its signs. */
@@ -20,17 +21,33 @@ export function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sig
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
   addPickupBlocks(book, pal);
-  const signs = {
-    coinsAdd: addSign(book, pal, 'coinsAdd', 'COINS ADD POINTS', 4, 2),
-    scoreKey: addSign(book, pal, 'scoreKey', 'F2 SHOWS YOUR SCORE', 4, 2),
-    coinTen: addSign(book, pal, 'coinTen', 'A COIN IS WORTH 10', 4, 2),
-    gemFifty: addSign(book, pal, 'gemFifty', 'A GEM IS WORTH 50', 4, 2),
-    rockCosts: addSign(book, pal, 'rockCosts', 'A ROCK TAKES 20 AWAY', 4, 2),
-    onlyPoints: addSign(book, pal, 'onlyPoints', 'COINS ARE ONLY POINTS', 4, 2),
-    heartLife: addSign(book, pal, 'heartLife', 'A HEART ADDS A LIFE', 4, 2),
-    f2Lives: addSign(book, pal, 'f2Lives', 'F2 SHOWS YOUR LIVES', 4, 2),
-    exit: addSign(book, pal, 'exit', 'EXIT →', 3),
-  };
+  const { blocks, signs } = buildTiledSigns(
+    {
+      coinsAdd: { rows: [['COINS ADD POINTS']] },
+      scoreKey: { rows: [['F2 SHOWS YOUR SCORE']] },
+      coinTen: { rows: [['A COIN IS WORTH 10']] },
+      gemFifty: { rows: [['A GEM IS WORTH 50']] },
+      rockCosts: { rows: [['A ROCK TAKES 20 AWAY']] },
+      onlyPoints: { rows: [['COINS ARE ONLY POINTS']] },
+      heartLife: { rows: [['A HEART ADDS A LIFE']] },
+      f2Lives: { rows: [['F2 SHOWS YOUR LIVES']] },
+      exit: { rows: [['EXIT →']] },
+    },
+    {
+      colors: {
+        background: skyOf(pal),
+        paper: pal.c('parch', 3),
+        ink: pal.c('ink', 0),
+        wood: pal.c('wood', 2),
+        highlight: pal.c('wood', 4),
+        shadow: pal.c('wood', 0),
+      },
+      glyphs: { ...MICRO_GLYPHS, '→': '100110111110100' },
+      lettersPerBlock: 3,
+      maxBlocks: 100 - book.index.size,
+    },
+  );
+  for (const [name, pic] of blocks) book.add(name, pic, { grav: PULL.down });
   return { book, signs };
 }
 
@@ -84,9 +101,9 @@ function coinsAddPoints(book: Book, signs: Record<SignName, Sign>): StarterMap {
   ledge(g, 3, 20, 27, 19);
   g.row(GROUND - 1, 13, 18, 'c').row(2, 21, 25, 'c');
   const m = new StarterMap(book, g.rows());
-  m.sign(4, onGround(GROUND, signs.coinsAdd), signs.coinsAdd);
-  m.sign(8, onGround(GROUND, signs.scoreKey), signs.scoreKey);
-  m.sign(38, onGround(GROUND, signs.exit), signs.exit);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 2, 6, signs.coinsAdd, 3);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 7, onGround(GROUND, signs.scoreKey), signs.scoreKey);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 38, 7, signs.exit, 2);
   return m;
 }
 
@@ -108,10 +125,10 @@ function worthMore(book: Book, signs: Record<SignName, Sign>): StarterMap {
   const m = new StarterMap(book, g.rows());
   for (const x of [25, 27, 29]) m.set(x, 2, 'gem');
   m.set(39, GROUND - 1, 'rock');
-  m.sign(5, onGround(GROUND, signs.coinTen), signs.coinTen);
-  m.sign(15, onGround(GROUND, signs.gemFifty), signs.gemFifty);
-  m.sign(34, onGround(GROUND, signs.rockCosts), signs.rockCosts);
-  m.sign(44, onGround(GROUND, signs.exit), signs.exit);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 4, onGround(GROUND, signs.coinTen), signs.coinTen);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 13, onGround(GROUND, signs.gemFifty), signs.gemFifty);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 34, onGround(GROUND, signs.rockCosts), signs.rockCosts);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 44, 7, signs.exit, 2);
   return m;
 }
 
@@ -132,10 +149,10 @@ function heartsAddLives(book: Book, signs: Record<SignName, Sign>): StarterMap {
   g.row(GROUND - 1, 10, 19, 'c');
   const m = new StarterMap(book, g.rows());
   m.set(31, 2, 'heart');
-  m.sign(5, onGround(GROUND, signs.onlyPoints), signs.onlyPoints);
-  m.sign(21, onGround(GROUND, signs.heartLife), signs.heartLife);
-  m.sign(37, onGround(GROUND, signs.f2Lives), signs.f2Lives);
-  m.sign(43, onGround(GROUND, signs.exit), signs.exit);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 5, onGround(GROUND, signs.onlyPoints), signs.onlyPoints);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 18, onGround(GROUND, signs.heartLife), signs.heartLife);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 35, onGround(GROUND, signs.f2Lives), signs.f2Lives);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 44, 7, signs.exit, 2);
   return m;
 }
 

@@ -46,6 +46,7 @@
 
 .gm-player .gm-start.has-poster {
   background-position: center;
+  background-repeat: no-repeat; /* a tall phone box tiled the poster three times */
   background-size: contain;
   image-rendering: pixelated;
   text-shadow: 0 2px 6px #000;
@@ -255,6 +256,39 @@
   font-size: 13px;
 }
 
+.gm-actions button {
+  /* one size for every name, so a long one wraps and the circle stays round */
+  width: 64px;
+  flex-direction: column;
+  gap: 1px;
+  padding: 0 4px;
+  overflow: hidden;
+}
+
+/* the game's name for the key (up to two lines) and the key small under it */
+.gm-actions .gm-act-name {
+  max-width: 100%;
+  font-size: 12px;
+  line-height: 1.1;
+  text-align: center;
+  overflow-wrap: normal;
+}
+
+.gm-actions .gm-act-key {
+  font-size: 9px;
+  font-weight: 600;
+  opacity: 0.85;
+}
+
+.gm-actions .gm-more {
+  background: rgb(36 38 58 / var(--touch-alpha));
+  border-color: rgb(138 141 172 / 0.6);
+  font-size: 12px;
+  padding: 0 4px;
+  line-height: 1.1;
+  text-align: center;
+}
+
 .gm-actions[data-count='1'] {
   grid-template-columns: auto;
 }
@@ -267,7 +301,7 @@
 
 .gm-sys button {
   min-width: 48px;
-  min-height: 40px;
+  min-height: 44px;
   padding: 0 10px;
   font-size: 13px;
   border-radius: 20px;
@@ -310,7 +344,7 @@
 
 .gm-player.touch-landscape .gm-sys button {
   min-width: 46px;
-  min-height: 36px;
+  min-height: 44px;
   padding: 0 6px;
 }
 
@@ -319,6 +353,7 @@
 }
 
 .gm-player.touch-landscape .gm-actions button {
+  width: 58px;
   min-width: 58px;
   min-height: 58px;
 }
@@ -442,6 +477,20 @@
   touch-action: manipulation;
 }
 
+.gm-player .gm-snapshot-note {
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(0, 0, 128, 0.85);
+  color: #fff;
+  font:
+    12px/1.3 system-ui,
+    sans-serif;
+}
+
+.gm-player .gm-snapshot-note:empty {
+  display: none;
+}
+
 .gm-player.gm-cursor-hidden .gm-snapshot {
   opacity: 0;
 }
@@ -455,4 +504,42 @@
 .gm-player .gm-snapshot:focus-visible {
   outline: 2px solid #fff;
   outline-offset: 2px;
+}
+
+/* ---- before the start, upright on a touch screen ------------------------------------ */
+/* The poster sits where the game will draw (the top, 4:3), the buttons and the "Run like a"
+   menu under it (screenKeys.css), then the setup bar and the shareware notice in their own
+   rows: nothing lies over the poster or the touch pad. */
+.gm-player.has-touch.touch-portrait .gm-start {
+  inset: env(safe-area-inset-top) 0 auto;
+  height: calc(var(--screen-bottom) - env(safe-area-inset-top));
+}
+
+.gm-player.has-touch.touch-portrait .gm-start.has-poster {
+  background-position: center top;
+  background-size: 100% 100%; /* exactly where the game draws */
+}
+
+.gm-player.has-touch.touch-portrait .gm-hardware-launch {
+  top: calc(var(--screen-bottom) + 80px);
+  bottom: auto;
+}
+
+.gm-player.has-touch.touch-portrait .gm-notice-link {
+  top: calc(var(--screen-bottom) + 144px);
+  bottom: auto;
+  min-height: 44px;
+}
+
+/* a short phone (360x640): the rows tuck closer so the notice stays clear of the Esc/F1 keys */
+@media (max-height: 700px) {
+  .gm-player.has-touch.touch-portrait .gm-hardware-launch {
+    top: calc(var(--screen-bottom) + 73px);
+  }
+  .gm-player.has-touch.touch-portrait .gm-notice-link {
+    top: calc(var(--screen-bottom) + 123px);
+    min-height: 38px;
+    padding: 2px 12px;
+    white-space: nowrap;
+  }
 }

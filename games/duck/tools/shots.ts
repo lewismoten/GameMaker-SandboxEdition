@@ -4,13 +4,18 @@
 import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { writePng } from '@lewismoten/gamemaker-sandbox-tools/kit/png';
+import { recordCamera } from '@lewismoten/gamemaker-sandbox-tools/kit/cameraLog';
 import { renderRegion } from '@lewismoten/gamemaker-sandbox-tools/kit/levelPicture';
 import { heroPicture } from '../../kit/starter/hero';
 import { ORIGIN } from '../../kit/starter/map';
 import { buildHeroBlocks2 } from '../src/hero';
 import { L1, L2, buildLevels } from '../src/levels';
 import { buildMonsterBlocks, buildMonsters } from '../src/monsters';
+import { play } from './play';
+import { GameSim } from './sim';
 
+// where the screen really was on the bot's way through the game (it rests in a new place after a climb or a drop)
+const cam = await recordCamera(GameSim, () => play());
 const out = process.argv[2];
 if (!out) throw new Error('usage: shots.ts <outDir>');
 mkdirSync(out, { recursive: true });
@@ -35,18 +40,18 @@ const place = (i: number, where: Record<number, number>) => {
   const m = maps[i];
   for (const [k, col] of Object.entries(where)) m.monsters[+k].curx = ORIGIN + Math.floor(col);
 };
-const screen = (i: number, col: number, row: number, ...sprites: ReturnType<typeof kit>[]) =>
-  renderRegion(maps[i], bbl, mbl, set, ORIGIN + col, ORIGIN + row, 16, 10, sprites.flat());
+const screen = (i: number, col: number, row: number | null, ...sprites: ReturnType<typeof kit>[]) =>
+  renderRegion(maps[i], bbl, mbl, set, ORIGIN + col, row === null ? cam.top(i, sprites.flat()) : ORIGIN + row, 16, 10, sprites.flat());
 
 const G1 = L1.ground;
 place(0, { 0: 23 });
-writePng(join(out, 'one-1-a-bird-comes.png'), screen(0, 12, 3, kit(15, G1 - 1)), pal.pal, 3);
+writePng(join(out, 'one-1-a-bird-comes.png'), screen(0, 12, null, kit(15, G1 - 1)), pal.pal, 3);
 place(0, { 0: 17 });
 writePng(join(out, 'one-2-ducking-the-bird-flies-over.png'), screen(0, 12, 3, kit(17, G1 - 1, 'duck')), pal.pal, 3);
 writePng(join(out, 'one-3-standing-it-hits.png'), screen(0, 12, 3, kit(17, G1 - 1, 'hurt')), pal.pal, 3);
 const G2 = L2.ground;
 place(1, { 0: 20, 1: 38 });
-writePng(join(out, 'two-1-ball-rolls-in.png'), screen(1, 29, 3, kit(34, G2 - 1)), pal.pal, 3);
+writePng(join(out, 'two-1-ball-rolls-in.png'), screen(1, 29, null, kit(34, G2 - 1)), pal.pal, 3);
 levels.forEach((l, i) =>
   writePng(join(out, `level-${i + 1}.png`), renderRegion(maps[i], bbl, mbl, set, ORIGIN, ORIGIN, l.map.width, l.map.height), pal.pal, 2),
 );

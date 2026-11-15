@@ -1,0 +1,14 @@
+{
+  "levels": [
+    {
+      "scene": 2,
+      "teaches": "Space hops once, Up lifts while held",
+      "rules": [{ "rule": "uses", "move": "Space", "min": 1 }, { "rule": "uses", "move": "Up", "min": 1 }, { "rule": "needs", "move": "Up" }]
+    },
+    {
+      "scene": 3,
+      "teaches": "Enter is one dash per press",
+      "rules": [{ "rule": "uses", "move": "Enter", "min": 4 }, { "rule": "needs", "move": "Enter" }]
+    }
+  ]
+}

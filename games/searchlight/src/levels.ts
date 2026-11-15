@@ -13,13 +13,14 @@ import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
-import { addSign, type Sign } from '../../kit/starter/sign';
+import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { MICRO_GLYPHS } from '@lewismoten/gamemaker-sandbox-tools/microFont';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { speckle } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';
 import { CONE } from './lightArt';
 import { SWEEP, lampOf } from './monsters';
 
-export type SignName = 'path' | 'seen' | 'hide' | 'two' | 'rest' | 'exit';
+export type SignName = 'path' | 'seen' | 'hide' | 'two' | 'rest' | 'exit' | 'exitLarge';
 
 /** The block set both levels share: the Starter blocks, the rail and the trench, then this game's signs. */
 function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
@@ -41,14 +42,35 @@ function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
     p.rect(0, 0, 1, 20, d[0]).rect(19, 0, 1, 20, d[0]);
     book.add('trench', p, { grav: PULL.down });
   }
-  const signs = {
-    path: addSign(book, pal, 'path.sign', 'THE LIGHT JUST WALKS A PATH', 4, 3),
-    seen: addSign(book, pal, 'seen.sign', 'BEING SEEN COSTS HIT POINTS', 4, 3),
-    hide: addSign(book, pal, 'hide.sign', 'WAIT IN A TRENCH TILL IT PASSES', 4, 3),
-    two: addSign(book, pal, 'two.sign', 'TWO LIGHTS, TWO SPEEDS', 4, 3),
-    rest: addSign(book, pal, 'rest.sign', 'GRASS HERE IS SAFE TO REST ON', 4, 3),
-    exit: addSign(book, pal, 'exit.sign', 'EXIT →', 3),
+  const texts = {
+    path: { rows: [['THE LIGHT JUST WALKS A PATH']], maxWidth: 5 },
+    seen: { rows: [['BEING SEEN COSTS HIT POINTS']], maxWidth: 7 },
+    hide: { rows: [['WAIT IN A TRENCH TILL IT PASSES']], maxWidth: 5 },
+    two: { rows: [['TWO LIGHTS, TWO SPEEDS']], maxWidth: 9 },
+    rest: { rows: [['GRASS HERE IS SAFE TO REST ON']], maxWidth: 11 },
+    exit: { rows: [['EXIT →']] },
+    exitLarge: { rows: [['EXIT →']] },
   };
+  const colors = { background: skyOf(pal), paper: c('parch', 3), ink: c('ink', 0), wood: c('wood', 2), highlight: c('wood', 4), shadow: c('wood', 0) };
+  const glyphs = { ...MICRO_GLYPHS, '→': '100110111110100' };
+  const compact = buildTiledSigns(texts, {
+    include: ['path', 'seen', 'hide', 'exit'],
+    compact: true,
+    colors,
+    glyphs,
+    maxBlocks: Math.min(100, 150 - book.index.size),
+  });
+  for (const [name, pic] of compact.blocks) book.add(name, pic, { grav: PULL.down });
+  const large = buildTiledSigns(texts, {
+    include: ['two', 'rest', 'exitLarge'],
+    lettersPerBlock: 3,
+    colors,
+    glyphs,
+    prefix: 'largeSign',
+    maxBlocks: Math.min(100, 150 - book.index.size),
+  });
+  for (const [name, pic] of large.blocks) book.add(name, pic, { grav: PULL.down });
+  const signs = { ...compact.signs, ...large.signs };
   return { book, signs };
 }
 
@@ -127,11 +149,12 @@ function waitAndGo(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [8, 13, 33],
   );
   const m = new StarterMap(book, g.rows());
-  m.sign(6, onGround(GROUND, signs.path), signs.path);
-  m.sign(10, onGround(GROUND, signs.seen), signs.seen);
-  m.sign(14, onGround(GROUND, signs.hide), signs.hide);
-  m.sign(42, onGround(GROUND, signs.exit), signs.exit);
   hang(m, 0);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 4, onGround(GROUND, signs.path), signs.path);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 11, onGround(GROUND, signs.seen), signs.seen);
+  // Past the sweep, with the post between the bush and the first coin.
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 29, onGround(GROUND, signs.hide), signs.hide);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 43, 7, signs.exit, 2);
   return m;
 }
 
@@ -152,10 +175,11 @@ function twoLights(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [8, 14, 30, 45],
   );
   const m = new StarterMap(book, g.rows());
-  m.sign(6, onGround(GROUND, signs.two), signs.two);
-  m.sign(30, onGround(GROUND, signs.rest), signs.rest);
-  m.sign(50, onGround(GROUND, signs.exit), signs.exit);
   hang(m, 1);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 5, onGround(GROUND, signs.two), signs.two);
+  // The post descends through the gap between the two rails.
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 28, 5, signs.rest, 4);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 51, 7, signs.exitLarge, 2);
   return m;
 }
 

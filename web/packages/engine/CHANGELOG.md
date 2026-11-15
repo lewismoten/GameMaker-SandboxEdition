@@ -5,6 +5,14 @@ Changes to `@lewismoten/gamemaker-sandbox-engine`, released as `engine-v*` tags.
 
 ## [Unreleased]
 
+## [3.3.3] - 2026-11-12
+
+Tighter limits on GIF, JPEG, slide list, VOC and animation input.
+
+### Security
+
+- Bound GIF dictionary setup and JPEG working memory, reject recursive slide lists and unsupported VOC formats, and close zero-speed animation scheduler ports.
+
 ## [3.3.2] - 2026-11-11
 
 The GIF decoder checks the picture size before it gathers any data.
@@ -55,7 +63,8 @@ for every Game-Maker file format, OPL2 and CMF audio, screen, input and fonts.
 
 - The engine, scoped as `@lewismoten/gamemaker-sandbox-engine` and published to GitHub Packages from version tags.
 
-[Unreleased]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/engine-v3.3.2...HEAD
+[Unreleased]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/engine-v3.3.3...HEAD
+[3.3.3]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/engine-v3.3.2...engine-v3.3.3
 [3.3.2]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/engine-v3.3.1...engine-v3.3.2
 [3.3.1]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/engine-v3.3.0...engine-v3.3.1
 [3.3.0]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/engine-v3.1.0...engine-v3.3.0

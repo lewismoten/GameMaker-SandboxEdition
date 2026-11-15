@@ -7,31 +7,33 @@
 //   Level 2, There and Back: a house. The HALL has a door to the KITCHEN and one to the BEDROOM, each
 //     with a door back; a gold door up on the HALL's ledge is shut until the kitchen's key comes along.
 //   Level 3, Two Doors: the FORK has two doors, to the GARDEN and to the ATTIC, and each leads on to the end.
-import { Book } from '../../kit/starter/book';
+import { Book, PULL } from '../../kit/starter/book';
 import { addArchBrick } from './archBrick';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { addLockBlocks } from '../../kit/starter/locks';
 import { ORIGIN, StarterMap } from '../../kit/starter/map';
-import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
-import { addSign, type Sign } from '../../kit/starter/sign';
+import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
+import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { MICRO_GLYPHS } from '@lewismoten/gamemaker-sandbox-tools/microFont';
 
 const SIGNS = {
-  door: ['door', 'THIS DOOR GOES TO ANOTHER ROOM', 4],
-  came: ['came', 'YOU CAME IN HERE', 4],
-  out: ['out', 'THIS WAY OUT →', 4],
-  kitchen: ['kitchen', 'KITCHEN', 4],
-  bedroom: ['bedroom', 'BEDROOM', 4],
-  locked: ['locked', 'LOCKED. THE KEY IS IN THE KITCHEN', 4],
-  back: ['back', 'THIS DOOR GOES BACK', 4],
-  carry: ['carry', 'THE KEY GOES WITH YOU', 4],
-  restart: ['restart', 'A ROOM STARTS OVER EACH TIME', 4],
-  score: ['score', 'YOUR SCORE STAYS', 4],
-  left: ['left', 'LEFT: THE GARDEN', 4],
-  right: ['right', 'RIGHT: THE ATTIC', 4],
-  tookLeft: ['tookLeft', 'YOU TOOK THE LEFT DOOR', 4],
-  tookRight: ['tookRight', 'YOU TOOK THE RIGHT DOOR', 4],
-  exit: ['exit', 'EXIT →', 3],
+  door: { rows: [['THIS DOOR GOES'], ['TO ANOTHER ROOM']] },
+  came: { rows: [['YOU CAME IN HERE']] },
+  out: { rows: [['THIS WAY OUT →']] },
+  kitchen: { rows: [['KITCHEN']] },
+  bedroom: { rows: [['BEDROOM']] },
+  locked: { rows: [['LOCKED. THE KEY'], ['IS IN THE KITCHEN']] },
+  back: { rows: [['THIS DOOR'], ['GOES BACK']] },
+  carry: { rows: [['THE KEY GOES'], ['WITH YOU']] },
+  restart: { rows: [['A ROOM STARTS'], ['OVER EACH TIME']] },
+  score: { rows: [['YOUR SCORE STAYS']] },
+  left: { rows: [['LEFT: THE GARDEN']] },
+  right: { rows: [['RIGHT: THE ATTIC']] },
+  tookLeft: { rows: [['YOU TOOK THE'], ['LEFT DOOR']] },
+  tookRight: { rows: [['YOU TOOK THE'], ['RIGHT DOOR']] },
+  exit: { rows: [['EXIT →']] },
+  exitHall: { rows: [['EXIT →']] },
 } as const;
 export type SignName = keyof typeof SIGNS;
 
@@ -59,17 +61,52 @@ export interface Card {
 
 const GROUND = 10;
 const at = (x: number, y: number): Spot => [x + ORIGIN, y + ORIGIN];
-/** The top row of a sign standing on ground row `ground`. */
-const onGround = (ground: number, s: Sign) => ground - 1 - s.board.length;
-
 /** The block set every room shares: the Starter blocks, the lock blocks, then this game's signs. */
 export function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
   addLockBlocks(book, pal);
-  const signs = {} as Record<SignName, Sign>;
-  for (const [key, [name, words, w]] of Object.entries(SIGNS)) signs[key as SignName] = addSign(book, pal, name, words, w, key === 'exit' ? 1 : 2);
   addArchBrick(book, pal);
+  const signs = {} as Record<SignName, Sign>;
+  const shared = new Map<string, string>();
+  // The hall's locked-door board needs compact letters; keep all of level 2 consistent.
+  const compact: SignName[] = ['kitchen', 'bedroom', 'locked', 'back', 'carry', 'restart', 'score', 'exitHall'];
+  const large: SignName[] = ['door', 'came', 'out', 'left', 'right', 'tookLeft', 'tookRight', 'exit'];
+  for (const include of [large, compact]) {
+    const small = include === compact;
+    const built = buildTiledSigns(SIGNS, {
+      include,
+      ...(small ? { compact: true } : { lettersPerBlock: 3 as const }),
+      prefix: small ? 'compactSign' : 'largeSign',
+      colors: {
+        background: skyOf(pal),
+        paper: pal.c('parch', 3),
+        ink: pal.c('ink', 0),
+        wood: pal.c('wood', 2),
+        highlight: pal.c('wood', 4),
+        shadow: pal.c('wood', 0),
+      },
+      glyphs: { ...MICRO_GLYPHS, '→': '100110111110100' },
+      maxBlocks: Math.min(100, 150 - book.index.size),
+    });
+    // Both fonts use the same frame and post pictures; share those across the two passes too.
+    const names = new Map<string, string>();
+    for (const [name, pic] of built.blocks) {
+      const pixels = pic.px.join(',');
+      const previous = shared.get(pixels);
+      names.set(name, previous ?? name);
+      if (previous) continue;
+      shared.set(pixels, name);
+      book.add(name, pic, { grav: PULL.down });
+    }
+    for (const key of include) {
+      const sign = built.signs[key];
+      signs[key] = {
+        board: sign.board.map((row) => row.map((name) => names.get(name)!)),
+        ...(sign.post ? { post: { x: sign.post.x, block: names.get(sign.post.block)! } } : {}),
+      };
+    }
+  }
   return { book, signs };
 }
 
@@ -102,7 +139,8 @@ function built(book: Book, g: Grid): StarterMap {
   if (bare) m.set(1, 0, 'sky');
   return m;
 }
-const place = (m: StarterMap, x: number, s: Sign, ground = GROUND) => m.sign(x, onGround(ground, s), s);
+const place = (m: StarterMap, x: number, s: Sign, ground = GROUND, postHeight = 1) =>
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, x, ground - postHeight - s.board.length, s, postHeight);
 const room = (file: string, title: string, map: StarterMap, exits: Room['exits'], ways: Room['ways']): Room => ({ file, title, map, exits, ways });
 
 /** Level 1, room 1: a door to another room. */
@@ -121,7 +159,7 @@ function start(book: Book, s: Record<SignName, Sign>): Room {
     [12, 21],
   );
   const m = built(book, g);
-  place(m, 13, s.door);
+  place(m, 12, s.door);
   return room('start', 'Out the Door', m, { door: at(19, 9) }, { start: at(3, 9) });
 }
 
@@ -144,8 +182,8 @@ function inside(book: Book, s: Record<SignName, Sign>): Room {
     [8, 23],
   );
   const m = built(book, g);
-  place(m, 5, s.came);
-  place(m, 19, s.out);
+  place(m, 6, s.came);
+  place(m, 17, s.out);
   return room('inside', 'Inside', m, { archway: at(26, 9) }, { door: at(3, 9) });
 }
 
@@ -175,7 +213,7 @@ function hall(book: Book, s: Record<SignName, Sign>): Room {
   place(m, 5, s.kitchen);
   place(m, 30, s.bedroom);
   place(m, 24, s.locked, LEDGE);
-  place(m, 32, s.exit, LEDGE);
+  place(m, 32, s.exitHall, LEDGE, 2);
   return room(
     'hall',
     'The Hall',
@@ -204,8 +242,8 @@ function kitchen(book: Book, s: Record<SignName, Sign>): Room {
     [8, 23],
   );
   const m = built(book, g);
-  place(m, 6, s.back);
-  place(m, 12, s.carry);
+  place(m, 7, s.back);
+  place(m, 13, s.carry);
   return room('kitchen', 'The Kitchen', m, { back: at(3, 9) }, { hall: at(6, 9) });
 }
 
@@ -225,7 +263,7 @@ function bedroom(book: Book, s: Record<SignName, Sign>): Room {
   );
   const m = built(book, g);
   place(m, 8, s.restart);
-  place(m, 15, s.score);
+  place(m, 16, s.score, GROUND, 2);
   return room('bedroom', 'The Bedroom', m, { back: at(22, 9) }, { hall: at(20, 9) });
 }
 
@@ -246,7 +284,7 @@ function fork(book: Book, s: Record<SignName, Sign>): Room {
   );
   const m = built(book, g);
   place(m, 6, s.left);
-  place(m, 20, s.right);
+  place(m, 20, s.right, GROUND, 2);
   return room('fork', 'The Fork', m, { left: at(4, 9), right: at(26, 9) }, { in: at(14, 9) });
 }
 
@@ -289,8 +327,8 @@ function attic(book: Book, s: Record<SignName, Sign>): Room {
     [10, 22],
   );
   const m = built(book, g);
-  place(m, 5, s.tookRight);
-  place(m, 20, s.exit);
+  place(m, 4, s.tookRight);
+  place(m, 19, s.exit);
   return room('attic', 'The Attic', m, { out: at(24, 9) }, { in: at(3, 9) });
 }
 

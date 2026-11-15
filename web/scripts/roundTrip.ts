@@ -4,6 +4,7 @@
 // Types with no byte-faithful serializer (gif, voc, fli, txt, lst...) are counted as skipped.
 import { mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { dirname, extname, join } from 'node:path';
+import { forLewis, mainCheckout } from './mainCheckout';
 import { readZip, isZip } from '@lewismoten/gamemaker-sandbox-archives/project/zip';
 import { parseGame, serializeGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { parseMap, serializeMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
@@ -51,13 +52,13 @@ const skipped = new Map<string, number>();
 const args = process.argv.slice(2);
 const inputs: string[] = [];
 let only: string[] | undefined;
-let outBase = '/Users/lewismoten/dev/GameMaker/.for-lewis/research/roundtrip/2026-11-04';
+let outBase = join(forLewis, 'research/roundtrip/2026-11-04');
 for (let i = 0; i < args.length; i++) {
   if (args[i] === '--type') only = (args[++i] ?? '').toLowerCase().split(',');
   else if (args[i] === '--out') outBase = args[++i] ?? outBase;
   else inputs.push(args[i]);
 }
-if (!inputs.length) inputs.push('/Users/lewismoten/dev/GameMaker/.for-lewis/reference/archive', '/Users/lewismoten/dev/GameMaker/cd');
+if (!inputs.length) inputs.push(join(forLewis, 'reference/archive'), join(mainCheckout, 'cd'));
 
 function hex(b: Uint8Array, at: number): string {
   return Array.from(b.subarray(Math.max(0, at - 4), at + 12), (v) => v.toString(16).padStart(2, '0')).join(' ');

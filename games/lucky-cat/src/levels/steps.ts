@@ -27,8 +27,6 @@ export const STEPS = {
 
 const SIGNS = {
   count: ['THIRTEEN STEPS. DO NOT COUNT THEM.', 4, 3],
-  top: ['THE 13TH STEP IS ALWAYS CRACKED. SO IS THE LANDING.', 4, 4],
-  salt: ['SPILLED SALT: THROW A PINCH OVER YOUR SHOULDER.', 4, 3],
 } as const;
 
 export function levelSteps(pal: Pal): Level {
@@ -58,8 +56,6 @@ export function levelSteps(pal: Pal): Level {
   m.set(STEPS.wall, GROUND - 2, 'saltArch').set(STEPS.wall, GROUND - 1, 'saltPile');
   for (const x of [55]) m.set(x, 8, 'lampHead').set(x, 9, 'lampPost');
   m.sign(4, onGround(GROUND, s.count), s.count);
-  m.sign(36, onGround(TOP, s.top), s.top);
-  m.sign(52, onGround(GROUND, s.salt), s.salt);
   return {
     file: 'steps',
     title: 'Thirteen Steps',

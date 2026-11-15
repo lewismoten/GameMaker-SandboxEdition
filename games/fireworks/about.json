@@ -6,7 +6,7 @@
   "hero": "LAMI",
   "year": 1994,
   "price": "Free",
-  "version": "1.1",
+  "version": "1.2",
   "blurb": "Fireworks drawn with monsters. A monster can turn into another monster when its path ends, so a rocket that flies up turns into a burst at the top, and the burst turns back into the rocket: two monsters taking turns make a firework that never stops. Level 1 has two launchers, each on its own time, and Enter launches a rocket of your own. Level 2 is a show over a sleeping town: rings, peonies and willows, each burst nine monsters on one path, each launcher with its own time so no two go off together. Play it, then open it in Game-Maker and change a burst.",
   "exe": "FIREWORK.EXE",
   "dosName": "FIREWORK",

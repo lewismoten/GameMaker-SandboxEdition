@@ -43,7 +43,8 @@ export function foldViewer(item: BalloonCubeItem): HTMLElement {
   let timer = 0;
 
   function render(): void {
-    stage.innerHTML = sceneBody(pos, id, { w: W, h: H, art: true, zoom: cam.zoom, yaw: cam.yaw, pitch: cam.pitch });
+    // toView turns the front face left as yaw grows, so the drag's yaw is negated: dragging right turns the cube right
+    stage.innerHTML = sceneBody(pos, id, { w: W, h: H, art: true, zoom: cam.zoom, yaw: -cam.yaw, pitch: cam.pitch });
     slider.value = String(pos);
     // the caption and slider follow the step being worked on: partway through a fold it is that fold's
     const shown = Math.min(last, Math.ceil(pos - 1e-6));

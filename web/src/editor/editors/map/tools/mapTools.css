@@ -246,7 +246,10 @@
   min-height: 0;
 }
 .mt-side-col .block-picker:not(.mt-brushes) {
-  max-height: max(160px, calc(var(--side-col-room, 440px) - 80px));
+  /* one scroller: the column (or the page below 901px) scrolls, and the picker grows to its
+     blocks, so a wheel or drag over it never scrolls a second, nested pane first */
+  max-height: none;
+  overflow: visible;
 }
 .mt-side-col .mt-panel {
   max-height: none;
@@ -334,5 +337,80 @@
   .mt-generate-btn {
     box-sizing: border-box;
     min-height: 44px;
+  }
+}
+
+/* the file pickers and Download picture: always shown on wide screens (the wrapper adds no box);
+   on a phone they fold behind the Files button, so the zoom and the tools come before the map */
+.mt-files-body {
+  display: contents;
+}
+.mt-files-toggle {
+  display: none;
+}
+@media (max-width: 600px) {
+  .mt-files-toggle {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    order: 0;
+  }
+  .mt-filebar {
+    gap: 6px;
+  }
+  .mt-filebar > .field {
+    order: 1;
+    flex-direction: row;
+    align-items: center;
+  }
+  .mt-filebar > .field > span:first-child {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+  .mt-files-body {
+    display: none;
+    order: 2;
+    flex: 1 0 100%;
+    flex-wrap: wrap;
+    gap: 6px 8px;
+    align-items: flex-end;
+  }
+  .mt-files-open .mt-files-body {
+    display: flex;
+  }
+}
+/* phones: the tools and the toggles beside them share rows (the chosen tool's name moves below them),
+   so the toolbar costs four short rows and the map starts higher */
+@media (max-width: 600px) {
+  .mt-modes {
+    gap: 4px;
+  }
+  .mt-modes .mt-tool,
+  .mt-modes > button {
+    padding-inline: 2px;
+  }
+  .mt-modes > .mt-toolset {
+    display: contents;
+  }
+  .mt-modes > span[style*='flex:1'] {
+    display: none;
+  }
+  .mt-modes > .mt-now {
+    order: 9;
+  }
+}
+/* phones: Undo and Redo keep their arrows and screen-reader names but drop the words, to fit the rows */
+@media (max-width: 600px) {
+  .mt-hist-text {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
   }
 }

@@ -6,15 +6,15 @@
 //   3  The Glow    the hall again, with three floating lanterns, each a 3x3 group of monsters (a halo 60 pixels across): solid, checkerboard, in rings.
 import { MLEN, type GameMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { ORIGIN, StarterMap } from '../../kit/starter/map';
-import { Book } from '../../kit/starter/book';
+import { Book, PULL } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
-import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
-import { addSign, type Sign } from '../../kit/starter/sign';
+import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
+import { buildTiledSigns, stampTiledSign, type TiledSign as Sign, type TiledSignText } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { addBeams } from './beam';
 import { CRITTER, GROUP, HALOS, lampPiece } from './critters';
-import { addHallBlocks, wallPicture } from './hall';
-import { LAYERS, addHillBlocks, hillBlock, hillName, meadow, onHill, type Zone } from './hills';
+import { addHallBlocks } from './hall';
+import { LAYERS, addHillBlocks, hillBlock, hillName, onHill, type Zone } from './hills';
 import { SIGNS } from './text';
 
 /** The row Lian walks on (the bottom of the doors) and the first solid row. */
@@ -37,17 +37,49 @@ export const FOG_ROOM = { width: 54, zoneB: 26, exit: 51, far: { x: 28, row: 4, 
 /** The glow's lanterns hang at `row` (the middle of a 3x3 group of monsters) and drift `run` blocks to the right. */
 export const GLOW = { width: 48, lamps: [10, 21, 32] as const, row: 6, run: 6, exit: 46 };
 
-type Words = Record<string, [string, number, number]>;
+// Keep the complete vocabulary together, but allocate only each room's own tiles.
+const WORDS: Record<string, TiledSignText> = Object.fromEntries(
+  Object.entries(SIGNS).flatMap(([room, signs]) =>
+    Object.entries(signs).map(([name, text]) => [
+      `${room}.${name}`,
+      {
+        rows:
+          room === 'beams'
+            ? ((
+                {
+                  start: [['GOAL: SEE HOW'], ['EACH BEAM IS MADE.']],
+                  solid: [['SOLID: THE'], ['BRICKS ARE'], ['GONE.']],
+                  checker: [['CHECKER:'], ['BRICKS STAY.']],
+                  soft: [['THREE CHECKERS:'], ['SOFT EDGE.']],
+                } as Record<string, string[][]>
+              )[name] ?? [[text]])
+            : [[text]],
+        post: room === 'fog',
+      },
+    ]),
+  ),
+);
 
-/** A block set with the Starters' blocks, the room's own (`add`) and the signs, with `sky` replaced by `behind` in the signs' pictures. */
-function bookFor(pal: Pal, signs: Words, behind: number, add: (book: Book) => void): { book: Book; signs: Record<string, Sign> } {
+/** Each room owns a block set; its unused sign vocabulary consumes no tiles. */
+function bookFor(pal: Pal, room: keyof typeof SIGNS, add: (book: Book) => void): { book: Book; signs: Record<string, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
   add(book);
-  const on = { ...pal, c: (n: string, k: number) => (n === 'sky' && k === 3 ? behind : pal.c(n, k)) };
-  const out: Record<string, Sign> = {};
-  for (const [k, [text, w, h]] of Object.entries(signs)) out[k] = addSign(book, on, `${k}.sign`, text, w, h);
-  return { book, signs: out };
+  const { blocks, signs } = buildTiledSigns(WORDS, {
+    include: Object.keys(SIGNS[room]).map((name) => `${room}.${name}`),
+    colors: {
+      background: skyOf(pal),
+      paper: pal.c('parch', 3),
+      ink: pal.c('ink', 0),
+      wood: pal.c('wood', 2),
+      highlight: pal.c('wood', 4),
+      shadow: pal.c('wood', 0),
+    },
+    lettersPerBlock: 3,
+    maxBlocks: Math.min(100, 150 - book.index.size),
+  });
+  for (const [name, pic] of blocks) book.add(name, pic, { grav: PULL.down });
+  return { book, signs: Object.fromEntries(Object.entries(signs).map(([name, sign]) => [name.slice(room.length + 1), sign])) };
 }
 
 /** A StarterMap whose edges carry on past the room: solid dark wood all round the hall, so the screen never shows the end of the map. */
@@ -86,21 +118,46 @@ function hall(book: Book, width: number, exit: number): StarterMap {
   return m;
 }
 
-const board = (m: StarterMap, s: Sign, x: number, y: number) => s.board.forEach((row, dy) => row.forEach((name, dx) => m.set(x + dx, y + dy, name)));
+/** Preserve the brick/hill backdrop behind side borders and posts; reject lamps, doors and other signs. */
+function board(book: Book, pal: Pal, m: StarterMap, s: Sign, x: number, y: number, postHeight = 1): void {
+  stampTiledSign(
+    {
+      set: (bx, by, name) => {
+        const old = m.map.blocks[(ORIGIN + by) * MLEN + ORIGIN + bx];
+        const base = [...book.index.keys()][old];
+        if (base !== 'wall' && base !== 'sky' && base !== 'meadow' && !base.startsWith('hill.')) throw new Error(`Sign at ${bx},${by} would cover ${base}`);
+        const pic = book.pics.get(name)!;
+        const behind = book.pics.get(base)!;
+        const composed = pic.crop(0, 0, 20, 20).map((px, py, color) => (color === skyOf(pal) ? behind.get(px, py) : color));
+        const shared = [...book.pics].find(([, p]) => p.px.every((color, i) => color === composed.px[i]));
+        const tile = shared?.[0] ?? `${name}.on.${base}`;
+        if (!shared) book.add(tile, composed, { grav: PULL.down });
+        m.set(bx, by, tile);
+      },
+    },
+    x,
+    y,
+    s,
+    postHeight,
+  );
+}
 
 /** The beams: three lamps, each with its beam of lit twins of the wall (rows 2 to 8) and the floor (row 9). */
 export function beams(pal: Pal): Level {
-  const { book, signs } = bookFor(pal, SIGNS.beams, wallPicture(pal).get(0, 1), (b) => addHallBlocks(b, pal, true));
+  const { book, signs } = bookFor(pal, 'beams', (b) => addHallBlocks(b, pal, true));
   const m = hall(book, BEAMS.width, BEAMS.exit);
-  board(m, signs.start, 4, 4);
+
   const kinds = ['solid', 'checker', 'soft'] as const;
   const lit = addBeams(book, pal, BEAMS.lamps, kinds, [1, FLOOR]);
   for (const [at, name] of lit) {
     const [x, y] = at.split(',').map(Number);
     m.set(x, y, name);
   }
-  BEAMS.lamps.forEach((lx, i) => board(m, signs[kinds[i]], lx - 5, 2));
-  board(m, signs.next, BEAMS.exit - 5, 4);
+  board(book, pal, m, signs.start, 2, 3);
+  board(book, pal, m, signs.solid, 15, 3);
+  board(book, pal, m, signs.checker, 26, 3);
+  board(book, pal, m, signs.soft, 38, 3);
+  board(book, pal, m, signs.next, BEAMS.exit - 5, 6);
   return { file: 'beams', title: 'The Beams', map: m, book, exit: BEAMS.exit };
 }
 
@@ -111,7 +168,7 @@ const RIDGE_ROW = [2, 4, 6];
 export function fog(pal: Pal): Level {
   const { width, zoneB, exit } = FOG_ROOM;
   const zoneOf = (x: number): Zone => (x < zoneB ? 'solid' : 'dither');
-  const { book, signs } = bookFor(pal, SIGNS.fog, meadow(pal), (b) => {
+  const { book, signs } = bookFor(pal, 'fog', (b) => {
     addHillBlocks(b, pal);
     // the doors stand on the meadow (their feet) and in front of the near hills (their tops)
     for (const [name, x, from] of [
@@ -143,13 +200,13 @@ export function fog(pal: Pal): Level {
   }
   m.set(3, BOTTOM - 1, 'doorwayTopH').set(3, BOTTOM, 'doorwayBottomH');
   m.set(exit, BOTTOM - 1, 'doorTopH').set(exit, BOTTOM, 'doorBottomH');
-  const sign = (s: Sign, x: number) => m.sign(x, 6, s);
-  sign(signs.start, 6);
-  sign(signs.flat, 12);
-  sign(signs.dither, zoneB + 3);
-  sign(signs.thick, zoneB + 9);
-  sign(signs.drift, zoneB + 15);
-  sign(signs.next, exit - 5);
+  // Stagger the wider boards over the hillside backdrop, clear of doors and each other.
+  board(book, pal, m, signs.start, 6, 6, 2);
+  board(book, pal, m, signs.flat, 12, 4, 4);
+  board(book, pal, m, signs.dither, zoneB + 3, 6, 2);
+  board(book, pal, m, signs.thick, zoneB + 9, 4, 4);
+  board(book, pal, m, signs.drift, zoneB + 15, 6, 2);
+  board(book, pal, m, signs.next, exit - 5, 4);
   // two banks of fog, three puffs each, side by side (the same monster so they stay together)
   for (const [bank, mon] of [
     [FOG_ROOM.far, CRITTER.puffFar],
@@ -161,15 +218,15 @@ export function fog(pal: Pal): Level {
 
 /** The glow: the hall with three lanterns drifting along row 6, each in its own stretch. */
 export function glow(pal: Pal): Level {
-  const { book, signs } = bookFor(pal, SIGNS.glow, wallPicture(pal).get(0, 1), (b) => addHallBlocks(b, pal, false));
+  const { book, signs } = bookFor(pal, 'glow', (b) => addHallBlocks(b, pal, false));
   const m = hall(book, GLOW.width, GLOW.exit);
-  board(m, signs.start, 4, 3);
+  board(book, pal, m, signs.start, 4, 4);
   const kinds = ['solid', 'checker', 'soft'] as const;
   GLOW.lamps.forEach((lx, i) => {
-    board(m, signs[kinds[i]], lx + 1, 1);
+    board(book, pal, m, signs[kinds[i]], lx + 1, 3);
     for (let ty = 0; ty < GROUP; ty++) for (let tx = 0; tx < GROUP; tx++) m.mon(lampPiece(HALOS[i], tx, ty), lx + tx - 1, GLOW.row + ty - 1);
   });
-  board(m, signs.next, GLOW.exit - 5, 3);
+  board(book, pal, m, signs.next, GLOW.exit - 5, 4);
   return { file: 'glow', title: 'The Glow', map: m, book, exit: GLOW.exit };
 }
 

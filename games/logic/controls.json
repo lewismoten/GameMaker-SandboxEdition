@@ -39,6 +39,10 @@
     "19": {
       "short": "Reboot",
       "long": "Reboot the board. It costs one spare battery."
+    },
+    "28": {
+      "short": "Reboot",
+      "long": "Enter: reboot the board, the same as R. It costs one spare battery."
     }
   },
   "joystick": {},

@@ -45,7 +45,7 @@ export function buildGame(levels: Level[]): Game {
     scene.files = [
       'pick.pal',
       `${l.file}.map`,
-      'pick.bbl',
+      `${l.file}.bbl`,
       'pick.mon',
       'pick.mbl',
       sc.chr ? `${sc.chr}.chr` : '',

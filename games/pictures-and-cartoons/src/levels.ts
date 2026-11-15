@@ -7,12 +7,13 @@
 //      between this level and the next.
 //   3. Keep It Short: the intro is a list of two pictures; signs say what a cartoon can't do.
 // Every room is closed in by hedges you can see, so Yana is never stopped by something she can't.
-import { Book } from '../../kit/starter/book';
+import { Book, PULL } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
-import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
-import { addSign, type Sign } from '../../kit/starter/sign';
+import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
+import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { MICRO_GLYPHS } from '@lewismoten/gamemaker-sandbox-tools/microFont';
 
 export interface Level {
   file: string;
@@ -20,6 +21,8 @@ export interface Level {
   /** What the level card says under the title. */
   hint: string;
   map: StarterMap;
+  /** Each room allocates only its own sign tiles from the complete vocabulary. */
+  book: Book;
   /** The scene's intro slot (shown before the level) and exit slot (shown when the hero leaves), '' for none. */
   before: string;
   after: string;
@@ -28,35 +31,51 @@ export interface Level {
 export const GROUND = 10;
 const WIDTH = 46;
 
-/** Each level's signs: [x of the board's left block, words]. The boards are 4 blocks wide and 3 high. */
-const SIGNS: Record<string, [number, string][]> = {
+/** Each level's signs: [x of the board's left block, text lines]. Each room shares its frame and letter tiles. */
+const SIGNS: Record<string, [number, string[]][]> = {
   frame: [
-    [6, 'A PICTURE CAME UP BEFORE THIS LEVEL'],
-    [15, 'ITS SCENE HOLDS THE INTRO PICTURE, A 320 BY 200 GIF'],
-    [27, 'THE DOOR SHOWS ANOTHER AFTER THE LEVEL'],
+    [6, ['A PICTURE', 'CAME UP BEFORE', 'THIS LEVEL']],
+    [14, ['ITS SCENE HOLDS THE', 'INTRO PICTURE, A', '320 BY 200 GIF']],
+    [27, ['THE DOOR SHOWS', 'ANOTHER AFTER', 'THE LEVEL']],
   ],
   cartoon: [
-    [6, 'A CARTOON IS AN FLI FILE THAT MOVES'],
-    [15, 'THE EXIT SLOT PLAYS IT WHEN YOU LEAVE'],
-    [27, 'WALK THROUGH THE DOOR TO WATCH IT'],
+    [6, ['A CARTOON IS', 'AN FLI FILE', 'THAT MOVES']],
+    [14, ['THE EXIT SLOT PLAYS IT', 'WHEN YOU LEAVE']],
+    [27, ['WALK THROUGH', 'THE DOOR', 'TO WATCH IT']],
   ],
   short: [
-    [6, 'A LIST SHOWS TWO PICTURES, ONE AFTER ANOTHER'],
-    [15, 'A CARTOON PLAYS TO ITS LAST FRAME'],
-    [27, 'SO KEEP IT SHORT, OR CUT IT INTO CLIPS'],
+    [4, ['A LIST SHOWS', 'TWO PICTURES,', 'ONE AFTER ANOTHER']],
+    [14, ['A CARTOON PLAYS', 'TO ITS LAST FRAME']],
+    [26, ['SO KEEP IT SHORT,', 'OR CUT IT', 'INTO CLIPS']],
   ],
 };
 
-/** The exit sign's name; its board is 3 blocks wide, one high. */
-const EXIT_AT = 38;
+/** The exit board stands clear of the flower and bush beside the door. */
+const EXIT_AT = 37;
 
-function buildBlocks(pal: Pal): { book: Book; signs: Map<string, Sign> } {
+function buildBlocks(pal: Pal, file: string): { book: Book; signs: Map<string, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
-  const signs = new Map<string, Sign>();
-  for (const [file, list] of Object.entries(SIGNS))
-    list.forEach(([, words], i) => signs.set(`${file}${i}`, addSign(book, pal, `${file}${i}.sign`, words, 4, 3)));
-  signs.set('exit', addSign(book, pal, 'exit.sign', 'EXIT →', 3));
+  const texts = Object.fromEntries(
+    Object.entries(SIGNS).flatMap(([level, list]) => list.map(([, rows], i) => [`${level}${i}`, { rows: rows.map((line) => [line]) }])),
+  );
+  texts.exit = { rows: [['EXIT →']] };
+  const tiled = buildTiledSigns(texts, {
+    colors: {
+      background: skyOf(pal),
+      paper: pal.c('parch', 3),
+      ink: pal.c('ink', 0),
+      wood: pal.c('wood', 2),
+      highlight: pal.c('wood', 4),
+      shadow: pal.c('wood', 0),
+    },
+    include: [...SIGNS[file].map((_, i) => `${file}${i}`), 'exit'],
+    lettersPerBlock: 3,
+    glyphs: { ...MICRO_GLYPHS, '→': '100110111110100' },
+    maxBlocks: Math.min(100, 150 - book.index.size),
+  });
+  for (const [name, pic] of tiled.blocks) book.add(name, pic, { grav: PULL.down });
+  const signs = new Map(Object.entries(tiled.signs));
   return { book, signs };
 }
 
@@ -81,23 +100,29 @@ function room(book: Book, signs: Map<string, Sign>, file: string, exitX: number,
   for (const x of flowers.filter((f) => !spots.includes(f))) g.put(x, GROUND - 1, 'f');
   for (const x of spots) g.put(x, GROUND - 1, 'c');
   const m = new StarterMap(book, g.rows());
-  SIGNS[file].forEach(([x], i) => m.sign(x, onGround(signs.get(`${file}${i}`)!), signs.get(`${file}${i}`)!));
-  m.sign(EXIT_AT, onGround(signs.get('exit')!), signs.get('exit')!);
+  const safe = { set: (x: number, y: number, block: string) => m.setOnSky(x, y, block) };
+  SIGNS[file].forEach(([x], i) => {
+    const sign = signs.get(`${file}${i}`)!;
+    stampTiledSign(safe, x, onGround(sign), sign);
+  });
+  stampTiledSign(safe, EXIT_AT, onGround(signs.get('exit')!), signs.get('exit')!);
   return m;
 }
 
 /** The levels in order. */
 export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
   const pal = buildStarterPalette(undefined, 'pictures-and-cartoons');
-  const { book, signs } = buildBlocks(pal);
+  const sets = Object.fromEntries(Object.keys(SIGNS).map((file) => [file, buildBlocks(pal, file)]));
+  const { book } = sets.frame;
   const levels: Level[] = [
     {
       file: 'frame',
+      book: sets.frame.book,
       title: 'A Picture First',
       hint: 'THIS PICTURE IS A GIF FILE',
       map: room(
-        book,
-        signs,
+        sets.frame.book,
+        sets.frame.signs,
         'frame',
         42,
         [
@@ -114,11 +139,12 @@ export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
     },
     {
       file: 'cartoon',
+      book: sets.cartoon.book,
       title: 'A Cartoon Between',
       hint: 'A CARTOON PLAYS AFTER THIS ONE',
       map: room(
-        book,
-        signs,
+        sets.cartoon.book,
+        sets.cartoon.signs,
         'cartoon',
         42,
         [
@@ -135,11 +161,12 @@ export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
     },
     {
       file: 'short',
+      book: sets.short.book,
       title: 'Keep It Short',
       hint: 'A CARTOON PLAYS TO THE END',
       map: room(
-        book,
-        signs,
+        sets.short.book,
+        sets.short.signs,
         'short',
         42,
         [

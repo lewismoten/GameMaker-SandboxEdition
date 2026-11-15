@@ -12,10 +12,10 @@ export const OG_IMAGE_ALT = 'A mid-90s computer desk with Game-Maker: Sandbox Ed
 
 /** For description tags (search results show about 160 characters). */
 const SITE_DESCRIPTION =
-  'Make DOS-style games in your browser with no programming: a free, open-source remake of RSD Game-Maker 3.0 (1994). Play 90s shareware and export your own games.';
+  'Make DOS-style games in your browser, no programming: a free, open-source fork of RSD Game-Maker 3.0. Play 90s shareware, export your games, play offline.';
 /** The longer version, for text on the page. */
 export const SITE_ABOUT =
-  'Make DOS-style games in your web browser with no programming: a free, open-source remake of Recreational Software Designs’ Game-Maker 3.0 (1994). Draw blocks and monsters, build maps, add music and sound, play the original sample and shareware games, and export your game as a web page, a web app or for DOS.';
+  'Make DOS-style games in your web browser with no programming: a free, open-source remake of Recreational Software Designs’ Game-Maker 3.0 (1994). Draw blocks and monsters, build maps, add music and sound, play the original sample and shareware games, and export your game as a web page, a web app or for DOS. The whole site can be saved for offline play.';
 
 /** What each page of the site is about, for <title> and <meta name="description">. */
 export const ROUTES = {
@@ -23,25 +23,24 @@ export const ROUTES = {
   desk: {
     title: `${PRODUCT} — the 1994 desk`,
     description:
-      'Sit down at a mid-90s PC: switch it on, run Game-Maker from C:\\GM, pick a game from the disk box or the shareware catalog, and play or design it just like in 1994 — in your browser.',
+      'Sit down at a mid-90s PC: run Game-Maker from C:\\GM, pick a game from the disk box or the shareware catalog, and play or design it like in 1994.',
   },
   dos: {
     title: `DOS Game-Maker · ${PRODUCT}`,
-    description:
-      'Go straight to the 1994 PC: it boots into Game-Maker from its CD, with a disk menu of games to play or change, the Owner’s Guide, and a BBS to call. No desk around it, and it shares the desk’s saves.',
+    description: 'The 1994 PC on its own, no desk around it: it boots into Game-Maker from its CD, with a menu of games, the Owner’s Guide and a BBS to call.',
   },
   guide: {
     title: `Guide · ${PRODUCT}`,
-    description: `How to use ${PRODUCT}: making blocks, monsters and characters, building maps and scenes, sounds and music, testing and exporting your game for the web or DOS.`,
+    description: `How to use ${PRODUCT}: blocks, monsters and characters, maps and scenes, sounds and music, testing, and exporting your game for the web or DOS.`,
   },
   cast: {
     title: `The cast · ${PRODUCT}`,
     description:
-      'Who keeps turning up in the new games: Teddy the corgi, Gwinn, Doc Leo the friendly hobo clown, THE\u00a0CHEZ the tomato-red CitiCar, Carl the fly and more, with where to find each one, and how the Sandbox Software games differ from The Bard of Bizarre’s.',
+      'Who keeps turning up in the new games: Teddy the corgi, Gwinn, Doc Leo the friendly hobo clown, THE\u00a0CHEZ the tomato-red CitiCar, Carl the fly and more.',
   },
   credits: {
     title: `Credits · ${PRODUCT}`,
-    description: `Who and what made ${PRODUCT}: RSD and the Stone family, the CD games’ authors, the software and third-party pieces, the AI tools and the people, and who made what in The Bard of Bizarre’s games.`,
+    description: `Who and what made ${PRODUCT}: RSD and the Stone family, the CD games’ authors, third-party software and the AI tools used.`,
   },
   privacy: {
     title: `Privacy · ${PRODUCT}`,
@@ -50,42 +49,42 @@ export const ROUTES = {
   magazine: {
     title: `TURBO BUTTON magazine · ${PRODUCT}`,
     description:
-      'TURBO BUTTON, the shareware gamer’s monthly: a 1990s-style magazine about Game-Maker and its games, with reviews, interviews, strategy, a BBS list, a game directory and ads, to read page by page or print.',
+      'TURBO BUTTON, the shareware gamer’s monthly: a 1990s-style magazine about Game-Maker and its games, with reviews, interviews, a BBS list and ads.',
   },
   library: {
     title: `Library · ${PRODUCT}`,
     description:
-      'Everything to read and print in one place: each game’s manual, hint book, maps, newsletter, sticker sheet and cards, the Game-Maker box’s paper, TURBO BUTTON magazine and the Guide, by game or by type.',
+      'Everything to read and print in one place: each game’s manual, hint book, maps, newsletter and stickers, the box’s paper, TURBO BUTTON and the Guide.',
   },
   achievements: {
     title: `What you’ve done · ${PRODUCT}`,
     description:
-      'Your achievements: games made, played and finished, walkthroughs watched, tin hearts found and the programs tried on the 1994 desk, with when each was unlocked. Kept in your browser.',
+      'Your achievements: games made, played and finished, walkthroughs watched, tin hearts found and programs tried on the 1994 desk. Kept in your browser.',
   },
   mac: {
     title: `Playing the games on a Mac · ${PRODUCT}`,
     description:
-      'Download any game as a Mac app. Why macOS says Apple could not verify it (the apps are built in your browser, so they are not notarized), how to open it the first time, what the app does and how to remove it.',
+      'Download any game as a Mac app. Why macOS says Apple could not verify it (the apps are built in your browser, so not notarized), how to open it and remove it.',
   },
   windows: {
     title: `Playing the games on Windows · ${PRODUCT}`,
     description:
-      'Download any game as a Windows program. Why SmartScreen says “Windows protected your PC” (the programs are built in your browser, so they are not code-signed), how to run it the first time, what the program does and how to remove it.',
+      'Download any game as a Windows program. Why SmartScreen says “Windows protected your PC” (built in your browser, so not code-signed), how to run and remove it.',
   },
   linux: {
     title: `Playing the games on Linux · ${PRODUCT}`,
     description:
-      'Download any game for Linux: how to extract and play it, the WebKitGTK package it needs on Debian, Ubuntu, Fedora and Arch, the web browser fallback, adding it to the applications menu, what the program does and how to remove it.',
+      'Download any game for Linux: how to extract and play it, the WebKitGTK package it needs on Debian, Ubuntu, Fedora and Arch, the browser fallback and removal.',
   },
   artCourses: {
     title: `Art courses · ${PRODUCT}`,
     description:
-      'How to draw the art for a Game-Maker game: cutting pictures into blocks, edges that meet, reusing blocks and keeping grass from showing a pattern, with real blocks drawn in code.',
+      'How to draw the art for a Game-Maker game: cutting pictures into blocks, edges that meet, reusing blocks and keeping grass from showing a pattern.',
   },
   programmersGuide: {
     title: `The Programmer’s Guide to Game-Maker 3.0 · ${PRODUCT}`,
     description:
-      'Why each limit of the Game-Maker 3.0 player is what it is: 150 blocks, 64 monsters, 36 sound steps, 20 scene links. A chapter for each part of the engine, with the lines of the original source.',
+      'Why each limit of the Game-Maker 3.0 player is what it is: 150 blocks, 64 monsters, 36 sound steps, 20 scene links, with the lines of the original source.',
   },
   editor: {
     title: `Editor · ${PRODUCT}`,
@@ -94,7 +93,7 @@ export const ROUTES = {
   downloads: {
     title: `Download the games · ${PRODUCT}`,
     description:
-      'A plain list of every Sandbox Software and Bizarre game, each a ZIP of the real DOS files: unzip it, then run it in DOSBox or open it in Game-Maker. With each game’s version and a short description.',
+      'A plain list of every Sandbox Software and Bizarre game, each a ZIP of the real DOS files: unzip it, then run it in DOSBox or open it in Game-Maker.',
   },
   player: {
     title: `Play · ${SHORT}`,

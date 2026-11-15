@@ -12,7 +12,7 @@ import { join, resolve } from 'node:path';
 import { arg } from './perfLib';
 
 const FILE = resolve('scripts/perfBudgets.json');
-const PAGES = ['home', 'editor map', 'desk', 'library', 'dos.html'];
+const PAGES = ['home', 'editor map', 'desk', 'library', 'dos.html', 'play.html blaster'];
 const update = process.argv.includes('--update');
 const runs = Number(arg('runs') ?? (update ? 3 : 1));
 const vite = resolve('../node_modules/vite/bin/vite.js');

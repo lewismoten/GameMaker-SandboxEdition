@@ -33,7 +33,7 @@ and the back cover as pictures), NO CARRIER #3 (`zineBook.ts`) and the Guide (`g
   only a picture; where a browser won't allow it, the piece is written as text instead.
 - `pack.ts` packs it: `mimetype` first and stored, the container, the package, the nav document,
   an EPUB 2 `toc.ncx` and the styles (`style.ts`, generic font families only), zipped by
-  `project/zip.ts`. Nothing in the file refers to the network.
+  `createZip` from `@lewismoten/gamemaker-sandbox-archives/zip`. Nothing in the file refers to the network.
 - `check.ts` checks selected structure (ZIP, package, references) and, with `xmlCheck.ts`, XML
   well-formedness; `pack.test.ts` runs it. It is not EPUBCheck or a schema validator.
 

@@ -12,6 +12,18 @@ import { xmlAttr, xmlText } from './xml';
 const HOW =
   'In the printed book each answer hides under red film. In this e-book the answers wait in the Answers section at the back: choose “Answer” under a question to see just that one, and “Back to the question” to return. Only read what you need!';
 
+/** A game's printed intro, reworded for the e-book: the red film is on paper only, so each film
+ *  instruction becomes the Answer link the e-book really has. The printed text itself is untouched. */
+export function epubHintIntro(text: string): string {
+  const cap = (m: string, r: string) => (/^[A-Z]/.test(m) ? r[0].toUpperCase() + r.slice(1) : r);
+  return text
+    .replace(/(?:lay|slide) the red film over an answer to read it/gi, (m) => cap(m, 'follow an Answer link to read it'))
+    .replace(/(?:lay|slide) the red film over the answer(?: under it)?/gi, (m) => cap(m, 'follow its Answer link'))
+    .replace(/the only red glasses this game will ever ask you to wear/i, 'the only red glasses this game will ever ask you to wear belong to the printed book')
+    .replace(/, printed under red,/i, ', kept at the back,')
+    .replace(/ through the red film,/i, '');
+}
+
 export async function hintBookEpub(ctx: PrintContext, it: HintBookItem): Promise<EpubBook> {
   const [{ hintCoverSheet }, { plainSketch }] = await Promise.all([import('../../library/covers'), import('../printables/redFilm')]);
   const media = new EpubMedia();
@@ -23,7 +35,7 @@ export async function hintBookEpub(ctx: PrintContext, it: HintBookItem): Promise
     title: 'How to use this book',
     body: [
       `<h1>How to use this book</h1>`,
-      it.intro ? `<p>${xmlText(it.intro)}</p>` : '',
+      it.intro ? `<p>${xmlText(epubHintIntro(it.intro))}</p>` : '',
       `<p>${xmlText(HOW)}</p>`,
       ctx.printables.skip?.includes('worldmap')
         ? ''

@@ -514,7 +514,7 @@ registerEditor(['gam'], (host, owner, file) => {
     setSideW(Math.max(160, Math.min(640, next[e.key])));
   });
   function renderSide(): void {
-    const { screens, songs } = screensAndSongs(game);
+    const { screens, songs } = screensAndSongs(game, project.files);
     const pick = (scene: number) => {
       selected = scene;
       boards.reveal(scene);

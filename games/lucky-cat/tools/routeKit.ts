@@ -28,10 +28,10 @@ export async function readAt(bot: StarterBot, col: number, what: string): Promis
   await must(bot, bot.wait(READ), `reading ${what}`);
 }
 
-/** Jumps the hazards at `col` .. `col + n - 1` from two blocks before, landing past them with every hit point. */
+/** Jumps the hazards at `col` .. `col + n - 1` from two blocks before (from the edge for a run of three), landing past them with every hit point. */
 export async function hop(bot: StarterBot, col: number, n = 1, what = 'the hazard'): Promise<void> {
   const hp = bot.sim.ci.hitpts;
-  await must(bot, bot.walk(col - 2, what), `to ${what}`);
+  await must(bot, bot.walk(col - (n >= 3 ? 1 : 2), what), `to ${what}`);
   await must(bot, bot.jump('right', col + n + 1), `over ${what}`);
   if (bot.sim.ci.hitpts !== hp) throw new Error(`${what} hurt: hit points ${hp} -> ${bot.sim.ci.hitpts}`);
 }
@@ -80,4 +80,20 @@ export async function watchFor(bot: StarterBot, ready: () => boolean, what: stri
     await must(bot, bot.wait(1), what);
   }
   throw new Error(`never saw ${what}`);
+}
+
+/** A person's cue to slip under a bobbing crow (its beat starts at `row`): she watches it reach the low end of its beat,
+ * then goes as it lifts off, so the gap under it opens while she runs. Waiting for it to reach the top is too late
+ * now that crows fly fast. */
+export function lifting(bot: StarterBot, x0: number, row: number): () => boolean {
+  let last = monsterY(bot, x0);
+  let low = false;
+  return () => {
+    const y = monsterY(bot, x0);
+    low ||= y >= row * 20 + 54;
+    const go = low && y < last && y <= row * 20 + 50;
+    last = y;
+    if (go) bot.say(`crow ${x0} lifting at y ${y - row * 20}, cat x ${bot.px.x}, tick ${bot.sim.ticks}`);
+    return go;
+  };
 }

@@ -39,6 +39,26 @@ At the default 0.2 mm kerf:
 Occupied rectangles are each sheet's used corner (parts plus margins) over the purchased
 area; a smaller share means a bigger reusable offcut. Sheet 1 is filled first.
 
+- **Rings, not solid discs.** The plain slice of each ring is a rim (a round hole inside it), and each base plate is two parts:
+  an outer ring and a collar round the ridge slot. The digit slices stay full (they carry the digits and the washer socket), and the
+  floor is solid. The narrowest wall left is **8 mm** (`RIM` in `cryptexDims.ts`): about 2.7 times the 3 mm plywood, which cuts,
+  handles and glues without snapping along the grain (laser-cut rings under about 5 mm break), and wide enough for an ID. Each hole
+  is under the rim of the next ring up (hole radius = that ring's outer radius minus the rim), so a load passes straight down the
+  rims to the base. The washers still lift out of the digit slice's socket and turn, so setting your own code works as before
+  (the lock check still frees the core for 2000 and no other of the 10,000 codes).
+- **Nesting.** `kit/laserNest.ts` (tools package) cuts the small parts out of the empty middles (first-fit circle packing, 2 mm of wood between cuts,
+  re-checked by the build). The kit went from 3 sheets (233,413 mm2 of bed) to 2 (183,000 mm2); the parts use about 72,000 mm2 of
+  wood instead of 82,000.
+- **IDs.** The letter is the sub-assembly (A base stack, B to E rings 4 to 1, F core, G1 to G4 washer pairs, H head, I lid); the
+  number counts layers from the bottom, with R (ring) and C (collar) for the two parts on a base layer (A2R, A2C). An ID is engraved
+  only on a face that ends up covered: the floor under the core, the glued face of a plain slice, a digit slice under the next ring up,
+  the glued face of a washer, a plate or a collar. The core slices, the plugs, ring 1's digit slice, the head and the lid have none
+  (too narrow, or bare on top). `cryptexGroups.ts` is the one list the assembly sheet and the desk's 3D view both read.
+- **Sub-assemblies**, built apart and glued where they cure, then put together: the base stack A (slowest, carries the rest; a dry
+  core lines up its collars), each ring B to E (glued to nothing else so it turns), the core F (it must be straight to slide), the
+  washer pairs G (loose, so they lift and turn) and the lid I. Only the head H is glued onto the finished stack.
+- **Set your own code** is its own run of steps in the 3D view: pull the core, lift ring 1, lift its washer G1, turn it, drop it back.
+
 The library's 12x20 size uses 16.7% less purchased material than two 12x12 sheets. Retained
 wood is about **61,757 mm²**, down from **72,275 mm²** (14.6%). The old 183,222 mm² figure
 was cropped layout area, not purchased stock; the manifest now distinguishes purchased

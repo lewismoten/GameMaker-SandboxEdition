@@ -14,6 +14,9 @@ const FLASH = 0.1;
 /** A quarter of the 16 × 10 screen. */
 const AREA = 40;
 
+/** Flashes a second at which the finding fires: the busiest second holds at least six changes (three flashes). */
+const MIN_RATE = 3;
+
 const meanLight = (d: SceneData, n: number) => {
   let sum = 0;
   let count = 0;
@@ -42,6 +45,30 @@ function mostOnScreen(d: SceneData, set: Set<number>): { count: number; cell: nu
   return best;
 }
 
+/**
+ * The most flashes in any one second of the cycle running round and round. A change counts when the light moves by
+ * FLASH or more and the darker side is not near white; a flash is a change and back. One quick step among slow
+ * pictures is one change a long while apart, so it is a low rate, not flashing.
+ */
+export function flashesPerSecond(d: SceneData, cycle: { n: number; ticks: number }[]): number {
+  const times: number[] = []; // tick of each counted change over turns of the cycle, enough to span two seconds
+  let t = 0;
+  while (t < 40)
+    cycle.forEach((c, i) => {
+      t += Math.max(1, c.ticks);
+      const a = meanLight(d, c.n);
+      const b = meanLight(d, cycle[(i + 1) % cycle.length].n);
+      if (Math.abs(a - b) >= FLASH && Math.min(a, b) < 0.8) times.push(t);
+    });
+  let most = 0;
+  for (let i = 0; i < times.length; i++) {
+    let k = i;
+    while (k < times.length && times[k] - times[i] < 18.2) k++;
+    most = Math.max(most, k - i);
+  }
+  return most / 2;
+}
+
 export function flashing(d: SceneData): Finding[] {
   const out: Finding[] = [];
   const done = new Set<number>();
@@ -51,17 +78,12 @@ export function flashing(d: SceneData): Finding[] {
     const cycle = blockCycle(d.bbl, n);
     if (cycle.length < 2) continue;
     cycle.forEach((c) => done.add(c.n));
-    // a fast change between pictures of very different light
-    const fast = cycle.some((c, i) => {
-      const next = cycle[(i + 1) % cycle.length];
-      const a = meanLight(d, c.n);
-      const b = meanLight(d, next.n);
-      return c.ticks <= FAST_TICKS && Math.abs(a - b) >= FLASH && Math.min(a, b) < 0.8;
-    });
-    if (!fast) continue;
+    // flashes in the busiest second: the changes of light that fall inside one second, two to a flash
+    const rate = flashesPerSecond(d, cycle);
+    if (rate < MIN_RATE) continue;
     const where = mostOnScreen(d, new Set(cycle.map((c) => c.n)));
     if (where.count < AREA) continue;
-    const per = (18.2 / (cycle.reduce((t, c) => t + c.ticks, 0) / (cycle.length / 2))).toFixed(1);
+    const per = rate.toFixed(1);
     out.push({
       check: 'flashing',
       severity: 'warning',

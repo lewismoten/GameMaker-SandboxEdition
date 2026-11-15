@@ -148,7 +148,9 @@ If you have reserved palette ranges for backgrounds, monsters and characters (Pa
 **Pack with reserved palettes** (the **Look for more savings** button) goes further: it uses your reserved ranges, or proposes a range for monsters and for characters when there are none, moves each file's colors into them, then looks for monster, character and background files that can join. It shows the bytes it would save, how many map pixels would draw differently and the delta E, and applies it all in one click and one Undo; it is offered only when it frees more than the automatic steps. When blocks join or fold, the names and groups you gave them follow.
 
 **Optimize** also holds your **checkpoints**: stamps of the whole game (every file and its editor
-notes), made with **Make a checkpoint…** any time and always before an optimization is applied. Each
+notes), made with **Make a checkpoint…** any time. To make one before applying an optimization,
+tick **Make a checkpoint first**; it starts unchecked and skips a new stamp when the files
+match the latest checkpoint. Undo works whether or not you tick it. Each
 stores only what changed since the one before, the way a git repository does: a changed block or map
 cell is a few bytes, a changed text file a few lines. **Compare…** lists what changed and draws each
 level's map as it was and as it is (Before, After or side by side, with a jump to the next view that

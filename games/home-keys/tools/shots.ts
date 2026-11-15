@@ -4,17 +4,21 @@
 import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { writePng } from '@lewismoten/gamemaker-sandbox-tools/kit/png';
+import { recordCamera } from '@lewismoten/gamemaker-sandbox-tools/kit/cameraLog';
 import { renderRegion } from '@lewismoten/gamemaker-sandbox-tools/kit/levelPicture';
 import { buildHeroBlocks, heroPicture } from '../../kit/starter/hero';
 import { ORIGIN } from '../../kit/starter/map';
 import { finishMonsterPictures, monsterPictures, monsterSet } from '../src/monsters';
 import { L1, L2, L3, buildLevels } from '../src/levels';
+import { play } from './play';
+import { GameSim } from './sim';
 
+// where the screen really was on the bot's way through the game (it rests in a new place after a climb or a drop)
+const cam = await recordCamera(GameSim, () => play());
 const out = process.argv[2];
 if (!out) throw new Error('usage: shots.ts <outDir>');
 mkdirSync(out, { recursive: true });
-const { book, pal, levels } = buildLevels();
-const bbl = book.finish();
+const { pal, levels } = buildLevels();
 const mb = monsterPictures(pal);
 const mbl = finishMonsterPictures(mb);
 const set = monsterSet(mb);
@@ -30,14 +34,14 @@ const kit = (col: number, feet: number) => {
 };
 const maps = levels.map((l) => l.map.done());
 /** One 16 by 10 block screen of level `i` with its top left at (col, row). */
-const screen = (i: number, col: number, row: number, ...sprites: ReturnType<typeof kit>[]) =>
-  renderRegion(maps[i], bbl, mbl, set, ORIGIN + col, ORIGIN + row, 16, 10, sprites.flat());
+const screen = (i: number, col: number, row: number | null, ...sprites: ReturnType<typeof kit>[]) =>
+  renderRegion(maps[i], levels[i].book.finish(), mbl, set, ORIGIN + col, row === null ? cam.top(i, sprites.flat()) : ORIGIN + row, 16, 10, sprites.flat());
 
-writePng(join(out, 'one-1-the-wall.png'), screen(0, 8, 3, kit(L1.wall[0] - 2, L1.ground - 1)), pal.pal, 3);
-writePng(join(out, 'one-2-the-tunnel.png'), screen(0, 26, 3, kit(L1.jellies[0] - 1, L1.ground - 1)), pal.pal, 3);
-writePng(join(out, 'two-1-the-arc.png'), screen(1, 8, 3, kit(L2.pits[0][0] - 1, L2.ground - 1)), pal.pal, 3);
-writePng(join(out, 'three-1-the-shelf.png'), screen(2, 14, 3, kit(L3.shelfE[0] - 2, L3.ground - 1)), pal.pal, 3);
+writePng(join(out, 'one-1-the-wall.png'), screen(0, 8, null, kit(L1.wall[0] - 2, L1.ground - 1)), pal.pal, 3);
+writePng(join(out, 'one-2-the-tunnel.png'), screen(0, 26, null, kit(L1.jellies[0] - 1, L1.ground - 1)), pal.pal, 3);
+writePng(join(out, 'two-1-the-arc.png'), screen(1, 8, null, kit(L2.pits[0][0] - 1, L2.ground - 1)), pal.pal, 3);
+writePng(join(out, 'three-1-the-shelf.png'), screen(2, 14, null, kit(L3.shelfE[0] - 2, L3.ground - 1)), pal.pal, 3);
 levels.forEach((l, i) =>
-  writePng(join(out, `level-${i + 1}.png`), renderRegion(maps[i], bbl, mbl, set, ORIGIN, ORIGIN, l.map.width, l.map.height), pal.pal, 2),
+  writePng(join(out, `level-${i + 1}.png`), renderRegion(maps[i], levels[i].book.finish(), mbl, set, ORIGIN, ORIGIN, l.map.width, l.map.height), pal.pal, 2),
 );
 console.log(`shots in ${out}`);

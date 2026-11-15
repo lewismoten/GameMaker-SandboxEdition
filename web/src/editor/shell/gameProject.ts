@@ -31,7 +31,8 @@ export function gameProject(project: Project, filename: string): Project {
       if (key === 'saveGame') return save;
       const value: unknown = Reflect.get(target, key, target);
       // These two queries follow this GAM's scenes. Persistence and listeners keep the real owner.
-      if (typeof value === 'function') return (value as (...args: unknown[]) => unknown).bind(key === 'usesOf' || key === 'paletteFor' ? receiver : target);
+      if (typeof value === 'function')
+        return (value as (...args: unknown[]) => unknown).bind(key === 'usesOf' || key === 'paletteFor' || key === 'shownPalette' ? receiver : target);
       return value;
     },
   });

@@ -6,12 +6,13 @@
 //   2. A Crowd: Pip, Moss and Dot stand together. One touch opens a talk of four voices that
 //      runs to a second card, because a card holds 16 rows of words.
 // Every room is closed in by hedges you can see, so Kit is never stopped by something he can't.
-import { Book } from '../../kit/starter/book';
+import { MICRO_GLYPHS } from '@lewismoten/gamemaker-sandbox-tools/microFont';
+import { Book, PULL } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { ORIGIN, StarterMap } from '../../kit/starter/map';
-import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
-import { addSign, type Sign } from '../../kit/starter/sign';
+import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
+import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { BUBBLE, addTalkers, talkerBlocks, type TalkerName } from './talkers';
 import type { TalkId } from './text';
 
@@ -22,17 +23,34 @@ function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
   addTalkers(book, pal);
-  const signs = {
-    two: addSign(book, pal, 'two.sign', 'A TALK CAN HAVE TWO SPEAKERS', 4, 3),
-    names: addSign(book, pal, 'names.sign', 'THE PICTURE DRAWS THE BUBBLES AND NAMES', 4, 3),
-    words: addSign(book, pal, 'words.sign', 'THE TXT HOLDS ONLY THE WORDS', 4, 3),
-    walkin: addSign(book, pal, 'walkin.sign', 'WALK INTO PIP TO TALK', 4, 2),
-    more: addSign(book, pal, 'more.sign', 'MORE SPEAKERS, SMALLER PICTURES', 4, 3),
-    rows: addSign(book, pal, 'rows.sign', 'A CARD HOLDS 16 ROWS OF WORDS', 4, 3),
-    second: addSign(book, pal, 'second.sign', 'A LONGER TALK USES A SECOND CARD', 4, 3),
-    group: addSign(book, pal, 'group.sign', 'WALK INTO THE GROUP', 4, 2),
-    exit: addSign(book, pal, 'exit.sign', 'EXIT →', 3),
-  };
+  const { blocks, signs } = buildTiledSigns(
+    {
+      two: { rows: [['A TALK CAN HAVE TWO SPEAKERS']] },
+      names: { rows: [['THE PICTURE DRAWS THE BUBBLES AND NAMES']] },
+      words: { rows: [['THE TXT HOLDS ONLY THE WORDS']] },
+      walkin: { rows: [['WALK INTO PIP TO TALK']] },
+      more: { rows: [['MORE SPEAKERS, SMALLER PICTURES']] },
+      rows: { rows: [['A CARD HOLDS 16 ROWS OF WORDS']] },
+      second: { rows: [['A LONGER TALK USES A SECOND CARD']] },
+      group: { rows: [['WALK INTO THE GROUP']] },
+      exit: { rows: [['EXIT →']] },
+    },
+    {
+      compact: true,
+      glyphs: { ...MICRO_GLYPHS, '→': '100110111110100' },
+      maxWidth: 5,
+      maxBlocks: Math.min(100, 150 - book.index.size),
+      colors: {
+        background: skyOf(pal),
+        paper: pal.c('parch', 3),
+        ink: pal.c('ink', 0),
+        wood: pal.c('wood', 2),
+        highlight: pal.c('wood', 4),
+        shadow: pal.c('wood', 0),
+      },
+    },
+  );
+  for (const [name, pic] of blocks) book.add(name, pic, { grav: PULL.down });
   return { book, signs };
 }
 
@@ -110,11 +128,11 @@ function twoVoices(book: Book, signs: Record<SignName, Sign>): Level {
     [13, 18, 24, 41],
   );
   const m = new StarterMap(book, g.rows());
-  m.sign(5, onGround(GROUND, signs.two), signs.two);
-  m.sign(11, onGround(GROUND, signs.names), signs.names);
-  m.sign(17, onGround(GROUND, signs.words), signs.words);
-  m.sign(22, onGround(GROUND, signs.walkin), signs.walkin);
-  m.sign(38, onGround(GROUND, signs.exit), signs.exit);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 4, onGround(GROUND, signs.two), signs.two);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 9, onGround(GROUND, signs.names), signs.names);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 15, onGround(GROUND, signs.words), signs.words);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 21, onGround(GROUND, signs.walkin), signs.walkin);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 37, onGround(GROUND, signs.exit), signs.exit);
   const talks: Talk[] = [];
   stand(m, 'pip', PIP_X, true);
   talk(talks, 'pip', 'hello', PIP_X, PIP_X + 3);
@@ -142,11 +160,11 @@ function crowd(book: Book, signs: Record<SignName, Sign>): Level {
     [13, 18, 33, 41],
   );
   const m = new StarterMap(book, g.rows());
-  m.sign(5, onGround(GROUND, signs.more), signs.more);
-  m.sign(11, onGround(GROUND, signs.rows), signs.rows);
-  m.sign(17, onGround(GROUND, signs.second), signs.second);
-  m.sign(22, onGround(GROUND, signs.group), signs.group);
-  m.sign(40, onGround(GROUND, signs.exit), signs.exit);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 4, onGround(GROUND, signs.more), signs.more);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 9, onGround(GROUND, signs.rows), signs.rows);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 15, onGround(GROUND, signs.second), signs.second);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 20, onGround(GROUND, signs.group), signs.group);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 38, onGround(GROUND, signs.exit), signs.exit);
   const talks: Talk[] = [];
   stand(m, 'pip', PIP2_X, true);
   stand(m, 'moss', MOSS_X, false);

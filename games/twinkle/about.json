@@ -6,7 +6,7 @@
   "hero": "RIMA",
   "year": 1994,
   "price": "Free",
-  "version": "1.0",
+  "version": "1.1",
   "blurb": "Stars that twinkle by themselves, drawn with blocks. A loop of four blocks makes a star blink, but the game keeps one clock for each block, so every star drawn with it blinks at the same moment. Level 1 shows that sky first, with every star in step, and then the fix: the same star in six loops with different times, laid so that no two neighbors share one. Level 2 is a night meadow with a moon and hills under that sky. Play it, then open it in Game-Maker and change a star's time.",
   "exe": "TWINKLE.EXE",
   "dosName": "TWINKLE",
