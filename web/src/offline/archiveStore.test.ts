@@ -115,3 +115,20 @@ it('publishes a replacement then removes the old snapshot and abandoned stages',
   expect(await caches.has(before!.cache)).toBe(false);
   expect(await caches.has(before!.cache + ':abandoned')).toBe(false);
 });
+
+it('rejects a manifest without an archive without fetching or touching the committed copy', async () => {
+  const stores = setup();
+  const old = await fixture();
+  vi.stubGlobal('fetch', async () => new Response(old.bytes as BodyInit));
+  await installArchive(base, old.manifest, [], vi.fn(), new AbortController().signal);
+  const before = await readOfflineCopy(base);
+  const names = [...stores.keys()];
+  const fetcher = vi.fn();
+  vi.stubGlobal('fetch', fetcher);
+  const manifest: OfflineManifest = { version: 'paused', shell: ['./'], files: old.manifest.files };
+  await expect(installArchive(base, manifest, [], vi.fn(), new AbortController().signal)).rejects.toThrow('Offline copies are coming back in a later update.');
+  expect(fetcher).not.toHaveBeenCalled();
+  expect([...stores.keys()]).toEqual(names);
+  expect(await readOfflineCopy(base)).toEqual(before);
+  expect(await (await (await caches.open(before!.cache)).match(base))?.text()).toBe('<html>one</html>');
+});
