@@ -110,7 +110,9 @@ function room(width: number, ground: number, exit: number): Grid {
   const g = new Grid(width, ground + 5);
   g.row(ground, 0, width - 1, 'G').fill(0, ground + 1, width, 4, 'D');
   g.col(0, 0, ground - 1, 'X').col(width - 1, 0, ground - 1, 'X');
-  g.put(3, ground - 2, 's').put(3, ground - 1, 'S');
+  // A firm turf step at the entrance, clear of the sand and its signs.
+  g.put(3, ground - 2, 'G').put(3, ground - 1, 'D');
+  g.put(3, ground - 4, 's').put(3, ground - 3, 'S');
   g.put(exit, ground - 2, 'e').put(exit, ground - 1, 'E');
   return g;
 }

@@ -8,7 +8,7 @@
  "segments": [
   {
    "scene": 2,
-   "keys": "AU0PzTVNKM0DTQ=="
+   "keys": "AU0NzTVNKM0DTQ=="
   },
   {
    "scene": 3,
@@ -36,7 +36,7 @@
   },
   {
    "scene": 6,
-   "keys": "AU0PzTVND80DTQ=="
+   "keys": "AU0NzTVND80DTQ=="
   },
   {
    "scene": 7,
@@ -117,7 +117,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 12368,
+  "frames": 12355,
   "chapters": [
    {
     "title": "Opening",
@@ -136,48 +136,48 @@
    },
    {
     "title": "Level 1: house 1 (red)",
-    "frame": 2861,
-    "time": 47683.33333333212
+    "frame": 2854,
+    "time": 47566.66666666547
    },
    {
     "title": "Level 1: house 2 (blue)",
-    "frame": 3617,
-    "time": 60283.33333333029
+    "frame": 3610,
+    "time": 60166.66666666364
    },
    {
     "title": "Level 1: house 3 (green)",
-    "frame": 4396,
-    "time": 73266.6666666651
+    "frame": 4389,
+    "time": 73149.9999999984
    },
    {
     "title": "Level 2: the square",
-    "frame": 5389,
-    "time": 89816.66666666992
+    "frame": 5382,
+    "time": 89700.00000000322
    },
    {
     "title": "Level 2: the wood room",
-    "frame": 6024,
-    "time": 100400.00000000633
+    "frame": 6011,
+    "time": 100183.3333333396
    },
    {
     "title": "Level 2: the ice room",
-    "frame": 6780,
-    "time": 113000.00000001
+    "frame": 6767,
+    "time": 112783.33333334327
    },
    {
     "title": "Level 2: the lava room",
-    "frame": 7559,
-    "time": 125983.33333334711
+    "frame": 7546,
+    "time": 125766.66666668038
    },
    {
     "title": "Ending",
-    "frame": 8601,
-    "time": 143350.00000000812
+    "frame": 8588,
+    "time": 143133.33333334158
    },
    {
     "title": "Credits",
-    "frame": 10813,
-    "time": 180216.66666665333
+    "frame": 10800,
+    "time": 179999.9999999868
    }
   ]
  }

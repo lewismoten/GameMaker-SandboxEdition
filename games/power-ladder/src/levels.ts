@@ -88,7 +88,9 @@ function base(width: number, exitX: number): Grid {
   const g = new Grid(width, 15);
   g.row(GROUND, 0, width - 1, 'G').fill(0, GROUND + 1, width, 4, 'D');
   g.col(0, 0, 9, 'X').col(width - 1, 0, 9, 'X');
-  g.put(3, 8, 's').put(3, 9, 'S');
+  // Three rows of turf and dirt frame both the ground and the upper keys in one view.
+  g.put(3, 7, 'G').put(3, 8, 'D').put(3, 9, 'D');
+  g.put(3, 5, 's').put(3, 6, 'S');
   g.put(exitX, 8, 'e').put(exitX, 9, 'E');
   return g;
 }
@@ -160,8 +162,8 @@ function oneGoldKey(book: Book, signs: Record<SignName, Sign>): StarterMap {
   m.set(15, 2, 'key_gold');
   door(m, 25, 'bronze');
   door(m, 35, 'silver');
-  // Raise the board above the entrance and keep its post left of the ladder.
-  stampTiledSign(signMap, 2, 5, signs.goldKey, 3);
+  // Keep the board above the raised entrance, with its post left of the ladder.
+  stampTiledSign(signMap, 2, 2, signs.goldKey, 6);
   stampTiledSign(signMap, 17, onGround(GROUND, signs.stronger), signs.stronger);
   // The taller post clears the flower and keeps the board above the exit door.
   stampTiledSign(signMap, 40, 7, signs.exit, 2);

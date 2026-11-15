@@ -44,6 +44,8 @@ export function buildGame(levels: Level[]): Game {
 
   const add = (desc: string, pal: string, file: string, card: string, links: Link[]): void => {
     const scene = emptyScene(ADVTYPE);
+    // Only the outside hubs get the raised, fixed view; decorated interiors stay as drawn.
+    if (file === 'street' || file === 'plaza') scene.scroll.up = scene.scroll.down = 0;
     scene.desc = desc.slice(0, 19);
     scene.pos = { x: 40 + (game.scenes.length - 2) * 50, y: 110 };
     scene.files = [

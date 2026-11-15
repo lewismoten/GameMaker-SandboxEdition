@@ -8,7 +8,7 @@
  "segments": [
   {
    "scene": 2,
-   "keys": "AU1GzQNN"
+   "keys": "AU1EzQNN"
   },
   {
    "scene": 4,
@@ -20,7 +20,7 @@
   },
   {
    "scene": 3,
-   "keys": "AU1QzQNN"
+   "keys": "AU1OzQNN"
   },
   {
    "scene": 5,
@@ -69,7 +69,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 10972,
+  "frames": 11440,
   "chapters": [
    {
     "title": "Opening",
@@ -88,18 +88,18 @@
    },
    {
     "title": "Level 2: Two Friends",
-    "frame": 4151,
-    "time": 69183.33333333058
+    "frame": 4144,
+    "time": 69066.66666666388
    },
    {
     "title": "Ending",
-    "frame": 7686,
-    "time": 128100.00000001439
+    "frame": 7673,
+    "time": 127883.33333334766
    },
    {
     "title": "Credits",
-    "frame": 9898,
-    "time": 164966.6666666622
+    "frame": 9885,
+    "time": 164749.99999999566
    }
   ]
  }
