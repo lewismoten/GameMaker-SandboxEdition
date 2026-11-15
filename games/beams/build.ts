@@ -47,7 +47,7 @@ const critters = buildCritterBlocks(pal);
 disk.put('beams.pal', serializePalette(pal.pal));
 disk.put('beams.mon', serializeMonsters(buildCritters(critters)));
 disk.put('beams.mbl', serializeBlocks(critters.finish()));
-const heroChar = buildHero(plain);
+const heroChar = buildHero(plain, { heldRise: { push: 12 } });
 heroChar.meter[0] = 3; // nothing here takes any
 disk.put('hero.chr', serializeCharacter(heroChar));
 disk.put('hero.cbl', serializeBlocks(plain.finish()));

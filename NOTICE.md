@@ -1249,3 +1249,5 @@ maker "ZORP" is invented. The shell is untested: nothing has been printed.
   The letters reuse this project's existing MIT-licensed micro font; no third-party assets were added.
 
 - **Editor scene roles (November 14, 2026):** OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, added timed-cutscene detection, native-game regression checks and scene role labels in Overview and file lists. Existing game data and export formats remain unchanged.
+
+- **Starter held-rise rollout (November 15, 2026):** OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, applied the approved First Steps held-rise controls and bot timing to Both Together, Beams and Fog, Beat the Clock, Round and Round, Block Brains, 150 Blocks, Big Bug, and Three Phases, and refreshed their recorded walkthroughs. Existing artwork, music, and engine credits remain.
