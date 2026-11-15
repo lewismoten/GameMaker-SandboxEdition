@@ -11,6 +11,7 @@ const STAGES = [dayOne, nightOne, dayTwo, duskTwo, nightTwo];
 export async function play(seed = SEED, upTo = STAGES.length): Promise<{ sim: GameSim; bot: StarterBot }> {
   const sim = new GameSim(undefined, seed);
   const bot = new StarterBot(sim);
+  bot.jumpHold = 8; // held-rise jump: hold Space to rise, then steer after release
   await playLevels(bot, STAGES, upTo);
   return { sim, bot };
 }

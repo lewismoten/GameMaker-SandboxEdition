@@ -47,7 +47,7 @@ disk.put('count.pal', serializePalette(pal.pal));
 disk.put('count.mbl', serializeBlocks(monsterBlocks.finish()));
 disk.put('count.mon', serializeMonsters(buildMonsters(monsterBlocks)));
 disk.put('hero.cbl', serializeBlocks(heroBlocks.finish()));
-const heroChar = buildHero(heroBlocks);
+const heroChar = buildHero(heroBlocks, { heldRise: { push: 12 } });
 heroChar.meter[KEYS] = INF_REPEAT; // no keys in this game
 heroChar.meter[0] = HERO_HIT_POINTS; // nothing here takes any
 heroChar.meter[1] = HERO_LIVES;

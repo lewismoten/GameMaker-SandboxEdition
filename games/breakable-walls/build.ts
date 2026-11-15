@@ -48,7 +48,7 @@ for (const l of levels) disk.put(`${l.file}.bbl`, serializeBlocks(finishBlocks(l
 disk.put('sm.mbl', serializeBlocks(monsterBlocks.finish()));
 disk.put('sm.mon', serializeMonsters(buildMonsters(monsterBlocks)));
 disk.put('hero.cbl', serializeBlocks(heroBlocks.finish()));
-const heroChar = buildHero(heroBlocks);
+const heroChar = buildHero(heroBlocks, { heldRise: { push: 12 } });
 heroChar.meter[KEYS] = INF_REPEAT; // no keys in this game
 heroChar.meter[0] = HERO_HIT_POINTS;
 heroChar.meter[1] = HERO_LIVES;

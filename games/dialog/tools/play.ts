@@ -11,6 +11,7 @@ const LEVELS = [twoVoices, crowd];
 export async function play(seed = SEED, upTo = LEVELS.length): Promise<{ sim: GameSim; bot: StarterBot }> {
   const sim = new GameSim(undefined, seed);
   const bot = new StarterBot(sim);
+  bot.jumpHold = 8; // held-rise jump: hold Space to rise, then steer after release
   await playLevels(bot, LEVELS, upTo);
   return { sim, bot };
 }
