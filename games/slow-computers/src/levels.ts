@@ -103,11 +103,16 @@ function scenery(g: Grid, width: number, clouds: [number, number][], bushes: num
 }
 
 /** The ground, hedges at both ends, the entrance at x 3 and the exit door at `exitX`. */
-function room(width: number, exitX: number): Grid {
+function room(width: number, exitX: number, raised = true): Grid {
   const g = new Grid(width, 15);
   g.row(GROUND, 0, width - 1, 'G').fill(0, GROUND + 1, width, 4, 'D');
   g.col(0, 0, 9, 'X').col(width - 1, 0, 9, 'X');
-  g.put(3, 8, 's').put(3, 9, 'S').put(exitX, 8, 'e').put(exitX, 9, 'E');
+  // Preserve the crowd's lower cave view; the other rooms start on a turf step.
+  if (raised) g.put(3, 8, 'G').put(3, 9, 'D');
+  g.put(3, raised ? 6 : 8, 's')
+    .put(3, raised ? 7 : 9, 'S')
+    .put(exitX, 8, 'e')
+    .put(exitX, 9, 'E');
   return g;
 }
 
@@ -151,7 +156,7 @@ function shortAndLong(pal: Pal): Level {
 /** Level 2: 36 friendly monsters: gumdrops on grass, snails in a cutaway cave and two low rows of bees. */
 function aCrowd(pal: Pal): Level {
   const { book, signs } = startBook(pal, ['crowd', 'fewer']);
-  const g = room(34, 32);
+  const g = room(34, 32, false);
   scenery(
     g,
     34,

@@ -8,7 +8,7 @@
  "segments": [
   {
    "scene": 2,
-   "keys": "AU0PzT9NHs0/TRnNG00KzRtNCs0bTQrNG00UzT9NGc0rTQrNK00KzStNCs0rTRnNP00="
+   "keys": "AU0NzT9NHs0/TRnNG00KzRtNCs0bTQrNG00UzT9NGc0rTQrNK00KzStNCs0rTRnNP00="
   },
   {
    "scene": 3,
@@ -16,7 +16,7 @@
   },
   {
    "scene": 4,
-   "keys": "AU0PzVNNI81TTSjNSU0="
+   "keys": "AU0NzVNNI81TTSjNSU0="
   }
  ],
  "chapters": [
@@ -35,7 +35,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 11876,
+  "frames": 11862,
   "chapters": [
    {
     "title": "Opening",
@@ -54,23 +54,23 @@
    },
    {
     "title": "Level 2: A Crowd",
-    "frame": 5006,
-    "time": 83433.33333333473
+    "frame": 4999,
+    "time": 83316.66666666802
    },
    {
     "title": "Level 3: Busy Sky",
-    "frame": 6574,
-    "time": 109566.66666667566
+    "frame": 6567,
+    "time": 109450.00000000896
    },
    {
     "title": "Ending",
-    "frame": 8109,
-    "time": 135150.0000000129
+    "frame": 8095,
+    "time": 134916.6666666797
    },
    {
     "title": "Credits",
-    "frame": 10321,
-    "time": 172016.6666666581
+    "frame": 10307,
+    "time": 171783.3333333249
    }
   ]
  }
