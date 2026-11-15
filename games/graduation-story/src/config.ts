@@ -47,6 +47,9 @@ You can tell a story with words, pictures and sound, time a scene and put a whol
 
 The next stage is waiting whenever you are ready.
 `),
-    credits: creditsPage('GRADUATION: STORY AND FINISH', about.version, 'A graduation: it comes after Telling a Story and Putting It Together.'),
+    credits:
+      creditsPage('GRADUATION: STORY AND FINISH', about.version, 'A graduation: it comes after Telling a Story and Putting It Together.') +
+      '\n' +
+      wrap('Held-rise jump: OpenAI Codex (GPT-6.1 Sol).'),
   },
 };

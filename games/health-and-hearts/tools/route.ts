@@ -92,8 +92,8 @@ export async function lives(bot: StarterBot): Promise<void> {
   if (Math.abs(bot.px.x - 60) > 24) throw new Error(`back at x ${bot.px.x}, not at the way in`);
   bot.say(`ran out: lives ${lives0} -> ${bot.sim.ci.lives}, back at x ${bot.px.x} with ${hp(bot)} hit points`);
   // again: up to the ledge and its two hearts first
-  await must(bot, bot.walk(12, 'the ledge'), 'to the ledge');
-  await must(bot, bot.jump('right', 15), 'up onto the ledge');
+  await must(bot, bot.walk(15, 'under the ledge'), 'to the ledge');
+  await must(bot, bot.jump(), 'up onto the ledge');
   await must(bot, bot.walk(19, 'the hearts'), 'along the ledge');
   await must(bot, bot.wait(LOOK), 'watching the hearts');
   if (hp(bot) !== 30 + 2 * HEART) throw new Error(`two hearts should take 30 to ${30 + 2 * HEART}, not ${hp(bot)}`);
@@ -106,9 +106,9 @@ export async function lives(bot: StarterBot): Promise<void> {
   }
   await must(bot, bot.wait(LOOK), 'watching the hit points');
   if (hp(bot) !== 30 + 2 * HEART - 4 * SPIKE_COST) throw new Error(`the four spikes should leave ${30 + 2 * HEART - 4 * SPIKE_COST}, not ${hp(bot)}`);
-  await must(bot, bot.walk(35, 'the face ledge'), 'to the face ledge');
+  await must(bot, bot.walk(38, 'under the face ledge'), 'to the face ledge');
   const have = bot.sim.ci.lives;
-  await must(bot, bot.jump('right', 38), 'up onto the face ledge');
+  await must(bot, bot.jump(), 'up onto the face ledge');
   await must(bot, bot.walk(40, 'the face'), 'to the face');
   await must(bot, bot.wait(LOOK), 'watching the lives');
   if (bot.sim.ci.lives !== have + 1) throw new Error(`the face should add a life: ${have} -> ${bot.sim.ci.lives}`);

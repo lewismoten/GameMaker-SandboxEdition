@@ -47,7 +47,7 @@ disk.put('top.bbl', serializeBlocks(topBook.finish()));
 disk.put('grav.mbl', serializeBlocks(monsterBlocks.finish()));
 disk.put('grav.mon', serializeMonsters(buildMonsters(monsterBlocks)));
 disk.put('hero.cbl', serializeBlocks(heroBlocks.finish()));
-const heroChar = buildHero(heroBlocks);
+const heroChar = buildHero(heroBlocks, { heldRise: { push: 12 } });
 heroChar.meter[KEYS] = INF_REPEAT; // no keys in this game
 disk.put('hero.chr', serializeCharacter(heroChar));
 // level 2's hero: Kit from above, one block, walking in four directions
