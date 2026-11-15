@@ -1,0 +1,14 @@
+{
+  "levels": [
+    {
+      "scene": 2,
+      "teaches": "two Enter hits break the crate so Plop drops out of the way",
+      "rules": [{"rule": "uses", "move": "Enter", "min": 2}, {"rule": "needs", "move": "Enter"}]
+    },
+    {
+      "scene": 3,
+      "teaches": "four Enter hits break both crates so soft Pip drifts down",
+      "rules": [{"rule": "uses", "move": "Enter", "min": 4}]
+    }
+  ]
+}

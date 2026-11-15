@@ -1,0 +1,14 @@
+{
+  "levels": [
+    {
+      "scene": 2,
+      "teaches": "Enter throws stars; move closer when a star falls short",
+      "rules": [{"rule": "uses", "move": "Enter", "min": 3}, {"rule": "before", "a": "score:50", "b": "leave"}]
+    },
+    {
+      "scene": 3,
+      "teaches": "face the grump and throw with Enter to clear the narrow way",
+      "rules": [{"rule": "uses", "move": "Enter", "min": 2}, {"rule": "before", "a": "score:50", "b": "leave"}, {"rule": "needs", "move": "Enter"}]
+    }
+  ]
+}

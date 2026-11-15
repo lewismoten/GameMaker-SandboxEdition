@@ -1,0 +1,19 @@
+{
+  "levels": [
+    {
+      "scene": 2,
+      "teaches": "collect keys before leaving; the silver key and bronze change pay for both doors",
+      "rules": [{"rule": "before", "a": "score:25", "b": "leave"}, {"rule": "uses", "move": "Up", "min": 1}]
+    },
+    {
+      "scene": 3,
+      "teaches": "one gold key pays for a bronze door and a silver door",
+      "rules": [{"rule": "before", "a": "score:25", "b": "leave"}, {"rule": "uses", "move": "Up", "min": 1}]
+    },
+    {
+      "scene": 4,
+      "teaches": "bronze and silver keys add up to the gold door's cost",
+      "rules": [{"rule": "before", "a": "score:25", "b": "leave"}, {"rule": "uses", "move": "Up", "min": 1}]
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "levels": [
+    {
+      "scene": 2,
+      "teaches": "repeated Space taps lift the jet pack up the cliff and across the gap",
+      "rules": [{ "rule": "uses", "move": "Space", "min": 2 }, { "rule": "needs", "move": "Space" }]
+    },
+    {
+      "scene": 3,
+      "teaches": "two Space taps spend the boots' jumps, and bubbles refill them",
+      "rules": [{ "rule": "uses", "move": "Space", "min": 2 }, { "rule": "needs", "move": "Space" }]
+    }
+  ]
+}
