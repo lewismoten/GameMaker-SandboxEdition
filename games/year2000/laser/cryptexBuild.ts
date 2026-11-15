@@ -105,7 +105,10 @@ export function buildCryptex(kerf = 0.2, checks = true, stock: StockSize = '12x1
     // Keep the normal cut/artwork and artwork/ID checks for everything else.
     clearance[part.name] = checks
       ? part.close().filter((c) => {
-          const other = c.a === 'text E1' ? c.b : c.b === 'text E1' ? c.a : '';
+          const label = `text ${part.name}`;
+          const other = c.a === label ? c.b : c.b === label ? c.a : '';
+          // Lower washer IDs occupy the 4 mm corner beyond the circular tab relief.
+          if (/^G[1-4]B$/.test(part.name) && (other === 'outline' || other === 'hole tab rotation clearance')) return c.mm < 0.3 - 1e-6;
           if (part.name !== 'E1' || (other !== 'outline' && other !== 'hole hollow')) return true;
           return c.mm < 0.5;
         })

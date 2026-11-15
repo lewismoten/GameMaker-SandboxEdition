@@ -1,8 +1,8 @@
 // "In The Year 2000!" cryptex: the measurements (millimeters, 3.18 mm plywood/MDF) and the lock check. The kit stands on its end:
 // a square base with four pocket plates, four rings that step up like a pyramid (the biggest at the bottom, so every ring
-// shows its own band of digits), and a hollow core that goes down the middle. The core's lower end carries a ridge that
-// waits in the base's pocket, just under the stack. To pull the core out, the ridge has to pass up through a notch in each
-// ring's inner washer, so all four notches must be at the marker. The notches' places are set by how the washers are seated.
+// shows its own band of digits), and a hollow core that goes down the middle. The core carries four aligned tabs, each of which
+// sits in the circular relief of each lower washer. A tab meets the notched upper washer immediately on lifting,
+// so any wrong digit blocks withdrawal before the downward-facing note bore leaves the glued base collar.
 import { offsetPoly, rotate } from '@lewismoten/gamemaker-sandbox-tools/kit/laserJoints';
 import type { Pt } from '@lewismoten/gamemaker-sandbox-tools/kit/laserSvg';
 
@@ -10,7 +10,8 @@ export const T = 3.18; // Proofgrade 1/8 in plywood or MDF; every stack uses the
 export const DIGITS = 10;
 export const STEP = 360 / DIGITS; // degrees between digits
 export const COMBO = [2, 0, 0, 0]; // the year the game is named for, read from the inner ring out
-export const CORE = { r: 12, ridgeHw: 2, ridgeOut: 14.5, bore: 8, ridgeSlices: 3, roundSlices: 9 };
+// The bottom is open against A1; CORE0 caps the top. Four CORER slices sit below the four locking faces.
+export const CORE = { r: 12, ridgeHw: 2, ridgeOut: 14.5, bore: 8, ridgeSlices: 4, roundSlices: 8 };
 /** The washer's hole: a round bore with one notch. The pocket hole in the base is the same with a snugger notch. */
 export const WASHER = { bore: 12.3, notchHw: 3.5, notchOut: 14.9, apothem: 18 };
 export const POCKET = { bore: 12.3, notchHw: 2.3, notchOut: 14.9, plates: 4 };
@@ -29,7 +30,8 @@ export const SLICE_HOLE = RINGS.map((r, k) => (k === 0 ? r : RINGS[k - 1]) - RIM
 export const COLLAR_R = Math.hypot(POCKET.notchOut, POCKET.notchHw) + RIM; // include the notch's corners
 export const PX_ID = 0.36; // millimeters per font pixel for part IDs: capitals 2.52 mm, the smallest the checks allow
 export const HEAD_R = 20;
-export const LID = { r: 14, plug: CORE.bore - 0.15 };
+// The old lid IDs now form a captured frame: bridge LID and two side posts LIDP.
+export const LID = { r: 20, plug: WASHER.bore, postX: 51.75, postW: 6, tenonW: 3, top: 13 * T, release: 6 };
 export const BASE = 114; // the square base
 export const PX = 0.5; // millimeters per font pixel for the digits (3.5 mm capitals)
 

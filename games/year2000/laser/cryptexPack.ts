@@ -1,6 +1,6 @@
 // "In The Year 2000!" cryptex: sheet packing. Almost every root piece is a disc or a ring, so a rectangle packer wastes the corners.
-// Discs are placed by their bounding circle (free position on a 1 mm grid, so rows can interlock like coins) and the square lid
-// plate as a rectangle. Several orders and scan directions are tried; the fewest sheets win, then the least occupied area, so
+// Discs are placed by their bounding circle (free position on a 1 mm grid, so rows can interlock like coins); the base,
+// retaining bridge and posts keep their rectangles. Several orders and scan directions are tried; the fewest sheets win, then the least occupied area, so
 // sheet 1 is filled before sheet 2 opens and the last sheet is as small as it can be. Placement only: no part's geometry changes.
 import { STOCK, STOCK_MARGIN, placePart, type Part, type Placed, type StockSize } from '@lewismoten/gamemaker-sandbox-tools/kit/laserLayout';
 import { LaserSheet } from '@lewismoten/gamemaker-sandbox-tools/kit/laserSvg';
@@ -17,8 +17,8 @@ interface Shape {
 
 function shapeOf(part: Part): Shape {
   const b = part.cutBounds;
-  // the lid plate keeps its rectangle; every other root is a disc, a ring or a many-sided plate, so its bounding circle is used
-  return { part, cx: 0, cy: 0, r: Math.max(b.w, b.h) / 2, round: part.name !== 'A1', bw: b.w, bh: b.h };
+  // Frame pieces are not round: their corners must stay inside their packed bounds.
+  return { part, cx: 0, cy: 0, r: Math.max(b.w, b.h) / 2, round: !['A1', 'LID', 'LIDP'].includes(part.name), bw: b.w, bh: b.h };
 }
 
 /** Space between two placed shapes' cut outlines (negative when they overlap). */
