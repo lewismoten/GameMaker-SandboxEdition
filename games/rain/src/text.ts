@@ -36,6 +36,8 @@ Finer rain, the house and its rain barrel, stepping splashes and the splash soun
 
 Shared Starter art and tools by this project's earlier contributors (see NOTICE).
 
+Held-rise jump and bot timing by OpenAI Codex (GPT-6.1 Sol).
+
 Built with GAME-MAKER 3.0 from Recreational Software Designs.
 
 Made in 2026 by Lewis Moten with AI help. Free to share: see LICENSE.TXT on the disk.

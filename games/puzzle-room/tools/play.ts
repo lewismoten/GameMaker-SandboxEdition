@@ -11,6 +11,7 @@ const LEVELS = [twoLevers, wiredRoom];
 export async function play(seed = SEED, upTo = LEVELS.length): Promise<{ sim: GameSim; bot: StarterBot }> {
   const sim = new GameSim(undefined, seed);
   const bot = new StarterBot(sim);
+  bot.jumpHold = 8; // rise while Space is held, then steer after release
   for (const level of LEVELS.slice(0, upTo)) {
     try {
       await level(bot);
