@@ -61,3 +61,24 @@ it('reports readiness only for the current committed version with every required
   keys = [];
   expect((await offlineStatus()).ready).toBe(false);
 });
+
+it('reports the pause for an archive-free manifest without touching existing copies', async () => {
+  vi.stubGlobal('location', { href: 'https://example.test/repo/' });
+  vi.stubGlobal('navigator', { serviceWorker: {}, locks: {}, storage: {} });
+  const open = vi.fn();
+  const remove = vi.fn();
+  vi.stubGlobal('caches', { open, delete: remove });
+  const fetcher = vi.fn(
+    async () =>
+      new Response(JSON.stringify({ version: 'paused', shell: ['./'], files: [['index.html', 10, 10]] }), { headers: { 'content-type': 'application/json' } }),
+  );
+  vi.stubGlobal('fetch', fetcher);
+  const status = await offlineStatus();
+  expect(status.supported).toBe(false);
+  expect(status.reason).toBe('Offline copies are coming back in a later update.');
+  expect((await makeOffline(status, vi.fn(), new AbortController().signal)).ok).toBe(false);
+  expect(fetcher).toHaveBeenCalledTimes(1);
+  expect(installArchive).not.toHaveBeenCalled();
+  expect(open).not.toHaveBeenCalled();
+  expect(remove).not.toHaveBeenCalled();
+});

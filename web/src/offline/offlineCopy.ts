@@ -2,7 +2,7 @@
 // visitor who asks (the web's Offline dialog, offlineDialog.ts; OFFLINE.EXE on the desk PC).
 // Otherwise everything is cached the first time it is used (siteWorker.ts).
 //
-// The build packs the files into one ZIP (offline.json names it, vite.config.ts offlineFiles): the code for every
+// When enabled, the build packs the files into one ZIP (offline.json names it, vite.config.ts offlineFiles): the code for every
 // part of the site, every listed game as its one-file pack, the boxes', manuals' and desk's
 // data and pictures. A secret game is in no list: once it is revealed in this browser its pack
 // is added from the catalog, and nothing here ever names it.
@@ -55,7 +55,7 @@ async function loadManifest(): Promise<OfflineManifest | undefined> {
     const res = await fetch(urlOf('offline.json'), { cache: 'no-cache' });
     if (!res.ok || !res.headers.get('content-type')?.includes('json')) return undefined;
     const m = (await res.json()) as OfflineManifest;
-    return m.archive ? m : undefined;
+    return m;
   } catch {
     return undefined;
   }
@@ -134,6 +134,7 @@ export async function offlineStatus(): Promise<OfflineStatus> {
   if (typeof caches === 'undefined' || !('serviceWorker' in navigator) || !navigator.locks) return empty('This browser cannot keep the site for offline use.');
   const m = await loadManifest();
   if (!m) return empty(navigator.onLine === false ? 'You are offline: connect to make an offline copy.' : 'Offline copies are made on the published site.');
+  if (!m.archive) return empty('Offline copies are coming back in a later update.');
   const [files, have, est] = await Promise.all([wantedFiles(m), cachedPaths(m.version), storageEstimate()]);
   const missing = files.filter((f) => !have.has(f.path));
   const sum = (list: OfflineFile[], k: 'wire' | 'stored') => list.reduce((a, f) => a + f[k], 0);

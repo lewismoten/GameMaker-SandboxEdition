@@ -12,7 +12,6 @@ import { singlePagePlayer } from './scripts/singlePageBuild';
 import { hostedPlayer } from './scripts/hostedPlayerBuild';
 import { seoPages } from './scripts/seoBuild';
 import { devLog } from './scripts/devLog';
-import { buildOfflineArchive } from './scripts/offlineArchive';
 
 const publicDir = resolve(__dirname, 'public');
 
@@ -160,7 +159,7 @@ function offline(): Plugin {
     enforce: 'post', // after Vite's HTML plugin has emitted the pages
     generateBundle: {
       order: 'post', // and after scripts/seoBuild.ts has made each game's play page from play.html
-      async handler(_options, bundle) {
+      handler(_options, bundle) {
         const built = Object.keys(bundle);
         const precache = appShell(bundle);
         const groups = groupHashes(bundle);
@@ -181,9 +180,8 @@ function offline(): Plugin {
           }
         }
         files.sort(([a], [b]) => (a < b ? -1 : 1));
-        const { data, ...archive } = await buildOfflineArchive(files.map(([name]) => ({ name, data: read(name) })));
-        this.emitFile({ type: 'asset', fileName: archive.path, source: data });
-        this.emitFile({ type: 'asset', fileName: 'offline.json', source: JSON.stringify({ version, shell: precache, files, archive }) });
+        // Full offline ZIPs are paused until per-file downloads with selectable tiers land.
+        this.emitFile({ type: 'asset', fileName: 'offline.json', source: JSON.stringify({ version, shell: precache, files }) });
         // every file for archive.html: the offline copy's list and what it leaves out (previews, firmware, crawler files)
         this.emitFile({ type: 'asset', fileName: 'archive.json', source: JSON.stringify({ version, shell: precache, files: offlineFiles(bundle, true) }) });
         const player = playerGraph(bundle);

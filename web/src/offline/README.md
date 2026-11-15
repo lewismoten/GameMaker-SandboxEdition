@@ -20,7 +20,19 @@ Entry points: `offline.ts` (the service worker's notices) imports `loadFailure.t
 Must not: `offlineDialog.ts` and `offlineExe.ts` are loaded on demand (`settingsMenu.ts`, `retro/computer.ts`); keep
 them dynamic so the first-load chunk stays small. `retro/computer.ts` is shared with `dos.html`, so nothing here may import `desk/`.
 
-## Acquisition and lifecycle
+## Current release
+
+Production builds no longer produce or publish `offline.<sha256>.zip` and omit the
+`archive` entry from `offline.json`. Play offline and OFFLINE.EXE show “Offline copies
+are coming back in a later update.” New downloads are paused until per-file downloads
+with selectable tiers arrive. Existing committed copies and ordinary browsing caches
+are preserved; the service worker still serves them. The archive builder and acquisition
+code below remain for reference.
+
+`check:offline` checks the pause notice and absence of download controls and ZIP requests
+when the manifest has no archive, then skips the full-copy offline navigation checks.
+
+## Acquisition and lifecycle (when an archive is available)
 
 Installation still downloads **only the app shell**, never the offline archive. Nothing starts
 an offline download until the visitor presses Download in Play offline or Y in OFFLINE.EXE.
@@ -29,7 +41,7 @@ one ZIP request, not a fetch for every entry in `offline.json`. Already-revealed
 packs/walkthroughs are the only supplemental requests: neither their files nor gate catalogs
 may appear in the public ZIP. An unchanged complete copy is reused without fetching the ZIP.
 
-The production Vite plugin builds the ZIP from the same selected resources as the old explicit
+When enabled, the production Vite plugin builds the ZIP from the same selected resources as the old explicit
 copy, plus the complete shell (including `index.html`); `scripts/offlineArchive.ts` uses sorted
 entries, a fixed local ZIP date and a SHA-256 filename. `offline.json` records its path, exact
 byte length and SHA-256. The manifest is saved beside the extracted entries, not inside the ZIP

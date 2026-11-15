@@ -6,7 +6,7 @@ export interface OfflineManifest {
   version: string;
   shell: string[];
   files: [string, number, number][];
-  archive: { path: string; bytes: number; sha256: string };
+  archive?: { path: string; bytes: number; sha256: string };
 }
 interface Copy {
   version: string;
@@ -77,6 +77,7 @@ export async function installArchive(
   progress: (p: OfflineProgress) => void,
   signal: AbortSignal,
 ): Promise<void> {
+  if (!m.archive) throw new Error('Offline copies are coming back in a later update.');
   const names = offlineNames(base);
   const previous = await readOfflineCopy(base);
   const wanted = [...m.files, ...extras];
