@@ -23,7 +23,7 @@ export const W = 48;
 export const H = 13;
 /** The floor's top row. */
 export const FLOOR = 10;
-/** The standing camera's top visible row (rows 0 to 3 are never seen while standing: nothing is hung there). */
+/** The decoration row, visible from both the original and raised entrances. */
 export const VIEW_TOP = 4;
 /** The balcony rail's row. */
 export const BALCONY_RAIL = 6;
@@ -32,6 +32,8 @@ export const LECTERN = 40;
 export const STAGE_FROM = 34;
 
 export interface Level {
+  /** The flat route and raised entrance fit a fixed vertical view. */
+  lockVertical?: boolean;
   file: string;
   title: string;
   hint: string;
@@ -40,8 +42,6 @@ export interface Level {
   book: Book;
   timed: Timed[];
   bbl: string;
-  /** Flat walks with raised entrances keep the same view after stepping down. */
-  lockVertical?: boolean;
 }
 
 export type SignName = 'start' | 'helpers' | 'cheer' | 'doc' | 'banner';
@@ -110,24 +110,25 @@ function aisle(
   friends: [string, string][],
   theme: Graduation['theme'],
   _guests: number,
-  raisedStart = false,
+  startLedge?: 2 | 3,
 ): StarterMap {
   const g = new Grid(W, H);
-  g.put(2, raisedStart ? 6 : 8, 's').put(2, raisedStart ? 7 : 9, 'S');
+  const rise = startLedge ?? 0;
+  g.put(2, 8 - rise, 's').put(2, 9 - rise, 'S');
   const m = new HallMap(book, g.rows());
   // floor: the carpet, then the stage, and the boards under both
   for (let x = 1; x < W - 1; x++) {
     m.set(x, FLOOR, x < STAGE_FROM ? 'carpet' : 'stage');
     m.set(x, FLOOR + 1, 'subfloor').set(x, FLOOR + 2, 'subfloor');
   }
-  // A narrow carpeted step under the entrance; walking right drops to the aisle.
-  if (raisedStart) {
-    for (const x of [2, 3]) m.set(x, 8, 'carpet').set(x, 9, 'subfloor');
-    m.start[0] += 1; // Stand beside the door, on the right half of the step.
+  // A carpeted entrance step matches the aisle, clear of the first sign.
+  if (rise) {
+    m.set(2, FLOOR - rise, 'carpet');
+    for (let y = FLOOR - rise + 1; y < FLOOR; y++) m.set(2, y, 'subfloor');
   }
   // the ends of the hall: heavy drapes, solid
   for (let y = 0; y < H; y++) m.set(0, y, 'curtainEdge').set(W - 1, y, 'curtainEdge');
-  // the valance and bunting, hung in the player's view (the top visible row)
+  // the valance and bunting, hung in the player's view
   for (let x = 1; x < W - 1; x++) m.set(x, VIEW_TOP, 'valance');
   // pennants hang under it along the aisle (the helpers' heads take the row over the stage)
   for (let x = 1; x < STAGE_FROM; x++) m.set(x, VIEW_TOP + 1, x % 2 ? 'bunting0' : 'bunting1');
@@ -168,6 +169,7 @@ export function buildLevels(cfg: Graduation) {
   const arrival = buildArrival(cfg, pal);
   const levels: Level[] = [
     {
+      lockVertical: !!cfg.startLedge?.arrival,
       file: ARRIVE,
       title: cfg.arrive.title,
       hint: cfg.arrive.hint,
@@ -175,17 +177,16 @@ export function buildLevels(cfg: Graduation) {
       book: arrival.book,
       timed: arrival.timed,
       bbl: ARRIVE,
-      lockVertical: cfg.raisedStart,
     },
     {
+      lockVertical: !!cfg.startLedge,
       file: 'hall',
       title: cfg.level.title,
       hint: cfg.level.hint,
-      map: aisle(book, signs, hall, friends, cfg.theme, cfg.cameos.length, cfg.raisedStart),
+      map: aisle(book, signs, hall, friends, cfg.theme, cfg.cameos.length, cfg.startLedge?.hall),
       book,
       timed,
       bbl: 'grad',
-      lockVertical: cfg.raisedStart,
     },
   ];
   return { book, pal, timed, levels };

@@ -6,10 +6,10 @@ import type { HallTheme } from './graduationTheme';
 export interface Graduation {
   /** The game id and folder: "graduation-basics". */
   id: string;
+  /** Raised entrances and locked vertical views; omit arrival for a climbing route. */
+  startLedge?: { arrival?: 2 | 3; hall: 2 | 3 };
   /** The stage's name: "First Steps". */
   stage: string;
-  /** Raised two-row entrances and a fixed vertical view for flat campus and aisle walks. */
-  raisedStart?: boolean;
   /** Names of the STARTER_GROUPS whose helpers sit in the audience. */
   groups: string[];
   /** Guests from the Cast who sit in the audience beside the helpers. */

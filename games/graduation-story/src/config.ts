@@ -7,7 +7,7 @@ import { song } from './song';
 
 export const cfg: Graduation = {
   id: 'graduation-story',
-  raisedStart: true,
+  startLedge: { arrival: 2, hall: 2 },
   stage: 'Story and Finish',
   groups: ['Telling a Story', 'Putting It Together'],
   cameos: ['teddy', 'chicken', 'will', 'gwinn', 'seed', 'joe', 'camel', 'carl'],

@@ -7,7 +7,7 @@ import { song } from './song';
 
 export const cfg: Graduation = {
   id: 'graduation-wiring',
-  raisedStart: true,
+  startLedge: { arrival: 2, hall: 2 },
   stage: 'Wiring and Worlds',
   groups: ['Wiring and Puzzles', 'Bigger Worlds'],
   cameos: ['gwinn', 'watt', 'loaf', 'chicken', 'teddy', 'joe', 'seed', 'goat'],
