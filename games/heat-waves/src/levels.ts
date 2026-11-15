@@ -225,6 +225,11 @@ function coolEvening(st: Stage): StarterMap {
   return m;
 }
 
+/** A narrow rock step below the existing high start, clear of the signs and wobbling hills. */
+function startStep(l: Level): void {
+  for (let y = START[1] + 1; y < GROUND_ROW; y++) l.map.set(START[0], y, l.st.plain(rockCell(l.st.pal, y, y === START[1] + 1), true));
+}
+
 /** The finished block set: the book's, with each timed block given its next block and its ticks. */
 export function finishBlocks(st: Pick<Stage, 'book' | 'timed'>): Block[] {
   const blocks = st.book.finish();
@@ -245,5 +250,6 @@ export function buildLevels(): { pal: Pal; hot: Uint8Array; cool: Uint8Array; le
     { file: 'two', title: 'The Mirage', hint: 'Is that water on the road?', palette: 'hot.pal', map: theMirage(two), st: two, scrolls: true },
     { file: 'three', title: 'Cool Evening', hint: 'The heat is gone.', palette: 'cool.pal', map: coolEvening(three), st: three, scrolls: false },
   ];
+  levels.forEach(startStep);
   return { pal, hot, cool, levels };
 }

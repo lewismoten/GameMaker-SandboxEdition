@@ -62,7 +62,9 @@ export interface Level {
  * Guard every cell so signs cannot cover scenery, pickups, platforms or each other.
  */
 function sign(map: StarterMap, x: number, board: Sign): void {
-  stampTiledSign({ set: (x, y, block) => map.setOnSky(x, y, block) }, x, 6, board, 3);
+  // Hang the entrance board above the raised door, with its post still reaching the ground.
+  const y = x <= 2 ? 3 : 6;
+  stampTiledSign({ set: (x, y, block) => map.setOnSky(x, y, block) }, x, y, board, GROUND - y - board.board.length);
 }
 
 export const GROUND = 10;
@@ -72,7 +74,8 @@ function base(width: number, exitX: number): Grid {
   const g = new Grid(width, 15);
   g.row(GROUND, 0, width - 1, 'G').fill(0, GROUND + 1, width, 4, 'D');
   g.col(0, 0, 9, 'X').col(width - 1, 0, 9, 'X');
-  g.put(3, 8, 's').put(3, 9, 'S');
+  // A two-column turf step supports the hero beside the readable entrance door.
+  g.put(3, 6, 's').put(3, 7, 'S').row(8, 3, 4, 'G').row(9, 3, 4, 'D');
   g.put(exitX, 8, 'e').put(exitX, 9, 'E');
   return g;
 }
@@ -98,6 +101,7 @@ function hitPoints(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [8, 28, 32],
   );
   const m = new StarterMap(book, g.rows());
+  m.start[0] += 1; // Stand beside the door, on the right half of the step.
   m.set(17, GROUND - 1, 'spikeUp');
   sign(m, 2, signs.f2);
   sign(m, 14, signs.spike);
@@ -120,6 +124,7 @@ function heartsHeal(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [8, 25, 33],
   );
   const m = new StarterMap(book, g.rows());
+  m.start[0] += 1; // Stand beside the door, on the right half of the step.
   m.set(13, GROUND - 1, 'spikeUp');
   for (const x of [17, 19]) m.set(x, GROUND - 1, 'heart');
   sign(m, 1, signs.heal);
@@ -151,6 +156,7 @@ function lives(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [32, 42],
   );
   const m = new StarterMap(book, g.rows());
+  m.start[0] += 1; // Stand beside the door, on the right half of the step.
   for (const x of LEDGE_HEARTS) m.set(x, 7, 'heart');
   for (const x of SPIKE_ROW) m.set(x, GROUND - 1, 'spikeUp');
   m.set(FACE_X, 7, 'oneUp');

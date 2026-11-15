@@ -175,8 +175,11 @@ function windsocksAndShelter(pal: Pal): Level {
   const g = new Grid(WIDTH_TWO, 16);
   g.row(G, 0, WIDTH_TWO - 1, 'G').fill(0, G + 1, WIDTH_TWO, 4, 'D');
   g.col(0, 0, G - 1, 'X').col(WIDTH_TWO - 1, 0, G - 1, 'X');
-  g.put(3, G - 2, 's')
-    .put(3, G - 1, 'S')
+  // A two-column turf step supports the hero beside the entrance door.
+  g.put(3, G - 4, 's')
+    .put(3, G - 3, 'S')
+    .row(G - 2, 3, 4, 'G')
+    .row(G - 1, 3, 4, 'D')
     .put(41, G - 2, 'e')
     .put(41, G - 1, 'E');
   scenery(
@@ -192,8 +195,9 @@ function windsocksAndShelter(pal: Pal): Level {
   );
   // the hill: a stone roof (G-4) with grass on top (G-5) over the tunnel, and the tunnel's flagstone floor
   const m = new StarterMap(book, g.rows());
-  // One row below the standing camera top; longer posts clear the entrance and flowers.
-  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 2, 6, signs.socks, G - 6 - signs.socks.board.length);
+  m.start[0] += 1; // Stand beside the door, on the right half of the step.
+  // Hang the first board above the door, with its post ending at the raised step.
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 2, 4, signs.socks, G - 2 - 4 - signs.socks.board.length);
   stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 7, 6, signs.shelter, G - 6 - signs.shelter.board.length);
   for (let x = TUNNEL[0]; x <= TUNNEL[1]; x++) {
     m.set(x, G, 'flags')

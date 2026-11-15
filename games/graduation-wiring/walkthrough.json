@@ -8,11 +8,11 @@
  "segments": [
   {
    "scene": 2,
-   "keys": "AU08zRtNCs0DTRnNA00PzRtNFM0DTQ/NA00UzRtNHs0DTQ/NA00="
+   "keys": "AU06zRtNCs0DTRnNA00PzRtNFM0DTQ/NA00UzRtNHs0DTQ/NA00="
   },
   {
    "scene": 3,
-   "keys": "AU0ezQNNKM0DTTzNA00yzV1N"
+   "keys": "AU0czQNNKM0DTTzNA00yzV1N"
   }
  ],
  "chapters": [
@@ -27,7 +27,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 7617,
+  "frames": 7604,
   "chapters": [
    {
     "title": "Opening",
@@ -46,18 +46,18 @@
    },
    {
     "title": "The Lab",
-    "frame": 3040,
-    "time": 50666.66666666502
+    "frame": 3033,
+    "time": 50549.99999999837
    },
    {
     "title": "Ending",
-    "frame": 4338,
-    "time": 72299.99999999815
+    "frame": 4325,
+    "time": 72083.33333333142
    },
    {
     "title": "Credits",
-    "frame": 6065,
-    "time": 101083.33333333986
+    "frame": 6052,
+    "time": 100866.66666667313
    }
   ]
  }

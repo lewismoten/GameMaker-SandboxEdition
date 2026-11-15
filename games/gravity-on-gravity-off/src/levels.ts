@@ -82,7 +82,8 @@ function sideLevel(book: Book, signs: Record<SignName, Sign>): StarterMap {
   const g = new Grid(40, 15);
   g.row(GROUND, 0, 39, 'G').fill(0, GROUND + 1, 40, 4, 'D');
   g.col(0, 0, 9, 'X').col(39, 0, 9, 'X');
-  g.put(3, 8, 's').put(3, 9, 'S').put(EXIT_X, 8, 'e').put(EXIT_X, 9, 'E');
+  // A two-column turf step supports the hero beside the readable entrance door.
+  g.put(3, 6, 's').put(3, 7, 'S').row(8, 3, 4, 'G').row(9, 3, 4, 'D').put(EXIT_X, 8, 'e').put(EXIT_X, 9, 'E');
   g.col(WALL_X, 8, 9, 'B'); // the wall: two blocks high, a jump clears it
   g.row(8, LEDGE_X[0], LEDGE_X[1], '='); // the ledge
   g.row(7, LEDGE_X[0], LEDGE_X[1], 'c'); // its five coins
@@ -95,7 +96,9 @@ function sideLevel(book: Book, signs: Record<SignName, Sign>): StarterMap {
   for (const x of [21, 28, 34]) g.put(x, GROUND - 1, 'b');
   for (const x of [10, 17, 30]) g.put(x, GROUND - 1, 'f');
   const m = new StarterMap(book, g.rows());
-  stampTiledSign(m, 1, 5, signs.jump);
+  m.start[0] += 1; // Stand beside the door, on the right half of the step.
+  // The first board hangs above the raised entrance, without covering the door.
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 1, 3, signs.jump, GROUND - 2 - 3 - signs.jump.board.length);
   stampTiledSign(m, 8, 5, signs.wall);
   stampTiledSign(m, 25, 5, signs.ledge);
   stampTiledSign(m, 34, 5, signs.exit);
