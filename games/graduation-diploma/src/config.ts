@@ -7,6 +7,7 @@ import { song } from './song';
 
 export const cfg: Graduation = {
   id: 'graduation-diploma',
+  startLedge: { hall: 2 },
   stage: 'The Sandbox Diploma',
   title: 'DIPLOMA',
   groups: [
@@ -63,7 +64,7 @@ Now go and make something of your own.`),
     credits: creditsPage(
       'THE SANDBOX DIPLOMA',
       about.version,
-      'The last graduation: it comes after the other six. Held-rise controls and bot timing by OpenAI Codex (GPT-6.1 Sol).',
+      'The last graduation: it comes after the other six. Held-rise controls, bot timing and raised-start camera layout by OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten.',
     ),
   },
 };

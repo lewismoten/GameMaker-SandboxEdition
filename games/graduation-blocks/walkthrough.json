@@ -8,11 +8,11 @@
  "segments": [
   {
    "scene": 2,
-   "keys": "AU08zRtNKM0DTQrNA00FzRtNHs0DTRnNG00jzQNNCs0DTQ=="
+   "keys": "AU06zRtNKM0DTQrNA00FzRtNHs0DTRnNG00jzQNNCs0DTQ=="
   },
   {
    "scene": 3,
-   "keys": "AU0ezQNNKM0DTTzNA00yzV1N"
+   "keys": "AU0czQNNKM0DTTzNA00yzV1N"
   }
  ],
  "chapters": [
@@ -27,7 +27,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 7624,
+  "frames": 7611,
   "chapters": [
    {
     "title": "Opening",
@@ -46,18 +46,18 @@
    },
    {
     "title": "The Gallery",
-    "frame": 3047,
-    "time": 50783.33333333167
+    "frame": 3040,
+    "time": 50666.66666666502
    },
    {
     "title": "Ending",
-    "frame": 4345,
-    "time": 72416.66666666485
+    "frame": 4332,
+    "time": 72199.99999999812
    },
    {
     "title": "Credits",
-    "frame": 6072,
-    "time": 101200.00000000656
+    "frame": 6059,
+    "time": 100983.33333333983
    }
   ]
  }

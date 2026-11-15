@@ -138,7 +138,9 @@ function torchHall(): Level {
     .row(GROUND, 0, W - 1, 'B')
     .fill(0, GROUND + 1, W, 3, 'D');
   g.col(0, 0, GROUND - 1, 'B').col(W - 1, 0, GROUND - 1, 'B');
-  g.put(3, GROUND - 2, 's').put(3, GROUND - 1, 'S');
+  // A narrow two-row entrance ledge keeps the lesson in the locked view.
+  g.put(3, GROUND - 2, 'B').put(3, GROUND - 1, 'B');
+  g.put(3, GROUND - 4, 's').put(3, GROUND - 3, 'S');
   g.put(54, GROUND - 2, 'e').put(54, GROUND - 1, 'E');
   const m = new StarterMap(book, g.rows());
   const torch = (x: number, ring: string, kind: Thing['kind']) => {
@@ -216,7 +218,9 @@ function falls(): Level {
   const g = new Grid(W, 15);
   g.row(GROUND, 0, W - 1, 'G').fill(0, GROUND + 1, W, 3, 'D');
   g.col(0, 0, GROUND - 1, 'X').col(W - 1, 0, GROUND - 1, 'X');
-  g.put(3, GROUND - 2, 's').put(3, GROUND - 1, 'S');
+  // A two-row turf ledge raises the entrance, clear of signs and scenery.
+  g.put(3, GROUND - 2, 'G').put(3, GROUND - 1, 'D');
+  g.put(3, GROUND - 4, 's').put(3, GROUND - 3, 'S');
   g.put(56, GROUND - 2, 'e').put(56, GROUND - 1, 'E');
   g.put(12, GROUND - 1, 'b')
     .put(35, GROUND - 1, 'f')
@@ -227,7 +231,7 @@ function falls(): Level {
   const L = 15;
   const R = 31;
   const F = 21;
-  // the view keeps the hero about 5 rows down, so rows above 5 are never on screen (ground row 11, view clamped to the map bottom): the cliff and lip start at row 5
+  // The cliff and lip start at row 5, inside the fixed view from the raised entrance (rows 3..12).
   for (let y = 5; y <= 10; y++)
     for (let x = L; x <= R; x++) {
       const side = x === L ? 'L' : x === R ? 'R' : '';
@@ -286,7 +290,9 @@ function fireOnTheHill(): Level {
   const g = new Grid(W, 15);
   g.row(GROUND, 0, W - 1, 'G').fill(0, GROUND + 1, W, 3, 'D');
   g.col(0, 0, GROUND - 1, 'X').col(W - 1, 0, GROUND - 1, 'X');
-  g.put(3, GROUND - 2, 's').put(3, GROUND - 1, 'S');
+  // A two-row turf ledge raises the entrance, clear of signs and scenery.
+  g.put(3, GROUND - 2, 'G').put(3, GROUND - 1, 'D');
+  g.put(3, GROUND - 4, 's').put(3, GROUND - 3, 'S');
   g.put(42, GROUND - 2, 'e').put(42, GROUND - 1, 'E');
   const m = new StarterMap(book, g.rows());
   const H0 = 18;
@@ -300,7 +306,7 @@ function fireOnTheHill(): Level {
     m.set(x, y, `fire.${q}.0`);
     things.push({ ring: `fire.${q}`, x, y, kind: 'fire' });
   });
-  // Sparks fly up and out from the flame; none sits above row 5, the screen's top row from the ground.
+  // Sparks fly up and out from the flame; all stay inside the fixed view.
   const sparks: [number, number, number][] = [
     [cx, top - 4, 0],
     [cx + 1, top - 4, 1],

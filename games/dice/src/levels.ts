@@ -97,8 +97,10 @@ function rollTheDice(pal: Pal): Level {
   const g = new Grid(WIDTH, 15);
   g.row(GROUND, 0, WIDTH - 1, 'G').fill(0, GROUND + 1, WIDTH, 4, 'D');
   g.col(0, 0, 9, 'X').col(WIDTH - 1, 0, 9, 'X');
-  g.put(3, 8, 's')
-    .put(3, 9, 'S')
+  // A two-row turf ledge lifts the opening view without changing the ladder route.
+  g.put(3, 8, 'G').put(3, 9, 'D');
+  g.put(3, 6, 's')
+    .put(3, 7, 'S')
     .put(WIDTH - 4, 8, 'e')
     .put(WIDTH - 4, 9, 'E');
   // the wall: brick between the two doors and over them, the way over blocked

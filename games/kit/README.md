@@ -398,7 +398,7 @@ Colors That Work plays both lessons with a simulated scene palette (`alike.pal`)
 - `scans/blacklight.py` — makes the desk’s day and night black-light portraits from the maintainer’s private photo (`python3 games/kit/scans/blacklight.py` from the root; needs Pillow and NumPy).
 - `starter/graduationCameo.ts` — recolors the Cast’s existing sprites, Teddy, Gwinn and THE CHEZ into a graduation hall’s palette.
 - `starter/graduationCast.ts` — allocates and recolors the Starter helpers’ and Doc Leo’s hall blocks.
-- `starter/graduationConfig.ts` — the `Graduation` data shape for the stage, hall, arrival, text, song and guests.
+- `starter/graduationConfig.ts` — the `Graduation` data shape for the stage, hall, arrival, text, song and guests. Its optional `startLedge` sets each entrance’s two- or three-row step and locks that level’s vertical view; omitting `arrival` preserves a climbing arrival, and omitting `startLedge` preserves both original layouts.
 - `starter/graduationFriends.ts` — draws the Starter friends in their own colors, clapping in graduation robes.
 - `starter/graduationGame.ts` — builds the graduation’s title, ending and level scenes and their links.
 - `starter/graduationHall.ts` — draws hall blocks, the stage, balcony, drapes, lectern, certificate and guests.

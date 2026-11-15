@@ -7,6 +7,7 @@ import { song } from './song';
 
 export const cfg: Graduation = {
   id: 'graduation-heroes',
+  startLedge: { arrival: 3, hall: 2 },
   stage: 'Heroes and Foes',
   groups: ['Changing Your Hero', 'Foes and Bosses'],
   cameos: ['chicken', 'teddy', 'will', 'joe', 'goat', 'gwinn', 'watt', 'camel'],
@@ -50,7 +51,7 @@ The next stage is waiting whenever you are ready.
     credits: creditsPage(
       'GRADUATION: HEROES AND FOES',
       about.version,
-      'A graduation: it comes after Changing Your Hero and Foes and Bosses. Held-rise controls and bot timing by OpenAI Codex (GPT-6.1 Sol).',
+      'A graduation: it comes after Changing Your Hero and Foes and Bosses. Held-rise controls, bot timing and raised-start camera layout by OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten.',
     ),
   },
 };

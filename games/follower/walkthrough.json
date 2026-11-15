@@ -8,7 +8,7 @@
  "segments": [
   {
    "scene": 2,
-   "keys": "AU0ZzStNKM0rTRTNA00IOQi5CDkIuTrNe00="
+   "keys": "AU0XzStNKM0rTRTNA00IOQi5CDkIuTrNe00="
   },
   {
    "scene": 3,
@@ -27,7 +27,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 9396,
+  "frames": 9390,
   "chapters": [
    {
     "title": "Opening",
@@ -46,18 +46,18 @@
    },
    {
     "title": "Level 2: Out of Reach",
-    "frame": 3885,
-    "time": 64749.999999996304
+    "frame": 3879,
+    "time": 64649.99999999632
    },
    {
     "title": "Ending",
-    "frame": 5634,
-    "time": 93900.00000000444
+    "frame": 5628,
+    "time": 93800.00000000441
    },
    {
     "title": "Credits",
-    "frame": 7841,
-    "time": 130683.33333334848
+    "frame": 7835,
+    "time": 130583.33333334845
    }
   ]
  }
