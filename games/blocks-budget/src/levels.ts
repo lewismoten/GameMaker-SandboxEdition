@@ -6,12 +6,13 @@
 //   2. Use It Again: a village row of eight houses made of six blocks, and a brick wall whose every copy
 //      is solid. The last sign counts the whole game's blocks against the 150 an editor allows.
 // Every room is closed in by brick walls you can see, so Lena is never stopped by something she can't.
-import { Book } from '../../kit/starter/book';
+import { Book, PULL } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
-import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
-import { addSign, type Sign } from '../../kit/starter/sign';
+import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
+import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { MICRO_GLYPHS } from '@lewismoten/gamemaker-sandbox-tools/microFont';
 import { BACKBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { HOUSE, TOWER, addHouses, addPicture, towerPicture } from './pictures';
 
@@ -41,35 +42,45 @@ function buildBlocks(pal: Pal) {
   const houses = addHouses(book, pal);
   const towerBlocks = new Set(tower.flat().filter((n) => n.startsWith('tower.'))).size;
   const houseBlocks = new Set([...houses.red.flat(), ...houses.blue.flat()]).size;
-  const text = (name: SignName): string =>
-    ({
-      many: 'ONE BIG PICTURE IS MANY BLOCKS',
-      count: `THIS TOWER TOOK ${towerBlocks} BLOCKS`,
-      walk: 'A PICTURE IS NOT SOLID. WALK IN',
-      again: 'ONE BLOCK CAN BE USED AGAIN',
-      houses: `${HOUSES} HOUSES, ONLY ${houseBlocks} BLOCKS`,
-      same: 'EVERY COPY ACTS THE SAME',
-      total: '',
-      exit: 'EXIT →',
-    })[name];
-  const sign = (name: SignName, w = 4, h = 2) => addSign(book, pal, `${name}.sign`, text(name), w, h);
-  const signs = {
-    many: sign('many'),
-    count: sign('count'),
-    walk: sign('walk'),
-    again: sign('again'),
-    houses: sign('houses'),
-    same: sign('same'),
-  } as Record<SignName, Sign>;
-  signs.exit = addSign(book, pal, 'exit.sign', text('exit'), 3);
-  // the last sign counts every block of the game, itself included (the legs are already in the book)
-  const used = book.index.size + 8;
-  signs.total = addSign(book, pal, 'total.sign', `THIS GAME USES ${used} OF ${BACKBL} BLOCKS`, 4, 2);
+  // The count board includes its own tiles. Requalify this number whenever the art changes.
+  const used = 123;
+  const { blocks, signs } = buildTiledSigns(
+    {
+      many: { rows: [['ONE BIG'], ['PICTURE IS'], ['MANY BLOCKS']] },
+      count: { rows: [['THIS TOWER TOOK'], [`${towerBlocks} BLOCKS`]] },
+      walk: { rows: [['A PICTURE IS NOT'], ['SOLID. WALK IN']] },
+      again: { rows: [['ONE BLOCK CAN'], ['BE USED AGAIN']] },
+      houses: { rows: [[`${HOUSES} HOUSES,`], [`ONLY ${houseBlocks} BLOCKS`]] },
+      same: { rows: [['EVERY COPY'], ['ACTS THE SAME']] },
+      total: { rows: [['THIS GAME USES'], [`${used} OF ${BACKBL} BLOCKS`]] },
+      exit: { rows: [['EXIT →']] },
+    },
+    {
+      colors: {
+        background: skyOf(pal),
+        paper: pal.c('parch', 3),
+        ink: pal.c('ink', 0),
+        wood: pal.c('wood', 2),
+        highlight: pal.c('wood', 4),
+        shadow: pal.c('wood', 0),
+      },
+      glyphs: { ...MICRO_GLYPHS, '→': '100110111110100' },
+      lettersPerBlock: 3,
+      maxBlocks: Math.min(100, BACKBL - book.index.size),
+    },
+  );
+  for (const [name, pic] of blocks) book.add(name, pic, { grav: PULL.down });
+  if (book.index.size !== used) throw new Error(`Count sign says ${used} blocks, but the game builds ${book.index.size}`);
   return { book, signs, tower, houses, counts: { tower: towerBlocks, houses: houseBlocks, used } };
 }
 
 /** The top row of a sign standing on ground row `ground`. */
 const onGround = (ground: number, s: Sign) => ground - 1 - s.board.length;
+
+/** Signs may replace only sky; later scenery is also checked against their final cells. */
+function sign(m: StarterMap, x: number, y: number, s: Sign): void {
+  stampTiledSign({ set: (col, row, name) => m.setOnSky(col, row, name) }, x, y, s, GROUND - y - s.board.length);
+}
 
 /** The ground, brick walls at both ends (rows 0 to 9, so the room is closed in), the entrance on the left (x 3) and the exit door at `exitX`. */
 function base(width: number, exitX: number): Grid {
@@ -105,11 +116,11 @@ function oneBigPicture(b: ReturnType<typeof buildBlocks>): StarterMap {
     [31, 35],
   );
   const m = new StarterMap(b.book, g.rows());
-  m.sign(6, onGround(GROUND, b.signs.many), b.signs.many);
-  m.sign(10, onGround(GROUND, b.signs.count), b.signs.count);
-  m.sign(15, onGround(GROUND, b.signs.walk), b.signs.walk);
+  sign(m, 1, 3, b.signs.many);
+  sign(m, 8, onGround(GROUND, b.signs.count), b.signs.count);
+  sign(m, 15, 3, b.signs.walk);
   b.tower.forEach((row, dy) => row.forEach((n, dx) => m.set(TOWER_X + dx, GROUND - TOWER.h + dy, n)));
-  m.sign(37, onGround(GROUND, b.signs.exit), b.signs.exit);
+  sign(m, 36, onGround(GROUND, b.signs.exit), b.signs.exit);
   return m;
 }
 
@@ -130,15 +141,15 @@ function useItAgain(b: ReturnType<typeof buildBlocks>): StarterMap {
     [33, 55],
   );
   const m = new StarterMap(b.book, g.rows());
-  m.sign(6, onGround(GROUND, b.signs.again), b.signs.again);
+  sign(m, 1, 4, b.signs.again);
   for (let i = 0; i < HOUSES; i++) {
     const house = i % 2 === 0 ? b.houses.red : b.houses.blue;
     house.forEach((row, dy) => row.forEach((n, dx) => m.set(VILLAGE_X + i * HOUSE.w + dx, GROUND - HOUSE.h + dy, n)));
   }
-  m.sign(11, onGround(GROUND, b.signs.houses), b.signs.houses);
-  m.sign(WALL_X - 5, onGround(GROUND, b.signs.same), b.signs.same);
-  m.sign(WALL_X + 6, onGround(GROUND, b.signs.total), b.signs.total);
-  m.sign(51, onGround(GROUND, b.signs.exit), b.signs.exit);
+  sign(m, 8, onGround(GROUND, b.signs.houses), b.signs.houses);
+  sign(m, WALL_X - 6, 5, b.signs.same);
+  sign(m, WALL_X + 2, 5, b.signs.total);
+  sign(m, 50, onGround(GROUND, b.signs.exit), b.signs.exit);
   return m;
 }
 
