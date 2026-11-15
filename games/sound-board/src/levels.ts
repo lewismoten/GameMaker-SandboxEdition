@@ -49,6 +49,9 @@ function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
   const texts = Object.fromEntries(
     Object.entries(SIGNS).map(([name, [text]]) => [name, { rows: [[text]], maxWidth: name === 'hello' || name === 'hello2' ? 7 : 5 }]),
   ) as Record<SignName, { rows: string[][]; maxWidth: number }>;
+  // Keep the instruction's last phrase and the silent sound number together.
+  texts.hello.rows = [['STEP ON A PAD'], ['TO HEAR IT']];
+  texts.quiet.rows = [['SILENT'], ['NO. 3'], ['IS EMPTY']];
   texts.hello2.rows = [['A SOUND SAYS'], ['WHAT HAPPENED']];
   texts.gate.rows = [['A GATE'], ['CREAKS'], ['NO. 8']];
   const { blocks, signs } = buildTiledSigns(texts, {
@@ -60,6 +63,8 @@ function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
       highlight: pal.c('wood', 4),
       shadow: pal.c('wood', 0),
     },
+    // One explicit 4×8 font for every board, including single-line pad labels.
+    lettersPerBlock: 4,
     compact: true,
     glyphs: { ...MICRO_GLYPHS, '→': '100110111110100' },
     maxBlocks: Math.min(100, 150 - book.index.size),
