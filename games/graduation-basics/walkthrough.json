@@ -8,7 +8,7 @@
  "segments": [
   {
    "scene": 2,
-   "keys": "AU08zRtNBc0DSCfIA00SzQNQJ9ADTQrNA00UzRtNFM0DTQ/NA00UzRtLAMsDTQ3NAzkCuQBNCM0QTQnNA00ZzRtNGc0DTQrNA00PzQNN"
+   "keys": "AU08zRtNBc0DSCfIA00SzQNQJ9ADTQrNA00UzRtNFM0DTQ/NA00UzRtLAMsDTQ3NAzkIuQBNCM0DTQnNA00ZzRtNGc0DTQrNA00PzQNN"
   },
   {
    "scene": 3,
@@ -27,7 +27,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 7819,
+  "frames": 7796,
   "chapters": [
    {
     "title": "Opening",
@@ -46,18 +46,18 @@
    },
    {
     "title": "The Aisle",
-    "frame": 3722,
-    "time": 62033.33333333003
+    "frame": 3699,
+    "time": 61649.999999996755
    },
    {
     "title": "Ending",
-    "frame": 5020,
-    "time": 83666.66666666813
+    "frame": 4997,
+    "time": 83283.33333333468
    },
    {
     "title": "Credits",
-    "frame": 6747,
-    "time": 112450.00000000984
+    "frame": 6724,
+    "time": 112066.66666667639
    }
   ]
  }

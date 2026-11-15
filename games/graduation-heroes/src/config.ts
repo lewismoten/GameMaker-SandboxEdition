@@ -47,6 +47,10 @@ You can be a new hero, drive a vehicle, meet foes that think and beat bosses tha
 
 The next stage is waiting whenever you are ready.
 `),
-    credits: creditsPage('GRADUATION: HEROES AND FOES', about.version, 'A graduation: it comes after Changing Your Hero and Foes and Bosses.'),
+    credits: creditsPage(
+      'GRADUATION: HEROES AND FOES',
+      about.version,
+      'A graduation: it comes after Changing Your Hero and Foes and Bosses. Held-rise controls and bot timing by OpenAI Codex (GPT-6.1 Sol).',
+    ),
   },
 };

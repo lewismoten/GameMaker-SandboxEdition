@@ -16,7 +16,7 @@ import { licenseText } from '../license';
 import { GRADUATION_STING, graduationStingFli } from './graduationSting';
 import { graduationMenu, graduationTitle } from './graduationScreens';
 import { buildHeroBlocks, heroPicture } from './hero';
-import { buildHero } from './heroChar';
+import { buildHero, type HeroOptions } from './heroChar';
 import { graduationMonsters } from './graduationConfetti';
 import { cardPicture, endPicture, gif, paper, scoresPicture, slotsPicture } from './screens';
 import { skyOf } from './palette';
@@ -29,8 +29,8 @@ import { finishBlocks } from './graduationHall';
 import type { buildLevels } from './graduationLevel';
 import { HOWTO, LOST } from './graduationText';
 
-/** Writes the game's disk: `dir` is the game's folder, `built` its levels (buildLevels), `demo` its DEMO.REC bytes. */
-export function buildGraduation(dir: string, cfg: Graduation, built: ReturnType<typeof buildLevels>, demo: Uint8Array): void {
+/** Writes the game's disk; optional hero settings apply only to this graduation. */
+export function buildGraduation(dir: string, cfg: Graduation, built: ReturnType<typeof buildLevels>, demo: Uint8Array, heroOptions: HeroOptions = {}): void {
   const disk = new Disk(join(dir, 'disk'));
   const { book, pal, levels } = built;
   const { STORY, WON, CREDITS } = { STORY: cfg.text.story, WON: cfg.text.won, CREDITS: cfg.text.credits };
@@ -48,7 +48,7 @@ export function buildGraduation(dir: string, cfg: Graduation, built: ReturnType<
   disk.put('grad.mbl', serializeBlocks(monsterBlocks.finish()));
   disk.put('grad.mon', serializeMonsters(monsters));
   disk.put('hero.cbl', serializeBlocks(heroBlocks.finish()));
-  const character = buildHero(heroBlocks);
+  const character = buildHero(heroBlocks, heroOptions);
   // the arrival's counting gates use these counters, which (like the key counter) start at 1: a count of none
   if (levels.some((l) => l.book.has('tokenGate'))) character.meter[SILVER_KEYS] = 1;
   if (levels.some((l) => l.book.has('powerGate'))) character.meter[POWER] = 1;

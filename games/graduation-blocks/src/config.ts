@@ -47,6 +47,10 @@ You can draw and animate your own blocks, play with light and dark and use the b
 
 The Sandbox Diploma is waiting once every stage has its honors.
 `),
-    credits: creditsPage('GRADUATION: BLOCKS AND SHOWCASE', about.version, 'A graduation: it comes after Drawing with Blocks, Weather and Showcase Tricks.'),
+    credits: creditsPage(
+      'GRADUATION: BLOCKS AND SHOWCASE',
+      about.version,
+      'A graduation: it comes after Drawing with Blocks, Weather and Showcase Tricks. Held-rise controls and bot timing by OpenAI Codex (GPT-6.1 Sol).',
+    ),
   },
 };
