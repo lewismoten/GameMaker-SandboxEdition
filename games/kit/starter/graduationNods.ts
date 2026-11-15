@@ -24,6 +24,8 @@ export const COUNT_TICKS = 36;
 export const COUNT_FROM = 9;
 
 export interface NodCtx {
+  /** A locked arrival’s top row: keep its sky lesson inside the view. */
+  viewTop?: number;
   book: Book;
   pal: Pal;
   timed: Timed[];
@@ -528,7 +530,7 @@ export const NODS: Record<string, Nod> = {
       });
       ring(c, names, 7);
     },
-    place(m, x) {
+    place(m, x, c) {
       [
         [4, 1],
         [6, 3],
@@ -536,7 +538,7 @@ export const NODS: Record<string, Nod> = {
         [10, 3],
         [5, 4],
         [9, 4],
-      ].forEach(([dx, y], i) => m.set(x + dx, y, `spark${i % 3}`));
+      ].forEach(([dx, y], i) => m.setOnSky(x + dx, Math.max(y, c.viewTop ?? y), `spark${i % 3}`));
     },
   },
   popups: {

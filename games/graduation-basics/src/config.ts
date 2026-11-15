@@ -7,6 +7,7 @@ import { song } from './song';
 
 export const cfg: Graduation = {
   id: 'graduation-basics',
+  startLedge: { arrival: 2, hall: 2 },
   stage: 'First Steps',
   groups: ['The Basics'],
   cameos: ['teddy', 'joe', 'loaf', 'gwinn', 'will', 'chicken', 'seed', 'lewie'],
@@ -50,7 +51,7 @@ The next stage is waiting whenever you are ready.
     credits: creditsPage(
       'GRADUATION: FIRST STEPS',
       about.version,
-      'A graduation: it comes after The Basics. Held-rise controls and bot timing by OpenAI Codex (GPT-6.1 Sol).',
+      'A graduation: it comes after The Basics. Held-rise controls, bot timing and raised-start camera layout by OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten.',
     ),
   },
 };

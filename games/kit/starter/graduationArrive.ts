@@ -60,7 +60,7 @@ export function buildArrival(cfg: Graduation, pal: Pal) {
     book.add(`guest.${k}`, px, { grav: 4 });
     return `guest.${k}`;
   });
-  const ctx: NodCtx = { book, pal, timed, guest };
+  const ctx: NodCtx = { book, pal, timed, guest, viewTop: cfg.startLedge?.arrival ? ARRIVE_FLOOR - 6 - cfg.startLedge.arrival : undefined };
   const { placed, hall, width } = arrivalLayout(cfg.arrive.nods);
   const welcome = addSign(book, pal, 'welcome', cfg.arrive.welcome, 4, 2, true);
   const banner = addSign(book, pal, 'hallBanner', cfg.signs.banner, 4, 2, true);
@@ -92,6 +92,13 @@ export function buildArrival(cfg: Graduation, pal: Pal) {
       .set(px, 9, 'pole');
     if (i % 2 === 0) m.set(p.x + 1, 4, 'cloudL').set(p.x + 2, 4, 'cloudR');
   });
+  // A narrow paved step lifts the opening view; the tall flock nod needs three rows.
+  if (cfg.startLedge?.arrival) {
+    const top = ARRIVE_FLOOR - cfg.startLedge.arrival;
+    m.setOnSky(2, top, 'paving');
+    for (let y = top + 1; y < ARRIVE_FLOOR; y++) m.setOnSky(2, y, 'dirt');
+    m.start = [2 + ORIGIN, top - 1 + ORIGIN];
+  }
   m.sign(4, 7, welcome);
   placed.forEach((p, i) => {
     m.sign(p.x, 7, signs[i]);
