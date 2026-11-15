@@ -113,7 +113,10 @@ function hall(book: Book, width: number, exit: number): StarterMap {
     for (let y = 1; y < FLOOR; y++) m.set(x, y, edge ? 'ceiling' : 'wall');
     m.set(x, FLOOR, x === 0 || edge ? 'ceiling' : 'floor');
   }
-  m.set(3, BOTTOM - 1, 'doorwayTopW').set(3, BOTTOM, 'doorwayBottomW');
+  // A two-row wooden entrance stage; the hall floor and lamps stay in the locked view.
+  for (let y = FLOOR - 2; y < FLOOR; y++) for (let x = 2; x <= 3; x++) m.set(x, y, 'floor');
+  m.set(3, BOTTOM - 3, 'doorwayTopW').set(3, BOTTOM - 2, 'doorwayBottomW');
+  m.start[1] -= 2;
   m.set(exit, BOTTOM - 1, 'doorTopW').set(exit, BOTTOM, 'doorBottomW');
   return m;
 }
@@ -200,6 +203,17 @@ export function fog(pal: Pal): Level {
   }
   m.set(3, BOTTOM - 1, 'doorwayTopH').set(3, BOTTOM, 'doorwayBottomH');
   m.set(exit, BOTTOM - 1, 'doorTopH').set(exit, BOTTOM, 'doorBottomH');
+  // The entrance stands on a two-row turf plinth, with its new door corners showing the hills behind it.
+  for (const [name, from, y] of [
+    ['raisedDoorTopH', 'doorwayTop', BOTTOM - 3],
+    ['raisedDoorBottomH', 'doorwayBottom', BOTTOM - 2],
+  ] as const) {
+    const behind = [...book.index.keys()][m.map.blocks[(ORIGIN + y) * MLEN + ORIGIN + 3]];
+    book.add(name, onHill(pal, book.pics.get(from)!, book.pics.get(behind)!), { grav: PULL.down });
+    m.set(3, y, name);
+  }
+  for (let x = 2; x <= 3; x++) m.set(x, FLOOR - 2, 'grass').set(x, FLOOR - 1, 'dirt');
+  m.start[1] -= 2;
   // Stagger the wider boards over the hillside backdrop, clear of doors and each other.
   board(book, pal, m, signs.start, 6, 6, 2);
   board(book, pal, m, signs.flat, 12, 4, 4);

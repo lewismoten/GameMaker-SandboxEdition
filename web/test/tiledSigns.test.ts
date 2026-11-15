@@ -183,8 +183,8 @@ describe('game-wide tiled signs', () => {
 
   it('keeps First Steps pickups, terrain and doors intact while sharing signs across both levels', () => {
     const { book, levels } = buildLevels();
-    // An extra credit page changes the committed walkthrough's running time.
-    expect(CREDITS.split('\n')).toHaveLength(32);
+    // The scroll review credit adds a page; the walkthrough was re-recorded with it.
+    expect(CREDITS.split('\n')).toHaveLength(48);
     expect(book.index.size).toBeLessThan(55);
     expect([...book.index.keys()].filter((k) => k.startsWith('tiledSign.post'))).toEqual(['tiledSign.post']);
     // Original first-level coins under the wider gravity sign must survive stamping.

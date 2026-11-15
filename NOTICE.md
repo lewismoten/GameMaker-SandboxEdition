@@ -65,6 +65,7 @@ game folder opens in the browser unchanged.
 ## Credits
 
 - **Starter held-rise jumps, batch F (November 15, 2026)**: OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, adapted the approved First Steps jump and bot timing for Score Popups, Stronger Keys, Wired Room, Quicksand, Rain on the Path, Room to Room, The Same House, Say Something, and refreshed their walkthroughs and level metadata. No new third-party material was added.
+- **Starter scroll framing, batch A (November 15, 2026)**: OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, added raised entrances and fixed vertical views to Beams and Fog, Beat the Clock, Block Brains, 150 Blocks, and Big Bug, and reviewed the camera constraints in First Steps, Both Together, and Round and Round. No new third-party material was added.
 
 - **Starter held-rise jumps, batch D (November 15, 2026)**: OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, adapted the approved First Steps jump and bot timing for *Graduation: Story and Finish*, *Graduation: Wiring and Worlds*, *Gravity On, Gravity Off*, *Gusts*, *Health and Hearts*, *Heat Waves*, *To the Horizon*, and *Keys and Doors*.
 - **Starter held-rise rollout (batch E, November 15, 2026)**: OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, applied the approved First Steps jump and bot timing to Kit's Shop, Leaves in the Wind, Lightning, Lightning Bugs, Lights Out, Rooms on One Map, Parallax, and Pictures and Cartoons, and refreshed their walkthroughs and level metadata. No new third-party material was added.

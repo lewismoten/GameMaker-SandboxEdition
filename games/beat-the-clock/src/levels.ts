@@ -154,12 +154,15 @@ function buildBlocks(pal: Pal, loop: boolean, names: SignName[]): { book: Book; 
 /** The top row of a sign standing on ground row `ground`. */
 const onGround = (ground: number, s: Sign) => ground - 1 - s.board.length;
 
-/** The ground, brick walls at both ends, the entrance on the left (x 3) and the exit door. */
-function base(): Grid {
+/** Ground, end walls, a raised entrance at `startX`, and the exit door. */
+function base(startX = 3): Grid {
   const g = new Grid(WIDTH, 15);
   g.row(GROUND, 0, WIDTH - 1, 'G').fill(0, GROUND + 1, WIDTH, 4, 'D');
   g.col(0, 0, 9, 'B').col(WIDTH - 1, 0, 9, 'B');
-  g.put(3, 8, 's').put(3, 9, 'S');
+  // The race's two-row plank stage lets the return walk pass underneath to the clock door.
+  // The loop uses turf: neither entrance covers a sign, cloud or restart door.
+  g.row(8, 2, startX, startX === 4 ? '=' : 'G').row(9, 2, startX, startX === 4 ? '=' : 'D');
+  g.put(startX, 6, 's').put(startX, 7, 'S');
   g.put(EXIT_X, 8, 'e').put(EXIT_X, 9, 'E');
   return g;
 }
@@ -189,7 +192,7 @@ function stampGate(m: StarterMap, x: number): void {
 function race(pal: Pal): Level {
   const { book, timed, signs } = buildBlocks(pal, false, ['bar', 'redo', 'gate', 'exit']);
   const s = signs as Record<SignName, Sign>;
-  const g = base();
+  const g = base(4);
   wall(g, RACE_GATE);
   g.row(9, 20, 23, 'c').row(9, 32, 33, 'c').row(9, 39, 40, 'c');
   scenery(

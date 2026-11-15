@@ -30,6 +30,8 @@ export function buildGame(levels: Level[]): Game {
 
   levels.forEach((l, i) => {
     const scene = emptyScene(ADVTYPE);
+    // Both routes stay on one walking row; the raised entrance keeps the sky in view.
+    scene.scroll.up = scene.scroll.down = 0;
     scene.desc = l.title.slice(0, 19);
     scene.pos = { x: 60 + i * 80, y: 110 };
     scene.files = [

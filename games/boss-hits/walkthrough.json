@@ -8,11 +8,11 @@
  "segments": [
   {
    "scene": 2,
-   "keys": "AU0jzQNNQc0DTRTNAEskywNND80DHAOcPBwDnDwcA5w8HAOcPBwDnDxNS80DTQ=="
+   "keys": "AU0hzQNNQc0DTRTNAEskywNND80DHAOcPBwDnDwcA5w8HAOcPBwDnDxNS80DTQ=="
   },
   {
    "scene": 3,
-   "keys": "AU1BzQNNQc0DHAOcPBwDnDwcA5w8HAOcPBwDnDxNPM0DTQ=="
+   "keys": "AU0/zQNNQc0DHAOcPBwDnDwcA5w8HAOcPBwDnDxNPM0DTQ=="
   }
  ],
  "chapters": [
@@ -27,7 +27,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 9820,
+  "frames": 10288,
   "chapters": [
    {
     "title": "Opening",
@@ -46,18 +46,18 @@
    },
    {
     "title": "Level 2: Count the Lights",
-    "frame": 4475,
-    "time": 74583.33333333215
+    "frame": 4469,
+    "time": 74483.33333333212
    },
    {
     "title": "Ending",
-    "frame": 6537,
-    "time": 108950.00000000882
+    "frame": 6524,
+    "time": 108733.33333334209
    },
    {
     "title": "Credits",
-    "frame": 8746,
-    "time": 145766.66666667338
+    "frame": 8733,
+    "time": 145550.00000000684
    }
   ]
  }
