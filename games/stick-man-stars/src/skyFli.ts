@@ -1,75 +1,58 @@
-// The cartoons between levels: the same hill the title shows, and the sky changing from one level's palette
-// to the next while Stick Man waves. The change is a palette animation (cheap in an .FLI): night to dawn, the
-// stars fade out as the sun comes up; dawn to day, the sun climbs; day to dusk, the sun sets and the first
-// star comes out. The stars are one color (gold 5), so a fade is one palette entry changing.
+// Paper-and-pencil level openings and the palette-animated won street. Art made in code with OpenAI Codex (GPT-6.1 Sol).
 import { encodeFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
 import { scaleBlit } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
 import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import type { Book } from '../../kit/starter/book';
 import type { Pal } from '../../kit/starter/palette';
 import { scene } from '../../kit/starter/screens';
-import { outlined, textWidth } from '@lewismoten/gamemaker-sandbox-tools/kit/pcText';
+import { wrap } from '../../kit/starter/text';
+import { outlined, text, textWidth } from '@lewismoten/gamemaker-sandbox-tools/kit/pcText';
 import { paletteFor } from './moods';
 
-export type SunMove = 'rise' | 'climb' | 'set';
-const FRAMES = 36;
-const SPEED = 4;
-const SUN_X = 250;
-
-/** The sun's height in frame `f`: below the hills at the start of a rise, up high on a climb, down again on a set. */
-function sunY(move: SunMove, t: number): number {
-  if (move === 'rise') return 150 - t * 90;
-  if (move === 'climb') return 60 - t * 25;
-  return 35 + t * 115;
+/** A notebook level card, penciled in from left to right. The opening uses the same palette as the still. */
+export function paperCard(pal: Pal, hero: Pixels, n: number, of: number, name: string, hint: string, progress = 1): Pixels {
+  const { c } = pal;
+  const p = new Pixels(320, 200, c('sky', 3));
+  for (let y = 15; y < 200; y += 20) p.rect(0, y, 320, 1, c('paper', 0));
+  p.rect(35, 0, 1, 200, c('red', 3));
+  for (const y of [35, 95, 155]) p.disc(14, y, 5, c('paper', 2)).disc(15, y + 1, 4, c('white', 3));
+  text(p, 49, 26, `LEVEL ${n} OF ${of}`, c('stone', 1));
+  const title = name.toUpperCase();
+  const scale = textWidth(title, 2) <= 258 ? 2 : 1;
+  const width = textWidth(title, scale);
+  const writing = new Pixels(320, 200, 255);
+  text(writing, 49, 58, title, c('stone', 0), scale);
+  const edge = 49 + Math.round(width * progress);
+  for (let y = 58; y < 74; y++) for (let x = 49; x < edge; x++) if (writing.get(x, y) !== 255) p.set(x, y, writing.get(x, y));
+  // A faint eraser rub and a few crumbs; the final underline is a wobbly pencil stroke.
+  p.line(51, 83, 91, 84, c('stone', 4)).line(55, 85, 86, 85, c('stone', 4));
+  p.set(94, 84, c('stone', 3)).set(97, 86, c('stone', 3));
+  if (progress === 1) {
+    p.line(49, 78, 49 + width / 2, 79, c('stone', 2)).line(49 + width / 2, 79, 49 + width, 78, c('stone', 2));
+  }
+  // Keep the hint readable throughout the animation, with two ruled lines available.
+  wrap(hint)
+    .trim()
+    .split('\n')
+    .forEach((line, i) => text(p, 49, 106 + i * 20, line, c('stone', 0)));
+  scaleBlit(p, hero, 61, 144, 1);
+  p.line(48, 185, 105, 186, c('stone', 2));
+  if (progress < 1) {
+    // Graphite tip at the writing edge, wood, yellow barrel, silver ferrule and pink eraser.
+    const y = 69 + Math.round(Math.sin(progress * 35));
+    p.line(edge, y, edge + 6, y - 7, c('stone', 0));
+    for (let k = 0; k < 5; k++) p.line(edge + 4 + k, y - 5, edge + 23 + k, y - 24, c('gold', k < 2 ? 4 : 2));
+    p.line(edge + 4, y - 5, edge + 7, y - 11, c('wood', 4));
+    for (let k = 0; k < 5; k++) p.line(edge + 24 + k, y - 25, edge + 27 + k, y - 28, c('stone', 3));
+    for (let k = 0; k < 5; k++) p.line(edge + 28 + k, y - 29, edge + 31 + k, y - 32, c('pink', 3));
+  }
+  return p;
 }
 
-/** A cartoon from `fromPal` to `toPal` (both 768-byte VGA palettes of the same indexes). `hero` is Stick Man's picture (20x40). */
-export function skyFli(
-  pal: Pal,
-  book: Book,
-  hero: Pixels,
-  fromPal: Uint8Array,
-  toPal: Uint8Array,
-  move: SunMove,
-  stars: 'fade-out' | 'fade-in' | 'none',
-): Uint8Array {
-  const base = scene(pal, book, 160);
-  scaleBlit(base, hero, 150, 80, 2);
-  const sky = new Set(pal.r('sky'));
-  const rand = rng(5);
-  const points: [number, number][] = [];
-  while (points.length < 44) {
-    const x = Math.floor(rand() * 320);
-    const y = Math.floor(rand() * 100);
-    if (sky.has(base.get(x, y))) points.push([x, y]);
-  }
-  const starIdx = pal.c('gold', 5);
-  const sunIdx = pal.c('gold', 4);
-  const glowIdx = pal.c('gold', 3);
-  const frames: Uint8Array[] = [];
-  const palettes: Uint8Array[] = [];
-  for (let f = 0; f < FRAMES; f++) {
-    const t = f / (FRAMES - 1);
-    const p = new Pixels(320, 200);
-    p.px.set(base.px);
-    const y = sunY(move, t);
-    for (let py = 0; py < 160; py++)
-      for (let px = 0; px < 320; px++) {
-        if (!sky.has(base.get(px, py))) continue;
-        const d = Math.hypot(px - SUN_X, py - y);
-        if (d < 14) p.set(px, py, sunIdx);
-        else if (d < 19 && move !== 'rise') p.set(px, py, glowIdx);
-      }
-    if (stars !== 'none') for (const [x, yy] of points) if (sky.has(p.get(x, yy))) p.rect(x, yy, 2, 2, starIdx);
-    frames.push(Uint8Array.from(p.px));
-    const mixed = fromPal.map((v, i) => Math.round(v + (toPal[i] - v) * t));
-    // the stars: white at full strength, melting into the sky as they fade out (or out of it as they fade in)
-    const k = stars === 'fade-out' ? 1 - Math.min(1, t * 1.6) : stars === 'fade-in' ? Math.max(0, t * 1.6 - 0.6) : 0;
-    const s = pal.c('sky', 1) * 3;
-    for (let c = 0; c < 3; c++) mixed[starIdx * 3 + c] = Math.round(mixed[s + c] + (60 - mixed[s + c]) * k);
-    palettes.push(mixed);
-  }
-  return encodeFli(frames, palettes[0], { speed: SPEED, palettes, runs: true, noLoopFrame: true });
+/** Every level opens in two seconds, including a readable final hold; no added voice or gameplay wait. */
+export function paperOpening(pal: Pal, hero: Pixels, n: number, of: number, name: string, hint: string): Uint8Array {
+  const frames = Array.from({ length: 48 }, (_, f) => Uint8Array.from(paperCard(pal, hero, n, of, name, hint, Math.min(1, f / 29)).px));
+  return encodeFli(frames, pal.pal, { speed: 3, runs: true, noLoopFrame: true });
 }
 
 /** The won street at nightfall: warm windows, the hero cheering, and stars coming out.
@@ -110,5 +93,5 @@ export function endingFli(pal: Pal, book: Book, mb: Book, hero: Pixels): Uint8Ar
     frames.push(Uint8Array.from(picture.px));
     palettes.push(colors);
   }
-  return encodeFli(frames, palettes[0], { speed: SPEED, palettes, runs: true, noLoopFrame: true });
+  return encodeFli(frames, palettes[0], { speed: 4, palettes, runs: true, noLoopFrame: true });
 }

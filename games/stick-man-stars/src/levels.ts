@@ -3,10 +3,10 @@
 //
 //   1. Stargazing Hill (night): Stick Man picks bright stars out of the sky (Space jumps to the high ones). They are what he throws.
 //   2. Main Street (dawn): learn Enter. Two cottages, one too far for a first throw; then a solid shed
-//      fills a brick tunnel, and the way opens when a star lights it.
+//      fills a crosshatched pencil tunnel, and the way opens when a star lights it.
 //   3. Shy Street (day): the towers wander up and down the street. Wait, aim, throw. A shed again.
 //   4. Spam Row (dusk): spam bots roll and bump, then the Big Repo, a shed that takes three stars, and the lit street beyond.
-// Every room is closed in by brick walls you can see, so Stick Man is never stopped by something he can't.
+// Every room is closed in by crosshatched pencil walls you can see, so Stick Man is never stopped by something he can't.
 import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
@@ -91,19 +91,19 @@ export const GROUND = 10;
 /** Where the monsters stand: the row above the ground. */
 export const STAND = GROUND - 1;
 
-/** The ground, brick walls at both ends, the entrance on the left (x 3) and the exit door at `exitX`. */
+/** The ground, crosshatched pencil walls at both ends, the entrance on the left (x 3) and the exit door at `exitX`. */
 function base(width: number, exitX: number): Grid {
   const g = new Grid(width, 15);
   g.row(GROUND, 0, width - 1, 'G').fill(0, GROUND + 1, width, 4, 'D');
   g.col(0, 0, 9, 'B').col(width - 1, 0, 9, 'B');
-  // a brick ceiling: Space can be pressed in the air again and again, so without it he climbs out over the walls and the tunnels
+  // a crosshatched pencil ceiling: Space can be pressed in the air again and again, so without it he climbs out over the walls and the tunnels
   g.row(0, 0, width - 1, 'B');
   g.put(3, 8, 's').put(3, 9, 'S');
   g.put(exitX, 8, 'e').put(exitX, 9, 'E');
   return g;
 }
 
-/** A brick tunnel two blocks high (rows 8 and 9) from x0 to x1: a gate house in it can't be stepped around or jumped. */
+/** A crosshatched pencil tunnel two blocks high (rows 8 and 9) from x0 to x1: a gate house in it can't be stepped around or jumped. */
 function tunnel(g: Grid, x0: number, x1: number): void {
   g.fill(x0, 0, x1 - x0 + 1, 8, 'B');
 }
@@ -152,7 +152,7 @@ export const L0 = {
 function stargazingHill(w: World): StarterMap {
   const g = base(L0.width, L0.exit);
   tunnel(g, L0.tunnel[0], L0.tunnel[1]);
-  // the screen never scrolls up or down here (game.ts), so the brick ceiling comes down to row 3, just above
+  // the screen never scrolls up or down here (game.ts), so the crosshatched pencil ceiling comes down to row 3, just above
   // the top of the screen: however often Space is pressed in the air, Stick Man stays in sight
   g.fill(1, 0, L0.width - 2, L0.ceiling + 1, 'B');
   for (const x of [24, 42]) g.put(x, GROUND - 1, 'b');
@@ -192,6 +192,8 @@ function mainStreet(w: World): StarterMap {
   named(m, w, COTTAGE, L1.cottages[2], 'TEAPOT');
   // a giant silver fork lies on the sheet: he hops onto it, takes the coins along it, and hops down
   FORK.forEach((name, i) => m.set(L1.fork + i, STAND, name));
+  // Clear paper under the far sign's right end cap; no pickup, post or platform moves.
+  m.set(L1.fork - 1, STAND, 'forkTail');
   m.set(L1.bonus, 5, 'pickstar');
   m.mon(SHED, L1.gate, STAND);
   return m;

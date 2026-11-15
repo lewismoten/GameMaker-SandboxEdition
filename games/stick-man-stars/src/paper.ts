@@ -112,21 +112,21 @@ export function addPaperBlocks(book: Book, pal: Pal): void {
   addFork(book, pal);
 }
 
-/** The block names of the giant fork lying on the sheet, left to right: handle end, shaft, head, tines. */
+/** The fork's original solid blocks, left to right: handle, shaft, head, tines. The new rounded tip is decorative. */
 export const FORK = ['forkEnd', 'forkShaft', 'forkHead', 'forkTines'] as const;
 /** Tine rows (four, 3 tall with 2 between) across the head, 18 pixels from row 2 down. */
 const TINE_ROWS = (y: number) => (y - 2) % 5 < 3 && y >= 2 && y <= 19;
 
 /**
- * A giant silver table fork lying flat on the paper, tines to the right, four blocks long (a solid obstacle he hops over).
+ * A giant silver table fork lying flat on the paper, tines to the right, five blocks long (the original four-block solid obstacle with a decorative handle tip).
  * Each piece is a shape; the drawing outlines it in graphite like the rest of the sheet, shades the top bright and the
  * bottom dark so the metal shines, and leaves a white glint.
  */
 function addFork(book: Book, pal: Pal): void {
   const { c } = pal;
   const shapes: ((x: number, y: number) => boolean)[] = [
-    // the handle's end: a rounded end, joined to the narrow shaft
-    (x, y) => ((x - 9) / 9) ** 2 + ((y - 10) / 5) ** 2 <= 1 || (x >= 9 && y >= 7 && y <= 12),
+    // the longer handle continues from a decorative rounded tip in the clear tile to its left
+    (_x, y) => y >= 7 && y <= 12,
     // the shaft is a thin neck that widens toward the head
     (x, y) => y >= 7 - Math.round((5 * x) / 19) && y <= 12 + Math.round((7 * x) / 19),
     // the head's palm, then the first of the tines
@@ -134,7 +134,9 @@ function addFork(book: Book, pal: Pal): void {
     // the tines, their tips rounded
     (x, y) => TINE_ROWS(y) && x <= 13 && !(x >= 12 && [0, 2].includes((y - 2) % 5)),
   ];
-  FORK.forEach((name, i) => {
+  const names = [...FORK, 'forkTail'];
+  shapes.push((x, y) => ((x - 9) / 9) ** 2 + ((y - 10) / 5) ** 2 <= 1 || (x >= 9 && y >= 7 && y <= 12));
+  names.forEach((name, i) => {
     const inside = (x: number, y: number) => x >= 0 && y >= 0 && x < 20 && y < 20 && shapes[i](x, y);
     const p = new Pixels(20, 20, skyOf(pal));
     for (let y = 0; y < 20; y++)
@@ -150,9 +152,10 @@ function addFork(book: Book, pal: Pal): void {
         p.set(x, y, shade);
       }
     // a glint
-    if (i === 0) p.set(5, 7, c('white', 3)).set(6, 7, c('white', 3));
+    if (i === 4) p.set(5, 7, c('white', 3)).set(6, 7, c('white', 3));
     if (i === 2) p.set(3, 6, c('white', 3)).set(4, 6, c('white', 3));
-    book.add(name, p, { solid: SOLID });
+    // Only the new tip is decoration: keep every existing collision cell unchanged.
+    book.add(name, p, i === 4 ? { grav: PULL.down } : { solid: SOLID });
   });
 }
 
