@@ -89,7 +89,11 @@ const cardList = (): Card[] => {
     { title: 'Stacks B, C, D, E: the four rings', keys: ['B1', 'B2', 'E1', 'E2'], text: [ring('B'), ring('C'), ring('D'), ring('E'), g('B').why] },
     { title: 'Stack F: the core', keys: ['CORE0', 'CORER', 'COREC'], text: [g('F').build, g('F').why, g('F').done] },
     { title: 'G1 to G4: the washer pairs', keys: ['G1', 'G2'], text: [1, 2, 3, 4].map((n) => `${g(`G${n}`).build} ${g(`G${n}`).done}`).concat(g('G1').why) },
-    { title: 'H the head and I the lid', keys: ['HEAD', 'LID', 'LIDP'], text: [g('H').build, g('H').done, g('H').why, g('I').build, g('I').done, g('I').why] },
+    {
+      title: 'H head, I posts and J retaining bridge',
+      keys: ['HEAD', 'LID', 'LIDP'],
+      text: [g('H').build, g('H').done, g('H').why, g('I').build, g('I').done, g('I').why, g('J').build, g('J').done, g('J').why],
+    },
   ];
 };
 
@@ -156,7 +160,7 @@ export function assemblySvg(kerf = 0.2): string {
   });
   y += Math.ceil(legend(kerf).length / 2) * 14 + 8;
   const [note, ny] = wrap(
-    'IDs use covered faces, including small marks on glue faces. Hidden pictures use unglued faces. Cut and engrave face up in one pass. During assembly orient ring bottoms, head and lid artwork down; other art faces up. Unmarked parts are in (brackets). Spread glue across the small ID marks too.',
+    'IDs use covered faces, including small marks on glue faces. Hidden pictures use unglued faces. Cut and engrave face up in one pass. During assembly orient ring bottoms, CORE0 ceiling, head and bridge artwork down; other art faces up. Unmarked parts are in (brackets). Spread glue across the small ID marks too.',
     20,
     y,
     150,
@@ -191,6 +195,6 @@ ${leg}${cards}${fit}${setCode}
 <text y="68" font-size="11">Each washer can sit ten ways, one per digit: 10,000 combinations.</text>
 <text y="92" font-size="11">The ridge is ${CORE.ridgeHw * 2} mm wide, the notch ${WASHER.notchHw * 2} mm: a ring only has to be near its digit</text>
 <text y="107" font-size="11">(about 5 degrees), not exact. There are no detents, so look at the marker.</text></g>
-<text x="20" y="${h - 14}" font-size="10">Stack height ${(12 * T).toFixed(2)} mm: four pocket layers (${(4 * T).toFixed(2)}), eight ring slices (${(8 * T).toFixed(2)}). Stock ${T} mm; the head sits on top.</text>
+<text x="20" y="${h - 14}" font-size="10">Core height ${(13 * T).toFixed(2)} mm: four pocket layers (${(4 * T).toFixed(2)}), eight ring slices (${(8 * T).toFixed(2)}), one ceiling (${T}). Stock ${T} mm; fixed bridge above the rings, head above the bridge.</text>
 </svg>`;
 }

@@ -17,6 +17,7 @@ import {
   SLICE_HOLE,
   SOCKET_FIT,
   STEP,
+  T,
   WASHER,
   coreShape,
   decagon,
@@ -72,6 +73,16 @@ export function makeParts(kerf: number): Parts {
   // --- the base: a floor, with the reading mark, the title and a few pictures --------------------------------------
   const base = add('A1', BASE, BASE, 1, 'base stack A, layer 1: the floor (the core stands on it)');
   base.outline(rectPoly([0, 0, BASE, BASE]));
+  for (const sign of [-1, 1])
+    base.hole(
+      'frame post socket',
+      rectPoly([
+        BASE / 2 + sign * LID.postX - LID.tenonW / 2 - 0.15,
+        BASE / 2 + 12 - T / 2 - 0.15,
+        BASE / 2 + sign * LID.postX + LID.tenonW / 2 + 0.15,
+        BASE / 2 + 12 + T / 2 + 0.15,
+      ]),
+    );
   const c = BASE / 2;
   hidden(base, 'floor beneath the removable core', c, c, 0, CORE.r - 1, () => {
     floorReveal(base, c);
@@ -161,11 +172,12 @@ export function makeParts(kerf: number): Parts {
         2 * wr,
         2 * wr,
         1,
-        `washer pair G${n}: ${bottom ? 'ID-marked lower' : 'artwork upper'} washer; glue mating faces together, notch aligned`,
+        `washer pair G${n}: ${bottom ? 'ID-marked lower' : 'artwork upper'} washer; glue mating faces together, outer decagon flats aligned`,
       );
       wash.outline(at(decagon(WASHER.apothem), wr, wr));
-      wash.hole('bore and notch', at(washerHole(), wr, wr));
-      if (bottom) wash.text(id, 'micro', wr, wr + (WASHER.bore + WASHER.apothem) / 2 + 0.2, 0.6);
+      if (bottom) wash.holeRound('tab rotation clearance', wr, wr, WASHER.notchOut);
+      else wash.hole('bore and notch', at(washerHole(), wr, wr));
+      if (bottom) wash.text(id, 'micro', wr, wr + 16.5, 0.5);
       if (!bottom)
         hidden(wash, 'upper washer face; glue only the blank reverse', wr, wr, WASHER.bore, WASHER.apothem, () => {
           circuitBand(wash, wr, WASHER.bore, WASHER.apothem, `G${n}`, n);
@@ -173,17 +185,18 @@ export function makeParts(kerf: number): Parts {
     }
   }
 
-  // --- the core: a hollow tube, closed at the bottom, ridge near the bottom -----------------------------------------
+  // --- the core: a downward-opening tube, closed at the top, ridge near the bottom -----------------------------------------
   const cw = 2 * CORE.ridgeOut;
-  const core0 = add('CORE0', cw, cw, 1, 'core F, slice 1 (bottom, closed, with the ridge)');
-  core0.outline(at(coreShape(), CORE.ridgeOut, CORE.ridgeOut));
-  hidden(core0, 'floor inside the hollow core; keep the entire wall glue annulus blank', CORE.ridgeOut, CORE.ridgeOut, 0, CORE.bore - 0.5, () => {
+  const core0 = add('CORE0', cw, cw, 1, 'core F, slice 13 (solid round ceiling, artwork down)');
+  core0.outlineRound(CORE.ridgeOut, CORE.ridgeOut, CORE.r);
+  parts.CORE0.face = 'down';
+  hidden(core0, 'ceiling inside the hollow core; keep the entire wall glue annulus blank', CORE.ridgeOut, CORE.ridgeOut, 0, CORE.bore - 0.5, () => {
     coreMessage(core0, CORE.ridgeOut);
   });
-  const coreR = add('CORER', cw, cw, CORE.ridgeSlices - 1, 'core slices 2 and 3 (hollow, with the ridge; ridges all on one side)');
+  const coreR = add('CORER', cw, cw, CORE.ridgeSlices, 'core slices 5, 7, 9 and 11 (hollow, aligned ridge tabs)');
   coreR.outline(at(coreShape(), CORE.ridgeOut, CORE.ridgeOut));
   coreR.holeRound('bore', CORE.ridgeOut, CORE.ridgeOut, CORE.bore);
-  const coreC = disc('COREC', CORE.r, CORE.roundSlices, 'core slices 4 to 12 (hollow, round)');
+  const coreC = disc('COREC', CORE.r, CORE.roundSlices, 'core slices 1 to 4, 6, 8, 10 and 12 (hollow, round)');
   coreC.holeRound('bore', CORE.r, CORE.r, CORE.bore);
   const head = disc('HEAD', HEAD_R, 1, 'head (glue on the core last, above the rings)');
   head.holeRound('bore', HEAD_R, HEAD_R, CORE.bore);
@@ -191,11 +204,87 @@ export function makeParts(kerf: number): Parts {
   hidden(head, 'underside of head, outside the core glue joint', HEAD_R, HEAD_R, CORE.r + 1, HEAD_R - 1, () => {
     medallion(head, HEAD_R, CORE.r + 1, HEAD_R - 1.25, '2000');
   });
-  const lid = disc('LID', LID.r, 1, 'lid (glue two plugs under it)');
+  // A fixed bridge captures the loose rings and washers; two glued posts capture it until the core is removed.
+  const lid = add('LID', BASE, 46, 1, 'sliding retaining bridge (artwork down; never glue it)');
+  const bridge: Pt[] = [
+    [-57, 5],
+    [-40, 5],
+    [-20, -5],
+    ...Array.from({ length: 61 }, (_, i) => {
+      const a = Math.PI + (Math.PI * i) / 60;
+      return [20 * Math.cos(a), 20 * Math.sin(a)] as Pt;
+    }),
+    [20, -5],
+    [40, 5],
+    [57, 5],
+    [57, 23],
+    [40, 23],
+    [20, 5],
+    ...Array.from({ length: 61 }, (_, i) => {
+      const a = (Math.PI * i) / 60;
+      return [20 * Math.cos(a), 20 * Math.sin(a)] as Pt;
+    }),
+    [-20, 5],
+    [-40, 23],
+    [-57, 23],
+  ];
+  lid.outline(at(bridge, BASE / 2, 23));
+  lid.hole('core passage', at(washerHole(), BASE / 2, 23));
+  for (const sign of [-1, 1]) {
+    const x = BASE / 2 + sign * LID.postX,
+      y = 23 + 12;
+    const narrow = LID.tenonW / 2 + 0.15,
+      wide = LID.postW / 2 + 0.15,
+      halfT = T / 2 + 0.15;
+    lid.hole('post keyhole', [
+      [x - narrow, y - halfT],
+      [x + narrow, y - halfT],
+      [x + narrow, y + LID.release - halfT],
+      [x + wide, y + LID.release - halfT],
+      [x + wide, y + LID.release + halfT],
+      [x - wide, y + LID.release + halfT],
+      [x - wide, y + LID.release - halfT],
+      [x - narrow, y + LID.release - halfT],
+    ]);
+  }
   parts.LID.face = 'down';
-  hidden(lid, 'underside of lid, outside the plug glue joint', LID.r, LID.r, LID.plug + 0.7, LID.r - 0.7, () => {
-    medallion(lid, LID.r, LID.plug + 0.7, LID.r - 1.25);
+  hidden(lid, 'underside of captured bridge, clear of post keyholes', BASE / 2, 23, LID.plug + 0.7, LID.r - 0.7, () => {
+    // medallion assumes equal x/y center; translate its paths to the bridge center.
+    const from = lid.sheet.items.length;
+    medallion(lid, LID.r, LID.plug + 1.5, LID.r - 1.75);
+    for (const item of lid.sheet.items.slice(from)) if (item.k === 'poly') item.pts = item.pts.map(([x, y]) => [x + BASE / 2 - LID.r, y + 23 - LID.r] as Pt);
+    // Leave the fixed ridge-passage notch and 1.5 mm around it clear of hidden pixels.
+    const safe = lid.sheet.items
+      .slice(from)
+      .filter(
+        (item) =>
+          item.k !== 'poly' ||
+          item.pts.every(([x, y]) => x < BASE / 2 + 2 || x > BASE / 2 + 2 + WASHER.notchOut + 1.7 || Math.abs(y - 25) > WASHER.notchHw + 1.7),
+      );
+    lid.sheet.items.splice(from, lid.sheet.items.length - from, ...safe);
+    lid.elements[lid.elements.length - 1].to = lid.sheet.items.length;
   });
-  disc('LIDP', LID.plug, 2, 'lid plug (press fit in the core)');
+  const post = add('LIDP', LID.postW, 15 * T, 2, 'frame side post (glue only its foot into A1; mushroom top captures bridge)');
+  const hw = LID.postW / 2,
+    ht = LID.tenonW / 2,
+    h = 15 * T;
+  post.outline([
+    [0, h],
+    [2 * hw, h],
+    [2 * hw, h - T],
+    [hw + ht, h - T],
+    [hw + ht, h - 2 * T],
+    [2 * hw, h - 2 * T],
+    [2 * hw, T],
+    [hw + ht, T],
+    [hw + ht, 0],
+    [hw - ht, 0],
+    [hw - ht, T],
+    [0, T],
+    [0, h - 2 * T],
+    [hw - ht, h - 2 * T],
+    [hw - ht, h - T],
+    [0, h - T],
+  ]);
   return parts;
 }

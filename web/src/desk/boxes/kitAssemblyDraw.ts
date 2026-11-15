@@ -79,8 +79,8 @@ export function assemblyView(canvas: HTMLCanvasElement, model: AssemblyModel): T
           const r = loop[(j + 1) % loop.length];
           face([[point(q, 0), point(r, 0), point(r, model.thickness), point(q, model.thickness)]], solid ? '#a07a4c' : '#967044', !solid, p.group, 1);
         });
-      // Engraving sits on the sheet's outside face (the lid is read from above).
-      if (p.art.length)
+      // The camera looks down on the kit. Do not paint underside art through an opaque slab.
+      if (p.art.length && p.artFace !== 'down')
         face(
           p.art.map((loop) => loop.map((q) => point(q, model.thickness + 0.02))),
           '#48341e',

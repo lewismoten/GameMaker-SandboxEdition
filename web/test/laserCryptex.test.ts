@@ -90,7 +90,7 @@ describe('cryptex stock sheets', () => {
         stock,
       ).toEqual([]);
     }
-    expect(kit.area.wood).toBeLessThan(72274.93 * 0.86);
+    expect(kit.area.wood).toBeLessThan(72274.93 * 0.88);
   });
   it('keeps engraving and cuts separated on every part', () => {
     expect(kit.problems).toEqual([]);
@@ -179,7 +179,7 @@ describe('cryptex hollow and hidden engraving', () => {
         expect(engravingRegionProblems(m.part.sheet, { ...z, cx: z.cx + 2, cy: z.cy + 2 }), key).toEqual([]);
       }
     }
-    for (const key of ['B1', 'C1', 'D1', 'E1', 'HEAD', 'LID']) expect(kit.parts[key].face).toBe('down');
+    for (const key of ['B1', 'C1', 'D1', 'E1', 'CORE0', 'HEAD', 'LID']) expect(kit.parts[key].face).toBe('down');
     expect(kit.parts.A1.hidden[0].r1).toBeLessThan(CORE.r);
     expect(kit.parts.CORE0.hidden[0].r1).toBeLessThan(CORE.bore);
     expect(kit.parts.HEAD.hidden[0].r0).toBeGreaterThan(CORE.r);
@@ -323,13 +323,63 @@ describe('cryptex hollow and hidden engraving', () => {
 });
 
 describe('cryptex stack and lock', () => {
-  it('uses actual stock thickness throughout assembly and leaves the ridge below the rings', () => {
+  it('uses actual stock thickness throughout assembly and places a tab immediately below every locking face', () => {
     const core = CORE.ridgeSlices + CORE.roundSlices;
     expect(core * T).toBe((POCKET.plates + RINGS.length * SLICES_PER_RING) * T);
-    expect(CORE.ridgeSlices).toBeLessThan(POCKET.plates);
-    expect(GROUPS.find((g) => g.id === 'H')!.pieces[0].z).toBeCloseTo(13 * T);
+    expect(CORE.ridgeSlices).toBe(RINGS.length);
+    expect(GROUPS.find((g) => g.id === 'H')!.pieces[0].z).toBeCloseTo(14 * T);
     expect(GROUPS.find((g) => g.id === 'G1')!.pieces.map((p) => p.key)).toEqual(['G1B', 'G1']);
     expect(WASHER.apothem - WASHER.notchOut).toBeGreaterThanOrEqual(3);
+  });
+  it('encloses the note after every freely removable group is removed, and blocks partial withdrawal at every wrong digit', () => {
+    const core = GROUPS.find((g) => g.id === 'F')!.pieces;
+    const cap = core.find((p) => p.key === 'CORE0')!;
+    const cuts = (key: string) => kit.parts[key].part.sheet.items.filter((i) => i.op === 'cut');
+    // Permanent floor and glued core ceiling are solid. The entire intervening tube has a continuous 4 mm wall.
+    expect(cuts('A1')).toHaveLength(3);
+    expect(cuts('CORE0')).toHaveLength(1);
+    expect(cap.z).toBe(13 * T);
+    expect(core.find((p) => p.z === T)!.key).toBe('COREC');
+    expect(core.filter((p) => p.key !== 'CORE0')).toHaveLength(12);
+    expect(CORE.r - CORE.bore).toBeGreaterThanOrEqual(RIM);
+    // The glued posts anchor the captured bridge to the base; it releases only with the core out.
+    const frame = GROUPS.find((g) => g.id === 'I')!;
+    expect(frame.pieces.filter((p) => p.post).map((p) => p.post)).toEqual([-1, 1]);
+    const bridge = GROUPS.find((g) => g.id === 'J')!;
+    expect(bridge.pieces[0].z).toBe(13 * T);
+    const passage = cuts('LID')[1];
+    expect(passage.k).toBe('poly');
+    const gatePassage = cuts('G1')[1];
+    if (passage.k === 'poly' && gatePassage.k === 'poly') {
+      // The fixed keeper passes the same ridge shape as a correctly aligned locking washer.
+      expect(passage.pts).toHaveLength(gatePassage.pts.length);
+      passage.pts.forEach(([x, y], i) => {
+        expect(x - kit.parts.LID.part.w / 2).toBeCloseTo(gatePassage.pts[i][0] - kit.parts.G1.part.w / 2);
+        expect(y - kit.parts.LID.part.h / 2).toBeCloseTo(gatePassage.pts[i][1] - kit.parts.G1.part.h / 2);
+      });
+    }
+    expect(WASHER.notchOut).toBeLessThan(WASHER.apothem); // every washer is captured by the keeper
+    expect(HEAD_R).toBeGreaterThan(WASHER.bore);
+    // The core prevents the keyhole release slide; mushroom heads prevent any upward bridge movement.
+    expect(WASHER.bore - CORE.r).toBeLessThan(LID.release);
+    expect(LID.postW).toBeGreaterThan(LID.tenonW + 0.3);
+    expect(kit.parts.LIDP.part.h).toBe(15 * T);
+    expect(bridge.pieces[0].z + T).toBe(14 * T);
+    // Each wrong ring must stop the core locally: no long partial pull when only the last ring is wrong.
+    for (let n = 1; n <= 4; n++) {
+      const washers = GROUPS.find((g) => g.id === `G${n}`)!.pieces;
+      const gate = washers.find((p) => p.key === `G${n}`)!;
+      const tab = core.find((p) => p.key === 'CORER' && Math.abs(p.z + T - gate.z) < 1e-6)!;
+      expect(tab, `ring ${n} tab`).toBeDefined();
+      expect(gate.z - (tab.z + T)).toBeCloseTo(0);
+      expect(washers[0].z).toBeCloseTo(tab.z);
+      const relief = cuts(`G${n}B`)[1];
+      expect(relief.k).toBe('circle');
+      if (relief.k === 'circle') expect(relief.r - 0.1).toBeGreaterThan(Math.hypot(CORE.ridgeOut, CORE.ridgeHw));
+      // At the stop the bottom mouth remains buried in four glued collar layers, closed below by A1.
+      expect(T + gate.z - (tab.z + T)).toBeLessThan((POCKET.plates + 1) * T);
+    }
+    expect(checkLock().opens).toEqual(['2000']);
   });
   it('frees the core for 2000 and no other of the 10,000 combinations', () => {
     expect(kit.lock.opens).toEqual([COMBO.join('')]);
