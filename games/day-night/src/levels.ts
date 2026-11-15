@@ -100,7 +100,9 @@ function oneMapTwoLooks(pal: Pal): Level {
   const g = new Grid(WIDTH_ONE, 15);
   g.row(GROUND, 0, WIDTH_ONE - 1, 'G').fill(0, GROUND + 1, WIDTH_ONE, 4, 'D');
   g.col(0, 0, 9, 'B').col(WIDTH_ONE - 1, 0, 9, 'B');
-  g.put(3, 8, 's').put(3, 9, 'S');
+  // The raised doorway leaves room for the opening sign on its own tall post.
+  g.put(3, 7, 'G').put(3, 8, 'D').put(3, 9, 'D');
+  g.put(3, 5, 's').put(3, 6, 'S');
   for (const [x, y] of [
     [8, 4],
     [14, 5],
@@ -125,12 +127,12 @@ function oneMapTwoLooks(pal: Pal): Level {
     [20, 0],
     [24, 1],
     [27, 0],
-    [4, 4],
+    [4, 1],
   ])
     m.set(x, y, 'star');
   // Narrower boards fit between the clouds and porch; every post reaches clear ground.
   const signsOnSky = { set: m.setOnSky.bind(m) };
-  stampTiledSign(signsOnSky, 1, 5, signs.palettes, 2);
+  stampTiledSign(signsOnSky, 1, 2, signs.palettes, 5);
   stampTiledSign(signsOnSky, 8, 5, signs.sun);
   stampTiledSign(signsOnSky, 13, 6, signs.door);
   const door = world(DOOR_ONE, 9);
@@ -154,14 +156,16 @@ function sundownStreet(pal: Pal): Level {
   const g = new Grid(WIDTH_TWO, 15);
   g.row(GROUND, 0, WIDTH_TWO - 1, 'G').fill(0, GROUND + 1, WIDTH_TWO, 4, 'D');
   g.col(0, 0, 9, 'B').col(WIDTH_TWO - 1, 0, 9, 'B');
-  g.put(2, 8, 's').put(2, 9, 'S');
+  // The raised doorway leaves room for the opening sign on its own tall post.
+  g.put(2, 7, 'G').put(2, 8, 'D').put(2, 9, 'D');
+  g.put(2, 5, 's').put(2, 6, 'S');
   for (const [x, y] of [
-    [8, 4],
+    [8, 3],
     [20, 3],
     [27, 5],
   ])
     g.put(x, y, '(').put(x + 1, y, ')');
-  for (const x of [7, 14, 21]) g.put(x, GROUND - 1, 'b');
+  for (const x of [6, 14, 21]) g.put(x, GROUND - 1, 'b');
   for (const x of [9, 13, 20]) g.put(x, GROUND - 1, 'f');
   for (const [x, y] of [
     [8, 9],
@@ -188,7 +192,7 @@ function sundownStreet(pal: Pal): Level {
   for (const x of [19, 32]) {
     m.set(x, 7, 'post.top').set(x, 8, 'post').set(x, 9, 'post');
   }
-  m.set(35, 3, 'orb');
+  m.set(35, 4, 'orb'); // Also visible after a ground-level palette-gate entry.
   for (const [x, y] of [
     [3, 1],
     [9, 0],
@@ -203,7 +207,8 @@ function sundownStreet(pal: Pal): Level {
   ])
     m.set(x, y, 'star');
   const signsOnSky = { set: m.setOnSky.bind(m) };
-  stampTiledSign(signsOnSky, 1, 5, signs.gate, 2);
+  // Gate arrivals open at row 4: keep the whole board readable in every palette.
+  stampTiledSign(signsOnSky, 3, 4, signs.gate, 3);
   stampTiledSign(signsOnSky, 13, 5, signs.steps, 3);
   stampTiledSign(signsOnSky, 25, 6, signs.fade);
   const through = (mid: number): [number, number][] => [world(mid, 9), world(mid, 8)];

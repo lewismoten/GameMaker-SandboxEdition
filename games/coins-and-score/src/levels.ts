@@ -71,7 +71,9 @@ function shell(width: number, clouds: [number, number][], bushes: number[], flow
   const g = new Grid(width, 15);
   g.row(GROUND, 0, width - 1, 'G').fill(0, GROUND + 1, width, 4, 'D');
   g.col(0, 0, 9, 'X').col(width - 1, 0, 9, 'X');
-  g.put(3, 8, 's').put(3, 9, 'S');
+  // Three rows keep both the ground and the high pickup ledge in the locked view.
+  g.put(3, 7, 'G').put(3, 8, 'D').put(3, 9, 'D');
+  g.put(3, 5, 's').put(3, 6, 'S');
   g.put(width - 4, 8, 'e').put(width - 4, 9, 'E');
   for (const [x, y] of clouds) g.put(x, y, '(').put(x + 1, y, ')');
   for (const x of bushes) g.put(x, GROUND - 1, 'b');
@@ -101,7 +103,7 @@ function coinsAddPoints(book: Book, signs: Record<SignName, Sign>): StarterMap {
   ledge(g, 3, 20, 27, 19);
   g.row(GROUND - 1, 13, 18, 'c').row(2, 21, 25, 'c');
   const m = new StarterMap(book, g.rows());
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 2, 6, signs.coinsAdd, 3);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 2, 3, signs.coinsAdd, 6);
   stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 7, onGround(GROUND, signs.scoreKey), signs.scoreKey);
   stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 38, 7, signs.exit, 2);
   return m;

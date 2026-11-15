@@ -41,7 +41,7 @@ Music: OpenAI Codex.
 
 Tiled signs: OpenAI Codex.
 
-Held-rise jump rollout by OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten.
+Held-rise jumps and raised-start scroll design by OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten.
 
 Made with GAME-MAKER 3.0 from Recreational Software Designs.
 
