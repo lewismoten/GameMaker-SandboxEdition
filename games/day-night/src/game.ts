@@ -33,6 +33,8 @@ export function buildGame(levels: Level[]): Game {
   const stages = levels.flatMap((level) => level.stages.map((stage) => ({ level, stage })));
   stages.forEach(({ level: l, stage }, i) => {
     const scene = emptyScene(ADVTYPE);
+    // The whole route fits in the opening view, including its short ledges.
+    scene.scroll.up = scene.scroll.down = 0;
     scene.desc = `${l.title} ${stage.hour}`.slice(0, 19);
     scene.pos = { x: 40 + i * 50, y: 110 };
     scene.files = [

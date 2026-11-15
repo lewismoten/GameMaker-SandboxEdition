@@ -42,6 +42,8 @@ export function buildGame(levels: Level[], pass: StarterMap): Game {
 
   levels.forEach((l, i) => {
     const scene = emptyScene(ADVTYPE);
+    // The whole route fits in the opening view, including its short ledges.
+    scene.scroll.up = scene.scroll.down = 0;
     scene.desc = l.title.slice(0, 19);
     scene.pos = { x: 60 + i * 80, y: 110 };
     scene.files = [

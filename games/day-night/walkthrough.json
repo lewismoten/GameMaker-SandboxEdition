@@ -8,15 +8,15 @@
  "segments": [
   {
    "scene": 2,
-   "keys": "AU0PzTVNGc01TRnNNU0UzQNNFM0DTQ=="
+   "keys": "AU0NzTZNGc01TRnNNU0UzQNNFM0DTQ=="
   },
   {
    "scene": 3,
-   "keys": "PU1VzQNNFM0DTQ=="
+   "keys": "PU1TzQNNFM0DTQ=="
   },
   {
    "scene": 4,
-   "keys": "AU0PzTVN"
+   "keys": "AU0NzTZN"
   },
   {
    "scene": 5,
@@ -51,7 +51,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 9496,
+  "frames": 9484,
   "chapters": [
    {
     "title": "Opening",
@@ -70,33 +70,33 @@
    },
    {
     "title": "Level 1: the same map at night",
-    "frame": 3384,
-    "time": 56399.99999999752
+    "frame": 3381,
+    "time": 56349.999999997526
    },
    {
     "title": "Level 2: Sundown Street (day)",
-    "frame": 4063,
-    "time": 67716.66666666348
+    "frame": 4054,
+    "time": 67566.66666666344
    },
    {
     "title": "Level 2: dusk",
-    "frame": 4721,
-    "time": 78683.33333333334
+    "frame": 4709,
+    "time": 78483.33333333328
    },
    {
     "title": "Level 2: night",
-    "frame": 5311,
-    "time": 88516.66666666954
+    "frame": 5299,
+    "time": 88316.66666666948
    },
    {
     "title": "Ending",
-    "frame": 5733,
-    "time": 95550.00000000492
+    "frame": 5721,
+    "time": 95350.00000000486
    },
    {
     "title": "Credits",
-    "frame": 7941,
-    "time": 132350.00000001452
+    "frame": 7929,
+    "time": 132150.00000001464
    }
   ]
  }

@@ -112,7 +112,9 @@ function menu(book: Book, signs: Record<string, Sign>): StarterMap {
   const g = new Grid(WIDTH_MENU, 15);
   g.row(GROUND, 0, WIDTH_MENU - 1, 'G').fill(0, GROUND + 1, WIDTH_MENU, 4, 'D');
   g.col(0, 0, 9, 'B').col(WIDTH_MENU - 1, 0, 9, 'B');
-  g.put(2, 8, 's').put(2, 9, 'S');
+  // The menu's short door ledges fit above the ground in a locked view.
+  g.put(2, 8, 'G').put(2, 9, 'D');
+  g.put(2, 6, 's').put(2, 7, 'S');
   // each door stands on its own ledge of grass over dirt, with a ladder up to it, so walking along
   // the ground never touches a door by accident
   for (const x of MENU_DOORS) {

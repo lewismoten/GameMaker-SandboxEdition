@@ -44,6 +44,8 @@ export function buildGame(hall: Level, gallery: Level): Game {
   const blank = () => Array.from({ length: MAXSCENELINKS }, () => ({ toScene: NOSCENE, from: { x: 0, y: 0 }, to: { x: 0, y: 0 } }));
   const scene = (desc: string, pal: string, map: string, card: string, x: number, y: number) => {
     const s = emptyScene(ADVTYPE);
+    // Both rooms are horizontal; keep their signs and swatches in a steady view.
+    s.scroll.up = s.scroll.down = 0;
     s.desc = desc.slice(0, 19);
     s.pos = { x, y };
     s.files = [pal, map, 'doors.bbl', 'doors.mon', 'doors.mbl', 'hero.chr', 'hero.cbl', 'doors.snd', 'doors.cmf', card, '', ...new Array(9).fill('')];

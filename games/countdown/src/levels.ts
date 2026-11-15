@@ -177,7 +177,9 @@ function nineToZero(pal: Pal): Level {
   const g = new Grid(WIDTH_ONE, 15);
   g.row(GROUND, 0, WIDTH_ONE - 1, 'G').fill(0, GROUND + 1, WIDTH_ONE, 4, 'D');
   g.col(0, 0, 9, 'B').col(WIDTH_ONE - 1, 0, 9, 'B');
-  g.put(3, 8, 's').put(3, 9, 'S');
+  // A two-row turf ledge keeps the timer, signs and doorway in one steady view.
+  g.put(3, 8, 'G').put(3, 9, 'D');
+  g.put(3, 6, 's').put(3, 7, 'S');
   scenery(
     g,
     [

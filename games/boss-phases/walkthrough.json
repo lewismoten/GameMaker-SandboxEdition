@@ -8,11 +8,11 @@
  "segments": [
   {
    "scene": 2,
-   "keys": "AU0jzQNNN80DTTLNAEsuywNNEM0/HAOcPBwDnJABHAOcbBwDnDxNRs0DTRnNA00="
+   "keys": "AU0hzQNNN80DTTLNAEsuywNND80/HAOcPBwDnI8BHAOcbBwDnDxNRs0DTRnNA00="
   },
   {
    "scene": 3,
-   "keys": "AU1BzQNNGc0/HAOcPBwDnIQBHAOcPBwDnHgcA5w8TUbNA00ezQNN"
+   "keys": "AU0/zQNNGc0/HAOcPBwDnIQBHAOcPBwDnHgcA5w8TUbNA00ezQNN"
   }
  ],
  "chapters": [
@@ -27,7 +27,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 11000,
+  "frames": 11464,
   "chapters": [
    {
     "title": "Opening",
@@ -46,18 +46,18 @@
    },
    {
     "title": "Level 2: A Third Face",
-    "frame": 5009,
-    "time": 83483.33333333474
+    "frame": 4999,
+    "time": 83316.66666666802
    },
    {
     "title": "Ending",
-    "frame": 7714,
-    "time": 128566.6666666812
+    "frame": 7697,
+    "time": 128283.33333334778
    },
    {
     "title": "Credits",
-    "frame": 9926,
-    "time": 165433.3333333286
+    "frame": 9909,
+    "time": 165149.99999999543
    }
   ]
  }

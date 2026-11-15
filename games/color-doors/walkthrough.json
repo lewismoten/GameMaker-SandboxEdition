@@ -12,7 +12,7 @@
   },
   {
    "scene": 3,
-   "keys": "KU25Ac0XTQ=="
+   "keys": "KU23Ac0XTQ=="
   },
   {
    "scene": 8,
@@ -20,7 +20,7 @@
   },
   {
    "scene": 4,
-   "keys": "KU25Ac0XTQ=="
+   "keys": "KU23Ac0XTQ=="
   },
   {
    "scene": 8,
@@ -28,7 +28,7 @@
   },
   {
    "scene": 5,
-   "keys": "KU25Ac0XTQ=="
+   "keys": "KU23Ac0XTQ=="
   },
   {
    "scene": 8,
@@ -36,7 +36,7 @@
   },
   {
    "scene": 6,
-   "keys": "KU25Ac0XTQ=="
+   "keys": "KU23Ac0XTQ=="
   },
   {
    "scene": 8,
@@ -44,7 +44,7 @@
   },
   {
    "scene": 7,
-   "keys": "KU25Ac0XTQ=="
+   "keys": "KU23Ac0XTQ=="
   },
   {
    "scene": 8,
@@ -94,7 +94,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 17100,
+  "frames": 17058,
   "chapters": [
    {
     "title": "Opening",
@@ -113,38 +113,38 @@
    },
    {
     "title": "As you see it",
-    "frame": 2293,
-    "time": 38216.66666666683
+    "frame": 2286,
+    "time": 38100.00000000018
    },
    {
     "title": "Red-green, one kind",
-    "frame": 4502,
-    "time": 75033.33333333228
+    "frame": 4488,
+    "time": 74799.99999999888
    },
    {
     "title": "Red-green, the other",
-    "frame": 6710,
-    "time": 111833.33333334299
+    "frame": 6689,
+    "time": 111483.33333334289
    },
    {
     "title": "Blue-yellow",
-    "frame": 8918,
-    "time": 148633.33333333838
+    "frame": 8890,
+    "time": 148166.66666667198
    },
    {
     "title": "No color",
-    "frame": 11127,
-    "time": 185449.9999999836
+    "frame": 11092,
+    "time": 184866.66666665062
    },
    {
     "title": "Ending",
-    "frame": 13336,
-    "time": 222266.66666662885
+    "frame": 13294,
+    "time": 221566.66666662926
    },
    {
     "title": "Credits",
-    "frame": 15548,
-    "time": 259133.33333327406
+    "frame": 15506,
+    "time": 258433.33333327447
    }
   ]
  }

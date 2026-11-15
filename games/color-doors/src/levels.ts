@@ -19,9 +19,8 @@ import { VIEWS } from './views';
 
 export const GROUND = 10;
 /**
- * The first map row of anything the player must read. After a jump the view comes to rest with the grass about 76
- * pixels from the top of the picture, so the picture then starts at map row 6.2 (viewShots.ts measures it); a board
- * or a swatch higher up scrolls out of sight. Row 6 loses only its top 4 pixels, which is frame, not words or color.
+ * The first map row of anything the player must read. Both rooms lock vertical scrolling; the raised entrance
+ * opens at local row 2, and returns to the hall at ground level open at row 4. All boards fit in either view.
  */
 export const SIGN_ROW = 6;
 
@@ -119,11 +118,13 @@ function hall(book: Book, signs: Record<string, Sign>): Level {
   const g = new Grid(HALL_W, 15);
   g.row(GROUND, 0, HALL_W - 1, 'G').fill(0, GROUND + 1, HALL_W, 4, 'D');
   g.col(0, 0, 9, 'B').col(HALL_W - 1, 0, 9, 'B');
-  g.put(3, 8, 's').put(3, 9, 'S');
+  // A narrow turf ledge raises the entrance without covering the signs beside it.
+  g.put(3, 8, 'G').put(3, 9, 'D');
+  g.put(3, 6, 's').put(3, 7, 'S');
   for (const x of [...HALL_DOORS, HALL_FINISH]) g.put(x, 8, 'e').put(x, 9, 'E');
   const m = new StarterMap(book, g.rows());
   for (let y = 0; y < GROUND; y++) for (let x = 1; x < HALL_W - 1; x++) if (g.rows()[y][x] === ' ') m.set(x, y, 'wall');
-  m.set(3, 8, 'doorwayTopW').set(3, 9, 'doorwayBottomW');
+  m.set(3, 6, 'doorwayTopW').set(3, 7, 'doorwayBottomW');
   for (const x of [...HALL_DOORS, HALL_FINISH]) m.set(x, 8, 'doorTopW').set(x, 9, 'doorBottomW');
   const board = (s: Sign, x: number, y: number) =>
     stampTiledSign(
@@ -157,7 +158,9 @@ function gallery(book: Book, signs: Record<string, Sign>): Level {
   const g = new Grid(GALLERY_W, 15);
   g.row(GROUND, 0, GALLERY_W - 1, 'G').fill(0, GROUND + 1, GALLERY_W, 4, 'D');
   g.col(0, 0, 9, 'B').col(GALLERY_W - 1, 0, 9, 'B');
-  g.put(3, 8, 's').put(3, 9, 'S');
+  // A narrow turf ledge raises the entrance without covering the signs beside it.
+  g.put(3, 8, 'G').put(3, 9, 'D');
+  g.put(3, 6, 's').put(3, 7, 'S');
   g.put(GALLERY_END, 8, 'e').put(GALLERY_END, 9, 'E');
   for (const x of [53, 66]) g.put(x, GROUND - 1, 'b');
   for (const x of [8, 45, 78]) g.put(x, GROUND - 1, 'f');

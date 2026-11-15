@@ -12,7 +12,7 @@
   },
   {
    "scene": 3,
-   "keys": "AU0ZzT9NFM0DSCfIA00="
+   "keys": "AU0XzT9NFM0DSCfIA00="
   },
   {
    "scene": 4,
@@ -20,7 +20,7 @@
   },
   {
    "scene": 6,
-   "keys": "AU1azQNIJ8gDTQ=="
+   "keys": "AU1YzQNIJ8gDTQ=="
   },
   {
    "scene": 5,
@@ -28,7 +28,7 @@
   },
   {
    "scene": 6,
-   "keys": "AU2HAc0DSCfIA00="
+   "keys": "AU2FAc0DSCfIA00="
   }
  ],
  "chapters": [
@@ -57,7 +57,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 12795,
+  "frames": 12777,
   "chapters": [
    {
     "title": "Opening",
@@ -81,23 +81,23 @@
    },
    {
     "title": "Level 2: A Menu Room (tale one)",
-    "frame": 5218,
-    "time": 86966.66666666909
+    "frame": 5212,
+    "time": 86866.66666666906
    },
    {
     "title": "Level 2: A Menu Room (tale two)",
-    "frame": 7049,
-    "time": 117483.33333334464
+    "frame": 7037,
+    "time": 117283.33333334458
    },
    {
     "title": "Ending",
-    "frame": 9028,
-    "time": 150466.66666667064
+    "frame": 9010,
+    "time": 150166.66666667082
    },
    {
     "title": "Credits",
-    "frame": 11240,
-    "time": 187333.33333331585
+    "frame": 11222,
+    "time": 187033.33333331603
    }
   ]
  }
