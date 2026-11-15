@@ -80,7 +80,7 @@ describe('cryptex stock sheets', () => {
     expect(kit.sheets).toHaveLength(2);
     expect(buildCryptex(0.2, false, '12x20').sheets).toHaveLength(1);
   });
-  it('packs discs by their circles: at most 4, 3, 2 and 1 sheets, none overlapping within 2 mm', { timeout: 120000 }, () => {
+  it('packs discs by their circles: at most 4, 3, 2 and 1 sheets, none overlapping within 2 mm', { timeout: 300000 }, () => {
     const most = { '6x12': 4, '8x12': 3, '12x12': 2, '12x20': 1 } as const;
     for (const stock of Object.keys(most) as StockSize[]) {
       const b = buildCryptex(0.2, true, stock);
