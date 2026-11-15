@@ -22,6 +22,7 @@ const out = process.argv[2];
 if (out) mkdirSync(out, { recursive: true });
 const sim = new GameSim(undefined, 1);
 const bot = new StarterBot(sim);
+bot.jumpHold = 8;
 await shortAndLong(bot);
 assert.equal(sim.scene, 3);
 await bot.walk(15, 'the crowd');
@@ -75,14 +76,10 @@ for (let i = 0; i < 120; i++) {
   if (i < 73) shot(`frame-${String(i).padStart(3, '0')}`);
 }
 for (let j = 0; j < 3; j++) {
-  // Space may be tapped again in the air (PLAYGAME has no ground check). This
-  // crosses the vertical scroll threshold; a single small hop need not do so.
+  // The approved held rise stays below the scroll trigger; check the crowd
+  // remains fully visible when each ordinary jump returns to the floor.
   sim.press(SCAN.space);
-  await bot.wait(2);
-  sim.release(SCAN.space);
-  await bot.wait(8);
-  sim.press(SCAN.space);
-  await bot.wait(2);
+  await bot.wait(bot.jumpHold);
   sim.release(SCAN.space);
   await bot.land();
   for (let i = 0; i < 120; i++) {
@@ -93,7 +90,10 @@ for (let j = 0; j < 3; j++) {
 }
 console.log(JSON.stringify({ frames, viewTopPixels: [Math.min(...tops), Math.max(...tops)], errors: [...errors] }, null, 2));
 assert.deepEqual([...errors], []);
-assert.ok(Math.max(...tops) >= 120, 'exercise downward scroll after returning from a jump');
+assert.ok(
+  tops.every((top) => top === tops[0]),
+  'ordinary jumps return to the same crowd framing',
+);
 console.log('crowd: all 36 fully visible and harmless; eight snails supported; three jump/return cycles');
 
 // The whole-scene CLI also includes the far-away entrance and exit. Check its

@@ -76,7 +76,11 @@ function base(width: number, exitX: number, entrance = true): Grid {
   const g = new Grid(width, 15);
   g.row(GROUND, 0, width - 1, 'G').fill(0, GROUND + 1, width, 4, 'D');
   g.col(0, 0, 9, 'B').col(width - 1, 0, 9, 'B');
-  if (entrance) g.put(3, 8, 's').put(3, 9, 'S');
+  if (entrance) {
+    // A one-column turf ledge, two rows high, below the start door.
+    g.put(3, 8, 'G').put(3, 9, 'D');
+    g.put(3, 6, 's').put(3, 7, 'S');
+  }
   g.put(exitX, 8, 'e').put(exitX, 9, 'E');
   return g;
 }

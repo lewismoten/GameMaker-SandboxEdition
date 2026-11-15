@@ -61,7 +61,9 @@ function frame(width: number, exitX: number): { g: Grid; GROUND: number } {
   const GROUND = 10;
   g.row(GROUND, 0, width - 1, 'G').fill(0, GROUND + 1, width, 4, 'D');
   g.col(0, 0, 9, 'X').col(width - 1, 0, 9, 'X');
-  g.put(3, 8, 's').put(3, 9, 'S');
+  // A narrow three-row turf ledge keeps the shop's roof board in the fixed view.
+  g.put(3, 7, 'G').put(3, 8, 'D').put(3, 9, 'D');
+  g.put(3, 5, 's').put(3, 6, 'S');
   g.put(exitX, 8, 'e').put(exitX, 9, 'E');
   return { g, GROUND };
 }

@@ -8,11 +8,11 @@
  "segments": [
   {
    "scene": 2,
-   "keys": "AU08zRtNCDkIuRA5CLkNzQRND80bTR7NA00UzRtNHs0DTRTNA00="
+   "keys": "AU06zRtNCDkIuRA5CLkNzQRND80bTR7NA00UzRtNHs0DTRTNA00="
   },
   {
    "scene": 3,
-   "keys": "AU0ezQNNKM0DTTzNA00yzV1N"
+   "keys": "AU0czQNNKM0DTTzNA00yzV1N"
   }
  ],
  "chapters": [
@@ -27,7 +27,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 7660,
+  "frames": 7647,
   "chapters": [
    {
     "title": "Opening",
@@ -46,18 +46,18 @@
    },
    {
     "title": "The Great Hall",
-    "frame": 3083,
-    "time": 51383.33333333158
+    "frame": 3076,
+    "time": 51266.66666666493
    },
    {
     "title": "Ending",
-    "frame": 4381,
-    "time": 73016.66666666503
+    "frame": 4368,
+    "time": 72799.9999999983
    },
    {
     "title": "Credits",
-    "frame": 6108,
-    "time": 101800.00000000674
+    "frame": 6095,
+    "time": 101583.33333334001
    }
   ]
  }

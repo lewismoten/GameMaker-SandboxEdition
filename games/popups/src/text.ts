@@ -36,7 +36,7 @@ export const CREDITS = withCreditPage(
 
 Design, pixels, beeps and levels by Claude Sonnet 5.5, an AI model made by Anthropic.
 
-Held-rise jump and bot timing by OpenAI Codex (GPT-6.1 Sol).
+Held-rise jump, bot timing and raised level openings by OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten.
 
 Made with GAME-MAKER 3.0 from Recreational Software Designs.
 

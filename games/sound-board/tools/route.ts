@@ -79,7 +79,7 @@ export async function feedback(bot: StarterBot): Promise<void> {
   await hears(bot, [SLOT.blip], 'the key', () => must(bot, bot.walk(f.key + 1, 'the key'), 'to the key'));
   await hears(bot, [SLOT.creak], 'the gate', () => must(bot, bot.walk(f.gate + 2, 'through the gate'), 'through the gate'));
   const [l0] = f.ledge;
-  await must(bot, bot.walk(l0 - 2, 'the ledge'), 'to the ledge');
+  await must(bot, bot.walk(l0 - 1, 'the ledge'), 'to the ledge');
   await hears(bot, [SLOT.jump, SLOT.ping, SLOT.ping], 'a jump and two coins', async () => {
     await must(bot, bot.jump('right', l0 + 1), 'up onto the ledge');
     await must(bot, bot.walk(l0 + 3, 'along the ledge'), 'along the ledge');

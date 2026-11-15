@@ -47,7 +47,7 @@ disk.put('sndboard.bbl', serializeBlocks(book.finish()));
 disk.put('sndboard.mbl', serializeBlocks(monsterBlocks.finish()));
 disk.put('sndboard.mon', serializeMonsters(buildMonsters(monsterBlocks)));
 disk.put('hero.cbl', serializeBlocks(heroBlocks.finish()));
-const heroChar = buildHero(heroBlocks);
+const heroChar = buildHero(heroBlocks, { heldRise: { push: 12 } });
 heroChar.meter[KEYS] = 1; // keys carried: none (a counter shows one less than it holds)
 heroChar.meter[MONEY] = START_MONEY; // money is counter 3 (a counter shows one less than it holds)
 heroChar.meter[OTHER] = 1; // the blip pad's counter, counting from nothing

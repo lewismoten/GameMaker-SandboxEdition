@@ -45,7 +45,7 @@ disk.put('spendit.bbl', serializeBlocks(book.finish()));
 disk.put('spendit.mbl', serializeBlocks(monsterBlocks.finish()));
 disk.put('spendit.mon', serializeMonsters(buildMonsters(monsterBlocks)));
 disk.put('hero.cbl', serializeBlocks(heroBlocks.finish()));
-const heroChar = buildHero(heroBlocks);
+const heroChar = buildHero(heroBlocks, { heldRise: { push: 12 } });
 heroChar.meter[MONEY] = 1; // Money starts at 0 (a counter shows one less than it holds); counter 3 is the one the DOS status page (F2) prints
 disk.put('hero.chr', serializeCharacter(heroChar));
 disk.put('spendit.snd', serializeSoundSet(buildSounds()));

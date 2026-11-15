@@ -47,7 +47,7 @@ disk.put('slowpc.pal', serializePalette(pal.pal));
 disk.put('slowpc.mbl', serializeBlocks(finishMonsterPictures(monsterBlocks)));
 disk.put('slowpc.mon', serializeMonsters(monsterSet(monsterBlocks)));
 disk.put('hero.cbl', serializeBlocks(heroBlocks.finish()));
-const heroChar = buildHero(heroBlocks);
+const heroChar = buildHero(heroBlocks, { heldRise: { push: 12 } });
 heroChar.meter[KEYS] = INF_REPEAT; // no keys in this game
 heroChar.meter[3] = 1; // money: the long pad adds a coin, and a counter that is not unlimited plays the coin sound
 heroChar.meter[0] = HERO_HIT_POINTS; // nothing here hurts

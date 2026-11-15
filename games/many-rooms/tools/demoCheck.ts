@@ -23,5 +23,5 @@ const fail = (m: string) => {
 };
 if (sim.ci.score < 20) fail("the demo should take the red room's two coins");
 if (at !== 3) fail(`the red door should land in the blue room (scene 3), not scene ${at}`);
-if (p.x !== 10 + 16 + LAND_X || p.y !== 10 + FLOOR - 1) fail("he should be standing on the blue room's middle cell");
+if (p.x !== 10 + 16 + LAND_X || p.y !== 10 + FLOOR - 3) fail('he should be standing on the raised blue entrance');
 console.log('demoCheck ok: two coins, then a door that lands in the blue room');

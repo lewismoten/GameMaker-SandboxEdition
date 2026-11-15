@@ -8,7 +8,7 @@
  "segments": [
   {
    "scene": 2,
-   "keys": "FU0UzW5NKM1QTTLNRk0="
+   "keys": "FU0SzXBNKM1QTTLNRk0="
   },
   {
    "scene": 3,
@@ -27,7 +27,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 10039,
+  "frames": 10520,
   "chapters": [
    {
     "title": "Opening",
