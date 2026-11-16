@@ -7,8 +7,9 @@
 //      grass runs into sand, a bridge over water with a shore block at each end, and a finish on the far sand.
 import { Book } from '../../kit/starter/book';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
-import type { Sign } from '../../kit/starter/sign';
-import { addRoadBlocks, addRoadSign } from './blocks';
+import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { addRoadBlocks } from './blocks';
 import { RoadMap } from './overMap';
 import type { Grounds } from './roadArt';
 
@@ -25,21 +26,10 @@ export interface Level {
   finish: Spot;
 }
 
-/** [name, words, board width, board height, ground it stands on]. */
 const SIGNS = {
-  straight: ['straight', 'STRAIGHT PIECES: ACROSS, UP, DOWN', 4, 2, 'grass'],
-  corner: ['corner', 'ROUND CORNERS CURVE THE ROAD', 4, 2, 'grass'],
-  four: ['four', 'FOUR CORNERS, ONE DRAWING', 4, 2, 'grass'],
-  line: ['line', 'SQUARES MAKE A FINISH LINE', 4, 2, 'grass'],
-  diag: ['diag', 'A DIAGONAL: CORNER TO CORNER', 4, 2, 'grass'],
-  tips: ['tips', 'TRIANGLES FILL THE GAPS', 4, 2, 'grass'],
-  bend: ['bend', 'A BEND TURNS ONTO A DIAGONAL', 4, 2, 'grass'],
-  steps: ['steps', 'KIT WALKS A DIAGONAL IN STEPS', 4, 2, 'grass'],
-  cross: ['cross', 'FOUR WAYS', 3, 2, 'grass'],
-  tee: ['tee', 'THREE WAYS, A T', 3, 2, 'grass'],
-  blend: ['blend', 'GRASS BLENDS INTO SAND', 3, 2, 'sand'],
-  bridge: ['bridge', 'A BRIDGE IS ROAD OVER WATER', 3, 3, 'sand'],
-} as const;
+  cross: { lines: ['4', 'WAYS'], post: false },
+  tee: { lines: ['3', 'WAYS'], post: false },
+};
 type SignName = keyof typeof SIGNS;
 
 export const LEVEL_W = [20, 24, 20];
@@ -62,9 +52,10 @@ export const SHEET = ['corner.se', 'road.h', 'bend.w-ne', 'diag.ne', 'road.v', '
 export function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign>; grounds: Grounds } {
   const book = new Book('bbl');
   const grounds = addRoadBlocks(book, pal);
-  const signs = {} as Record<SignName, Sign>;
-  for (const [key, [name, words, w, h, ground]] of Object.entries(SIGNS))
-    signs[key as SignName] = addRoadSign(book, pal, grounds[ground], ground, name, words, w, h);
+  const scratch = new Book('bbl');
+  const signs = addMicroPlaques(scratch, pal, SIGNS);
+  // Top-down labels keep the shared artwork but have no gravity, like the roads.
+  for (const [name, pic] of scratch.pics) book.add(name, pic);
   return { book, signs, grounds };
 }
 
@@ -80,7 +71,7 @@ function meadow(book: Book, w: number, h: number, flowers: Spot[]): RoadMap {
 }
 
 /** Level 1: a snake of straights and the four round corners. */
-function cornersLevel(book: Book, s: Record<SignName, Sign>): RoadMap {
+function cornersLevel(book: Book): RoadMap {
   const m = meadow(book, 20, 15, [
     [5, 8],
     [12, 4],
@@ -103,12 +94,11 @@ function cornersLevel(book: Book, s: Record<SignName, Sign>): RoadMap {
   m.put(9, 9, 'corner.se');
   down(9, 10, 12);
   m.put(9, 13, 'finish.v');
-  m.sign(3, 4, s.straight, 'grass').sign(10, 1, s.corner, 'grass').sign(15, 1, s.four, 'grass').sign(11, 11, s.line, 'grass');
   return m;
 }
 
 /** Level 2: a diagonal up, a diagonal down, and the bends and triangles that make them join. */
-function diagonalsLevel(book: Book, s: Record<SignName, Sign>): RoadMap {
+function diagonalsLevel(book: Book): RoadMap {
   const m = meadow(book, 24, 13, [
     [3, 8],
     [12, 11],
@@ -140,7 +130,6 @@ function diagonalsLevel(book: Book, s: Record<SignName, Sign>): RoadMap {
   m.put(18, 10, 'bend.e-nw');
   m.fill(19, 10, 3, 1, 'road.h');
   m.put(22, 10, 'finish.h');
-  m.sign(2, 3, s.diag, 'grass').sign(10, 8, s.tips, 'grass').sign(11, 1, s.bend, 'grass').sign(19, 5, s.steps, 'grass');
   return m;
 }
 
@@ -175,7 +164,15 @@ function groundLevel(book: Book, s: Record<SignName, Sign>): RoadMap {
   // the road up and down at the crossroads, and the T's way south
   m.fill(3, 1, 1, 5, 'road.v').fill(3, 7, 1, 5, 'road.v');
   m.fill(11, 7, 1, 5, 'road.v.sand');
-  m.sign(4, 2, s.cross, 'grass').sign(4, 8, s.tee, 'grass').sign(8, 1, s.blend, 'sand').sign(8, 8, s.bridge, 'sand');
+  const target = {
+    set: (x: number, y: number, block: string) => {
+      if (m.at(x, y) !== 'grass' && m.at(x, y) !== 'sand') throw new Error(`Plaque covers road or scenery at ${x},${y}`);
+      m.put(x, y, block);
+    },
+  };
+  // Before each junction in the left-to-right reading order, clear of every road tile.
+  stampTiledSign(target, 2, 5, s.cross, 0);
+  stampTiledSign(target, 10, 5, s.tee, 0);
   return m;
 }
 
@@ -183,7 +180,7 @@ function groundLevel(book: Book, s: Record<SignName, Sign>): RoadMap {
 export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
   const pal = buildStarterPalette(undefined, 'road-tiles');
   const { book, signs } = buildBlocks(pal);
-  const maps = [cornersLevel(book, signs), diagonalsLevel(book, signs), groundLevel(book, signs)];
+  const maps = [cornersLevel(book), diagonalsLevel(book), groundLevel(book, signs)];
   const meta = [
     ['one', 'Round Corners', 'Straights and curves.'],
     ['two', 'Diagonals', 'Corner to corner.'],

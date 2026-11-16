@@ -6,49 +6,30 @@
 //      hurries them) and you are back, just past Pip.
 //   2. Two Friends: Moss, whose talk runs to two pages, and Dot, who has one short line.
 // Every room is closed in by hedges you can see, so Kit is never stopped by something he can't.
-import { Book, PULL } from '../../kit/starter/book';
+import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { ORIGIN, StarterMap } from '../../kit/starter/map';
-import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
-import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { MICRO_GLYPHS } from '@lewismoten/gamemaker-sandbox-tools/microFont';
+import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
+import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { addMicroPlaques, stampTiledSign, stampMicroPlaques } from '../../kit/starter/microPlaque';
 import { BUBBLE, addTalkers, talkerBlocks, type TalkerName } from './talkers';
 
-export type SignName = 'what' | 'edit' | 'big' | 'walkin' | 'bubble' | 'each' | 'long' | 'exit';
+export type SignName = 'what' | 'edit' | 'big' | 'more' | 'walkin' | 'exit';
 
 /** The block set the levels share: the Starter blocks, then the talkers and this game's signs. */
 function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
   addTalkers(book, pal);
-  const { blocks, signs } = buildTiledSigns(
-    {
-      what: { rows: [['A SIGN IS'], ['A PICTURE'], ['OF WORDS']] },
-      edit: { rows: [['EDIT ITS'], ['BLOCKS TO'], ['CHANGE'], ['THE WORDS']] },
-      big: { rows: [['A TALLER'], ['BOARD HOLDS'], ['MORE WORDS']] },
-      walkin: { rows: [['WALK INTO'], ['PIP TO TALK']] },
-      bubble: { rows: [['A BUBBLE'], ['SAYS'], ['SOMEONE'], ['WILL TALK']] },
-      each: { rows: [['EACH FRIEND'], ['HAS WORDS'], ['OF'], ['THEIR OWN']] },
-      long: { rows: [['A LONG'], ['TALK RUNS'], ['TWO PAGES']] },
-      exit: { rows: [['EXIT →']] },
-    },
-    {
-      colors: {
-        background: skyOf(pal),
-        paper: pal.c('parch', 3),
-        ink: pal.c('ink', 0),
-        wood: pal.c('wood', 2),
-        highlight: pal.c('wood', 4),
-        shadow: pal.c('wood', 0),
-      },
-      glyphs: { ...MICRO_GLYPHS, '←': '001011111011001', '→': '100110111110100' },
-      compact: true,
-      maxWidth: 5,
-      maxBlocks: Math.min(100, 150 - book.index.size),
-    },
-  );
-  for (const [name, pic] of blocks) book.add(name, pic, { grav: PULL.down });
+  const signs = addMicroPlaques(book, pal, {
+    what: { lines: ['WORDS', 'ARE ART'] },
+    edit: { lines: ['EDIT', 'ME!'] },
+    big: { lines: ['TALL', 'SIGN'] },
+    more: { lines: ['MORE', 'TEXT'] },
+    walkin: { lines: ['SAY', 'HI!'] },
+    exit: { lines: ['EXIT', '→'], post: false },
+  });
   return { book, signs };
 }
 
@@ -124,8 +105,7 @@ function sayHello(book: Book, signs: Record<SignName, Sign>): Level {
   );
   const m = new StarterMap(book, g.rows());
   stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 4, onGround(GROUND, signs.what), signs.what);
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 9, onGround(GROUND, signs.edit), signs.edit);
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 15, onGround(GROUND, signs.bubble), signs.bubble);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 11, onGround(GROUND, signs.edit), signs.edit);
   stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 21, onGround(GROUND, signs.walkin), signs.walkin);
   stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 37, onGround(GROUND, signs.exit), signs.exit);
   const talks: Talk[] = [];
@@ -153,9 +133,7 @@ function twoFriends(book: Book, signs: Record<SignName, Sign>): Level {
     [13, 20, 28, 41],
   );
   const m = new StarterMap(book, g.rows());
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 6, onGround(GROUND, signs.big), signs.big);
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 13, onGround(GROUND, signs.each), signs.each);
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 20, onGround(GROUND, signs.long), signs.long);
+  stampMicroPlaques({ set: (x, y, name) => m.setOnSky(x, y, name) }, 9, 7, [signs.big, signs.more]);
   stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 41, 7, signs.exit, 2);
   const talks: Talk[] = [];
   stand(m, talks, 'moss', MOSS_X);
