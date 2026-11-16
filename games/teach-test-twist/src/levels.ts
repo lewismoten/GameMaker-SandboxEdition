@@ -7,14 +7,14 @@
 //   3. Twist: the same gap again, but now you want to be in it: the key to the locked door is down there.
 //
 // Every room is closed in by hedges you can see, so Lena is never stopped by something she can't.
-import { Book, PULL } from '../../kit/starter/book';
+import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { addLockBlocks } from '../../kit/starter/locks';
 import { StarterMap } from '../../kit/starter/map';
-import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
-import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { MICRO_GLYPHS } from '@lewismoten/gamemaker-sandbox-tools/microFont';
+import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
+import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { addMicroPlaques, stampTiledSign, stampMicroPlaques } from '../../kit/starter/microPlaque';
 import { addHazards } from './hazards';
 
 export interface Level {
@@ -28,16 +28,18 @@ export interface Level {
 export const GROUND = 10;
 /** The floor of a gap: the ground row, two blocks lower. */
 export const PIT_FLOOR = GROUND + 2;
-export type SignName = 'teach' | 'safe' | 'test' | 'wider' | 'twist' | 'key' | 'locked' | 'exit';
+export type SignName = 'teach' | 'safe' | 'drop' | 'test' | 'ouch' | 'wider' | 'twist' | 'key' | 'locked' | 'exit';
 const SIGNS = {
-  teach: { rows: [['STEP 1, TEACH. A GAP. JUMP IT.']], maxWidth: 7 },
-  safe: { rows: [['NOTHING HURTS HERE. DROP IN FOR A COIN.']], maxWidth: 7 },
-  test: { rows: [['STEP 2, TEST. THE GAP HAS SPIKES NOW.']], maxWidth: 7 },
-  wider: { rows: [['A WIDER GAP. RUN, THEN JUMP.']], maxWidth: 7 },
-  twist: { rows: [['STEP 3, TWIST.'], ['NOW YOU WANT IN.']], maxWidth: 7 },
-  key: { rows: [['THE KEY IS IN THE GAP.'], ['DROP IN, THEN'], ['CLIMB OUT.']], maxWidth: 9 },
-  locked: { rows: [['LOCKED. THE KEY OPENS IT.']], maxWidth: 7 },
-  exit: { rows: [['EXIT →']], maxWidth: 5 },
+  teach: { lines: ['STEP 1', 'TEACH'], post: false },
+  safe: { lines: ['SAFE', 'HERE'] },
+  drop: { lines: ['DROP', 'IN'] },
+  test: { lines: ['STEP 2', 'TEST'], post: false },
+  ouch: { lines: ['OUCH'], post: false },
+  wider: { lines: ['RUN,', 'JUMP'] },
+  twist: { lines: ['STEP 3', 'TWIST'], post: false },
+  key: { lines: ['DROP', 'IN'] },
+  locked: { lines: ['NEED', 'KEY'] },
+  exit: { lines: ['EXIT', '→'], post: false },
 };
 
 /** The block set the levels share: the Starter blocks, the lock and spike blocks, then this game's signs. */
@@ -46,21 +48,7 @@ function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
   addStarterBlocks(book, pal);
   addLockBlocks(book, pal);
   addHazards(book, pal);
-  // Share larger centered lettering and frames across all three lessons.
-  const { blocks, signs } = buildTiledSigns(SIGNS, {
-    lettersPerBlock: 3,
-    colors: {
-      background: skyOf(pal),
-      paper: pal.c('parch', 3),
-      ink: pal.c('ink', 0),
-      wood: pal.c('wood', 2),
-      highlight: pal.c('wood', 4),
-      shadow: pal.c('wood', 0),
-    },
-    glyphs: { ...MICRO_GLYPHS, '→': '100110111110100' },
-    maxBlocks: Math.min(100, 150 - book.index.size),
-  });
-  for (const [name, pic] of blocks) book.add(name, pic, { grav: PULL.down });
+  const signs = addMicroPlaques(book, pal, SIGNS);
   return { book, signs };
 }
 
@@ -120,7 +108,7 @@ function teach(book: Book, s: Record<SignName, Sign>): StarterMap {
   );
   const m = new StarterMap(book, g.rows());
   stampTiledSign({ set: m.setOnSky.bind(m) }, 4, onGround(GROUND, s.teach), s.teach);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 12, onGround(GROUND, s.safe), s.safe);
+  stampMicroPlaques({ set: m.setOnSky.bind(m) }, 12, GROUND - 3, [s.safe, s.drop]);
   stampTiledSign({ set: m.setOnSky.bind(m) }, 30, onGround(GROUND, s.exit), s.exit);
   return m;
 }
@@ -144,7 +132,8 @@ function test(book: Book, s: Record<SignName, Sign>): StarterMap {
   );
   const m = new StarterMap(book, g.rows());
   stampTiledSign({ set: m.setOnSky.bind(m) }, 4, onGround(GROUND, s.test), s.test);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 21, onGround(GROUND, s.wider), s.wider);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 11, 8, s.ouch);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 23, onGround(GROUND, s.wider), s.wider);
   stampTiledSign({ set: m.setOnSky.bind(m) }, 36, onGround(GROUND, s.exit), s.exit);
   for (const [x, w] of [
     [AT.two.gap, AT.two.width],
@@ -175,9 +164,9 @@ function twist(book: Book, s: Record<SignName, Sign>): StarterMap {
   );
   const m = new StarterMap(book, g.rows());
   stampTiledSign({ set: m.setOnSky.bind(m) }, 4, onGround(GROUND, s.twist), s.twist);
-  // The wider board's centered post stands just beyond the pit, clear of its key.
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 12, onGround(GROUND, s.key), s.key);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 25, onGround(GROUND, s.locked), s.locked);
+  // Read DROP IN before reaching the key's pit; the post stays on solid ground.
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 11, onGround(GROUND, s.key), s.key);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 28, onGround(GROUND, s.locked), s.locked);
   stampTiledSign({ set: m.setOnSky.bind(m) }, 39, onGround(GROUND, s.exit), s.exit);
   for (let i = 0; i < AT.three.wideWidth; i++) m.set(AT.three.wide + i, PIT_FLOOR - 1, 'spikeUp');
   return m;

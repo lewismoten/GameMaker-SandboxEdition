@@ -9,9 +9,7 @@ import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { Book, SOLID } from '../../kit/starter/book';
 import { KEYS } from '../../kit/starter/blocks';
 import type { Pal } from '../../kit/starter/palette';
-import { addSign, type Sign } from '../../kit/starter/sign';
 import { buildTopHero } from '../../kit/starter/topHero';
-import { skyOf } from '../../kit/starter/palette';
 
 const N = 20;
 /** The counter the keys add to (and the gate takes from). Yana starts with 1: a counter shows one less than it holds. The keys add 2: a map reloads when you come back to it, so the gate is shut again after the house and needs a second key to leave the yard. */
@@ -153,20 +151,6 @@ function gateTile(pal: Pal, under: Pixels): Pixels {
   p.rect(8, 9, 4, 4, ink).rect(9, 10, 2, 2, g[3]).rect(9, 8, 2, 1, ink);
   return p;
 }
-
-/** A sign standing on `under`: the Starters' board and posts, with the posts drawn over that ground (so each ground has its own). */
-export function addGroundSign(book: Book, pal: Pal, ground: string, under: Pixels, name: string, text: string, w: number, h: number): Sign {
-  const scratch = new Book('bbl');
-  const sign = addSign(scratch, pal, name, text, w, h);
-  const legs = sign.legs.map((n) => `${n}.${ground}`) as [string, string];
-  sign.legs.forEach((n, i) => {
-    if (!book.has(legs[i])) book.add(legs[i], onto(scratch.pics.get(n)!, pal, under));
-  });
-  for (const [n, pic] of scratch.pics) if (!sign.legs.includes(n) && !book.has(n)) book.add(n, onto(pic, pal, under));
-  return { board: sign.board, legs };
-}
-
-const onto = (pic: Pixels, pal: Pal, under: Pixels): Pixels => pic.crop(0, 0, pic.w, pic.h).map((x, y, c) => (c === skyOf(pal) ? under.get(x % N, y % N) : c));
 
 /** Adds the world's blocks and the gate; returns the plain land block's picture (what world signs stand on). */
 export function addWorldBlocks(book: Book, pal: Pal, townGround: Pixels): { land: Pixels } {

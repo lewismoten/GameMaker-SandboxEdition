@@ -13,27 +13,21 @@ import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { ORIGIN, StarterMap } from '../../kit/starter/map';
-import { type Pal } from '../../kit/starter/palette';
-import { addSign, type Sign } from '../../kit/starter/sign';
+import { skyOf, type Pal } from '../../kit/starter/palette';
+import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
 import { addHoodBlocks, hoodPalette, PLAY_BYTES } from './hoodBlocks';
 
 const SIGNS = {
-  bytes: ['AN EXE IS A LONG ROW OF BYTES', 2],
-  offset: ['EVERY BYTE HAS AN OFFSET', 2],
-  play: ['AT 2575B THE BYTES SAY PLAY', 2],
-  gate: ['THE GATE WANTS ALL 4', 2],
-  patch: ['A PATCH LIVES IN THE PLAYER, NOT IN A LEVEL', 3],
-  slot: ['A WORD SITS IN A SLOT', 2],
-  four: ['PLAY HAS 4 BYTES. SO DOES ITS SLOT', 2],
-  long: ['START IS 5 BYTES. TOO LONG', 2],
-  fits: ['GO AND 2 SPACES FITS', 2],
-  same: ['SAME SIZE IN, SAME SIZE OUT', 2],
-  copy: ['COPY THE EXE FIRST', 2],
-  backup: ['THE GATE WANTS A BACKUP', 2],
-  own: ['ONLY CHANGE YOUR OWN COPY', 2],
-  credits: ['LEAVE THE CREDITS AS THEY ARE', 2],
-  paid: ['UNLOCKING A PAID GAME IS NOT TAUGHT HERE', 3],
-  test: ['TRY IT ON THE COPY, THEN PLAY', 2],
+  play: { lines: ['2575B:', 'PLAY'], post: false },
+  gate: { lines: ['NEED', '4'] },
+  long: { lines: ['START=5', 'TOO LONG'] },
+  fits: { lines: ['GO'] },
+  spaces: { lines: ['2', 'SPACES'] },
+  copy: { lines: ['COPY EXE', 'FIRST'] },
+  own: { lines: ['YOUR OWN', 'COPY'] },
+  credits: { lines: ['KEEP THE', 'CREDITS'] },
+  paid: { lines: ['NO PAID', 'UNLOCKS'] },
 } as const;
 
 export type SignName = keyof typeof SIGNS;
@@ -43,15 +37,15 @@ export function buildBlocks(pal: Pal, names: SignName[]): { book: Book; signs: R
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
   addHoodBlocks(book, pal);
-  const signs = Object.fromEntries(names.map((name) => [name, addSign(book, pal, name, SIGNS[name][0], 4, SIGNS[name][1])])) as Record<SignName, Sign>;
+  const signs = addMicroPlaques(book, pal, Object.fromEntries(names.map((name) => [name, SIGNS[name]]))) as Record<SignName, Sign>;
   return { book, signs };
 }
 
 /** The signs each level stands up, in order. */
 const LEVEL_SIGNS: SignName[][] = [
-  ['bytes', 'offset', 'play', 'gate', 'patch'],
-  ['slot', 'four', 'long', 'fits', 'same'],
-  ['copy', 'backup', 'own', 'credits', 'paid', 'test'],
+  ['play', 'gate'],
+  ['long', 'fits', 'spaces'],
+  ['copy', 'own', 'credits', 'paid'],
 ];
 
 export interface Level {
@@ -89,15 +83,35 @@ function walls(m: StarterMap, width: number, at: number[], to = GROUND - 1): voi
 }
 
 /** The hex dump behind everything: each open cell above the ground shows two rows of bytes. */
-function dump(book: Book, m: StarterMap): void {
+function dump(book: Book, pal: Pal, m: StarterMap): void {
   const sky = book.n('sky');
   const map = m.done();
+  const names = [...book.index.keys()];
   for (let y = 0; y < GROUND; y++)
-    for (let x = 0; x < m.width; x++) if (map.blocks[(y + ORIGIN) * 100 + x + ORIGIN] === sky) m.set(x, y, `hex${(x * 3 + y * 5) % 8}`);
+    for (let x = 0; x < m.width; x++) {
+      const block = map.blocks[(y + ORIGIN) * 100 + x + ORIGIN];
+      const hex = `hex${(x * 3 + y * 5) % 8}`;
+      if (block === sky) m.set(x, y, hex);
+      else if (names[block].startsWith('microPlaque.post')) {
+        // Copy shared supports before adding the local dump texture; boards stay shared.
+        const source = names[block];
+        const mounted = `${source}.${hex}`;
+        if (!book.has(mounted))
+          book.add(
+            mounted,
+            book.pics
+              .get(source)!
+              .crop(0, 0, 20, 20)
+              .map((px, py, c) => (c === skyOf(pal) ? book.pics.get(hex)!.get(px, py) : c)),
+            book.rulesOf(source),
+          );
+        m.set(x, y, mounted);
+      }
+    }
 }
 
 /** Level 1: What Is an EXE. 44 blocks wide. */
-function whatIsAnExe(book: Book, signs: Record<SignName, Sign>): StarterMap {
+function whatIsAnExe(book: Book, signs: Record<SignName, Sign>, pal: Pal): StarterMap {
   const W = 44;
   const g = frame(W, 40);
   for (const x of [27, 32]) g.put(x, GROUND - 1, 'c');
@@ -105,12 +119,11 @@ function whatIsAnExe(book: Book, signs: Record<SignName, Sign>): StarterMap {
   walls(m, W, [33], GROUND - 3);
   m.set(33, GROUND - 2, 'arch').set(33, GROUND - 1, 'playGate');
   PLAY_BYTES.forEach(([hex], i) => m.set(20 + i * 2, GROUND - 1, `b${hex}`));
-  m.sign(5, onGround(GROUND, signs.bytes), signs.bytes);
-  m.sign(10, onGround(GROUND, signs.offset), signs.offset);
-  m.sign(15, onGround(GROUND, signs.play), signs.play);
-  m.sign(28, onGround(GROUND, signs.gate), signs.gate);
-  m.sign(35, onGround(GROUND, signs.patch), signs.patch);
-  dump(book, m);
+
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 15, onGround(GROUND, signs.play), signs.play);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 28, onGround(GROUND, signs.gate), signs.gate);
+
+  dump(book, pal, m);
   return m;
 }
 
@@ -118,7 +131,7 @@ function whatIsAnExe(book: Book, signs: Record<SignName, Sign>): StarterMap {
 export const LEDGE = 6;
 
 /** Level 2: Same Size. 46 blocks wide; a wall at 25 with two doors, a ledge and a ladder to the upper one. */
-function sameSize(book: Book, signs: Record<SignName, Sign>): StarterMap {
+function sameSize(book: Book, signs: Record<SignName, Sign>, pal: Pal): StarterMap {
   const W = 46;
   const g = frame(W, 41);
   g.col(18, LEDGE - 1, GROUND - 1, 'H');
@@ -129,17 +142,17 @@ function sameSize(book: Book, signs: Record<SignName, Sign>): StarterMap {
   for (let x = 19; x <= 24; x++) m.set(x, LEDGE, 'panel');
   m.set(25, LEDGE - 2, 'arch').set(25, LEDGE - 1, 'goPlate');
   m.set(25, GROUND - 2, 'arch').set(25, GROUND - 1, 'startPlate');
-  m.sign(5, onGround(GROUND, signs.slot), signs.slot);
-  m.sign(10, onGround(GROUND, signs.four), signs.four);
-  m.sign(20, onGround(GROUND, signs.long), signs.long);
-  m.sign(20, onGround(LEDGE, signs.fits), signs.fits);
-  m.sign(31, onGround(GROUND, signs.same), signs.same);
-  dump(book, m);
+
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 20, onGround(GROUND, signs.long), signs.long);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 20, onGround(LEDGE, signs.fits), signs.fits);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 22, onGround(LEDGE, signs.spaces), signs.spaces);
+
+  dump(book, pal, m);
   return m;
 }
 
 /** Level 3: Ask First. 46 blocks wide; the backup gate is in a wall at 16. */
-function askFirst(book: Book, signs: Record<SignName, Sign>): StarterMap {
+function askFirst(book: Book, signs: Record<SignName, Sign>, pal: Pal): StarterMap {
   const W = 46;
   const g = frame(W, 41);
   for (const x of [26, 27, 33, 38]) g.put(x, GROUND - 1, 'c');
@@ -148,13 +161,13 @@ function askFirst(book: Book, signs: Record<SignName, Sign>): StarterMap {
   m.set(16, GROUND - 2, 'arch').set(16, GROUND - 1, 'backupGate');
   m.set(10, GROUND - 1, 'floppy');
   m.set(23, 5, 'creditsL').set(24, 5, 'creditsR');
-  m.sign(5, onGround(GROUND, signs.copy), signs.copy);
-  m.sign(11, onGround(GROUND, signs.backup), signs.backup);
-  m.sign(17, onGround(GROUND, signs.own), signs.own);
-  m.sign(22, onGround(GROUND, signs.credits), signs.credits);
-  m.sign(28, onGround(GROUND, signs.paid), signs.paid);
-  m.sign(34, onGround(GROUND, signs.test), signs.test);
-  dump(book, m);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 5, onGround(GROUND, signs.copy), signs.copy);
+
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 17, onGround(GROUND, signs.own), signs.own);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 22, onGround(GROUND, signs.credits), signs.credits);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 28, onGround(GROUND, signs.paid), signs.paid);
+
+  dump(book, pal, m);
   return m;
 }
 
@@ -163,7 +176,7 @@ export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
   const pal = hoodPalette();
   const make = (i: number, file: string, title: string, hint: string, draw: typeof whatIsAnExe): Level => {
     const { book, signs } = buildBlocks(pal, LEVEL_SIGNS[i]);
-    return { file, title, hint, book, map: draw(book, signs) };
+    return { file, title, hint, book, map: draw(book, signs, pal) };
   };
   const levels: Level[] = [
     make(0, 'one', 'What Is an EXE', 'A program is a row of bytes.', whatIsAnExe),
