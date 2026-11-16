@@ -22,14 +22,14 @@ export async function ladderLane(bot: StarterBot): Promise<void> {
   await climbUp(bot, ONE.ladderUp, 5, 'the scaffold');
   await must(bot, bot.walk(ONE.clover, 'the clover'), 'to the clover');
   await must(bot, bot.walk(ONE.roadEnd + 1, 'the end of the awning'), 'off the awning');
-  await hop(bot, ONE.cracks, 3, 'the cracks');
+  await hop(bot, ONE.cracks, 1, 'the cracks');
   await climbUp(bot, ONE.scaffoldLadder, 5, 'the second scaffold');
   await must(bot, bot.walk(ONE.horseshoe, 'the horseshoe'), 'to the horseshoe');
   await must(bot, bot.walk(ONE.horseshoe + 4, 'the end of the awning'), 'off the awning');
   await must(bot, bot.walk(ONE.crates - 1, 'the crates'), 'to the crates');
   await must(bot, bot.walk(ONE.crates + 3, 'over the crates'), 'over the crates');
   await readAt(bot, 50, 'the blame sign');
-  await hop(bot, ONE.cracks2, 2, 'the last cracks');
+  await hop(bot, ONE.cracks2, 1, 'the last cracks');
   score(bot, from, 2, 0, 'level 1');
   if (bot.sim.ci.hitpts !== hp) throw new Error(`level 1 cost hit points: ${hp} -> ${bot.sim.ci.hitpts}`);
   await must(bot, bot.wait(READ / 2), 'a breath');
@@ -48,7 +48,7 @@ export async function mirrorMaze(bot: StarterBot): Promise<void> {
     await must(bot, bot.walk(TWO.ladybug, 'the ladybug'), 'to the ladybug');
     await must(bot, bot.walk(TWO.key, 'the hand mirror'), 'to the hand mirror');
     await must(bot, bot.walk(TWO.planksEnd + 2, 'the end of the mezzanine'), 'off the mezzanine');
-    await hop(bot, TWO.cracks, 2, 'the cracks before the gate');
+    await hop(bot, TWO.cracks, 1, 'the cracks before the gate');
     await must(bot, bot.walk(TWO.wall + 2, 'through the gate'), 'through the shining gate');
     await must(bot, bot.walk(45, 'the second pillars'), 'over the second pillars');
     await climbUp(bot, TWO.ladder2, 4, 'the second ladder');
@@ -78,7 +78,7 @@ export async function townHall(bot: StarterBot): Promise<void> {
   await readAt(bot, 48, 'the salt sign');
   await must(bot, bot.walk(THREE.wall + 2, 'through the salt'), 'through the salt');
   await must(bot, bot.walk(THREE.sock, 'the sock'), 'to the sock');
-  await hop(bot, THREE.cracks, 2, 'the cracks by the door');
+  await hop(bot, THREE.cracks, 1, 'the cracks by the door');
   score(bot, from, 2, 25, 'level 3');
   if (bot.sim.ci.hitpts !== hp) throw new Error(`level 3 cost hit points: ${hp} -> ${bot.sim.ci.hitpts}`);
   await must(bot, bot.wait(READ / 2), 'a breath');
@@ -90,7 +90,7 @@ export async function raceToTheFair(bot: StarterBot): Promise<void> {
   const from = bot.sim.ci.score;
   const hp = bot.sim.ci.hitpts;
   await readAt(bot, 6, 'the race sign');
-  await hop(bot, FOUR.cracks, 3, 'the first cracks');
+  await hop(bot, FOUR.cracks, 1, 'the first cracks');
   // under the stepladder: a drip of paint costs a fifth of her luck, but it is the quick way
   await must(bot, bot.walk(FOUR.ladder - 1, 'the stepladder'), 'to the stepladder');
   await must(bot, bot.walk(FOUR.ladder + 5, 'under the stepladder'), 'under the stepladder');
@@ -98,7 +98,7 @@ export async function raceToTheFair(bot: StarterBot): Promise<void> {
   await climbUp(bot, FOUR.wallLadder, 6, 'the wall ladder');
   await must(bot, bot.walk(FOUR.star, 'the star'), 'to the star');
   await must(bot, bot.walk(FOUR.wall[1] + 2, 'the far side of the wall'), 'down the far side');
-  await hop(bot, FOUR.cracks2, 3, 'the cracks by the wall');
+  await hop(bot, FOUR.cracks2, 1, 'the cracks by the wall');
   await must(bot, bot.walk(FOUR.crates - 1, 'the crates'), 'to the crates');
   await must(bot, bot.walk(FOUR.crates + 3, 'over the crates'), 'over the crates');
   await must(bot, bot.walk(FOUR.dice, 'the dice'), 'to the dice');
@@ -137,7 +137,7 @@ export async function knockOnWood(bot: StarterBot): Promise<void> {
 export async function rascalsRoof(bot: StarterBot): Promise<void> {
   const from = bot.sim.ci.score;
   const hp = bot.sim.ci.hitpts;
-  await hop(bot, SIX.cracks, 3, 'the cracks');
+  await hop(bot, SIX.cracks, 1, 'the cracks');
   await must(bot, bot.walk(SIX.lift - 1, 'the umbrellas'), 'to the umbrellas');
   await must(bot, bot.walk(SIX.lift, 'into the umbrellas'), 'into the umbrellas');
   await must(bot, bot.wait(30), 'rising');
@@ -201,7 +201,7 @@ export async function earlierThatMorning(bot: StarterBot): Promise<void> {
   await must(bot, bot.walk(MORNING.cleat2, 'the awning rope'), 'tying off the awning rope');
   await must(bot, bot.walk(MORNING.key, 'the bin key'), 'to the bin key');
   await must(bot, bot.walk(MORNING.awning[1] + 2, 'the end of the awning'), 'off the awning');
-  await hop(bot, MORNING.cracks, 3, 'the cracks');
+  await hop(bot, MORNING.cracks, 1, 'the cracks');
   await must(bot, bot.walk(MORNING.step2, 'the second doorstep'), 'setting out the second saucer');
   await must(bot, bot.walk(MORNING.crow - 3, 'before the crow'), 'to the crow');
   await watchFor(bot, lifting(bot, MORNING.crow, MORNING.crowRow), 'the crow flying up');

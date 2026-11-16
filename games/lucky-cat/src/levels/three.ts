@@ -6,7 +6,7 @@
 // Two charms: the acorn and the sock.
 import { StarterMap } from '../../../kit/starter/map';
 import type { Pal } from '../print';
-import { GROUND, addSigns, onGround, room, startBook, type Level } from '../level';
+import { GROUND, crackCrossing, addSigns, onGround, room, startBook, type Level } from '../level';
 
 export const THREE = {
   lift: 15,
@@ -16,7 +16,7 @@ export const THREE = {
   shaker: 31,
   wall: 52,
   sock: 56,
-  /** Two cracks between the sock and the door. */
+  /** A cracked gap between the sock and the door. */
   cracks: 57,
   exit: 61,
 } as const;
@@ -43,9 +43,9 @@ export function levelThree(pal: Pal): Level {
   for (let y = -10; y < GROUND - 2; y++) m.set(THREE.wall, y, 'brick');
   m.set(THREE.wall, GROUND - 2, 'saltArch').set(THREE.wall, GROUND - 1, 'saltPile');
   m.set(THREE.sock, GROUND - 1, 'charm.sock');
-  for (const x of [THREE.cracks, THREE.cracks + 1]) m.set(x, GROUND - 1, 'crack');
   for (const x of [38, 46, 58]) m.set(x, 8, 'lampHead').set(x, 9, 'lampPost');
   m.sign(47, onGround(GROUND, s.salt), s.salt);
+  crackCrossing(m, THREE.cracks, 1);
   return {
     file: 'three',
     title: 'Town Hall',

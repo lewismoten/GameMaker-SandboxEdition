@@ -6,7 +6,7 @@
 // No charms. Chores score 7 points each (three cleats on the stairs, one on the line, three doorsteps) and the key 25.
 import { StarterMap } from '../../../kit/starter/map';
 import type { Pal } from '../print';
-import { GROUND, addSigns, onGround, room, startBook, type Level } from '../level';
+import { GROUND, crackCrossing, addSigns, onGround, room, startBook, type Level } from '../level';
 
 export const LAUNDRY = {
   step1: 9,
@@ -43,12 +43,13 @@ export function levelLaundry(pal: Pal): Level {
   m.set(LAUNDRY.cleatLine, 2, 'cleat');
   m.set(LAUNDRY.key, 2, 'binKey');
   for (const x of [LAUNDRY.step1, LAUNDRY.step2, LAUNDRY.step3]) m.set(x, GROUND - 1, 'step');
-  for (const x of [LAUNDRY.cracks, LAUNDRY.cracks + 1, LAUNDRY.cracks + 2, LAUNDRY.cracks2, LAUNDRY.cracks2 + 1]) m.set(x, GROUND - 1, 'crack');
   // the padlocked gate, with the bins beside it
   for (let y = -10; y < GROUND - 2; y++) m.set(LAUNDRY.wall, y, 'brick');
   m.set(LAUNDRY.wall, GROUND - 2, 'saltArch').set(LAUNDRY.wall, GROUND - 1, 'padlock');
   for (const x of [69, 70]) m.set(x, GROUND - 2, 'binTop').set(x, GROUND - 1, 'bin');
   m.sign(4, onGround(GROUND, s.banner), s.banner);
+  crackCrossing(m, LAUNDRY.cracks, 3);
+  crackCrossing(m, LAUNDRY.cracks2, 2);
   return {
     file: 'wash',
     title: 'Wash Day',

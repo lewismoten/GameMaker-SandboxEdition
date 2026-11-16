@@ -6,7 +6,7 @@
 // Two charms: the ladybug and the wishbone.
 import { StarterMap } from '../../../kit/starter/map';
 import type { Pal } from '../print';
-import { GROUND, addSigns, onGround, room, startBook, type Level } from '../level';
+import { GROUND, crackCrossing, addSigns, onGround, room, startBook, type Level } from '../level';
 
 export const TWO = {
   pillars: 15,
@@ -14,7 +14,7 @@ export const TWO = {
   ladybug: 27,
   key: 31,
   planksEnd: 33,
-  /** Two cracks before the gate, hopped on the swapped keys. */
+  /** A cracked gap before the gate, hopped on the swapped keys. */
   cracks: 36,
   wall: 40,
   ladder2: 47,
@@ -36,7 +36,6 @@ export function levelTwo(pal: Pal): Level {
   g.col(TWO.ladder2, 4, GROUND - 1, 'H');
   g.row(5, TWO.ladder2 + 1, TWO.wishbone + 3, '=');
   const m = new StarterMap(book, g.rows());
-  for (const x of [TWO.cracks, TWO.cracks + 1]) m.set(x, GROUND - 1, 'crack');
   for (let x = 4; x < 58; x += 2) m.set(x, 1, 'bunting');
   for (const y of [8, 9]) m.set(TWO.pillars, y, 'mirrorWall').set(TWO.pillars + 1, y, 'mirrorWall2');
   m.set(TWO.ladybug, 4, 'charm.ladybug').set(TWO.key, 4, 'mirrorKey');
@@ -47,6 +46,7 @@ export function levelTwo(pal: Pal): Level {
   // a few mirror pillars after the gate for the look and one more hop
   for (const y of [8, 9]) m.set(43, y, 'mirrorWall2').set(44, y, 'mirrorWall');
   m.sign(5, onGround(GROUND, s.swap), s.swap);
+  crackCrossing(m, TWO.cracks, 2);
   return {
     file: 'two',
     title: 'Mirror Maze',

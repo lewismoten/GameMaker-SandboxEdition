@@ -87,3 +87,10 @@ export function scenery(g: Grid, clouds: [number, number][], bushes: number[], f
   for (const x of bushes) g.put(x, ground - 1, 'b');
   for (const x of flowers) g.put(x, ground - 1, 'f');
 }
+
+/** A narrow cracked gap under a low wooden landing: one held rise clears the crack after release. */
+export function crackCrossing(m: StarterMap, col: number, width: number, row = GROUND - 1): void {
+  for (let x = col; x < col + width; x++) m.set(x, row, 'sky');
+  m.set(col, row, 'plank');
+  m.set(col, row + 1, 'crack');
+}
