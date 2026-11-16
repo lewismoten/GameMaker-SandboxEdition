@@ -7,12 +7,13 @@
 //   2. Dusk Meadow: a longer meadow with fireflies of ten kinds scattered over it, laid so that no two of a kind are near.
 import { rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { MLEN, type GameMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
-import { Book, PULL } from '../../kit/starter/book';
+import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { ORIGIN, StarterMap } from '../../kit/starter/map';
-import { skyOf, type Pal } from '../../kit/starter/palette';
-import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { type Pal } from '../../kit/starter/palette';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { BUG, KINDS, STEP, reachOf, type Kind } from './bugs';
 import { GROUND, HEIGHT, addBands, addTrees, addTuft, addTurf, duskPalette, onSky, skyAt, treeAt } from './dusk';
 
@@ -36,12 +37,8 @@ export interface Bug {
 }
 
 const WORDS = {
-  step: { rows: [['SIX COPIES OF'], ['ONE FIREFLY'], ['BLINK AS ONE']] },
-  own: { rows: [['NOW EACH'], ['ONE IS ITS'], ['OWN MONSTER']] },
-  times: { rows: [['OWN TIMES,'], ['OWN PATH,'], ['NONE IN STEP']] },
-  dark: { rows: [['A FLASH, THEN'], ['A LONG DARK']] },
-  glow: { rows: [['THE GLOW IS'], ['DOTS, THE SKY'], ['SHOWS BETWEEN']] },
-  near: { rows: [['NO FIREFLY IS'], ['NEXT TO ITS'], ['OWN KIND']] },
+  step: { lines: ['SAME', 'TIME'] },
+  own: { lines: ['OWN', 'TIME'] },
 } as const;
 type SignName = keyof typeof WORDS;
 
@@ -98,7 +95,7 @@ class DuskMap extends StarterMap {
 }
 
 /** A level's block set (the Starter blocks and the dusk's), and its signs, drawn in a book of their own until they are laid. */
-function blocks(pal: Pal, used: SignName[]): { book: Book; signBook: Book; signs: Record<SignName, Sign> } {
+function blocks(pal: Pal, used: SignName[]): { book: Book; signBook: Book; signs: Record<string, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
   addBands(book, pal);
@@ -106,20 +103,7 @@ function blocks(pal: Pal, used: SignName[]): { book: Book; signBook: Book; signs
   addTuft(book, pal);
   addTurf(book, pal);
   const signBook = new Book('bbl');
-  const { blocks: tiles, signs } = buildTiledSigns(WORDS, {
-    include: used,
-    colors: {
-      background: skyOf(pal),
-      paper: pal.c('parch', 3),
-      ink: pal.c('ink', 0),
-      wood: pal.c('wood', 2),
-      highlight: pal.c('wood', 4),
-      shadow: pal.c('wood', 0),
-    },
-    lettersPerBlock: 3,
-    maxBlocks: Math.min(100, 150 - book.index.size),
-  });
-  for (const [name, pic] of tiles) signBook.add(name, pic, { grav: PULL.down });
+  const signs = addMicroPlaques(signBook, pal, Object.fromEntries(used.map((name) => [name, WORDS[name]])));
   return { book, signBook, signs };
 }
 
@@ -181,11 +165,11 @@ function lay(m: DuskMap, bugs: Bug[], x: number, y: number, monnum: number, kind
 
 /** Level 1: 62 blocks wide; six copies of one firefly, then six fireflies each its own. */
 function inStep(pal: Pal): Level {
-  const { book, signBook, signs } = blocks(pal, ['step', 'own', 'times']);
+  const { book, signBook, signs } = blocks(pal, ['step', 'own']);
   const m = meadow(pal, book, signBook, STEP_ROOM.width, STEP_ROOM.exit, [10, 19, 30, 36, 52, 57]);
   m.stand(4, signs.step);
-  m.stand(30, signs.own);
-  m.stand(51, signs.times);
+  // One cell right of the old board: the centered one-block post clears tuft 30.
+  m.stand(31, signs.own);
   const bugs: Bug[] = [];
   // the copies: every one the same monster, on two rows, three blocks apart
   for (const [x, y] of STEP_ROOM.copies) lay(m, bugs, x, y, BUG.step, STEP);
@@ -196,14 +180,11 @@ function inStep(pal: Pal): Level {
 
 /** Level 2: 66 blocks wide; fireflies of all ten kinds over the meadow, two every three blocks, no two of a kind within 8 blocks, none starting on a sign. */
 function duskMeadow(pal: Pal): Level {
-  const { book, signBook, signs } = blocks(pal, ['dark', 'glow', 'near']);
+  const { book, signBook } = blocks(pal, []);
   const { width, exit } = DUSK_ROOM;
   const m = meadow(pal, book, signBook, width, exit, [10, 13, 24, 35, 41, 53, 57]);
-  // Taller centered posts keep the larger boards above the unchanged firefly starts.
-  // Retain DUSK_ROOM.signs below as the original sampling exclusions and bot waypoints.
-  m.stand(5, signs.dark, 2);
-  m.stand(31, signs.glow, 2);
-  m.stand(52, signs.near, 2);
+  // All three old boards are dropped. Retain DUSK_ROOM.signs below as the
+  // original monster sampling exclusions and bot waypoints.
   const bugs: Bug[] = [];
   const rand = rng(6);
   /** Whether level block (x, y) is on a sign's board (rows 5 to 7, four wide): a firefly may fly past a sign but not start on one. */
