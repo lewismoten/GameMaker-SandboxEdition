@@ -1302,3 +1302,5 @@ maker "ZORP" is invented. The shell is untested: nothing has been printed.
 
 - **Specials timer visibility repairs (November 16, 2026):** OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, repeated the existing countdown artwork, added small five-light copies in the same inks, and checked alternate camera heights in Pass the Pie and The Thank-You Parade and revised Pass the Pie’s first kick-bag timing. Existing art, music, voice and engine credits remain; no third-party material was added.
 - **Lucky Cat steady crossings and visible bell meters (November 16, 2026):** OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, added runged approaches within three crossings, repeated compact woodcut bell meters without changing gate timing, and verified recorded play. Existing artwork, music and engine credits remain.
+
+- **Crossing clearance (November 16, 2026):** OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, adjusted doorway approaches for one-key-at-a-time movement. Existing artwork, music and engine credits remain. No third-party material was added.
