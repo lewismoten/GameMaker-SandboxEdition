@@ -43,6 +43,8 @@ Design, pixels, beeps, songs, words and levels by Claude Sonnet 5.5 and Claude O
 
 Timer visibility repairs by OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten.
 
+Level card layout repairs by OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten.
+
 Made with GAME-MAKER 3.0 from Recreational Software Designs.
 
 A Special: a game that visits for a few days of the year.
