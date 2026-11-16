@@ -6,13 +6,13 @@
 //      sees red and green alike can't tell which is which. Both levels use the simulated palette during play.
 //   2. Shape and Brightness: the same stretch with spikes (dark, pointed) in place of the red plates
 //      and light striped plates for the safe ones. Nothing depends on color any more.
-import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
 import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
-import { stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { addColorBlocks, addColorRamps } from './colorBlocks';
 
 export type SignName = 'sting' | 'alike' | 'shape' | 'stripe' | 'any' | 'exit' | 'exit2';

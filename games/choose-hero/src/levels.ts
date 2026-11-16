@@ -8,13 +8,13 @@
 //   3. The Open Road: a short road with one hill and its scene sets NO character file: the hero you picked
 //                    last is still the hero. Nothing on it needs a particular hero; every one can finish it.
 // Every edge is a hedge or a wall you can see, so nobody is stopped by something they can't.
-import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { addMicroPlaques, stampTiledSign, stampMicroPlaques } from '../../kit/starter/microPlaque';
 import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
-import { stampTiledSign, stampMicroPlaques, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 
 export type SignName = 'pick' | 'fast' | 'big' | 'high' | 'back' | 'exit' | 'carry';
 
@@ -157,7 +157,7 @@ function theClimb(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [11, 36, 45, 48],
   );
   const m = new StarterMap(book, g.rows());
-  stampMicroPlaques({ set: (x, y, name) => m.setOnSky(x, y, name) }, 24, 10, [signs.high, signs.back]);
+  stampMicroPlaques({ set: (x, y, name) => m.setOnSky(x, y, name) }, 12, 14, [signs.high, signs.back]);
   stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 50, 14, signs.exit);
   return m;
 }

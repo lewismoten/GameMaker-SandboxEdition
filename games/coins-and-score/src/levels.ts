@@ -7,13 +7,13 @@
 //   3. Points Are Not Lives: a row of coins changes the score and nothing else; a heart on a
 //      ledge adds a life. Game-Maker has no "extra life at a score": a block that adds to the
 //      lives counter does it.
-import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
 import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
-import { stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { addPickupBlocks } from './pickups';
 
 /** The block set the levels share: the Starter blocks, this game's pickups, then its signs. */
@@ -132,7 +132,7 @@ function heartsAddLives(book: Book, signs: Record<SignName, Sign>): StarterMap {
   g.row(GROUND - 1, 10, 19, 'c');
   const m = new StarterMap(book, g.rows());
   m.set(31, 2, 'heart');
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 24, onGround(GROUND, signs.heartLife), signs.heartLife);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 20, onGround(GROUND, signs.heartLife), signs.heartLife);
   stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 35, onGround(GROUND, signs.f2Lives), signs.f2Lives);
   stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 47, 7, signs.exit);
   return m;

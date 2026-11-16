@@ -6,13 +6,13 @@
 //   2. A Crowd: Pip, Moss and Dot stand together. One touch opens a talk of four voices that
 //      runs to a second card, because a card holds 16 rows of words.
 // Every room is closed in by hedges you can see, so Kit is never stopped by something he can't.
-import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
 import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { ORIGIN, StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
-import { stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { BUBBLE, addTalkers, talkerBlocks, type TalkerName } from './talkers';
 import type { TalkId } from './text';
 
