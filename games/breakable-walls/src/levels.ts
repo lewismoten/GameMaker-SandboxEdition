@@ -8,51 +8,33 @@
 //   3. Spinning Gems: gems that turn in four frames. Every frame has the same touch, so a gem goes
 //      whichever frame it is caught in. A crate wall hides a stack of them.
 // Every room is closed in by hedges you can see, so Yana is never stopped by something she can't.
-import { Book, PULL } from '../../kit/starter/book';
+import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
-import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
-import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { MICRO_GLYPHS } from '@lewismoten/gamemaker-sandbox-tools/microFont';
+import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
+import { stampTiledSign, stampMicroPlaques, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { addBreakBlocks } from './breakBlocks';
 
-export type SignName = 'bump' | 'rubble' | 'again' | 'once' | 'wall' | 'spin' | 'frames' | 'hidden' | 'exit';
+export type SignName = 'bump' | 'rubble' | 'again' | 'once' | 'wall' | 'hidden' | 'exit';
 
 /** Each map's block set: shared gameplay blocks followed by its selected signs. */
 function buildBlocks(pal: Pal, include: readonly SignName[]): { book: Book; signs: Record<SignName, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
   addBreakBlocks(book, pal);
-  const { blocks, signs } = buildTiledSigns(
-    {
-      bump: { rows: [['BUMP A CRATE AND IT BECOMES RUBBLE']] },
-      rubble: { rows: [['ONLY WHAT YOU TOUCH BREAKS'], ['RUBBLE IS A BLOCK TOO. WALK ON']] },
-      again: { rows: [['A COIN THAT STAYS A COIN'], ['PAYS AGAIN AND AGAIN']] },
-      once: { rows: [['A COIN THAT BECOMES AIR PAYS ONCE']] },
-      wall: { rows: [['BREAK THE WALL TO THE EXIT']] },
-      spin: { rows: [['A SPINNING GEM IS FOUR BLOCKS IN A LOOP']] },
-      frames: { rows: [['EACH FRAME BECOMES AIR']] },
-      hidden: { rows: [['MORE GEMS BEHIND THE CRATES']] },
-      exit: { rows: [['EXIT →']] },
-    },
-    {
-      colors: {
-        background: skyOf(pal),
-        paper: pal.c('parch', 3),
-        ink: pal.c('ink', 0),
-        wood: pal.c('wood', 2),
-        highlight: pal.c('wood', 4),
-        shadow: pal.c('wood', 0),
-      },
-      glyphs: { ...MICRO_GLYPHS, '→': '100110111110100' },
-      lettersPerBlock: 3,
-      include,
-      maxBlocks: 100 - book.index.size,
-    },
-  );
+  const texts = {
+    bump: { lines: ['BUMP', 'IT!'] },
+    rubble: { lines: ['WALK', 'ON'] },
+    again: { lines: ['PAYS', 'AGAIN'] },
+    once: { lines: ['PAYS', 'ONCE'] },
+    wall: { lines: ['BUMP', 'WALL'] },
+    hidden: { lines: ['MORE', 'GEMS'] },
+    exit: { lines: ['EXIT', '→'], post: false },
+  };
+  const signs = addMicroPlaques(book, pal, Object.fromEntries(include.map((name) => [name, texts[name]]))) as Record<SignName, Sign>;
 
-  for (const [name, pic] of blocks) book.add(name, pic, { grav: PULL.down });
   return { book, signs };
 }
 
@@ -110,10 +92,10 @@ function bumpACrate(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [8, 14, 39],
   );
   const m = new StarterMap(book, g.rows());
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 5, 4, signs.bump, 5);
-  // Camera rows 4–5, as before; the two post halves stand in columns 25–26, clear of the crates and coins.
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 25 - (signs.rubble.post?.x ?? 0), 4, signs.rubble, 4);
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 40, 7, signs.exit, 2);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 5, 8, signs.bump);
+  // The post stands beside the second crate wall, clear of the coins.
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 25, 8, signs.rubble);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 43, 7, signs.exit);
   crates(m, L1.wallA, 1, L1.rows);
   crates(m, L1.wallB, L1.wallBWidth, L1.rows);
   return m;
@@ -135,10 +117,10 @@ function coinsPayOnce(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [8, 13, 36],
   );
   const m = new StarterMap(book, g.rows());
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 5, 5, signs.again, 3);
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 19, 7, signs.once, 2);
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 34, 4, signs.wall, 5);
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 44, 7, signs.exit, 2);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 5, 8, signs.again);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 19, 8, signs.once);
+  stampMicroPlaques({ set: (x, y, name) => m.setOnSky(x, y, name) }, 34, 7, [signs.wall, { ...signs.exit, post: signs.wall.post }]);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 47, 7, signs.exit);
   for (const x of L2.stuck) m.setOnSky(x, GROUND - 1, 'stuckCoin');
   crates(m, L2.wall, 1, 4);
   return m;
@@ -159,10 +141,8 @@ function spinningGems(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [9, 25, 41],
   );
   const m = new StarterMap(book, g.rows());
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 5, 5, signs.spin, 4);
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 22, 7, signs.frames, 2);
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 27, 4, signs.hidden, 1);
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 43, 7, signs.exit, 2);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 30, 8, signs.hidden);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 47, 7, signs.exit);
   for (const x of L3.gems) m.setOnSky(x, GROUND - 1, 'gem0');
   crates(m, L3.wall, 1, 4);
   for (const x of L3.stack) m.setOnSky(x, GROUND - 1, 'gem2').setOnSky(x, GROUND - 2, 'gem1');
@@ -179,7 +159,7 @@ export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
   const levels = [
     level('one', 'Bump a Crate', 'A bump is a touch.', ['bump', 'rubble', 'exit'], bumpACrate),
     level('two', 'Coins Pay Once', 'A coin must become air.', ['again', 'once', 'wall', 'exit'], coinsPayOnce),
-    level('three', 'Spinning Gems', 'Every frame says the same.', ['spin', 'frames', 'hidden', 'exit'], spinningGems),
+    level('three', 'Spinning Gems', 'Every frame says the same.', ['hidden', 'exit'], spinningGems),
   ];
   return { book: levels[0].book, pal, levels };
 }

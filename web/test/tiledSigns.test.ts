@@ -279,15 +279,16 @@ describe('game-wide tiled signs', () => {
     expect(Math.max(...ink.map(([, y]) => y)) - Math.min(...ink.map(([, y]) => y)) + 1).toBe(8);
   });
 
-  it('keeps Meet the Monsters pickups while placing the micro boards and both post halves', () => {
+  it('keeps Meet the Monsters pickups while placing one-block plaques on grounded posts', () => {
     const { book, levels } = monsterLevels();
-    expect(book.index.size).toBe(35);
+    expect(book.index.size).toBeLessThanOrEqual(24);
     for (const level of levels) expect(level.map.done().blocks.filter((n) => n === book.n('coin'))).toHaveLength(8);
     const cells = levels[0].map.done().blocks;
     const at = (x: number, y: number) => cells[(ORIGIN + y) * MLEN + ORIGIN + x];
     expect(at(19, 9)).toBe(book.n('flower'));
-    expect(at(20, 9)).toBe(book.n('tiledSign.post-left'));
-    expect(at(21, 9)).toBe(book.n('tiledSign.post-right'));
+    expect(at(20, 9)).toBe(book.n('microPlaque.post'));
+    expect(at(20, 10)).toBe(book.n('grass'));
+    expect(at(21, 9)).toBe(book.n('sky'));
   });
 
   it('keeps pickups and gameplay block IDs intact when maps load separate sign books', () => {
@@ -311,11 +312,11 @@ describe('game-wide tiled signs', () => {
     const { book, levels } = buildLevels();
     // The scroll review credit adds a page; the walkthrough was re-recorded with it.
     expect(CREDITS.split('\n')).toHaveLength(48);
-    expect(book.index.size).toBeLessThan(55);
-    expect([...book.index.keys()].filter((k) => k.startsWith('tiledSign.post')).sort()).toEqual([
-      'tiledSign.post',
-      'tiledSign.post-left',
-      'tiledSign.post-right',
+    expect(book.index.size).toBeLessThanOrEqual(30);
+    expect([...book.index.keys()].filter((k) => k.startsWith('microPlaque.post')).sort()).toEqual([
+      'microPlaque.post',
+      'microPlaque.post-left',
+      'microPlaque.post-right',
     ]);
     // Original first-level coins under the wider gravity sign must survive stamping.
     const map = levels[0].map.done();
