@@ -15,7 +15,8 @@ import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { ORIGIN, StarterMap } from '../../kit/starter/map';
 import { skyOf, type Pal } from '../../kit/starter/palette';
-import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { AIR, air, drip, floor, lantern, post, rock } from './cave';
 import { type Timed } from './loops';
 import { cavePalette } from './palettes';
@@ -43,14 +44,10 @@ export interface Level {
 }
 
 const WORDS = {
-  shades: { rows: [['FIVE SHADES'], ['OF ONE BLOCK']] },
-  rings: { rows: [['RINGS GET DARKER'], ['AWAY FROM A LAMP']] },
-  fixed: { rows: [['THE LAMP STAYS'], ['PUT. MIA'], ['WALKS ON.']] },
-  touch: { rows: [['TOUCH A DARK'], ['BLOCK AND'], ['IT LIGHTS']] },
-  jump: { rows: [['A JUMP LIGHTS'], ['BLOCKS HIGHER UP']] },
-  trail: { rows: [['LIGHT STAYS'], ['WHERE YOU WALKED']] },
-  clock: { rows: [['WAIT FOR'], ['ALL SIX BULBS']] },
-  once: { rows: [['A CLOCK LIGHTS'], ['EVERY BLOCK'], ['AT ONCE']] },
+  fixed: { lines: ['WALK', 'ON'] },
+  touch: { lines: ['STEP', 'ON'] },
+  jump: { lines: ['JUMP', 'UP'] },
+  clock: { lines: ['WAIT'] },
 } as const;
 type SignName = keyof typeof WORDS;
 
@@ -114,20 +111,9 @@ function start(names: SignName[]): Built {
 
   // the signs' pictures are drawn in a scratch book; each placed block is added to the level's own book (signAt), on the
   // brightness of the air behind it, so a sign lights with its surroundings
-  const { blocks: pics, signs } = buildTiledSigns(WORDS, {
-    colors: {
-      background: skyOf(pal),
-      paper: pal.c('parch', 3),
-      ink: pal.c('ink', 0),
-      wood: pal.c('wood', 2),
-      highlight: pal.c('wood', 4),
-      shadow: pal.c('wood', 0),
-    },
-    lettersPerBlock: 3,
-    maxWidth: 7,
-    include: names,
-  });
-  return { book, pal, signs, pics };
+  const signBook = new Book('bbl');
+  const signs = addMicroPlaques(signBook, pal, Object.fromEntries(names.map((name) => [name, WORDS[name]])));
+  return { book, pal, signs, pics: signBook.pics };
 }
 
 /** The picture of a cave block by name: `air.K`, `rock.K.V`, `floor.K.V`, `drip.K`, `post.K`, `lantern`, `lantern.off`. */
@@ -167,7 +153,7 @@ interface Laid {
   map: StarterMap;
   timed: Timed[];
   cells: { kind: string; shade: number }[][];
-  signAt: (name: string, x: number) => [number, number];
+  signAt: (name: string, x: number, top?: number) => [number, number];
 }
 
 /**
@@ -253,9 +239,9 @@ function lay(
    * Stamps a sign. Each of its blocks sits on the air of its cell: a tunnel's is dark until touched (and turns lit with the
    * air around it), a dark hall's lights with the hall, and elsewhere it is drawn at its ring's brightness.
    */
-  const signAt = (name: string, x: number): [number, number] => {
+  const signAt = (name: string, x: number, top?: number): [number, number] => {
     const sign = built.signs[name];
-    const y = onGround(sign);
+    const y = top ?? onGround(sign);
     const stamp = (pic: string, cx: number, cy: number): void => {
       if (letters[cy][cx] !== ' ' || !['air', 'tunnel'].includes(cells[cy][cx].kind))
         throw new Error(`Sign ${name} covers ${cells[cy][cx].kind} at ${cx},${cy}`);
@@ -281,7 +267,7 @@ function lay(
       }
       m.set(cx, cy, id);
     };
-    stampTiledSign({ set: (cx, cy, pic) => stamp(pic, cx, cy) }, x, y, sign);
+    stampTiledSign({ set: (cx, cy, pic) => stamp(pic, cx, cy) }, x, y, sign, GROUND - y - sign.board.length);
     return [x, y];
   };
   return { map: m, timed, cells, signAt };
@@ -292,7 +278,7 @@ const heights = (W: number, hills: Record<number, number> = {}): number[] => Arr
 
 /** Level 1: three lamps and the rings round them, 48 blocks wide. */
 function lanternCave(): Level {
-  const built = start(['shades', 'rings', 'fixed']);
+  const built = start(['fixed']);
   const W = 48;
   const lamps: [number, number][] = [
     [13, GROUND - 2],
@@ -300,7 +286,8 @@ function lanternCave(): Level {
     [43, GROUND - 2],
   ];
   const laid = lay(built, W, heights(W, { 30: 7, 31: 7, 32: 7 }), { lamps, start: 2, exit: 45 });
-  const signs = { shades: laid.signAt('shades', 5), rings: laid.signAt('rings', 19), fixed: laid.signAt('fixed', 34) };
+  // Beside the entrance, before the first static lamp; one grounded block of post.
+  const signs = { fixed: laid.signAt('fixed', 3) };
   return {
     file: 'lanterns',
     title: 'The Lantern Cave',
@@ -319,10 +306,12 @@ function lanternCave(): Level {
 
 /** Level 2: a dark tunnel that lights where it is touched, 44 blocks wide. */
 function lightYourWay(): Level {
-  const built = start(['touch', 'jump', 'trail']);
+  const built = start(['touch', 'jump']);
   const W = 44;
   const laid = lay(built, W, heights(W), { tunnel: [3, 40], start: 2, exit: 41 });
-  const signs = { touch: laid.signAt('touch', 6), jump: laid.signAt('jump', 19), trail: laid.signAt('trail', 32) };
+  // Read STEP/ON beside the entrance before reaching the dark tunnel at 3;
+  // JUMP/UP precedes the unchanged route's jump at 15. High intro plaques float.
+  const signs = { touch: laid.signAt('touch', 1, 4), jump: laid.signAt('jump', 11) };
   return {
     file: 'tunnel',
     title: 'Light Your Way',
@@ -351,7 +340,7 @@ function bulb(pal: Pal, on: boolean): Pixels {
 
 /** Level 3: a dark hall that lights all at once, 40 blocks wide. */
 function lightsComeOn(): Level {
-  const built = start(['clock', 'once']);
+  const built = start(['clock']);
   const W = 40;
   const lamps: [number, number][] = [
     [13, GROUND - 2],
@@ -365,7 +354,7 @@ function lightsComeOn(): Level {
     laid.timed.push({ name: `bulb.${k}.off`, next: `bulb.${k}`, ticks: BULB_TICKS * (k + 1) });
     laid.map.set(5 + k, 3, `bulb.${k}.off`);
   }
-  const signs = { clock: laid.signAt('clock', 5), once: laid.signAt('once', 18) };
+  const signs = { clock: laid.signAt('clock', 1, 4) };
   return {
     file: 'hall',
     title: 'The Lights Come On',
