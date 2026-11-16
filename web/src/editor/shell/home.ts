@@ -217,6 +217,8 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
     level = n;
     void select(current);
   });
+  // select() shows the ones the collection uses; until the tabs are drawn they stay out of the row, so it doesn't wrap and then shrink (a layout shift)
+  for (const box of [sortBox, ratingBox, tagBox, doneBox, levelBox]) box.hidden = true;
   let current: Category = savedCategory() ?? FIRST_CATEGORY;
 
   // games found by words inside them (file names, text screens, the blurb…), with where: they join as the background read goes
