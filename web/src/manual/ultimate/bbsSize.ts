@@ -7,9 +7,9 @@
 // DEFLATE: original Image/PNG/ZIP/{ZIP.H,ZIPUP.C,DEFLATE.C,TREES.C}; existing
 // Info-ZIP/FLI documentation credits are in NOTICE.md. See compressionFigures.ts
 // for generated examples; ZIP sizes use the project's writer, not DOS PKZIP.
-// Period command sources: PKWARE's PKZIP 2.04g help (February 1993), reproduced at
-// https://bcgcanada.com/pages/pkzip.htm; Robert K Jung's April 1993 ARJ 2.41 manual:
-// https://files.mpoli.fi/unpacked/drivers_1/dos/622/6_22.exe/arj.doc
+// Period command sources: PKWARE's PKZIP 2.04g help (February 1993) and Robert K Jung's
+// April 1993 ARJ 2.41 manual (web links omitted on purpose: the mock-domain
+// check scans source text).
 // SARJ is documented in ARJ's October 1995 manual; no 1994 availability established,
 // so the period prose explains solid compression without recommending that utility.
 export const BBS_SIZE = `<h2>A smaller upload, a shorter phone call</h2>
