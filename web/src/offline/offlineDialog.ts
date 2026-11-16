@@ -28,7 +28,7 @@ export async function openOfflineDialog(): Promise<void> {
           : s.copy === 'outdated'
             ? 'An update is available. The previous complete copy stays until this selection is ready.'
             : 'Choose what to keep. Verified files are reused when you update or resume.');
-      const choices = h('fieldset');
+      const choices = h('fieldset', { class: 'offline-tiers' });
       choices.append(h('legend', null, 'Keep in this browser'));
       for (const [tier, label] of Object.entries(offlineTiers) as [OfflineTier, string][]) {
         const input = h('input', { type: 'checkbox', checked: s.tiers.includes(tier), disabled: tier === 'core' });

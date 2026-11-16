@@ -4,17 +4,21 @@ Part of the [source map](../README.md). Play offline and the desk's OFFLINE.EXE 
 an explicit offline copy. Ordinary browsing still caches what the visitor opens.
 Nothing starts a bulk download until the visitor chooses Download (Y on the desk).
 
-- `tiers.ts`: manifest file metadata and the five independent tier boundaries. Core always
+- `tiers.ts`: manifest file metadata and the nine independent tier boundaries. Core always
   includes the application code, editor, desk, catalogs, lessons, previews and narration
-  metadata. Games adds public packs, shared Starter pieces and compressed walkthroughs.
+  metadata. Starters, Sandbox, Specials, Bizarre and CD independently add their catalog group’s public packs
+  and compressed walkthroughs. CD holds the original CD gameware and shareware. Shared ZIP
+  blobs (including Starter kit files) stay with their sole consuming group, or Core when
+  several public groups need them. Specials holds the limited-time games marked `series: "special"`.
   Feelies & library adds craft files and library resources. Spoken tour & phone adds the
   recordings and tour effects. Hardware & native exports adds firmware, installer files
   and native players. In-game sound stays with its game pack. Videos need the internet.
 - `offlineCopy.ts`: reads the production inventory, resolves the selected tiers and
   already-revealed games, checks actual cached bodies and storage estimates, and prepares
   or removes the copy. The default first selection is Core; subsequent visits use the
-  last requested selection, so a closed tab can resume an unfinished choice. Removing an optional tier prepares a smaller replacement while
-  retaining Core. Browser storage estimates are advisory, with 10% headroom required.
+  last requested selection (an old Games choice expands to all five game groups; an old Sandbox choice expands to Sandbox and Specials), so a closed tab can resume an unfinished choice. Removing an optional tier prepares a smaller replacement while
+  retaining Core. Saved selections and committed pointers carry a tier-schema version so
+  migrated Sandbox selections can later drop Specials independently. Browser storage estimates are advisory, with 10% headroom required.
 - `archiveStore.ts`: per-file downloads with four workers, checking both stored length and
   SHA-256 before accepting a file. A version/selection-specific staging cache retains
   verified responses after interruption, quota failure or cancellation. Retries check its
@@ -29,7 +33,8 @@ Nothing starts a bulk download until the visitor chooses Download (Y on the desk
   the written tour remains available without its spoken tier.
 - `offlineDialog.ts`, `offline.css`: today's web tier picker with bytes still needed,
   space required for safe replacement, verified-file progress, cancellation and removal.
-- `offlineExe.ts`: the same operation in the desk's text UI. Keys 1–4 toggle optional
+  Wide, short screens show the tier list in two columns without removing names or sizes.
+- `offlineExe.ts`: the same operation in the desk's text UI. Keys 1–8 toggle optional
   tiers, Y saves the selection, R removes the prepared copy and Esc stops/quits.
 - `loadFailure.ts`, `replay.ts`, `updateState.ts`: load notices, archive replay detection,
   and the explicit Reload handshake for a waiting worker.

@@ -2,7 +2,7 @@
 import { createHash } from 'node:crypto';
 import { gzipSync } from 'node:zlib';
 import { decodePart } from '../src/project/zipParts';
-import { tierOf, type OfflineFile } from '../src/offline/tiers';
+import { tierOf, type OfflineGame, type OfflineTier, type OfflineFile } from '../src/offline/tiers';
 
 export function offlineInventory(
   paths: string[],
@@ -12,8 +12,12 @@ export function offlineInventory(
   const extras = new Map(secret.map((dir) => [dir, [] as OfflineFile[]]));
   const files: OfflineFile[] = [];
   const catalog = paths.includes('games/catalog.json')
-    ? (JSON.parse(new TextDecoder().decode(read('games/catalog.json'))) as { path: string; pack?: string; parts?: string }[])
+    ? (JSON.parse(new TextDecoder().decode(read('games/catalog.json'))) as (OfflineGame & { pack?: string; parts?: string })[])
     : [];
+  // Read gated metadata only to classify private inventories; never emit these catalogs publicly.
+  for (const path of paths.filter((p) => /^games\/extra-\d+\.json$/.test(p))) {
+    catalog.push(...(JSON.parse(new TextDecoder().decode(read(path))) as OfflineGame[]));
+  }
   const canonical = new Map(catalog.filter((g) => g.pack).map((g) => [g.path, `${g.path}${g.parts ?? g.pack}`]));
   // Canonical split packs supersede their legacy ZIP aliases.
   const split = new Set(paths.filter((p) => p.endsWith('.zpart')).map((p) => p.slice(0, -6)));
@@ -31,7 +35,7 @@ export function offlineInventory(
       stored: data.length,
       wire: /\.(html|js|css|json|svg|txt|xml|webmanifest)$/i.test(path) ? gzipSync(data, { level: 6 }).length : data.length,
       sha256: createHash('sha256').update(data).digest('hex'),
-      tier: tierOf(path),
+      tier: tierOf(path, catalog),
     };
     const dir = secret.find((s) => path.startsWith(s));
     if (dir) extras.get(dir)!.push(file);
@@ -44,13 +48,21 @@ export function offlineInventory(
     }
     for (const path of dependencies) {
       const data = read(path);
-      list.push({ path, stored: data.length, wire: data.length, sha256: createHash('sha256').update(data).digest('hex'), tier: 'games' });
+      list.push({ path, stored: data.length, wire: data.length, sha256: createHash('sha256').update(data).digest('hex'), tier: list[0]?.tier ?? 'cd' });
     }
   }
   // Do not publish shared blobs used solely by unrevealed games.
-  const shared = new Set<string>();
+  const shared = new Map<string, Set<OfflineTier>>();
   for (const file of files.filter((f) => f.path.endsWith('.zpart'))) {
-    for (const [, , name] of decodePart(read(file.path)).header.shared) shared.add(`games/shared/${name}.bin`);
+    for (const [, , name] of decodePart(read(file.path)).header.shared) {
+      const path = `games/shared/${name}.bin`;
+      if (!shared.has(path)) shared.set(path, new Set());
+      shared.get(path)!.add(file.tier);
+    }
+  }
+  for (const file of files) {
+    const users = shared.get(file.path);
+    if (users) file.tier = users.size === 1 ? [...users][0] : 'core';
   }
   return { files: files.filter((f) => !f.path.startsWith('games/shared/') || shared.has(f.path)), extras };
 }

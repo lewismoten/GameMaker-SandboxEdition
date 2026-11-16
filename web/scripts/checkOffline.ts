@@ -1,4 +1,4 @@
-// Checks selectable per-file tiers, a Core-only cold start, then Games and narration offline.
+// Checks selectable per-file tiers, a Core-only cold start, then the five game groups and narration offline.
 // Never run against the maintainer's dev server.
 //
 // Needs a PRODUCTION build, because the service worker is only in one: build to a scratch folder
@@ -10,6 +10,7 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { target, launch, arg } from './perfLib';
 import { forceTheme } from './forceTheme';
+import { measure } from './dialogsFitMeasure';
 
 interface Row {
   name: string;
@@ -135,6 +136,18 @@ try {
     'Core is always selected',
     (await page.getByRole('checkbox', { name: /^Core/ }).isChecked()) && (await page.getByRole('checkbox', { name: /^Core/ }).isDisabled()),
   );
+  // Measure the real production picker, including all tier names and their sizes.
+  for (const [width, height] of [
+    [375, 812],
+    [390, 844],
+    [844, 390],
+  ]) {
+    await page.setViewportSize({ width, height });
+    const fit = await measure(page);
+    check(`tier picker fits ${width}x${height}`, fit.open && fit.problems.length === 0, fit.problems.join('; '));
+  }
+  await page.setViewportSize({ width: 1440, height: 900 });
+  check('Specials has its own public choice', (await page.getByRole('checkbox', { name: /^Specials/ }).count()) === 1);
   {
     await page.locator('dialog[open] button.primary').click();
     await waitReady();
@@ -167,7 +180,7 @@ try {
       .getByText(/Play offline|Make available offline/)
       .first()
       .click();
-    for (const name of [/^Games/, /^Feelies/, /^Spoken/, /^Hardware/]) {
+    for (const name of [/^Starters/, /^Sandbox/, /^Specials/, /^Bizarre/, /^CD/, /^Feelies/, /^Spoken/, /^Hardware/]) {
       await page.getByRole('checkbox', { name }).check();
       await page.getByText(/Checking selected files/).waitFor({ state: 'hidden', timeout: 120000 });
     }

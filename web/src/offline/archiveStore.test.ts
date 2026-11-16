@@ -1,8 +1,8 @@
 // Cache/fetch boundary regressions for resumable atomic per-file copies.
 import { afterEach, expect, it, vi } from 'vitest';
 import { contentHash, installFiles, readOfflineCopy } from './archiveStore';
-import type { OfflineManifest, OfflineTier } from './tiers';
-const revealed = vi.hoisted(() => ({ entries: [] as { path: string; pack: string }[] }));
+import type { OfflineGame, OfflineManifest, OfflineTier } from './tiers';
+const revealed = vi.hoisted(() => ({ entries: [] as (OfflineGame & { pack: string })[] }));
 vi.mock('../project/files', () => ({ loadCatalogList: async () => revealed.entries }));
 vi.mock('../achievements', () => ({ unlockAchievement: vi.fn() }));
 const base = 'https://example.test/nested/site/';
@@ -40,7 +40,7 @@ async function fixture(version = 'one', count = 6) {
       wire: body.length,
       stored: body.length,
       sha256: await contentHash(new TextEncoder().encode(body).buffer),
-      tier: path === 'assets/File-5.js' ? 'games' : 'core',
+      tier: path === 'assets/File-5.js' ? 'cd' : 'core',
     });
   const fetcher = vi.fn(
     async (url: string) =>
@@ -49,7 +49,7 @@ async function fixture(version = 'one', count = 6) {
   vi.stubGlobal('fetch', fetcher);
   return { m, fetcher };
 }
-const install = (m: OfflineManifest, tiers: OfflineTier[] = ['core', 'games'], signal = new AbortController().signal) =>
+const install = (m: OfflineManifest, tiers: OfflineTier[] = ['core', 'cd'], signal = new AbortController().signal) =>
   installFiles(base, m, [], tiers, vi.fn(), signal);
 afterEach(() => {
   vi.unstubAllGlobals();
@@ -97,7 +97,7 @@ it.each(['network', 'checksum', 'short', 'quota', 'canceled'])('keeps the previo
       return originalPut.call(this, key, value);
     });
   }
-  await expect(install(m, ['core', 'games'], stop.signal)).rejects.toThrow();
+  await expect(install(m, ['core', 'cd'], stop.signal)).rejects.toThrow();
   expect(await readOfflineCopy(base)).toEqual(before);
   expect(await (await (await caches.open(before!.cache)).match(base))?.text()).toBe('<html>one</html>');
 });
@@ -156,7 +156,7 @@ it('reports cached byte reuse but requires publication for a changed tier select
     url.endsWith('offline.json') ? new Response(JSON.stringify(m), { headers: { 'content-type': 'application/json' } }) : perFile(url),
   );
   expect((await offlineStatus()).ready).toBe(true);
-  const add = await offlineStatus(['core', 'games']);
+  const add = await offlineStatus(['core', 'cd']);
   expect(add.ready).toBe(false);
   expect(add.missing.map((f) => f.path)).toEqual(['assets/File-5.js']);
   expect(add.wireMissing).toBe(m.files[5].wire);
@@ -175,28 +175,38 @@ it('keeps a ready Core copy when adding an optional tier fails', async () => {
   expect(await readOfflineCopy(base)).toEqual(before);
   expect(await (await (await caches.open(before!.cache)).match(base))?.text()).toBe('<html>one</html>');
 });
-it('adds only already-revealed extras, verifies their hashes and keeps their inventory private', async () => {
+it.each(['cd', 'sandbox', 'specials'] as const)('adds only revealed %s extras and keeps their inventory private', async (tier) => {
   setup();
   const { m, fetcher } = await fixture();
   const { offlineStatus, makeOffline } = await import('./offlineCopy');
-  revealed.entries = [{ path: 'games/originals/revealed/', pack: 'game.zip' }];
+  revealed.entries = [
+    { path: 'games/originals/revealed/', pack: 'game.zip', ...(tier === 'cd' ? {} : { original: {}, series: tier === 'specials' ? 'special' : undefined }) },
+  ];
   vi.stubGlobal('location', { href: base });
   vi.stubGlobal('navigator', { serviceWorker: {}, locks: { request: (_key: string, run: () => Promise<unknown>) => run() }, storage: {} });
   vi.stubGlobal('localStorage', { getItem: () => null, setItem: vi.fn() });
   const bytes = new TextEncoder().encode('private');
-  const extra = { path: 'games/originals/revealed/game.zip', wire: bytes.length, stored: bytes.length, sha256: await contentHash(bytes.buffer), tier: 'games' };
+  const extra = { path: 'games/originals/revealed/game.zip', wire: bytes.length, stored: bytes.length, sha256: await contentHash(bytes.buffer), tier };
+  const shared = { ...extra, path: 'games/shared/kit.bin' };
+  m.files.push({ ...shared, tier: 'starters' });
   const perFile = fetcher.getMockImplementation()!;
   fetcher.mockImplementation(async (url) => {
     if (url === base + 'offline.json') return new Response(JSON.stringify(m), { headers: { 'content-type': 'application/json' } });
-    if (url.endsWith('revealed/offline.json')) return new Response(JSON.stringify([extra]));
+    if (url.endsWith('revealed/offline.json')) return new Response(JSON.stringify([extra, shared]));
+    if (url.endsWith('shared/kit.bin')) return new Response(bytes);
     if (url.endsWith('revealed/game.zip')) return new Response(bytes);
     return perFile(url);
   });
-  const status = await offlineStatus(['core', 'games']);
+  const unselected = await offlineStatus(['core', 'starters']);
+  expect(unselected.files.some((f) => f.path.includes('revealed'))).toBe(false);
+  expect(fetcher.mock.calls.some(([url]) => url.endsWith('revealed/offline.json'))).toBe(false);
+  const status = await offlineStatus(['core', tier]);
+  expect(status.tierFiles).toEqual(m.files);
   expect(await makeOffline(status, vi.fn(), new AbortController().signal)).toEqual({ ok: true });
   const cache = await caches.open((await readOfflineCopy(base))!.cache);
   expect(await (await cache.match(base + extra.path))?.text()).toBe('private');
   expect(await cache.match(base + 'games/originals/revealed/offline.json')).toBeDefined();
+  expect(await (await cache.match(base + shared.path))?.text()).toBe('private');
   expect(await (await cache.match(base + 'offline.json'))?.text()).not.toContain('revealed');
 });
 
@@ -214,10 +224,51 @@ it('remembers an interrupted selection when the dialog reopens and reports only 
     if (url.endsWith('File-5.js')) throw new Error('interrupted');
     return perFile(url);
   });
-  const status = await offlineStatus(['core', 'games', 'speech']);
+  const status = await offlineStatus(['core', 'cd', 'speech']);
   expect((await makeOffline(status, vi.fn(), new AbortController().signal)).ok).toBe(false);
   const reopened = await offlineStatus();
-  expect(reopened.tiers).toEqual(['core', 'games', 'speech']);
+  expect(reopened.tiers).toEqual(['core', 'cd', 'speech']);
   expect(reopened.wireMissing).toBe(m.files[5].wire);
   expect(reopened.storedMissing).toBe(m.files[5].stored);
+});
+
+it.each(['localStorage', 'committed copy'])('migrates the old Games selection from %s to all five groups', async (source) => {
+  setup();
+  const { m, fetcher } = await fixture();
+  const { offlineStatus } = await import('./offlineCopy');
+  if (source === 'committed copy') await install(m, ['core', 'games'] as unknown as OfflineTier[]);
+  vi.stubGlobal('location', { href: base });
+  vi.stubGlobal('navigator', { serviceWorker: {}, locks: {}, storage: {} });
+  vi.stubGlobal('localStorage', { getItem: (key: string) => (source === 'localStorage' && key === 'gm-offline-tiers' ? '["games","speech"]' : null) });
+  fetcher.mockImplementation(async () => new Response(JSON.stringify(m), { headers: { 'content-type': 'application/json' } }));
+  expect((await offlineStatus()).tiers).toEqual(['core', 'starters', 'sandbox', 'specials', 'bizarre', 'cd', ...(source === 'localStorage' ? ['speech'] : [])]);
+});
+
+// Old pointers lack tierVersion; new pointers and saved selections retain independent choices.
+it.each(['localStorage', 'committed copy'])('migrates a legacy Sandbox selection from %s once', async (source) => {
+  setup();
+  const { m, fetcher } = await fixture();
+  const { offlineStatus, makeOffline } = await import('./offlineCopy');
+  const saved = new Map<string, string>();
+  if (source === 'localStorage') saved.set('gm-offline-tiers', '["sandbox","speech"]');
+  else {
+    await install(m, ['core', 'sandbox']);
+    const control = await caches.open(`gm-offline-control:${base}`);
+    const copy = await readOfflineCopy(base);
+    await control.put(base + '__gm-offline.json', new Response(JSON.stringify({ ...copy, tierVersion: undefined })));
+  }
+  vi.stubGlobal('location', { href: base });
+  vi.stubGlobal('navigator', { serviceWorker: {}, locks: { request: (_key: string, run: () => Promise<unknown>) => run() }, storage: {} });
+  vi.stubGlobal('localStorage', { getItem: (key: string) => saved.get(key) ?? null, setItem: (key: string, value: string) => saved.set(key, value) });
+  const perFile = fetcher.getMockImplementation()!;
+  fetcher.mockImplementation(async (url) =>
+    url === base + 'offline.json' ? new Response(JSON.stringify(m), { headers: { 'content-type': 'application/json' } }) : perFile(url),
+  );
+  expect((await offlineStatus()).tiers).toEqual(['core', 'sandbox', 'specials', ...(source === 'localStorage' ? ['speech'] : [])]);
+  const sandboxOnly = await offlineStatus(['core', 'sandbox']);
+  expect(sandboxOnly.tiers).toEqual(['core', 'sandbox']);
+  expect((await makeOffline(sandboxOnly, vi.fn(), new AbortController().signal)).ok).toBe(true);
+  expect((await offlineStatus()).tiers).toEqual(['core', 'sandbox']);
+  saved.clear();
+  expect((await offlineStatus()).tiers).toEqual(['core', 'sandbox']);
 });
