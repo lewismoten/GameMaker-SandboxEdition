@@ -6,46 +6,27 @@
 //      A plank ledge, then, is for jumping up through.
 //   2. The Belt: a long walkway carries Kit along, to a spike at its end unless he jumps off.
 //   3. Wind: a spring pad bounces him up to a ledge, and a fan blows him up through a one-way shelf to the door.
-import { Book, PULL } from '../../kit/starter/book';
+import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
-import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
-import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { MICRO_GLYPHS } from '@lewismoten/gamemaker-sandbox-tools/microFont';
+import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
+import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
 import { addSlick } from './slick';
 
-export type SignName = 'ice' | 'ledge' | 'belt' | 'spring' | 'wind' | 'exit';
+export type SignName = 'ice' | 'ledge' | 'exit';
 
 /** The shared block set: Starter art, floors and pulling air, then every level's tiled signs. */
 function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
   addSlick(book, pal);
-  const { blocks, signs } = buildTiledSigns(
-    {
-      ice: { rows: [['ICE DRAGS YOU'], ['RIGHT, AND YOU'], ['SLIDE ON']] },
-      ledge: { rows: [['JUMP UP THROUGH'], ['A LEDGE AND'], ['LAND ON TOP']] },
-      belt: { rows: [['A BELT CARRIES'], ['YOU. JUMP NEAR'], ['THE END']] },
-      spring: { rows: [['A SPRING IS'], ['A SHORT WIND']] },
-      wind: { rows: [['WIND BLOWS'], ['YOU UP']] },
-      exit: { rows: [['EXIT →']] },
-    },
-    {
-      colors: {
-        background: skyOf(pal),
-        paper: pal.c('parch', 3),
-        ink: pal.c('ink', 0),
-        wood: pal.c('wood', 2),
-        highlight: pal.c('wood', 4),
-        shadow: pal.c('wood', 0),
-      },
-      lettersPerBlock: 3,
-      glyphs: { ...MICRO_GLYPHS, '→': '100110111110100' },
-      maxBlocks: Math.min(100, 150 - book.index.size),
-    },
-  );
-  for (const [name, pic] of blocks) book.add(name, pic, { grav: PULL.down });
+  const signs = addMicroPlaques(book, pal, {
+    ice: { lines: ['ICE', '→'] },
+    ledge: { lines: ['JUMP', 'UP'] },
+    exit: { lines: ['EXIT', '→'], post: false },
+  });
   return { book, signs };
 }
 
@@ -56,9 +37,6 @@ export interface Level {
   hint: string;
   map: StarterMap;
 }
-
-/** The top row of a sign standing on ground row `ground`. */
-const onGround = (ground: number, s: Sign) => ground - 1 - s.board.length;
 
 export const GROUND = 10;
 
@@ -116,8 +94,8 @@ function iceLevel(book: Book, signs: Record<SignName, Sign>): StarterMap {
   const m = new StarterMap(book, g.rows());
   floor(m, ICE[0], ICE[1], 'ice', 'slickAir');
   // Taller posts keep the boards below the camera top and clear of ground art.
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 6, 5, signs.ice, 2);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 23, 5, signs.ledge, 2);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 6, GROUND - 2, signs.ice);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 24, GROUND - 2, signs.ledge);
   stampTiledSign({ set: m.setOnSky.bind(m) }, 43, 7, signs.exit, 2);
   m.set(ICE_SPIKE, GROUND - 1, 'spikeUp');
   return m;
@@ -143,7 +121,6 @@ function beltLevel(book: Book, signs: Record<SignName, Sign>): StarterMap {
   );
   const m = new StarterMap(book, g.rows());
   floor(m, BELT[0], BELT[1], 'belt', 'beltAir');
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 5, 5, signs.belt, 2);
   stampTiledSign({ set: m.setOnSky.bind(m) }, 34, 7, signs.exit, 2);
   m.set(BELT_SPIKE, GROUND - 1, 'spikeUp');
   return m;
@@ -181,8 +158,6 @@ function windLevel(book: Book, signs: Record<SignName, Sign>): StarterMap {
     m.set(x, GROUND, 'fan');
     for (let y = SHELF_ROW + 3; y < GROUND; y++) m.set(x, y, 'windAir');
   }
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 2, 6, signs.spring, 2);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 16, onGround(GROUND, signs.wind), signs.wind);
   stampTiledSign({ set: m.setOnSky.bind(m) }, 23, SHELF_ROW - 1 - signs.exit.board.length, signs.exit);
   m.set(SHELF_SPIKE, SHELF_ROW - 1, 'spikeUp');
   return m;
