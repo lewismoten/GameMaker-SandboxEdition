@@ -10,11 +10,11 @@
 // Every room is closed in by hedges you can see, so Yana is never stopped by something she can't.
 import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
-import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { addMicroPlaques, stampTiledSign, stampMicroPlaques } from '../../kit/starter/microPlaque';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
-import { stampTiledSign, stampMicroPlaques, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { addBreakBlocks } from './breakBlocks';
 
 export type SignName = 'bump' | 'rubble' | 'again' | 'once' | 'wall' | 'hidden' | 'exit';

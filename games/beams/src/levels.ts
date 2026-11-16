@@ -8,10 +8,10 @@ import { MLEN, type GameMap } from '@lewismoten/gamemaker-sandbox-engine/formats
 import { ORIGIN, StarterMap } from '../../kit/starter/map';
 import { Book, PULL } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
-import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { addMicroPlaques, stampMicroPlaques } from '../../kit/starter/microPlaque';
 import { Grid } from '../../kit/starter/grid';
 import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
-import { stampMicroPlaques, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { addBeams } from './beam';
 import { CRITTER, GROUP, HALOS, lampPiece } from './critters';
 import { addHallBlocks } from './hall';
@@ -145,11 +145,11 @@ export function beams(pal: Pal): Level {
     const [x, y] = at.split(',').map(Number);
     m.set(x, y, name);
   }
-  // Stacked at the nearest clear column beside the entrance stage.
-  board(book, pal, m, [signs.start, signs.made], 6, 6);
-  board(book, pal, m, signs.solid, 17, 7);
-  board(book, pal, m, signs.checker, 28, 7);
-  board(book, pal, m, signs.soft, 39, 7);
+  // The introduction sits left of the door; each beam label precedes its first lit floor tile.
+  board(book, pal, m, [signs.start, signs.made], 1, 5, FLOOR - 7);
+  board(book, pal, m, signs.solid, 6, 7);
+  board(book, pal, m, signs.checker, 17, 7);
+  board(book, pal, m, signs.soft, 28, 7);
   board(book, pal, m, signs.next, BEAMS.exit - 3, 7);
   return { file: 'beams', title: 'The Beams', map: m, book, exit: BEAMS.exit };
 }
@@ -205,10 +205,10 @@ export function fog(pal: Pal): Level {
   for (let x = 2; x <= 3; x++) m.set(x, FLOOR - 2, 'grass').set(x, FLOOR - 1, 'dirt');
   m.start[1] -= 2;
   // Stagger the wider boards over the hillside backdrop, clear of doors and each other.
-  board(book, pal, m, signs.flat, 12, 7);
-  board(book, pal, m, signs.dither, zoneB + 3, 7);
-  board(book, pal, m, signs.thick, zoneB + 9, 4);
-  board(book, pal, m, signs.drift, zoneB + 15, 7);
+  board(book, pal, m, signs.flat, 5, 7);
+  board(book, pal, m, signs.dither, zoneB - 7, 7);
+  board(book, pal, m, signs.thick, zoneB - 3, 4);
+  board(book, pal, m, signs.drift, zoneB - 3, 7);
   board(book, pal, m, signs.next, exit - 3, 7);
   // two banks of fog, three puffs each, side by side (the same monster so they stay together)
   for (const [bank, mon] of [
@@ -225,7 +225,7 @@ export function glow(pal: Pal): Level {
   const m = hall(book, GLOW.width, GLOW.exit);
   const kinds = ['solid', 'checker', 'soft'] as const;
   GLOW.lamps.forEach((lx, i) => {
-    board(book, pal, m, signs[kinds[i]], lx - 3, i === 2 ? 3 : 7);
+    board(book, pal, m, signs[kinds[i]], lx - 4, i === 2 ? 3 : 7, i === 2 ? FLOOR - 4 : 1);
     for (let ty = 0; ty < GROUP; ty++) for (let tx = 0; tx < GROUP; tx++) m.mon(lampPiece(HALOS[i], tx, ty), lx + tx - 1, GLOW.row + ty - 1);
   });
   board(book, pal, m, signs.next, GLOW.exit - 3, 7);

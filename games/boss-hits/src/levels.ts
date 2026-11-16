@@ -9,11 +9,11 @@
 // Both rooms are closed in by brick walls you can see, so Kit is never stopped by something he can't.
 import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
-import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
-import { stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { LAMPED, PLAIN } from './monsters';
 
 export type SignName = 'meet' | 'sting' | 'poof' | 'exit';
