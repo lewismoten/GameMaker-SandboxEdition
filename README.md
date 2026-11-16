@@ -83,7 +83,7 @@ to buy Game-Maker. The desk, the BBSes and _Snowbound_ come from those years: se
   that runs in DOSBox, or download any game, your own too, as a Mac app, a Windows program
   or a Linux folder that plays offline in its own window (built in the browser; see the
   [Mac](mac/README.md), [Windows](win/README.md) and [Linux](linux/README.md) notes).
-  Everything is saved in your browser and works offline.
+  Everything you make is saved in your browser, and Play offline keeps the parts of the site you pick.
 - **Opening games from other sites:** a link (`?open=<address of the game>`) or a page using
   `window.open` and `postMessage` can open a game here to play or edit, on the desk, in DOS
   Game-Maker or on the web, after the visitor says yes. See
