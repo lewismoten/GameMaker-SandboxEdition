@@ -13,8 +13,8 @@ import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { type Pal } from '../../kit/starter/palette';
-import { addMicroPlaques } from '../../kit/starter/microPlaque';
-import { stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { LEAF } from './leaves';
 import { autumnPalette, type Kind } from './palette';
 import { SIGNS } from './text';
@@ -196,9 +196,9 @@ export function gust(pal: Pal): Level {
       row === 0 ? `${crownName(t.kind, i, col, 0)}.hard` : row === 2 && col !== 1 ? `${t.kind}.calm${col / 2}` : crownName(t.kind, i, col, row),
     );
   });
-  // the signs stand where the calm leaves seldom fall (the gust leaves fly over everything)
-  stand(m, signs.gust, 16);
-  stand(m, signs.model, 43);
+  // Read both wind hints before the first tree; the generated leaves are unchanged.
+  stand(m, signs.gust, 6);
+  stand(m, signs.model, 8);
   stand(m, signs.next, GUST.exit - 5);
   m.set(19, 1, 'cloudL').set(20, 1, 'cloudR').set(46, 1, 'cloudL').set(47, 1, 'cloudR');
   return { file: 'gust', title: 'The Gust', map: m, book, timed, births, exit: GUST.exit };

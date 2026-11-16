@@ -11,8 +11,8 @@ import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { type Pal } from '../../kit/starter/palette';
-import { addMicroPlaques } from '../../kit/starter/microPlaque';
-import { stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { BOLT, addBolt, addCloud, addHill, addLitTwins, addStone, stormPalette, type Timed } from './storm';
 
 export interface Level {
@@ -90,7 +90,7 @@ function flashAndRumble(pal: Pal): Level {
   for (const x of [10, 31]) g.put(x, GROUND - 1, 'b');
   for (const x of [17, 28, 36]) g.put(x, GROUND - 1, 'f');
   const m = new StarterMap(b.book, g.rows());
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 24, onGround(b.signs.thunder), b.signs.thunder);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 14, onGround(b.signs.thunder), b.signs.thunder);
   const bolt = storm(m, b, 19, [
     [6, 5, 2],
     [27, 5, 3],

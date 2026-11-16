@@ -11,9 +11,9 @@ import { addLockBlocks } from '../../kit/starter/locks';
 import { ORIGIN, StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
 import { addAwning, addCash, addSold, addStall, stallName } from '../../kit/starter/shop';
-import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
-import { stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 
 export function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
   const book = new Book('bbl');
@@ -137,8 +137,9 @@ function shop(book: Book, pal: Pal, signs: Record<SignName, Sign>): StarterMap {
     );
   place(5, onGround(GROUND, signs.street), signs.street);
   place(26, onGround(GROUND, signs.both), signs.both);
-  place(40, onGround(GROUND, signs.heart), signs.heart);
-  place(44, onGround(GROUND, signs.prices), signs.prices);
+  // Price instructions precede the first stall; the life hint precedes its heart.
+  place(28, onGround(GROUND, signs.prices), signs.prices);
+  place(36, onGround(GROUND, signs.heart), signs.heart);
   place(53, 7, signs.exit);
   return m;
 }

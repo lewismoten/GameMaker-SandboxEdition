@@ -43,6 +43,8 @@ Made with GAME-MAKER 3.0 from Recreational Software Designs.
 
 Tiled signs: OpenAI Codex.
 
+Micro plaques by Hermes Agent using OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten.
+
 One of the Starters: small games that each show one idea.
 `),
 );

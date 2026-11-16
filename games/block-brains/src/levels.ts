@@ -17,10 +17,11 @@ import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks'
 import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { Book, PULL, SOLID } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
+import { addMicroPlaques, stampTiledSign, stampMicroPlaques } from '../../kit/starter/microPlaque';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
-import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
-import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
+import { type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { HUES, cap, gate, lamp, type Hue } from './props';
 import { SPELL, TURN } from './timing';
 
@@ -80,32 +81,20 @@ function addRing(book: Book, timed: Timed[], ring: string, turns: number, ticks:
   for (let i = 0; i < turns; i++) timed.push({ name: `${ring}.${i}`, next: `${ring}.${(i + 1) % turns}`, ticks });
 }
 
-type SignName = 'lamps' | 'gates' | 'sun' | 'moon' | 'step';
+type SignName = 'lamps' | 'gates' | 'sun' | 'moon' | 'moonOpen' | 'step';
 const SIGNS = {
-  lamps: { rows: [['THREE LAMPS'], ['TAKE TURNS']] },
-  gates: { rows: [['THE LIT LAMP'], ['OPENS ITS GATE.'], ['GO IN ORDER']] },
-  sun: { rows: [['SUN GATES'], ['ALL OPEN'], ['TOGETHER']] },
-  moon: { rows: [['MOON'], ['GATES'], ['OPEN AS'], ['SUN SHUTS']] },
-  step: { maxWidth: 5, rows: [['CROSS'], ['ONE,'], ['WAIT,'], ['CROSS THE'], ['NEXT']] },
+  lamps: { lines: ['TAKE', 'TURN'] },
+  gates: { lines: ['IN ORDER'] },
+  sun: { lines: ['SUN', 'OPEN'] },
+  moon: { lines: ['SUN', 'SHUT'] },
+  moonOpen: { lines: ['MOON', 'OPEN'] },
+  step: { lines: ['WAIT'] },
 };
 
 function startBook(pal: Pal, names: SignName[]): { book: Book; signs: Record<string, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
-  const { blocks, signs } = buildTiledSigns(SIGNS, {
-    include: names,
-    lettersPerBlock: 3,
-    maxBlocks: 100 - book.index.size,
-    colors: {
-      background: skyOf(pal),
-      paper: pal.c('parch', 3),
-      ink: pal.c('ink', 0),
-      wood: pal.c('wood', 2),
-      highlight: pal.c('wood', 4),
-      shadow: pal.c('wood', 0),
-    },
-  });
-  for (const [name, pic] of blocks) book.add(name, pic, AIR);
+  const signs = addMicroPlaques(book, pal, Object.fromEntries(names.map((name) => [name, SIGNS[name]])));
   return { book, signs };
 }
 
@@ -178,7 +167,7 @@ function takeYourTurn(pal: Pal): Level {
 
 /** Level 2: the sun's ring and the moon's ring, two blocks each, one step apart. */
 function outOfStep(pal: Pal): Level {
-  const { book, signs } = startBook(pal, ['sun', 'moon', 'step']);
+  const { book, signs } = startBook(pal, ['sun', 'moon', 'moonOpen', 'step']);
   const timed: Timed[] = [];
   const rings: [string, Hue, number][] = [
     ['sun', 'gold', 1],
@@ -210,8 +199,8 @@ function outOfStep(pal: Pal): Level {
     stampGate(m, x, sun ? 'cap.sun' : 'cap.moon', sun ? startOf('sun.gate', 2, 0) : startOf('moon.gate', 2, 1));
   });
   sign(m, 4, signs.sun);
-  sign(m, 10, signs.moon);
-  sign(m, 24, signs.step);
+  stampMicroPlaques({ set: m.setOnSky.bind(m) }, 12, 7, [signs.moon, signs.moonOpen]);
+  sign(m, 25, signs.step);
   return { file: 'two', title: 'Out of Step', hint: 'Two rings, one step apart.', map: m, book, timed };
 }
 

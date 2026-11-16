@@ -11,13 +11,14 @@
 // A "stage" is one scene of a level: a palette and the links that lead out of it. A level with
 // several stages loads the same .MAP and .BBL in each; only the palette slot differs. Nothing in
 // the map or the blocks knows what time it is.
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { Book, PULL, SOLID } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { ORIGIN, StarterMap } from '../../kit/starter/map';
-import { skyOf, type Pal } from '../../kit/starter/palette';
-import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { type Pal } from '../../kit/starter/palette';
+import { stampTiledSign, stampMicroPlaques, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { buildPalettes, type Palettes } from './palettes';
 import { gateTop, lanternBrick, orb, pillar, post, postTop, roof, star, windowBrick } from './props';
 
@@ -52,14 +53,14 @@ export const DOOR_ONE = 25;
 export const GATES = [11, 23] as const;
 export const DOOR_TWO = 34;
 
-type SignName = 'palettes' | 'sun' | 'door' | 'gate' | 'steps' | 'fade';
+type SignName = 'palettes' | 'look' | 'sun' | 'door' | 'gate' | 'steps';
 const SIGNS = {
-  palettes: { rows: [['SAME MAP, TWO'], ['PALETTES: DAY'], ['AND NIGHT']] },
-  sun: { rows: [['SUN BY'], ['DAY, MOON'], ['BY NIGHT:'], ['ONE BLOCK']] },
-  door: { rows: [['THE DOOR GOES TO'], ['A NEW SCENE WITH'], ['A NEW PALETTE']], maxWidth: 6 },
-  gate: { rows: [['AT A GATE THE SCENE'], ['CHANGES. SAME MAP,'], ['NEW PALETTE']] },
-  steps: { rows: [['THREE PALETTES.'], ['GATES GO ONE WAY']] },
-  fade: { rows: [['A SCENE FADES IN'], ['FROM BLACK: THAT'], ['IS THE FADE']], maxWidth: 7 },
+  palettes: { lines: ['SAME', 'MAP'] },
+  look: { lines: ['NEW', 'LOOK'] },
+  sun: { lines: ['SUN', 'MOON'] },
+  door: { lines: ['TO', 'DOOR'] },
+  gate: { lines: ['SAME', 'MAP'] },
+  steps: { lines: ['ONE', 'WAY'] },
 };
 
 function startBook(pal: Pal, names: SignName[]): { book: Book; signs: Record<string, Sign> } {
@@ -75,20 +76,7 @@ function startBook(pal: Pal, names: SignName[]): { book: Book; signs: Record<str
   book.add('post', post(pal), air);
   book.add('pillar', pillar(pal), air);
   for (const part of ['l', 'm', 'r'] as const) book.add(`gate.${part}`, gateTop(pal, part), air);
-  const { blocks, signs } = buildTiledSigns(SIGNS, {
-    include: names,
-    lettersPerBlock: 3,
-    maxBlocks: Math.min(100, 150 - book.index.size),
-    colors: {
-      background: skyOf(pal),
-      paper: pal.c('parch', 3),
-      ink: pal.c('ink', 0),
-      wood: pal.c('wood', 2),
-      highlight: pal.c('wood', 4),
-      shadow: pal.c('wood', 0),
-    },
-  });
-  for (const [name, pic] of blocks) book.add(name, pic, air);
+  const signs = addMicroPlaques(book, pal, Object.fromEntries(names.map((name) => [name, SIGNS[name]])));
   return { book, signs };
 }
 
@@ -96,7 +84,7 @@ const world = (x: number, y: number): [number, number] => [x + ORIGIN, y + ORIGI
 
 /** Level 1: the same room by day and by night. */
 function oneMapTwoLooks(pal: Pal): Level {
-  const { book, signs } = startBook(pal, ['palettes', 'sun', 'door']);
+  const { book, signs } = startBook(pal, ['palettes', 'look', 'sun', 'door']);
   const g = new Grid(WIDTH_ONE, 15);
   g.row(GROUND, 0, WIDTH_ONE - 1, 'G').fill(0, GROUND + 1, WIDTH_ONE, 4, 'D');
   g.col(0, 0, 9, 'B').col(WIDTH_ONE - 1, 0, 9, 'B');
@@ -130,11 +118,11 @@ function oneMapTwoLooks(pal: Pal): Level {
     [4, 1],
   ])
     m.set(x, y, 'star');
-  // Narrower boards fit between the clouds and porch; every post reaches clear ground.
+  // Short hints stand on clear ground before the porch.
   const signsOnSky = { set: m.setOnSky.bind(m) };
-  stampTiledSign(signsOnSky, 1, 2, signs.palettes, 5);
-  stampTiledSign(signsOnSky, 8, 5, signs.sun);
-  stampTiledSign(signsOnSky, 14, 3, signs.door);
+  stampMicroPlaques(signsOnSky, 5, 7, [signs.palettes, signs.look]);
+  stampTiledSign(signsOnSky, 11, 8, signs.sun);
+  stampTiledSign(signsOnSky, 16, 8, signs.door);
   const door = world(DOOR_ONE, 9);
   const enter = m.start;
   return {
@@ -152,7 +140,7 @@ function oneMapTwoLooks(pal: Pal): Level {
 
 /** Level 2: a street, and a gate for each step of the sunset. */
 function sundownStreet(pal: Pal): Level {
-  const { book, signs } = startBook(pal, ['gate', 'steps', 'fade']);
+  const { book, signs } = startBook(pal, ['gate', 'look', 'steps']);
   const g = new Grid(WIDTH_TWO, 15);
   g.row(GROUND, 0, WIDTH_TWO - 1, 'G').fill(0, GROUND + 1, WIDTH_TWO, 4, 'D');
   g.col(0, 0, 9, 'B').col(WIDTH_TWO - 1, 0, 9, 'B');
@@ -208,9 +196,8 @@ function sundownStreet(pal: Pal): Level {
     m.set(x, y, 'star');
   const signsOnSky = { set: m.setOnSky.bind(m) };
   // Gate arrivals open at row 4: keep the whole board readable in every palette.
-  stampTiledSign(signsOnSky, 3, 4, signs.gate, 3);
-  stampTiledSign(signsOnSky, 13, 5, signs.steps, 3);
-  stampTiledSign(signsOnSky, 25, 4, signs.fade);
+  stampMicroPlaques(signsOnSky, 4, 7, [signs.gate, signs.look]);
+  stampTiledSign(signsOnSky, 16, 8, signs.steps);
   const through = (mid: number): [number, number][] => [world(mid, 9), world(mid, 8)];
   const door = world(DOOR_TWO, 9);
   return {

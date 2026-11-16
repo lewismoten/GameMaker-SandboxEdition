@@ -17,7 +17,7 @@ for (const l of built.levels) {
   for (let y = 0; y < l.map.height; y++)
     for (let x = 0; x < l.map.width; x++) {
       const name = names[l.map.map.blocks[(y + ORIGIN) * 100 + x + ORIGIN]];
-      if (!name.startsWith('tiledSign.') || !/left|right|post/.test(name)) continue;
+      if ((!name.startsWith('tiledSign.') && !name.startsWith('microPlaque.')) || !/left|right|post/.test(name)) continue;
       const pixel = name.includes('right') ? 219 : 200;
       const { kind, shade } = l.cells[y][x];
       const initial = kind === 'tunnel' || l.lightsAt ? 0 : shade;

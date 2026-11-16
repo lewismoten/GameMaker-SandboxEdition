@@ -7,12 +7,13 @@
 //   2. The left wall:  gravity left,  the hero on his side, Up walks (up the wall)
 //   3. The ceiling:    gravity up,    the hero upside down, Right walks
 //   4. The right wall: gravity right, the hero on his other side, Down walks (down the wall)
-import { Book, PULL } from '../../kit/starter/book';
+import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { MLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
-import { StarterMap } from '../../kit/starter/map';
-import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
-import { buildTiledSigns, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { ORIGIN, StarterMap } from '../../kit/starter/map';
+import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
+import { type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { addMicroPlaques, microPlaquePostHeight } from '../../kit/starter/microPlaque';
 import { roomBook } from './blocks';
 import { ACROSS, frameOf, type Frame, type Room } from './frame';
 
@@ -41,21 +42,27 @@ interface Course {
 
 /** Upright wall boards: all four rooms' words, selected per map. */
 const SIGNS = {
-  floor: { rows: [['THE FLOOR.'], ['GRAVITY PULLS DOWN.'], ['LEFT WALKS,'], ['SPACE JUMPS']], post: false },
-  block1: { rows: [['A BLOCK.'], ['JUMP OVER IT']], post: false },
-  trench1: { rows: [['A TRENCH.'], ['JUMP ACROSS']], post: false },
-  exit1: { rows: [['THE ROOM TURNS NEXT.'], ['WALK TO THE DOOR']], post: false },
-  left: { rows: [['THE LEFT WALL.'], ['GRAVITY PULLS LEFT.'], ['UP WALKS UP'], ['THE WALL']], post: false },
-  jump2: { rows: [['SPACE JUMPS OFF'], ['THE WALL, AND'], ['YOU FALL BACK']], post: false },
-  trench2: { rows: [['A TRENCH IN'], ['THE WALL. JUMP IT']], post: false },
-  exit2: { rows: [['NEXT, THE CEILING.'], ['WALK TO THE DOOR']], post: false },
-  ceil: { rows: [['THE CEILING.'], ['GRAVITY PULLS UP.'], ['RIGHT WALKS RIGHT']], post: false },
-  jump3: { rows: [['SPACE JUMPS DOWN FROM THE CEILING']], post: false },
-  trench3: { rows: [['A WIDE TRENCH. FALLING UP IS STILL FALLING']], post: false },
-  exit3: { rows: [['ONE WALL LEFT.'], ['WALK TO THE DOOR']], post: false },
-  right: { rows: [['THE RIGHT WALL.'], ['GRAVITY PULLS RIGHT.'], ['DOWN WALKS DOWN']], post: false },
-  block4: { rows: [['BLOCKS AND TRENCHES.'], ['SAME JUMPS,'], ['ONE MORE TURN']], post: false },
-  exit4: { rows: [['THAT WAS ONE LAP.'], ['THE LAST DOOR']], post: false },
+  floor: { lines: ['PULL', '↓'] },
+  walk1: { lines: ['WALK', '←'] },
+  space1: { lines: ['SPACE', 'JUMPS'] },
+  block1: { lines: ['JUMP', 'OVER'] },
+  trench1: { lines: ['JUMP', 'OVER'] },
+  exit1: { lines: ['TO', 'DOOR'] },
+  left: { lines: ['PULL', '←'] },
+  walk2: { lines: ['WALK', '↑'] },
+  jump2: { lines: ['SPACE', 'JUMPS'] },
+  trench2: { lines: ['JUMP', 'OVER'] },
+  exit2: { lines: ['TO', 'DOOR'] },
+  ceil: { lines: ['PULL', '↑'] },
+  walk3: { lines: ['WALK', '→'] },
+  jump3: { lines: ['SPACE', 'JUMPS'] },
+  trench3: { lines: ['FALL', 'UP!'] },
+  exit3: { lines: ['ONE', 'MORE'] },
+  door3: { lines: ['TO', 'DOOR'] },
+  right: { lines: ['PULL', '→'] },
+  walk4: { lines: ['WALK', '↓'] },
+  block4: { lines: ['JUMP', 'OVER'] },
+  exit4: { lines: ['LAST', 'DOOR'] },
 };
 
 const COURSES: Course[] = [
@@ -65,19 +72,21 @@ const COURSES: Course[] = [
     hint: 'Down is down. Left walks.',
     blocks: [
       [12, 1],
-      [18, 2],
+      [18, 1],
     ],
     trenches: [[25, 27]],
     coins: [
       [25, 2],
-      [26, 3],
+      [26, 2],
       [27, 2],
-      [12, 3],
-      [18, 4],
+      [12, 2],
+      [18, 2],
     ],
     signs: [
-      ['floor', 5, 3],
-      ['block1', 14, 4],
+      ['floor', 5, 2],
+      ['walk1', 7, 2],
+      ['space1', 9, 2],
+      ['block1', 10, 4],
       ['trench1', 22, 3],
       ['exit1', 35, 3],
     ],
@@ -92,7 +101,7 @@ const COURSES: Course[] = [
     title: 'The Left Wall',
     hint: 'Gravity left. Up walks.',
     blocks: [
-      [14, 2],
+      [14, 1],
       [20, 1],
       [21, 1],
     ],
@@ -101,14 +110,15 @@ const COURSES: Course[] = [
       [34, 35],
     ],
     coins: [
-      [14, 4],
+      [14, 2],
       [27, 2],
-      [28, 3],
+      [28, 2],
       [29, 2],
-      [34, 3],
+      [34, 2],
     ],
     signs: [
-      ['left', 5, 4],
+      ['left', 5, 2],
+      ['walk2', 7, 2],
       ['jump2', 10, 4],
       ['trench2', 24, 4],
       ['exit2', 38, 4],
@@ -123,8 +133,8 @@ const COURSES: Course[] = [
     title: 'The Ceiling',
     hint: 'Gravity up. Right walks.',
     blocks: [
-      [10, 2],
-      [30, 2],
+      [10, 1],
+      [30, 1],
       [36, 1],
     ],
     trenches: [
@@ -133,16 +143,18 @@ const COURSES: Course[] = [
     ],
     coins: [
       [17, 2],
-      [18, 3],
-      [24, 3],
+      [18, 2],
+      [24, 2],
       [25, 2],
-      [30, 4],
+      [30, 2],
     ],
     signs: [
-      ['ceil', 6, 1],
-      ['jump3', 17, 1],
-      ['trench3', 22, 0],
-      ['exit3', 34, 3],
+      ['ceil', 5, 2],
+      ['walk3', 7, 2],
+      ['jump3', 8, 3],
+      ['trench3', 21, 2],
+      ['exit3', 32, 3],
+      ['door3', 35, 3],
     ],
     scenery: [
       [12, 'f'],
@@ -155,8 +167,8 @@ const COURSES: Course[] = [
     hint: 'Gravity right. Down walks.',
     blocks: [
       [10, 1],
-      [14, 2],
-      [15, 2],
+      [14, 1],
+      [15, 1],
       [30, 1],
     ],
     trenches: [
@@ -164,15 +176,16 @@ const COURSES: Course[] = [
       [26, 27],
     ],
     coins: [
-      [14, 4],
+      [14, 2],
       [21, 2],
-      [26, 3],
-      [27, 3],
-      [30, 3],
+      [26, 2],
+      [27, 2],
+      [30, 2],
     ],
     signs: [
-      ['right', 5, 4],
-      ['block4', 17, 4],
+      ['right', 5, 2],
+      ['walk4', 7, 2],
+      ['block4', 8, 4],
       ['exit4', 36, 4],
     ],
     scenery: [
@@ -234,6 +247,31 @@ function roomMap(f: Frame, course: Course, book: Book, signs: Record<string, Sig
     const y0 = cy - Math.floor(board.length / 2);
     if (x0 < 0 || y0 < 0 || x0 + board[0].length > f.w || y0 + board.length > f.h) throw new Error(`Sign ${name} leaves the room`);
     board.forEach((row, dy) => row.forEach((id, dx) => m.setOnSky(x0 + dx, y0 + dy, id)));
+    const post = signs[name].post!;
+    const posts = f.k === 1 || f.k === 3 ? ['microPlaque.post'] : post.rightBlock ? [post.block, post.rightBlock] : [post.block];
+    if (f.k === 2) posts.reverse();
+    const toward = [-f.away[0], -f.away[1]];
+    // Upright plaques attach along the side facing the surface; rotate only their supports.
+    for (let j = 0; j < posts.length; j++) {
+      const tile = posts[j];
+      const px = f.k === 0 || f.k === 2 ? x0 + post.x + j : f.k === 1 ? x0 - 1 : x0 + board[0].length;
+      const py = f.k === 0 ? y0 + board.length : f.k === 2 ? y0 - 1 : y0;
+      let x = px,
+        y = py;
+      const cells: [number, number][] = [];
+      let grounded = false;
+      while (x >= 0 && y >= 0 && x < f.w && y < f.h) {
+        const at = m.map.blocks[(y + ORIGIN) * MLEN + x + ORIGIN];
+        if (at === book.n('grass') || at === book.n('dirt')) {
+          grounded = true;
+          break;
+        }
+        cells.push([x, y]);
+        x += toward[0];
+        y += toward[1];
+      }
+      if (grounded && microPlaquePostHeight(cells.length)) for (const [x, y] of cells) m.setOnSky(x, y, tile);
+    }
   }
   const dirt = book.n('dirt');
   return {
@@ -263,20 +301,7 @@ export function buildLevels(): { base: Book; pal: Pal; levels: Level[] } {
   const floorBook = (course: Course): { book: Book; signs: Record<string, Sign> } => {
     const book = new Book('bbl');
     addStarterBlocks(book, pal);
-    const { blocks, signs } = buildTiledSigns(SIGNS, {
-      include: course.signs.map(([name]) => name as keyof typeof SIGNS),
-      lettersPerBlock: 3,
-      maxBlocks: 100 - book.index.size,
-      colors: {
-        background: skyOf(pal),
-        paper: pal.c('parch', 3),
-        ink: pal.c('ink', 0),
-        wood: pal.c('wood', 2),
-        highlight: pal.c('wood', 4),
-        shadow: pal.c('wood', 0),
-      },
-    });
-    for (const [name, pic] of blocks) book.add(name, pic, { grav: PULL.down });
+    const signs = addMicroPlaques(book, pal, Object.fromEntries(course.signs.map(([name]) => [name, SIGNS[name as keyof typeof SIGNS]])));
     return { book, signs };
   };
   const levels: Level[] = COURSES.map((course, i) => {
