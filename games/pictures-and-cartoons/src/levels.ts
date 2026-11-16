@@ -7,13 +7,13 @@
 //      between this level and the next.
 //   3. Keep It Short: the intro is a list of two pictures; signs say what a cartoon can't do.
 // Every room is closed in by hedges you can see, so Yana is never stopped by something she can't.
-import { Book, PULL } from '../../kit/starter/book';
+import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
-import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
-import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { MICRO_GLYPHS } from '@lewismoten/gamemaker-sandbox-tools/microFont';
+import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
+import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
 
 export interface Level {
   file: string;
@@ -32,22 +32,13 @@ export const GROUND = 10;
 const WIDTH = 46;
 
 /** Each level's signs: [x of the board's left block, text lines]. Each room shares its frame and letter tiles. */
-const SIGNS: Record<string, [number, string[]][]> = {
-  frame: [
-    [6, ['A PICTURE', 'CAME UP BEFORE', 'THIS LEVEL']],
-    [13, ['ITS SCENE HOLDS THE', 'INTRO PICTURE, A', '320 BY 200 GIF']],
-    [27, ['THE DOOR SHOWS', 'ANOTHER AFTER', 'THE LEVEL']],
-  ],
+const SIGNS: Record<string, [number, string[], boolean?][]> = {
+  frame: [[13, ['320X200', 'GIF'], false]],
   cartoon: [
-    [6, ['A CARTOON IS', 'AN FLI FILE', 'THAT MOVES']],
-    [13, ['THE EXIT SLOT PLAYS IT', 'WHEN YOU LEAVE']],
-    [27, ['WALK THROUGH', 'THE DOOR', 'TO WATCH IT']],
+    [6, ['FLI FILE']],
+    [27, ['WALK', 'IN']],
   ],
-  short: [
-    [4, ['A LIST SHOWS', 'TWO PICTURES,', 'ONE AFTER ANOTHER']],
-    [13, ['A CARTOON PLAYS', 'TO ITS LAST FRAME']],
-    [26, ['SO KEEP IT SHORT,', 'OR CUT IT', 'INTO CLIPS']],
-  ],
+  short: [[26, ['KEEP IT', 'SHORT']]],
 };
 
 /** The exit board stands clear of the flower and bush beside the door. */
@@ -56,26 +47,9 @@ const EXIT_AT = 37;
 function buildBlocks(pal: Pal, file: string): { book: Book; signs: Map<string, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
-  const texts = Object.fromEntries(
-    Object.entries(SIGNS).flatMap(([level, list]) => list.map(([, rows], i) => [`${level}${i}`, { rows: rows.map((line) => [line]) }])),
-  );
-  texts.exit = { rows: [['EXIT →']] };
-  const tiled = buildTiledSigns(texts, {
-    colors: {
-      background: skyOf(pal),
-      paper: pal.c('parch', 3),
-      ink: pal.c('ink', 0),
-      wood: pal.c('wood', 2),
-      highlight: pal.c('wood', 4),
-      shadow: pal.c('wood', 0),
-    },
-    include: [...SIGNS[file].map((_, i) => `${file}${i}`), 'exit'],
-    lettersPerBlock: 3,
-    glyphs: { ...MICRO_GLYPHS, '→': '100110111110100' },
-    maxBlocks: Math.min(100, 150 - book.index.size),
-  });
-  for (const [name, pic] of tiled.blocks) book.add(name, pic, { grav: PULL.down });
-  const signs = new Map(Object.entries(tiled.signs));
+  const texts = Object.fromEntries(SIGNS[file].map(([, lines, post], i) => [`${file}${i}`, { lines, post }]));
+  texts.exit = { lines: ['EXIT', '→'], post: false };
+  const signs = new Map(Object.entries(addMicroPlaques(book, pal, texts)));
   return { book, signs };
 }
 

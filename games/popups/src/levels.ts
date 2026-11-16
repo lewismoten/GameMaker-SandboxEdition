@@ -6,46 +6,26 @@
 //   2. Its Own Picture: a gem pays 200 and a box 500, each with a number picture of its own. Then
 //      the mistake: a coin whose number has no way to leave, so it blinks there for good. The last coin is right.
 // Both rooms are closed in by brick walls you can see, and nothing blocks Yana.
-import { Book, PULL } from '../../kit/starter/book';
+import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
-import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
-import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { MICRO_GLYPHS } from '@lewismoten/gamemaker-sandbox-tools/microFont';
+import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
+import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
 import { BOX, COIN, GEM, STUCK } from './monsters';
 
-export type SignName = 'plain' | 'monster' | 'number' | 'picture' | 'stuck' | 'ends' | 'exit';
+export type SignName = 'monster' | 'stuck' | 'exit';
 
 /** The block set both levels share: the Starter blocks, then this game's signs. */
 function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
-  const { blocks, signs } = buildTiledSigns(
-    {
-      plain: { rows: [['PLAIN COINS'], ['JUST VANISH']] },
-      monster: { rows: [['THESE COINS ARE'], ['MONSTERS.'], ['WALK INTO ONE']] },
-      number: { rows: [['IT BECAME'], ['A NUMBER'], ['THAT RISES']] },
-      picture: { rows: [['EACH NUMBER IS'], ['ITS OWN PICTURE']] },
-      stuck: { rows: [['THIS 100 NEVER'], ['GOES AWAY']] },
-      ends: { rows: [['LET ITS PATH'], ['END TO CLEAR IT']] },
-      exit: { rows: [['EXIT →']] },
-    },
-    {
-      colors: {
-        background: skyOf(pal),
-        paper: pal.c('parch', 3),
-        ink: pal.c('ink', 0),
-        wood: pal.c('wood', 2),
-        highlight: pal.c('wood', 4),
-        shadow: pal.c('wood', 0),
-      },
-      lettersPerBlock: 3,
-      glyphs: { ...MICRO_GLYPHS, '→': '100110111110100' },
-      maxBlocks: Math.min(100, 150 - book.index.size),
-    },
-  );
-  for (const [name, pic] of blocks) book.add(name, pic, { grav: PULL.down });
+  const signs = addMicroPlaques(book, pal, {
+    monster: { lines: ['WALK', 'IN'] },
+    stuck: { lines: ['THIS 100', 'STAYS'] },
+    exit: { lines: ['EXIT', '→'], post: false },
+  });
   return { book, signs };
 }
 
@@ -57,8 +37,8 @@ export interface Level {
   map: StarterMap;
 }
 
-/** Two post rows keep the wider boards above the prizes at head height. */
-const onGround = (ground: number, s: Sign) => ground - 2 - s.board.length;
+/** One short post supports each compact lesson board. */
+const onGround = (ground: number, s: Sign) => ground - 1 - s.board.length;
 
 export const GROUND = 10;
 /** Where the monsters stand: the row above the ground. */
@@ -111,11 +91,9 @@ function aNumber(book: Book, signs: Record<SignName, Sign>): StarterMap {
   );
   const m = new StarterMap(book, g.rows());
   const safe = { set: (x: number, y: number, block: string) => m.setOnSky(x, y, block) };
-  stampTiledSign(safe, 4, onGround(GROUND, signs.plain), signs.plain, 2);
-  // Leave the entire three-block rise above each prize clear of the boards.
-  stampTiledSign(safe, 11, onGround(GROUND, signs.monster), signs.monster, 2);
-  stampTiledSign(safe, 28, onGround(GROUND, signs.number), signs.number, 2);
-  stampTiledSign(safe, 37, onGround(GROUND, signs.exit), signs.exit, 2);
+  // Explain the monster coins before the first prize, clear of its rising number.
+  stampTiledSign(safe, 15, onGround(GROUND, signs.monster), signs.monster, 1);
+  stampTiledSign(safe, 37, onGround(GROUND, signs.exit), signs.exit, 1);
   for (const [x, y] of L1_COINS) m.mon(COIN, x, y);
   return m;
 }
@@ -136,11 +114,9 @@ function itsOwn(book: Book, signs: Record<SignName, Sign>): StarterMap {
   );
   const m = new StarterMap(book, g.rows());
   const safe = { set: (x: number, y: number, block: string) => m.setOnSky(x, y, block) };
-  // The gem, box and last coin rise beside the boards, rather than through the text.
-  stampTiledSign(safe, 4, onGround(GROUND, signs.picture), signs.picture, 2);
-  stampTiledSign(safe, 18, onGround(GROUND, signs.stuck), signs.stuck, 2);
-  stampTiledSign(safe, 26, onGround(GROUND, signs.ends), signs.ends, 2);
-  stampTiledSign(safe, 37, onGround(GROUND, signs.exit), signs.exit, 2);
+  // Explain the persistent number before its coin, clear of the rising prizes.
+  stampTiledSign(safe, 21, onGround(GROUND, signs.stuck), signs.stuck, 1);
+  stampTiledSign(safe, 37, onGround(GROUND, signs.exit), signs.exit, 1);
   m.mon(GEM, L2_GEM, HEAD).mon(BOX, L2_BOX, HEAD).mon(STUCK, L2_STUCK, HEAD).mon(COIN, L2_COIN, HEAD);
   return m;
 }

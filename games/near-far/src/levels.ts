@@ -12,19 +12,17 @@ import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { ORIGIN, StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
-import { addSign, type Sign } from '../../kit/starter/sign';
+import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
 import { addScenery, type Scenery } from './scenery';
 
 const SIGNS = {
-  nearIs: ['nearIs', 'NEAR IS BIG AND CLEAR', 4],
-  trail: ['trail', 'THE TRAIL GOES INTO THE DISTANCE', 4],
-  farIs: ['farIs', 'FAR IS SMALL AND PALE', 3],
-  backNear: ['backNear', 'BACK TO NEAR', 3],
-  cliff: ['cliff', 'A CLIFF IS IN THE WAY. TRY THE TRAIL', 4],
-  noCliff: ['noCliff', 'NO CLIFF HERE', 3],
-  comesOut: ['comesOut', 'IT COMES OUT PAST THE CLIFF', 4],
-  past: ['past', 'PAST THE CLIFF AT LAST', 4],
-} as const;
+  nearIs: { lines: ['NEAR', 'BIG'] },
+  farIs: { lines: ['FAR', 'PALE'] },
+  backNear: { lines: ['GO', 'BACK'] },
+  cliff: { lines: ['TRY', 'IT!'] },
+  past: { lines: ['WELL', 'DONE'] },
+};
 export type SignName = keyof typeof SIGNS;
 
 /** A block of the map, in world blocks. */
@@ -69,13 +67,12 @@ export const LAND_X = 8;
 const at = (x: number, y: number): Spot => [x + ORIGIN, y + ORIGIN];
 const onGround = (s: Sign) => FLOOR - 1 - s.board.length;
 
-/** The block set every scene shares: the Starter blocks, the near and far scenery, then this game's signs. */
+/** Shared scenery and compact plaques keep the near and far scenes in one block set. */
 export function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign>; art: Scenery } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
   const art = addScenery(book, pal);
-  const signs = {} as Record<SignName, Sign>;
-  for (const [key, [name, words, w]] of Object.entries(SIGNS)) signs[key as SignName] = addSign(book, pal, name, words, w, 2);
+  const signs = addMicroPlaques(book, pal, SIGNS);
   return { book, signs, art };
 }
 
@@ -93,7 +90,7 @@ const cloud = (g: Grid, x: number, y: number) => g.put(x, y, '(').put(x + 1, y, 
 function stamp(m: StarterMap, x: number, y: number, names: string[][]): void {
   names.forEach((row, dy) => row.forEach((n, dx) => m.set(x + dx, y + dy, n)));
 }
-const sign = (m: StarterMap, x: number, s: Sign) => m.sign(x, onGround(s), s);
+const sign = (m: StarterMap, x: number, s: Sign) => stampTiledSign({ set: (sx, sy, block) => m.setOnSky(sx, sy, block) }, x, onGround(s), s);
 
 /** A map from a grid, starting where Mara first lands; the far plane's ground and hedges are swapped for its own. */
 function built(book: Book, g: Grid, start: Spot, far: boolean): StarterMap {
@@ -133,8 +130,7 @@ function mapOne(book: Book, s: Record<SignName, Sign>, a: Scenery): { files: Map
   cloud(gn, 11, 2);
   const near = built(book, gn, [LAND_X, FEET], false);
   stamp(near, 1, FLOOR - 3, a.bigTree);
-  sign(near, 3, s.nearIs);
-  sign(near, 9, s.trail);
+  sign(near, 7, s.nearIs);
   near.set(13, FEET, a.bigFence);
   stamp(near, 14, FLOOR - 2, a.trailInto);
   // far
@@ -149,7 +145,7 @@ function mapOne(book: Book, s: Record<SignName, Sign>, a: Scenery): { files: Map
   const far = built(book, gf, [LAND_X, FEET], true);
   bare(far, LAND_X);
   stamp(far, 1, FLOOR - 2, a.trailBack);
-  sign(far, 2, s.backNear);
+  sign(far, 3, s.backNear);
   sign(far, 5, s.farIs);
   stamp(far, 11, FLOOR - 1, a.farHouse);
   stamp(far, 13, FLOOR - 2, a.farTree);
@@ -185,9 +181,9 @@ function mapTwo(book: Book, s: Record<SignName, Sign>, a: Scenery): { files: Map
   const near = built(book, gn, [LAND_X, FEET], false);
   for (let x = 13; x < 19; x++) for (let y = 0; y < FLOOR; y++) near.set(x, y, 'cliff');
   stamp(near, 11, FLOOR - 3, a.bigTree);
-  sign(near, 2, s.cliff);
+  sign(near, 4, s.cliff);
   stamp(near, 1, FLOOR - 2, a.trailInto);
-  sign(near, 20, s.past);
+  sign(near, 27, s.past);
   // far: no cliff, so the way past is open
   const gf = new Grid(16, 10);
   ground(gf, 16);
@@ -200,9 +196,7 @@ function mapTwo(book: Book, s: Record<SignName, Sign>, a: Scenery): { files: Map
   const far = built(book, gf, [LAND_X, FEET], true);
   bare(far, LAND_X);
   stamp(far, 1, FLOOR - 2, a.peak);
-  sign(far, 3, s.noCliff);
   stamp(far, 9, FLOOR - 2, a.farTree);
-  sign(far, 10, s.comesOut);
   far.set(11, FEET, a.mound);
   stamp(far, 14, FLOOR - 2, a.trailBack);
   return {
