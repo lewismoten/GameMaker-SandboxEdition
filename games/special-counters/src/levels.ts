@@ -10,37 +10,37 @@ import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
-import { addSign, type Sign } from '../../kit/starter/sign';
+import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
 import { addGoldBlocks, addGreenBlocks } from './lockBlocks';
 
+const WORDS = {
+  both: { lines: ['GET', 'KEYS'] },
+  one: { lines: ['NEED', 'KEY'] },
+  spare: { lines: ['SPARE', 'KEY'] },
+  none: { lines: ['USE', 'SPARE'] },
+  again: { lines: ['GET', 'KEY'] },
+  exit: { lines: ['EXIT', '→'], post: false },
+  number: { lines: ['20 GOLD', '22 GREEN'] },
+  saved: { lines: ['GOLD', 'KEY'] },
+};
+
 /**
- * The block set: the Starter blocks, the gold door, levels 1 and 2's signs; then (after `shared` blocks)
- * the green set and level 3's signs. Levels 1 and 2 load the first `shared` blocks; level 3 loads its own
+ * The block set: the Starter blocks, gold door and shared plaque vocabulary; then (after `shared` blocks)
+ * the green set. Levels 1 and 2 load the first `shared` blocks; level 3 loads its own
  * copy of the set with the rest added, and every shared block keeps its number.
  */
 export function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign>; shared: number } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
   addGoldBlocks(book, pal);
-  const signs = {
-    both: addSign(book, pal, 'both', 'TAKE BOTH KEYS', 4, 2),
-    one: addSign(book, pal, 'one', 'ONE KEY OPENS THIS DOOR', 4, 2),
-    spare: addSign(book, pal, 'spare', 'THE SPARE KEY GOES WITH YOU', 4, 3),
-    none: addSign(book, pal, 'none', 'NO KEY IN THIS LEVEL. TRY THE SPARE', 4, 3),
-    again: addSign(book, pal, 'again', 'TAKE THIS ONE TOO', 4, 2),
-    exit: addSign(book, pal, 'exit', 'EXIT →', 3),
-  };
+  const signs = addMicroPlaques(book, pal, WORDS);
   const shared = book.index.size;
   addGreenBlocks(book, pal);
-  Object.assign(signs, {
-    notThat: addSign(book, pal, 'notThat', 'A GOLD KEY IS NOT A GREEN KEY', 4, 2),
-    number: addSign(book, pal, 'number', 'COUNTER 20 IS GOLD. COUNTER 22 IS GREEN.', 4, 3),
-    saved: addSign(book, pal, 'saved', 'THE GOLD KEY WAITED FOR THIS DOOR', 4, 3),
-  });
   return { book, signs: signs as Record<SignName, Sign>, shared };
 }
 
-export type SignName = 'both' | 'one' | 'spare' | 'none' | 'again' | 'notThat' | 'number' | 'saved' | 'exit';
+export type SignName = keyof typeof WORDS;
 
 export interface Level {
   file: string;
@@ -93,10 +93,10 @@ function takeBoth(book: Book, signs: Record<SignName, Sign>): StarterMap {
   for (const x of [7, 21, 43]) g.put(x, GROUND - 1, 'f');
   const m = new StarterMap(book, g.rows());
   m.wallToSky(24);
-  m.sign(5, onGround(GROUND, signs.both), signs.both);
-  m.sign(19, onGround(GROUND, signs.one), signs.one);
-  m.sign(33, onGround(GROUND, signs.spare), signs.spare);
-  m.sign(39, onGround(GROUND, signs.exit), signs.exit);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 5, onGround(GROUND, signs.both), signs.both);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 19, onGround(GROUND, signs.one), signs.one);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 33, onGround(GROUND, signs.spare), signs.spare);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 39, onGround(GROUND, signs.exit), signs.exit);
   return m;
 }
 
@@ -115,9 +115,9 @@ function spareFits(book: Book, signs: Record<SignName, Sign>): StarterMap {
   for (const x of [10, 26, 44]) g.put(x, GROUND - 1, 'f');
   const m = new StarterMap(book, g.rows());
   m.wallToSky(16);
-  m.sign(5, onGround(GROUND, signs.none), signs.none);
-  m.sign(27, onGround(GROUND, signs.again), signs.again);
-  m.sign(39, onGround(GROUND, signs.exit), signs.exit);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 5, onGround(GROUND, signs.none), signs.none);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 18, onGround(GROUND, signs.again), signs.again);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 39, onGround(GROUND, signs.exit), signs.exit);
   return m;
 }
 
@@ -144,10 +144,9 @@ function notThat(book: Book, signs: Record<SignName, Sign>): StarterMap {
     .set(24, GROUND - 1, 'gateGreen')
     .set(22, 2, 'keyGreen');
   m.wallToSky(24).wallToSky(34);
-  m.sign(5, onGround(GROUND, signs.notThat), signs.notThat);
-  m.sign(18, onGround(GROUND, signs.number), signs.number);
-  m.sign(28, onGround(GROUND, signs.saved), signs.saved);
-  m.sign(39, onGround(GROUND, signs.exit), signs.exit);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 12, onGround(GROUND, signs.number), signs.number);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 28, onGround(GROUND, signs.saved), signs.saved);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 39, onGround(GROUND, signs.exit), signs.exit);
   return m;
 }
 
