@@ -15,33 +15,38 @@ import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
-import { addSign, type Sign } from '../../kit/starter/sign';
+import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
 import { addChart } from './chartSign';
 import { BIG, BIG_STILL, MID, PIP, POWER, monsterPictures } from './monsters';
 import { drawStar } from './starArt';
 
 export type SignName = 'stronger' | 'chart1' | 'watch' | 'chart2' | 'step' | 'exit';
+type Signs = Record<Exclude<SignName, 'chart1' | 'chart2'>, Sign> & Record<'chart1' | 'chart2', ReturnType<typeof addChart>>;
+
+const WORDS = {
+  stronger: { lines: ['HIGHER', 'WINS'] },
+  watch: { lines: ['LOOK', '→'] },
+  step: { lines: ['180>140', 'GO PAST'] },
+  exit: { lines: ['EXIT', '→'], post: false },
+};
 
 /** The block set both levels share: the Starter blocks, then this game's signs. */
-function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
+function buildBlocks(pal: Pal): { book: Book; signs: Signs } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
-  const exit = addSign(book, pal, 'exit.sign', 'EXIT →', 3);
   // the charts show the monsters' own pictures beside their real powers
   const pics = monsterPictures(pal).pics;
   const row = (name: string, power: number) => ({ pic: pics.get(name)!, power });
   const signs = {
-    stronger: addSign(book, pal, 'stronger.sign', 'WHEN TWO MEET, HIGHER POWER WINS', 4, 3),
     chart1: addChart(book, pal, 'chart1', [row('big0', POWER.big), row('pip0', POWER.pip)]),
-    watch: addSign(book, pal, 'watch.sign', 'WATCH THE BIG RED ONE →', 4, 3),
     chart2: addChart(book, pal, 'chart2', [
       row('big0', POWER.big),
       { pic: drawStar(pal, 0), power: POWER.star },
       row('mid0', POWER.mid),
       row('pip0', POWER.pip),
     ]),
-    step: addSign(book, pal, 'step.sign', 'THE BIG ONE BEATS YOUR STAR, 180 TO 140. STEP PAST IT →', 4, 4),
-    exit,
+    ...addMicroPlaques(book, pal, WORDS),
   };
   return { book, signs };
 }
@@ -92,7 +97,7 @@ function wall(g: Grid, [from, to]: readonly [number, number]): void {
 }
 
 /** Level 1: the big one walks through the tunnel and pops the pips. 46 blocks wide; the ground is row 10. */
-function theBigOne(book: Book, signs: Record<SignName, Sign>): StarterMap {
+function theBigOne(book: Book, signs: Signs): StarterMap {
   const g = base(46, 42);
   wall(g, TUNNEL_1);
   g.row(9, 11, 12, 'c').row(9, 32, 35, 'c');
@@ -108,17 +113,17 @@ function theBigOne(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [31, 40],
   );
   const m = new StarterMap(book, g.rows());
-  m.sign(5, onGround(GROUND, signs.stronger), signs.stronger);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 5, onGround(GROUND, signs.stronger), signs.stronger);
   m.sign(10, onGround(GROUND, signs.chart1), signs.chart1);
-  m.sign(15, onGround(GROUND, signs.watch), signs.watch);
-  m.sign(38, onGround(GROUND, signs.exit), signs.exit);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 15, onGround(GROUND, signs.watch), signs.watch);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 38, onGround(GROUND, signs.exit), signs.exit);
   for (const x of PIPS_1) m.mon(PIP, x, STAND);
   m.mon(BIG, BIG_X, STAND);
   return m;
 }
 
 /** Level 2: a still big one in front of a tunnel with a pip and a mid in it. 46 blocks wide. */
-function yourStar(book: Book, signs: Record<SignName, Sign>): StarterMap {
+function yourStar(book: Book, signs: Signs): StarterMap {
   const g = base(46, 42);
   wall(g, TUNNEL_2);
   g.row(9, 10, 11, 'c').row(9, 35, 38, 'c');
@@ -135,8 +140,8 @@ function yourStar(book: Book, signs: Record<SignName, Sign>): StarterMap {
   );
   const m = new StarterMap(book, g.rows());
   m.sign(6, onGround(GROUND, signs.chart2), signs.chart2);
-  m.sign(12, onGround(GROUND, signs.step), signs.step);
-  m.sign(39, onGround(GROUND, signs.exit), signs.exit);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 12, onGround(GROUND, signs.step), signs.step);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 39, onGround(GROUND, signs.exit), signs.exit);
   m.mon(BIG_STILL, BIG_X, STAND);
   m.mon(PIP, PIP_2, STAND);
   m.mon(MID, MID_2, STAND);

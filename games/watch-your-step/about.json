@@ -36,5 +36,15 @@
       ["three.map", 16, 6]
     ],
     "rating": "Everyone"
+  },
+  "acceptedFindings": [
+  {
+    "finding": "hazard-art s3 Block 29 hurts through its whole cell, but its art fills 17% of it",
+    "why": "This is the unchanged pool warning already recorded for Block 62 in the shared baseline. Plaque reduction renumbered it to Block 29 with identical art and damage."
+  },
+  {
+    "finding": "hazard-art s4 Block 29 hurts through its whole cell, but its art fills 17% of it",
+    "why": "This is the unchanged pool warning already recorded for Block 62 in the shared baseline. Plaque reduction renumbered it to Block 29 with identical art and damage."
   }
+]
 }

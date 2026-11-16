@@ -25,8 +25,7 @@ function letters(p: Pixels, ink: number, text: string, x0: number, y0: number): 
 
 /**
  * Adds a chart sign called `name` to `book`, 4 blocks wide and one block high for every row
- * (plus a little for the heading, so 2 rows take 3 blocks and 4 take 5). `book` must already
- * hold a sign, for its posts.
+ * (plus a little for the heading, so 2 rows take 3 blocks and 4 take 5).
  */
 export function addChart(book: Book, pal: Pal, name: string, rows: ChartRow[]): Sign {
   const w = 4;
@@ -55,6 +54,7 @@ export function addChart(book: Book, pal: Pal, name: string, rows: ChartRow[]): 
       book.add(id, p.crop(col * 20, row * 20, 20, 20), { grav: PULL.down });
     }
   }
-  if (!book.has('signPostL')) throw new Error('addChart: add a sign first, for its posts');
+  // Preserve the charts' original posts independently of the lesson plaques.
+  for (const leg of blank.legs) if (!book.has(leg)) book.add(leg, scratch.pics.get(leg)!, { grav: PULL.down });
   return { board, legs: ['signPostL', 'signPostR'] };
 }

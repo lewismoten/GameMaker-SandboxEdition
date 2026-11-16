@@ -5,45 +5,33 @@
 //      it a refund tray gives three back, so the second lock (and the door past it) can be paid too.
 //   2. No Tray: the same two locks, but no refund. Six words are needed: three before the first
 //      lock and three more on a ledge past it. The second lock is the level's exit.
-import { Book, PULL } from '../../kit/starter/book';
+import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { ORIGIN, StarterMap } from '../../kit/starter/map';
-import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
-import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
+import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
 import { addWordBlocks } from './wordBlocks';
 
 export type SignName = 'words' | 'takes' | 'tray' | 'again' | 'noTray' | 'gone' | 'last';
+
+const WORDS = {
+  words: { lines: ['GET', '3'] },
+  takes: { lines: ['NEED', '3'] },
+  tray: { lines: ['TRAY', '+3'] },
+  again: { lines: ['PAY', 'AGAIN'] },
+  noTray: { lines: ['GET', '6'] },
+  gone: { lines: ['NO', 'TRAY'] },
+  last: { lines: ['3', 'MORE'] },
+};
 
 /** The block set both levels share: the Starter blocks, the word, lock and refund, then this game's signs. */
 export function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
   addWordBlocks(book, pal);
-  const texts = {
-    words: { rows: [['WORDS ADD'], ['UP. GET 3']], maxWidth: 5 },
-    takes: { rows: [['THIS LOCK TAKES'], ['3 WORDS']], maxWidth: 7 },
-    tray: { rows: [['THE TRAY'], ['GIVES'], ['3 BACK']], maxWidth: 5 },
-    again: { rows: [['PAY THIS'], ['LOCK AGAIN']], maxWidth: 7 },
-    noTray: { rows: [['NO TRAY HERE.'], ['GET 6']], maxWidth: 7 },
-    gone: { rows: [['NO TRAY.'], ['THEY ARE GONE']], maxWidth: 7 },
-    last: { rows: [['THE EXIT LOCK'], ['TAKES 3 MORE']], maxWidth: 7 },
-  };
-  const colors = {
-    background: skyOf(pal),
-    paper: pal.c('parch', 3),
-    ink: pal.c('ink', 0),
-    wood: pal.c('wood', 2),
-    highlight: pal.c('wood', 4),
-    shadow: pal.c('wood', 0),
-  };
-  // Balanced rows leave room for large letters on every board in both rooms.
-  const { blocks, signs } = buildTiledSigns(texts, {
-    lettersPerBlock: 3,
-    colors,
-    maxBlocks: Math.min(100, 150 - book.index.size),
-  });
-  for (const [name, pic] of blocks) book.add(name, pic, { grav: PULL.down });
+  const signs = addMicroPlaques(book, pal, WORDS);
   return { book, signs };
 }
 
@@ -56,11 +44,11 @@ export interface Level {
 }
 
 /** The top row of a sign standing on ground row `ground`. */
-const onGround = (ground: number, s: Sign) => ground - 2 - s.board.length;
+const onGround = (ground: number, s: Sign) => ground - 1 - s.board.length;
 
-/** Two grounded post rows keep boards above the words and scenery. */
+/** A single grounded post keeps each plaque beside the words and scenery. */
 function place(m: StarterMap, x: number, sign: Sign): void {
-  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, x, onGround(10, sign), sign, 2);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, x, onGround(10, sign), sign);
 }
 
 /** A wall of brick from the top down to a lock: the lock and its arch are set after. */
@@ -96,9 +84,9 @@ function payToPass(book: Book, signs: Record<SignName, Sign>): StarterMap {
   m.set(21, GROUND - 1, 'refund');
   m.set(35, GROUND - 2, 'lockTop').set(35, GROUND - 1, 'lock');
   place(m, 4, signs.words);
-  place(m, 11, signs.takes);
-  place(m, 23, signs.tray);
-  place(m, 29, signs.again);
+  place(m, 16, signs.takes);
+  place(m, 20, signs.tray);
+  place(m, 31, signs.again);
   return m;
 }
 
@@ -132,7 +120,7 @@ function noTray(book: Book, signs: Record<SignName, Sign>): StarterMap {
   m.set(44, GROUND - 2, 'lockTop').set(44, GROUND - 1, 'lock');
   m.exits.push({ from: [44 + ORIGIN, GROUND - 1 + ORIGIN] });
   place(m, 5, signs.noTray);
-  place(m, 20, signs.gone);
+  place(m, 19, signs.gone);
   place(m, 36, signs.last);
   return m;
 }

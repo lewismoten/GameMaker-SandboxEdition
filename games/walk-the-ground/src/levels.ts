@@ -13,27 +13,27 @@ import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
-import { addSign, type Sign } from '../../kit/starter/sign';
+import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
 import { addDigBlocks } from './digBlocks';
 
 export type SignName = 'soil' | 'rock' | 'gold' | 'sink' | 'spikes' | 'exit';
 
 /** The signs' words and sizes. */
-const WORDS: Record<SignName, { text: string; w: number; h: number }> = {
-  soil: { text: 'SOIL CRUMBLES WHEN YOU TOUCH IT. WALK IN, OR PRESS ENTER TO DIG DOWN', w: 4, h: 5 },
-  rock: { text: 'ROCK DOES NOT DIG. JUMP, AND DIG OVER IT', w: 4, h: 4 },
-  gold: { text: 'GOLD FLECKS PAY 10 WHEN YOU DIG THEM UP', w: 4, h: 4 },
-  sink: { text: 'SOIL UNDER YOUR FEET GIVES WAY. STEP ON IT TO SINK', w: 4, h: 4 },
-  spikes: { text: 'SPIKES HURT. DIG UNDER THEM TO THE LADDER', w: 4, h: 4 },
-  exit: { text: 'EXIT →', w: 3, h: 1 },
+const WORDS = {
+  soil: { lines: ['ENTER', 'DIGS'] },
+  rock: { lines: ['JUMP', 'OVER'] },
+  gold: { lines: ['GOLD', '+10'], post: false },
+  sink: { lines: ['STEP', 'ON'] },
+  spikes: { lines: ['OUCH'] },
+  exit: { lines: ['EXIT', '→'], post: false },
 };
 
 /** The block set the levels share: the Starter blocks, then this game's signs, then the dig blocks. */
 function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
-  const signs = {} as Record<SignName, Sign>;
-  for (const n of Object.keys(WORDS) as SignName[]) signs[n] = addSign(book, pal, `${n}.sign`, WORDS[n].text, WORDS[n].w, WORDS[n].h);
+  const signs = addMicroPlaques(book, pal, WORDS);
   addDigBlocks(book, pal);
   return { book, signs };
 }
@@ -119,10 +119,10 @@ function theTunnel(book: Book, signs: Record<SignName, Sign>): StarterMap {
   }
   m.set(L1.rock, G - 1, 'rock');
   for (const [x, y] of L1.nuggets) m.set(x, y, 'nugget');
-  m.sign(4, onGround(G, signs.soil), signs.soil);
-  m.sign(8, onGround(G, signs.rock), signs.rock);
-  m.sign(12, onGround(G, signs.gold), signs.gold);
-  m.sign(37, onGround(G, signs.exit), signs.exit);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 4, onGround(G, signs.soil), signs.soil);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 8, onGround(G, signs.rock), signs.rock);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 12, onGround(G, signs.gold), signs.gold);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 37, onGround(G, signs.exit), signs.exit);
   return m;
 }
 
@@ -157,9 +157,9 @@ function theSink(book: Book, signs: Record<SignName, Sign>): StarterMap {
   for (let y = S + 1; y < L2.floor; y++) m.set(L2.ladder, y, 'mineLadder');
   m.set(L2.ladder, S, 'ladder').set(L2.ladder, S - 1, 'ladder');
   for (const [x, y] of L2.nuggets) m.set(x, y, 'nugget');
-  m.sign(3, onGround(S, signs.sink), signs.sink);
-  m.sign(7, onGround(S, signs.spikes), signs.spikes);
-  m.sign(39, onGround(S, signs.exit), signs.exit);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 3, onGround(S, signs.sink), signs.sink);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 7, onGround(S, signs.spikes), signs.spikes);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 39, onGround(S, signs.exit), signs.exit);
   return m;
 }
 
