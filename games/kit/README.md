@@ -169,6 +169,7 @@ Making the files:
 - `starter/monsters.ts` — the gumdrop, buzzer and shelly monsters and their two-frame pictures.
 - `starter/palette.ts` — shared bright color ramps, `skyOf` and a palette using the chosen hero’s ramps.
 - `starter/screens.ts` — title, menu, paper, cards and ending pictures, with the title’s group style.
+- `starter/screenSharing.ts` — shares ordinary course menus, text-page backdrops, level/ending backdrops and Kit’s intro when `Disk.write` finishes a Starter. Card wording moves to DOS `.txt` overlays with the same pause; unique text-page headings move into spare lines in their text files, retaining full pages’ pictured headings, while the shared How to Play and Credits headings keep their pagination; title pages, added lesson artwork, palette/visibility lessons and graduations keep their own pictures. Pictures and Cartoons keeps its GIF-only level cards so its format contrasts stay visible. Scores keep their pictured captions because DOS draws only its fixed score labels. `screens.ts` records each unmodified picture’s wording for this step; the fixed kit palette leaves gameplay palettes alone.
 - `starter/shop.ts` — coin, price, purchase and sold blocks for Starter shops, using the DOS Money counter.
 - `starter/sign.ts` — short words on a wooden board, cut into blocks, with two posts.
 - `starter/songStyle.ts` — each group’s instruments, bass, comping, drums and tempo, arranged around a game’s A and B sections.

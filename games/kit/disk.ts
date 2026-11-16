@@ -4,12 +4,14 @@ import { basename, dirname, join } from 'node:path';
 import { Disk as NativeDisk } from '@lewismoten/gamemaker-sandbox-tools/kit/disk';
 import { stampMenuVersion, type MenuVersionSpot } from '@lewismoten/gamemaker-sandbox-tools/kit/menuVersion';
 import { stampCourseNumber } from './courseStamp';
+import { shareStarterScreens } from './starter/screenSharing';
 export class Disk extends NativeDisk {
   menuVersion: MenuVersionSpot = {};
   override write(): number {
     const about = join(this.dir, '..', 'about.json');
     if (existsSync(about)) {
-      const { version } = JSON.parse(readFileSync(about, 'utf8')) as { version?: string };
+      const { version, series } = JSON.parse(readFileSync(about, 'utf8')) as { version?: string; series?: string };
+      if (series === 'starter') shareStarterScreens(this.files, basename(dirname(this.dir)));
       if (version) stampMenuVersion(this.files, version, this.menuVersion);
     }
     stampCourseNumber(this.files, basename(dirname(this.dir)));
