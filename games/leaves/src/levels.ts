@@ -12,8 +12,9 @@ import { Book, PULL } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
-import { skyOf, type Pal } from '../../kit/starter/palette';
-import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { type Pal } from '../../kit/starter/palette';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { LEAF } from './leaves';
 import { autumnPalette, type Kind } from './palette';
 import { SIGNS } from './text';
@@ -88,38 +89,13 @@ export const GUST_LOOP = [
 ] as const;
 export const GUST_EVERY = GUST_LOOP.reduce((t, s) => t + s.ticks, 0);
 
-/** All the words, including both rooms; each room allocates only its own vocabulary. */
-const texts = Object.fromEntries(
-  Object.entries(SIGNS).flatMap(([room, signs]) => Object.entries(signs).map(([name, [text]]) => [`${room}.${name}`, { rows: [[text]], maxWidth: 7 }])),
-);
-// Narrow gaps next to the bank and first maple need compact, balanced phrases.
-texts['tumble.start'] = { rows: [['EVERY'], ['LEAF IS'], ['A MONSTER.']], maxWidth: 5 };
-texts['tumble.stiff'] = { rows: [['1 FRAME, STRAIGHT'], ['DOWN: STIFF.']], maxWidth: 7 };
-texts['tumble.next'] = { rows: [['NEXT:'], ['THE WIND.']], maxWidth: 5 };
-texts['gust.start'] = { rows: [['BRANCHES'], ['DROP LEAVES'], ['ON TIMERS.']], maxWidth: 5 };
-texts['gust.model'] = { rows: [['GUST LEAVES'], ['FLY FAR AND FAST.']], maxWidth: 7 };
-texts['gust.next'] = { rows: [['THAT IS'], ['THE LOT.']], maxWidth: 5 };
-
-/** A block set: the Starters' blocks, the room's own (`add`) and its signs. */
+/** Each room keeps only its own mapped plaque vocabulary. */
 function bookFor(pal: Pal, room: keyof typeof SIGNS, add: (book: Book) => void): { book: Book; signs: Record<string, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
   add(book);
-  const { blocks, signs } = buildTiledSigns(texts, {
-    colors: {
-      background: skyOf(pal),
-      paper: pal.c('parch', 3),
-      ink: pal.c('ink', 0),
-      wood: pal.c('wood', 2),
-      highlight: pal.c('wood', 4),
-      shadow: pal.c('wood', 0),
-    },
-    compact: true,
-    include: Object.keys(SIGNS[room]).map((name) => `${room}.${name}`),
-    maxBlocks: Math.min(100, 150 - book.index.size),
-  });
-  for (const [name, pic] of blocks) book.add(name, pic, { grav: PULL.down });
-  return { book, signs: Object.fromEntries(Object.entries(signs).map(([name, sign]) => [name.slice(room.length + 1), sign])) };
+  const signs = addMicroPlaques<string>(book, pal, SIGNS[room]);
+  return { book, signs };
 }
 
 /** The ground of a room: hedges at the ends, grass with fallen leaves, the doors. */
@@ -176,8 +152,6 @@ export function tumble(pal: Pal): Level {
   TUMBLE.trees.forEach((t, i) => {
     plant(m, 'maple', i, t.x, (col, row) => (col === 2 && row === 1 ? `branch${i}` : crownName('maple', i, col, row)));
   });
-  // Lift the bank's board, keeping its post on clear meadow beside the step.
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 4, 4, signs.start, 3);
   TUMBLE.trees.forEach((t) => stand(m, signs[t.sign], t.x - (t.sign === 'stiff' ? 6 : 7)));
   stand(m, signs.next, TUMBLE.exit - 5);
   m.set(8, 1, 'cloudL').set(9, 1, 'cloudR').set(33, 1, 'cloudL').set(34, 1, 'cloudR');
@@ -222,10 +196,8 @@ export function gust(pal: Pal): Level {
       row === 0 ? `${crownName(t.kind, i, col, 0)}.hard` : row === 2 && col !== 1 ? `${t.kind}.calm${col / 2}` : crownName(t.kind, i, col, row),
     );
   });
-  stand(m, signs.start, 5);
   // the signs stand where the calm leaves seldom fall (the gust leaves fly over everything)
   stand(m, signs.gust, 16);
-  stand(m, signs.land, 29);
   stand(m, signs.model, 43);
   stand(m, signs.next, GUST.exit - 5);
   m.set(19, 1, 'cloudL').set(20, 1, 'cloudR').set(46, 1, 'cloudL').set(47, 1, 'cloudR');

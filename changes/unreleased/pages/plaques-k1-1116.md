@@ -1,3 +1,3 @@
 ### Changed
 
-- Kit’s Moves and Kit’s Shop use small framed plaques for their hints, with floating exit labels.
+- Kit’s Moves, Kit’s Shop and Leaves in the Wind use small framed plaques for their hints.
