@@ -1,5 +1,6 @@
 // Validated integrator links: destinations, exit blocks, and arrivals typed or picked on a map.
 import { h, numberField, selectField, toast } from '../../core/ui';
+import { capacityNote } from '../../widgets/limitNote';
 import type { Project } from '../../core/project';
 import { ADVTYPE, MAXSCENELINKS, NOSCENE, type Game, type Point, type Scene } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
@@ -97,6 +98,12 @@ export function linksPanel(ctx: LinksContext, s: Scene, kind: 'start' | 'adventu
       kind === 'start'
         ? 'Link 1 picks the first level and the block where the character starts in it.'
         : 'Each exit needs its own block, separate from entrances. Link to Game Won to end the game; an ending has no arrival block.',
+    ),
+    capacityNote(
+      s.links.slice(0, kind === 'start' ? 1 : MAXSCENELINKS).filter((link) => link.toScene !== NOSCENE).length,
+      kind === 'start' ? 1 : MAXSCENELINKS,
+      kind === 'start' ? 'starting link' : 'links',
+      kind === 'start' ? 'a start scene' : 'a scene',
     ),
     h(
       'div',

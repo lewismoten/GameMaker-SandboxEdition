@@ -12,6 +12,11 @@ export function fullNote(max: number, things: string, where: string): HTMLElemen
   return h('p', { class: 'hint limit-note', role: 'note' }, fullText(max, things, where));
 }
 
+/** Shows the full-list note only once every available place is used. */
+export function capacityNote(used: number, max: number, things: string, where: string): HTMLElement | null {
+  return used >= max ? fullNote(max, things, where) : null;
+}
+
 /** A label suffix such as "up to 19 letters in DOS" for a field the format cuts short. */
 export function upTo(max: number, unit = 'letters'): string {
   return `up to ${max} ${unit} in DOS`;

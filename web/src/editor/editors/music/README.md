@@ -31,3 +31,5 @@ From `web/`:
 ```sh
 npx vitest run src/editor/editors/music
 ```
+
+The instrument bank shows the shared DOS limit note beside New instrument when all 128 instruments are used; it also explains why Own copy is unavailable.

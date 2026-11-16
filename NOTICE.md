@@ -1309,3 +1309,5 @@ maker "ZORP" is invented. The shell is untested: nothing has been printed.
 - **The Noodle Observatory exit countdown lights (November 16, 2026):** OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, made the five-light indicators and their code, reusing the game’s palette and unused block slots while preserving its opening clocks. Existing art, music and engine credits remain. No third-party material was added.
 
 - **Pass the Pie level card layout (November 16, 2026):** OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, wrapped long chapter and payback subtitles inside their text areas, preserving every word and the existing artwork. No third-party material was added.
+
+- **Editor DOS limit feedback (November 16, 2026):** OpenAI Codex, directed by Lewis Moten, added instrument-bank, scene-link and VGA channel limit messages and node-only regression tests. No third-party material was added.
