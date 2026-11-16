@@ -4,14 +4,16 @@
 //   The shop: a roof and a doorway, three stalls in a row (a gold key for 3, a silver key for 3, a heart for 2),
 //   then two locked gates in a wall, silver and gold, then the exit. Both keys cost 6; all three cost 8, every coin.
 import { SHOP_BOARD, addFront } from './front';
-import { Book } from '../../kit/starter/book';
+import { Book, PULL } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { addLockBlocks } from '../../kit/starter/locks';
-import { StarterMap } from '../../kit/starter/map';
-import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
+import { ORIGIN, StarterMap } from '../../kit/starter/map';
+import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
 import { addAwning, addCash, addSold, addStall, stallName } from '../../kit/starter/shop';
-import { addSign, type Sign } from '../../kit/starter/sign';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
+import { stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 
 export function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
   const book = new Book('bbl');
@@ -24,13 +26,13 @@ export function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sig
   addStall(book, pal, 'key', 3);
   addStall(book, pal, 'silver', 3);
   addStall(book, pal, 'heart', 2);
-  const signs = {
-    street: addSign(book, pal, 'street', "KIT'S SHOP. TAKE COINS FIRST", 4, 3),
-    prices: addSign(book, pal, 'prices', 'EACH THING HAS A PRICE. PAY, THEN TAKE IT', 4, 4),
-    both: addSign(book, pal, 'both', 'THE EXIT NEEDS BOTH KEYS', 4, 3),
-    heart: addSign(book, pal, 'heart', 'A HEART IS AN EXTRA LIFE', 4, 3),
-    exit: addSign(book, pal, 'exit', 'EXIT →', 3),
-  };
+  const signs = addMicroPlaques(book, pal, {
+    street: { lines: ['COINS', 'FIRST'] },
+    prices: { lines: ['PAY,', 'TAKE'] },
+    both: { lines: ['GET', 'KEYS'] },
+    heart: { lines: ['+1', 'LIFE'] },
+    exit: { lines: ['EXIT', '→'], post: false },
+  });
   addFront(book, pal); // last, so no other block's number moves
   return { book, signs };
 }
@@ -77,7 +79,7 @@ function cash(m: StarterMap, rows: string[]): StarterMap {
 const clouds = (g: Grid, at: readonly (readonly [number, number])[]) => at.forEach(([x, y]) => g.put(x, y, '(').put(x + 1, y, ')'));
 
 /** The one level: 56 blocks wide, the ground is row 10. */
-function shop(book: Book, signs: Record<SignName, Sign>): StarterMap {
+function shop(book: Book, pal: Pal, signs: Record<SignName, Sign>): StarterMap {
   const { g, GROUND } = frame(56, 54);
   // the street: six coins on the path, two more up a ladder
   g.row(9, 9, 11, 'c').row(9, 14, 16, 'c');
@@ -107,11 +109,37 @@ function shop(book: Book, signs: Record<SignName, Sign>): StarterMap {
   ] as const) {
     m.set(x, GROUND - 1, stallName(item, price)).set(x, GROUND - 2, `awning${price}`);
   }
-  m.sign(5, onGround(GROUND, signs.street), signs.street);
-  m.sign(26, onGround(GROUND, signs.both), signs.both);
-  m.sign(40, onGround(GROUND, signs.heart), signs.heart);
-  m.sign(44, onGround(GROUND, signs.prices), signs.prices);
-  m.sign(51, onGround(GROUND, signs.exit), signs.exit);
+  // The shop's plain back wall is scenery, not a gameplay cell. Composite each
+  // post from its pristine kit picture, keeping the brick behind it intact.
+  const place = (x: number, y: number, sign: Sign) =>
+    stampTiledSign(
+      {
+        set: (cx, cy, name) => {
+          const existing = m.map.blocks[(cy + ORIGIN) * 100 + cx + ORIGIN];
+          if (existing === book.n('sky')) return m.setOnSky(cx, cy, name);
+          if (existing !== book.n('backWall')) throw new Error(`Plaque covers shop art at ${cx},${cy}`);
+          const id = `${name}.wall`;
+          if (!book.has(id)) {
+            const src = book.pics.get(name)!;
+            const wall = book.pics.get('backWall')!;
+            book.add(
+              id,
+              new Pixels(20, 20).blit(src, 0, 0).map((px, py, c) => (c === skyOf(pal) ? wall.px[py * 20 + px] : c)),
+              { grav: PULL.down },
+            );
+          }
+          return m.set(cx, cy, id);
+        },
+      },
+      x,
+      y,
+      sign,
+    );
+  place(5, onGround(GROUND, signs.street), signs.street);
+  place(26, onGround(GROUND, signs.both), signs.both);
+  place(40, onGround(GROUND, signs.heart), signs.heart);
+  place(44, onGround(GROUND, signs.prices), signs.prices);
+  place(53, 7, signs.exit);
   return m;
 }
 
@@ -119,6 +147,6 @@ function shop(book: Book, signs: Record<SignName, Sign>): StarterMap {
 export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
   const pal = buildStarterPalette(undefined, 'kits-shop');
   const { book, signs } = buildBlocks(pal);
-  const levels: Level[] = [{ file: 'one', title: "Kit's Shop", hint: 'Pay for what you want.', map: shop(book, signs) }];
+  const levels: Level[] = [{ file: 'one', title: "Kit's Shop", hint: 'Pay for what you want.', map: shop(book, pal, signs) }];
   return { book, pal, levels };
 }
