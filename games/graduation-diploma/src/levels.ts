@@ -18,6 +18,7 @@ import type { Timed } from '../../kit/starter/graduationHall';
 import { CONFETTI } from '../../kit/starter/graduationConfetti';
 import { addFriendBlocks } from '../../kit/starter/graduationFriends';
 import { cfg } from './config';
+import { microSigns } from '../../graduation-basics/src/microSigns';
 
 export const W = 88;
 export const H = 13;
@@ -64,7 +65,7 @@ function tinyScroll(pal: Pal): Pixels {
 }
 
 /** The levels (one) and the block set, palette and timers they share. */
-export function buildLevels() {
+function originalLevels() {
   const pal = buildPalette(cfg);
   const { book, timed, hall, signs } = buildBlocks(pal, cfg, false);
   // a banner is as wide as its word needs (three blocks hold six letters), which leaves room for the gowned friends' blocks
@@ -148,4 +149,9 @@ export function buildLevels() {
     { lockVertical: true, file: 'hall', title: cfg.level.title, hint: cfg.level.hint, map: m, book, timed, bbl: 'grad' },
   ];
   return { book, pal, timed, levels };
+}
+
+/** Keep the finale's own scenery and replace its boards with shared micro plaques. */
+export function buildLevels() {
+  return microSigns(originalLevels(), cfg);
 }

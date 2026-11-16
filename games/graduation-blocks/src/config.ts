@@ -51,7 +51,7 @@ The Sandbox Diploma is waiting once every stage has its honors.
     credits: creditsPage(
       'GRADUATION: BLOCKS AND SHOWCASE',
       about.version,
-      'A graduation: it comes after Drawing with Blocks, Weather and Showcase Tricks. Held-rise controls, bot timing and raised-start camera layout by OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten.',
+      'A graduation: it comes after Drawing with Blocks, Weather and Showcase Tricks. Held-rise controls, bot timing, raised-start camera layout and micro-sign plaques by OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten.',
     ),
   },
 };

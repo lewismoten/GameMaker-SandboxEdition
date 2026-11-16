@@ -2,7 +2,7 @@
 // on the built disk, as PNGs in the folder given (default: the system temp dir).
 //   cd web && npx vite-node ../games/graduation-heroes/tools/preview.ts [outDir]
 import { graduationPreview } from '../../kit/starter/graduationPreview';
-import { buildLevels } from '../../kit/starter/graduationLevel';
+import { buildLevels } from '../src/levels';
 import { cfg } from '../src/config';
 
-graduationPreview(cfg.id, new URL('../', import.meta.url), buildLevels(cfg));
+graduationPreview(cfg.id, new URL('../', import.meta.url), buildLevels());
