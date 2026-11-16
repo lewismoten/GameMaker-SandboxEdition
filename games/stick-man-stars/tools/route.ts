@@ -97,7 +97,7 @@ function totals(bot: StarterBot, from: number, coins: number, picks: number, pop
 /** A hop with Space, in place, waiting for the landing. */
 async function hop(bot: StarterBot): Promise<void> {
   bot.sim.press(SCAN_JUMP);
-  await must(bot, bot.wait(2), 'hopping');
+  await must(bot, bot.wait(bot.jumpHold), 'hopping');
   bot.sim.release(SCAN_JUMP);
   await must(bot, bot.land(), 'landing');
 }

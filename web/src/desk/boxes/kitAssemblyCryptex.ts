@@ -2,7 +2,7 @@
 // finished groups are put together, then one washer is lifted, turned and dropped back to set your own code.
 // Groups, IDs and captions come from games/year2000/laser/cryptexGroups.ts, the same list the assembly card sheet prints.
 import { makeParts } from '../../../../games/year2000/laser/cryptexParts';
-import { BASE, STEP } from '../../../../games/year2000/laser/cryptexDims';
+import { BASE, LID, STEP, T } from '../../../../games/year2000/laser/cryptexDims';
 import { CODE_STEPS, CODE_TURN, FIT_ORDER, GROUPS } from '../../../../games/year2000/laser/cryptexGroups';
 import { loopsOf } from './kitAssemblyLoops';
 import type { AssemblyGroup, AssemblyModel, AssemblyPart, AssemblyStep, V3 } from './kitAssemblyModel';
@@ -28,10 +28,11 @@ export function cryptexModel(): AssemblyModel {
         caption: g.build,
         cut: loopsOf(p, 'cut'),
         art: loopsOf(p, 'engrave'),
-        origin: [c - p.w / 2, c - p.h / 2, piece.z],
+        artFace: stock[piece.key].face,
+        origin: piece.post ? [c + piece.post * LID.postX - p.w / 2, c + 12 - T / 2, piece.z] : [c - p.w / 2, c - p.h / 2, piece.z],
         right: [1, 0, 0],
-        down: [0, 1, 0],
-        normal: [0, 0, 1],
+        down: piece.post ? [0, 0, 1] : [0, 1, 0],
+        normal: piece.post ? [0, 1, 0] : [0, 0, 1],
         explode: [0, 0, 14 + Math.min(9, 90 / g.pieces.length) * j],
         group: g.id,
       });
@@ -75,14 +76,18 @@ export function cryptexModel(): AssemblyModel {
   const up: V3 = [0, 0, 40];
   const turn = CODE_TURN * STEP;
   const code: [string, string, AssemblyStep['moves']][] = [
-    ['F, H and I lift out', 'F', [...lift('F', OUT)!, ...lift('H', OUT)!, ...lift('I', OUT)!]],
+    ['F and H lift out', 'F', [...lift('F', OUT)!, ...lift('H', OUT)!]],
+    ['J slides free', 'J', lift('J', [0, -LID.release, 0])],
+    ['J lifts off', 'J', lift('J', [70, -LID.release, 30], undefined, [0, -LID.release, 0])],
     ['E lifts off', 'E', lift('E', aside)],
     ['G1 lifts out', 'G1', lift('G1', up)],
     ['G1 turns', 'G1', lift('G1', up, [0, turn], up)],
     ['G1 drops back', 'G1', lift('G1', ZERO, [turn, turn], up)],
     ['E goes back on', 'E', lift('E', ZERO, undefined, aside)],
-    ['F, H and I go back in', 'F', [...lift('F', ZERO, undefined, OUT)!, ...lift('H', ZERO, undefined, OUT)!, ...lift('I', ZERO, undefined, OUT)!]],
+    ['J lowers onto posts', 'J', lift('J', [0, -LID.release, 0], undefined, [70, -LID.release, 30])],
+    ['J slides home', 'J', lift('J', ZERO, undefined, [0, -LID.release, 0])],
+    ['F and H go back in', 'F', [...lift('F', ZERO, undefined, OUT)!, ...lift('H', ZERO, undefined, OUT)!]],
   ];
   code.forEach(([label, group, moves], i) => steps.push({ kind: 'move', label, caption: CODE_STEPS[i], group, moves }));
-  return { parts, thickness: 3, steps, groups, center: [c, c], sections };
+  return { parts, thickness: T, steps, groups, center: [c, c], sections };
 }

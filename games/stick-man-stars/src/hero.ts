@@ -22,7 +22,7 @@ export const HERO_LIVES = 3;
 
 /** HERO.CHR: the kit's hero with Enter throwing a star and Space jumping (there are no ladders). */
 export function buildThrower(heroBlocks: Parameters<typeof buildHero>[0]): Character {
-  const ch = buildHero(heroBlocks);
+  const ch = buildHero(heroBlocks, { heldRise: { push: 12 } });
   const s = ch.sequences[SEQ.throw];
   const [windUp, release, follow] = s.frames;
   const birth = { ...emptyFrame(), x: 0, y: 20, pic1: STAR, pic2: MONBL, pause: 0 };

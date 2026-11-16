@@ -8,7 +8,7 @@
 import { StarterMap } from '../../../kit/starter/map';
 import type { Pal } from '../print';
 import { CROW } from '../monsters';
-import { GROUND, addSigns, onGround, room, scenery, startBook, type Level } from '../level';
+import { GROUND, crackCrossing, addSigns, onGround, room, scenery, startBook, type Level } from '../level';
 import { addMeter } from '../meter';
 
 export const MARKET = {
@@ -54,7 +54,6 @@ export function levelMarket(pal: Pal): Level {
   for (let x = 5; x < MARKET.width - 4; x += 2) m.set(x, 2, 'bunting');
   for (const x of MARKET.gates) for (let y = GROUND - 4; y < GROUND; y++) m.set(x, y, 'gateOpen');
   for (const x of MARKET.boxes) for (const y of [GROUND - 2, GROUND - 1]) m.set(x, y, 'woodBox');
-  for (const x of [MARKET.cracks, MARKET.cracks + 1, MARKET.cracks + 2, MARKET.cracks2, MARKET.cracks2 + 1, MARKET.cracks2 + 2]) m.set(x, GROUND - 1, 'crack');
   for (const y of [8, 9]) m.set(MARKET.crates, y, 'crate').set(MARKET.crates + 1, y, 'crate');
   // each watch is two crows wing to wing, so the gap under them is a short one
   for (const x of MARKET.crows) m.mon(CROW.bobbing, x, MARKET.crowRow).mon(CROW.bobbing, x + 1, MARKET.crowRow);
@@ -64,6 +63,8 @@ export function levelMarket(pal: Pal): Level {
       .set(x, 9, 'tentL')
       .set(x + 1, 9, 'tentR');
   m.sign(5, onGround(GROUND, s.close), s.close);
+  crackCrossing(m, MARKET.cracks, 3);
+  crackCrossing(m, MARKET.cracks2, 3);
   return {
     file: 'market',
     title: 'The Night Market',

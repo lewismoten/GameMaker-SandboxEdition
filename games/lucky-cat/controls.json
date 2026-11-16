@@ -10,7 +10,7 @@
     },
     "57": {
       "short": "Jump",
-      "long": "Jump. Steer with Left and Right while you are in the air."
+      "long": "Hold Space to rise; release to fall. Steer with Left and Right while you are in the air."
     },
     "72": {
       "short": "Climb up",
@@ -40,7 +40,7 @@
   "joystick": {
     "1": {
       "short": "Jump",
-      "long": "Jump."
+      "long": "Hold to rise; release to fall."
     }
   },
   "counters": {

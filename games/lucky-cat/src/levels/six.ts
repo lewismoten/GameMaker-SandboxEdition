@@ -5,7 +5,7 @@
 import { StarterMap } from '../../../kit/starter/map';
 import type { Pal } from '../print';
 import { CROW } from '../monsters';
-import { GROUND, addSigns, onGround, room, startBook, type Level } from '../level';
+import { GROUND, crackCrossing, addSigns, onGround, room, startBook, type Level } from '../level';
 
 export const SIX = {
   cracks: 14,
@@ -44,7 +44,6 @@ export function levelSix(pal: Pal): Level {
   for (let x = SIX.lift - 1; x <= SIX.lift + 1; x++) m.set(x, 1, 'brick');
   const colors = ['brollyRed', 'brollyGold', 'brollyTeal'];
   for (let y = 3; y < GROUND; y++) m.set(SIX.lift, y, colors[y % 3]);
-  for (const x of [SIX.cracks, SIX.cracks + 1, SIX.cracks + 2]) m.set(x, GROUND - 1, 'crack');
   m.set(SIX.shaker, 3, 'shaker');
   for (let y = -10; y < GROUND - 2; y++) m.set(SIX.wall, y, 'brick');
   m.set(SIX.wall, GROUND - 2, 'saltArch').set(SIX.wall, GROUND - 1, 'saltPile');
@@ -53,6 +52,7 @@ export function levelSix(pal: Pal): Level {
   m.set(SIX.rascal, 8, 'rascalTop').set(SIX.rascal, 9, 'rascalBottom');
   for (const x of [11, 41, 72]) m.set(x, 8, 'lampHead').set(x, 9, 'lampPost');
   m.sign(62, onGround(GROUND, s.who), s.who);
+  crackCrossing(m, SIX.cracks, 3);
   return {
     file: 'six',
     title: 'Payback',

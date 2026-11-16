@@ -4,8 +4,9 @@ import { existsSync, readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { CHAPTERS, chapterStarts, planBook } from './plan';
 import { CHECKS } from '../../editor/check/findings';
+import { COMPRESSION_FIGURES } from './compressionFigures';
 
-const FIGURES = ['moods', 'compare', 'goat', 'loaf', 'chain', 'walkoff'];
+const FIGURES = ['moods', 'compare', 'goat', 'loaf', 'chain', 'walkoff', ...Object.keys(COMPRESSION_FIGURES)];
 const words = (t: string) =>
   t
     .replace(/<[^>]+>/g, ' ')

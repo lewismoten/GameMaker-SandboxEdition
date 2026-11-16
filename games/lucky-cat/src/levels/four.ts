@@ -7,7 +7,7 @@
 // Two charms: the shooting star and the dice.
 import { StarterMap } from '../../../kit/starter/map';
 import type { Pal } from '../print';
-import { GROUND, addSigns, onGround, room, scenery, startBook, type Level } from '../level';
+import { GROUND, crackCrossing, addSigns, onGround, room, scenery, startBook, type Level } from '../level';
 import { addMeter } from '../meter';
 
 export const FOUR = {
@@ -65,11 +65,12 @@ export function levelFour(pal: Pal): Level {
   for (const y of [8, 9]) m.set(FOUR.ladder, y, 'stepL').set(FOUR.ladder + 3, y, 'stepR');
   m.set(FOUR.ladder + 2, 8, 'drip');
   m.set(FOUR.star, 6, 'charm.star');
-  for (const x of [FOUR.cracks, FOUR.cracks + 1, FOUR.cracks + 2, FOUR.cracks2, FOUR.cracks2 + 1, FOUR.cracks2 + 2]) m.set(x, GROUND - 1, 'crack');
   for (const y of [8, 9]) m.set(FOUR.crates, y, 'crate').set(FOUR.crates + 1, y, 'crate');
   m.set(FOUR.dice, GROUND - 1, 'charm.dice');
   for (const x of [72, 76]) m.set(x, 9, 'tentL').set(x + 1, 9, 'tentR');
   m.sign(5, onGround(GROUND, s.race), s.race);
+  crackCrossing(m, FOUR.cracks, 3);
+  crackCrossing(m, FOUR.cracks2, 3);
   return {
     file: 'four',
     title: 'Race to the Fair',

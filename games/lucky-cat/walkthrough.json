@@ -8,47 +8,47 @@
  "segments": [
   {
    "scene": 2,
-   "keys": "AU0KzWdNKM0DSwXLA0gnyANNFM0DTRzNC00UzQM5ArkATRnNA00UzQNLBcsDSCfIA00UzQNNEs0LTQ/NA00DOQK5F80DTQXNZ00yzQM5ArkATRnNNU0="
+   "keys": "AU0KzWdNKM0DSwXLA0gnyANNFM0DTRzNC00UzQM5CLkATQ3NBE0ezQNLBcsDSCfIA00UzQNNEs0LTQ/NA00DOQi5Es0HTQXNZ003zQM5CLkATQ3NNk0="
   },
   {
    "scene": 3,
-   "keys": "AU0ozQNND81nTQrNA00DOQK5F80DTRTNA00PzQM5ArkATRnNA00PzQNLBcsDSCfIA00jzQNNEs0LTQXNA00PzRZNHs0DTQrNA00jzQNND801TQ=="
+   "keys": "AU0ozQNND81nTQrNA00DOQi5Es0HTRTNA00PzQM5CLkATQ3NBE0ZzQNLBcsDSCfIA00jzQNNEs0LTQXNA00PzQxNHs0DTQrNA00jzQNND801TQ=="
   },
   {
    "scene": 4,
-   "keys": "AUsPy2dLKMsDSwM5ArkXywNLHssDTQXNA0gxyANLFMsDSxTLA0sSyw1NBc0DOQK5AEsZywNLD8sDSwM5ArkSywdLD8sDTQXNA0gxyANLHssDSxLLREs="
+   "keys": "AUsPy2dLKMsDSwM5CLkSywdLHssDTQXNA0gxyANLFMsDSxTLA0sSyw1NAM0DOQi5AEsNywRLFMsDSwM5CLkNywxLD8sDTQXNA0gxyANLHssDSxLLREs="
   },
   {
    "scene": 5,
-   "keys": "AU0KzWdNFzkCuRc5ArkXOQK5FzkCuRc5ArkXOQK5FzkCuQ/NCE0PzQM5ArkATRnNA0sAywtND80DTQPNA1CBAdADTTzNA00="
+   "keys": "AU0KzWdNFzkIuQ05CLkNOQi5DTkIuQ05CLkNOQi5DTkIuQ05CLkNOQi5DTkIuQ05CLkNOQi5DTkIuQ/NA00UzQM5CLkATQ3NBE0FzSBND80DTQPNA1CBAdADTTzNA00="
   },
   {
    "scene": 6,
-   "keys": "AU03zQNNBc0vTQrNA00ZzQNNLc0DTUTNE00PzWdNHs0DTQrNA0sFywM5ArkATRnNNU0="
+   "keys": "AU03zQNNBc0vTQrNA00ZzQNNLc0DTUTNE00PzWdNHs0DTQrNA0sAywM5CLkATQ3NNk0="
   },
   {
    "scene": 7,
-   "keys": "AU0KzWdNKM0DTQM5ArkUOQK5Ic0ETQ/NA0sFywNIJ8gDTR7NA00XzQtNFM0DTQ/NA00FzS9ND80DTRnNA00czQ5NFM0DTQ=="
+   "keys": "AU0KzWdNKM0DTQM5CLkSOQi5H80ETQ/NA0sFywNIJ8gDTR7NA00XzQtNFM0DTQ/NA00FzS9ND80DTRnNA00czQ5NFM0DTQ=="
   },
   {
    "scene": 8,
-   "keys": "AU0PzWdNAM0DTQg5ArkUOQK5Ic0ETQrNA00FzQNIMcgDTSPNA00mzQ1NFM0DSwXLIU0ezQNNCs0DTQXNA0gxyANNFM0DTRzNDU0PzQNN"
+   "keys": "AU0PzWdNAM0DTQg5CLkQOQi5EzkIuR/NBE0KzQNNBc0DSDHIA00jzQNNJs0NTRTNA0sFyytNHs0DTQrNA00FzQNIMcgDTRTNA00czQ1ND80DTQ=="
   },
   {
    "scene": 9,
-   "keys": "AU0ozQNND81nTRnNA00KzQNNAzkCuRfNA00PzQNLBcsDSCfIA00UzQNNFM0DTQ3NC00FzQM5ArkATRnNA00FzQNNGc0OTR7NA00KzQNNHs0DTQ/NNU0="
+   "keys": "AU0ozQNND81nTRnNA00KzQNNAzkIuRLNB00PzQNLBcsDSCfIA00UzQNNFM0DTQ3NC00FzQM5CLkATQ3NBE0PzQNNGc0vTR7NA00KzQNNHs0DTQ/NNU0="
   },
   {
    "scene": 10,
-   "keys": "AU0KzWdNFM0DTQXNA00FzQNNAzkCuRfNA00FzQNNBc0vTQrNA00UzQNNI80DTQPNPU0KzQNND80DTR7NA00czRZNBc0DTQrNAzkCuQBNGc0DSwDLJ00ozQNNBc0DTQ=="
+   "keys": "AU0KzWdNFM0DTQXNA00FzQNNAzkIuRLNB00FzQNNBc0vTQrNA00UzQNNI80DTQPNPU0KzQNND80DTR7NA00czRZNBc0DTQrNAzkIuQBNDc0ETQrNHU0ozQNNBc0DTQ=="
   },
   {
    "scene": 11,
-   "keys": "AU0KzWdNGc0DTQrNAzkCuQBNGc0DSwDLAzkCuQBND80ITQXNA0sFywM5ArkATQ/NCE0FzQNLBcsDOQK5AE0PzQhNBc0DSwXLAzkCuQBND80ITQXNA0sFywM5ArkATQ/NCE0FzQNLBcsDOQK5AE0PzQhNBc0DOQK5AE0KzQ1NLc0DTR7NA00NzRBNBc0DTQ/NAzkCuQBNGs0DTQrNA00KzQNN"
+   "keys": "AU0KzWdNGc0DTQrNAzkIuQBNDc0ETQ/NAzkIuQBNCs0DTQXNA0sAywM5CLkATQrNA00FzQNLAMsDOQi5AE0KzQNNBc0DSwDLAzkIuQBNCs0DTQXNA0sAywM5CLkATQrNA00FzQNLAMsDOQi5AE0KzQNNBc0DOQi5AE0KzQNNLc0DTR7NA00NzRBNBc0DTRTNAzkIuQBNDc0ETQ/NA00KzQNN"
   },
   {
    "scene": 12,
-   "keys": "AU0PzWdNGc0DOQK5AE0ZzQNND80DTQ45ArkTzQNNKzkCuRM5ArkFzRdLA8sDSADIA00KzQNNDc0JTRnNAzkCuQBNGc0DTRnNA00DOQK5F80DTRnNA00="
+   "keys": "AU0PzWdNGc0DOQi5AE0NzQRNGc0DTQ45CLkTzQNNKzkIuQXNBUsDywNIAMgDTQrNA00NzQlNGc0DOQi5AE0NzQRNI80DTQM5CLkSzQdNGc0DTQ=="
   },
   {
    "scene": 13,
@@ -60,11 +60,11 @@
   },
   {
    "scene": 15,
-   "keys": "AU0PzWdNI80DTQ/NA00PzQM5ArkATRnNA00ZzQNND80TTSPNA0sAywNND80DTQrNAzkCuQBNGc0DTRnNA0sAyypNITkCuQjNDEsDywxNAzkCuRfNA00FzQNND80DTSjNA00="
+   "keys": "AU0PzWdNI80DTQ/NA00PzQM5CLkATQ3NBE0jzQNND80OTSPNA0sAywNND80DTQrNAzkIuQBNDc0ETSPNA0sAyyVNITkIuQXNA0sDywxNAzkIuRLNB00FzQNND80DTSjNA00="
   },
   {
    "scene": 16,
-   "keys": "AU0yzQM5ArkATRnNA00PzQNNBc0vTQrNA00yzQNNIc0TTS3NA00FzQNNCs0hTR7NA00FzQNND81nTQrNZ00="
+   "keys": "AU0yzQM5CLkATQ3NBE0ZzQNNBc0vTQrNA00yzQNNIc0TTS3NA00FzQNNCs0cTR7NA00FzQNND81nTQrNZ00="
   }
  ],
  "chapters": [
@@ -131,7 +131,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 60543,
+  "frames": 61159,
   "chapters": [
    {
     "title": "Opening",
@@ -150,83 +150,83 @@
    },
    {
     "title": "Level 2: Saucer Alley",
-    "frame": 6788,
-    "time": 113133.33333334337
+    "frame": 6837,
+    "time": 113950.00000001027
    },
    {
     "title": "Level 3: Mirror Maze",
-    "frame": 10342,
-    "time": 172366.6666666579
+    "frame": 10391,
+    "time": 173183.3333333241
    },
    {
     "title": "Level 4: Thirteen Steps",
-    "frame": 13417,
-    "time": 223616.66666662807
+    "frame": 13486,
+    "time": 224766.6666666274
    },
    {
     "title": "Level 5: Town Hall",
-    "frame": 16927,
-    "time": 282116.6666666289
+    "frame": 17421,
+    "time": 290349.9999999718
    },
    {
     "title": "Level 6: The Mirror Shop",
-    "frame": 20184,
-    "time": 336400.00000002544
+    "frame": 20661,
+    "time": 344350.0000000347
    },
    {
     "title": "Level 7: The Other Side",
-    "frame": 23543,
-    "time": 392383.33333342394
+    "frame": 24046,
+    "time": 400766.66666676704
    },
    {
     "title": "Level 8: Earlier That Morning",
-    "frame": 27057,
-    "time": 450950.0000001588
+    "frame": 27701,
+    "time": 461683.3333335046
    },
    {
     "title": "Level 9: Earlier Still",
-    "frame": 30561,
-    "time": 509350.0000002268
+    "frame": 31346,
+    "time": 522433.33333357534
    },
    {
     "title": "Level 10: Wash Day",
-    "frame": 34174,
-    "time": 569566.6666668054
+    "frame": 34961,
+    "time": 582683.3333334415
    },
    {
     "title": "Level 11: Race to the Fair",
-    "frame": 37796,
-    "time": 629933.3333333315
+    "frame": 38455,
+    "time": 640916.6666666393
    },
    {
     "title": "Level 12: The Clock Tower",
-    "frame": 40789,
-    "time": 679816.6666665487
+    "frame": 41408,
+    "time": 690133.3333331913
    },
    {
     "title": "Level 13: Knock on Wood",
-    "frame": 44171,
-    "time": 736183.3333330841
+    "frame": 44790,
+    "time": 746499.9999997268
    },
    {
     "title": "Level 14: The Night Market",
-    "frame": 47256,
-    "time": 787599.9999996311
+    "frame": 47875,
+    "time": 797916.6666662737
    },
    {
     "title": "Level 15: Payback",
-    "frame": 50921,
-    "time": 848683.3333328222
+    "frame": 51537,
+    "time": 858949.999999465
    },
    {
     "title": "Ending",
-    "frame": 54688,
-    "time": 911466.6666660093
+    "frame": 55304,
+    "time": 921733.3333326521
    },
    {
     "title": "Credits",
-    "frame": 58988,
-    "time": 983133.3333325092
+    "frame": 59604,
+    "time": 993399.9999991519
    }
   ]
  }
