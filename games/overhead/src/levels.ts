@@ -10,31 +10,25 @@
 import { Book } from '../../kit/starter/book';
 import { Grid } from '../../kit/starter/grid';
 import { ORIGIN } from '../../kit/starter/map';
-import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
-import type { Sign } from '../../kit/starter/sign';
-import { addOverBlocks, addOverSign, type Ground } from './blocks';
+import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
+import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { addOverBlocks, type Ground } from './blocks';
 import { OverMap } from './overMap';
 
 /** A block of the map, in world blocks (a level's own corner is ORIGIN). */
 export type Spot = [number, number];
 const at = (x: number, y: number): Spot => [x + ORIGIN, y + ORIGIN];
 
-/** The words on every sign: [name, text, board width, board height, on 'floor' or 'grass']. */
+/** The approved compact vocabulary; dropped lesson boards allocate no tiles. */
 const SIGNS = {
-  // the room
-  arrows: ['arrows', 'THE ARROWS WALK UP, DOWN, LEFT AND RIGHT', 4, 3, 'floor'],
-  facing: ['facing', 'LAMI TURNS TO FACE THE WAY THEY WALK', 4, 3, 'floor'],
-  solid: ['solid', 'FURNITURE IS SOLID. WALK ROUND IT', 4, 3, 'floor'],
-  wallsign: ['wallsign', 'SEE A WALL? IT IS A WALL. DOOR →', 4, 3, 'floor'],
-  // the roads
-  middle: ['middle', 'LAMI STARTS IN THE MIDDLE OF A SCREEN', 4, 3, 'grass'],
-  edge: ['edge', 'OFF THE EDGE IS A LINK', 4, 2, 'grass'],
-  both: ['both', 'EDGE LINKS GO BOTH WAYS', 4, 2, 'grass'],
-  door: ['door', 'A DOOR IS A LINK TOO. WALK IN', 4, 2, 'grass'],
-  water: ['water', 'WATER IS SOLID. WALK ROUND', 4, 2, 'grass'],
-  back: ['back', 'THIS DOOR GOES BACK TO THE VILLAGE', 4, 2, 'floor'],
-  out: ['out', 'EXIT →', 3, 1, 'floor'],
-} as const;
+  arrows: { lines: ['↑ ↓', '← →'] },
+  wallsign: { lines: ['DOOR', '→'] },
+  edge: { lines: ['EDGE', 'LINK'] },
+  door: { lines: ['WALK', 'IN'] },
+  back: { lines: ['GO', 'BACK'] },
+  out: { lines: ['EXIT', '→'], post: false },
+};
 export type SignName = keyof typeof SIGNS;
 
 export interface Level {
@@ -156,9 +150,24 @@ export function fromCells(l: Link): Spot[] {
 export function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign>; ground: Ground } {
   const book = new Book('bbl');
   const ground = addOverBlocks(book, pal);
-  const signs = {} as Record<SignName, Sign>;
-  for (const [key, [name, words, w, h, on]] of Object.entries(SIGNS)) signs[key as SignName] = addOverSign(book, pal, ground[on], name, words, w, h);
+  // Copy the shared boards with no gravity for this overhead world.
+  const scratch = new Book('bbl');
+  const signs = addMicroPlaques(scratch, pal, SIGNS);
+  for (const [name, pic] of scratch.pics) if (!name.includes('post')) book.add(name, pic);
+  // Posts retain the exact floor or grass texture around their four-pixel shaft.
+  for (const on of ['floor', 'grass'] as const)
+    for (const [name, pic] of scratch.pics)
+      if (name.includes('post')) {
+        const composite = ground[on].crop(0, 0, 20, 20);
+        for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) if (pic.get(x, y) !== skyOf(pal)) composite.set(x, y, pic.get(x, y));
+        book.add(`${name}.${on}`, composite);
+      }
   return { book, signs, ground };
+}
+
+/** The top-down ground is directly beneath a short post; board pixels stay shared. */
+function plaque(m: OverMap, x: number, y: number, s: Sign, on: 'floor' | 'grass'): void {
+  stampTiledSign({ set: (sx, sy, block) => m.set(sx, sy, block.includes('post') ? `${block}.${on}` : block) }, x, y, s);
 }
 
 const LEGEND_ONE: Record<string, string> = {
@@ -195,8 +204,8 @@ function roomLevel(book: Book, s: Record<SignName, Sign>): OverMap {
   for (const [x, y] of COINS_ONE) g.put(x, y, 'c');
   g.put(DOOR_ONE[0], DOOR_ONE[1], 'D');
   const m = new OverMap(book, g.rows(), LEGEND_ONE, 'wall');
-  m.sign(3, 9, s.arrows).sign(9, 9, s.facing);
-  m.sign(13, 1, s.solid).sign(19, 8, s.wallsign);
+  plaque(m, 4, 7, s.arrows, 'floor');
+  plaque(m, 22, 7, s.wallsign, 'floor');
   return m;
 }
 
@@ -318,14 +327,12 @@ function worldLevel(book: Book, s: Record<SignName, Sign>): OverMap {
   L('shop', 15, 5, 'D');
   for (const [x, y] of COINS_TWO.shop) L('shop', x, y, 'C');
   const m = new OverMap(book, g.rows(), LEGEND_TWO, 'tree');
-  const sign = (id: string, lx: number, ly: number, name: SignName) => m.sign(area(id).rl + lx, area(id).rt + ly, s[name]);
-  sign('meadow', 1, 5, 'middle');
-  sign('meadow', 9, 6, 'edge');
-  sign('woods', 9, 6, 'both');
-  sign('village', 10, 4, 'door');
-  sign('pond', 1, 6, 'water');
-  sign('shop', 9, 6, 'back');
-  sign('shop', 12, 3, 'out');
+  const sign = (id: string, lx: number, ly: number, name: SignName) =>
+    plaque(m, area(id).rl + lx, area(id).rt + ly, s[name], id === 'shop' ? 'floor' : 'grass');
+  sign('meadow', 6, 2, 'edge');
+  sign('village', 9, 3, 'door');
+  sign('shop', 8, 7, 'back');
+  sign('shop', 12, 5, 'out');
   return m;
 }
 
