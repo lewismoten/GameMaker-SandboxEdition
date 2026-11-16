@@ -1,8 +1,9 @@
 // The figures of The Ultimate Owner's Guide: the palette figures drawn from the games' real
-// files (paletteFigures.ts) and two small diagrams. Each is a <figure> with a text
+// files (paletteFigures.ts) and small diagrams, including measured compression examples. Each is a <figure> with a text
 // alternative; a figure whose files are missing is left out.
 import { h } from '../../editor/core/ui';
 import { PALETTE_FIGURES } from './paletteFigures';
+import { COMPRESSION_FIGURES } from './compressionFigures';
 
 /** A row of labeled boxes joined by arrows, read out as one sentence. */
 function flow(label: string, steps: (string | [string, string])[]): HTMLElement {
@@ -62,7 +63,7 @@ function walkoff(): HTMLElement {
   );
 }
 
-const FIGURES: Record<string, () => Promise<HTMLElement | undefined> | HTMLElement> = { ...PALETTE_FIGURES, chain, walkoff };
+const FIGURES: Record<string, () => Promise<HTMLElement | undefined> | HTMLElement> = { ...PALETTE_FIGURES, ...COMPRESSION_FIGURES, chain, walkoff };
 
 /** Replaces each `<figure data-fig>` in a chapter with its figure (or removes it). */
 export async function fillFigures(root: HTMLElement): Promise<void> {

@@ -278,7 +278,7 @@ game folder opens in the browser unchanged.
   game magazine (`web/src/manual/magazine`): its words, layout and drawings, with screenshots
   of the games, the desk and the site themselves and its interview with Lewis drawn from his own account in
   `docs/history.md`; The Ultimate Owner's Guide (`web/src/manual/ultimate`), including its BBS file-size
-  advice and download-time table written with **OpenAI Codex (GPT-6.1 Sol)**, directed by Lewis Moten (archive syntax checked against PKWARE’s 1993 PKZIP 2.04g help
+  advice, download-time table and compression diagrams (including generated BBL/FLI examples) written and drawn in code with **OpenAI Codex (GPT-6.1 Sol)**, directed by Lewis Moten (archive syntax checked against PKWARE’s 1993 PKZIP 2.04g help
   and Robert K Jung’s April 1993 ARJ 2.41 manual, both copyrighted by their authors); and the desk's
   props, drawn in code: the GRAVITAS game pad, the ILLOGITECH speakers and their SOUND BOASTER
   switch, the mugs (each badge made from a game's own files or the BBS's ANSI art) and the mouse
