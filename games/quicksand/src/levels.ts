@@ -14,8 +14,9 @@ import { Book, PULL, SOLID } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
-import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
-import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
+import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { STAGES, bed, hole, sandAt, sandRamps, stone, tuft, type Kind } from './props';
 
 export interface Level {
@@ -44,13 +45,11 @@ export const SAND_TWO = [14, 37] as const;
 export const STONES = [19, 25, 32] as const;
 export const WET_TWO = [26, 31] as const;
 
-type SignName = 'sinks' | 'walk' | 'stones' | 'wet';
-// All words stay together here; each map allocates only the tiles it needs.
+// The complete mapped vocabulary is shared by both independently built block sets.
 const SIGNS = {
-  sinks: { rows: [['STAND STILL ON'], ['SAND AND IT SINKS']], maxWidth: 9 },
-  walk: { rows: [['KEEP WALKING,'], ['OR JUMP OUT']], maxWidth: 7 },
-  stones: { rows: [['STONES NEVER SINK.'], ['REST ON ONE']], maxWidth: 9 },
-  wet: { rows: [['DARK WET SAND'], ['SINKS FASTER']], maxWidth: 7 },
+  sinks: { lines: ['KEEP', 'MOVING'] },
+  walk: { lines: ['KEEP', 'MOVING'] },
+  stones: { lines: ['SAFE', 'HERE'] },
 };
 
 /** The name of the block of `kind` sand at link `i` of its chain (0 is fresh sand). */
@@ -73,26 +72,13 @@ function addSand(book: Book, pal: Pal, kind: Kind): void {
   book.add(holeOf(kind), hole(pal, kind), AIR);
 }
 
-function startBook(pal: Pal, names: SignName[], kinds: Kind[]): { book: Book; signs: Record<string, Sign> } {
+function startBook(pal: Pal, kinds: Kind[]): { book: Book; signs: Record<string, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
   book.add('bed', bed(pal), { solid: SOLID });
   book.add('tuft', tuft(pal), AIR);
   for (const k of kinds) addSand(book, pal, k);
-  const { blocks, signs } = buildTiledSigns(SIGNS, {
-    include: names,
-    colors: {
-      background: skyOf(pal),
-      paper: pal.c('parch', 3),
-      ink: pal.c('ink', 0),
-      wood: pal.c('wood', 2),
-      highlight: pal.c('wood', 4),
-      shadow: pal.c('wood', 0),
-    },
-    lettersPerBlock: 3,
-    maxBlocks: Math.min(100, 150 - book.index.size - (names.includes('stones') ? 1 : 0)),
-  });
-  for (const [name, pic] of blocks) book.add(name, pic, AIR);
+  const signs = addMicroPlaques(book, pal, SIGNS);
   return { book, signs };
 }
 
@@ -127,7 +113,7 @@ function lay(m: StarterMap, ground: number, x0: number, x1: number, kind: Kind):
 
 /** Level 1: one patch of dry quicksand. */
 function dontStandStill(pal: Pal): Level {
-  const { book, signs } = startBook(pal, ['sinks', 'walk'], ['sand']);
+  const { book, signs } = startBook(pal, ['sand']);
   const G = GROUND_ONE;
   const g = room(WIDTH_ONE, G, 32);
   for (const x of [18, 21]) g.put(x, G - 1, 'c');
@@ -146,7 +132,8 @@ function dontStandStill(pal: Pal): Level {
   const m = new StarterMap(book, g.rows());
   const signMap = { set: (x: number, y: number, block: string) => m.setOnSky(x, y, block) };
   stampTiledSign(signMap, 4, onGround(G, signs.sinks), signs.sinks);
-  stampTiledSign(signMap, 14, onGround(G, signs.walk), signs.walk);
+  // Both reminders precede the first sand; their short posts stand on firm turf.
+  stampTiledSign(signMap, 9, onGround(G, signs.walk), signs.walk);
   lay(m, G, SAND_ONE[0], SAND_ONE[1], 'sand');
   m.set(SAND_ONE[0] - 1, G - 1, 'tuft').set(SAND_ONE[1] + 1, G - 1, 'tuft');
   return { file: 'one', title: "Don't Stand Still", hint: 'Sand sinks under your feet.', map: m, book };
@@ -154,7 +141,7 @@ function dontStandStill(pal: Pal): Level {
 
 /** Level 2: a wide crossing with three stones and a wet stretch. */
 function steppingStones(pal: Pal): Level {
-  const { book, signs } = startBook(pal, ['stones', 'wet'], ['sand', 'wet']);
+  const { book, signs } = startBook(pal, ['sand', 'wet']);
   book.add('stone', stone(pal), { solid: SOLID });
   const G = GROUND_TWO;
   const g = room(WIDTH_TWO, G, 42);
@@ -173,7 +160,7 @@ function steppingStones(pal: Pal): Level {
   const m = new StarterMap(book, g.rows());
   const signMap = { set: (x: number, y: number, block: string) => m.setOnSky(x, y, block) };
   stampTiledSign(signMap, 4, onGround(G, signs.stones), signs.stones);
-  stampTiledSign(signMap, 14, onGround(G, signs.wet), signs.wet);
+
   lay(m, G, SAND_TWO[0], SAND_TWO[1], 'sand');
   lay(m, G, WET_TWO[0], WET_TWO[1], 'wet');
   for (const x of STONES) m.set(x, G, 'stone');

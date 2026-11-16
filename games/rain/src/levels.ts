@@ -1,11 +1,10 @@
 // Two short weather lessons. The second map is revisited with a darker palette, as in Day and Night.
 import { MLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
-import { Book, PULL } from '../../kit/starter/book';
+import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { ORIGIN, StarterMap } from '../../kit/starter/map';
-import { buildTiledSigns, stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { skyOf } from '../../kit/starter/palette';
+import { addMicroPlaques, stampMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
 import { addHouse, HOUSE } from './house';
 import { addRain, rainPalette, stormPalette, type Timed } from './rain';
 import type { Pal } from '../../kit/starter/palette';
@@ -45,39 +44,20 @@ function lesson(pal: Pal, pools: boolean): Level {
   g.put(2, GROUND - 4, 's').put(2, GROUND - 3, 'S');
   g.put(width - 3, GROUND - 2, 'e').put(width - 3, GROUND - 1, 'E');
   const map = new StarterMap(book, g.rows());
-  // One vocabulary for both lessons; the crowded house lesson uses compact letters throughout.
+  // Only the mapped puddle and palette hints remain; the rain art teaches the first lesson.
   const texts = {
-    rows: { rows: [['THIS RAIN FALLS IN ROWS']] },
-    offset: { rows: [['OFFSET THE PICTURES'], ['FOR SCATTERED RAIN']] },
-    ripple: { rows: [['RAIN SPLASHES.'], ['PUDDLES RIPPLE']] },
-    touch: { rows: [['STEP IN A PUDDLE:'], ['A TOUCH SWAPS IN'], ['SPLASH BLOCKS']] },
-    dark: { rows: [['SAME MAP, DARKER'], ['COLORS: GO THROUGH'], ['THE DOOR']] },
+    touch: { lines: ['STEP', 'ON'] },
+    same: { lines: ['SAME', 'MAP'] },
+    look: { lines: ['NEW', 'LOOK'] },
   };
-  const { blocks, signs } = buildTiledSigns(texts, {
-    include: pools ? ['ripple', 'touch', 'dark'] : ['rows', 'offset'],
-    colors: {
-      background: skyOf(pal),
-      paper: pal.c('parch', 3),
-      ink: pal.c('ink', 0),
-      wood: pal.c('wood', 2),
-      highlight: pal.c('wood', 4),
-      shadow: pal.c('wood', 0),
-    },
-    ...(pools ? { compact: true } : { lettersPerBlock: 3 as const }),
-    maxBlocks: Math.min(100, 150 - book.index.size),
-  });
-  for (const [name, pic] of blocks) book.add(name, pic, { grav: PULL.down });
-  const positions = pools
-    ? ([
-        [4, signs.ripple],
-        [22, signs.touch],
-        [30, signs.dark],
-      ] as const)
-    : ([
-        [4, signs.rows],
-        [21, signs.offset],
-      ] as const);
-  for (const [x, sign] of positions) stampTiledSign({ set: (x, y, name) => map.setOnSky(x, y, name) }, x, GROUND - 1 - sign.board.length, sign);
+  if (pools) {
+    const signs = addMicroPlaques(book, pal, texts);
+    const signMap = { set: (x: number, y: number, name: string) => map.setOnSky(x, y, name) };
+    // Before the first puddle; keep the post off every wet touch cell.
+    stampTiledSign(signMap, 5, 8, signs.touch);
+    // Two plaques on one short grounded post, before the palette-changing door.
+    stampMicroPlaques(signMap, 33, 7, [signs.same, signs.look]);
+  }
   if (pools) {
     // the house, its roof and spout on the rain's clock (same phase as the rain around each cell)
     house.forEach((row, r) =>
