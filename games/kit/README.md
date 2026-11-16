@@ -467,3 +467,21 @@ Colors That Work plays both lessons with a simulated scene palette (`alike.pal`)
 - `testdisks/sound-stress/floppy.ts` — makes a nonbootable 1.44 MB FAT12 image with the DOS runtime and notices.
 - `testdisks/sound-stress/image.ts` — writes a new private floppy image and refuses replacement (`npx vite-node ../games/kit/testdisks/sound-stress/image.ts --out <new SOUNDTST.img>`).
 - `testdisks/sound-stress/rooms.ts` — two flat rooms with one-shot effect pads, score pads and doors that reset the course.
+
+
+### Reusable micro plaques
+
+`starter/microPlaque.ts` exports `addMicroPlaques(book, pal, texts)`: supply a named
+record of `{ lines: ['WALK', 'IN'], post?: boolean }`. Each plaque has one outer
+one-pixel frame, one or two blocks across, one block tall, and at most two explicit
+lines of eight characters each. Words stay whole. N/W/M widen when the line fits (N keeps its capital diagonal);
+all eight directional arrows come from the kit font. Large-font signs keep their frame.
+Boards contain only the shared paper, ink and wood indices, so they are byte-identical
+across Starter palettes. Only post tiles use `skyOf(pal)`, and all tiles are passable
+with downward gravity.
+
+Place one with `stampTiledSign(map, x, y, sign, postHeight)` from the tools package's
+`kit/tiledSigns`; use `post: false` for floating labels. `stampMicroPlaques` from the
+same module places a stack such as TOO/SLOW above GO/BACK on one post. Stacked
+plaques must have the same width, keeping their centers aligned on the block grid.
+The helper is groundwork for shared signs; existing Starter signs are not migrated.

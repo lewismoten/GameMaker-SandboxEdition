@@ -11,6 +11,7 @@ import { buildGame as heroGame } from '../../games/choose-hero/src/game';
 import { CREDITS } from '../../games/first-steps/src/text';
 import { buildLevels as monsterLevels } from '../../games/meet-the-monsters/src/levels';
 
+import { microSignLine } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSignFont';
 import { MICRO_GLYPHS } from '@lewismoten/gamemaker-sandbox-tools/microFont';
 
 const options = { colors: { background: 0, paper: 1, ink: 2, wood: 3, highlight: 4, shadow: 5 } };
@@ -157,17 +158,20 @@ describe('game-wide tiled signs', () => {
       expect(board).toHaveLength(1);
       expect(board[0]).toHaveLength(width);
       const pixel = (x: number, y: number) => blocks.get(board[0][Math.floor(x / 20)])!.get(x % 20, y);
-      // Inspect every interior pixel: text crosses seams without inner rails or side bevels.
+      // Compare the continuous line, including wide W/M and letters crossing tile seams.
       lines.forEach((line, row) => {
-        const x0 = Math.floor((width * 20 - (line.length * 4 - 1)) / 2);
+        const rendered = microSignLine(line, MICRO_GLYPHS, width * 20 - 2);
+        const x0 = Math.floor((width * 20 - rendered.width) / 2);
+        let pen = x0;
+        const expected = new Map<string, boolean>();
+        for (const glyph of rendered.glyphs) {
+          const gw = glyph.length / 5;
+          for (let y = 0; y < 5; y++) for (let x = 0; x < gw; x++) if (glyph[y * gw + x] === '1') expected.set(`${pen + x},${y}`, true);
+          pen += gw + 1;
+        }
         for (let y = 0; y < 5; y++)
-          for (let x = 2; x < width * 20 - 2; x++) {
-            const offset = x - x0;
-            const ch = line[Math.floor(offset / 4)];
-            const glyph = ch === 'M' ? '101111101101101' : ch === 'W' ? '101101101111101' : ch === 'N' ? '101111111111101' : MICRO_GLYPHS[ch];
-            const ink = offset >= 0 && ch && offset % 4 < 3 && glyph[y * 3 + (offset % 4)] === '1';
-            expect(pixel(x, 4 + row * 7 + y)).toBe(ink ? options.colors.ink : options.colors.paper);
-          }
+          for (let x = 1; x < width * 20 - 1; x++)
+            expect(pixel(x, 4 + row * 7 + y)).toBe(expected.has(`${x},${y}`) ? options.colors.ink : options.colors.paper);
       });
       expect(pixel(0, 10)).toBe(options.colors.highlight);
       expect(pixel(width * 20 - 1, 10)).toBe(options.colors.shadow);

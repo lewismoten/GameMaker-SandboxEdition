@@ -65,6 +65,15 @@ export const MICRO_GLYPHS: MicroGlyphs = Object.freeze({
   '%': '101001010100101',
   '@': '010101111100011',
   '~': '000011110000000',
+  // Sign arrows by OpenAI Codex (GPT-6.1 Sol); horizontal forms preserve existing games.
+  '→': '100110111110100',
+  '←': '001011111011001',
+  '↑': '010111010010010',
+  '↓': '010010010111010',
+  '↖': '000111110101000',
+  '↗': '000111011101000',
+  '↙': '000101110111000',
+  '↘': '000101011111000',
 });
 
 /** Square letterforms for technical labels, with the full punctuation repertoire. */
