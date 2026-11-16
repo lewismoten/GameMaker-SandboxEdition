@@ -8,6 +8,10 @@ import type { Pal } from '../../../kit/starter/palette';
 import { GROUND, addSigns, mountain, onGround, placeFace, room, startBook, MountainMap, type Level } from '../level';
 import { NEXT, PROLOGUE } from '../monsters';
 import { FOOT } from '../art/land';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
+import { micro } from '@lewismoten/gamemaker-sandbox-tools/kit/microText';
+import { PULL } from '../../../kit/starter/book';
+import { TOE_AFTER } from '../props';
 
 /** Where things are (columns; rows count down from the sky). */
 export const NEXT_AT = {
@@ -30,6 +34,29 @@ const SIGNS = {
 export function levelNext(pal: Pal): Level {
   const { book, timed } = startBook(pal, ['mountain', 'sleepy', 'town'], { wake: PROLOGUE.wake });
   const s = addSigns(book, pal, SIGNS);
+  // Ten lights drain over the existing one-time wait; the last becomes a permanent arrow.
+  // Opaque stained boards avoid adding background variants to the block set.
+  const lights = 10;
+  const opens = PROLOGUE.wake + TOE_AFTER;
+  for (let left = lights; left >= 0; left--) {
+    const p = new Pixels(20, 20, pal.c('ink', 0));
+    p.rect(1, 1, 18, 18, pal.c('wood', 1));
+    p.line(2, 2, 16, 2, pal.c('wood', 3)).line(3, 18, 17, 18, pal.c('wood', 0));
+    micro(p, 4, 3, 'TOE', pal.c('parch', 4));
+    if (left) {
+      for (let j = 0; j < lights; j++) {
+        const x = 3 + (j % 5) * 3;
+        const y = 10 + Math.floor(j / 5) * 4;
+        p.rect(x, y, 2, 3, pal.c(j < left ? 'gold' : 'ink', j < left ? 3 : 0));
+        if (j < left) p.set(x, y, pal.c('parch', 4));
+      }
+      timed.push({ name: `toeWait${left}`, next: `toeWait${left - 1}`, ticks: opens / lights });
+    } else {
+      p.line(4, 13, 15, 13, pal.c('parch', 4));
+      p.line(12, 10, 15, 13, pal.c('parch', 4)).line(15, 13, 12, 16, pal.c('parch', 4));
+    }
+    book.add(`toeWait${left}`, p, { grav: PULL.down });
+  }
   const g = room(70, NEXT_AT.exit);
   const m = new MountainMap(book, g.rows());
   mountain(m, NEXT_AT.peak, NEXT_AT.top);
@@ -37,6 +64,8 @@ export function levelNext(pal: Pal): Level {
   m.set(32, 2, 'gate.green').set(26, 5, 'gate.white').set(39, 5, 'gate.blue').set(29, 3, 'gate.red');
   // the big foot across the sidewalk, four blocks high so nobody hops it
   for (let k = 0; k < FOOT.w * FOOT.h; k++) m.set(NEXT_AT.toe + (k % FOOT.w), GROUND - FOOT.h + Math.floor(k / FOOT.w), `foot${k}`);
+  // High and low copies flank the toe; drifting fog cannot cover both light groups.
+  for (const x of [NEXT_AT.toe - 2, NEXT_AT.toe + FOOT.w + 1]) for (const y of [GROUND - FOOT.h - 2, GROUND - 1]) m.set(x, y, 'toeWait10');
   // Tess's house (she starts in its doorway) and her fence; Mrs. Okoro's house past the toe
   house(m, 1, 7, 'wall', 'windowLit');
   m.set(3, GROUND - 2, 'houseDoorTop').set(3, GROUND - 1, 'houseDoorBottom');

@@ -1304,3 +1304,5 @@ maker "ZORP" is invented. The shell is untested: nothing has been printed.
 - **Lucky Cat steady crossings and visible bell meters (November 16, 2026):** OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, added runged approaches within three crossings, repeated compact woodcut bell meters without changing gate timing, and verified recorded play. Existing artwork, music and engine credits remain.
 
 - **Crossing clearance (November 16, 2026):** OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, adjusted doorway approaches for one-key-at-a-time movement. Existing artwork, music and engine credits remain. No third-party material was added.
+
+- **Next Door toe countdown (November 16, 2026):** OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, added woodcut countdown plaques beside Old Mossback’s toe in The Mountain Moved Next Door, using its existing palette and block clocks without changing passage timing. No new third-party material was added.
