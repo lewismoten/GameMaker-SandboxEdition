@@ -48,6 +48,15 @@ export function addGust(book: PBook, pal: Pal, ticksEach: number): void {
   off.rect(1, 7, 18, 9, c('blue', 0));
   halftone(off, 1, 7, 18, 9, c('blue', 2), 1);
   book.add('gustOff', off, air);
+  // Small five-light copies beside placards use the same segment clock and teal ink.
+  for (let step = 0; step <= 5; step++) {
+    const p = new Pixels(20, 20, paperOf(pal));
+    for (let i = 0; i < 5; i++) {
+      p.rect(1, 2 + i * 3, 18, 2, c('blue', 1)).rect(2, 2 + i * 3, 16, 1, i >= step ? c('teal', 3) : c('blue', 0));
+    }
+    book.add(`gustMini${step}`, p, air);
+    if (step < 5) book.time(`gustMini${step}`, `gustMini${step + 1}`, ticksEach);
+  }
 }
 
 /** The card box: a navy mailbox with a slot and a vermilion flag; it takes four cards at once and then opens. */

@@ -20,4 +20,4 @@ const titles: Record<number, string> = {
   13: 'Payback, Part 6: Main Street (Mr. Plume)',
   14: 'Payback, Part 7: Big Gobble (Mr. Plume)',
 };
-await writeSimWalkthrough('pass-the-pie', sim, SEED, titles);
+await writeSimWalkthrough('pass-the-pie', sim, SEED, titles, { clips: true });

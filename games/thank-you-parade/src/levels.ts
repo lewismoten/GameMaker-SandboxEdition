@@ -2,6 +2,7 @@
 // morning (a dawn pink, a windy gray, a bakery pink, the airstrip's butter yellow, a creek-water sage, the hall's warm
 // buff, a practice-hall lilac, a mint for the drum-off, plain cream for the route, a stadium blue, a truck-lot gray
 // and a gold for ten o'clock).
+import { repeatRouteBars } from './tall';
 import { printPalette, swap, type Pal, type Ramp } from './print';
 import { type Level } from './lay';
 import { bakery } from './bakery';
@@ -67,5 +68,6 @@ export function buildLevels(): { pal: Pal; levels: Level[] } {
     const paper = PAPERS[file];
     return make(paper ? swap(pal, { sky: paper }) : pal);
   });
+  for (const l of built) repeatRouteBars(l.file, l.map, l.book);
   return { pal, levels: built };
 }
