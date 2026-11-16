@@ -1325,3 +1325,8 @@ Reusable drawing, fonts, palette processing, synthesis, native builders and chec
 live in the [tools package](../web/packages/tools/README.md). Game folders contain their
 art, colors, recorded inputs, routes and thin compatibility adapters. Rounded and square
 micro-font profiles retain their original glyph coverage, fallback and spacing.
+
+The repeated countdown layouts for Pass the Pie (`src/timing.ts`) and The Thank-You Parade
+(`src/tall.ts`) keep complete five-segment bars across street, roof and pond-bed views.
+Their placement guards reject changes over gameplay tiles. Large copies reuse the original clock blocks;
+small five-light copies beside placards follow the same segment durations.

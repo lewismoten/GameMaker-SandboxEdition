@@ -64,10 +64,10 @@ export async function enter(bot: StarterBot, after = 16): Promise<void> {
 }
 
 /** Faces `dir` with a short tap of the arrow (the move flies the way he last moved). */
-export async function face(bot: StarterBot, dir: 'left' | 'right'): Promise<void> {
+export async function face(bot: StarterBot, dir: 'left' | 'right', ticks = 1): Promise<void> {
   const scan = dir === 'right' ? 77 : 75;
   bot.sim.press(scan);
-  await must(bot, bot.wait(1), 'turning');
+  await must(bot, bot.wait(ticks), 'turning');
   bot.sim.release(scan);
   await must(bot, bot.wait(2), 'turning');
 }
@@ -132,13 +132,14 @@ export async function smash(
   what: string,
   row: number,
   dir: 'left' | 'right' = 'right',
+  turnTicks = 1,
 ): Promise<void> {
   await must(bot, bot.walk(dir === 'right' ? x - 1 : x + 1, what, 900), `to ${what}`);
   const there = () => monsters(bot, nums).some((m) => m.y === row && Math.abs(m.x - x * 20) < 24);
   let n = 0;
   while (there()) {
     if (++n > combos + 1) throw new Error(`${what}: still standing after ${n - 1} combos\n${bot.log.slice(-6).join('\n')}`);
-    await face(bot, dir);
+    await face(bot, dir, turnTicks);
     await enter(bot, 22);
     if (process.env.DEBUG_SMASH) bot.say(`after combo ${n}: me ${bot.px.x},${bot.px.y} ${JSON.stringify(monsters(bot, [...nums, 2, 34]))}`);
   }
