@@ -23,6 +23,7 @@
 import { opening, tip, type Chapter, onCd } from './chapter';
 import { PLAYER_EXE, PLAYER_WORDS } from './playerWords';
 import { ARCHIVE_TRICKS } from './archiveTricks';
+import { BBS_SIZE } from './bbsSize';
 
 const esc = (t: string) => t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
@@ -129,6 +130,7 @@ export const SHAREWARE: Chapter = {
   animation stays tiny and plays on any PC (RSD’s own text-box animations in <i>Penguin Pete</i>).
   Fade-in and fade-out animations round a text screen in a slide list make a cheap page turn.</p>
   ${ARCHIVE_TRICKS}
+  ${BBS_SIZE}
   <h2>Customizing the player’s own words</h2>
   <p>A transferred game’s <code>.EXE</code> is Game-Maker’s own <code>XFERPLAY.EXE</code>, renamed
   after the game by Transfer (or by this edition’s DOS download). PLAYGAME’s built-in words live
