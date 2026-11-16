@@ -186,7 +186,8 @@ export function cardFli(pal: Pal, bytes: Uint8Array, hero: Hero, part: number, t
       p.rect(0, 0, W, H, acc[1]);
       hatch(p, 0, 0, W, H, acc[0], 4);
       p.rect(0, 112 + dy, W, 88, ink[0]);
-      text(p, 16 + dx, 20 + dy, `PAYBACK PART ${part}`, acc2[3], 1);
+      // The last two posters use yellow bands; their pink accent disappears at this size.
+      text(p, 16 + dx, 20 + dy, `PAYBACK PART ${part}`, part >= 6 ? ink[0] : acc2[3], 1);
       const s = name.length * 24 <= 228 ? 3 : 2;
       text(p, 12 + dx + 2, 40 + dy + 2, name, ink[0], s);
       text(p, 12 + dx, 40 + dy, name, pp[3], s);

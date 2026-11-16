@@ -1307,3 +1307,5 @@ maker "ZORP" is invented. The shell is untested: nothing has been printed.
 
 - **Next Door toe countdown (November 16, 2026):** OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, added woodcut countdown plaques beside Old Mossback’s toe in The Mountain Moved Next Door, using its existing palette and block clocks without changing passage timing. No new third-party material was added.
 - **The Noodle Observatory exit countdown lights (November 16, 2026):** OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, made the five-light indicators and their code, reusing the game’s palette and unused block slots while preserving its opening clocks. Existing art, music and engine credits remain. No third-party material was added.
+
+- **Pass the Pie card heading contrast (November 16, 2026):** OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, changed the Main Street and Big Gobble small headings to the existing dark ink. Existing art, words, music and engine credits remain; no third-party material was added.
