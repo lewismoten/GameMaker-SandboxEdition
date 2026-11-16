@@ -8,11 +8,11 @@
 //      right edge as well, and comes out on the left.
 // A dashed white line marks the map's top row and left column wherever the road crosses them. Hedges you can see
 // close the road in, so nothing stops Mia that she can't see.
-import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { addMicroPlaques, stampTiledSign, stampMicroPlaques } from '../../kit/starter/microPlaque';
 import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
-import { stampTiledSign, stampMicroPlaques, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { newMap, MLEN, type GameMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { addTopBlocks } from './topBlocks';
 import { HEDGE, MAP, STRAIGHT, TILTED, WIDTH, capRow, cellAt, finishRow, type Course } from './course';
@@ -23,9 +23,9 @@ export type SignName = 'straight' | 'seam' | 'back' | 'tilt' | 'lap1' | 'lap2' |
 const SIGN_CLEARANCE = 4;
 const WORDS = {
   straight: { lines: ['100', 'TALL'], post: false },
-  seam: { lines: ['MAP', 'EDGE'] },
+  seam: { lines: ['MAP', 'EDGE'], post: false },
   back: { lines: ['97', 'BLOCKS'], post: false },
-  tilt: { lines: ['SAME', 'MAP'] },
+  tilt: { lines: ['SAME', 'MAP'], post: false },
   lap1: { lines: ['LAP', '1 OF 3'], post: false },
   lap2: { lines: ['LAP', '2 OF 3'], post: false },
   length2: { lines: ['LAP', '3 OF 3'], post: false },

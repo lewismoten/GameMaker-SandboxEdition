@@ -11,14 +11,14 @@
 // A "stage" is one scene of a level: a palette and the links that lead out of it. A level with
 // several stages loads the same .MAP and .BBL in each; only the palette slot differs. Nothing in
 // the map or the blocks knows what time it is.
-import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { addMicroPlaques, stampTiledSign, stampMicroPlaques } from '../../kit/starter/microPlaque';
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { Book, PULL, SOLID } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { ORIGIN, StarterMap } from '../../kit/starter/map';
 import { type Pal } from '../../kit/starter/palette';
-import { stampTiledSign, stampMicroPlaques, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { buildPalettes, type Palettes } from './palettes';
 import { gateTop, lanternBrick, orb, pillar, post, postTop, roof, star, windowBrick } from './props';
 
@@ -197,7 +197,7 @@ function sundownStreet(pal: Pal): Level {
   const signsOnSky = { set: m.setOnSky.bind(m) };
   // Gate arrivals open at row 4: keep the whole board readable in every palette.
   stampMicroPlaques(signsOnSky, 4, 7, [signs.gate, signs.look]);
-  stampTiledSign(signsOnSky, 16, 8, signs.steps);
+  stampTiledSign(signsOnSky, 7, 8, signs.steps);
   const through = (mid: number): [number, number][] => [world(mid, 9), world(mid, 8)];
   const door = world(DOOR_TWO, 9);
   return {

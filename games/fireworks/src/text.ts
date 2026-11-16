@@ -22,7 +22,7 @@ export const HOWTO = wrap(`
 
 Walk along the field to the door at the end. Look up as you go: the fireworks are the lesson.
 
-Level 1 has two launchers. Level 2 is a big show over a sleeping town. Nothing here can hurt you.
+Level 1 has two launchers. Level 2 is a big show over a sleeping town. Nine monsters in step make one big burst. Nothing here can hurt you.
 
 |ESC for the menu.
 `);

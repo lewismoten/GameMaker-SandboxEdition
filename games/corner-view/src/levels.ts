@@ -14,8 +14,7 @@ import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { Book, SOLID } from '../../kit/starter/book';
 import { ORIGIN, type Exit } from '../../kit/starter/map';
 import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
-import { addMicroPlaques } from '../../kit/starter/microPlaque';
-import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
 import { cubeShades, floor, pad, tower } from './iso';
 
 export type SignName = 'upright' | 'downleft' | 'zig';
@@ -25,7 +24,7 @@ export const ROWS = 10;
 const WORDS = {
   upright: { lines: ['↑ ↗', '→ ↘'], post: false },
   downleft: { lines: ['↓ ↙', '← ↖'], post: false },
-  zig: { lines: ['TAP TWO', 'IN TURN'] },
+  zig: { lines: ['TAP TWO', 'IN TURN'], post: false },
 };
 
 /** A tower: the block it stands on (`row` is its lowest) and how many blocks tall its picture is (1, 2 or 3). */
@@ -186,7 +185,7 @@ function build(pal: Pal, file: string, spec: Spec, title: string, hint: string):
   const cells = Array.from({ length: ROWS }, (_, y) => Array.from({ length: COLS }, (_, x) => plain(cellOf(base, x, y), solid.has(`${x},${y}`))));
 
   // Plaques hang in the dark corners, clear of every cube, pad and floor cell.
-  // The last hint stands on a short post above the bottom border.
+  // The last hint floats over the dark margin, which has no ground for a post.
   const scratch = new Book('bbl');
   const signs = spec.signs.length ? addMicroPlaques(scratch, pal, WORDS) : undefined;
   const sky = skyOf(pal);

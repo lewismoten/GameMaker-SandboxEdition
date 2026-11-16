@@ -8,13 +8,13 @@
 // The gallery is a single file (GALLERY.MAP). Each door leads to its own SCENE of the game; the scenes list
 // the same map and blocks and differ in one slot, the palette (game.ts). So the same blocks are drawn in
 // five sets of colors, and the way back from each lands you at the door you came through.
-import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
 import { ORIGIN, StarterMap } from '../../kit/starter/map';
 import { Book, PULL } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
-import { stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { SWATCHES, addColorBlocks, swatchBlock, swatchRamps } from './colorBlocks';
 import { VIEWS } from './views';
 
@@ -161,8 +161,8 @@ function gallery(book: Book, signs: Record<string, Sign>): Level {
   // the garden bed
   ['rose', 'sun', 'iris', 'bluebell'].forEach((f, i) => m.set(FLOWERS_X + i, GROUND - 1, f));
   stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 5, onGround(signs.same), signs.same);
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, LIGHT_X + 3, GROUND - 2, signs.light);
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, TABLE_X + 6, onGround(signs.fruit), signs.fruit);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, LIGHT_X - 2, GROUND - 3, signs.light, 2);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, TABLE_X - 2, onGround(signs.fruit), signs.fruit);
   stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, GALLERY_END - 1, GROUND - 3, signs.back);
   return { file: 'gallery', title: 'The Gallery', map: m };
 }

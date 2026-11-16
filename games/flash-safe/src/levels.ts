@@ -19,7 +19,8 @@ import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
 import type { Sign as Panel } from '../../kit/starter/sign';
-import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
 import { BURR } from './monsters';
 import { STORM, bolt, lamp, lampPost, nope, onSky } from './props';
 import { BLINK_OFF, BLINK_ON, PULSE_STEP, SKY_CALM, SKY_FIRST, SKY_HOLD, SKY_STEP } from './timing';
@@ -62,37 +63,22 @@ export const LAMP_X = [10, 18];
 export const BOLT_X = 21;
 export const BOLT_TOP = 2;
 
-type SignName = 'cues' | 'hit' | 'nope' | 'slow' | 'soft' | 'noper' | 'fade' | 'storm' | 'bolt';
-const SIGNS: Record<SignName, string> = {
-  cues: 'A HIT NEEDS NO FLASH',
-  hit: 'A HIT IS A BEEP, OUCH, A NUMBER, FEWER HIT POINTS',
-  nope: 'NOT THIS: THE WHOLE SCREEN FLASHING',
-  slow: 'ONCE A SECOND IS SLOW ENOUGH',
-  soft: 'A SOFT PULSE IS EVEN GENTLER',
-  noper: 'NOT THIS: A BIG RED SCREEN BLINKING',
-  fade: 'THE DOOR FADES. IT DOES NOT FLASH',
-  storm: 'THE SKY LIFTS A LITTLE AND STAYS',
-  bolt: 'THE BOLT IS SMALL AND IT STAYS',
+type SignName = 'cues' | 'nope' | 'slow' | 'soft' | 'noper' | 'fade' | 'storm' | 'bolt';
+const WORDS: Record<SignName, { lines: string[]; post?: boolean }> = {
+  cues: { lines: ['NO', 'FLASH'] },
+  nope: { lines: ['NOT', 'THIS'], post: false },
+  slow: { lines: ['1 PER', 'SECOND'] },
+  soft: { lines: ['LIKE', 'THIS'], post: false },
+  noper: { lines: ['NOT', 'THIS'], post: false },
+  fade: { lines: ['LIKE', 'THIS'], post: false },
+  storm: { lines: ['LIKE', 'THIS'], post: false },
+  bolt: { lines: ['LIKE', 'THIS'], post: false },
 };
 
 function startBook(pal: Pal, names: SignName[]): { book: Book; signs: Record<string, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
-  const { blocks, signs } = buildTiledSigns(Object.fromEntries(Object.entries(SIGNS).map(([name, text]) => [name, { rows: [[text]] }])), {
-    include: names,
-    compact: true,
-    maxWidth: 5,
-    maxBlocks: Math.min(100, 150 - book.index.size),
-    colors: {
-      background: skyOf(pal),
-      paper: pal.c('parch', 3),
-      ink: pal.c('ink', 0),
-      wood: pal.c('wood', 2),
-      highlight: pal.c('wood', 4),
-      shadow: pal.c('wood', 0),
-    },
-  });
-  for (const [name, pic] of blocks) book.add(name, pic, AIR);
+  const signs = addMicroPlaques(book, pal, Object.fromEntries(names.map((name) => [name, WORDS[name]]))) as Record<SignName, Sign>;
   return { book, signs };
 }
 
@@ -160,7 +146,7 @@ function room(exitX: number): Grid {
 
 /** Level 1: three burrs. */
 function hitWithoutAFlash(pal: Pal): Level {
-  const { book, signs } = startBook(pal, ['cues', 'hit', 'nope']);
+  const { book, signs } = startBook(pal, ['cues', 'nope']);
   const panel = addPanel(book, pal, 'white', 'white');
   const g = room(40);
   for (const x of [15, 20, 25, 29]) g.put(x, GROUND - 1, 'c');
@@ -176,7 +162,6 @@ function hitWithoutAFlash(pal: Pal): Level {
   );
   const m = new StarterMap(book, g.rows());
   stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 5, onGround(GROUND, signs.cues), signs.cues);
-  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 11, onGround(GROUND, signs.hit), signs.hit);
   stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 28, onGround(GROUND, signs.nope), signs.nope);
   m.sign(33, onGround(GROUND, panel), panel);
   for (const x of BURR_X) m.mon(BURR, x, GROUND - 1);
@@ -274,7 +259,7 @@ function stormHeld(pal: Pal): Level {
   const { book: signBook, signs } = startBook(pal, ['storm', 'bolt']);
   const skyTiles = new Set<string>();
   for (const [name, pic] of signBook.pics) {
-    if (!name.startsWith('tiledSign.')) continue;
+    if (!name.startsWith('microPlaque.')) continue;
     if (pic.px.includes(skyOf(pal))) {
       skyTiles.add(name);
       ring(
@@ -288,8 +273,6 @@ function stormHeld(pal: Pal): Level {
   }
   for (const sign of Object.values(signs)) {
     sign.board = sign.board.map((row) => row.map((name) => (skyTiles.has(name) ? `${name}.start` : name)));
-    sign.post!.block += '.start';
-    if (sign.post!.rightBlock) sign.post!.rightBlock += '.start';
   }
   ring(
     book,
