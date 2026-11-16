@@ -51,17 +51,42 @@ export function compactGlyph(ch: string, micro: string): string {
   }).join('');
 }
 
-/** Classic 3×5 forms give M, W and N distinct silhouettes, and Q a clear tail. */
+/** Capital N/M/W fallbacks and a tailed Q for narrow micro signs. */
 const MICRO_SIGN_LETTERS: Readonly<Record<string, string>> = {
+  N: '101111111111101',
   M: '101111101101101',
   W: '101101101111101',
-  N: '101111111111101',
   Q: '111101101111001',
 };
 
 /** Refine default letters only in micro signs; custom glyphs and other font modes stay intact. */
 export function microSignGlyph(ch: string, glyph: string): string {
   return glyph === MICRO_GLYPHS[ch] ? (MICRO_SIGN_LETTERS[ch] ?? glyph) : glyph;
+}
+
+/** Wide forms expose the diagonal of capital N, the valleys of W and the notch of M. */
+const WIDE_MICRO: Readonly<Record<string, string>> = {
+  N: '10011101110110111001',
+  W: '1000110001101011010101010',
+  M: '1000111011101011000110001',
+};
+
+/** Spend the line's spare pixels on wide N/W/M, left to right; preserve custom forms. */
+export function microSignLine(line: string, glyphs: Readonly<Record<string, string>>, capacity: number): { glyphs: string[]; width: number } {
+  const narrow = [...line].map((ch) => {
+    if (glyphs[ch] === undefined) throw new Error(`No tiny sign glyph for "${ch}"`);
+    return microSignGlyph(ch, glyphs[ch]);
+  });
+  const measure = (forms: string[]) => forms.reduce((sum, form) => sum + form.length / 5 + 1, -1);
+  let spare = capacity - measure(narrow);
+  const forms = [...line].map((ch, i) => {
+    const wide = glyphs[ch] === MICRO_GLYPHS[ch] ? WIDE_MICRO[ch] : undefined;
+    const extra = wide ? (wide.length - narrow[i].length) / 5 : 0;
+    if (!wide || spare < extra) return narrow[i];
+    spare -= extra;
+    return wide;
+  });
+  return { glyphs: forms, width: measure(forms) };
 }
 
 /** Four characters per block across the whole board, wrapping only at word boundaries. */

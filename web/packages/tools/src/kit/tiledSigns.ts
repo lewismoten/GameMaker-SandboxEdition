@@ -1,7 +1,7 @@
 // Game-wide tiled signs, inspired by Stick Man Stars (Lewis Moten / Claude Sonnet 5.5).
 // OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten: uniform pixels and two-line micro boards.
 import { MICRO_GLYPHS, type MicroGlyphs } from '../microFont';
-import { compactGlyph, microSignLayout, microSignGlyph } from './tiledSignFont';
+import { compactGlyph, microSignLayout, microSignLine } from './tiledSignFont';
 import { Pixels } from './pixels';
 
 export interface TiledSignText {
@@ -111,7 +111,8 @@ export function buildTiledSigns<K extends string, S extends K = K>(
     }
     const microLayout = micro ? microSignLayout(lines, maxWidth, key) : undefined;
     if (microLayout) lines = microLayout.lines;
-    const widths = lines.map(textWidth);
+    const microLines = microLayout ? lines.map((line) => microSignLine(line, glyphs, microLayout.width * 20 - 2)) : undefined;
+    const widths = microLines ? microLines.map((line) => line.width) : lines.map(textWidth);
     let width = Math.ceil((Math.max(...widths) + 4) / 20);
     if (microLayout) width = microLayout.width;
     const board: string[][] = [];
@@ -125,15 +126,16 @@ export function buildTiledSigns<K extends string, S extends K = K>(
           ? Math.floor((picture.h - (lines.length * 9 - 1)) / 2) + row * 9
           : row * 20 + Math.floor((20 - glyphHeight) / 2);
       let pen = x0;
-      [...line].forEach((ch) => {
+      [...line].forEach((ch, index) => {
         const glyph = glyphs[ch];
         if (glyph === undefined) throw new Error(`No tiny sign glyph for "${ch}"`);
-        const ink = compact ? compactGlyph(ch, glyph) : micro ? microSignGlyph(ch, glyph) : glyph;
+        const ink = compact ? compactGlyph(ch, glyph) : micro ? microLines![row].glyphs[index] : glyph;
+        const drawnWidth = micro ? ink.length / 5 : glyphWidth;
         for (let y = 0; y < glyphHeight; y++)
-          for (let x = 0; x < glyphWidth; x++)
-            if (ink[compact ? y * 4 + x : Math.floor((y * 5) / glyphHeight) * 3 + Math.floor((x * 3) / glyphWidth)] === '1')
+          for (let x = 0; x < drawnWidth; x++)
+            if (ink[micro ? y * drawnWidth + x : compact ? y * 4 + x : Math.floor((y * 5) / glyphHeight) * 3 + Math.floor((x * 3) / glyphWidth)] === '1')
               picture.set(pen + x, y0 + y, c.ink);
-        pen += advance(ch);
+        pen += micro ? drawnWidth + 1 : advance(ch);
       });
     });
     for (let row = 0; row < height; row++) {
@@ -149,12 +151,14 @@ export function buildTiledSigns<K extends string, S extends K = K>(
         return add(`${side}-${left ? 'left' : 'right'}`, p);
       };
       const strip = picture.crop(0, row * 20, width * 20, 20);
-      if (top) strip.rect(0, 0, strip.w, 3, c.wood).rect(0, 0, strip.w, 1, c.highlight);
-      if (bottom) strip.rect(0, 17, strip.w, 3, c.wood).rect(0, 19, strip.w, 1, c.shadow);
+      if (top) strip.rect(0, 0, strip.w, micro ? 1 : 3, c.wood).rect(0, 0, strip.w, 1, c.highlight);
+      if (bottom) strip.rect(0, micro ? 19 : 17, strip.w, micro ? 1 : 3, c.wood).rect(0, 19, strip.w, 1, c.shadow);
       if (micro) {
         // Only the outer edges are framed; letters cross every interior tile seam.
-        strip.rect(0, 0, 2, 20, c.wood).rect(0, 0, 1, 20, c.highlight);
-        strip.rect(strip.w - 2, 0, 2, 20, c.wood).rect(strip.w - 1, 0, 1, 20, c.shadow);
+        strip.rect(0, 0, 1, 20, c.highlight);
+        strip.rect(strip.w - 1, 0, 1, 20, c.shadow);
+        if (top) strip.set(strip.w - 1, 0, c.wood);
+        if (bottom) strip.set(0, 19, c.wood);
       }
       const left = micro ? undefined : edge(true);
       const tiles = Array.from({ length: width }, (_, x) => add(`letters:${blocks.size}`, strip.crop(x * 20, 0, 20, 20)));
@@ -185,4 +189,22 @@ export function stampTiledSign(map: { set(x: number, y: number, block: string): 
       map.set(x + sign.post.x, y + sign.board.length + dy, sign.post.block);
       if (sign.post.rightBlock) map.set(x + sign.post.x + 1, y + sign.board.length + dy, sign.post.rightBlock);
     }
+}
+
+/** Stack equally wide, one-row plaques on one centered post; zero height floats the stack. */
+export function stampMicroPlaques(
+  map: { set(x: number, y: number, block: string): unknown },
+  x: number,
+  y: number,
+  plaques: readonly TiledSign[],
+  postHeight = 1,
+): void {
+  if (!plaques.length) throw new Error('A plaque stack needs at least one plaque');
+  if (!Number.isInteger(postHeight) || postHeight < 0) throw new Error('Post height must be a nonnegative integer');
+  const width = plaques[0].board[0]?.length;
+  if (plaques.some((p) => p.board.length !== 1 || p.board[0].length !== width) || (width !== 1 && width !== 2))
+    throw new Error('Stacked micro plaques must be one row and the same width (1 or 2 blocks)');
+  const last = plaques.at(-1)!;
+  if (postHeight && !last.post) throw new Error('The bottom plaque needs a post for a mounted stack');
+  plaques.forEach((plaque, i) => stampTiledSign(map, x, y + i, plaque, i === plaques.length - 1 ? postHeight : 0));
 }

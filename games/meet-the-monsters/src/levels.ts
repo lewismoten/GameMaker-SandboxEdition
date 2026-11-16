@@ -12,7 +12,6 @@ import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
 import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { MICRO_GLYPHS } from '@lewismoten/gamemaker-sandbox-tools/microFont';
 import { GRUMP, POP } from './monsters';
 
 export type SignName = 'path' | 'hurts' | 'over' | 'land' | 'lives' | 'exit';
@@ -39,7 +38,6 @@ export function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sig
         highlight: pal.c('wood', 4),
         shadow: pal.c('wood', 0),
       },
-      glyphs: { ...MICRO_GLYPHS, '→': '100110111110100' },
       font: 'micro',
       maxBlocks: 100 - book.index.size,
     },
