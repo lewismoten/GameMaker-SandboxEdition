@@ -9,12 +9,13 @@
 //
 // Both rooms are closed in by brick you can see, so Lian is never stopped by something he can't.
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
-import { Book, PULL } from '../../kit/starter/book';
+import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
-import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
-import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
+import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
 import { demoMeter, menuThumb, type Mural } from './props';
 
 /** A link: touching the world cell `from` takes the hero to scene `to` (a key of the scenes, or 'end'), standing at that scene's entrance. */
@@ -44,12 +45,9 @@ export const DOOR_ONE = 34;
 export const DOOR_TWO = 36;
 
 const WORDS = {
-  slot: { rows: [['MENU.GIF GOES IN'], ['THE MENU'], ['GRAPHIC SLOT']] },
-  ontop: { rows: [['THE GAME'], ['WRITES ON TOP']] },
-  plain: { rows: [['KEEP THE BOARD PLAIN']] },
-  record: { rows: [['A DEMO IS YOUR'], ['KEYS PLAYED BACK']] },
-  idle: { rows: [['DEMO SLOT: IT'], ['PLAYS AFTER 30'], ['QUIET SECONDS']] },
-  limit: { rows: [['EACH PRESS OR'], ['RELEASE COUNTS.'], ['1,000 AT MOST']] },
+  slot: { lines: ['MENU.GIF'], post: false },
+  idle: { lines: ['AFTER 30', 'SECONDS'] },
+  limit: { lines: ['1,000', 'AT MOST'] },
 };
 
 /** The finished block set. */
@@ -92,31 +90,16 @@ export function buildLevels(): { pal: Pal; book: Book; scenes: Scene[] } {
   addStarterBlocks(book, pal);
   const thumb = menuThumb(book, pal);
   const meter = demoMeter(book, pal);
-  // OpenAI Codex: shared large-letter boards; keep all six signs' words unchanged.
-  const { blocks, signs } = buildTiledSigns(WORDS, {
-    lettersPerBlock: 3,
-    colors: {
-      background: skyOf(pal),
-      paper: pal.c('parch', 3),
-      ink: pal.c('ink', 0),
-      wood: pal.c('wood', 2),
-      highlight: pal.c('wood', 4),
-      shadow: pal.c('wood', 0),
-    },
-    maxBlocks: Math.min(100, 150 - book.index.size),
-  });
-  for (const [name, pic] of blocks) book.add(name, pic, { grav: PULL.down });
+  const signs = addMicroPlaques(book, pal, WORDS);
 
-  const one = hall(
-    book,
-    DOOR_ONE,
-    [signs.slot, signs.ontop, signs.plain].map((sign, i) => ({ x: SIGNS_ONE[i], sign })),
-    { m: thumb, x: 11, y: 3 },
-  );
+  const one = hall(book, DOOR_ONE, [{ x: SIGNS_ONE[0], sign: signs.slot }], { m: thumb, x: 11, y: 3 });
   const two = hall(
     book,
     DOOR_TWO,
-    [signs.record, signs.idle, signs.limit].map((sign, i) => ({ x: SIGNS_TWO[i], sign })),
+    [
+      { x: SIGNS_TWO[1] + 2, sign: signs.idle },
+      { x: SIGNS_TWO[2], sign: signs.limit },
+    ],
     { m: meter, x: 10, y: 5 },
   );
   const scenes: Scene[] = [

@@ -78,6 +78,7 @@ export async function askFirst(bot: StarterBot): Promise<void> {
   await must(bot, bot.walk(17, 'through the backup gate'), 'through the gate');
   if (held(bot, BACKUP) !== 0) throw new Error('the gate should take the backup');
   await must(bot, bot.walk(38, 'the signs and coins'), 'along the signs');
-  coins(bot, score, 6, 'level 3 before the exit', 1);
+  // Removing the old BACKUP sign exposes the existing coin at column 14.
+  coins(bot, score, 7, 'level 3 before the exit', 1);
   await leave(bot, bot.walk(42, 'the exit'), 'the exit');
 }

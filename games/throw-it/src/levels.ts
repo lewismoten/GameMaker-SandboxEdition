@@ -12,22 +12,20 @@ import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
-import { addSign, type Sign } from '../../kit/starter/sign';
+import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
 import { GUARD, TARGET } from './monsters';
 
-export type SignName = 'throw' | 'far' | 'narrow' | 'face' | 'exit';
+export type SignName = 'throw' | 'exit';
 
 /** The block set both levels share: the Starter blocks, then this game's signs. */
 function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
-  const signs = {
-    throw: addSign(book, pal, 'throw.sign', 'PRESS ENTER TO THROW A STAR', 4, 3),
-    far: addSign(book, pal, 'far.sign', 'A STAR FLIES ONLY SO FAR', 4, 3),
-    narrow: addSign(book, pal, 'narrow.sign', 'A GRUMP BLOCKS THE NARROW WAY', 4, 3),
-    face: addSign(book, pal, 'face.sign', 'A STAR FLIES THE WAY YOU LAST WALKED', 4, 4),
-    exit: addSign(book, pal, 'exit.sign', 'EXIT →', 3),
-  };
+  const signs = addMicroPlaques(book, pal, {
+    throw: { lines: ['ENTER', 'THROWS'] },
+    exit: { lines: ['EXIT', '→'], post: false },
+  });
   return { book, signs };
 }
 
@@ -85,9 +83,9 @@ function throwAStar(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [8, 21, 31],
   );
   const m = new StarterMap(book, g.rows());
-  m.sign(6, onGround(GROUND, signs.throw), signs.throw);
-  m.sign(20, onGround(GROUND, signs.far), signs.far);
-  m.sign(38, onGround(GROUND, signs.exit), signs.exit);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 6, onGround(GROUND, signs.throw), signs.throw);
+
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 38, onGround(GROUND, signs.exit), signs.exit);
   for (const x of TARGETS_1) m.mon(TARGET, x, STAND);
   return m;
 }
@@ -110,9 +108,8 @@ function narrowWay(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [11, 31, 40],
   );
   const m = new StarterMap(book, g.rows());
-  m.sign(6, onGround(GROUND, signs.narrow), signs.narrow);
-  m.sign(12, onGround(GROUND, signs.face), signs.face);
-  m.sign(38, onGround(GROUND, signs.exit), signs.exit);
+
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 38, onGround(GROUND, signs.exit), signs.exit);
   m.mon(GUARD, GUARD_X, STAND);
   return m;
 }
