@@ -8,27 +8,27 @@
 //   3. The Lift:     a tall pool that pulls UP and LEFT. Lami steps in at the bottom and is lifted to the ledge on the left,
 //                    where the door is.
 // Every level is closed in by hedges you can see, so Lami is never stopped by something she can't.
-import { Book, PULL } from '../../kit/starter/book';
+import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
-import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
-import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { MICRO_GLYPHS } from '@lewismoten/gamemaker-sandbox-tools/microFont';
+import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
+import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
 import { addWater } from './water';
 
-export type SignName = 'pull' | 'stones' | 'exit' | 'float' | 'top' | 'lift' | 'ledge' | 'back';
+export type SignName = keyof typeof WORDS;
 
-/** The shared vocabulary; compact boards fit the banks without moving the pools or scenery. */
+/** Shared micro plaques fit the banks without moving pools or scenery. */
 const WORDS = {
-  pull: { rows: [['THIS WATER PULLS'], ['LEFT. FALL IN'], ['AND IT CARRIES'], ['YOU BACK']] },
-  stones: { rows: [['NOTHING HERE HURTS.'], ['HOP THE STONES'], ['TO CROSS']] },
-  exit: { rows: [['EXIT →']] },
-  float: { rows: [['THIS WATER PULLS'], ['UP, SO LAMI FLOATS']] },
-  top: { rows: [['THE TOP ROW HAS'], ['NO PULL. LAMI'], ['SETTLES THERE']] },
-  lift: { rows: [['THIS WATER PULLS'], ['UP AND LEFT.'], ['STEP IN']] },
-  ledge: { rows: [['THE TOP ROW HAS'], ['NO PULL, SO WALK'], ['OUT HERE']] },
-  back: { rows: [['← EXIT']] },
+  pull: { lines: ['PULL', '←'] },
+  stones: { lines: ['SAFE', 'HERE'] },
+  exit: { lines: ['EXIT', '→'], post: false },
+  float: { lines: ['PULL', '↑'] },
+  top: { lines: ['NO', 'PULL'] },
+  lift: { lines: ['PULL', '↖'] },
+  ledge: { lines: ['NO', 'PULL'] },
+  back: { lines: ['EXIT', '←'], post: false },
 };
 
 /** One block set for every level, including the complete sign vocabulary. */
@@ -36,21 +36,7 @@ function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
   addWater(book, pal);
-  const { blocks, signs } = buildTiledSigns(WORDS, {
-    compact: true,
-    maxWidth: 7,
-    colors: {
-      background: skyOf(pal),
-      paper: pal.c('parch', 3),
-      ink: pal.c('ink', 0),
-      wood: pal.c('wood', 2),
-      highlight: pal.c('wood', 4),
-      shadow: pal.c('wood', 0),
-    },
-    glyphs: { ...MICRO_GLYPHS, '←': '001011111011001', '→': '100110111110100' },
-    maxBlocks: Math.min(100, 150 - book.index.size),
-  });
-  for (const [name, pic] of blocks) book.add(name, pic, { grav: PULL.down });
+  const signs = addMicroPlaques(book, pal, WORDS) as Record<SignName, Sign>;
   return { book, signs };
 }
 
@@ -146,7 +132,7 @@ function theCreek(book: Book, signs: Record<SignName, Sign>): StarterMap {
   const m = new StarterMap(book, g.rows());
   for (let x = c0; x <= c1; x++) m.set(x, G, 'creekTop').set(x, G + 1, 'creek');
   for (const x of L1.stones) m.set(x, G, 'stone');
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 1, 5, signs.pull, 2);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 5, onGround(G, signs.pull), signs.pull);
   stampTiledSign({ set: m.setOnSky.bind(m) }, 9, onGround(G, signs.stones), signs.stones);
   stampTiledSign({ set: m.setOnSky.bind(m) }, 35, 7, signs.exit, 2);
   return m;
@@ -179,8 +165,8 @@ function theFloat(book: Book, signs: Record<SignName, Sign>): StarterMap {
     m.set(x, G, 'deepTop');
     for (let y = G + 1; y < G + L2.depth; y++) m.set(x, y, 'deep');
   }
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 4, onGround(G, signs.float), signs.float);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 31, onGround(G, signs.top), signs.top);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 5, onGround(G, signs.float), signs.float);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 8, onGround(G, signs.top), signs.top);
   stampTiledSign({ set: m.setOnSky.bind(m) }, 38, 7, signs.exit, 2);
   return m;
 }
@@ -213,8 +199,9 @@ function theLift(book: Book, signs: Record<SignName, Sign>): StarterMap {
     m.set(x, L3.top, 'liftTop');
     for (let y = L3.top + 1; y < F; y++) m.set(x, y, 'lift');
   }
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 29, onGround(F, signs.lift), signs.lift);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 6, onGround(L3.ledge, signs.ledge), signs.ledge);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 31, onGround(F, signs.lift), signs.lift);
+  // Float beside the upper water row: the approach has no nearby ground for a short post.
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 26, 4, signs.ledge, 0);
   stampTiledSign({ set: m.setOnSky.bind(m) }, 1, 3, signs.back, 2);
   return m;
 }
