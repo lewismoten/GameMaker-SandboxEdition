@@ -1310,3 +1310,5 @@ maker "ZORP" is invented. The shell is untested: nothing has been printed.
 
 - **Pass the Pie level card layout (November 16, 2026):** OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, wrapped long chapter and payback subtitles inside their text areas, preserving every word and the existing artwork. No third-party material was added.
 - **Pass the Pie card heading contrast (November 16, 2026):** OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, changed the Main Street and Big Gobble small headings to the existing dark ink. Existing art, words, music and engine credits remain; no third-party material was added.
+
+- **Editor DOS limit feedback (November 16, 2026):** OpenAI Codex, directed by Lewis Moten, added instrument-bank, scene-link and VGA channel limit messages and node-only regression tests. No third-party material was added.

@@ -1,6 +1,7 @@
 // The FM instrument of the selected track: pick one from the song's instrument bank, add
 // one from the presets, and shape its two operators (the SBI settings SBFMDRV loads).
 import { h, clear } from '../../core/ui';
+import { capacityNote } from '../../widgets/limitNote';
 import { channelNotes, programChanges, setStartProgram, startProgram } from '@lewismoten/gamemaker-sandbox-engine/formats/cmfEdit';
 import { RHYTHM_CHANNELS } from '@lewismoten/gamemaker-sandbox-engine/formats/cmfSong';
 import type { MusicDoc } from './doc';
@@ -276,7 +277,7 @@ export class InstrumentPanel {
       },
       '＋ New instrument…',
     );
-    clear(this.list, h('ul', null, ...items), add);
+    clear(this.list, h('ul', null, ...items), add, capacityNote(song.instruments.length, 128, 'instruments', 'a song'));
   }
 
   render(): void {
