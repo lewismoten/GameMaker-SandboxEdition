@@ -17,9 +17,10 @@ export const L07: RoomSpec = {
   song: 'sugar',
   card: ['Ants only steal points.', 'The belt only goes one way.', 'Two boards are not boards.'],
   born: { s: { kind: 'ant', reach: 2, speed: 1 } },
+  // A short wall return stops an upward step on the doorway row before turning right.
   rows: [
     '##################################',
-    '#Z@..#...._....._....._....#$$$$$#',
+    '#Z@.##...._....._....._....#$$$$$#',
     '#....>......HH......HH...........#',
     '#.T..#..$...............$..#..k..#',
     '########.#################v#######',
