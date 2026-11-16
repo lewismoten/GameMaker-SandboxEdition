@@ -481,8 +481,11 @@ Boards contain only the shared paper, ink and wood indices, so they are byte-ide
 across Starter palettes. Only post tiles use `skyOf(pal)`, and all tiles are passable
 with downward gravity.
 
-Place one with `stampTiledSign(map, x, y, sign, postHeight)` from the tools package's
-`kit/tiledSigns`; use `post: false` for floating labels. `stampMicroPlaques` from the
-same module places a stack such as TOO/SLOW above GO/BACK on one post. Stacked
-plaques must have the same width, keeping their centers aligned on the block grid.
-The helper is groundwork for shared signs; existing Starter signs are not migrated.
+Place one with `stampTiledSign(map, x, y, sign, postHeight, options)` from
+`starter/microPlaque`; `postHeight` is the full distance to the supporting ground in
+20-pixel blocks. The default `options.maxPostHeight` is 1: farther plaques float
+with no support, rather than hanging on a shortened post. Use `post: false` for
+floating labels at any height. `stampMicroPlaques` from the same module places a
+stack such as TOO/SLOW above GO/BACK, measuring the mount from its bottom plaque.
+Stacked plaques must have the same width. `microPlaquePostHeight` applies the same
+limit to Around the Room's supports directed toward its rotated ground.
