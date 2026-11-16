@@ -42,6 +42,8 @@ Held-rise jump, bot timing and camera review by OpenAI Codex (GPT-6.1 Sol), dire
 Made with GAME-MAKER 3.0 from Recreational Software Designs.
 
 One of the Starters: small games that each show one idea.
+
+Micro plaques adapted with Hermes Agent using OpenAI Codex GPT-6.1 Sol.
 `),
 );
 
