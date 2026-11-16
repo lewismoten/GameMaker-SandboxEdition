@@ -13,7 +13,7 @@ import {
   stageName,
   contentHash,
 } from './archiveStore';
-import { offlineTiers, selectedFiles, type OfflineFile, type OfflineManifest, type OfflineTier } from './tiers';
+import { gameTier, migrateTiers, selectedFiles, type OfflineFile, type OfflineManifest, type OfflineTier } from './tiers';
 
 /** localStorage: the copy was asked for: "started", or the version (offline.json) it was finished for. */
 const WANTED_KEY = 'gm-offline';
@@ -22,7 +22,10 @@ const SELECTION_KEY = 'gm-offline-tiers';
 function savedTiers(): OfflineTier[] | undefined {
   try {
     const value: unknown = JSON.parse(localStorage.getItem(SELECTION_KEY) ?? 'null');
-    return Array.isArray(value) ? value.filter((t: unknown): t is OfflineTier => typeof t === 'string' && Object.hasOwn(offlineTiers, t)) : undefined;
+    if (Array.isArray(value)) return migrateTiers(value);
+    if (value && typeof value === 'object' && 'version' in value && value.version === 2 && 'tiers' in value && Array.isArray(value.tiers))
+      return migrateTiers(value.tiers, 2);
+    return undefined;
   } catch {
     return undefined;
   }
@@ -73,11 +76,12 @@ async function loadManifest(): Promise<OfflineManifest | undefined> {
 /** The list, with the pack of a secret game revealed in this browser (the full catalog has it then; the list never does). */
 async function wantedFiles(m: OfflineManifest, tiers: OfflineTier[]): Promise<OfflineFile[]> {
   const files = selectedFiles(m.files, tiers);
-  if (!tiers.includes('games')) return files;
+  if (!tiers.some((tier) => ['starters', 'sandbox', 'specials', 'bizarre', 'cd'].includes(tier))) return files;
   const listed = new Set(m.files.map((f) => f.path));
   const catalog = await loadCatalogList().catch(() => []);
   for (const g of catalog) {
-    if (!g.pack || listed.has(`${g.path}${g.parts ?? g.pack}`)) continue;
+    const tier = gameTier(g);
+    if (!tiers.includes(tier) || !g.pack || listed.has(`${g.path}${g.parts ?? g.pack}`)) continue;
     // This descriptor is never linked by the public inventory; only revealed entries reach it.
     const res = await fetch(urlOf(`${g.path}offline.json`), { cache: 'no-cache' });
     if (!res.ok) throw new Error('Could not read the revealed game inventory.');
@@ -88,7 +92,7 @@ async function wantedFiles(m: OfflineManifest, tiers: OfflineTier[]): Promise<Of
       wire: descriptor.byteLength,
       stored: descriptor.byteLength,
       sha256: await contentHash(descriptor),
-      tier: 'games',
+      tier,
     });
     for (const f of extra) if (!files.some((old) => old.path === f.path)) files.push(f);
   }
@@ -145,7 +149,7 @@ export async function offlineStatus(selection?: OfflineTier[]): Promise<OfflineS
     return empty(navigator.onLine === false ? 'You are offline: connect to update the offline inventory.' : 'Offline copies are made on the published site.');
   const base = siteBase().href;
   const copy = await readOfflineCopy(base);
-  const tiers = [...new Set<OfflineTier>(['core', ...(selection ?? savedTiers() ?? copy?.tiers ?? ['core'])])];
+  const tiers = selection ? migrateTiers(selection, 2) : (savedTiers() ?? migrateTiers(copy?.tiers ?? ['core'], copy?.tierVersion));
   const [files, stores, est] = await Promise.all([wantedFiles(m, tiers), reusableStores(base), storageEstimate()]);
   const have = new Set<string>();
   const committed = new Set<string>();
@@ -216,11 +220,12 @@ export async function makeOffline(status: OfflineStatus, onProgress: (p: Offline
   await navigator.storage?.persist?.().catch(() => false);
   if (status.copy !== 'outdated') rememberCopy(true);
   try {
-    localStorage.setItem(SELECTION_KEY, JSON.stringify(status.tiers));
+    localStorage.setItem(SELECTION_KEY, JSON.stringify({ version: 2, tiers: status.tiers }));
   } catch {
     /* storage may be disabled */
   }
-  const listed = new Set(status.manifest.files.map((f) => f.path));
+  // A revealed game may need a public blob whose owning tier was not selected.
+  const listed = new Set(selectedFiles(status.manifest.files, status.tiers).map((f) => f.path));
   const extras = status.files.filter((f) => !listed.has(f.path));
   try {
     await offlineLock(siteBase().href, () => installFiles(siteBase().href, status.manifest!, extras, status.tiers, onProgress, signal));

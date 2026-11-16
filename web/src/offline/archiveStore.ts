@@ -5,6 +5,7 @@ interface Copy {
   version: string;
   cache: string;
   tiers?: OfflineTier[];
+  tierVersion?: number;
 }
 // Also embedded in siteWorker.ts; its lifecycle tests exercise the generated worker.
 export const offlineNames = (base: string) => ({
@@ -114,7 +115,7 @@ export async function installFiles(
   signal.throwIfAborted();
   await (
     await caches.open(names.control)
-  ).put(names.pointer, new Response(JSON.stringify({ version: m.version, cache: name, tiers: [...new Set(['core', ...tiers])] })));
+  ).put(names.pointer, new Response(JSON.stringify({ version: m.version, cache: name, tierVersion: 2, tiers: [...new Set(['core', ...tiers])] })));
   // Cleanup after the commit point cannot turn a successful publication into a failed result.
   for (const key of await caches.keys().catch(() => [])) {
     if ((key.startsWith(names.prefix) || key === previous?.cache) && key !== name) await caches.delete(key).catch(() => false);

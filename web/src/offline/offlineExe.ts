@@ -10,8 +10,8 @@ import { offlineTiers, type OfflineTier } from './tiers';
 
 const X = 9;
 const W = 62;
-const TOP = 5;
-const H = 14;
+const TOP = 3;
+const H = 18;
 const TEXT = attr(15, 1);
 const DIM = attr(7, 1);
 
@@ -63,7 +63,7 @@ export async function runOfflineExe(ui: Ui): Promise<void> {
       }
       const tiers = Object.entries(offlineTiers) as [OfflineTier, string][];
       const room = hasRoom(st, st.storedMissing);
-      frame(st.ready ? 'READY OFFLINE' : 'TAKE IT ALONG', ' 1-4 Toggle tier   Y Save selection   R Remove   Esc Quit');
+      frame(st.ready ? 'READY OFFLINE' : 'TAKE IT ALONG', ' 1-8 Toggle tier   Y Save selection   R Remove   Esc Quit');
       lines([
         ['Core is always included. Video needs the internet.'],
         ...tiers.slice(1).map(([id, label], i): [string] => [`${i + 1} [${st.tiers.includes(id) ? 'X' : ' '}] ${label}`]),
@@ -75,7 +75,7 @@ export async function runOfflineExe(ui: Ui): Promise<void> {
       note = '';
       const k = (await ui.keys.next()).key.toUpperCase();
       if (k === 'ESCAPE' || k === 'N' || k === 'Q') return;
-      if (/^[1-4]$/.test(k)) {
+      if (/^[1-8]$/.test(k)) {
         const id = tiers[Number(k)][0];
         st = await offlineStatus(st.tiers.includes(id) ? st.tiers.filter((t) => t !== id) : [...st.tiers, id]);
         continue;
