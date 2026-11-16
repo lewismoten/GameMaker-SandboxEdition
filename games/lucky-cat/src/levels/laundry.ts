@@ -36,6 +36,12 @@ export function levelLaundry(pal: Pal): Level {
   // the awnings (stand on them, jump up through them) and the long line
   for (const { x, row } of LAUNDRY.stairs) for (let i = 0; i < STAIR_W; i++) m.set(x + i, row, i % 2 ? 'awning' : 'awning2');
   for (let x = LAUNDRY.line[0]; x <= LAUNDRY.line[1]; x++) m.set(x, 3, x % 2 ? 'awning' : 'awning2');
+  // Short ladders join the final two rising edges, with room to pause before stepping off.
+  for (const [x, top] of [
+    [LAUNDRY.stairs[5].x - 1, 3],
+    [LAUNDRY.line[0] - 1, 2],
+  ])
+    for (const y of [top, top + 1]) m.set(x, y, 'ladder');
   // the banner: bunting along the line's top (it is the Committee's banner, in little flags)
   for (let x = LAUNDRY.line[0]; x <= LAUNDRY.line[1]; x++) m.set(x, 1, 'bunting');
   // chores: a cleat on each awning and the line, saucers on three doorsteps, the key

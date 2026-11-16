@@ -42,6 +42,12 @@ export function levelShop(pal: Pal): Level {
   [1, 2, 1].forEach((h, i) => {
     for (let k = 0; k < h; k++) m.set(SHOP.pillars[i], GROUND - 1 - k, 'mirrorWall').set(SHOP.pillars[i] + 1, GROUND - 1 - k, 'mirrorWall2');
   });
+  // Short display ladders give unhurried hands a resting place at each rising panel.
+  for (const [x, top] of [
+    [SHOP.pillars[0] - 1, 8],
+    [SHOP.pillars[1] - 1, 7],
+  ])
+    for (const y of [top, top + 1]) m.set(x, y, 'ladder');
   m.set(SHOP.key1, 5, 'mirrorKey');
   for (const x of [SHOP.gate1, SHOP.gate2]) {
     for (let y = -10; y < GROUND - 2; y++) m.set(x, y, y % 2 ? 'mirrorWall' : 'mirrorWall2');

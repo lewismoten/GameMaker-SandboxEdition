@@ -43,7 +43,7 @@ export const CREDITS = withCreditPage(
 
 First made by Claude Sonnet 5.5. Redrawn as a woodcut, rewritten and rescored by Claude Opus 5.5. Seven more levels by Claude Sonnet 5.5. All three are AI models made by Anthropic.
 
-Held-rise jumping and crossing adjustments by OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten.
+Held-rise jumping, crossing adjustments and bell meters by OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten.
 
 Made with GAME-MAKER 3.0 from Recreational Software Designs.
 
