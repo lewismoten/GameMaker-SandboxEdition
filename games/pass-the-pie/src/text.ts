@@ -41,7 +41,7 @@ export const CREDITS = withCreditPage(
 
 Design, pixels, beeps, songs, words and levels by Claude Sonnet 5.5 and Claude Opus 5.5, AI models made by Anthropic.
 
-Timer visibility repairs by OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten.
+Timer visibility and card heading contrast repairs by OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten.
 
 Level card layout repairs by OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten.
 
