@@ -18,7 +18,8 @@ import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { skyOf, type Pal } from '../../kit/starter/palette';
-import { buildTiledSigns, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
 import { MIRAGE } from './monsters';
 import { buildPalettes } from './palettes';
 import { BAND_W, CLEAR, bandCell, bandPicture, rockCell, stillCell } from './scene';
@@ -26,15 +27,15 @@ import { COLS, DOOR_COL, GROUND_ROW, HAZE_ROWS, LAG, LONG, LONG_SIGNS, PUDDLES, 
 
 export type SignName = 'jelly' | 'rises' | 'puddle' | 'mirage' | 'palette' | 'still';
 
-/** Boards start below the top visible row; their centered posts end above the hills. */
+/** Plaques float below the top visible row, clear of the animated hills. */
 const SIGN_AT = { left: [1, 1], right: [9, 1] } as const;
-const SIGN_WORDS: Record<SignName, string> = {
-  jelly: 'ALL ROWS SWAY TOGETHER. IT LOOKS LIKE JELLY',
-  rises: 'EACH ROW SWAYS AFTER THE ROW UNDER IT, LIKE HOT AIR',
-  puddle: 'A PUDDLE ON THE ROAD? WALK UP TO IT',
-  mirage: 'A MIRAGE! A MONSTER THAT HIDES WHEN YOU COME NEAR',
-  palette: 'SAME PICTURES, COOL COLORS: A NEW PALETTE',
-  still: 'NO HEAT TONIGHT: THE HILL BLOCKS STAY STILL',
+const SIGN_WORDS = {
+  jelly: { lines: ['LIKE', 'JELLY'], post: false },
+  rises: { lines: ['HOT AIR'], post: false },
+  puddle: { lines: ['PUDDLE?'], post: false },
+  mirage: { lines: ['MIRAGE!'], post: false },
+  palette: { lines: ['NEW', 'LOOK'], post: false },
+  still: { lines: ['NO', 'HEAT'], post: false },
 };
 
 /** A block that turns into another after some ticks (patched into the finished .BBL). */
@@ -53,29 +54,15 @@ export class Stage {
   readonly timed: Timed[] = [];
   readonly signs = {} as Record<SignName, Sign>;
   readonly band: Pixels;
-  private readonly scratch = new Book('bbl');
   private readonly names = new Map<string, string>();
 
-  constructor(readonly pal: Pal) {
+  constructor(
+    readonly pal: Pal,
+    names: SignName[],
+  ) {
     addStarterBlocks(this.book, pal);
     this.band = bandPicture(pal);
-    const { blocks, signs } = buildTiledSigns(
-      Object.fromEntries((Object.keys(SIGN_WORDS) as SignName[]).map((n) => [n, { rows: [[SIGN_WORDS[n]]] }])) as Record<SignName, { rows: string[][] }>,
-      {
-        compact: true,
-        maxWidth: 7,
-        colors: {
-          background: skyOf(pal),
-          paper: pal.c('parch', 3),
-          ink: pal.c('ink', 0),
-          wood: pal.c('wood', 2),
-          highlight: pal.c('wood', 4),
-          shadow: pal.c('wood', 0),
-        },
-      },
-    );
-    Object.assign(this.signs, signs);
-    for (const [name, pic] of blocks) this.scratch.add(name, pic);
+    Object.assign(this.signs, addMicroPlaques(this.book, pal, Object.fromEntries(names.map((name) => [name, SIGN_WORDS[name]]))));
   }
 
   /** A block of this picture (the same picture is the same block), solid or air. */
@@ -126,12 +113,9 @@ export class Stage {
     return out.map((x, y, c) => (src.get(x, y) !== clear ? src.get(x, y) : c));
   }
 
-  /** The sign `n` stamped on the map with its top-left block at (x, y), and its posts under it. */
+  /** Stamp an opaque shared plaque above the scenery, without a post. */
   sign(m: StarterMap, n: SignName, at: readonly [number, number]): void {
-    const { board, post } = this.signs[n];
-    const put = (src: string, x: number, y: number) => m.set(x, y, this.plain(this.over(this.scratch.pics.get(src)!, this.under(x, y))));
-    board.forEach((row, dy) => row.forEach((name, dx) => put(name, at[0] + dx, at[1] + dy)));
-    if (post) put(post.block, at[0] + post.x, at[1] + board.length);
+    stampTiledSign(m, at[0], at[1], this.signs[n], 0);
   }
 
   /** The exit door standing on the road at column `x`, its bottom on row 8. */
@@ -244,7 +228,7 @@ export function finishBlocks(st: Pick<Stage, 'book' | 'timed'>): Block[] {
 /** The levels in order, and the two palettes. */
 export function buildLevels(): { pal: Pal; hot: Uint8Array; cool: Uint8Array; levels: Level[] } {
   const { pal, hot, cool } = buildPalettes();
-  const [one, two, three] = [new Stage(pal), new Stage(pal), new Stage(pal)];
+  const [one, two, three] = [new Stage(pal, ['jelly', 'rises']), new Stage(pal, ['puddle', 'mirage']), new Stage(pal, ['palette', 'still'])];
   const levels: Level[] = [
     { file: 'one', title: 'The Wobble', hint: 'Hot air makes the hills sway.', palette: 'hot.pal', map: theWobble(one), st: one, scrolls: false },
     { file: 'two', title: 'The Mirage', hint: 'Is that water on the road?', palette: 'hot.pal', map: theMirage(two), st: two, scrolls: true },

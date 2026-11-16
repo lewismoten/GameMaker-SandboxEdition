@@ -17,23 +17,17 @@ import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
-import { addSign, type Sign } from '../../kit/starter/sign';
+import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
 import { BALL } from './monsters';
 import { drawArch, drawScene } from './scene';
 import { COLS, DOOR_COL, GROUND_ROW, HORIZON_ROW, ROWS, SPAWN_COL, START, WIDTH } from './view';
 
-export type SignName = 'road' | 'balls' | 'arch' | 'bar';
+export type SignName = 'bar';
 
-/** The sign boards' size in blocks: four across, three high, standing on two posts. */
-const SIGN = { w: 4, h: 3 } as const;
-/** Where a sign's top-left block is: the lawn on either side of the road. */
-const SIGN_AT = { left: [0, 2], right: [12, 2] } as const;
-const SIGN_WORDS: Record<SignName, string> = {
-  road: 'ONE PICTURE: THE ROAD NARROWS TO A POINT',
-  balls: 'BLOCKS OFF SCREEN MAKE BALLS THAT GROW',
-  arch: 'AN ARCH GROWS: EACH BLOCK BECOMES THE NEXT',
-  bar: 'THE DOOR OPENS WHEN THE ARCH ARRIVES',
-};
+/** The waiting plaque floats before the barred door, clear of the growing arch. */
+const SIGN_AT = { right: [11, 6] } as const;
+const SIGN_WORDS = { bar: { lines: ['WAIT'], post: false } };
 
 /** Ticks (18.2 to the second) after the level starts that the arch grows to its next size, and the door opens at the last. */
 export const ARCH_AT = [110, 230, 350] as const;
@@ -73,14 +67,16 @@ class Stage {
   readonly signs = {} as Record<SignName, Sign>;
   readonly base: Pixels;
   readonly archAt: Pixels[];
-  private readonly scratch = new Book('bbl');
   private readonly names = new Map<string, string>();
 
-  constructor(readonly pal: Pal) {
+  constructor(
+    readonly pal: Pal,
+    wait = false,
+  ) {
     addStarterBlocks(this.book, pal);
     this.base = drawScene(pal);
     this.archAt = [0, 1, 2, 3].map((s) => drawArch(pal, this.base.crop(0, 0, 320, 200), s));
-    for (const n of Object.keys(SIGN_WORDS) as SignName[]) this.signs[n] = addSign(this.scratch, pal, n, SIGN_WORDS[n], SIGN.w, SIGN.h);
+    if (wait) Object.assign(this.signs, addMicroPlaques(this.book, pal, SIGN_WORDS));
   }
 
   /** A block of this picture (the same picture is the same block), solid or air. */
@@ -108,13 +104,9 @@ class Stage {
     return out.map((x, y, c) => (src.get(x, y) !== sky ? src.get(x, y) : c));
   }
 
-  /** The sign `n` stamped on the map with its top-left block at (x, y), and its posts under it. */
+  /** Stamp the shared floating plaque without compositing its board pixels. */
   sign(m: StarterMap, n: SignName, at: readonly [number, number]): void {
-    const { board, legs } = this.signs[n];
-    const put = (src: string, x: number, y: number) => m.set(x, y, this.plain(this.over(this.scratch.pics.get(src)!, cellOf(this.base, x, y))));
-    board.forEach((row, dy) => row.forEach((name, dx) => put(name, at[0] + dx, at[1] + dy)));
-    put(legs[0], at[0], at[1] + board.length);
-    put(legs[1], at[0] + SIGN.w - 1, at[1] + board.length);
+    stampTiledSign(m, at[0], at[1], this.signs[n], 0);
   }
 
   /** A copy of a door block with two red and white bars across it. */
@@ -187,8 +179,6 @@ const blank = (): Grid => new Grid(WIDTH, ROWS);
 /** Level 1: the hill, the road, the balls. */
 function overTheHill(st: Stage): StarterMap {
   const m = paint(st, blank());
-  st.sign(m, 'road', SIGN_AT.left);
-  st.sign(m, 'balls', SIGN_AT.right);
   st.door(m, DOOR_COL);
   // the spawner chains, one per lane, off the right edge on the vanishing point's row
   const blankPic = new Pixels(20, 20, skyOf(st.pal));
@@ -206,7 +196,6 @@ function overTheHill(st: Stage): StarterMap {
 /** Level 2: the arch grows, the bar lifts. */
 function comingCloser(st: Stage): StarterMap {
   const m = paint(st, blank());
-  st.sign(m, 'arch', SIGN_AT.left);
   st.sign(m, 'bar', SIGN_AT.right);
   // the arch's cells: columns 6 to 10, rows 2 to 4, each changing through the four sizes
   for (let y = 2; y <= 4; y++) for (let x = 6; x <= 10; x++) m.set(x, y, st.chain(st.archAt.map((p) => ({ pic: cellOf(p, x, y), solid: false }))));
@@ -241,7 +230,7 @@ export function finishBlocks(st: Pick<Stage, 'book' | 'timed'>): Block[] {
 export function buildLevels(): { pal: Pal; levels: Level[] } {
   const pal = buildStarterPalette(undefined, 'horizon');
   const one = new Stage(pal);
-  const two = new Stage(pal);
+  const two = new Stage(pal, true);
   const levels: Level[] = [
     { file: 'one', title: 'Over the Hill', hint: 'Balls come out of the hill.', map: overTheHill(one), st: one },
     { file: 'two', title: 'Coming Closer', hint: 'Wait for the arch.', map: comingCloser(two), st: two },
