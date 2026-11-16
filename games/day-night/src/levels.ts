@@ -56,10 +56,10 @@ type SignName = 'palettes' | 'sun' | 'door' | 'gate' | 'steps' | 'fade';
 const SIGNS = {
   palettes: { rows: [['SAME MAP, TWO'], ['PALETTES: DAY'], ['AND NIGHT']] },
   sun: { rows: [['SUN BY'], ['DAY, MOON'], ['BY NIGHT:'], ['ONE BLOCK']] },
-  door: { rows: [['THE DOOR GOES TO'], ['A NEW SCENE WITH'], ['A NEW PALETTE']] },
+  door: { rows: [['THE DOOR GOES TO'], ['A NEW SCENE WITH'], ['A NEW PALETTE']], maxWidth: 6 },
   gate: { rows: [['AT A GATE THE SCENE'], ['CHANGES. SAME MAP,'], ['NEW PALETTE']] },
   steps: { rows: [['THREE PALETTES.'], ['GATES GO ONE WAY']] },
-  fade: { rows: [['A SCENE FADES IN'], ['FROM BLACK: THAT'], ['IS THE FADE']] },
+  fade: { rows: [['A SCENE FADES IN'], ['FROM BLACK: THAT'], ['IS THE FADE']], maxWidth: 7 },
 };
 
 function startBook(pal: Pal, names: SignName[]): { book: Book; signs: Record<string, Sign> } {
@@ -105,11 +105,11 @@ function oneMapTwoLooks(pal: Pal): Level {
   g.put(3, 5, 's').put(3, 6, 'S');
   for (const [x, y] of [
     [8, 4],
-    [14, 5],
+    [15, 2],
   ])
     g.put(x, y, '(').put(x + 1, y, ')');
   for (const x of [8, 19]) g.put(x, GROUND - 1, 'b');
-  for (const x of [14, 17]) g.put(x, GROUND - 1, 'f');
+  for (const x of [14, 18]) g.put(x, GROUND - 1, 'f');
   // the house: a roof, brick walls, a porch under its front and a door at the porch's end
   g.fill(20, 4, 9, 4, 'B').fill(26, 8, 3, 2, 'B');
   g.fill(20, 9, 4, 1, 'c');
@@ -134,7 +134,7 @@ function oneMapTwoLooks(pal: Pal): Level {
   const signsOnSky = { set: m.setOnSky.bind(m) };
   stampTiledSign(signsOnSky, 1, 2, signs.palettes, 5);
   stampTiledSign(signsOnSky, 8, 5, signs.sun);
-  stampTiledSign(signsOnSky, 13, 6, signs.door);
+  stampTiledSign(signsOnSky, 14, 3, signs.door);
   const door = world(DOOR_ONE, 9);
   const enter = m.start;
   return {
@@ -162,7 +162,7 @@ function sundownStreet(pal: Pal): Level {
   for (const [x, y] of [
     [8, 3],
     [20, 3],
-    [27, 5],
+    [28, 3],
   ])
     g.put(x, y, '(').put(x + 1, y, ')');
   for (const x of [6, 14, 21]) g.put(x, GROUND - 1, 'b');
@@ -210,7 +210,7 @@ function sundownStreet(pal: Pal): Level {
   // Gate arrivals open at row 4: keep the whole board readable in every palette.
   stampTiledSign(signsOnSky, 3, 4, signs.gate, 3);
   stampTiledSign(signsOnSky, 13, 5, signs.steps, 3);
-  stampTiledSign(signsOnSky, 25, 6, signs.fade);
+  stampTiledSign(signsOnSky, 25, 4, signs.fade);
   const through = (mid: number): [number, number][] => [world(mid, 9), world(mid, 8)];
   const door = world(DOOR_TWO, 9);
   return {

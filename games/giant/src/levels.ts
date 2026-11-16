@@ -142,7 +142,7 @@ function theGiant(book: Book, signs: Record<SignName, Sign>): StarterMap {
   ceiling(m, WALL[0]);
   stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 6, onGround(GROUND, signs.four), signs.four);
   stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 11, onGround(GROUND, signs.head), signs.head);
-  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 36, onGround(GROUND, signs.exit), signs.exit);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 37, onGround(GROUND, signs.exit), signs.exit);
   giant(m, GIANT_X[0], ROCKY);
   return m;
 }
@@ -160,14 +160,14 @@ function ouchWait(book: Book, signs: Record<SignName, Sign>): StarterMap {
       [32, 3],
       [40, 1],
     ],
-    [10, 36],
+    [10, 37],
     [8, 31, 41],
   );
   const m = new StarterMap(book, g.rows());
   ceiling(m, WALL[1]);
   stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 5, onGround(GROUND, signs.ouch), signs.ouch);
   stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 11, onGround(GROUND, signs.wait), signs.wait);
-  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 37, onGround(GROUND, signs.exit), signs.exit);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 34, onGround(GROUND, signs.exit), signs.exit);
   giant(m, GIANT_X[1], FRESH);
   return m;
 }

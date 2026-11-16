@@ -166,7 +166,7 @@ function crowd(book: Book, signs: Record<SignName, Sign>): Level {
   stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 9, onGround(GROUND, signs.rows), signs.rows);
   stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 15, onGround(GROUND, signs.second), signs.second);
   stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 20, onGround(GROUND, signs.group), signs.group);
-  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 38, onGround(GROUND, signs.exit), signs.exit);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 30, onGround(GROUND, signs.exit), signs.exit);
   const talks: Talk[] = [];
   stand(m, 'pip', PIP2_X, true);
   stand(m, 'moss', MOSS_X, false);

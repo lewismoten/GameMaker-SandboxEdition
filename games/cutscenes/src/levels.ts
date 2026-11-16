@@ -61,7 +61,7 @@ export const MENU_DOORS = [13, 22, 31];
 
 const SIGNS = {
   words: { rows: [['A SCENE SHOWS'], ['A PICTURE AND'], ['WORDS FIRST']] },
-  floor: { rows: [['THEN THE ROOM.'], ['THE FLOOR DROPS'], ['AND TAKES YOU ON']] },
+  floor: { rows: [['THEN THE ROOM.'], ['THE FLOOR DROPS'], ['AND TAKES YOU ON']], maxWidth: 7 },
   menu: { rows: [['A MENU IS A ROOM'], ['WITH DOORS.'], ['PICK ONE']] },
   one: { rows: [['TALE ONE']], post: false },
   two: { rows: [['TALE TWO']], post: false },
@@ -95,7 +95,7 @@ function stage(book: Book, signs: Record<string, Sign> | undefined, floor: 'trap
   const m = new StarterMap(book, g.rows());
   if (signs) {
     stampTiledSign({ set: m.setOnSky.bind(m) }, STAGE_SIGNS[0], 4, signs.words, 3);
-    stampTiledSign({ set: m.setOnSky.bind(m) }, STAGE_SIGNS[1], 4, signs.floor, 3);
+    stampTiledSign({ set: m.setOnSky.bind(m) }, STAGE_SIGNS[1], 4, signs.floor, 2);
   }
   const ways: [number, number][] = [];
   for (let x = 1; x < WIDTH_STAGE - 1; x++) {

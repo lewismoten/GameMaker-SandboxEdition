@@ -162,7 +162,7 @@ function lives(book: Book, signs: Record<SignName, Sign>): StarterMap {
   m.set(FACE_X, 7, 'oneUp');
   sign(m, 1, signs.zero);
   sign(m, 15, signs.past);
-  sign(m, 29, signs.face);
+  sign(m, 30, signs.face);
   sign(m, 43, signs.exit);
   return m;
 }

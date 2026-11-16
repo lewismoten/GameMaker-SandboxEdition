@@ -186,8 +186,8 @@ function nineToZero(pal: Pal): Level {
       [8, 3],
       [14, 4],
     ],
-    [8],
-    [14],
+    [9],
+    [13],
   );
   // the building: a lintel of brick with the number on it, a porch under it, and the door's frame to the right
   g.fill(19, 2, 6, 6, 'B').fill(23, 8, 2, 2, 'B');

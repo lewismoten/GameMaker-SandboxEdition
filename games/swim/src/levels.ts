@@ -148,7 +148,7 @@ function theCreek(book: Book, signs: Record<SignName, Sign>): StarterMap {
   for (const x of L1.stones) m.set(x, G, 'stone');
   stampTiledSign({ set: m.setOnSky.bind(m) }, 1, 5, signs.pull, 2);
   stampTiledSign({ set: m.setOnSky.bind(m) }, 9, onGround(G, signs.stones), signs.stones);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 37, 7, signs.exit, 2);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 35, 7, signs.exit, 2);
   return m;
 }
 
@@ -207,7 +207,7 @@ function theLift(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [30, 39],
     [28, 38],
   );
-  scenery(g, L3.ledge, [[9, 1]], [2], [11]);
+  scenery(g, L3.ledge, [[9, 1]], [5], [11]);
   const m = new StarterMap(book, g.rows());
   for (let x = p0; x <= p1; x++) {
     m.set(x, L3.top, 'liftTop');

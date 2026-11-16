@@ -155,7 +155,7 @@ function twoOfAKind(book: Book, signs: Record<SignName, Sign>): StarterMap {
   const m = new StarterMap(book, g.rows());
   // the wall's gold door costs two keys
   m.set(29, GROUND - 1, 'gateTwo');
-  place(m, 6, onGround(GROUND, signs.findBoth), signs.findBoth);
+  place(m, 7, onGround(GROUND, signs.findBoth), signs.findBoth);
   place(m, 24, onGround(GROUND, signs.needsTwo), signs.needsTwo);
   place(m, 36, onGround(GROUND, signs.exit), signs.exit);
   return m;
@@ -188,7 +188,7 @@ function twoDoors(book: Book, signs: Record<SignName, Sign>): StarterMap {
   ] as const)
     g.put(x, y, '(').put(x + 1, y, ')');
   for (const x of [11, 30, 43]) g.put(x, GROUND - 1, 'b');
-  for (const x of [7, 20, 42]) g.put(x, GROUND - 1, 'f');
+  for (const x of [7, 19, 42]) g.put(x, GROUND - 1, 'f');
   const m = new StarterMap(book, g.rows());
   place(m, 2, 5, signs.two, 3);
   place(m, 8, 5, signs.gold, 3);

@@ -35,17 +35,17 @@ const WIDTH = 46;
 const SIGNS: Record<string, [number, string[]][]> = {
   frame: [
     [6, ['A PICTURE', 'CAME UP BEFORE', 'THIS LEVEL']],
-    [14, ['ITS SCENE HOLDS THE', 'INTRO PICTURE, A', '320 BY 200 GIF']],
+    [13, ['ITS SCENE HOLDS THE', 'INTRO PICTURE, A', '320 BY 200 GIF']],
     [27, ['THE DOOR SHOWS', 'ANOTHER AFTER', 'THE LEVEL']],
   ],
   cartoon: [
     [6, ['A CARTOON IS', 'AN FLI FILE', 'THAT MOVES']],
-    [14, ['THE EXIT SLOT PLAYS IT', 'WHEN YOU LEAVE']],
+    [13, ['THE EXIT SLOT PLAYS IT', 'WHEN YOU LEAVE']],
     [27, ['WALK THROUGH', 'THE DOOR', 'TO WATCH IT']],
   ],
   short: [
     [4, ['A LIST SHOWS', 'TWO PICTURES,', 'ONE AFTER ANOTHER']],
-    [14, ['A CARTOON PLAYS', 'TO ITS LAST FRAME']],
+    [13, ['A CARTOON PLAYS', 'TO ITS LAST FRAME']],
     [26, ['SO KEEP IT SHORT,', 'OR CUT IT', 'INTO CLIPS']],
   ],
 };
@@ -133,7 +133,7 @@ export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
           [30, 3],
           [38, 1],
         ],
-        [14, 24, 31, 40],
+        [13, 24, 31, 40],
         [10, 19, 36, 41],
       ),
       before: 'frame.lst',
@@ -155,7 +155,7 @@ export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
           [33, 1],
           [39, 3],
         ],
-        [14, 25, 32, 40],
+        [13, 25, 32, 40],
         [10, 19, 36, 41],
       ),
       before: 'cartoon.lst',
@@ -177,7 +177,7 @@ export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
           [29, 2],
           [37, 3],
         ],
-        [14, 25, 32, 40],
+        [13, 25, 32, 40],
         [10, 19, 36, 41],
       ),
       before: 'short.lst',

@@ -103,7 +103,9 @@ export function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sig
       const sign = built.signs[key];
       signs[key] = {
         board: sign.board.map((row) => row.map((name) => names.get(name)!)),
-        ...(sign.post ? { post: { x: sign.post.x, block: names.get(sign.post.block)! } } : {}),
+        ...(sign.post
+          ? { post: { x: sign.post.x, block: names.get(sign.post.block)!, ...(sign.post.rightBlock ? { rightBlock: names.get(sign.post.rightBlock)! } : {}) } }
+          : {}),
       };
     }
   }
@@ -181,7 +183,7 @@ function inside(book: Book, s: Record<SignName, Sign>): Room {
       [8, 1],
       [20, 2],
     ],
-    [10, 17],
+    [5, 17],
     [8, 23],
   );
   // A two-row turf step under the arrival doorway, clear of signs and prizes.
@@ -244,7 +246,7 @@ function kitchen(book: Book, s: Record<SignName, Sign>): Room {
       [10, 2],
       [17, 1],
     ],
-    [15],
+    [17],
     [8, 23],
   );
   // One-way entrance planks support the arrival while the return walk passes underneath.
@@ -266,7 +268,7 @@ function bedroom(book: Book, s: Record<SignName, Sign>): Room {
       [3, 1],
       [14, 2],
     ],
-    [1, 10],
+    [1, 12],
     [8, 18],
   );
   const m = built(book, g);
@@ -311,7 +313,7 @@ function garden(book: Book, s: Record<SignName, Sign>): Room {
       [6, 1],
       [15, 2],
     ],
-    [7, 12, 20],
+    [5, 12, 20],
     [6, 10, 14, 18, 22],
   );
   // A two-row turf step under the arrival doorway, clear of signs and prizes.
@@ -337,7 +339,7 @@ function attic(book: Book, s: Record<SignName, Sign>): Room {
       [6, 1],
       [17, 2],
     ],
-    [8],
+    [9],
     [10, 22],
   );
   // A two-row turf step under the arrival doorway, clear of signs and prizes.

@@ -19,8 +19,8 @@ import { addPickups } from './pickups';
 
 export type SignName = 'room' | 'loop' | 'next' | 'score' | 'money' | 'hurt' | 'heal' | 'quiet' | 'jump' | 'one' | 'exit';
 
-/** The block set the levels share: the Starter blocks, this game's signs, then the pickups. */
-function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
+/** One level’s block set: shared gameplay blocks and only that level’s signs. */
+function buildBlocks(pal: Pal, include: readonly SignName[]): { book: Book; signs: Record<SignName, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
   addPickups(book, pal);
@@ -39,6 +39,7 @@ function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
       exit: { rows: [['EXIT →']], maxWidth: 5 },
     },
     {
+      include,
       colors: {
         background: skyOf(pal),
         paper: pal.c('parch', 3),
@@ -65,6 +66,7 @@ export interface Level {
   /** The song file the level's scene names ('' = the room has no song). */
   song: string;
   map: StarterMap;
+  book: Book;
 }
 
 /** The two songs (song.ts writes them). */
@@ -184,11 +186,23 @@ function quietRoom(book: Book, signs: Record<SignName, Sign>): StarterMap {
 /** The levels in order. */
 export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
   const pal = buildStarterPalette(undefined, 'sounds-and-music');
-  const { book, signs } = buildBlocks(pal);
-  const levels: Level[] = [
-    { file: 'one', title: 'A Song Per Room', hint: 'Listen: this room has a song.', song: MEADOW, map: songRoom(book, signs) },
-    { file: 'two', title: 'Sounds on Pickups', hint: 'Each pickup has its own sound.', song: WALTZ, map: pickupRoom(book, signs) },
-    { file: 'three', title: 'A Quiet Room', hint: 'No song here. Jump!', song: '', map: quietRoom(book, signs) },
+  const sets = [
+    buildBlocks(pal, ['room', 'loop', 'next', 'exit']),
+    buildBlocks(pal, ['score', 'money', 'hurt', 'heal', 'exit']),
+    buildBlocks(pal, ['quiet', 'jump', 'one', 'exit']),
   ];
-  return { book, pal, levels };
+  const [first, second, third] = sets;
+  const levels: Level[] = [
+    { file: 'one', title: 'A Song Per Room', hint: 'Listen: this room has a song.', song: MEADOW, book: first.book, map: songRoom(first.book, first.signs) },
+    {
+      file: 'two',
+      title: 'Sounds on Pickups',
+      hint: 'Each pickup has its own sound.',
+      song: WALTZ,
+      book: second.book,
+      map: pickupRoom(second.book, second.signs),
+    },
+    { file: 'three', title: 'A Quiet Room', hint: 'No song here. Jump!', song: '', book: third.book, map: quietRoom(third.book, third.signs) },
+  ];
+  return { book: first.book, pal, levels };
 }

@@ -140,7 +140,7 @@ function board(book: Book, signs: Record<SignName, Sign>): StarterMap {
   const m = new StarterMap(book, g.rows());
   const sky = { set: m.setOnSky.bind(m) };
   stampTiledSign(sky, BOARD.again - 1, 7, signs.again, 2);
-  stampTiledSign(sky, 8, onGround(GROUND, signs.hello), signs.hello);
+  stampTiledSign(sky, 9, onGround(GROUND, signs.hello), signs.hello);
   for (const [pad, x0, sign, slot] of BOARD.units) {
     stampTiledSign(sky, x0, onGround(GROUND, signs[sign]), signs[sign]);
     m.set(x0 + 1, GROUND - 1, `pad.${pad}`);
@@ -149,7 +149,7 @@ function board(book: Book, signs: Record<SignName, Sign>): StarterMap {
   stampTiledSign(sky, BOARD.chuteSign - 1, onGround(GROUND, signs.chute), signs.chute);
   m.set(BOARD.chuteSign, GROUND - 4, `wave.${SLOT.fanfare}`).set(BOARD.chuteSign + 2, GROUND - 4, `wave.${SLOT.ping}`);
   for (let i = 0; i < jump.width; i++) m.set(jump.x + i, jump.long, `pad.${PADS.long.name}`).set(jump.x + i, jump.short, `pad.${PADS.short.name}`);
-  stampTiledSign(sky, 43, 7, signs.exit, 2);
+  stampTiledSign(sky, 44, 7, signs.exit, 2);
   return m;
 }
 
@@ -188,7 +188,7 @@ function feedback(book: Book, signs: Record<SignName, Sign>): StarterMap {
       [55, 1],
     ],
     [12, 17, 26, 38, 41, 48],
-    [6, 24, 31, 45, 53],
+    [6, 26, 31, 45, 53],
   );
   const m = new StarterMap(book, g.rows());
   const at = (x: number, s: Sign, wave?: number) => {

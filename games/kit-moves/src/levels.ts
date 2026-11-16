@@ -145,7 +145,7 @@ function tapAndHold(book: Book, signs: Record<SignName, Sign>): StarterMap {
   place(m, 15, onGround(G, signs.hold), signs.hold);
   place(m, 23, 9, signs.lift, 3);
   place(m, 32, onGround(L1.cliffTop, signs.top), signs.top);
-  place(m, 44, 1, signs.exit, 3);
+  place(m, 42, 1, signs.exit, 3);
   return m;
 }
 

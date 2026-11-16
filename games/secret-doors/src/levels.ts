@@ -139,7 +139,7 @@ function sameLook(book: Book, signs: Record<SignName, Sign>): StarterMap {
   stampTiledSign({ set: m.setOnSky.bind(m) }, 11, onGround(GROUND, signs.real), signs.real);
   stampTiledSign({ set: m.setOnSky.bind(m) }, 26, onGround(GROUND, signs.picture), signs.picture);
   stampTiledSign({ set: m.setOnSky.bind(m) }, 36, onGround(GROUND, signs.setting), signs.setting);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 45, 7, signs.exit, 2);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 43, 7, signs.exit, 2);
   return m;
 }
 
@@ -164,7 +164,7 @@ function bumpThenBump(book: Book, signs: Record<SignName, Sign>): StarterMap {
   stampTiledSign({ set: m.setOnSky.bind(m) }, 4, onGround(GROUND, signs.bump), signs.bump);
   stampTiledSign({ set: m.setOnSky.bind(m) }, 11, onGround(GROUND, signs.twice), signs.twice);
   stampTiledSign({ set: m.setOnSky.bind(m) }, 27, onGround(GROUND, signs.own), signs.own);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 45, 7, signs.exit, 2);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 43, 7, signs.exit, 2);
   return m;
 }
 
@@ -187,7 +187,7 @@ function coinsInTheWall(book: Book, signs: Record<SignName, Sign>): StarterMap {
   stack(m, 'fake', L3.x, L3.width, 2);
   for (let i = 0; i < L3.width; i++) m.set(L3.x + i, L3.roofRow, 'wall');
   for (const [x, y] of L3.windows) m.set(x, y, 'coin');
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 6, onGround(GROUND, signs.window), signs.window);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 4, onGround(GROUND, signs.window), signs.window);
   stampTiledSign({ set: m.setOnSky.bind(m) }, 18, onGround(GROUND, signs.fair), signs.fair);
   stampTiledSign({ set: m.setOnSky.bind(m) }, 45, 7, signs.exitLarge, 2);
   return m;

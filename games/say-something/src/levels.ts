@@ -156,7 +156,7 @@ function twoFriends(book: Book, signs: Record<SignName, Sign>): Level {
   stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 6, onGround(GROUND, signs.big), signs.big);
   stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 13, onGround(GROUND, signs.each), signs.each);
   stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 20, onGround(GROUND, signs.long), signs.long);
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 40, 7, signs.exit, 2);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 41, 7, signs.exit, 2);
   const talks: Talk[] = [];
   stand(m, talks, 'moss', MOSS_X);
   stand(m, talks, 'dot', DOT_X);

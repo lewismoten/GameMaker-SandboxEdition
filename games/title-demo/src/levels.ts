@@ -39,7 +39,7 @@ export const GROUND = 10;
 export const WIDTH = 40;
 /** Where each room's signs stand (x of the board's left block), in order, and where its door is. */
 export const SIGNS_ONE = [3, 15, 23];
-export const SIGNS_TWO = [3, 19, 29];
+export const SIGNS_TWO = [3, 19, 28];
 export const DOOR_ONE = 34;
 export const DOOR_TWO = 36;
 
@@ -75,8 +75,8 @@ function hall(book: Book, door: number, signs: { x: number; sign: Sign }[], mura
     [33, 1],
   ])
     g.put(x, y, '(').put(x + 1, y, ')');
-  for (const x of [8, 20, 31]) g.put(x, GROUND - 1, 'b');
-  for (const x of [7, 19, 30, 38]) g.put(x, GROUND - 1, 'f');
+  for (const x of [8, 20, 33]) g.put(x, GROUND - 1, 'b');
+  for (const x of [9, 19, 30, 38]) g.put(x, GROUND - 1, 'f');
   const m = new StarterMap(book, g.rows());
   mural.m.names.forEach((row, dy) => row.forEach((n, dx) => m.set(mural.x + dx, mural.y + dy, n)));
   // Check against the finished mural and garden, not just the hall's blank sky.
@@ -111,7 +111,7 @@ export function buildLevels(): { pal: Pal; book: Book; scenes: Scene[] } {
     book,
     DOOR_ONE,
     [signs.slot, signs.ontop, signs.plain].map((sign, i) => ({ x: SIGNS_ONE[i], sign })),
-    { m: thumb, x: 10, y: 3 },
+    { m: thumb, x: 11, y: 3 },
   );
   const two = hall(
     book,

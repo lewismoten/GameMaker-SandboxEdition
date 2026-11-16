@@ -154,7 +154,7 @@ function waitAndGo(book: Book, signs: Record<SignName, Sign>): StarterMap {
   stampTiledSign({ set: m.setOnSky.bind(m) }, 11, onGround(GROUND, signs.seen), signs.seen);
   // Past the sweep, with the post between the bush and the first coin.
   stampTiledSign({ set: m.setOnSky.bind(m) }, 29, onGround(GROUND, signs.hide), signs.hide);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 43, 7, signs.exit, 2);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 41, 7, signs.exit, 2);
   return m;
 }
 
@@ -176,9 +176,9 @@ function twoLights(book: Book, signs: Record<SignName, Sign>): StarterMap {
   );
   const m = new StarterMap(book, g.rows());
   hang(m, 1);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 5, onGround(GROUND, signs.two), signs.two);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 4, onGround(GROUND, signs.two), signs.two);
   // The post descends through the gap between the two rails.
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 28, 5, signs.rest, 4);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 28, 4, signs.rest, 4);
   stampTiledSign({ set: m.setOnSky.bind(m) }, 51, 7, signs.exitLarge, 2);
   return m;
 }

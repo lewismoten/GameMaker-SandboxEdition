@@ -40,7 +40,7 @@ export function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sig
         shadow: pal.c('wood', 0),
       },
       glyphs: { ...MICRO_GLYPHS, '→': '100110111110100' },
-      lettersPerBlock: 3,
+      font: 'micro',
       maxBlocks: 100 - book.index.size,
     },
   );
@@ -101,7 +101,7 @@ function walkAndHurt(book: Book, signs: Record<SignName, Sign>): StarterMap {
   );
   const m = new StarterMap(book, g.rows());
   placeSign(m, 7, onGround(GROUND, signs.path), signs.path);
-  placeSign(m, 18, onGround(GROUND, signs.over), signs.over);
+  placeSign(m, 20, onGround(GROUND, signs.over), signs.over);
   placeSign(m, 26, onGround(GROUND, signs.hurts), signs.hurts);
   placeSign(m, 37, onGround(GROUND, signs.exit) - 1, signs.exit, 2);
   return m;

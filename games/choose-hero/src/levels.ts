@@ -20,7 +20,7 @@ export type SignName = 'pick' | 'fast' | 'big' | 'steps' | 'high' | 'exit' | 'ca
 
 /** Complete vocabulary, shared within each map's own block set. */
 const WORDS = {
-  pick: { rows: [['TWO DOORS, TWO HEROES.'], ['THE SAME LEVEL'], ['BEHIND BOTH']] },
+  pick: { rows: [['TWO DOORS, TWO HEROES.'], ['THE SAME LEVEL'], ['BEHIND BOTH']], maxWidth: 9 },
   fast: { rows: [['FAST FEET. RUNS QUICKLY,'], ['JUMPS LIKE LIAN']] },
   big: { rows: [['BIG HOPS. SLOW FEET,'], ['JUMPS SIX BLOCKS']] },
   steps: { rows: [['STEPS UP. EVERY'], ['HERO CAN TAKE THEM'], ['BIG HOPS CAN SKIP A STEP.'], ['FAST FEET TAKES THEM ALL']] },
@@ -140,7 +140,7 @@ function twoDoors(book: Book, signs: Record<SignName, Sign>): StarterMap {
   );
   const m = new StarterMap(book, g.rows());
   stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 3, 8, signs.fast, 2);
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 14, 6, signs.pick, 3);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 15, 5, signs.pick, 3);
   stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 24, 8, signs.big, 2);
   return m;
 }

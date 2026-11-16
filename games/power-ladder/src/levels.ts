@@ -134,7 +134,7 @@ function smallKeyBigDoor(book: Book, signs: Record<SignName, Sign>): StarterMap 
   stampTiledSign(signMap, 4, onGround(GROUND, signs.bronzeKey), signs.bronzeKey);
   stampTiledSign(signMap, 9, onGround(GROUND, signs.silverKey), signs.silverKey);
   stampTiledSign(signMap, 22, onGround(GROUND, signs.silverDoor), signs.silverDoor);
-  stampTiledSign(signMap, 29, onGround(GROUND, signs.change), signs.change);
+  stampTiledSign(signMap, 30, onGround(GROUND, signs.change), signs.change);
   stampTiledSign(signMap, 38, onGround(GROUND, signs.exit), signs.exit);
   return m;
 }
@@ -163,7 +163,7 @@ function oneGoldKey(book: Book, signs: Record<SignName, Sign>): StarterMap {
   door(m, 25, 'bronze');
   door(m, 35, 'silver');
   // Keep the board above the raised entrance, with its post left of the ladder.
-  stampTiledSign(signMap, 2, 2, signs.goldKey, 6);
+  stampTiledSign(signMap, 3, 2, signs.goldKey, GROUND - 2 - signs.goldKey.board.length);
   stampTiledSign(signMap, 17, onGround(GROUND, signs.stronger), signs.stronger);
   // The taller post clears the flower and keeps the board above the exit door.
   stampTiledSign(signMap, 40, 7, signs.exit, 2);

@@ -86,7 +86,7 @@ const SIGNS = {
   gates: { rows: [['THE LIT LAMP'], ['OPENS ITS GATE.'], ['GO IN ORDER']] },
   sun: { rows: [['SUN GATES'], ['ALL OPEN'], ['TOGETHER']] },
   moon: { rows: [['MOON'], ['GATES'], ['OPEN AS'], ['SUN SHUTS']] },
-  step: { rows: [['CROSS'], ['ONE,'], ['WAIT,'], ['CROSS THE'], ['NEXT']] },
+  step: { maxWidth: 5, rows: [['CROSS'], ['ONE,'], ['WAIT,'], ['CROSS THE'], ['NEXT']] },
 };
 
 function startBook(pal: Pal, names: SignName[]): { book: Book; signs: Record<string, Sign> } {
@@ -199,8 +199,8 @@ function outOfStep(pal: Pal): Level {
       [30, 3],
       [42, 1],
     ],
-    [7, 14, 37],
-    [19, 26, 32],
+    [8, 14, 37],
+    [19, 27, 32],
   );
   const m = new StarterMap(book, g.rows());
   // the sun is open on the first turn, the moon on the second: the same ring, started one block along
@@ -211,7 +211,7 @@ function outOfStep(pal: Pal): Level {
   });
   sign(m, 4, signs.sun);
   sign(m, 10, signs.moon);
-  sign(m, 23, signs.step);
+  sign(m, 24, signs.step);
   return { file: 'two', title: 'Out of Step', hint: 'Two rings, one step apart.', map: m, book, timed };
 }
 

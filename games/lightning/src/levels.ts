@@ -69,7 +69,9 @@ function blocks(pal: Pal, level: 1 | 2): Built {
     maxBlocks: 100 - book.index.size,
   });
   const used: SignName[] = level === 1 ? ['sky', 'bolt', 'thunder'] : ['stones', 'always'];
-  const needed = new Set(used.flatMap((k) => [...signs[k].board.flat(), signs[k].post!.block]));
+  const needed = new Set(
+    used.flatMap((k) => [...signs[k].board.flat(), signs[k].post!.block, ...(signs[k].post!.rightBlock ? [signs[k].post!.rightBlock!] : [])]),
+  );
   for (const [name, pic] of tiles) if (needed.has(name)) book.add(name, pic, { grav: PULL.down });
   const clouds = { two: addCloud(book, pal, 2), three: addCloud(book, pal, 3) };
   const hill = addHill(book, pal);

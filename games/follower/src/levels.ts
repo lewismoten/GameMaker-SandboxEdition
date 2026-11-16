@@ -139,7 +139,7 @@ function outOfReach(book: Book, signs: Record<SignName, Sign>): StarterMap {
   );
   const m = new StarterMap(book, g.rows());
   const sky = { set: (x: number, y: number, name: string) => m.setOnSky(x, y, name) };
-  stampTiledSign(sky, 6, onGround(LEDGE, signs.under), signs.under);
+  stampTiledSign(sky, 5, onGround(LEDGE, signs.under), signs.under);
   stampTiledSign(sky, 18, onGround(LEDGE, signs.around), signs.around, GROUND - LEDGE + 1);
   stampTiledSign(sky, 39, onGround(GROUND, signs.exit) - 1, signs.exit, 2);
   m.mon(PUFF, PUFF_START_2, STAND);

@@ -133,7 +133,7 @@ function curtainUp(book: Book, signs: Record<SignName, Sign>): StarterMap {
   stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 10, onGround(GROUND, signs.start), signs.start);
   stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 28, onGround(GROUND, signs.chain), signs.chain);
   stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 33, onGround(GROUND, signs.encore), signs.encore);
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 46, 7, signs.exit, 2);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 47, 7, signs.exit, 2);
   // the actors wait behind the curtains, peeking
   m.mon(MON.pipPeek, s.left, STAND);
   m.mon(MON.bluPeek, s.right, STAND);

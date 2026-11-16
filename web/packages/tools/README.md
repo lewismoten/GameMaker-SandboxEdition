@@ -157,27 +157,43 @@ Each row is a line: chunks are joined without tile padding, whitespace becomes s
 and lowercase becomes uppercase. Letters pack continuously across tile boundaries, with each
 line centered horizontally and vertically. One-line boards occupy one block row, including
 their top and bottom rails. Shared side tiles contain the edges and corners; the interior width
-is the smallest that fits the text plus margins (rounded up to odd for one centered post).
-The result contains `blocks: Map<string, Pixels>` and `signs` with named-block boards and optional centered posts.
+is the smallest that fits the text plus margins (without rounding to an odd width).
+The result contains `blocks: Map<string, Pixels>` and `signs` with named-block boards and optional centered posts. Even-width boards use two adjacent half-post tiles (`post.block`
+and optional `post.rightBlock`); `stampTiledSign` stamps both. Custom name remappers must
+preserve and remap both fields.
 Identical rendered tiles, including split letters, are deduplicated across all signs.
 `include: ["roomA.start", "roomA.exit"]` selects a map’s signs from the complete vocabulary.
 Call once per map when rooms have separate block sets; omitted signs allocate no tiles, and
 each call still enforces `maxBlocks`. Names and pixel deduplication are local to each call.
-`post: false` omits the post for a wall sign and allows even interior widths.
+`post: false` omits the post for a wall sign.
 
 Pass six palette indices in `colors` (`background`, `paper`, `ink`, `wood`, `highlight`, `shadow`),
 optional `glyphs` for game-owned symbols, and `maxBlocks` for the remaining block budget (0–100; default 100).
 Unsupported glyphs, empty rows and budget overflow throw errors.
 `lettersPerBlock: 5` (default) or `4` uses the project's 3×5 micro font; `3` enlarges it to
-5×10 pixels for readability at native game size. `compact: true` instead uses four 4×8 letters
+6×10 pixels with uniform 2×2 source pixels for readability at native game size.
+Large letters advance seven pixels, with three-pixel spaces; wrapping measures rendered
+pixels rather than character counts. `compact: true` instead uses four 4×8 letters
 per block with one-pixel stems and open counters, spaced five pixels across and nine down.
 Compact boards pack lines into the smallest whole-block height that leaves three-pixel rails;
 the same side borders and centered post are shared. Omit `lettersPerBlock` or set it to `4` in compact mode.
-`maxWidth` caps the **total** board width in blocks, including both side tiles and odd interior
-rounding for posts. Words wrap at spaces; explicit rows remain line breaks. A sign's own
+`maxWidth` caps the **total** board width in blocks, including both side tiles. Words wrap at spaces; explicit rows remain line breaks. A sign's own
 `maxWidth` overrides the option. A word too wide for the available interior throws instead of
 being clipped or split. Custom `glyphs` remain 3×5 patterns; compact punctuation and symbols
-scale to 4×8, while uppercase letters and digits use the compact letterforms.
+retain their native 3×5 pixels inside the 4×8 cell, while uppercase letters and digits use the compact letterforms.
 Centered fragments can cost more unique tiles.
 Add the returned pictures to your block set with the game's passable-background rules, once for the whole game or separately for each map selected by `include`.
-The stamp helper accepts any map with `set(x, y, blockName)`; taller posts reuse the same centered tile.
+The stamp helper accepts any map with `set(x, y, blockName)`; taller posts reuse the same centered tile or pair.
+
+`font: 'micro'` opts into Lewis Moten’s two-line 3×5 boards. Text flows continuously
+across the whole board: N blocks hold 4N characters per line, with a one-pixel gap.
+Lines wrap only between words and are centered horizontally; each block row holds two
+vertically centered lines (a final unpaired line is centered alone). The smallest width
+that fits the words and two lines is chosen automatically. For example, `MONSTERS WALK A PATH`
+uses three blocks and reads `MONSTERS / WALK A PATH`; `JUMP OVER IT` uses two and reads
+`JUMP / OVER IT`. Explicit rows remain line breaks. One frame surrounds the whole board,
+with three-pixel horizontal rails and two-pixel side bevels, without additional side tiles.
+`maxWidth` (at least 1 here) caps the board width; additional line pairs continue on another
+block row, and a word wider than the cap throws. Micro signs refine the default M, W, N
+and Q forms; custom glyphs remain intact. Do not combine this option with `compact` or
+`lettersPerBlock`. Existing font selection stays the default.
