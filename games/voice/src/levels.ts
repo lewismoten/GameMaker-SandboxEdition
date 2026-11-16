@@ -8,49 +8,29 @@
 //   3. Let It Finish: one voice is cut off when another starts or the scene changes, so the
 //      speaker stands far enough from the door for the whole line.
 // Every room is closed in by hedges you can see, so Lena is never stopped by something she can't.
-import { Book, PULL } from '../../kit/starter/book';
+import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
-import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
-import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { MICRO_GLYPHS } from '@lewismoten/gamemaker-sandbox-tools/microFont';
+import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
+import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
 import { addSpeakerBlocks } from './speakerBlocks';
 
-export type SignName = 'enter' | 'key' | 'again' | 'walkin' | 'counter' | 'one' | 'cut' | 'room' | 'exit';
+export type SignName = 'enter' | 'walkin' | 'exit';
+
+const WORDS = {
+  enter: { lines: ['PRESS', 'ENTER'] },
+  walkin: { lines: ['WALK', 'IN'] },
+  exit: { lines: ['EXIT', '→'], post: false },
+};
 
 /** The block set the levels share: the Starter blocks, this game's signs, then the speakers. */
 function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
   addSpeakerBlocks(book, pal);
-  const { blocks, signs } = buildTiledSigns(
-    {
-      enter: { rows: [['PRESS ENTER AND LENA SAYS HELLO']] },
-      key: { rows: [['A KEY CAN PLAY A SOUND']] },
-      again: { rows: [['ENTER AGAIN AND THE VOICE RESTARTS']] },
-      walkin: { rows: [['WALK INTO A SPEAKER AND IT TALKS']] },
-      counter: { rows: [['COUNTER UP PLAYS THE UP VOICE']] },
-      one: { rows: [['COUNTER DOWN PLAYS'], ['THE OTHER VOICE']] },
-      cut: { rows: [['A NEW SCENE CUTS A VOICE OFF']] },
-      room: { rows: [['THE DOOR IS FAR ENOUGH FOR THE LINE']] },
-      exit: { rows: [['EXIT →']] },
-    },
-    {
-      colors: {
-        background: skyOf(pal),
-        paper: pal.c('parch', 3),
-        ink: pal.c('ink', 0),
-        wood: pal.c('wood', 2),
-        highlight: pal.c('wood', 4),
-        shadow: pal.c('wood', 0),
-      },
-      lettersPerBlock: 3,
-      glyphs: { ...MICRO_GLYPHS, '→': '100110111110100' },
-      maxBlocks: Math.min(100, 150 - book.index.size),
-    },
-  );
-  for (const [name, pic] of blocks) book.add(name, pic, { grav: PULL.down });
+  const signs = addMicroPlaques(book, pal, WORDS);
   return { book, signs };
 }
 
@@ -111,9 +91,7 @@ function sayHello(book: Book, signs: Record<SignName, Sign>): StarterMap {
   );
   const m = new StarterMap(book, g.rows());
   place(m, 7, signs.enter);
-  place(m, 19, signs.key);
-  place(m, 29, signs.again);
-  place(m, 43, signs.exit);
+  place(m, 45, signs.exit);
   return m;
 }
 
@@ -134,9 +112,7 @@ function twoSpeakers(book: Book, signs: Record<SignName, Sign>): StarterMap {
   );
   const m = new StarterMap(book, g.rows());
   place(m, 4, signs.walkin);
-  place(m, 18, signs.counter);
-  place(m, 30, signs.one);
-  place(m, 43, signs.exit);
+  place(m, 45, signs.exit);
   m.set(L2.up, GROUND - 1, 'speaker');
   m.set(L2.down, GROUND - 1, 'lower');
   return m;
@@ -158,9 +134,7 @@ function letItFinish(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [9, 31, 41],
   );
   const m = new StarterMap(book, g.rows());
-  place(m, 6, signs.cut);
-  place(m, 30, signs.room);
-  place(m, 44, signs.exit, 2);
+  place(m, 44, signs.exit);
   m.set(L3.speaker, GROUND - 1, 'speaker');
   return m;
 }

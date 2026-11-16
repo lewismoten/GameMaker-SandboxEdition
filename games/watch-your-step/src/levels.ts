@@ -9,22 +9,24 @@ import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
-import { addSign, type Sign } from '../../kit/starter/sign';
+import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
 import { addHazards } from './hazards';
 
-export type SignName = 'spikes' | 'over' | 'fall' | 'safe' | 'exit';
+export type SignName = 'spikes' | 'over' | 'fall' | 'exit';
+
+const WORDS = {
+  spikes: { lines: ['OUCH'] },
+  over: { lines: ['JUMP', 'OVER'] },
+  fall: { lines: ['STARTS', 'OVER'] },
+  exit: { lines: ['EXIT', '→'], post: false },
+};
 
 /** The block set the levels share: the Starter blocks, this game's signs, then the hazards. */
 function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
-  const signs = {
-    spikes: addSign(book, pal, 'spikes.sign', 'SPIKES HURT', 4, 2),
-    over: addSign(book, pal, 'over.sign', 'JUMP OVER THEM', 4, 2),
-    fall: addSign(book, pal, 'fall.sign', 'FALL IN AND YOU START THIS ROOM AGAIN', 4, 3),
-    safe: addSign(book, pal, 'safe.sign', 'FIND A SAFE WAY ACROSS', 4, 2),
-    exit: addSign(book, pal, 'exit.sign', 'EXIT →', 3),
-  };
+  const signs = addMicroPlaques(book, pal, WORDS);
   addHazards(book, pal);
   return { book, signs };
 }
@@ -73,9 +75,9 @@ function spikes(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [8, 20, 32],
   );
   const m = new StarterMap(book, g.rows());
-  m.sign(8, onGround(GROUND, signs.spikes), signs.spikes);
-  m.sign(17, onGround(GROUND, signs.over), signs.over);
-  m.sign(32, onGround(GROUND, signs.exit), signs.exit);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 9, onGround(GROUND, signs.spikes), signs.spikes);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 17, onGround(GROUND, signs.over), signs.over);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 32, onGround(GROUND, signs.exit), signs.exit);
   m.set(14, GROUND - 1, 'spikeUp');
   for (const x of [26, 27]) m.set(x, GROUND - 1, 'spikeUp');
   return m;
@@ -96,8 +98,8 @@ function pool(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [10, 18],
   );
   const m = new StarterMap(book, g.rows());
-  m.sign(5, onGround(GROUND, signs.fall), signs.fall);
-  m.sign(17, onGround(GROUND, signs.exit), signs.exit);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 5, onGround(GROUND, signs.fall), signs.fall);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 17, onGround(GROUND, signs.exit), signs.exit);
   for (const x of [13, 14, 15]) m.set(x, GROUND, 'waterTop').set(x, GROUND + 1, 'water');
   return m;
 }
@@ -119,8 +121,7 @@ function safeWay(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [7, 18, 29],
   );
   const m = new StarterMap(book, g.rows());
-  m.sign(4, onGround(GROUND, signs.safe), signs.safe);
-  m.sign(28, onGround(GROUND, signs.exit), signs.exit);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 28, onGround(GROUND, signs.exit), signs.exit);
   for (const x of [10, 11, 12]) m.set(x, GROUND - 1, 'spikeUp');
   for (const x of [20, 21, 22, 23]) m.set(x, GROUND + 1, 'waterTop').set(x, GROUND + 2, 'water');
   return m;

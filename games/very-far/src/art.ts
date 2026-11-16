@@ -101,13 +101,10 @@ function grovePicture(pal: Pal, cap: boolean, behind: Pixels): Pixels {
   return p;
 }
 
-/** A sign post, 4 wide at column `x`, standing on the ground in front of the nearest hill (row 5 of the landscape is that hill's flat color). */
-function postPicture(pal: Pal, x: number, land: Pixels): Pixels {
-  const w = pal.r('wood');
+/** Keep the shared centered post's pixels, with this landscape behind it instead of sky. */
+function postPicture(pal: Pal, post: Pixels, land: Pixels): Pixels {
   const p = land.crop(0, 100, 20, 20);
-  p.rect(x, 0, 4, 20, w[2])
-    .rect(x, 0, 1, 20, w[4])
-    .rect(x + 3, 0, 1, 20, w[1]);
+  for (let i = 0; i < post.px.length; i++) if (post.px[i] !== skyOf(pal)) p.px[i] = post.px[i];
   return p;
 }
 
@@ -157,13 +154,13 @@ export interface Scenery {
   slope: [string, string, string];
   groveTop: string;
   grove: string;
-  /** A sign's two posts, drawn over the hills (the Starter sign's own posts are on sky). */
+  /** The two halves of one centered plaque post, drawn over the hills. */
   posts: [string, string];
   gate: string;
 }
 
 /** Adds the blocks to `book`, after the Starter blocks and before the signs. */
-export function addScenery(book: Book, pal: Pal): Scenery {
+export function addScenery(book: Book, pal: Pal, posts: [Pixels, Pixels]): Scenery {
   const air = { grav: PULL.down };
   const seen = new Map<string, string>();
   const hillsPic = new Pixels(320, 120, skyOf(pal));
@@ -176,8 +173,8 @@ export function addScenery(book: Book, pal: Pal): Scenery {
   const front = cut(book, 'front', foregroundPicture(pal), { solid: SOLID }, new Map());
   book.add('groveTop', grovePicture(pal, true, land.crop(0, 80, 20, 20)), { ...air, solid: SOLID });
   book.add('grove', grovePicture(pal, false, land), { solid: SOLID });
-  book.add('postL', postPicture(pal, 3, land), air);
-  book.add('postR', postPicture(pal, 13, land), air);
+  book.add('postL', postPicture(pal, posts[0], land), air);
+  book.add('postR', postPicture(pal, posts[1], land), air);
   book.add('gate', gatePicture(pal, land), air);
   return { hills, front, ridge: 'ridge', slope, groveTop: 'groveTop', grove: 'grove', posts: ['postL', 'postR'], gate: 'gate' };
 }
