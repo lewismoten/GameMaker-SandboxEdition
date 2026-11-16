@@ -110,8 +110,8 @@ function sayHello(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [9, 24, 43],
   );
   const m = new StarterMap(book, g.rows());
-  place(m, 4, signs.enter);
-  place(m, 18, signs.key);
+  place(m, 7, signs.enter);
+  place(m, 19, signs.key);
   place(m, 29, signs.again);
   place(m, 43, signs.exit);
   return m;

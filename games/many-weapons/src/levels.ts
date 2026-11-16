@@ -76,7 +76,10 @@ function buildBlocks(pal: Pal) {
   }
   for (const sign of Object.values(compact.signs)) {
     sign.board = sign.board.map((row) => row.map((name) => aliases.get(name)!));
-    if (sign.post) sign.post.block = aliases.get(sign.post.block)!;
+    if (sign.post) {
+      sign.post.block = aliases.get(sign.post.block)!;
+      if (sign.post.rightBlock) sign.post.rightBlock = aliases.get(sign.post.rightBlock)!;
+    }
   }
   return { book, large: large.signs, compact: compact.signs };
 }
@@ -200,7 +203,7 @@ function starOrFlame(book: Book, signs: Record<'frost' | 'flame' | 'order' | 'ex
   stamp(m, 11, 5, signs.flame, 2);
   m.mon(FLAME_POUCH, L2.flamePouch, L2.ledgeRow - 1);
   stamp(m, 17, 6, signs.order, 2);
-  stamp(m, 42, 7, signs.exit, 2);
+  stamp(m, 43, 7, signs.exit, 2);
   for (const x of L2.frosty) m.mon(FROSTY, x, STAND);
   m.mon(TARGET, L2.target, STAND);
   return m;

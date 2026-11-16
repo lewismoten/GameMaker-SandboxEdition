@@ -98,7 +98,7 @@ function payToPass(book: Book, signs: Record<SignName, Sign>): StarterMap {
   place(m, 4, signs.words);
   place(m, 11, signs.takes);
   place(m, 23, signs.tray);
-  place(m, 28, signs.again);
+  place(m, 29, signs.again);
   return m;
 }
 

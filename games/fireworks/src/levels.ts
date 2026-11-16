@@ -1,5 +1,5 @@
 // FIREWORKS' two levels, painted on a Grid (see games/kit/starter/map.ts for the letters), with one block set
-// (fw.bbl) for both: the Starter blocks, the signs and the scenery (town.ts).
+// per level: the Starter blocks, that level’s signs and the scenery (town.ts).
 //
 //   1. Launch!: a night field with two launchers. A launcher is a block that gives birth to a rocket every few
 //      seconds, the pink one every 70 ticks and the teal one every 97, so they rarely go up together. A rocket is a
@@ -42,18 +42,20 @@ export interface Level {
   /** What the level card says under the title. */
   hint: string;
   map: StarterMap;
+  book: Book;
   /** The launchers' columns, for the checks. */
   launchers: { x: number; color: 'pink' | 'teal' }[];
   /** The big fireworks' middle columns (level 2), in BIGS order. */
   bigs: number[];
 }
 
-/** The block set both levels share. */
-function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
+/** One level’s block set; allocate only the signs it uses. */
+function buildBlocks(pal: Pal, include: readonly SignName[]): { book: Book; signs: Record<SignName, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
   addScenery(book, pal);
   const { blocks, signs } = buildTiledSigns(WORDS, {
+    include,
     colors: {
       background: skyOf(pal),
       paper: pal.c('parch', 3),
@@ -118,7 +120,7 @@ function launch(book: Book, signs: Record<SignName, Sign>): Level {
     [31, 2],
     [38, 1],
   ]);
-  return { file: 'one', title: 'Launch!', hint: 'A block that makes rockets.', map: m, launchers, bigs: [] };
+  return { file: 'one', title: 'Launch!', hint: 'A block that makes rockets.', map: m, book, launchers, bigs: [] };
 }
 
 /** Level 2: 66 blocks wide; three big fireworks over a town, two small launchers between them. */
@@ -163,14 +165,15 @@ function bigShow(book: Book, signs: Record<SignName, Sign>): Level {
     [44, 1],
     [61, 2],
   ]);
-  return { file: 'two', title: 'The Big Show', hint: 'Nine monsters, one burst.', map: m, launchers, bigs };
+  return { file: 'two', title: 'The Big Show', hint: 'Nine monsters, one burst.', map: m, book, launchers, bigs };
 }
 
 /** The palette, the block set and the levels in order. */
 export function buildLevels(): { pal: Pal; book: Book; levels: Level[] } {
   const pal = nightPalette();
-  const { book, signs } = buildBlocks(pal);
-  return { pal, book, levels: [launch(book, signs), bigShow(book, signs)] };
+  const first = buildBlocks(pal, ['launcher', 'top', 'own', 'enter']);
+  const second = buildBlocks(pal, ['nine', 'back', 'shapes']);
+  return { pal, book: first.book, levels: [launch(first.book, first.signs), bigShow(second.book, second.signs)] };
 }
 
 /** The finished block set: each launcher given its rocket and its time. */

@@ -43,7 +43,7 @@ function buildBlocks(pal: Pal) {
   const towerBlocks = new Set(tower.flat().filter((n) => n.startsWith('tower.'))).size;
   const houseBlocks = new Set([...houses.red.flat(), ...houses.blue.flat()]).size;
   // The count board includes its own tiles. Requalify this number whenever the art changes.
-  const used = 123;
+  const used = 130;
   const { blocks, signs } = buildTiledSigns(
     {
       many: { rows: [['ONE BIG'], ['PICTURE IS'], ['MANY BLOCKS']] },
@@ -116,7 +116,7 @@ function oneBigPicture(b: ReturnType<typeof buildBlocks>): StarterMap {
     [31, 35],
   );
   const m = new StarterMap(b.book, g.rows());
-  sign(m, 1, 3, b.signs.many);
+  sign(m, 2, 3, b.signs.many);
   sign(m, 8, onGround(GROUND, b.signs.count), b.signs.count);
   sign(m, 15, 3, b.signs.walk);
   b.tower.forEach((row, dy) => row.forEach((n, dx) => m.set(TOWER_X + dx, GROUND - TOWER.h + dy, n)));

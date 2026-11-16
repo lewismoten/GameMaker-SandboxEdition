@@ -227,7 +227,7 @@ function house(pal: Pal): Level['room'] {
   m.set(11, 6, 'window').set(15, 6, 'window').set(13, 6, 'painting');
   m.set(12, 9, 'sofa.l').set(13, 9, 'sofa.r');
   // Below the pictures; the centered post clears both the sofa and all four coins.
-  wallSign(m, book, 'wallpaper', 5, 7, inside, 2);
+  wallSign(m, book, 'wallpaper', 4, 7, inside, 2);
   return {
     file: 'house',
     map: m,
@@ -266,7 +266,7 @@ function plaza(pal: Pal): Level['hub'] {
   PLAZA_DOORS.forEach((d, i) => {
     const sign = signs[names[i]];
     // Raise the two right labels above the doors; posts use the clear ground beside them.
-    stampTiledSign(sky, d - (i ? 4 : 5), i ? 7 : onGround(GROUND, sign), sign, i ? 2 : 1);
+    stampTiledSign(sky, d - (i ? 4 : 6), i ? 7 : onGround(GROUND, sign), sign, i ? 2 : 1);
   });
   stampTiledSign(sky, 33, onGround(GROUND, signs.three), signs.three);
   return {
@@ -311,7 +311,7 @@ function tower(pal: Pal): Level['room'] {
   for (let x = 3; x <= 22; x++) m.set(x, GROUND, 'slab').set(x, 4, 'cap').set(x, 3, 'cap');
   for (let x = 3; x <= 22; x += 2) m.set(x, 2, 'merlon');
   m.set(11, 6, 'lamp').set(17, 6, 'lamp').set(13, 6, 'banner').set(15, 6, 'slit');
-  wallSign(m, book, 'tower.wall', 7, onGround(GROUND, room), room);
+  wallSign(m, book, 'tower.wall', 6, onGround(GROUND, room), room);
   return {
     file: 'tower',
     map: m,

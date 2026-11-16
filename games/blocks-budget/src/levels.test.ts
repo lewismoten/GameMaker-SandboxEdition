@@ -5,9 +5,13 @@ import { BACKBL, BLOCK_SIZE, emptyBlock, serializeBlocks } from '@lewismoten/gam
 import { buildLevels } from './levels';
 
 describe('150 Blocks tiled signs', () => {
-  it('uses one shared centered post tile across both levels', () => {
+  it('shares centered posts and both halves across both levels', () => {
     const { book } = buildLevels();
-    expect([...book.index.keys()].filter((name) => name === 'tiledSign.post')).toHaveLength(1);
+    expect([...book.index.keys()].filter((name) => name.startsWith('tiledSign.post')).sort()).toEqual([
+      'tiledSign.post',
+      'tiledSign.post-left',
+      'tiledSign.post-right',
+    ]);
     expect([...book.index.keys()].some((name) => name.endsWith('.legL') || name.endsWith('.legR'))).toBe(false);
   });
 

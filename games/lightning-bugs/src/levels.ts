@@ -185,7 +185,7 @@ function inStep(pal: Pal): Level {
   const m = meadow(pal, book, signBook, STEP_ROOM.width, STEP_ROOM.exit, [10, 19, 30, 36, 52, 57]);
   m.stand(4, signs.step);
   m.stand(30, signs.own);
-  m.stand(50, signs.times);
+  m.stand(51, signs.times);
   const bugs: Bug[] = [];
   // the copies: every one the same monster, on two rows, three blocks apart
   for (const [x, y] of STEP_ROOM.copies) lay(m, bugs, x, y, BUG.step, STEP);

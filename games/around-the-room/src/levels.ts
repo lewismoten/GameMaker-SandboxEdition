@@ -142,10 +142,10 @@ const COURSES: Course[] = [
       ['ceil', 6, 1],
       ['jump3', 17, 1],
       ['trench3', 22, 0],
-      ['exit3', 34, 2],
+      ['exit3', 34, 3],
     ],
     scenery: [
-      [14, 'f'],
+      [12, 'f'],
       [33, 'b'],
     ],
   },

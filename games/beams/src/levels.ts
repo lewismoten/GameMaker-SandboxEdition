@@ -55,6 +55,7 @@ const WORDS: Record<string, TiledSignText> = Object.fromEntries(
               )[name] ?? [[text]])
             : [[text]],
         post: room === 'fog',
+        ...(room === 'beams' && name === 'checker' ? { maxWidth: 6 } : room === 'beams' && name === 'soft' ? { maxWidth: 7 } : {}),
       },
     ]),
   ),

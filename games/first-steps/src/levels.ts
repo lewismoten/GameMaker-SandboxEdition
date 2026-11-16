@@ -84,13 +84,13 @@ function walkJumpFall(book: Book, signs: Record<SignName, Sign>): StarterMap {
   for (const x of [12, 38, 56]) g.put(x, GROUND - 1 + (x > 48 ? 2 : 0), 'b');
   for (const x of [19, 32, 47]) g.put(x, x === 47 ? 7 : GROUND - 1, 'f');
   const m = new StarterMap(book, g.rows());
-  stampTiledSign(m, 6, onGround(GROUND, signs.start), signs.start);
-  stampTiledSign(m, 14, onGround(GROUND, signs.walk), signs.walk);
-  stampTiledSign(m, 26, onGround(GROUND, signs.jump), signs.jump);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 6, onGround(GROUND, signs.start), signs.start);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 14, onGround(GROUND, signs.walk), signs.walk);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 26, onGround(GROUND, signs.jump), signs.jump);
   // Keep the gravity board above the coins, with its post just to their left.
-  stampTiledSign(m, 40, 3, signs.gravity, 4);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 39, 3, signs.gravity, 4);
   // Keep the exit board above the doorway, with a taller centered post.
-  stampTiledSign(m, 52, onGround(12, signs.exit) - 1, signs.exit, 2);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 52, onGround(12, signs.exit) - 1, signs.exit, 2);
   return m;
 }
 
@@ -123,8 +123,8 @@ function climbAndFall(book: Book, signs: Record<SignName, Sign>): StarterMap {
   ] as const)
     g.put(x, y, 'f');
   const m = new StarterMap(book, g.rows());
-  stampTiledSign(m, 6, onGround(GROUND, signs.climb), signs.climb);
-  stampTiledSign(m, 43, onGround(GROUND, signs.exit) - 1, signs.exit, 2);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 5, onGround(GROUND, signs.climb), signs.climb);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 43, onGround(GROUND, signs.exit) - 1, signs.exit, 2);
   return m;
 }
 

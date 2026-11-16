@@ -121,8 +121,8 @@ function glide(book: Book, signs: Record<SignName, Sign>): StarterMap {
   );
   const m = new StarterMap(book, g.rows());
   placeSign(m, 5, onGround(G, signs.glide), signs.glide);
-  placeSign(m, 17, onGround(G, signs.faster), signs.faster);
-  placeSign(m, 32, onGround(G, signs.turn), signs.turn);
+  placeSign(m, 20, onGround(G, signs.faster), signs.faster);
+  placeSign(m, 34, onGround(G, signs.turn), signs.turn);
   placeSign(m, 54, onGround(G, signs.exit), signs.exit);
   return m;
 }

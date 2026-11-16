@@ -289,6 +289,7 @@ function stormHeld(pal: Pal): Level {
   for (const sign of Object.values(signs)) {
     sign.board = sign.board.map((row) => row.map((name) => (skyTiles.has(name) ? `${name}.start` : name)));
     sign.post!.block += '.start';
+    if (sign.post!.rightBlock) sign.post!.rightBlock += '.start';
   }
   ring(
     book,

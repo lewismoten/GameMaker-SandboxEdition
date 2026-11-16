@@ -41,9 +41,9 @@ const cheer = heroPicture(heroBlocks, 'cheer.top', 'jump');
 // the exit door as a picture to stand in the scenes: its sky made clear
 const door = heroPicture(book, 'doorTop', 'doorBottom').map((_x, _y, c) => (c === skyOf(pal) ? 255 : c));
 
-// the game's shared data: one block set, one palette, one hero, an (empty) set of monsters, two songs
+// Each level has its own sign book; palette, hero, empty monster set and songs are shared.
 disk.put('sounds.pal', serializePalette(pal.pal));
-disk.put('sounds.bbl', serializeBlocks(book.finish()));
+for (const level of levels) disk.put(`${level.file}.bbl`, serializeBlocks(level.book.finish()));
 disk.put('sounds.mbl', serializeBlocks(monsterBlocks.finish()));
 disk.put('sounds.mon', serializeMonsters(buildMonsters(monsterBlocks)));
 disk.put('hero.cbl', serializeBlocks(heroBlocks.finish()));

@@ -134,7 +134,7 @@ function countTheLights(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [8, 24, 28],
   );
   const m = new StarterMap(book, g.rows());
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 6, onGround(GROUND, signs.lights), signs.lights);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 4, onGround(GROUND, signs.lights), signs.lights);
   stampTiledSign({ set: m.setOnSky.bind(m) }, 16, onGround(GROUND, signs.poof), signs.poof);
   stampTiledSign({ set: m.setOnSky.bind(m) }, 40, 6, signs.exit, 3);
   m.mon(LAMPED, BUG_X[1], STAND);

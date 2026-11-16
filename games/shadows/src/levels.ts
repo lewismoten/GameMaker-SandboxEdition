@@ -169,7 +169,7 @@ export function yard(pal: Pal, look: Look): Level {
   board(m, book, signs.start, 1, 5);
   board(m, book, signs.sand, 10, 5);
   board(m, book, signs.grass, 17, 5);
-  board(m, book, signs.soil, 24, 5);
+  board(m, book, signs.soil, 25, 5);
   board(m, book, signs.next, 33, 5);
   for (const x of YARD.pips) m.mon(CRITTER.pip, x, LANE);
   return { file: 'yard', title: 'The Yard', map: m, book, from: 3, exit: YARD.exit, grounds: YARD.grounds };

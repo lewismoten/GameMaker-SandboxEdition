@@ -73,6 +73,7 @@ function start(pal: Pal, names: SignName[]): Built {
   addStarterBlocks(book, pal);
   // Pack every level's sign text together; keep only the tiles used in this palette.
   const { blocks: tiles, signs } = buildTiledSigns(WORDS, {
+    include: names,
     colors: {
       background: skyOf(pal),
       paper: pal.c('parch', 3),
@@ -84,7 +85,9 @@ function start(pal: Pal, names: SignName[]): Built {
     lettersPerBlock: 3,
     maxBlocks: 100,
   });
-  const needed = new Set(names.flatMap((k) => [...signs[k].board.flat(), signs[k].post!.block]));
+  const needed = new Set(
+    names.flatMap((k) => [...signs[k].board.flat(), signs[k].post!.block, ...(signs[k].post!.rightBlock ? [signs[k].post!.rightBlock!] : [])]),
+  );
   for (const [name, pic] of tiles) if (needed.has(name)) book.add(name, pic, { grav: PULL.down });
   return { book, timed: [], signs };
 }

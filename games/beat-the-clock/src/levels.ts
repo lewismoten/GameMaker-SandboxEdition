@@ -146,7 +146,9 @@ function buildBlocks(pal: Pal, loop: boolean, names: SignName[]): { book: Book; 
     lettersPerBlock: 3,
     maxBlocks: 100,
   });
-  const needed = new Set(names.flatMap((k) => [...signs[k].board.flat(), signs[k].post!.block]));
+  const needed = new Set(
+    names.flatMap((k) => [...signs[k].board.flat(), signs[k].post!.block, ...(signs[k].post!.rightBlock ? [signs[k].post!.rightBlock!] : [])]),
+  );
   for (const [name, pic] of blocks) if (needed.has(name)) book.add(name, pic, AIR);
   return { book, timed, signs };
 }

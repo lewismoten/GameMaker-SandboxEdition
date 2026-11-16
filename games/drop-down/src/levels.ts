@@ -129,7 +129,7 @@ export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
     monster: PLOP,
     signs: [
       [signs.gate, 5],
-      [signs.break, 12],
+      [signs.break, 14],
       [signs.why, 30],
       [signs.exit, 39],
     ],
@@ -164,7 +164,7 @@ export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
     monster: PIP,
     signs: [
       [second.signs.slow, 4],
-      [second.signs.wait, 21],
+      [second.signs.wait, 22],
       [second.signs.speed, 32],
       [second.signs.exit, 39],
     ],

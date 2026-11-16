@@ -76,7 +76,9 @@ function blocks(pal: Pal, level: 1 | 2): Built {
     maxBlocks: 100 - book.index.size,
   });
   const used: SignName[] = level === 1 ? ['same', 'own', 'six'] : ['night', 'apart'];
-  const needed = new Set(used.flatMap((k) => [...signs[k].board.flat(), signs[k].post!.block]));
+  const needed = new Set(
+    used.flatMap((k) => [...signs[k].board.flat(), signs[k].post!.block, ...(signs[k].post!.rightBlock ? [signs[k].post!.rightBlock!] : [])]),
+  );
   for (const [name, pic] of tiles) if (needed.has(name)) book.add(name, pic, { grav: PULL.down });
   if (level === 1) addSyncStars(book, timed, pal);
   addOwnStars(book, timed, pal);
@@ -153,7 +155,7 @@ function nightSky(pal: Pal): Level {
   const moon = [...Array(3).keys()].map((row) => [...Array(3).keys()].map((col) => `moon.${col}${row}`));
   moon.forEach((row, dy) => row.forEach((name, dx) => m.set(46 + dx, 5 + dy, name)));
   // One cell right keeps the centered post clear of the flower at (10, 10).
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 8, onGround(signs.night), signs.night);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 5, onGround(signs.night), signs.night);
   stampTiledSign({ set: m.setOnSky.bind(m) }, 26, onGround(signs.apart), signs.apart);
   const stars = scatter(m, book, 'star', 1, 58, 8, 21);
   return { file: 'two', title: 'A Night Sky', hint: 'A moon, hills and a sky of loops.', book, timed, map: m, stars };

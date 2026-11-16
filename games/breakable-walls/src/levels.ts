@@ -111,8 +111,8 @@ function bumpACrate(book: Book, signs: Record<SignName, Sign>): StarterMap {
   );
   const m = new StarterMap(book, g.rows());
   stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 5, 4, signs.bump, 5);
-  // Camera rows 4–5, as before; the post stands on the ground in column 32, the one gap in the coin row.
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 32 - (signs.rubble.post?.x ?? 0), 4, signs.rubble, 4);
+  // Camera rows 4–5, as before; the two post halves stand in columns 25–26, clear of the crates and coins.
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 25 - (signs.rubble.post?.x ?? 0), 4, signs.rubble, 4);
   stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 40, 7, signs.exit, 2);
   crates(m, L1.wallA, 1, L1.rows);
   crates(m, L1.wallB, L1.wallBWidth, L1.rows);
@@ -132,7 +132,7 @@ function coinsPayOnce(book: Book, signs: Record<SignName, Sign>): StarterMap {
       [44, 1],
     ],
     [11, 24, 33, 40],
-    [9, 13, 36],
+    [8, 13, 36],
   );
   const m = new StarterMap(book, g.rows());
   stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 5, 5, signs.again, 3);

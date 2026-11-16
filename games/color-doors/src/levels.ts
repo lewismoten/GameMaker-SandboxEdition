@@ -64,7 +64,8 @@ function buildBlocks(pal: Pal): { book: Book; signs: Record<string, Sign> } {
   const pictures = new Map([...book.pics].map(([name, pic]) => [pic.px.join(','), name]));
   for (const [key, sign] of Object.entries(signs)) {
     if (sign.post) {
-      for (const name of [...sign.board.flat(), sign.post.block]) if (!book.has(name)) book.add(name, blocks.get(name)!, { grav: PULL.down });
+      for (const name of [...sign.board.flat(), sign.post.block, ...(sign.post.rightBlock ? [sign.post.rightBlock] : [])])
+        if (!book.has(name)) book.add(name, blocks.get(name)!, { grav: PULL.down });
       continue;
     }
     const width = sign.board[0].length * 20;
@@ -140,7 +141,7 @@ function hall(book: Book, signs: Record<string, Sign>): Level {
     );
   board(signs.welcome, 4, SIGN_ROW);
   HALL_DOORS.forEach((x, i) => board(signs[`door${i}`], x - Math.floor(signs[`door${i}`].board[0].length / 2), SIGN_ROW));
-  board(signs.finish, HALL_FINISH - 2, SIGN_ROW + 1);
+  board(signs.finish, HALL_FINISH - 3, SIGN_ROW + 1);
   return { file: 'hall', title: 'The Hall', map: m };
 }
 
@@ -162,8 +163,8 @@ function gallery(book: Book, signs: Record<string, Sign>): Level {
   g.put(3, 8, 'G').put(3, 9, 'D');
   g.put(3, 6, 's').put(3, 7, 'S');
   g.put(GALLERY_END, 8, 'e').put(GALLERY_END, 9, 'E');
-  for (const x of [53, 66]) g.put(x, GROUND - 1, 'b');
-  for (const x of [8, 45, 78]) g.put(x, GROUND - 1, 'f');
+  for (const x of [53, 67]) g.put(x, GROUND - 1, 'b');
+  for (const x of [9, 45, 78]) g.put(x, GROUND - 1, 'f');
   for (const [x, y] of [
     [8, 2],
     [38, 1],
