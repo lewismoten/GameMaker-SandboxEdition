@@ -15,6 +15,7 @@ const fair = levels.findIndex((l) => l.file === 'four');
 const book = levels[fair].book;
 const sim = new GameSim(undefined, 1);
 const bot = new StarterBot(sim);
+bot.jumpHold = 8;
 for (const level of LEVELS.slice(0, fair)) await level(bot);
 if (sim.ticks > 3) await bot.wait(1);
 // the map keeps the block a cell was painted with; the block timers change what each block number shows (blkmap)

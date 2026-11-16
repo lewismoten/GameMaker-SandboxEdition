@@ -20,7 +20,7 @@ export async function saucerAlley(bot: StarterBot): Promise<void> {
   await must(bot, bot.walk(ALLEY.crates - 1, 'the crates'), 'to the crates');
   await must(bot, bot.walk(ALLEY.crates + 3, 'over the crates'), 'over the crates');
   await must(bot, bot.walk(ALLEY.saucer2, 'the second saucer'), 'to the second saucer');
-  await hop(bot, ALLEY.cracks, 3, 'the cracks');
+  await hop(bot, ALLEY.cracks, 1, 'the cracks');
   await climbUp(bot, ALLEY.ladder, 5, 'the fire escape');
   await must(bot, bot.walk(ALLEY.key, 'the gate key'), 'to the gate key');
   await must(bot, bot.walk(ALLEY.awning[1] + 2, 'the end of the awning'), 'off the awning');
@@ -43,7 +43,7 @@ export async function thirteenSteps(bot: StarterBot): Promise<void> {
   const hp = bot.sim.ci.hitpts;
   await readAt(bot, 5, 'the stairs sign');
   await must(bot, bot.walk(STEPS.landing[0], 'the top of the stairs'), 'up the thirteen steps');
-  await hop(bot, STEPS.cracks, 2, 'the cracks');
+  await hop(bot, STEPS.cracks, 1, 'the cracks');
   await must(bot, bot.walk(STEPS.shaker, 'the shaker'), 'to the shaker');
   await watchFor(bot, lifting(bot, STEPS.crow, STEPS.crowRow), 'the crow flying up');
   await must(bot, bot.walk(STEPS.ladder - 1, 'past the crow'), 'past the crow');
@@ -77,7 +77,7 @@ export async function earlierStill(bot: StarterBot): Promise<void> {
   await must(bot, bot.walk(RIGGING.key, 'the bin key'), 'to the bin key');
   await must(bot, bot.walk(RIGGING.rafters[1] + 2, 'the end of the rafters'), 'off the rafters');
   await must(bot, bot.walk(RIGGING.step2, 'the second doorstep'), 'setting out the second saucer');
-  await hop(bot, RIGGING.cracks, 3, 'the cracks');
+  await hop(bot, RIGGING.cracks, 1, 'the cracks');
   await must(bot, bot.walk(RIGGING.crow - 3, 'before the crow'), 'to the crow');
   await watchFor(bot, lifting(bot, RIGGING.crow, RIGGING.crowRow), 'the crow flying up');
   await must(bot, bot.walk(RIGGING.wall + 2, 'through the padlock'), 'through the padlock');
@@ -117,14 +117,14 @@ export async function nightMarket(bot: StarterBot): Promise<void> {
   await readAt(bot, 6, 'the closing sign');
   await must(bot, bot.walk(MARKET.boxes[0] - 1, 'the first stall'), 'to the first stall');
   await must(bot, bot.walk(MARKET.boxes[0] + 2, 'through the first stall'), 'knocking through the first stall');
-  await hop(bot, MARKET.cracks, 3, 'the cracks');
+  await hop(bot, MARKET.cracks, 1, 'the cracks');
   await must(bot, bot.walk(MARKET.gates[0] + 2, 'through the first shutter'), 'through the first shutter');
   await must(bot, bot.walk(MARKET.crows[0] - 3, 'before the first crow'), 'to the first crow');
   await watchFor(bot, lifting(bot, MARKET.crows[0], MARKET.crowRow), 'the first crow flying up');
   await must(bot, bot.walk(MARKET.crows[0] + 4, 'past the first crows'), 'past the first crow');
   await must(bot, bot.walk(MARKET.boxes[1] - 1, 'the second stall'), 'to the second stall');
   await must(bot, bot.walk(MARKET.boxes[1] + 2, 'through the second stall'), 'knocking through the second stall');
-  await hop(bot, MARKET.cracks2, 3, 'the cracks by the shutter');
+  await hop(bot, MARKET.cracks2, 1, 'the cracks by the shutter');
   await must(bot, bot.walk(MARKET.gates[1] + 2, 'through the second shutter'), 'through the second shutter');
   await must(bot, bot.walk(MARKET.crows[1] - 3, 'before the second crow'), 'to the second crow');
   await watchFor(bot, lifting(bot, MARKET.crows[1], MARKET.crowRow), 'the second crow flying up');
@@ -176,9 +176,9 @@ export async function washDay(bot: StarterBot): Promise<void> {
   const hp = bot.sim.ci.hitpts;
   await readAt(bot, 5, 'the banner sign');
   await must(bot, bot.walk(LAUNDRY.step1 + 1, 'the first doorstep'), 'to the first doorstep');
-  await hop(bot, LAUNDRY.cracks, 3, 'the cracks');
+  await hop(bot, LAUNDRY.cracks, 1, 'the cracks');
   for (const { x } of LAUNDRY.stairs) {
-    await must(bot, bot.walk(x - 2, 'the next awning'), 'to the next awning');
+    await must(bot, bot.walk(x - 1, 'the next awning'), 'to the next awning');
     await must(bot, bot.jump('right', x + 1), 'onto the awning');
     await must(bot, bot.walk(x + STAIR_W - 1, 'the awning'), 'along the awning');
   }
@@ -187,7 +187,7 @@ export async function washDay(bot: StarterBot): Promise<void> {
   await must(bot, bot.walk(LAUNDRY.key + 1, 'the key'), 'to the key');
   await must(bot, bot.walk(LAUNDRY.line[1] + 2, 'the end of the line'), 'off the line');
   await must(bot, bot.walk(LAUNDRY.step2 + 1, 'the second doorstep'), 'to the second doorstep');
-  await hop(bot, LAUNDRY.cracks2, 2, 'the last cracks');
+  await hop(bot, LAUNDRY.cracks2, 1, 'the last cracks');
   await must(bot, bot.walk(LAUNDRY.wall + 2, 'through the padlock'), 'through the padlock');
   await must(bot, bot.walk(LAUNDRY.step3 + 1, 'the last doorstep'), 'to the last doorstep');
   score(bot, from, 0, 7 * CHORE_POINTS + 25, 'Wash Day');

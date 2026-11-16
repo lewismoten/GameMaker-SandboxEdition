@@ -8,7 +8,7 @@
 // No charms: Rascal isn't collecting luck, he's arranging it.
 import { StarterMap } from '../../../kit/starter/map';
 import { CROW } from '../monsters';
-import { GROUND, addSigns, onGround, room, scenery, startBook, type Level } from '../level';
+import { GROUND, crackCrossing, addSigns, onGround, room, scenery, startBook, type Level } from '../level';
 import type { Pal } from '../print';
 
 /** Where things are, for the bot and the shots (columns; rows count down from the sky). */
@@ -57,7 +57,6 @@ export function levelMorning(pal: Pal): Level {
   m.set(MORNING.cleat2, 5, 'cleat').set(MORNING.key, 5, 'binKey');
   for (const x of [MORNING.step1, MORNING.step2, MORNING.step3]) m.set(x, GROUND - 1, 'step');
   for (const y of [8, 9]) m.set(MORNING.crates, y, 'crate').set(MORNING.crates + 1, y, 'crate');
-  for (const x of [MORNING.cracks, MORNING.cracks + 1, MORNING.cracks + 2]) m.set(x, GROUND - 1, 'crack');
   m.mon(CROW.bobbing, MORNING.crow, MORNING.crowRow);
   // the bins' wall: brick to the top of the world, an arch, and the padlock
   for (let y = -10; y < GROUND - 2; y++) m.set(MORNING.wall, y, 'brick');
@@ -65,6 +64,7 @@ export function levelMorning(pal: Pal): Level {
   for (const x of [64, 65]) m.set(x, GROUND - 2, 'binTop').set(x, GROUND - 1, 'bin');
   for (const x of [9, 33]) m.set(x, 8, 'lampHead').set(x, 9, 'lampPost');
   m.sign(13, onGround(GROUND, s.todo), s.todo);
+  crackCrossing(m, MORNING.cracks, 3);
   return {
     file: 'rascal',
     title: 'Earlier That Morning',

@@ -6,7 +6,7 @@
 // Two charms: the clover and the horseshoe.
 import { StarterMap } from '../../../kit/starter/map';
 import type { Pal } from '../print';
-import { GROUND, addSigns, onGround, room, scenery, startBook, type Level } from '../level';
+import { GROUND, crackCrossing, addSigns, onGround, room, scenery, startBook, type Level } from '../level';
 
 /** Where things are, for the bot and the shots (columns; rows count down from the sky). */
 export const ONE = {
@@ -63,7 +63,6 @@ export function levelOne(pal: Pal): Level {
   for (let x = 35; x <= 40; x++) m.set(x, 6, x % 2 ? 'awning' : 'awning2');
   m.set(ONE.clover, 5, 'charm.clover').set(ONE.horseshoe, 5, 'charm.horseshoe');
   // cracks
-  for (const x of [ONE.cracks, ONE.cracks + 1, ONE.cracks + 2, ONE.cracks2, ONE.cracks2 + 1]) m.set(x, GROUND - 1, 'crack');
   // crates to hop
   for (const y of [8, 9]) m.set(ONE.crates, y, 'crate').set(ONE.crates + 1, y, 'crate');
   // lamp posts and a fence for the street
@@ -71,6 +70,8 @@ export function levelOne(pal: Pal): Level {
   for (const x of [58, 59, 60]) m.set(x, 9, 'fence');
   m.sign(4, onGround(GROUND, s.start), s.start);
   m.sign(49, onGround(GROUND, s.blame), s.blame);
+  crackCrossing(m, ONE.cracks, 3);
+  crackCrossing(m, ONE.cracks2, 2);
   return {
     file: 'one',
     title: 'Ladder Lane',
