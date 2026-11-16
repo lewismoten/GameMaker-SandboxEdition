@@ -51,7 +51,7 @@ The next stage is waiting whenever you are ready.
     credits: creditsPage(
       'GRADUATION: FIRST STEPS',
       about.version,
-      'A graduation: it comes after The Basics. Held-rise controls, bot timing and raised-start camera layout by OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten.',
+      'A graduation: it comes after The Basics. Held-rise controls, bot timing, raised-start camera layout and micro-sign plaques by OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten.',
     ),
   },
 };
