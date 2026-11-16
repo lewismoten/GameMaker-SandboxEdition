@@ -17,20 +17,21 @@ import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
-import { addSign, type Sign } from '../../kit/starter/sign';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { CAR } from './monsters';
 import { drawLoop, drawRoad, lamp, stripAt } from './scene';
 import { CAR_AT, COLS, DOOR2_COL, DOOR_COL, GROUND_ROW, HILLS, LAMPS, LAP, LAPS, RAIL, ROWS, START, TILE, TREES, type Strip } from './view';
 
 export type SignName = 'ring' | 'speed' | 'loop' | 'lamps';
 
-/** Where each sign's top-left block is, and its size in blocks (a board on two posts that stand on the row under it). */
-const SIGNS: Record<SignName, { at: readonly [number, number]; w: number; h: number; words: string }> = {
-  ring: { at: [1, 5], w: 4, h: 3, words: 'THE LAST BLOCK TURNS BACK INTO THE FIRST' },
-  speed: { at: [7, 5], w: 4, h: 3, words: 'NEAR THINGS SLIDE FASTER' },
-  loop: { at: [1, 6], w: 4, h: 2, words: 'END WHERE YOU START AND IT LOOPS' },
-  lamps: { at: [10, 6], w: 3, h: 2, words: 'LAMPS COUNT THE LAPS' },
-};
+/** Plaques stand on the truck deck or beside the track; LAPS floats beside the lamps. */
+const SIGNS = {
+  ring: { at: [1, 6], lines: ['LOOP'] },
+  speed: { at: [7, 6], lines: ['NEAR', 'FAST'] },
+  loop: { at: [1, 7], lines: ['LOOP'] },
+  lamps: { at: [11, 4], lines: ['LAPS'], post: false },
+} as const;
 
 /** Ticks after the scene starts that the third lamp lights and the door opens. */
 export const OPENS_AT = LAP * LAPS;
@@ -62,7 +63,7 @@ class Stage {
     signNames: SignName[],
   ) {
     addStarterBlocks(this.book, pal);
-    for (const n of signNames) this.signs[n] = addSign(this.scratch, pal, n, SIGNS[n].words, SIGNS[n].w, SIGNS[n].h);
+    Object.assign(this.signs, addMicroPlaques(this.scratch, pal, Object.fromEntries(signNames.map((n) => [n, SIGNS[n]]))));
   }
 
   /** A block of this picture (the same picture is the same block), solid or air. */
@@ -92,12 +93,15 @@ class Stage {
 
   /** The sign `n` stamped on the map. */
   sign(m: StarterMap, n: SignName): void {
-    const { at, w } = SIGNS[n];
-    const { board, legs } = this.signs[n];
-    const put = (src: string, x: number, y: number) => m.set(x, y, this.plain(this.over(this.scratch.pics.get(src)!, cellOf(this.base, x, y))));
-    board.forEach((row, dy) => row.forEach((name, dx) => put(name, at[0] + dx, at[1] + dy)));
-    put(legs[0], at[0], at[1] + board.length);
-    put(legs[1], at[0] + w - 1, at[1] + board.length);
+    const { at } = SIGNS[n];
+    const put = (x: number, y: number, src: string) => {
+      const pic = this.scratch.pics.get(src)!;
+      // Opaque boards retain shared palette bytes; posts show the truck or meadow behind them.
+      const name = src.startsWith('microPlaque.post') ? this.plain(this.over(pic, cellOf(this.base, x, y))) : src;
+      if (!this.book.has(name)) this.book.add(name, pic, AIR);
+      m.set(x, y, name);
+    };
+    stampTiledSign({ set: put }, at[0], at[1], this.signs[n], GROUND_ROW - at[1] - 1);
   }
 
   /** The exit door standing at column `x`, its bottom on row 8, over whatever is behind it; `barred` for a version with two red and white bars. */

@@ -7,10 +7,10 @@ import { buildLevels } from './levels';
 describe('150 Blocks tiled signs', () => {
   it('shares centered posts and both halves across both levels', () => {
     const { book } = buildLevels();
-    expect([...book.index.keys()].filter((name) => name.startsWith('tiledSign.post')).sort()).toEqual([
-      'tiledSign.post',
-      'tiledSign.post-left',
-      'tiledSign.post-right',
+    expect([...book.index.keys()].filter((name) => name.startsWith('microPlaque.post')).sort()).toEqual([
+      'microPlaque.post',
+      'microPlaque.post-left',
+      'microPlaque.post-right',
     ]);
     expect([...book.index.keys()].some((name) => name.endsWith('.legL') || name.endsWith('.legR'))).toBe(false);
   });

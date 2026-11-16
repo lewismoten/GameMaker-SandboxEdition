@@ -1,6 +1,6 @@
 // Each room's block set: the same blocks as every Starter (kit/starter/blocks.ts), copied for the room with the
 // ground, hedges, scenery and doors turned to face the hero, and every block of air pulling toward the surface.
-// Signs, coins and sky stay as drawn: a sign is read upright wherever it hangs.
+// Plaque supports turn toward the surface. Boards, coins and sky stay as drawn: words stay upright.
 import { Book, PULL, type Rules } from '../../kit/starter/book';
 import { turn, turnedPair } from './turn';
 import type { Room } from './frame';
@@ -17,7 +17,7 @@ export function roomBook(base: Book, k: Room, pull: number): Book {
   };
   for (const [name] of [...base.index].sort((a, b) => a[1] - b[1])) {
     let pic = base.pics.get(name)!;
-    if (TURNED.has(name)) pic = turn(pic, k);
+    if (TURNED.has(name) || name.startsWith('microPlaque.post')) pic = turn(pic, k);
     else if (name === 'doorTop') pic = pairs.door.top;
     else if (name === 'doorBottom') pic = pairs.door.bottom;
     else if (name === 'doorwayTop') pic = pairs.doorway.top;
