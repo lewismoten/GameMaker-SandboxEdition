@@ -17,3 +17,5 @@ plan, so a room's map and its route cannot drift apart.
   picture on the disk.
 - `shots.ts`: progress pictures in PLAYGAME's own view: the title, a screen of every scene, and (`--frames
 lensroll,bakery`) the frames of a watched scene for a GIF.
+
+The five watched exits use `src/meter.ts`: compact steel-framed lights drain in five steps on the existing doorway clock, then show an open arrow. Copies repeat in clear backdrop cells beside the path, with higher copies above the counter and signs. Six unused Starter slots hold the animation, including in the loft’s full 150-block set.

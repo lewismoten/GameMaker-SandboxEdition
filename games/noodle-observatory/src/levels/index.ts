@@ -15,6 +15,7 @@
 //   9 The Real Sky: homeward, loftback, roofset, parapet, eaves       the scope packed up and set up outside
 //   Moonrise (watch)                            the real moon; the bakery's light goes out
 import type { Level } from '../level';
+import { addExitMeter } from '../meter';
 import { buildNoodlePalette } from '../palette';
 import { SHAFTS, buildShaft } from './ring';
 import { ROOMS, buildRoom } from './rooms';
@@ -83,5 +84,6 @@ export function buildLevels(): { pal: ReturnType<typeof buildNoodlePalette>; lev
     extra('eaves'),
     levelMoonrise(pal),
   ];
+  for (const level of levels) if (level.watch) addExitMeter(pal, level);
   return { pal, levels };
 }
