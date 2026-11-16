@@ -6,43 +6,27 @@
 //   2. Pop and Lives: two mint gumdrops sit at the bottom of a pit. Drop onto them and they
 //      pop into stars. Game-Maker has no "top only" rule, so the pit is what makes the way in
 //      from above; a hurting gumdrop and another pit follow.
-import { Book, PULL } from '../../kit/starter/book';
+import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
-import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
-import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
+import { stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { GRUMP, POP } from './monsters';
 
-export type SignName = 'path' | 'hurts' | 'over' | 'land' | 'lives' | 'exit';
+export type SignName = 'hurts' | 'over' | 'land' | 'exit';
 
 /** The block set both levels share: the Starter blocks, then this game's signs. */
 export function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
-  const { blocks, signs } = buildTiledSigns(
-    {
-      path: { rows: [['MONSTERS WALK A PATH']] },
-      hurts: { rows: [['TOUCHING HURTS']] },
-      over: { rows: [['JUMP OVER IT']] },
-      land: { rows: [['LAND ON TOP TO POP IT']] },
-      lives: { rows: [['WATCH YOUR LIVES']] },
-      exit: { rows: [['EXIT →']] },
-    },
-    {
-      colors: {
-        background: skyOf(pal),
-        paper: pal.c('parch', 3),
-        ink: pal.c('ink', 0),
-        wood: pal.c('wood', 2),
-        highlight: pal.c('wood', 4),
-        shadow: pal.c('wood', 0),
-      },
-      font: 'micro',
-      maxBlocks: 100 - book.index.size,
-    },
-  );
-  for (const [name, pic] of blocks) book.add(name, pic, { grav: PULL.down });
+  const signs = addMicroPlaques(book, pal, {
+    hurts: { lines: ['OUCH'] },
+    over: { lines: ['JUMP', 'OVER'] },
+    land: { lines: ['JUMP', 'ON!'] },
+    exit: { lines: ['EXIT', '→'], post: false },
+  });
   return { book, signs };
 }
 
@@ -98,10 +82,9 @@ function walkAndHurt(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [9, 19, 30],
   );
   const m = new StarterMap(book, g.rows());
-  placeSign(m, 7, onGround(GROUND, signs.path), signs.path);
   placeSign(m, 20, onGround(GROUND, signs.over), signs.over);
   placeSign(m, 26, onGround(GROUND, signs.hurts), signs.hurts);
-  placeSign(m, 37, onGround(GROUND, signs.exit) - 1, signs.exit, 2);
+  placeSign(m, 41, 7, signs.exit);
   return m;
 }
 
@@ -123,9 +106,8 @@ function popAndLives(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [8, 21, 33],
   );
   const m = new StarterMap(book, g.rows());
-  placeSign(m, 5, onGround(GROUND, signs.land) - 1, signs.land, 2);
-  placeSign(m, 16, onGround(GROUND, signs.lives), signs.lives);
-  placeSign(m, 37, onGround(GROUND, signs.exit) - 1, signs.exit, 2);
+  placeSign(m, 5, onGround(GROUND, signs.land), signs.land);
+  placeSign(m, 41, 7, signs.exit);
   m.mon(GRUMP, 25, GROUND - 1);
   for (const x of [13, 14, 35, 36]) m.mon(POP, x, GROUND + 1);
   return m;

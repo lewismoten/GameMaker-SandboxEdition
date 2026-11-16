@@ -18,11 +18,11 @@
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { Book, PULL, SOLID } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
-import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
-import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { MICRO_GLYPHS } from '@lewismoten/gamemaker-sandbox-tools/microFont';
+import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
+import { stampTiledSign, stampMicroPlaques, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { face, gate, lamp, restartDoor, segment, type Fill } from './clockArt';
 import { HAND, LOOP_OPEN, LOOP_ROUND, LOOP_SEG, RACE_SEG, RACE_TOTAL, SEGMENTS, WARN } from './timing';
 
@@ -78,14 +78,14 @@ export const RESTART_X = 1;
 /** Segment `i` goes out at this tick: the right-hand one first. */
 export const goesOutAt = (i: number, seg: number): number => (SEGMENTS - i) * seg;
 
-export type SignName = 'bar' | 'redo' | 'gate' | 'loop' | 'wait' | 'exit';
+export type SignName = 'redo' | 'back' | 'gate' | 'loop' | 'wait' | 'exit';
 const SIGNS = {
-  bar: { rows: [['THE BAR IS YOUR'], ['TIME. WHEN IT IS'], ['EMPTY, THE'], ['GATE SHUTS']] },
-  redo: { rows: [['TOO SLOW? WALK'], ['BACK TO THE'], ['CLOCK DOOR TO'], ['TRY AGAIN']] },
-  gate: { rows: [['RUN TO THE GATE'], ['BEFORE IT SHUTS']] },
-  loop: { rows: [['THIS CLOCK'], ['STARTS OVER'], ['BY ITSELF']] },
-  wait: { rows: [['GATE SHUT?'], ['WAIT FOR'], ['THE BAR TO'], ['FILL AGAIN']] },
-  exit: { rows: [['EXIT →']] },
+  redo: { lines: ['TOO', 'SLOW'] },
+  back: { lines: ['GO', 'BACK'] },
+  gate: { lines: ['RUN', 'NOW!'] },
+  loop: { lines: ['CLOCK', 'RESETS'] },
+  wait: { lines: ['WAIT'] },
+  exit: { lines: ['EXIT', '→'], post: false },
 };
 
 /** One level's block set: the Starter blocks, its signs and its clock blocks. `loop` is the repeating clock. */
@@ -133,23 +133,7 @@ function buildBlocks(pal: Pal, loop: boolean, names: SignName[]): { book: Book; 
     book.add('restartTop', door.crop(0, 0, 20, 20), AIR);
     book.add('restartBottom', door.crop(0, 20, 20, 20), AIR);
   }
-  const { blocks, signs } = buildTiledSigns(SIGNS, {
-    colors: {
-      background: skyOf(pal),
-      paper: pal.c('parch', 3),
-      ink: pal.c('ink', 0),
-      wood: pal.c('wood', 2),
-      highlight: pal.c('wood', 4),
-      shadow: pal.c('wood', 0),
-    },
-    glyphs: { ...MICRO_GLYPHS, '→': '100110111110100' },
-    lettersPerBlock: 3,
-    maxBlocks: 100,
-  });
-  const needed = new Set(
-    names.flatMap((k) => [...signs[k].board.flat(), signs[k].post!.block, ...(signs[k].post!.rightBlock ? [signs[k].post!.rightBlock!] : [])]),
-  );
-  for (const [name, pic] of blocks) if (needed.has(name)) book.add(name, pic, AIR);
+  const signs = addMicroPlaques(book, pal, Object.fromEntries(names.map((name) => [name, SIGNS[name]])));
   return { book, timed, signs };
 }
 
@@ -192,7 +176,7 @@ function stampGate(m: StarterMap, x: number): void {
 
 /** Level 1: the race. */
 function race(pal: Pal): Level {
-  const { book, timed, signs } = buildBlocks(pal, false, ['bar', 'redo', 'gate', 'exit']);
+  const { book, timed, signs } = buildBlocks(pal, false, ['redo', 'back', 'gate', 'exit']);
   const s = signs as Record<SignName, Sign>;
   const g = base(4);
   wall(g, RACE_GATE);
@@ -209,10 +193,9 @@ function race(pal: Pal): Level {
     [19, 26, 34],
   );
   const m = new StarterMap(book, g.rows());
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 6, onGround(GROUND, s.bar), s.bar);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 14, onGround(GROUND, s.redo), s.redo);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 26, onGround(GROUND, s.gate), s.gate);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 39, 6, s.exit, 3);
+  stampMicroPlaques({ set: m.setOnSky.bind(m) }, 14, 7, [s.redo, s.back]);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 27, onGround(GROUND, s.gate), s.gate);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 41, 7, s.exit);
   m.set(RESTART_X, 8, 'restartTop').set(RESTART_X, 9, 'restartBottom');
   for (const x of RACE_BARS) stampBar(m, x);
   stampGate(m, RACE_GATE);
@@ -230,7 +213,7 @@ function race(pal: Pal): Level {
 
 /** Level 2: the clock that starts over. */
 function loopLevel(pal: Pal): Level {
-  const { book, timed, signs } = buildBlocks(pal, true, ['loop', 'wait', 'exit']);
+  const { book, timed, signs } = buildBlocks(pal, true, ['loop', 'redo', 'wait', 'exit']);
   const s = signs as Record<SignName, Sign>;
   const g = base();
   wall(g, LOOP_GATE);
@@ -248,8 +231,9 @@ function loopLevel(pal: Pal): Level {
   );
   const m = new StarterMap(book, g.rows());
   stampTiledSign({ set: m.setOnSky.bind(m) }, 4, onGround(GROUND, s.loop), s.loop);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 14, onGround(GROUND, s.wait), s.wait);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 39, 6, s.exit, 3);
+  // Column 15 is the nearest clear post site beside the flower at 14.
+  stampMicroPlaques({ set: m.setOnSky.bind(m) }, 15, 7, [s.redo, s.wait]);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 41, 7, s.exit);
   for (const x of LOOP_BARS) stampBar(m, x);
   stampGate(m, LOOP_GATE);
   return { file: 'two', title: 'Round and Round', hint: 'The clock starts itself over.', map: m, book, timed, gateX: LOOP_GATE };

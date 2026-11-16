@@ -14,14 +14,14 @@
 // 4 down), and level 1's big one is placed three times and level 2's pair twice, so one is always in
 // view on the way (games/kit/inViewCheck.ts checks both on the walkthrough).
 // Both rooms are closed in by brick you can see, so Nova is never stopped by something she can't.
-import { MLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { Book, PULL, SOLID } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
 import { Grid } from '../../kit/starter/grid';
 import { ORIGIN, StarterMap } from '../../kit/starter/map';
-import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
-import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
+import { stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { digit } from './digits';
 import { door, mat, shaft, trap } from './props';
 import { DOOR_AT, FLOOR_AT, SECOND, TENS, WARN } from './timing';
@@ -79,10 +79,10 @@ const QUARTERS = [
 
 type SignName = 'count' | 'door' | 'two' | 'floor';
 const SIGNS = {
-  count: { rows: [['THE BIG NUMBER'], ['COUNTS DOWN,'], ['ONE EVERY SECOND']] },
-  door: { rows: [['AT 0 THE DOOR'], ['OPENS. UNTIL'], ['THEN IT IS SHUT']] },
-  two: { rows: [['TWO DIGITS'], ['COUNT 99 TO 00']] },
-  floor: { rows: [['AT 00 THE FLOOR'], ['OPENS. DROP OUT']] },
+  count: { lines: ['COUNT', 'DOWN!'], post: false },
+  door: { lines: ['OPEN', 'AT 0'], post: false },
+  two: { lines: ['99 TO 00'], post: false },
+  floor: { lines: ['DROP', 'AT 0'], post: false },
 };
 
 function startBook(pal: Pal, names: SignName[]): { book: Book; signs: Record<string, Sign> } {
@@ -93,59 +93,9 @@ function startBook(pal: Pal, names: SignName[]): { book: Book; signs: Record<str
   // that room uses, including grass for StarterMap's ground-edge lookup.
   const needed = names.includes('two') ? new Set(['sky', 'grass', 'dirt', 'brick', 'doorwayTop', 'doorwayBottom', 'coin']) : undefined;
   for (const [name, pic] of starter.pics) if (!needed || needed.has(name)) book.add(name, pic, starter.rulesOf(name));
-  const { blocks, signs } = buildTiledSigns(SIGNS, {
-    include: names,
-    lettersPerBlock: 3,
-    // Reserve the timed pictures and the joined border tiles added below.
-    maxBlocks: Math.min(100, 150 - book.index.size - (names.includes('two') ? 110 + 4 + 2 : 40 + 8 + 3)),
-    colors: {
-      background: skyOf(pal),
-      paper: pal.c('parch', 3),
-      ink: pal.c('ink', 0),
-      wood: pal.c('wood', 2),
-      highlight: pal.c('wood', 4),
-      shadow: pal.c('wood', 0),
-    },
-  });
-  for (const [name, pic] of blocks) book.add(name, pic, AIR);
+  const signs = addMicroPlaques(book, pal, Object.fromEntries(names.map((name) => [name, SIGNS[name]])));
   return { book, signs };
 }
-
-/** Adjacent boards share their mostly empty edge column, keeping both centered posts off scenery. */
-function stampBeside(m: StarterMap, book: Book, pal: Pal, x: number, y: number, left: Sign, right: Sign): void {
-  stampTiledSign({ set: m.setOnSky.bind(m) }, x, y, left);
-  const joinX = x + left.board[0].length - 1;
-  const joint = right.board.map((row, dy) => {
-    const edge = left.board[dy].at(-1)!;
-    const pic = book.pics.get(edge)!.crop(0, 0, 20, 20);
-    const next = book.pics.get(row[0])!;
-    const name = `joined.${book.index.size}`;
-    // Right edges occupy pixels 0–2; left edges occupy 17–19. Neither covers the other.
-    book.add(
-      name,
-      pic.map((px, py, c) => (next.get(px, py) === skyOf(pal) ? c : next.get(px, py))),
-      AIR,
-    );
-    return name;
-  });
-  stampTiledSign(
-    {
-      set: (xx, yy, name) => {
-        const dy = yy - y;
-        if (xx === joinX && dy < right.board.length) {
-          if (m.map.blocks[(yy + ORIGIN) * MLEN + xx + ORIGIN] !== book.n(left.board[dy].at(-1)!)) throw new Error('Expected shared sign border');
-          m.set(xx, yy, joint[dy]);
-        } else m.setOnSky(xx, yy, name);
-      },
-    },
-    joinX,
-    y,
-    right,
-  );
-}
-
-/** The top row of a sign standing on ground row `ground`. */
-const onGround = (ground: number, s: Sign) => ground - 1 - s.board.length;
 
 function scenery(g: Grid, clouds: [number, number][], bushes: number[], flowers: number[]): void {
   for (const [x, y] of clouds) g.put(x, y, '(').put(x + 1, y, ')');
@@ -193,7 +143,8 @@ function nineToZero(pal: Pal): Level {
   g.fill(19, 2, 6, 6, 'B').fill(23, 8, 2, 2, 'B');
   g.row(9, 15, 18, 'c');
   const m = new StarterMap(book, g.rows());
-  stampBeside(m, book, pal, 4, onGround(GROUND, signs.count), signs.count, signs.door);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 4, 7, signs.count);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 17, 8, signs.door);
   for (const [q, x, y] of QUARTERS) {
     m.set(DOOR_X + x / 20, BOARD_Y + y / 20, `big9.${q}`);
     for (const cx of BIG_COPIES) m.set(cx + x / 20, BOARD_Y + y / 20, `big9.${q}`);
@@ -231,7 +182,8 @@ function ninetyNine(pal: Pal): Level {
   g.put(1, 8, 's').put(1, 9, 'S');
   g.put(7, 9, 'c').put(8, 9, 'c').put(13, 9, 'c').put(14, 9, 'c');
   const m = new StarterMap(book, g.rows());
-  stampBeside(m, book, pal, 2, onGround(GROUND, signs.two), signs.two, signs.floor);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 2, 8, signs.two);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 10, 8, signs.floor);
   for (const x of DIGIT_PAIRS) m.set(x, DIGIT_ROW, 'ten9').set(x + 1, DIGIT_ROW, 'one99');
   const links: [number, number][] = [];
   for (let x = 1; x < WIDTH_TWO - 1; x++) {
