@@ -12,7 +12,7 @@
 // manual says so), so the warning is something to watch for, not something she can set off.
 // Both rooms end in a visible hedge, so Rima is never stopped by something she can't see.
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
-import { Book, PULL, SOLID as SOLID_ALL } from '../../kit/starter/book';
+import { Book, PULL, SOLID as SOLID_ALL, type Timed } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
@@ -21,13 +21,6 @@ import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/
 import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
 import { MOODS, fog, grate, mat, pit, plank, type Mood } from './props';
 import { FLICKER_STEPS, GONE, PLANK_FIRST, PUFF, PUFF_HURT, REST, RUMBLE, SHAKE_STEPS, SOLID, VENT_FIRST } from './timing';
-
-/** A block that turns into another after some ticks. */
-interface Timed {
-  name: string;
-  next: string;
-  ticks: number;
-}
 
 export interface Level {
   file: string;

@@ -38,6 +38,8 @@ export const CREDITS = withCreditPage(
 
 Design, pixels, beeps and levels by Claude Sonnet 5.5, an AI model made by Anthropic.
 
+Micro plaques by OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten.
+
 Playable palette lesson by OpenAI Codex (GPT-6), directed by Lewis Moten.
 
 Color-vision pictures use the matrices of Machado, Oliveira and Fernandes (2009).

@@ -12,7 +12,7 @@
 // Both rooms are closed in by things you can see (a tail board, a cab, hedges), so Mia is never stopped by something she can't.
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
-import { Book, PULL, SOLID } from '../../kit/starter/book';
+import { Book, PULL, SOLID, type Timed } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
@@ -35,13 +35,6 @@ const SIGNS = {
 
 /** Ticks after the scene starts that the third lamp lights and the door opens. */
 export const OPENS_AT = LAP * LAPS;
-
-/** A block that turns into another after some ticks (patched into the finished .BBL). */
-interface Timed {
-  name: string;
-  next: string;
-  ticks: number;
-}
 
 const AIR = { grav: PULL.down };
 

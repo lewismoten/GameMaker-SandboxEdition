@@ -2,7 +2,7 @@
 // games/kit/starter/map.ts for what the letters mean; ground.ts draws them in the game's woodcut), the Committee's
 // handbills, scenery and the level's own block set.
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
-import { Book } from '../../kit/starter/book';
+import { Book, type Timed } from '../../kit/starter/book';
 import { Grid } from '../../kit/starter/grid';
 import type { StarterMap } from '../../kit/starter/map';
 import type { Sign } from '../../kit/starter/sign';
@@ -12,12 +12,7 @@ import { addBill } from './handbill';
 import type { Pal } from './print';
 import { addProps } from './props';
 
-/** A block that turns into another after some ticks (the fair's chime meter and gate). */
-export interface Timed {
-  name: string;
-  next: string;
-  ticks: number;
-}
+export type { Timed };
 
 export interface Level {
   /** The files' base name (one.map, one.lst ...). */

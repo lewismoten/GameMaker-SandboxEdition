@@ -29,7 +29,7 @@ In the pasta ring, LEFT and RIGHT steer. The ring rolls up by itself.
 
 Shelves wobble before they tip: wait on the ladder for level. Sockets in a row take their parts in order, so carry what the row asks for.
 
-Some scenes are stories: watch them happen.
+Some scenes are stories: watch them happen. Five lights count down to the exit opening. An arrow means open.
 
 |ESC for the menu.
 `);
@@ -41,6 +41,8 @@ export const CREDITS = withCreditPage(
 |(c) 1994 Sandbox Software
 
 Story, pixels, beeps, songs and levels by Claude Sonnet 5.5, an AI model made by Anthropic, from a level plan written with OpenAI Codex.
+
+Exit countdown lights and code by OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten.
 
 Made with GAME-MAKER 3.0 from Recreational Software Designs.
 

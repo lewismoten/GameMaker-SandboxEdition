@@ -33,13 +33,14 @@ export async function verifyWalk(
   };
   const rec = s.rec as unknown as { keysLeft: number };
   const limit = (opts.maxMinutes ?? 60) * 60 * WALKTHROUGH_FPS;
-  // once every key is played, a few seconds more (the last scene's link, or the hero idle where the bot stopped)
+  // A partial route ends a few seconds after its last key. A complete route can
+  // keep a key held or coast to its winning link, so let it finish within limit.
   let after = -1;
   while (run.frame < limit && (await run.step(false))) {
     if (run.frame % 600 === 0 && opts.progress?.(run.frame)) break;
     // (counted from the scene the bot stopped in: before that, a scene with no keys of its own is still to come)
     const there = scenes.length >= walk.segments.length + (walk.partial && !walk.segments.at(-1)?.incomplete ? 1 : 0);
-    if (rec.keysLeft === 0 && there && !scenes.includes(1)) {
+    if (walk.partial && rec.keysLeft === 0 && there && !scenes.includes(1)) {
       if (after < 0) after = run.frame;
       else if (run.frame - after > 5 * WALKTHROUGH_FPS) break;
     }

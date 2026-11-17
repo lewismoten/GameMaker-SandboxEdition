@@ -11,7 +11,7 @@
 // The tales are scenes too, but they are not levels: they load a stage map without signs.
 // Both rooms are closed in by brick you can see, so Mara is never stopped by something she can't.
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
-import { Book, PULL, SOLID } from '../../kit/starter/book';
+import { Book, PULL, SOLID, type Timed } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
 import { Grid } from '../../kit/starter/grid';
@@ -20,13 +20,6 @@ import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
 import { type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { mat, shaft, trap } from './props';
 import { FLOOR_AT, QUICK_AT, QUICK_WARN, WARN } from './timing';
-
-/** A block that turns into another after some ticks. */
-interface Timed {
-  name: string;
-  next: string;
-  ticks: number;
-}
 
 /** A link: touching the world cell `from` takes the hero to scene `to` (a key of the scenes, or 'end'), standing at that scene's entrance. */
 export interface Way {

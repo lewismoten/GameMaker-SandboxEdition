@@ -47,6 +47,8 @@ export const CREDITS = withCreditPage(
 
 Story, pixels, beeps, songs and levels by Claude Sonnet 5.5 and Claude Opus 5.5, AI models made by Anthropic.
 
+Toe countdown art and code: OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten.
+
 Old Mossback's voice: Pocket TTS by Kyutai (CC BY 4.0), in a cloned voice.
 
 Made with GAME-MAKER 3.0 from Recreational Software Designs.

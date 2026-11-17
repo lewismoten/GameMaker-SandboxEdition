@@ -4,12 +4,13 @@
 //
 //   1. The High Ledge: the door is on a ledge five blocks up. A jump falls short; the stars give high jumps.
 //   2. The Wide Gap: a canyon too wide to jump. The sneakers (back the way you came) make a run and a jump reach.
-import { Book, PULL } from '../../kit/starter/book';
+import { Book } from '../../kit/starter/book';
+import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
-import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
-import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
+import { type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { addPowers } from './powers';
 
 export type SignName = 'ledge' | 'stars' | 'gap' | 'sneakers';
@@ -19,28 +20,13 @@ function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
   addPowers(book, pal);
-  // Share centered lettering, borders and posts across every level's vocabulary.
-  const { blocks, signs } = buildTiledSigns(
-    {
-      ledge: { rows: [['THE EXIT IS UP'], ['ON THAT LEDGE.'], ['TRY A JUMP.']], maxWidth: 7 },
-      stars: { rows: [['A STAR GIVES'], ['4 HIGH JUMPS.'], ['TAKE ONE.']], maxWidth: 7 },
-      gap: { rows: [['TOO WIDE TO JUMP?'], ['LOOK BACK THE'], ['WAY YOU CAME.']], maxWidth: 9 },
-      sneakers: { rows: [['SNEAKERS RUN'], ['AND JUMP FAR.'], ['50 STRIDES.']], maxWidth: 7 },
-    },
-    {
-      colors: {
-        background: skyOf(pal),
-        paper: pal.c('parch', 3),
-        ink: pal.c('ink', 0),
-        wood: pal.c('wood', 2),
-        highlight: pal.c('wood', 4),
-        shadow: pal.c('wood', 0),
-      },
-      lettersPerBlock: 3,
-      maxBlocks: Math.min(100, 150 - book.index.size),
-    },
-  );
-  for (const [name, pic] of blocks) book.add(name, pic, { grav: PULL.down });
+  // Approved shared phrases, allocated once for both lessons.
+  const signs = addMicroPlaques(book, pal, {
+    ledge: { lines: ['JUMP', 'UP'] },
+    stars: { lines: ['STAR =', '4 JUMPS'] },
+    gap: { lines: ['LOOK', 'BACK'] },
+    sneakers: { lines: ['50', 'STRIDES'] },
+  });
   return { book, signs };
 }
 

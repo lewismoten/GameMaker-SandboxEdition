@@ -14,7 +14,7 @@
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import type { Pal } from '@lewismoten/gamemaker-sandbox-tools/kit/palRamps';
 import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
-import { Book, LEDGE, PULL, SOLID, type Rules } from '../../../kit/starter/book';
+import { Book, LEDGE, PULL, SOLID, type Rules, type Timed } from '../../../kit/starter/book';
 import { KEYS } from '../../../kit/starter/blocks';
 import { Grid } from '../../../kit/starter/grid';
 import { SILVER_KEYS } from '../../../kit/starter/locks';
@@ -26,6 +26,8 @@ import { addPrintBlocks } from '../blocks';
 import { MONS } from '../monsters';
 import type { Mood } from '../palette';
 import { addBill } from '../sign';
+
+export type { Timed };
 
 export type Hero = 'rory' | 'plume';
 
@@ -49,12 +51,6 @@ export interface Level {
   before?: string;
   /** Blocks that give birth to a monster every so many ticks while near the screen. */
   births?: { name: string; mon: number; ticks: number }[];
-}
-
-export interface Timed {
-  name: string;
-  next: string;
-  ticks: number;
 }
 
 export const AIR: Rules = { grav: PULL.down };

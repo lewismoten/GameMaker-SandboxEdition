@@ -8,7 +8,7 @@
 //   2  The Gust     a maple, an oak and a birch. Each drops leaves of its own kind on its own timers. Every few seconds a
 //                   gust bends all three crowns at once and blows three more leaves off each, far to the right. A leaf
 //                   that lands lies on the grass a moment and is gone.
-import { Book, PULL } from '../../kit/starter/book';
+import { Book, PULL, type Timed } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
@@ -20,6 +20,8 @@ import { autumnPalette, type Kind } from './palette';
 import { SIGNS } from './text';
 import { addGround, addTree, cell, crownName, crowns } from './trees';
 
+export type { Timed };
+
 /** The row the hero walks on, the grass row, and the crowns' top row (a crown is three rows, its trunk down to the grass). */
 export const BOTTOM = 8;
 const GROUND = 9;
@@ -28,12 +30,6 @@ export const CROWN = 2;
 /** The bank the entrance stands on: its top row, and its last column (a step down follows it). */
 const BANK = { top: 7, to: 4 };
 
-/** A block that turns into another after some ticks, and a block that gives birth to a monster every so many ticks. */
-export interface Timed {
-  name: string;
-  next: string;
-  ticks: number;
-}
 export interface Birth {
   name: string;
   mon: number;
