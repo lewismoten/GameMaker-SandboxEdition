@@ -64,6 +64,11 @@ game folder opens in the browser unchanged.
 
 ## Credits
 
+- **OpenAI Codex** helped audit imported archive walkthroughs and wrote the walkthrough
+  bot's missing background lookups, sustained flight steering, complete-recording
+  verification, and regression tests,
+  directed by Lewis Moten.
+
 - **Starter screen backgrounds and sharing (November 15–16, 2026)**: OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, redrew common screen ground as horizontal grass and dirt bands and adapted ordinary Starter menus, level and ending cards, text-page palettes, and Kit’s intro for byte-identical sharing. Existing title, lesson, hero, music and engine credits remain; no third-party material was added.
 - **Starter held-rise jumps, batch H (November 15, 2026)**: OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, adapted the approved First Steps jump and bot timing for Slow Computers, Sound Board, Sounds and Music, Not That Key, Spend It, Switches, Seeds and Nests, and Three Tokens, and refreshed their walkthroughs and level metadata. No new third-party material was added.
 - **Starter held-rise jumps, batch F (November 15, 2026)**: OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, adapted the approved First Steps jump and bot timing for Score Popups, Stronger Keys, Wired Room, Quicksand, Rain on the Path, Room to Room, The Same House, Say Something, and refreshed their walkthroughs and level metadata. No new third-party material was added.

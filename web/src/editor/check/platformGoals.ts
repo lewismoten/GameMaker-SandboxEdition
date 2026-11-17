@@ -2,7 +2,7 @@
 import { BLEN, CHARBL, MONBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { terrainStates } from './terrainStates';
-import { INF_REPEAT, type World } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
+import { INF_REPEAT, shownBlock, type World } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
 
 interface Guidance {
   normal: Uint16Array;
@@ -13,7 +13,7 @@ interface Guidance {
 /** Infer the movement mode from survivable, open terrain; opposite pulls cancel in PLAYGAME. */
 export function directionalGravity(w: World): boolean {
   return [...new Set(w.map)].some((n) => {
-    const b = w.bg[w.blkmap[n]];
+    const b = shownBlock(w, n);
     if (b.solid === 15 || (b.chHitPt < 0 && -b.chHitPt >= w.ci.hitpts)) return false;
     const g = b.grav;
     return !!(g & 1) !== !!(g & 4) || !!(g & 2) !== !!(g & 8);
@@ -39,7 +39,7 @@ export function continuousFlight(w: World): boolean {
 export function platformGoals(w: World, goals: readonly number[]): Guidance | undefined {
   if (
     ![...new Set(w.map)].some((n) => {
-      const g = w.bg[w.blkmap[n]].grav;
+      const g = shownBlock(w, n).grav;
       return g & 4 && !(g & 1);
     })
   )
