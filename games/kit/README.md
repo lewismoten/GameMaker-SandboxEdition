@@ -22,6 +22,15 @@ A name with no folder is a file here; `starter/`, `scans/`, `song/` and `cdDemos
 This folder keeps game artwork and repository policy: `disk.ts` reads `about.json`, honors
 `GAME_DISK_OUT` and reports build totals; `photo.ts` locates this repository's scans;
 `align.ts` selects a repository disk and prints its audit. The portable work is in the package.
+`vocRates.ts` is the build's explicit opt-in list of synthesized non-voice effects.
+`Disk.put` applies it to source-generated VOCs before writing: try half rate, then an
+8 kHz cap, never raise a rate. Both the lost Nyquist band and the filter transition
+band must contain at most 0.01% of signal energy. Speech, song recordings, mixed
+voice clips, recorded barks, vocal imitations and unknown files keep their original
+bytes. Slow Computers keeps its intentional large/short disk-read demonstration.
+The generic spectral measurement and study-matched sinc filter live in the tools
+package's `kit/vocRate`. Rate selection preserves each effect's engine wait ticks.
+
 The descriptions below cover the remaining repository tools. Package helpers are named by their import paths.
 
 Nested developer-only diagnostics live under `testdisks/`, with their own build/check

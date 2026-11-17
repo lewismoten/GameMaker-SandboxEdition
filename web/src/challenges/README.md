@@ -23,7 +23,9 @@ The content pin is SHA-256 of all pristine disk files in lowercase filename orde
 encoded as UTF-8 `filename`, NUL, decimal byte length, NUL, then raw bytes. The metadata
 and disk fixture test refuses drift. When content changes, review it again, update the
 pin and profile version deliberately, and retain an older profile only if its exact assets
-remain available. A future launcher must hash the loaded bytes against the pin before
+remain available. The 1.5 pin includes the selective non-voice VOC rate reductions,
+version stamp and license credit; maps, character defaults, scene arrival and rules
+are unchanged. A future launcher must hash the loaded bytes against the pin before
 starting; trusting the descriptor alone does not verify downloaded content. The explicit
 allowlist excludes every other game, including revealed secret games and Starters. Adding
 profiles requires checking `about.json` for those restrictions; tests cover secret metadata.

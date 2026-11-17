@@ -33,7 +33,12 @@ const data = serializeBlocks(blocks);
 ```
 
 `audio` exports `song`, `blankSong`, `sbi`, `INSTRUMENTS`, `tune`, speaker effects and
-sample synthesis, without playback devices. `images` exports indexed PNG encoding,
+sample synthesis, without playback devices. `kit/vocRate` (also exported by `audio`)
+measures Hann-windowed signal energy above supplied cutoffs and lowers plain PCM
+VOC rates with a centered 32-source-sample Hann-windowed sinc filter (cutoff 0.45
+× output rate), rounding back to 8-bit PCM. Other VOC encodings and rates that
+would increase or fall below the type-1 floor stay unchanged. Callers own the
+content classification and quality threshold. `images` exports indexed PNG encoding,
 `crc32`, `medianCutRgba`, `Pixels`, transforms and painting helpers.
 
 ```ts

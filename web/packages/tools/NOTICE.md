@@ -137,3 +137,5 @@ animation findings and their tests using this project's existing engine decoders
 OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, implemented `kit/tiledSigns` (November 14, 2026), its tests and documentation,
 modeled on this project's Stick Man Stars signs by Lewis Moten / Claude Sonnet 5.5, using the
 existing project micro font (MIT).
+
+Selective VOC spectral measurements and the Hann-windowed sinc rate reducer (`src/kit/vocRate.ts`) were implemented by **OpenAI Codex (GPT-6.1 Sol)**, directed by Lewis Moten, under the project’s **MIT License**, matching this project’s November 2026 audio study.
