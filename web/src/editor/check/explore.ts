@@ -8,7 +8,7 @@
 import { BACKBL, BLEN, SOLTOP, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { DIESEQ, HURTSEQ } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 import { MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
-import { LASTMM, LASTMON, type CharInfo, type World } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
+import { bgBlock, shownBlock, LASTMM, LASTMON, type CharInfo, type World } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
 import { keyRoles, movesFor, steadyMoves, type Move } from './inputs';
 import { keysAllowed } from './keyLimit';
 import { SceneSim, changedCells, type FileSource, type Snap } from './sim';
@@ -210,7 +210,7 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
     if (key) sequencesByKey.set(key, [...(sequencesByKey.get(key) ?? []), index]);
   });
   const flying = opt.steerAirborne && continuousFlight(w);
-  const all = movesFor(keyRoles(w.chr, gravity && !flying), gravity && !flying, opt.steerAirborne).filter(
+  const all = movesFor(keyRoles(w.chr, gravity && !flying), gravity && !flying, opt.steerAirborne, flying).filter(
     (m) => keysAllowed(m) && (!opt.moveFilter || opt.moveFilter(m)),
   );
   const moves = opt.steadyTicks ? steadyMoves(all, opt.steadyTicks, opt.steadySteering) : all;
@@ -334,8 +334,8 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
     if (opt.resourceSearch || opt.steerAirborne) s += `|aim:${Math.sign(ci.netx)},${Math.sign(ci.nety)}`;
     const d = changedCells(baseMap, w.map);
     for (let i = 0; i < d.length; i += 2) {
-      const a = bg[baseMap[d[i]]];
-      const b = bg[d[i + 1]];
+      const a = bgBlock(w, baseMap[d[i]]);
+      const b = bgBlock(w, d[i + 1]);
       if (a.solid !== b.solid || a.grav !== b.grav) s += `|${d[i]}:${d[i + 1]}`;
     }
     return s;
@@ -398,7 +398,7 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
       if (opt.steerAirborne && verticalMotion > 0) {
         for (let dy = 1; dy <= MWID; dy++) {
           const y = (c.y[0] + dy) % MWID;
-          const b = bg[w.blkmap[w.map[y * MLEN + bearingX]]];
+          const b = shownBlock(w, w.map[y * MLEN + bearingX]);
           if (b.solid & SOLTOP) {
             toward = footingDistance(((y + MWID - 1) % MWID) * MLEN + bearingX) + distance(cellOf()) / 100;
             break;

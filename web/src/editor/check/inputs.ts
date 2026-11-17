@@ -77,18 +77,16 @@ export function keyRoles(chr: Character, gravity: boolean): KeyRoles {
   return roles;
 }
 
-/** The moves tried from every resting place. `planning` adds sustained movement and jump turns. Keys are pressed in order, so the last one listed runs. */
-export function movesFor(roles: KeyRoles, gravity: boolean, planning = false): Move[] {
+/** The moves tried from every resting place. `planning` adds sustained movement and jump turns; `flight` keeps held steering on both axes. Keys run in order. */
+export function movesFor(roles: KeyRoles, gravity: boolean, planning = false, flight = false): Move[] {
   const out: Move[] = [];
   const sideways = roles.move.filter((m) => m.dx !== 0 && m.dy === 0);
   for (const m of roles.move) {
     out.push({ name: `walk ${m.scan}`, steps: [{ keys: [m.scan], until: 'cell', max: 30 }] });
-    // a short step lines a jump up; on a top-down map the walk does it all
-    if (gravity) {
-      out.push({ name: `step ${m.scan}`, steps: [{ keys: [m.scan], until: 'ticks', max: 2 }] });
-      if (planning && m.dx && !m.dy && !m.once)
-        for (const hold of [6, 18, 36]) out.push({ name: `walk ${m.scan} held ${hold}`, steps: [{ keys: [m.scan], until: 'ticks', max: hold }] });
-    }
+    // A short step lines a jump up; flight also needs steering held across cell boundaries.
+    if (gravity) out.push({ name: `step ${m.scan}`, steps: [{ keys: [m.scan], until: 'ticks', max: 2 }] });
+    if (planning && !m.once && ((gravity && m.dx && !m.dy) || flight))
+      for (const hold of [6, 18, 36]) out.push({ name: `walk ${m.scan} held ${hold}`, steps: [{ keys: [m.scan], until: 'ticks', max: hold }] });
     // a key that moves once a press is tapped again and again until the hero is in a new cell
     if (m.once)
       out.push({
