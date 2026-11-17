@@ -10,7 +10,7 @@
 // Both rooms are closed in by hedges you can see, so Rima is never stopped by something she can't.
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
-import { Book, PULL, SOLID } from '../../kit/starter/book';
+import { Book, PULL, SOLID, type Timed } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
@@ -34,13 +34,6 @@ export const SUN_AT = [100, 200, 300] as const;
 export const OPENS_AT = SUN_AT[2];
 /** The suns' columns on row 2. */
 export const SUN_COLS = [6, 7, 8] as const;
-
-/** A block that turns into another after some ticks (patched into the finished .BBL). */
-interface Timed {
-  name: string;
-  next: string;
-  ticks: number;
-}
 
 const AIR = { grav: PULL.down };
 

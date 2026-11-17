@@ -4,18 +4,13 @@
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { bevel } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';
-import { Book, SOLID } from '../../kit/starter/book';
+import { Book, SOLID, type Timed } from '../../kit/starter/book';
 import type { Pal } from '../../kit/starter/palette';
 import { skyOf } from '../../kit/starter/palette';
 import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { addMicroPlaques } from '../../kit/starter/microPlaque';
 
-/** A block that turns into another after some ticks (the engine's only clock). */
-export interface Timed {
-  name: string;
-  next: string;
-  ticks: number;
-}
+export type { Timed };
 
 /**
  * Adds a ring of `pics`: block `${base}.0` shows the first picture, then turns into `${base}.1`, and so on round to

@@ -12,6 +12,13 @@ export const LEDGE = SOLTOP;
 /** Which way a block pulls (a block's "gravity"): the hero falls through blocks that pull down. */
 export const PULL = { none: 0, up: 1, right: 2, down: 4, left: 8 } as const;
 
+/** A block that turns into another after some ticks (the engine's only clock). */
+export interface Timed {
+  name: string;
+  next: string;
+  ticks: number;
+}
+
 /** What a block does. Everything is optional: a plain block is passable, with no pull. */
 export interface Rules {
   /** SOLID, LEDGE or a mix of the SOL* bits. */

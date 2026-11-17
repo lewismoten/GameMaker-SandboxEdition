@@ -11,7 +11,7 @@
 // at a touch is whatever the tick makes it (the manual says so). The room ends in visible
 // hedges, so Mara is never stopped by something she can't see.
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
-import { Book, PULL } from '../../kit/starter/book';
+import { Book, PULL, type Timed } from '../../kit/starter/book';
 import { addStarterBlocks, KEYS } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { SILVER_KEYS, addLockBlocks } from '../../kit/starter/locks';
@@ -20,13 +20,6 @@ import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette'
 import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { face } from './props';
 import { FACE } from './timing';
-
-/** A block that turns into another after some ticks. */
-interface Timed {
-  name: string;
-  next: string;
-  ticks: number;
-}
 
 export interface Level {
   file: string;
