@@ -4,7 +4,7 @@
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { addStarterBlocks } from '../../kit/starter/blocks';
-import { Book, LEDGE, PULL, SOLID } from '../../kit/starter/book';
+import { Book, LEDGE, PULL, SOLID, type Timed } from '../../kit/starter/book';
 import { skyOf, type Pal } from '../../kit/starter/palette';
 import { addSign, type Sign } from '../../kit/starter/sign';
 import {
@@ -41,6 +41,8 @@ import type { LookName } from './palette';
 import type { Place, Step } from './place';
 import type { SongName } from './song';
 
+export type { Timed };
+
 export type MonFile = 'kitchen' | 'loft' | 'roof';
 
 export interface Level {
@@ -61,13 +63,6 @@ export interface Level {
   plan?: Step[];
   /** A scene you mostly watch. */
   watch?: boolean;
-}
-
-/** A block that turns into another after some ticks. */
-export interface Timed {
-  name: string;
-  next: string;
-  ticks: number;
 }
 
 /** Points: a star washer, and a part taken or fitted. */

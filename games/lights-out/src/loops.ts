@@ -2,14 +2,9 @@
 // a ring of them is an animation. The engine keeps one clock for each block number, so every cell of one block changes
 // in the same tick. Everything that moves in this game is such a ring.
 import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
-import { Book, PULL } from '../../kit/starter/book';
+import { Book, PULL, type Timed } from '../../kit/starter/book';
 
-/** A block that turns into another after some ticks (the engine's only clock). */
-export interface Timed {
-  name: string;
-  next: string;
-  ticks: number;
-}
+export type { Timed };
 
 /** Adds the frames `${base}.0`, `${base}.1` ... as a ring: each shows for `ticks[k]` ticks, then turns into the next. Frames are in the air. */
 export function addRing(book: Book, timed: Timed[], base: string, frames: Pixels[], ticks: readonly number[]): void {

@@ -15,7 +15,7 @@
 // visible hedge, so Mara is never stopped by something she can't see.
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
-import { Book, PULL, SOLID } from '../../kit/starter/book';
+import { Book, PULL, SOLID, type Timed } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { addMicroPlaques, stampTiledSign, stampMicroPlaques } from '../../kit/starter/microPlaque';
 import { Grid } from '../../kit/starter/grid';
@@ -24,13 +24,6 @@ import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
 import { type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { HUES, cap, gate, lamp, type Hue } from './props';
 import { SPELL, TURN } from './timing';
-
-/** A block that turns into another after some ticks. */
-interface Timed {
-  name: string;
-  next: string;
-  ticks: number;
-}
 
 export interface Level {
   file: string;

@@ -15,7 +15,7 @@
 // view on the way (games/kit/inViewCheck.ts checks both on the walkthrough).
 // Both rooms are closed in by brick you can see, so Nova is never stopped by something she can't.
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
-import { Book, PULL, SOLID } from '../../kit/starter/book';
+import { Book, PULL, SOLID, type Timed } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
 import { Grid } from '../../kit/starter/grid';
@@ -25,13 +25,6 @@ import { type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/
 import { digit } from './digits';
 import { door, mat, shaft, trap } from './props';
 import { DOOR_AT, FLOOR_AT, SECOND, TENS, WARN } from './timing';
-
-/** A block that turns into another after some ticks. */
-interface Timed {
-  name: string;
-  next: string;
-  ticks: number;
-}
 
 export interface Level {
   file: string;

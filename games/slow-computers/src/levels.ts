@@ -10,7 +10,7 @@
 // player has none). Every room ends in a visible hedge, so Kit is never stopped by something he can't see.
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
-import { Book, PULL } from '../../kit/starter/book';
+import { Book, PULL, type Timed } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
@@ -20,13 +20,6 @@ import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/
 import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
 import { breeze, cave, pad } from './props';
 import { BREEZE_FRAMES, CROWD } from './timing';
-
-/** A block that turns into another after some ticks. */
-interface Timed {
-  name: string;
-  next: string;
-  ticks: number;
-}
 
 export interface Level {
   file: string;

@@ -5,15 +5,10 @@
 // each in its own loop with its own times (23, 32, 21, 37, 29 and 17 ticks round), and laid so that no two stars near
 // each other share a loop. The sky repeats, but nothing in it blinks in step.
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
-import { Book, PULL } from '../../kit/starter/book';
+import { Book, PULL, type Timed } from '../../kit/starter/book';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
 
-/** A block that turns into another after some ticks (the engine's only clock). */
-export interface Timed {
-  name: string;
-  next: string;
-  ticks: number;
-}
+export type { Timed };
 
 /** The sky's day colors made night, and the grass and dirt darker, for this game's palette only. */
 export function nightPalette(): Pal {

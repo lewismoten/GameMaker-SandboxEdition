@@ -16,7 +16,7 @@
 // Each level has its own block file, so a kind can mean one timing here and another there.
 // Both rooms are closed in by brick walls you can see, so Kit is never stopped by something he can't.
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
-import { Book, PULL, SOLID } from '../../kit/starter/book';
+import { Book, PULL, SOLID, type Timed } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { addMicroPlaques, stampTiledSign, stampMicroPlaques } from '../../kit/starter/microPlaque';
 import { Grid } from '../../kit/starter/grid';
@@ -25,13 +25,6 @@ import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
 import { type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { face, gate, lamp, restartDoor, segment, type Fill } from './clockArt';
 import { HAND, LOOP_OPEN, LOOP_ROUND, LOOP_SEG, RACE_SEG, RACE_TOTAL, SEGMENTS, WARN } from './timing';
-
-/** A block that turns into another after some ticks. */
-interface Timed {
-  name: string;
-  next: string;
-  ticks: number;
-}
 
 export interface Level {
   file: string;

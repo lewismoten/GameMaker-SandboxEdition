@@ -13,7 +13,7 @@
 // ends in a visible hedge, so Lami is never stopped by something she can't see.
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
-import { Book, PULL } from '../../kit/starter/book';
+import { Book, PULL, type Timed } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
@@ -24,13 +24,6 @@ import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
 import { BURR } from './monsters';
 import { STORM, bolt, lamp, lampPost, nope, onSky } from './props';
 import { BLINK_OFF, BLINK_ON, PULSE_STEP, SKY_CALM, SKY_FIRST, SKY_HOLD, SKY_STEP } from './timing';
-
-/** A block that turns into another after some ticks. */
-interface Timed {
-  name: string;
-  next: string;
-  ticks: number;
-}
 
 export interface Level {
   file: string;
