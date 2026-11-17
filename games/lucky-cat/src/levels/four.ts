@@ -8,7 +8,7 @@
 import { StarterMap } from '../../../kit/starter/map';
 import type { Pal } from '../print';
 import { GROUND, crackCrossing, addSigns, onGround, room, scenery, startBook, type Level } from '../level';
-import { addMeter } from '../meter';
+import { addMeter, placeMeters } from '../meter';
 
 export const FOUR = {
   cracks: 12,
@@ -71,6 +71,8 @@ export function levelFour(pal: Pal): Level {
   m.sign(5, onGround(GROUND, s.race), s.race);
   crackCrossing(m, FOUR.cracks, 3);
   crackCrossing(m, FOUR.cracks2, 3);
+  placeMeters(m, book, 6);
+  placeMeters(m, book, 9);
   return {
     file: 'four',
     title: 'Race to the Fair',

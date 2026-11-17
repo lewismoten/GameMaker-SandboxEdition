@@ -12,21 +12,15 @@
 // manual says so), so the warning is something to watch for, not something she can set off.
 // Both rooms end in a visible hedge, so Rima is never stopped by something she can't see.
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
-import { Book, PULL, SOLID as SOLID_ALL } from '../../kit/starter/book';
+import { Book, PULL, SOLID as SOLID_ALL, type Timed } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
-import { addSign, type Sign } from '../../kit/starter/sign';
+import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
 import { MOODS, fog, grate, mat, pit, plank, type Mood } from './props';
 import { FLICKER_STEPS, GONE, PLANK_FIRST, PUFF, PUFF_HURT, REST, RUMBLE, SHAKE_STEPS, SOLID, VENT_FIRST } from './timing';
-
-/** A block that turns into another after some ticks. */
-interface Timed {
-  name: string;
-  next: string;
-  ticks: number;
-}
 
 export interface Level {
   file: string;
@@ -60,19 +54,16 @@ export const BRIDGE_X = [9, 17];
 export const BRIDGE_W = 4;
 export const PIT_ROWS = [GROUND + 1, GROUND + 2];
 
-type SignName = 'rumble' | 'puff' | 'flicker' | 'back';
-const SIGNS: Record<SignName, string> = {
-  rumble: 'RUMBLE FIRST, THEN A PUFF OF FOG',
-  puff: 'A PUFF STINGS. WAIT, THEN GO',
-  flicker: 'FLICKER MEANS GONE. GET OFF',
-  back: 'IT COMES BACK. CROSS WHEN SOLID',
+type SignName = 'puff' | 'flicker';
+const WORDS = {
+  puff: { lines: ['WAIT'] },
+  flicker: { lines: ['FLICKER?', 'GET OFF'] },
 };
 
 function startBook(pal: Pal, names: SignName[]): { book: Book; signs: Record<string, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
-  const signs: Record<string, Sign> = {};
-  for (const n of names) signs[n] = addSign(book, pal, `${n}.sign`, SIGNS[n], 4, 3);
+  const signs = addMicroPlaques(book, pal, Object.fromEntries(names.map((n) => [n, WORDS[n]])));
   return { book, signs };
 }
 
@@ -90,7 +81,7 @@ export const ventBlock = (k: number, cell: 'g' | 'a' | 'b' | 'h', mood: Mood | '
 
 /** Level 1: three vents. Each cell has a rest, a rumble and a puff block, in a ring; the map holds the "start" one (a rest with its own first length). */
 function rumbleThenPuff(pal: Pal): Level {
-  const { book, signs } = startBook(pal, ['rumble', 'puff']);
+  const { book, signs } = startBook(pal, ['puff']);
   const timed: Timed[] = [];
   for (let k = 0; k < VENT_X.length; k++) {
     const pics = Object.fromEntries(MOODS.map((m) => [m, fog(pal, m)])) as Record<Mood, ReturnType<typeof fog>>;
@@ -141,8 +132,7 @@ function rumbleThenPuff(pal: Pal): Level {
     [23, 30],
   );
   const m = new StarterMap(book, g.rows());
-  m.sign(5, onGround(GROUND, signs.rumble), signs.rumble);
-  m.sign(10, onGround(GROUND, signs.puff), signs.puff);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 10, onGround(GROUND, signs.puff), signs.puff);
   VENT_X.forEach((x, k) => {
     m.set(x, GROUND, ventBlock(k, 'g', 'start'))
       .set(x, GROUND - 1, ventBlock(k, 'a', 'start'))
@@ -153,7 +143,7 @@ function rumbleThenPuff(pal: Pal): Level {
 
 /** Level 2: two plank bridges over a pit. A plank cell is solid, flickers, is gone, and is back. */
 function flickerThenGone(pal: Pal): Level {
-  const { book, signs } = startBook(pal, ['flicker', 'back']);
+  const { book, signs } = startBook(pal, ['flicker']);
   const timed: Timed[] = [];
   book.add('pit', pit(pal), AIR);
   book.add('mat', mat(pal), { solid: SOLID_ALL });
@@ -191,8 +181,7 @@ function flickerThenGone(pal: Pal): Level {
   // the pits: open the ground under each bridge
   for (const x0 of BRIDGE_X) g.fill(x0, GROUND, BRIDGE_W, 4, ' ');
   const m = new StarterMap(book, g.rows());
-  m.sign(4, onGround(GROUND, signs.flicker), signs.flicker);
-  m.sign(23, onGround(GROUND, signs.back), signs.back);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 4, onGround(GROUND, signs.flicker), signs.flicker);
   BRIDGE_X.forEach((x0, k) => {
     for (let x = x0; x < x0 + BRIDGE_W; x++) {
       m.set(x, GROUND, `p${k}.start`).set(x, PIT_ROWS[0], 'pit').set(x, PIT_ROWS[1], 'mat');

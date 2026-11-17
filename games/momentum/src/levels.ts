@@ -7,45 +7,28 @@
 //   2. Run-Up: three gaps, each wider than the last, too wide for a hop from standing. Her speed from a run
 //             carries the hop across.
 // Every edge is a hedge or a wall you can see, so Yana is never stopped by something she can't.
-import { Book, PULL } from '../../kit/starter/book';
+import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
-import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
-import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { MICRO_GLYPHS } from '@lewismoten/gamemaker-sandbox-tools/microFont';
+import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
+import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
 
-export type SignName = 'glide' | 'faster' | 'turn' | 'exit' | 'run' | 'longer' | 'last';
+export type SignName = 'glide' | 'faster' | 'exit' | 'run' | 'longer' | 'last';
 
 /** The block set the levels share: the Starter blocks, then this game's signs. */
 function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
-  const { blocks, signs } = buildTiledSigns(
-    {
-      glide: { rows: [['TAP RIGHT AND LET GO.'], ['YANA GLIDES ON']] },
-      faster: { rows: [['HOLD IT LONGER AND'], ['THEY GO FASTER']] },
-      turn: { rows: [['LET GO AND THEY SLOW.'], ['LEFT TURNS THEM AROUND']] },
-      exit: { rows: [['EXIT →']] },
-      run: { rows: [['A STANDING HOP GOES'], ['NOWHERE. HOLD RIGHT TOO']] },
-      longer: { rows: [['A WIDER GAP NEEDS'], ['A RUN-UP FIRST']] },
-      last: { rows: [['THE WIDEST. RUN, THEN'], ['HOP AT THE EDGE']] },
-    },
-    {
-      colors: {
-        background: skyOf(pal),
-        paper: pal.c('parch', 3),
-        ink: pal.c('ink', 0),
-        wood: pal.c('wood', 2),
-        highlight: pal.c('wood', 4),
-        shadow: pal.c('wood', 0),
-      },
-      glyphs: { ...MICRO_GLYPHS, '→': '100110111110100' },
-      lettersPerBlock: 3,
-      maxBlocks: Math.min(100, 150 - book.index.size),
-    },
-  );
-  for (const [name, pic] of blocks) book.add(name, pic, { grav: PULL.down });
+  const signs = addMicroPlaques(book, pal, {
+    glide: { lines: ['TAP', '→'] },
+    faster: { lines: ['HOLD', '→'] },
+    exit: { lines: ['EXIT', '→'], post: false },
+    run: { lines: ['HOLD', '→'] },
+    longer: { lines: ['RUN-UP', 'FIRST'] },
+    last: { lines: ['RUN,', 'HOP!'] },
+  });
   return { book, signs };
 }
 
@@ -121,9 +104,8 @@ function glide(book: Book, signs: Record<SignName, Sign>): StarterMap {
   );
   const m = new StarterMap(book, g.rows());
   placeSign(m, 5, onGround(G, signs.glide), signs.glide);
-  placeSign(m, 20, onGround(G, signs.faster), signs.faster);
-  placeSign(m, 34, onGround(G, signs.turn), signs.turn);
-  placeSign(m, 54, onGround(G, signs.exit), signs.exit);
+  placeSign(m, 19, onGround(G, signs.faster), signs.faster);
+  placeSign(m, 49, onGround(G, signs.exit), signs.exit);
   return m;
 }
 

@@ -51,7 +51,7 @@ The next stage is waiting whenever you are ready.
     credits: creditsPage(
       'GRADUATION: HEROES AND FOES',
       about.version,
-      'A graduation: it comes after Changing Your Hero and Foes and Bosses. Held-rise controls, bot timing and raised-start camera layout by OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten.',
+      'A graduation: it comes after Changing Your Hero and Foes and Bosses. Held-rise controls, bot timing, raised-start camera layout and micro-sign plaques by OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten.',
     ),
   },
 };

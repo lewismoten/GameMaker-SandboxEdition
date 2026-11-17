@@ -5,12 +5,13 @@
 //      which looks like a signal, not a sky. The second half has the same stars, each in a loop of its own times.
 //   2. A Night Sky: a bigger meadow with a moon and hills, under the second kind of sky.
 // Both kinds of sky use the same six star pictures. What differs is the time each loop takes.
-import { Book, PULL } from '../../kit/starter/book';
+import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { ORIGIN, StarterMap } from '../../kit/starter/map';
-import { skyOf, type Pal } from '../../kit/starter/palette';
-import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { type Pal } from '../../kit/starter/palette';
+import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
 import { MLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { addMoon, addHill } from './scenery';
@@ -39,11 +40,9 @@ export interface Star {
 }
 
 const WORDS = {
-  same: { rows: [['ALL THE STARS'], ['BLINK AT THE'], ['SAME TIME']] },
-  own: { rows: [['NOW EACH STAR'], ['HAS ITS OWN TIMES']] },
-  six: { rows: [['6 STAR BLOCKS,'], ['6 LOOPS,'], ['NONE IN STEP']] },
-  night: { rows: [['THE SKY REPEATS,'], ['BUT NOTHING'], ['BLINKS IN STEP']] },
-  apart: { rows: [['NEIGHBORS NEVER SHARE A LOOP']] },
+  same: { lines: ['SAME', 'TIME'] },
+  own: { lines: ['OWN', 'TIME'] },
+  six: { lines: ['6 LOOPS'] },
 } as const;
 type SignName = keyof typeof WORDS;
 
@@ -62,24 +61,7 @@ function blocks(pal: Pal, level: 1 | 2): Built {
   const book = new Book('bbl');
   const timed: Timed[] = [];
   addStarterBlocks(book, pal);
-  // Build the complete sign vocabulary together; each level keeps only the tiles it uses.
-  const { blocks: tiles, signs } = buildTiledSigns(WORDS, {
-    colors: {
-      background: skyOf(pal),
-      paper: pal.c('parch', 3),
-      ink: pal.c('ink', 0),
-      wood: pal.c('wood', 2),
-      highlight: pal.c('wood', 4),
-      shadow: pal.c('wood', 0),
-    },
-    lettersPerBlock: 3,
-    maxBlocks: 100 - book.index.size,
-  });
-  const used: SignName[] = level === 1 ? ['same', 'own', 'six'] : ['night', 'apart'];
-  const needed = new Set(
-    used.flatMap((k) => [...signs[k].board.flat(), signs[k].post!.block, ...(signs[k].post!.rightBlock ? [signs[k].post!.rightBlock!] : [])]),
-  );
-  for (const [name, pic] of tiles) if (needed.has(name)) book.add(name, pic, { grav: PULL.down });
+  const signs = (level === 1 ? addMicroPlaques(book, pal, WORDS) : {}) as Record<SignName, Sign>;
   if (level === 1) addSyncStars(book, timed, pal);
   addOwnStars(book, timed, pal);
   if (level === 2) {
@@ -97,8 +79,12 @@ function blocks(pal: Pal, level: 1 | 2): Built {
 function scatter(m: StarterMap, book: Book, set: 'sync' | 'star', x0: number, x1: number, rowMax: number, seed: number): Star[] {
   const rand = rng(seed);
   const sky = book.n('sky');
+  // Preserve the sky animation layout while the signs shrink or disappear.
+  const reserved = (x: number, y: number) =>
+    m.width === 56 ? (y >= 7 && ((x >= 6 && x <= 12) || (x >= 42 && x <= 48))) || (y >= 8 && x >= 25 && x <= 32) : y >= 7 && x >= 5 && x <= 12;
   const cells: [number, number][] = [];
-  for (let y = 2; y <= rowMax; y++) for (let x = x0; x <= x1; x++) if (m.map.blocks[(y + ORIGIN) * MLEN + x + ORIGIN] === sky) cells.push([x, y]);
+  for (let y = 2; y <= rowMax; y++)
+    for (let x = x0; x <= x1; x++) if (!reserved(x, y) && m.map.blocks[(y + ORIGIN) * MLEN + x + ORIGIN] === sky) cells.push([x, y]);
   for (let i = cells.length - 1; i > 0; i--) {
     const j = Math.floor(rand() * (i + 1));
     [cells[i], cells[j]] = [cells[j], cells[i]];
@@ -133,14 +119,14 @@ function allAtOnce(pal: Pal): Level {
   const m = new StarterMap(book, g.rows());
   stampTiledSign({ set: m.setOnSky.bind(m) }, 6, onGround(signs.same), signs.same);
   stampTiledSign({ set: m.setOnSky.bind(m) }, 25, onGround(signs.own), signs.own);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 42, onGround(signs.six), signs.six);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 28, onGround(signs.six), signs.six);
   const stars = [...scatter(m, book, 'sync', 1, 24, 8, 11), ...scatter(m, book, 'star', 30, 54, 8, 12)];
   return { file: 'one', title: 'All at Once', hint: 'The same stars, then each its own.', book, timed, map: m, stars };
 }
 
 /** Level 2: 60 blocks wide; a moon, hills and a sky of six loops. */
 function nightSky(pal: Pal): Level {
-  const { book, timed, signs } = blocks(pal, 2);
+  const { book, timed } = blocks(pal, 2);
   const g = new Grid(60, 15);
   g.row(GROUND, 0, 59, 'G').fill(0, GROUND + 1, 60, 3, 'D');
   g.col(0, 0, GROUND - 1, 'X').col(59, 0, GROUND - 1, 'X');
@@ -154,9 +140,7 @@ function nightSky(pal: Pal): Level {
   for (const x0 of [12, 36]) for (let i = 0; i < 3; i++) m.set(x0 + i + (x0 === 12 ? 2 : 6), GROUND - 1, `hill.${i}`);
   const moon = [...Array(3).keys()].map((row) => [...Array(3).keys()].map((col) => `moon.${col}${row}`));
   moon.forEach((row, dy) => row.forEach((name, dx) => m.set(46 + dx, 5 + dy, name)));
-  // One cell right keeps the centered post clear of the flower at (10, 10).
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 5, onGround(signs.night), signs.night);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 26, onGround(signs.apart), signs.apart);
+
   const stars = scatter(m, book, 'star', 1, 58, 8, 21);
   return { file: 'two', title: 'A Night Sky', hint: 'A moon, hills and a sky of loops.', book, timed, map: m, stars };
 }

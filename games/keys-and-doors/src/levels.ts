@@ -7,17 +7,17 @@
 //   3. Two Keys, Two Doors: a gold key for the gold door, a silver key for the silver door. The
 //      silver key sits up on a ledge you can see from the start, reached by a ladder behind the
 //      gold door: a short walk back the way you came.
-import { Book, PULL } from '../../kit/starter/book';
+import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { addLockBlocks, gatePicture } from '../../kit/starter/locks';
 import { StarterMap } from '../../kit/starter/map';
-import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
+import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { KEYS } from '../../kit/starter/blocks';
 import { SOLID } from '../../kit/starter/book';
-import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { MICRO_GLYPHS } from '@lewismoten/gamemaker-sandbox-tools/microFont';
+import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
 
 /** A gold gate that costs two keys (Effect amount -2), with a second key hole so it looks the part. */
 function addGateTwo(book: Book, pal: Pal): void {
@@ -32,48 +32,28 @@ function addGateTwo(book: Book, pal: Pal): void {
   book.add('gateTwo', p, { solid: SOLID, effect: KEYS, eamt: -2, touch: 'sky' });
 }
 
+const WORDS: Record<string, { lines: string[]; post?: boolean }> = {
+  locked: { lines: ['NEED', 'KEY'] },
+  findBoth: { lines: ['GET', 'KEYS'] },
+  needsTwo: { lines: ['2', 'KEYS'], post: false },
+  gold: { lines: ['GOLD', 'KEY'] },
+  climb: { lines: ['GO', 'UP'] },
+  silver: { lines: ['SILVER', 'KEY'] },
+  exit: { lines: ['EXIT', '→'], post: false },
+  exitLarge: { lines: ['EXIT', '→'], post: false },
+};
+
 /** The block set both levels share: the Starter blocks, the lock blocks, then this game's signs. */
 export function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
   addLockBlocks(book, pal);
   addGateTwo(book, pal);
-  const texts = {
-    locked: { rows: [['LOCKED. FIND'], ['A KEY.']], maxWidth: 7 },
-    findBoth: { rows: [['FIND BOTH KEYS']], maxWidth: 7 },
-    needsTwo: { rows: [['THIS DOOR'], ['NEEDS'], ['2 KEYS']], maxWidth: 5 },
-    two: { rows: [['TWO DOORS,'], ['TWO KEYS']], maxWidth: 5 },
-    gold: { rows: [['GOLD KEY,'], ['GOLD DOOR']], maxWidth: 5 },
-    climb: { rows: [['CLIMB TO THE'], ['SILVER KEY']], maxWidth: 7 },
-    silver: { rows: [['SILVER KEY,'], ['SILVER DOOR']], maxWidth: 7 },
-    exit: { rows: [['EXIT →']] },
-  };
-  const colors = {
-    background: skyOf(pal),
-    paper: pal.c('parch', 3),
-    ink: pal.c('ink', 0),
-    wood: pal.c('wood', 2),
-    highlight: pal.c('wood', 4),
-    shadow: pal.c('wood', 0),
-  };
-  const glyphs = { ...MICRO_GLYPHS, '→': '100110111110100' };
-  // The first room has room for larger letters. The two denser rooms share compact boards.
-  const large = buildTiledSigns(texts, { colors, glyphs, lettersPerBlock: 3, include: ['locked', 'exit'], maxBlocks: 100 - book.index.size });
-  for (const [name, pic] of large.blocks) book.add(name, pic, { grav: PULL.down });
-  const compact = buildTiledSigns(texts, {
-    colors,
-    glyphs,
-    compact: true,
-    include: ['findBoth', 'needsTwo', 'two', 'gold', 'climb', 'silver', 'exit'],
-    prefix: 'compactSign',
-    maxBlocks: Math.min(100, 150 - book.index.size),
-  });
-  for (const [name, pic] of compact.blocks) book.add(name, pic, { grav: PULL.down });
-  const signs = { ...large.signs, ...compact.signs, exitLarge: large.signs.exit };
+  const signs = addMicroPlaques(book, pal, WORDS) as Record<SignName, Sign>;
   return { book, signs };
 }
 
-export type SignName = 'locked' | 'findBoth' | 'needsTwo' | 'two' | 'gold' | 'climb' | 'silver' | 'exit' | 'exitLarge';
+type SignName = string;
 
 export interface Level {
   file: string;
@@ -123,7 +103,7 @@ function oneKey(book: Book, signs: Record<SignName, Sign>): StarterMap {
   for (const x of [6, 17, 43]) g.put(x, GROUND - 1, 'f');
   const m = new StarterMap(book, g.rows());
   m.wallToSky(28);
-  place(m, 20, onGround(GROUND, signs.locked), signs.locked);
+  place(m, 15, onGround(GROUND, signs.locked), signs.locked);
   place(m, 36, onGround(GROUND, signs.exitLarge), signs.exitLarge);
   return m;
 }
@@ -155,7 +135,7 @@ function twoOfAKind(book: Book, signs: Record<SignName, Sign>): StarterMap {
   const m = new StarterMap(book, g.rows());
   // the wall's gold door costs two keys
   m.set(29, GROUND - 1, 'gateTwo');
-  place(m, 7, onGround(GROUND, signs.findBoth), signs.findBoth);
+  place(m, 5, onGround(GROUND, signs.findBoth), signs.findBoth);
   place(m, 24, onGround(GROUND, signs.needsTwo), signs.needsTwo);
   place(m, 36, onGround(GROUND, signs.exit), signs.exit);
   return m;
@@ -190,8 +170,7 @@ function twoDoors(book: Book, signs: Record<SignName, Sign>): StarterMap {
   for (const x of [11, 30, 43]) g.put(x, GROUND - 1, 'b');
   for (const x of [7, 19, 42]) g.put(x, GROUND - 1, 'f');
   const m = new StarterMap(book, g.rows());
-  place(m, 2, 5, signs.two, 3);
-  place(m, 8, 5, signs.gold, 3);
+  place(m, 5, onGround(GROUND, signs.gold), signs.gold);
   place(m, 18, onGround(GROUND, signs.climb), signs.climb);
   place(m, 26, onGround(GROUND, signs.silver), signs.silver);
   place(m, 39, onGround(GROUND, signs.exit), signs.exit);

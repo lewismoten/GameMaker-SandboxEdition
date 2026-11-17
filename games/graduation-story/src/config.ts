@@ -51,6 +51,6 @@ The next stage is waiting whenever you are ready.
     credits:
       creditsPage('GRADUATION: STORY AND FINISH', about.version, 'A graduation: it comes after Telling a Story and Putting It Together.') +
       '\n' +
-      wrap('Held-rise jump and raised starts: OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten.'),
+      wrap('Held-rise jump, raised starts and micro-sign plaques: OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten.'),
   },
 };

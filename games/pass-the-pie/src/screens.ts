@@ -11,6 +11,7 @@ import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import type { Pal } from '@lewismoten/gamemaker-sandbox-tools/kit/palRamps';
 import { Reel } from '@lewismoten/gamemaker-sandbox-tools/kit/reel';
 import type { Hero } from './levels';
+import { wrap } from '../../kit/starter/text';
 import { gouges, hatch, paperBlock, press } from './print';
 
 export const W = 320;
@@ -170,7 +171,9 @@ export function cardFli(pal: Pal, bytes: Uint8Array, hero: Hero, part: number, t
       page(p, 0);
       centered(p, 36, `CHAPTER ${part}`, ink[1]);
       centered(p, 52, name, ink[0], name.length * 16 <= 240 ? 2 : 1);
-      centered(p, 76, hint, ink[1]);
+      // Leave a margin inside the inner frame and finish above Rory's pose (y90).
+      const lines = hint.length <= 32 ? [hint] : wrap(hint, 22).trimEnd().split('\n');
+      lines.forEach((line, i) => centered(p, lines.length === 1 ? 76 : 72 + i * 10, line, ink[1]));
       standing(p, pose, 140, 170, 2);
     };
     reel.frame(black, full, 46);
@@ -186,11 +189,16 @@ export function cardFli(pal: Pal, bytes: Uint8Array, hero: Hero, part: number, t
       p.rect(0, 0, W, H, acc[1]);
       hatch(p, 0, 0, W, H, acc[0], 4);
       p.rect(0, 112 + dy, W, 88, ink[0]);
-      text(p, 16 + dx, 20 + dy, `PAYBACK PART ${part}`, acc2[3], 1);
+      // The last two posters use yellow bands; their pink accent disappears at this size.
+      text(p, 16 + dx, 20 + dy, `PAYBACK PART ${part}`, part >= 6 ? ink[0] : acc2[3], 1);
       const s = name.length * 24 <= 228 ? 3 : 2;
       text(p, 12 + dx + 2, 40 + dy + 2, name, ink[0], s);
       text(p, 12 + dx, 40 + dy, name, pp[3], s);
-      text(p, 12, 124, hint, pp[3]);
+      // The caption ends before Mr. Plume's pose starts at x246.
+      wrap(hint, 28)
+        .trimEnd()
+        .split('\n')
+        .forEach((line, i) => text(p, 12, 124 + i * 12, line, pp[3]));
       standing(p, pose, 246, 196, 3);
     };
     for (const [dx, dy] of [

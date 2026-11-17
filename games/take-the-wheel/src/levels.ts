@@ -11,11 +11,12 @@ import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
-import { addSign, type Sign } from '../../kit/starter/sign';
+import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
 import { parkedKart } from './kart';
 import { BIRD } from './monsters';
 
-export type SignName = 'foot' | 'bird' | 'hop' | 'file' | 'nojump' | 'honk' | 'again' | 'exit';
+export type SignName = 'bird' | 'hop' | 'nojump' | 'honk' | 'exit';
 
 /** The block set both levels share: the Starter blocks, the parked kart, then this game's signs. */
 function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
@@ -24,16 +25,13 @@ function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
   const kart = parkedKart(pal);
   book.add('kartTop', kart.top, { grav: PULL.down });
   book.add('kartBottom', kart.bottom, { grav: PULL.down });
-  const signs = {
-    foot: addSign(book, pal, 'foot.sign', 'ON FOOT, YANA WALKS AND JUMPS', 4, 4),
-    bird: addSign(book, pal, 'bird.sign', 'A BIRD IN THE ROAD. JUMP IT', 4, 4),
-    hop: addSign(book, pal, 'hop.sign', 'WALK INTO THE KART TO DRIVE IT', 4, 4),
-    file: addSign(book, pal, 'file.sign', 'THE KART IS A NEW CHARACTER FILE', 4, 4),
-    nojump: addSign(book, pal, 'nojump.sign', 'FAST, BUT A KART CANNOT JUMP', 4, 4),
-    honk: addSign(book, pal, 'honk.sign', 'SPACE HONKS. THE BIRD FLIES OFF', 4, 4),
-    again: addSign(book, pal, 'again.sign', 'ONE HONK CLEARS ONE BIRD', 4, 4),
-    exit: addSign(book, pal, 'exit.sign', 'EXIT →', 3),
-  };
+  const signs = addMicroPlaques(book, pal, {
+    bird: { lines: ['JUMP', 'OVER'] },
+    hop: { lines: ['WALK', 'IN'] },
+    nojump: { lines: ['NO', 'JUMP'] },
+    honk: { lines: ['SPACE', 'HONKS'] },
+    exit: { lines: ['EXIT', '→'], post: false },
+  });
   return { book, signs };
 }
 
@@ -87,9 +85,9 @@ function hopIn(book: Book, signs: Record<SignName, Sign>): StarterMap {
   );
   const m = new StarterMap(book, g.rows());
   m.set(42, 8, 'kartTop').set(42, 9, 'kartBottom');
-  m.sign(6, onGround(GROUND, signs.foot), signs.foot);
-  m.sign(14, onGround(GROUND, signs.bird), signs.bird);
-  m.sign(36, onGround(GROUND, signs.hop), signs.hop);
+
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 15, onGround(GROUND, signs.bird), signs.bird);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 36, onGround(GROUND, signs.hop), signs.hop);
   m.mon(BIRD, L1_BIRD, STAND);
   return m;
 }
@@ -109,11 +107,11 @@ function drive(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [9, 30, 41],
   );
   const m = new StarterMap(book, g.rows());
-  m.sign(6, onGround(GROUND, signs.file), signs.file);
-  m.sign(11, onGround(GROUND, signs.nojump), signs.nojump);
-  m.sign(16, onGround(GROUND, signs.honk), signs.honk);
-  m.sign(27, onGround(GROUND, signs.again), signs.again);
-  m.sign(38, onGround(GROUND, signs.exit), signs.exit);
+
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 11, onGround(GROUND, signs.nojump), signs.nojump);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 16, onGround(GROUND, signs.honk), signs.honk);
+
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 38, onGround(GROUND, signs.exit), signs.exit);
   for (const x of L2_BIRDS) m.mon(BIRD, x, STAND);
   return m;
 }

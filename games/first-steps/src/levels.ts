@@ -3,43 +3,26 @@
 //
 //   1. Walk, Jump, Fall: walk right, jump a wall, climb a step, and walk off the edge.
 //   2. Climb and Fall: up a ladder, across an island, and down two drops to the door.
-import { Book, PULL } from '../../kit/starter/book';
+import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
+import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
-import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
-import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { MICRO_GLYPHS } from '@lewismoten/gamemaker-sandbox-tools/microFont';
+import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
+import { type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 
 /** The block set both levels share: the Starter blocks, then this game's six signs. */
 export function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
-  // Pack complete lines, sharing identical rendered tiles across both levels.
-  const { blocks, signs } = buildTiledSigns(
-    {
-      start: { rows: [['YOU START HERE']] },
-      walk: { rows: [['← → WALK']] },
-      jump: { rows: [['SPACE JUMPS']] },
-      gravity: { rows: [['GRAVITY PULLS YOU DOWN']] },
-      climb: { rows: [['CLIMB THE LADDER']] },
-      exit: { rows: [['EXIT →']] },
-    },
-    {
-      colors: {
-        background: skyOf(pal),
-        paper: pal.c('parch', 3),
-        ink: pal.c('ink', 0),
-        wood: pal.c('wood', 2),
-        highlight: pal.c('wood', 4),
-        shadow: pal.c('wood', 0),
-      },
-      glyphs: { ...MICRO_GLYPHS, '←': '001011111011001', '→': '100110111110100' },
-      lettersPerBlock: 3,
-      maxBlocks: 100 - book.index.size,
-    },
-  );
-  for (const [name, pic] of blocks) book.add(name, pic, { grav: PULL.down });
+  const signs = addMicroPlaques(book, pal, {
+    start: { lines: ['START', 'HERE'] },
+    walk: { lines: ['← →', 'WALK'] },
+    jump: { lines: ['SPACE', 'JUMPS'] },
+    gravity: { lines: ['PULL', '↓'] },
+    climb: { lines: ['GO', 'UP'] },
+    exit: { lines: ['EXIT', '→'], post: false },
+  });
   return { book, signs };
 }
 
@@ -87,10 +70,10 @@ function walkJumpFall(book: Book, signs: Record<SignName, Sign>): StarterMap {
   stampTiledSign({ set: m.setOnSky.bind(m) }, 6, onGround(GROUND, signs.start), signs.start);
   stampTiledSign({ set: m.setOnSky.bind(m) }, 14, onGround(GROUND, signs.walk), signs.walk);
   stampTiledSign({ set: m.setOnSky.bind(m) }, 26, onGround(GROUND, signs.jump), signs.jump);
-  // Keep the gravity board above the coins, with its post just to their left.
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 39, 3, signs.gravity, 4);
-  // Keep the exit board above the doorway, with a taller centered post.
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 52, onGround(12, signs.exit) - 1, signs.exit, 2);
+  // Stand beside the raised ground, clear of the coins above it.
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 39, 6, signs.gravity, 3);
+  // Floating labels sit beside their doors.
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 54, 9, signs.exit);
   return m;
 }
 
@@ -124,7 +107,7 @@ function climbAndFall(book: Book, signs: Record<SignName, Sign>): StarterMap {
     g.put(x, y, 'f');
   const m = new StarterMap(book, g.rows());
   stampTiledSign({ set: m.setOnSky.bind(m) }, 5, onGround(GROUND, signs.climb), signs.climb);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 43, onGround(GROUND, signs.exit) - 1, signs.exit, 2);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 45, 12, signs.exit);
   return m;
 }
 

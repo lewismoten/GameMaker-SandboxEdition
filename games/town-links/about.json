@@ -6,7 +6,7 @@
   "hero": "YANA",
   "year": 1994,
   "price": "Free",
-  "version": "1.0",
+  "version": "1.1",
   "blurb": "Three short scenes about links between maps of different sizes. Yana starts on a world map where a whole town is one block and they are tiny. Step on the town and its streets open up at a bigger scale. A house door leads into a room. Each way in has a way back that puts Yana where they came from: beside the town block, or outside the door. A locked gate sends them back to the world map for a key. Signs say how. Play it, then open it in Game-Maker and look at a scene's links.",
   "exe": "TOWNLINK.EXE",
   "dosName": "TOWNLINK",

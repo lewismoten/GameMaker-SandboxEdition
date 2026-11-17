@@ -8,68 +8,44 @@
 //   2. Sounds That Tell You: a coin, a key, a gate, a jump, a spike and a wrong gate, so you
 //      hear what just happened.
 // Every room is closed in by hedges you can see, so Rima is never stopped by something she can't.
-import { Book, PULL } from '../../kit/starter/book';
-import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { MICRO_GLYPHS } from '@lewismoten/gamemaker-sandbox-tools/microFont';
+import { Book } from '../../kit/starter/book';
+import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { addLockBlocks } from '../../kit/starter/locks';
 import { StarterMap } from '../../kit/starter/map';
-import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
+import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
 import { SLOT } from './sounds';
 import { PADS, addBoardBlocks } from './pads';
 
-/** Every sign: its words, and the board's width (3 or 4 blocks) and height. */
-const SIGNS = {
-  hello: ['STEP ON A PAD TO HEAR IT', 4, 2],
-  again: ['PLAY AGAIN', 3, 2],
-  chime: ['CHIME NO. 0', 3, 2],
-  coin: ['COIN NO. 2', 3, 2],
-  blip: ['BLIP NO. 7', 3, 2],
-  quiet: ['SILENT NO. 3 IS EMPTY', 4, 2],
-  chute: ['JUMP UP 4 THEN 5', 3, 2],
-  exit: ['EXIT →', 3, 1],
-  hello2: ['A SOUND SAYS WHAT HAPPENED', 4, 2],
-  coin2: ['A COIN PINGS NO. 5', 3, 2],
-  key: ['A KEY BLIPS NO. 7', 3, 2],
-  gate: ['A GATE CREAKS NO. 8', 3, 2],
-  jump: ['SPACE JUMPS NO. 9', 3, 2],
-  spike: ['SPIKES HURT NO. 10', 3, 2],
-  wrong: ['WRONG WAY NO. 6', 3, 2],
-} as const;
-export type SignName = keyof typeof SIGNS;
+const WORDS = {
+  hello: { lines: ['STEP', 'ON'] },
+  again: { lines: ['PLAY', 'AGAIN'] },
+  chime: { lines: ['CHIME', '#0'], post: false },
+  coin: { lines: ['COIN', '#2'], post: false },
+  blip: { lines: ['BLIP', '#7'], post: false },
+  quiet: { lines: ['SILENT', '#3'], post: false },
+  chute: { lines: ['UP 4,', 'THEN 5'] },
+  exit: { lines: ['EXIT', '→'], post: false },
+  coin2: { lines: ['COIN', '#5'], post: false },
+  key: { lines: ['KEY', '#7'], post: false },
+  gate: { lines: ['GATE', '#8'], post: false },
+  jump: { lines: ['JUMP', '#9'], post: false },
+  spike: { lines: ['OUCH', '#10'], post: false },
+  wrong: { lines: ['WRONG', '#6'], post: false },
+};
 
-/** The block set the levels share: the Starter blocks, this game's signs, the locks, then the pads. */
+/** The level labels use the shared one-row micro plaques. */
+export type SignName = keyof typeof WORDS;
+
+/** The levels share the Starter blocks, locks, pads and plaque vocabulary. */
 function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
   addLockBlocks(book, pal);
   addBoardBlocks(book, pal);
-  // The five-block pad bays need compact lettering; use it throughout both rooms.
-  const texts = Object.fromEntries(
-    Object.entries(SIGNS).map(([name, [text]]) => [name, { rows: [[text]], maxWidth: name === 'hello' || name === 'hello2' ? 7 : 5 }]),
-  ) as Record<SignName, { rows: string[][]; maxWidth: number }>;
-  // Keep the instruction's last phrase and the silent sound number together.
-  texts.hello.rows = [['STEP ON A PAD'], ['TO HEAR IT']];
-  texts.quiet.rows = [['SILENT'], ['NO. 3'], ['IS EMPTY']];
-  texts.hello2.rows = [['A SOUND SAYS'], ['WHAT HAPPENED']];
-  texts.gate.rows = [['A GATE'], ['CREAKS'], ['NO. 8']];
-  const { blocks, signs } = buildTiledSigns(texts, {
-    colors: {
-      background: skyOf(pal),
-      paper: pal.c('parch', 3),
-      ink: pal.c('ink', 0),
-      wood: pal.c('wood', 2),
-      highlight: pal.c('wood', 4),
-      shadow: pal.c('wood', 0),
-    },
-    // One explicit 4×8 font for every board, including single-line pad labels.
-    lettersPerBlock: 4,
-    compact: true,
-    glyphs: { ...MICRO_GLYPHS, '→': '100110111110100' },
-    maxBlocks: Math.min(100, 150 - book.index.size),
-  });
-  for (const [name, pic] of blocks) book.add(name, pic, { grav: PULL.down });
+  const signs = addMicroPlaques(book, pal, WORDS) as Record<SignName, Sign>;
   return { book, signs };
 }
 
@@ -139,14 +115,14 @@ function board(book: Book, signs: Record<SignName, Sign>): StarterMap {
   );
   const m = new StarterMap(book, g.rows());
   const sky = { set: m.setOnSky.bind(m) };
-  stampTiledSign(sky, BOARD.again - 1, 7, signs.again, 2);
+  stampTiledSign(sky, BOARD.again + 2, 8, signs.again);
   stampTiledSign(sky, 9, onGround(GROUND, signs.hello), signs.hello);
   for (const [pad, x0, sign, slot] of BOARD.units) {
     stampTiledSign(sky, x0, onGround(GROUND, signs[sign]), signs[sign]);
     m.set(x0 + 1, GROUND - 1, `pad.${pad}`);
     m.set(x0 + 0, GROUND - 4, `wave.${slot}`);
   }
-  stampTiledSign(sky, BOARD.chuteSign - 1, onGround(GROUND, signs.chute), signs.chute);
+  stampTiledSign(sky, BOARD.chuteSign, onGround(GROUND, signs.chute), signs.chute);
   m.set(BOARD.chuteSign, GROUND - 4, `wave.${SLOT.fanfare}`).set(BOARD.chuteSign + 2, GROUND - 4, `wave.${SLOT.ping}`);
   for (let i = 0; i < jump.width; i++) m.set(jump.x + i, jump.long, `pad.${PADS.long.name}`).set(jump.x + i, jump.short, `pad.${PADS.short.name}`);
   stampTiledSign(sky, 44, 7, signs.exit, 2);
@@ -195,14 +171,13 @@ function feedback(book: Book, signs: Record<SignName, Sign>): StarterMap {
     stampTiledSign({ set: m.setOnSky.bind(m) }, x, onGround(GROUND, s), s);
     if (wave !== undefined) m.set(x + 1, GROUND - 4, `wave.${wave}`);
   };
-  at(5, signs.hello2);
   at(12, signs.coin2);
   m.set(12, GROUND - 4, `wave.${SLOT.ping}`);
   at(18, signs.key, SLOT.blip);
   at(23, signs.gate);
   m.set(25, GROUND - 4, `wave.${SLOT.creak}`);
-  // The jump label stands beyond the ledge; the notes remain at their original columns.
-  at(37, signs.jump);
+  // Read the jump label on the approach to the ledge.
+  at(30, signs.jump);
   m.set(31, GROUND - 4, `wave.${SLOT.jump}`);
   at(42, signs.spike);
   m.set(40, GROUND - 4, `wave.${SLOT.hurt}`);

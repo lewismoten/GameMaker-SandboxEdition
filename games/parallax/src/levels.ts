@@ -10,24 +10,23 @@
 // Both rooms are closed in by hedges you can see, so Rima is never stopped by something she can't.
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
-import { Book, PULL, SOLID } from '../../kit/starter/book';
+import { Book, PULL, SOLID, type Timed } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
-import { buildTiledSigns, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
 import { CLEAR, backOf, layerOf, stillCell, type BandName } from './scene';
 import { CLOUDS, COLS, DOOR_COL, FENCE, GROUND_ROW, HILLS, ROWS, START, TOWN, WIDTH, WISPS, ringSize, type Band } from './view';
 
-export type SignName = 'speeds' | 'ring' | 'sky' | 'suns';
+export type SignName = 'speeds' | 'suns';
 
-/** Boards sit below the top visible row, either side of the suns. */
-const SIGN_AT = { left: [1, 1], right: [9, 1] } as const;
+/** Short grounded plaques precede the door, below every moving band. */
+const SIGN_AT = { left: [9, 7], right: [11, 7] } as const;
 const SIGN_WORDS = {
-  speeds: { rows: [['FAR HILLS'], ['CRAWL, THE'], ['FENCE RACES']] },
-  ring: { rows: [['A BAND IS A RING'], ['OF BLOCKS, THE'], ['POSTS TOO']] },
-  sky: { rows: [['CLOUDS'], ['DRIFT AT'], ['TWO SPEEDS']] },
-  suns: { rows: [['THE DOOR OPENS'], ['WHEN THE SUNS FILL']] },
+  speeds: { lines: ['NEAR', 'FAST'] },
+  suns: { lines: ['WAIT'] },
 };
 
 /** Ticks (18.2 to the second) after level 2 starts that the next sun fills; the door opens with the last. */
@@ -35,13 +34,6 @@ export const SUN_AT = [100, 200, 300] as const;
 export const OPENS_AT = SUN_AT[2];
 /** The suns' columns on row 2. */
 export const SUN_COLS = [6, 7, 8] as const;
-
-/** A block that turns into another after some ticks (patched into the finished .BBL). */
-interface Timed {
-  name: string;
-  next: string;
-  ticks: number;
-}
 
 const AIR = { grav: PULL.down };
 
@@ -72,21 +64,9 @@ export class Stage {
 
   constructor(readonly pal: Pal) {
     addStarterBlocks(this.book, pal);
-    const { blocks, signs } = buildTiledSigns(SIGN_WORDS, {
-      colors: {
-        background: skyOf(pal),
-        paper: pal.c('parch', 3),
-        ink: pal.c('ink', 0),
-        wood: pal.c('wood', 2),
-        highlight: pal.c('wood', 4),
-        shadow: pal.c('wood', 0),
-      },
-      // Larger letters do not fit beside the three suns without covering them.
-      compact: true,
-      maxWidth: 7,
-    });
-    Object.assign(this.signs, signs);
-    for (const [name, pic] of blocks) this.scratch.add(name, pic, AIR);
+    Object.assign(this.signs, addMicroPlaques(this.book, pal, SIGN_WORDS));
+    // Only posts carry scene pixels; retain the lawn stripes around the shaft.
+    for (const [name, pic] of this.book.pics) if (name.startsWith('microPlaque.post')) this.book.redraw(name, this.over(pic, this.still(GROUND_ROW - 1)));
   }
 
   /** A block of this picture (the same picture is the same block), solid or air. */
@@ -138,9 +118,8 @@ export class Stage {
   }
 
   /**
-   * `src` (a sign post) over a sliding band, as a ring of its own that keeps step with the band's:
-   * the same number of pictures, the same wait, and it starts with the band, so the band slides
-   * on behind the post instead of standing still there. Both signs share the centered post ring.
+   * An entrance block over a sliding band, with the same pictures and timing as the band.
+   * The clear corners keep moving with the neighboring cells.
    */
   private ringOver(src: string, name: BandName, band: Band): string {
     const pre = `${src}~${name}`;
@@ -154,23 +133,9 @@ export class Stage {
     return `${pre}0`;
   }
 
-  /**
-   * The sign `n` stamped on the map with its top-left block at (x, y), and its posts under it.
-   * A post on a sliding band is a ring that slides with it (ringOver). The board stays one
-   * picture: only a 1-pixel rim of it shows what is behind, and a ring for each of its cells
-   * would cost more blocks than a level may have.
-   */
-  sign(m: StarterMap, n: SignName, at: readonly [number, number], bands: Partial<Record<number, BandName>>): void {
-    const { board, post: leg } = this.signs[n];
-    const put = (src: string, x: number, y: number) => m.set(x, y, this.plain(this.over(this.scratch.pics.get(src)!, this.under(y, bands))));
-    const post = (src: string, x: number, y: number) => {
-      const b = bands[y];
-      const band = b && this.sliding.get(b);
-      if (b && band) m.set(x, y, this.ringOver(src, b, band));
-      else put(src, x, y);
-    };
-    board.forEach((row, dy) => row.forEach((name, dx) => put(name, at[0] + dx, at[1] + dy)));
-    if (leg) for (let y = at[1] + board.length; y < GROUND_ROW; y++) post(leg.block, at[0] + leg.x, y);
+  /** Keep the shared board and its short textured post entirely below the moving bands. */
+  sign(m: StarterMap, n: SignName, at: readonly [number, number]): void {
+    stampTiledSign(m, at[0], at[1], this.signs[n], GROUND_ROW - at[1] - this.signs[n].board.length);
   }
 
   /** The raised doorway over the bands, with its clear corners kept in step with them. */
@@ -287,8 +252,8 @@ function threeSpeeds(st: Stage): StarterMap {
   slide(st, m, 'hills', HILLS);
   slide(st, m, 'town', TOWN);
   slide(st, m, 'fence', FENCE);
-  st.sign(m, 'speeds', SIGN_AT.left, here);
-  st.sign(m, 'ring', SIGN_AT.right, here);
+  st.sign(m, 'speeds', SIGN_AT.left);
+  st.sign(m, 'suns', SIGN_AT.right);
   st.entrance(m, here);
   st.door(m, DOOR_COL);
   return m;
@@ -301,8 +266,8 @@ function driftingClouds(st: Stage): StarterMap {
   slide(st, m, 'wisps', WISPS);
   slide(st, m, 'clouds', CLOUDS);
   slide(st, m, 'hills', HILLS);
-  st.sign(m, 'sky', SIGN_AT.left, { 0: 'wisps', 1: 'clouds', ...here });
-  st.sign(m, 'suns', SIGN_AT.right, { 0: 'wisps', 1: 'clouds', ...here });
+  st.sign(m, 'speeds', SIGN_AT.left);
+  st.sign(m, 'suns', SIGN_AT.right);
   st.entrance(m, here);
   // the suns: each fills at its time
   SUN_COLS.forEach((x, i) => m.set(x, 2, st.chain([0, 1, 2, 3].map((s) => ({ pic: st.sun(s > i), solid: false })))));

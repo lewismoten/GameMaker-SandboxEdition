@@ -19,6 +19,6 @@ const chapter = (scene: number) => {
   return room?.spec.interlude ? `Interlude: ${room.spec.name}` : `Room ${scene - 1}: ${ROOM_NAMES[scene - 1]}`;
 };
 const chapters: WalkChapterMark[] = sim.segments.map((s) => ({ scene: s.scene, title: chapter(s.scene) }));
-const r = await writeWalkthrough('bakers', { rand: { seed: SEED, per: 'scene' }, segments, chapters });
+const r = await writeWalkthrough('bakers', { rand: { seed: SEED, per: 'scene' }, segments, chapters }, { clips: true });
 const want = [...segments.map((s) => s.scene), 1].join(' ');
 if (r.scenes.join(' ') !== want || r.keysLeft) throw new Error(`the engine went ${r.scenes.join(' ')} (the bot ${want}), ${r.keysLeft} keys unplayed`);

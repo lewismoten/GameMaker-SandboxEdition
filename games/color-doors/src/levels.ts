@@ -8,12 +8,13 @@
 // The gallery is a single file (GALLERY.MAP). Each door leads to its own SCENE of the game; the scenes list
 // the same map and blocks and differ in one slot, the palette (game.ts). So the same blocks are drawn in
 // five sets of colors, and the way back from each lands you at the door you came through.
+import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
 import { ORIGIN, StarterMap } from '../../kit/starter/map';
 import { Book, PULL } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
-import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { SWATCHES, addColorBlocks, swatchBlock, swatchRamps } from './colorBlocks';
 import { VIEWS } from './views';
 
@@ -24,82 +25,40 @@ export const GROUND = 10;
  */
 export const SIGN_ROW = 6;
 
-export type SignName = 'welcome' | 'door0' | 'door1' | 'door2' | 'door3' | 'door4' | 'finish' | 'same' | 'light' | 'fruit' | 'back' | `name${number}`;
+export type SignName = 'door0' | 'door1' | 'door2' | 'door3' | 'door4' | 'finish' | 'same' | 'light' | 'fruit' | 'back' | `name${number}`;
 
 /** Complete sign vocabulary, with wall boards sized to the fixed gaps between doors. */
 const WORDS = {
-  welcome: { rows: [['COLOR LOOKS'], ['DIFFERENT'], ['TO SOME.']], post: false },
-  door0: { rows: [['AS YOU SEE IT']], post: false },
-  door1: { rows: [['RED-GREEN'], ['ONE KIND']], post: false },
-  door2: { rows: [['RED-GREEN'], ['THE OTHER']], post: false },
-  door3: { rows: [['BLUE AND YELLOW']], post: false },
-  door4: { rows: [['NO COLOR']], post: false },
-  finish: { rows: [['ALL DONE?']], post: false },
-  same: { rows: [['SAME ROOM']] },
-  light: { rows: [['RED TOP. GREEN BELOW.']] },
-  fruit: { rows: [['SHAPES HELP TOO.']] },
-  back: { rows: [['TO HALL']] },
-  ...Object.fromEntries(SWATCHES.map((s) => [`name${s.word}`, { rows: [[s.word]], post: false }])),
+  door0: { lines: ['AS YOU', 'SEE IT'], post: false },
+  door1: { lines: ['RED-', 'GREEN 1'], post: false },
+  door2: { lines: ['RED-', 'GREEN 2'], post: false },
+  door3: { lines: ['BLUE +', 'YELLOW'], post: false },
+  door4: { lines: ['NO', 'COLOR'], post: false },
+  finish: { lines: ['ALL', 'DONE'] },
+  same: { lines: ['SAME', 'ROOM'] },
+  light: { lines: ['RED TOP', 'GREEN ↓'] },
+  fruit: { lines: ['SHAPES', 'HELP'] },
+  back: { lines: ['TO', 'HALL'], post: false },
+  ...Object.fromEntries(SWATCHES.map((s) => [`name${s.word}`, { lines: [s.word], post: false }])),
 };
 
 function buildBlocks(pal: Pal): { book: Book; signs: Record<string, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
   addColorBlocks(book, pal);
-  const { blocks, signs } = buildTiledSigns(WORDS, {
-    colors: {
-      background: skyOf(pal),
-      paper: pal.c('parch', 3),
-      ink: pal.c('ink', 0),
-      wood: pal.c('wood', 2),
-      highlight: pal.c('wood', 4),
-      shadow: pal.c('wood', 0),
-    },
-    lettersPerBlock: 3,
-    maxBlocks: Math.min(100, 150 - book.index.size),
-  });
-  // A three-pixel sky-blue surround on every side of each wall board. The old
-  // boards sat directly on stone; these are decorative surrounds, not color samples.
-  // Copy shared tiles before painting: Pixels.map mutates, and grass signs reuse them.
-  const pictures = new Map([...book.pics].map(([name, pic]) => [pic.px.join(','), name]));
-  for (const [key, sign] of Object.entries(signs)) {
-    if (sign.post) {
-      for (const name of [...sign.board.flat(), sign.post.block, ...(sign.post.rightBlock ? [sign.post.rightBlock] : [])])
-        if (!book.has(name)) book.add(name, blocks.get(name)!, { grav: PULL.down });
-      continue;
-    }
-    const width = sign.board[0].length * 20;
-    const height = sign.board.length * 20;
-    sign.board = sign.board.map((row, dy) =>
-      Array.from({ length: key.startsWith('name') ? 3 : row.length }, (_, dx) => {
-        // The gallery's samples stay three tiles wide; center labels of either
-        // tile parity underneath them, including the longer color names.
-        const offset = key.startsWith('name') ? (width - 60) / 2 : 0;
-        const pic = blocks
-          .get(row[0])!
-          .crop(0, 0, 20, 20)
-          .map((x, y) => {
-            const bx = dx * 20 + x + offset;
-            const c = blocks.get(row[Math.floor(bx / 20)])!.get(bx % 20, y);
-            const by = dy * 20 + y;
-            if (bx < 14 || bx >= width - 14) return book.pics.get('wall')!.get(x, y);
-            if (bx < 17 || bx >= width - 17 || by < 3 || by >= height - 3) return skyOf(pal);
-            if (by === 3) return pal.c('wood', 4);
-            if (by === 4) return pal.c('wood', 2);
-            if (by === height - 5) return pal.c('wood', 2);
-            if (by === height - 4) return pal.c('wood', 0);
-            return c;
-          });
-        const pixels = pic.px.join(',');
-        const shared = pictures.get(pixels);
-        if (shared) return shared;
-        const wallName = `${key}.wall.${dx}.${dy}`;
-        book.add(wallName, pic, { grav: PULL.down });
-        pictures.set(pixels, wallName);
-        return wallName;
-      }),
-    );
-  }
+  const signs = addMicroPlaques(book, pal, WORDS);
+  // The hall's posted hint stands against stone; only its post needs a wall backdrop.
+  const post = signs.finish.post!;
+  const wall = book.pics.get('wall')!;
+  book.add(
+    'microPlaque.post.wall',
+    book.pics
+      .get(post.block)!
+      .crop(0, 0, 20, 20)
+      .map((x, y, c) => (c === skyOf(pal) ? wall.get(x, y) : c)),
+    { grav: PULL.down },
+  );
+  signs.finish = { ...signs.finish, post: { ...post, block: 'microPlaque.post.wall' } };
   return { book, signs };
 }
 
@@ -139,9 +98,8 @@ function hall(book: Book, signs: Record<string, Sign>): Level {
       y,
       s,
     );
-  board(signs.welcome, 4, SIGN_ROW);
   HALL_DOORS.forEach((x, i) => board(signs[`door${i}`], x - Math.floor(signs[`door${i}`].board[0].length / 2), SIGN_ROW));
-  board(signs.finish, HALL_FINISH - 3, SIGN_ROW + 1);
+  board(signs.finish, HALL_FINISH - 2, GROUND - 2);
   return { file: 'hall', title: 'The Hall', map: m };
 }
 
@@ -203,9 +161,9 @@ function gallery(book: Book, signs: Record<string, Sign>): Level {
   // the garden bed
   ['rose', 'sun', 'iris', 'bluebell'].forEach((f, i) => m.set(FLOWERS_X + i, GROUND - 1, f));
   stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 5, onGround(signs.same), signs.same);
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, LIGHT_X + 3, SIGN_ROW, signs.light, 3);
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, TABLE_X + 6, onGround(signs.fruit), signs.fruit);
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, GALLERY_END - 6, onGround(signs.back), signs.back);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, LIGHT_X - 2, GROUND - 3, signs.light, 2);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, TABLE_X - 2, onGround(signs.fruit), signs.fruit);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, GALLERY_END - 1, GROUND - 3, signs.back);
   return { file: 'gallery', title: 'The Gallery', map: m };
 }
 
@@ -222,7 +180,7 @@ export { VIEWS };
 
 /** Rows (map rows, first and last) that must stay on screen. */
 export const LANDMARK_ROWS = {
-  hall: [['welcome and door signs', SIGN_ROW, GROUND - 1]] as [string, number, number][],
+  hall: [['door signs', SIGN_ROW, GROUND - 1]] as [string, number, number][],
   gallery: [
     ['swatches and names', SIGN_ROW, SIGN_ROW + 2],
     ['traffic light', SIGN_ROW, SIGN_ROW + 2],

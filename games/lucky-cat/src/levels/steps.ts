@@ -49,6 +49,8 @@ export function levelSteps(pal: Pal): Level {
   for (let k = 0; k < 13; k++)
     for (const x of [STEPS.first + 2 * k, STEPS.first + 2 * k + 1]) for (let y = TOP + (12 - k); y < GROUND; y++) m.set(x, y, 'brick');
   for (let x = STEPS.landing[0]; x <= STEPS.landing[1]; x++) m.set(x, TOP, 'brick');
+  // Short runged risers let a cat stop, climb and step onto each of the thirteen treads.
+  for (let k = 0; k < 13; k++) for (const y of [GROUND - 2 - k, GROUND - 1 - k]) m.set(STEPS.first + 2 * k - 1, y, 'ladder');
   m.set(STEPS.shaker, STEPS.stand, 'shaker');
   m.mon(CROW.bobbing, STEPS.crow, STEPS.crowRow);
   for (let y = -10; y < GROUND - 2; y++) m.set(STEPS.wall, y, 'brick');

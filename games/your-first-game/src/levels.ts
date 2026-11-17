@@ -12,7 +12,8 @@ import { Grid } from '../../kit/starter/grid';
 import { addLockBlocks } from '../../kit/starter/locks';
 import { ORIGIN, StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
-import { addSign, type Sign } from '../../kit/starter/sign';
+import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { addMicroPlaques, stampTiledSign, stampMicroPlaques } from '../../kit/starter/microPlaque';
 import { addHazards } from './hazards';
 
 export interface Level {
@@ -24,18 +25,19 @@ export interface Level {
 }
 
 export const GROUND = 10;
-export type SignName = 'walk' | 'jump' | 'coins' | 'pop' | 'spikes' | 'ladder' | 'locked' | 'all' | 'key' | 'exit';
-const SIGNS: Record<SignName, [string, number, number]> = {
-  walk: ['ARROWS WALK. SPACE JUMPS.', 4, 3],
-  jump: ['HOLD AN ARROW AND TAP SPACE TO JUMP THE WALL', 4, 4],
-  coins: ['COINS ARE POINTS. F2 SHOWS YOUR SCORE.', 4, 3],
-  pop: ['A GUMDROP IS FRIENDLY. WALK INTO IT TO POP IT.', 4, 4],
-  spikes: ['SPIKES HURT. JUMP OVER THEM.', 4, 3],
-  ladder: ['CLIMB UP FOR THE KEY', 4, 2],
-  locked: ['LOCKED. A KEY OPENS THE DOOR.', 4, 3],
-  all: ['ONE MORE LEVEL. USE IT ALL.', 4, 3],
-  key: ['KEY FIRST, THEN THE DOOR', 4, 3],
-  exit: ['EXIT →', 3, 1],
+export type SignName = 'walk' | 'space' | 'jump' | 'coins' | 'pop' | 'spikes' | 'ladder' | 'locked' | 'all' | 'key' | 'exit';
+const WORDS = {
+  walk: { lines: ['← →', 'WALK'] },
+  space: { lines: ['SPACE', 'JUMPS'] },
+  jump: { lines: ['JUMP', 'OVER'] },
+  coins: { lines: ['TRY', 'F2'] },
+  pop: { lines: ['POP', 'IT!'] },
+  spikes: { lines: ['OUCH'] },
+  ladder: { lines: ['GO', 'UP'] },
+  locked: { lines: ['NEED', 'KEY'] },
+  all: { lines: ['ONE', 'MORE'] },
+  key: { lines: ['GET', 'KEY'] },
+  exit: { lines: ['EXIT', '→'], post: false },
 };
 
 /** The block set the levels share: the Starter blocks, the lock and spike blocks, then this game's signs. */
@@ -44,11 +46,7 @@ function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
   addStarterBlocks(book, pal);
   addLockBlocks(book, pal);
   addHazards(book, pal);
-  const signs = {} as Record<SignName, Sign>;
-  for (const n of Object.keys(SIGNS) as SignName[]) {
-    const [text, w, h] = SIGNS[n];
-    signs[n] = addSign(book, pal, `${n}.sign`, text, w, h);
-  }
+  const signs = addMicroPlaques(book, pal, WORDS);
   return { book, signs };
 }
 
@@ -110,11 +108,12 @@ function walkAndJump(book: Book, s: Record<SignName, Sign>): StarterMap {
     [14, 27, 48],
   );
   const m = new StarterMap(book, g.rows());
-  m.sign(5, onGround(GROUND, s.walk), s.walk);
-  m.sign(15, onGround(GROUND, s.jump), s.jump);
-  m.sign(24, onGround(GROUND, s.coins), s.coins);
-  m.sign(38, onGround(GROUND, s.pop), s.pop);
-  m.sign(49, onGround(GROUND, s.exit), s.exit);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 5, onGround(GROUND, s.walk), s.walk);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 7, onGround(GROUND, s.space), s.space);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 15, onGround(GROUND, s.jump), s.jump);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 10, onGround(GROUND, s.coins), s.coins);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 40, onGround(GROUND, s.pop), s.pop);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 49, onGround(GROUND, s.exit), s.exit);
   return m;
 }
 
@@ -138,10 +137,10 @@ function keyAndDoor(book: Book, s: Record<SignName, Sign>): StarterMap {
     [9, 17, 40],
   );
   const m = new StarterMap(book, g.rows());
-  m.sign(5, onGround(GROUND, s.spikes), s.spikes);
-  m.sign(14, onGround(GROUND, s.ladder), s.ladder);
-  m.sign(21, onGround(GROUND, s.locked), s.locked);
-  m.sign(37, onGround(GROUND, s.exit), s.exit);
+  stampMicroPlaques({ set: (x, y, block) => m.setOnSky(x, y, block) }, 5, GROUND - 3, [s.spikes, s.jump]);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 14, onGround(GROUND, s.ladder), s.ladder);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 21, onGround(GROUND, s.locked), s.locked);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 37, onGround(GROUND, s.exit), s.exit);
   for (const x of [AT.two.lone, AT.two.spikes, AT.two.spikes + 1]) m.set(x, GROUND - 1, 'spikeUp');
   wallToTop(m, AT.two.door);
   return m;
@@ -167,9 +166,9 @@ function allTogether(book: Book, s: Record<SignName, Sign>): StarterMap {
     [7, 24, 45],
   );
   const m = new StarterMap(book, g.rows());
-  m.sign(5, onGround(GROUND, s.all), s.all);
-  m.sign(32, onGround(GROUND, s.key), s.key);
-  m.sign(44, onGround(GROUND, s.exit), s.exit);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 5, onGround(GROUND, s.all), s.all);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 30, onGround(GROUND, s.key), s.key);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 44, onGround(GROUND, s.exit), s.exit);
   for (const x of [AT.three.spikes, AT.three.spikes + 1]) m.set(x, GROUND - 1, 'spikeUp');
   wallToTop(m, AT.three.door);
   return m;

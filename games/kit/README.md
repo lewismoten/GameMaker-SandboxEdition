@@ -178,6 +178,7 @@ Making the files:
 - `starter/monsters.ts` — the gumdrop, buzzer and shelly monsters and their two-frame pictures.
 - `starter/palette.ts` — shared bright color ramps, `skyOf` and a palette using the chosen hero’s ramps.
 - `starter/screens.ts` — title, menu, paper, cards and ending pictures, with the title’s group style.
+- `starter/screenSharing.ts` — shares ordinary course menus, text-page backdrops, level/ending backdrops and Kit’s intro when `Disk.write` finishes a Starter. Card wording moves to DOS `.txt` overlays with the same pause; unique text-page headings move into spare lines in their text files, retaining full pages’ pictured headings, while the shared How to Play and Credits headings keep their pagination; title pages, added lesson artwork, palette/visibility lessons and graduations keep their own pictures. Pictures and Cartoons keeps its GIF-only level cards so its format contrasts stay visible. Scores keep their pictured captions because DOS draws only its fixed score labels. `screens.ts` records each unmodified picture’s wording for this step; the fixed kit palette leaves gameplay palettes alone.
 - `starter/shop.ts` — coin, price, purchase and sold blocks for Starter shops, using the DOS Money counter.
 - `starter/sign.ts` — short words on a wooden board, cut into blocks, with two posts.
 - `starter/songStyle.ts` — each group’s instruments, bass, comping, drums and tempo, arranged around a game’s A and B sections.
@@ -392,6 +393,7 @@ Maximus has a machine-embroidery patch as a feelie (`games/maximus/patch/`: `des
 
 - `vocCues.ts` — `npx vite-node ../games/kit/vocCuesCli.ts <id>...` (logic in `vocCues.ts`): the editor's `voc-stutter` suggestions for a built game: a `.VOC` of 10,000 bytes or more (a 286 reading it from a hard disk loses about a game tick; 32,000 about two) and a long sound on a score or healing block that stays put, so DOS restarts it every tick. Estimates from the programmer's guide notes, dismissible; it can't see the player's disk. `checkGames.ts` prints a count line (advisory, never fails).
 - `inViewCheck.ts` (logic in `inView.ts`) — `npx vite-node ../games/kit/inViewCheck.ts <id> --scene <n> [--standing <row>] --rect x,y,w,h [--rect ...] [--scene ...]`: in view. Replays the game's walkthrough on the engine and checks that something the player must watch (a timer bar, a meter, a sign) is on screen: every frame of the scene, at least one of the rectangles (map cells, world blocks) is wholly inside the 312x196 picture PLAYGAME shows. `--standing` counts only the frames the hero stands with his feet in that map row (not mid-jump or falling). Prints PASS or FAIL per scene with the frames that missed; exits 1 on a FAIL. `--rows` lists the map rows and columns each scene ever shows. It sees only the walkthrough's route, not every way a player could scroll.
+- `timerRoutes.test.ts` — countdown regressions for Pass the Pie and The Thank-You Parade: complete meters at alternate street, roof and pond-bed camera heights, sub-tile scroll margins and the Freezer Raid’s wrapped upper view; the engine must drain each small five-light copy on the same ticks as the large bar.
 - `viewCheck.ts` (with `viewCheckCli.ts`) — `npx vite-node ../games/kit/viewCheckCli.ts [<id>...]` (logic in `viewCheck.ts`): view edge. Replays each game's walkthrough on the engine and lists monsters PLAYGAME doesn't draw (so they can't hurt) because their map cell is in the screen's left column or top row, or past the right or bottom bound (`ScrnLowBnd`/`onscrn`, PLAYGAME.C:294), while most of their pixels would be on screen for half a second or more at a stretch: scene, monster number, frames hidden, edge, first cell. A suggestion an author can dismiss: it can't tell a monster meant to hide, and sees only the walkthrough's route. `checkGames.ts` prints a count line (advisory, never fails).
 
 Colors That Work plays both lessons with a simulated scene palette (`alike.pal`); its cards still compare the original and simulated colors. Beat the Clock writes valid empty monster and monster-block sets because its maps place no monsters.
@@ -476,3 +478,24 @@ Colors That Work plays both lessons with a simulated scene palette (`alike.pal`)
 - `testdisks/sound-stress/floppy.ts` — makes a nonbootable 1.44 MB FAT12 image with the DOS runtime and notices.
 - `testdisks/sound-stress/image.ts` — writes a new private floppy image and refuses replacement (`npx vite-node ../games/kit/testdisks/sound-stress/image.ts --out <new SOUNDTST.img>`).
 - `testdisks/sound-stress/rooms.ts` — two flat rooms with one-shot effect pads, score pads and doors that reset the course.
+
+
+### Reusable micro plaques
+
+`starter/microPlaque.ts` exports `addMicroPlaques(book, pal, texts)`: supply a named
+record of `{ lines: ['WALK', 'IN'], post?: boolean }`. Each plaque has one outer
+one-pixel frame, one or two blocks across, one block tall, and at most two explicit
+lines of eight characters each. Words stay whole. N/W/M widen when the line fits (N keeps its capital diagonal);
+all eight directional arrows come from the kit font. Large-font signs keep their frame.
+Boards contain only the shared paper, ink and wood indices, so they are byte-identical
+across Starter palettes. Only post tiles use `skyOf(pal)`, and all tiles are passable
+with downward gravity.
+
+Place one with `stampTiledSign(map, x, y, sign, postHeight, options)` from
+`starter/microPlaque`; `postHeight` is the full distance to the supporting ground in
+20-pixel blocks. The default `options.maxPostHeight` is 1: farther plaques float
+with no support, rather than hanging on a shortened post. Use `post: false` for
+floating labels at any height. `stampMicroPlaques` from the same module places a
+stack such as TOO/SLOW above GO/BACK, measuring the mount from its bottom plaque.
+Stacked plaques must have the same width. `microPlaquePostHeight` applies the same
+limit to Around the Room's supports directed toward its rotated ground.

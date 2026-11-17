@@ -4,8 +4,8 @@
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { buildGraduation } from '../kit/starter/graduationBuild';
-import { buildLevels } from '../kit/starter/graduationLevel';
+import { buildLevels } from './src/levels';
 import { cfg } from './src/config';
 import { demoRecording } from './src/demo';
 
-buildGraduation(dirname(fileURLToPath(import.meta.url)), cfg, buildLevels(cfg), demoRecording(), { heldRise: { push: 12 } });
+buildGraduation(dirname(fileURLToPath(import.meta.url)), cfg, buildLevels(), demoRecording(), { heldRise: { push: 12 } });

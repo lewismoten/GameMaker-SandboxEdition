@@ -8,45 +8,31 @@
 //   3. The Open Road: a short road with one hill and its scene sets NO character file: the hero you picked
 //                    last is still the hero. Nothing on it needs a particular hero; every one can finish it.
 // Every edge is a hedge or a wall you can see, so nobody is stopped by something they can't.
-import { Book, PULL } from '../../kit/starter/book';
+import { addMicroPlaques, stampTiledSign, stampMicroPlaques } from '../../kit/starter/microPlaque';
+import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
-import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
-import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { MICRO_GLYPHS } from '@lewismoten/gamemaker-sandbox-tools/microFont';
+import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
+import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 
-export type SignName = 'pick' | 'fast' | 'big' | 'steps' | 'high' | 'exit' | 'carry';
+export type SignName = 'pick' | 'fast' | 'big' | 'high' | 'back' | 'exit' | 'carry';
 
 /** Complete vocabulary, shared within each map's own block set. */
 const WORDS = {
-  pick: { rows: [['TWO DOORS, TWO HEROES.'], ['THE SAME LEVEL'], ['BEHIND BOTH']], maxWidth: 9 },
-  fast: { rows: [['FAST FEET. RUNS QUICKLY,'], ['JUMPS LIKE LIAN']] },
-  big: { rows: [['BIG HOPS. SLOW FEET,'], ['JUMPS SIX BLOCKS']] },
-  steps: { rows: [['STEPS UP. EVERY'], ['HERO CAN TAKE THEM'], ['BIG HOPS CAN SKIP A STEP.'], ['FAST FEET TAKES THEM ALL']] },
-  high: { rows: [['HIGH COINS NEED BIG HOPS.'], ['TRY THE OTHER DOOR']] },
-  carry: { rows: [['NO HERO IS SET HERE:'], ['YOU ARE STILL THE'], ['ONE YOU PICKED']] },
-  exit: { rows: [['EXIT →']] },
+  pick: { lines: ['PICK', 'DOOR'] },
+  fast: { lines: ['FAST', 'FEET'], post: false },
+  big: { lines: ['BIG', 'HOPS'], post: false },
+  high: { lines: ['BIG', 'HOPS'] },
+  back: { lines: ['GO', 'BACK'] },
+  carry: { lines: ['SAME', 'HERO'] },
+  exit: { lines: ['EXIT', '→'], post: false },
 };
 
 function buildBlocks(pal: Pal, include: readonly SignName[]): { book: Book; signs: Record<SignName, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
-  const { blocks, signs } = buildTiledSigns(WORDS, {
-    include,
-    colors: {
-      background: skyOf(pal),
-      paper: pal.c('parch', 3),
-      ink: pal.c('ink', 0),
-      wood: pal.c('wood', 2),
-      highlight: pal.c('wood', 4),
-      shadow: pal.c('wood', 0),
-    },
-    glyphs: { ...MICRO_GLYPHS, '→': '100110111110100' },
-    lettersPerBlock: 3,
-    maxBlocks: 100 - book.index.size,
-  });
-  for (const [name, pic] of blocks) book.add(name, pic, { grav: PULL.down });
+  const signs = addMicroPlaques(book, pal, Object.fromEntries(include.map((name) => [name, WORDS[name]]))) as Record<SignName, Sign>;
   return { book, signs };
 }
 
@@ -139,9 +125,9 @@ function twoDoors(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [10, 21, 26],
   );
   const m = new StarterMap(book, g.rows());
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 3, 8, signs.fast, 2);
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 15, 5, signs.pick, 3);
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 24, 8, signs.big, 2);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 3, 9, signs.fast);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 18, 10, signs.pick);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 32, 9, signs.big);
   return m;
 }
 
@@ -171,9 +157,8 @@ function theClimb(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [11, 36, 45, 48],
   );
   const m = new StarterMap(book, g.rows());
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 3, 11, signs.steps, 2);
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 21, 9, signs.high, 2);
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 45, 14, signs.exit, 2);
+  stampMicroPlaques({ set: (x, y, name) => m.setOnSky(x, y, name) }, 12, 14, [signs.high, signs.back]);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 50, 14, signs.exit);
   return m;
 }
 
@@ -203,8 +188,8 @@ function openRoad(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [8, 30, 36],
   );
   const m = new StarterMap(book, g.rows());
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 5, 9, signs.carry, 2);
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 37, 11, signs.exit, 2);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 5, 12, signs.carry);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 40, 11, signs.exit);
   return m;
 }
 
@@ -217,7 +202,7 @@ export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
   };
   const levels = [
     level('doors', 'Two Doors', 'Pick a hero.', ['pick', 'fast', 'big'], twoDoors),
-    level('climb', 'The Same Climb', 'Up the steps, or all at once.', ['steps', 'high', 'exit'], theClimb),
+    level('climb', 'The Same Climb', 'Up the steps, or all at once.', ['high', 'back', 'exit'], theClimb),
     level('road', 'The Open Road', 'Nobody is picked here.', ['carry', 'exit'], openRoad),
   ];
   return { book: levels[0].book, pal, levels };

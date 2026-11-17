@@ -6,17 +6,17 @@
 //   2. Use It Again: a village row of eight houses made of six blocks, and a brick wall whose every copy
 //      is solid. The last sign counts the whole game's blocks against the 150 an editor allows.
 // Every room is closed in by brick walls you can see, so Lena is never stopped by something she can't.
-import { Book, PULL } from '../../kit/starter/book';
+import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
+import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
-import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
-import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { MICRO_GLYPHS } from '@lewismoten/gamemaker-sandbox-tools/microFont';
+import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
+import { type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { BACKBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { HOUSE, TOWER, addHouses, addPicture, towerPicture } from './pictures';
 
-export type SignName = 'many' | 'count' | 'walk' | 'again' | 'houses' | 'same' | 'total' | 'exit';
+export type SignName = 'count' | 'walk' | 'houses' | 'total' | 'exit';
 
 export interface Level {
   file: string;
@@ -43,33 +43,14 @@ function buildBlocks(pal: Pal) {
   const towerBlocks = new Set(tower.flat().filter((n) => n.startsWith('tower.'))).size;
   const houseBlocks = new Set([...houses.red.flat(), ...houses.blue.flat()]).size;
   // The count board includes its own tiles. Requalify this number whenever the art changes.
-  const used = 130;
-  const { blocks, signs } = buildTiledSigns(
-    {
-      many: { rows: [['ONE BIG'], ['PICTURE IS'], ['MANY BLOCKS']] },
-      count: { rows: [['THIS TOWER TOOK'], [`${towerBlocks} BLOCKS`]] },
-      walk: { rows: [['A PICTURE IS NOT'], ['SOLID. WALK IN']] },
-      again: { rows: [['ONE BLOCK CAN'], ['BE USED AGAIN']] },
-      houses: { rows: [[`${HOUSES} HOUSES,`], [`ONLY ${houseBlocks} BLOCKS`]] },
-      same: { rows: [['EVERY COPY'], ['ACTS THE SAME']] },
-      total: { rows: [['THIS GAME USES'], [`${used} OF ${BACKBL} BLOCKS`]] },
-      exit: { rows: [['EXIT →']] },
-    },
-    {
-      colors: {
-        background: skyOf(pal),
-        paper: pal.c('parch', 3),
-        ink: pal.c('ink', 0),
-        wood: pal.c('wood', 2),
-        highlight: pal.c('wood', 4),
-        shadow: pal.c('wood', 0),
-      },
-      glyphs: { ...MICRO_GLYPHS, '→': '100110111110100' },
-      lettersPerBlock: 3,
-      maxBlocks: Math.min(100, BACKBL - book.index.size),
-    },
-  );
-  for (const [name, pic] of blocks) book.add(name, pic, { grav: PULL.down });
+  const used = 53;
+  const signs = addMicroPlaques(book, pal, {
+    count: { lines: [`${towerBlocks}`, 'BLOCKS'], post: false },
+    walk: { lines: ['WALK', 'IN'] },
+    houses: { lines: [`${HOUSES} HOUSES`, `${houseBlocks} BLOCKS`] },
+    total: { lines: [`USES ${used}`, `OF ${BACKBL}`], post: false },
+    exit: { lines: ['EXIT', '→'], post: false },
+  });
   if (book.index.size !== used) throw new Error(`Count sign says ${used} blocks, but the game builds ${book.index.size}`);
   return { book, signs, tower, houses, counts: { tower: towerBlocks, houses: houseBlocks, used } };
 }
@@ -116,11 +97,10 @@ function oneBigPicture(b: ReturnType<typeof buildBlocks>): StarterMap {
     [31, 35],
   );
   const m = new StarterMap(b.book, g.rows());
-  sign(m, 2, 3, b.signs.many);
-  sign(m, 8, onGround(GROUND, b.signs.count), b.signs.count);
-  sign(m, 15, 3, b.signs.walk);
+  sign(m, 17, 5, b.signs.count);
+  sign(m, 15, 8, b.signs.walk);
   b.tower.forEach((row, dy) => row.forEach((n, dx) => m.set(TOWER_X + dx, GROUND - TOWER.h + dy, n)));
-  sign(m, 36, onGround(GROUND, b.signs.exit), b.signs.exit);
+  sign(m, 41, 7, b.signs.exit);
   return m;
 }
 
@@ -141,15 +121,13 @@ function useItAgain(b: ReturnType<typeof buildBlocks>): StarterMap {
     [33, 55],
   );
   const m = new StarterMap(b.book, g.rows());
-  sign(m, 1, 4, b.signs.again);
   for (let i = 0; i < HOUSES; i++) {
     const house = i % 2 === 0 ? b.houses.red : b.houses.blue;
     house.forEach((row, dy) => row.forEach((n, dx) => m.set(VILLAGE_X + i * HOUSE.w + dx, GROUND - HOUSE.h + dy, n)));
   }
   sign(m, 8, onGround(GROUND, b.signs.houses), b.signs.houses);
-  sign(m, WALL_X - 6, 5, b.signs.same);
   sign(m, WALL_X + 2, 5, b.signs.total);
-  sign(m, 50, onGround(GROUND, b.signs.exit), b.signs.exit);
+  sign(m, 55, 7, b.signs.exit);
   return m;
 }
 

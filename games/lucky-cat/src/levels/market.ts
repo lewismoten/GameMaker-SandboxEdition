@@ -9,7 +9,7 @@ import { StarterMap } from '../../../kit/starter/map';
 import type { Pal } from '../print';
 import { CROW } from '../monsters';
 import { GROUND, crackCrossing, addSigns, onGround, room, scenery, startBook, type Level } from '../level';
-import { addMeter } from '../meter';
+import { addMeter, placeMeters } from '../meter';
 
 export const MARKET = {
   boxes: [14, 40, 66],
@@ -65,6 +65,8 @@ export function levelMarket(pal: Pal): Level {
   m.sign(5, onGround(GROUND, s.close), s.close);
   crackCrossing(m, MARKET.cracks, 3);
   crackCrossing(m, MARKET.cracks2, 3);
+  placeMeters(m, book, 6);
+  placeMeters(m, book, 9);
   return {
     file: 'market',
     title: 'The Night Market',

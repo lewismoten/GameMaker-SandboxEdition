@@ -11,21 +11,15 @@
 // The tales are scenes too, but they are not levels: they load a stage map without signs.
 // Both rooms are closed in by brick you can see, so Mara is never stopped by something she can't.
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
-import { Book, PULL, SOLID } from '../../kit/starter/book';
+import { Book, PULL, SOLID, type Timed } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
+import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
 import { Grid } from '../../kit/starter/grid';
 import { ORIGIN, StarterMap } from '../../kit/starter/map';
-import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
-import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
+import { type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { mat, shaft, trap } from './props';
 import { FLOOR_AT, QUICK_AT, QUICK_WARN, WARN } from './timing';
-
-/** A block that turns into another after some ticks. */
-interface Timed {
-  name: string;
-  next: string;
-  ticks: number;
-}
 
 /** A link: touching the world cell `from` takes the hero to scene `to` (a key of the scenes, or 'end'), standing at that scene's entrance. */
 export interface Way {
@@ -52,20 +46,17 @@ export const GROUND = 10;
 export const WIDTH_STAGE = 16;
 export const WIDTH_MENU = 40;
 export const MAT_ROW = 19;
-/** The stage's signs (x of the board's left block) and the menu's. */
-export const STAGE_SIGNS = [1, 8];
-export const MENU_INFO_X = 4;
+/** The menu's hint and doorway labels (board left columns). */
+export const MENU_INFO_X = 5;
 export const MENU_LABELS = [12, 21, 30];
 export const LEDGE_ROW = 6;
 export const MENU_DOORS = [13, 22, 31];
 
 const SIGNS = {
-  words: { rows: [['A SCENE SHOWS'], ['A PICTURE AND'], ['WORDS FIRST']] },
-  floor: { rows: [['THEN THE ROOM.'], ['THE FLOOR DROPS'], ['AND TAKES YOU ON']], maxWidth: 7 },
-  menu: { rows: [['A MENU IS A ROOM'], ['WITH DOORS.'], ['PICK ONE']] },
-  one: { rows: [['TALE ONE']], post: false },
-  two: { rows: [['TALE TWO']], post: false },
-  end: { rows: [['THE END']], post: false },
+  menu: { lines: ['PICK', 'DOOR'] },
+  one: { lines: ['TALE', 'ONE'], post: false },
+  two: { lines: ['TALE', 'TWO'], post: false },
+  end: { lines: ['THE', 'END'], post: false },
 };
 
 /** The finished block set: the book's, with each timed block given its next block and its ticks. */
@@ -85,7 +76,7 @@ const AIR = { grav: PULL.down };
 const onGround = (ground: number, s: Sign) => ground - 1 - s.board.length;
 
 /** The stage: a closed room whose whole floor is planks over a shaft, with a mat at the bottom of it. The links are the mat's cells. */
-function stage(book: Book, signs: Record<string, Sign> | undefined, floor: 'trap' | 'quick'): { map: StarterMap; mat: [number, number][] } {
+function stage(book: Book, floor: 'trap' | 'quick'): { map: StarterMap; mat: [number, number][] } {
   const g = new Grid(WIDTH_STAGE, 22);
   g.row(2, 0, WIDTH_STAGE - 1, 'B')
     .col(0, 2, 19, 'B')
@@ -93,10 +84,6 @@ function stage(book: Book, signs: Record<string, Sign> | undefined, floor: 'trap
     .fill(0, 20, WIDTH_STAGE, 2, 'D');
   g.put(1, 8, 's').put(1, 9, 'S');
   const m = new StarterMap(book, g.rows());
-  if (signs) {
-    stampTiledSign({ set: m.setOnSky.bind(m) }, STAGE_SIGNS[0], 4, signs.words, 3);
-    stampTiledSign({ set: m.setOnSky.bind(m) }, STAGE_SIGNS[1], 4, signs.floor, 2);
-  }
   const ways: [number, number][] = [];
   for (let x = 1; x < WIDTH_STAGE - 1; x++) {
     m.set(x, GROUND, `${floor}.shut`);
@@ -143,19 +130,7 @@ export function buildLevels(): { pal: Pal; book: Book; timed: Timed[]; scenes: S
   const pal = buildStarterPalette(undefined, 'cutscenes');
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
-  const { blocks, signs } = buildTiledSigns(SIGNS, {
-    lettersPerBlock: 3,
-    maxBlocks: 100 - book.index.size,
-    colors: {
-      background: skyOf(pal),
-      paper: pal.c('parch', 3),
-      ink: pal.c('ink', 0),
-      wood: pal.c('wood', 2),
-      highlight: pal.c('wood', 4),
-      shadow: pal.c('wood', 0),
-    },
-  });
-  for (const [name, pic] of blocks) book.add(name, pic, AIR);
+  const signs = addMicroPlaques(book, pal, SIGNS);
   const timed: Timed[] = [];
   book.add('trap.shut', trap(pal, false), { solid: SOLID });
   book.add('trap.warn', trap(pal, true), { solid: SOLID });
@@ -166,8 +141,8 @@ export function buildLevels(): { pal: Pal; book: Book; timed: Timed[]; scenes: S
   timed.push({ name: 'trap.shut', next: 'trap.warn', ticks: FLOOR_AT - WARN }, { name: 'trap.warn', next: 'shaft', ticks: WARN });
   timed.push({ name: 'quick.shut', next: 'quick.warn', ticks: QUICK_AT - QUICK_WARN }, { name: 'quick.warn', next: 'shaft', ticks: QUICK_WARN });
 
-  const first = stage(book, signs, 'trap');
-  const tale = stage(book, undefined, 'quick');
+  const first = stage(book, 'trap');
+  const tale = stage(book, 'quick');
   const hall = menu(book, signs);
   const back = (mat: [number, number][]): Way[] => mat.map((from) => ({ from, to: 'hall' }));
   const scenes: Scene[] = [

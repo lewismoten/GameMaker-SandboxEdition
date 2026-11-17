@@ -68,7 +68,8 @@ export async function payback(bot: StarterBot): Promise<void> {
   await read(bot, 6, 'flyer');
   await read(bot, 10, 'combo');
   for (const x of L.AT.turkeys) await smash(bot, x, turkey, 1, `the lawn turkey at ${x}`, G);
-  await smash(bot, L.AT.bag, bag, 1, 'the kick bag', G);
+  // At scene 3 tick 286, the recording used to let go after one tick. The bag allows six (330 ms).
+  await smash(bot, L.AT.bag, bag, 1, 'the kick bag', G, 'right', 6);
   // the shed roof: its drone, the spare key
   await climb(bot, L.AT.shedLadder, 9, 'the shed ladder');
   await cross(bot, L.AT.shedLadder + 1, 'onto the shed roof');

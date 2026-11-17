@@ -15,9 +15,10 @@ export const L10: RoomSpec = {
   card: ['Ride the line.', 'Duck the caps.', 'Some boards are greased.'],
   signs: { Q: 'signFizz' },
   born: { s: { kind: 'flyingCap', reach: 1, speed: 2 } },
+  // A short wall return stops an upward step on the doorway row before turning right.
   rows: [
     '##################################',
-    '#Z@..#....._....._....._....#....#',
+    '#Z@.##....._....._....._....#....#',
     '#....>EEEEEEEEEEEEEEEEEEEE.C#..k.#',
     '#.T..#####################.##....#',
     '####QQ######.............$......##',

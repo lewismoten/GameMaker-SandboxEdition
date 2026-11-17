@@ -13,25 +13,23 @@ import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
-import { addSign, type Sign } from '../../kit/starter/sign';
+import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
 import { addSwitchBlocks, PLANKS } from './switchBlocks';
 
-export type SignName = 'lever' | 'spend' | 'six' | 'colors' | 'ladder' | 'red' | 'blue' | 'exit';
+export type SignName = keyof typeof WORDS;
+
+const WORDS = {
+  six: { lines: ['1 PULL', '6 PLANKS'] },
+  ladder: { lines: ['GO', 'UP'] },
+  exit: { lines: ['EXIT', '→'], post: false },
+};
 
 /** The block set the levels share: the Starter blocks, this game's signs, then the switch blocks. */
 function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
-  const signs = {
-    lever: addSign(book, pal, 'lever.sign', 'A LEVER ADDS TO A COUNTER', 4, 3),
-    spend: addSign(book, pal, 'spend.sign', 'EACH DOTTED PLANK SPENDS ONE', 4, 3),
-    six: addSign(book, pal, 'six.sign', 'ONE PULL, SIX PLANKS', 4, 2),
-    colors: addSign(book, pal, 'colors.sign', 'EACH COLOR HAS ITS OWN COUNTER', 4, 3),
-    ladder: addSign(book, pal, 'ladder.sign', 'RED LEVER UP THE LADDER', 4, 3),
-    red: addSign(book, pal, 'red.sign', 'RED PLANKS WANT RED', 4, 3),
-    blue: addSign(book, pal, 'blue.sign', 'BLUE PLANKS WANT BLUE', 4, 3),
-    exit: addSign(book, pal, 'exit.sign', 'EXIT →', 3),
-  };
+  const signs = addMicroPlaques(book, pal, WORDS) as Record<SignName, Sign>;
   addSwitchBlocks(book, pal);
   return { book, signs };
 }
@@ -98,10 +96,8 @@ function pullTheLever(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [15, 31, 42],
   );
   const m = new StarterMap(book, g.rows());
-  m.sign(5, onGround(GROUND, signs.lever), signs.lever);
-  m.sign(14, onGround(GROUND, signs.spend), signs.spend);
-  m.sign(19, onGround(GROUND, signs.six), signs.six);
-  m.sign(39, onGround(GROUND, signs.exit), signs.exit);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 10, onGround(GROUND, signs.six), signs.six);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 39, onGround(GROUND, signs.exit), signs.exit);
   m.set(L1.lever, GROUND - 1, 'leverRed');
   fillPools(m, [L1.pool], 'Red');
   return m;
@@ -130,11 +126,8 @@ function redAndBlue(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [7, 30, 44],
   );
   const m = new StarterMap(book, g.rows());
-  m.sign(5, onGround(GROUND, signs.colors), signs.colors);
-  m.sign(13, onGround(GROUND, signs.ladder), signs.ladder);
-  m.sign(28, onGround(GROUND, signs.red), signs.red);
-  m.sign(41, onGround(GROUND, signs.blue), signs.blue);
-  m.sign(49, onGround(GROUND, signs.exit), signs.exit);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 13, onGround(GROUND, signs.ladder), signs.ladder);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 49, onGround(GROUND, signs.exit), signs.exit);
   m.set(L2.blueLever, GROUND - 1, 'leverBlue');
   m.set(L2.redLever, LEDGE_ROW, 'leverRed');
   fillPools(m, [L2.redPool], 'Red');

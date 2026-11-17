@@ -10,22 +10,16 @@
 // player has none). Every room ends in a visible hedge, so Kit is never stopped by something he can't see.
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
-import { Book, PULL } from '../../kit/starter/book';
+import { Book, PULL, type Timed } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
 import { MON } from '../../kit/starter/ids';
-import { addSign, type Sign } from '../../kit/starter/sign';
+import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
 import { breeze, cave, pad } from './props';
 import { BREEZE_FRAMES, CROWD } from './timing';
-
-/** A block that turns into another after some ticks. */
-interface Timed {
-  name: string;
-  next: string;
-  ticks: number;
-}
 
 export interface Level {
   file: string;
@@ -54,24 +48,17 @@ export const GROUND = 10;
 export const PAD_X = { short: [17, 19, 21, 23], long: [32, 34, 36, 38] };
 export const CROWD_X = [12, 22];
 
-type SignName = 'speed' | 'short' | 'long' | 'music' | 'crowd' | 'fewer' | 'sky' | 'cost' | 'keep';
-const SIGNS: Record<SignName, string> = {
-  speed: 'GOT A SPEED SETTING? TRY 286 HERE, THEN THE REST.',
-  short: 'FOUR SHORT PADS: A BLIP. TRY ONE AT EACH SPEED.',
-  long: 'FOUR LONG PADS: A BIG SOUND. THE GAME WAITS FOR THE DISK.',
-  music: 'THE MUSIC KEEPS TIME, EVEN WHEN THE GAME FREEZES.',
-  crowd: 'EVERY MONSTER ON THE SCREEN COSTS TIME TO MOVE AND DRAW.',
-  fewer: 'A 286 SLOWS DOWN HERE, A 486 DOES NOT. KEEP MONSTERS FEW.',
-  sky: 'THE WHOLE SKY MOVES, AND IS DRAWN AGAIN EVERY TICK.',
-  cost: 'A SKY FULL OF MOVING BLOCKS SLOWS A 286 A LITTLE.',
-  keep: 'KEEP MOVING BLOCKS WHERE THEY COUNT.',
+const WORDS = {
+  speed: { lines: ['TRY 286'] },
+  fewer: { lines: ['286 SLOW', '486 FINE'] },
 };
+
+type SignName = keyof typeof WORDS;
 
 function startBook(pal: Pal, names: SignName[]): { book: Book; signs: Record<string, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
-  const signs: Record<string, Sign> = {};
-  for (const n of names) signs[n] = addSign(book, pal, `${n}.sign`, SIGNS[n], 4, 4);
+  const signs = addMicroPlaques(book, pal, Object.fromEntries(names.map((name) => [name, WORDS[name]])));
   return { book, signs };
 }
 
@@ -127,7 +114,7 @@ function addPad(book: Book, pal: Pal, kind: 'short' | 'long'): void {
 
 /** Level 1: the short pad and the long pad. */
 function shortAndLong(pal: Pal): Level {
-  const { book, signs } = startBook(pal, ['speed', 'short', 'long', 'music']);
+  const { book, signs } = startBook(pal, ['speed']);
   addPad(book, pal, 'short');
   addPad(book, pal, 'long');
   const g = room(52, 50);
@@ -144,10 +131,7 @@ function shortAndLong(pal: Pal): Level {
     [26, 31, 42],
   );
   const m = new StarterMap(book, g.rows());
-  m.sign(5, onGround(GROUND, signs.speed), signs.speed);
-  m.sign(11, onGround(GROUND, signs.short), signs.short);
-  m.sign(26, onGround(GROUND, signs.long), signs.long);
-  m.sign(42, onGround(GROUND, signs.music), signs.music);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 5, onGround(GROUND, signs.speed), signs.speed);
   for (const x of PAD_X.short) m.set(x, GROUND - 1, 'pad.short');
   for (const x of PAD_X.long) m.set(x, GROUND - 1, 'pad.long');
   return { file: 'one', title: 'Short and Long', hint: 'Step on each pad. Hear the music.', map: m, book, timed: [] };
@@ -155,7 +139,7 @@ function shortAndLong(pal: Pal): Level {
 
 /** Level 2: 36 friendly monsters: gumdrops on grass, snails in a cutaway cave and two low rows of bees. */
 function aCrowd(pal: Pal): Level {
-  const { book, signs } = startBook(pal, ['crowd', 'fewer']);
+  const { book, signs } = startBook(pal, ['fewer']);
   const g = room(34, 32, false);
   scenery(
     g,
@@ -169,8 +153,7 @@ function aCrowd(pal: Pal): Level {
     [7, 30],
   );
   const m = new StarterMap(book, g.rows());
-  m.sign(5, onGround(GROUND, signs.crowd), signs.crowd);
-  m.sign(28, onGround(GROUND, signs.fewer), signs.fewer);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 5, onGround(GROUND, signs.fewer), signs.fewer);
   let n = 0;
   // The visible grass roof stays solid. Beneath it, two lit rows are cut out of the dirt;
   // the untouched dirt at row 13 supports every snail over its whole three-cell pace.
@@ -208,7 +191,7 @@ class BreezeMap extends StarterMap {
 
 /** Level 3: a sky of wisps that move every tick. */
 function busySky(pal: Pal): Level {
-  const { book, signs } = startBook(pal, ['sky', 'cost', 'keep']);
+  const { book } = startBook(pal, []);
   const timed: Timed[] = [];
   ring(
     book,
@@ -220,9 +203,6 @@ function busySky(pal: Pal): Level {
   const g = room(30, 28);
   scenery(g, 30, [], [10, 20], [8, 17, 25]);
   const m = new BreezeMap(book, g.rows());
-  m.sign(5, onGround(GROUND, signs.sky), signs.sky);
-  m.sign(12, onGround(GROUND, signs.cost), signs.cost);
-  m.sign(20, onGround(GROUND, signs.keep), signs.keep);
   return { file: 'three', title: 'Busy Sky', hint: 'The whole sky moves.', map: m, book, timed };
 }
 

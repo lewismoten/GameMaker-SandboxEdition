@@ -197,8 +197,19 @@ vertically centered lines (a final unpaired line is centered alone). The smalles
 that fits the words and two lines is chosen automatically. For example, `MONSTERS WALK A PATH`
 uses three blocks and reads `MONSTERS / WALK A PATH`; `JUMP OVER IT` uses two and reads
 `JUMP / OVER IT`. Explicit rows remain line breaks. One frame surrounds the whole board,
-with three-pixel horizontal rails and two-pixel side bevels, without additional side tiles.
+with a one-pixel highlight/shadow border and clean wood corners, without additional side tiles.
 `maxWidth` (at least 1 here) caps the board width; additional line pairs continue on another
-block row, and a word wider than the cap throws. Micro signs refine the default M, W, N
-and Q forms; custom glyphs remain intact. Do not combine this option with `compact` or
+block row, and a word wider than the cap throws. Micro signs refine the default N, M, W
+and Q forms; N uses a four-pixel capital with a diagonal, and W and M use five-pixel forms
+when the whole line fits inside the frame (18 pixels on a single block). Remaining N/W/M
+use three-pixel capital forms, spending spare pixels from left to right. Custom glyphs
+remain intact. The shared `microFont` includes all eight arrows, with the existing
+right/left arrow pixels preserved. Do not combine this option with `compact` or
 `lettersPerBlock`. Existing font selection stays the default.
+
+
+`stampMicroPlaques(map, x, y, plaques, postHeight = 1)` places a vertical stack of
+one-row micro plaques of the same width (one or two blocks). Plaques touch vertically,
+sharing only the bottom plaque's centered post. Set height to zero to float the stack;
+a positive height requires the bottom plaque to have a post. Different widths are
+rejected because their centers lie on different tile alignments.

@@ -64,7 +64,7 @@ Now go and make something of your own.`),
     credits: creditsPage(
       'THE SANDBOX DIPLOMA',
       about.version,
-      'The last graduation: it comes after the other six. Held-rise controls, bot timing and raised-start camera layout by OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten.',
+      'The last graduation: it comes after the other six. Held-rise controls, bot timing, raised-start camera layout and micro-sign plaques by OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten.',
     ),
   },
 };

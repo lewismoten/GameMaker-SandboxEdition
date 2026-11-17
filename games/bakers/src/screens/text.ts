@@ -62,6 +62,8 @@ A Sandbox Software game, December 1994
 Game design, rooms, art, music and every block: Claude Opus 5.5
 
 Recipe: the Baker family, est. 1776 (allegedly)`,
+    `Crossing clearance:
+OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten.`,
     `STARRING
 Doc Leo, PhD (Comedic Science), as himself
 Teddy, a corgi who knows left from right

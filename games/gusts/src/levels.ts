@@ -12,21 +12,15 @@
 // says so). Both rooms end in a visible hedge, so Mia is never stopped by something she can't see,
 // and a tunnel's ends are open.
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
-import { Book, PULL, SOLID as SOLID_ALL } from '../../kit/starter/book';
+import { Book, PULL, SOLID as SOLID_ALL, type Timed } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
-import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
-import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
+import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
 import { MOODS, awning, back, flags, lantern, pole, roof, rug, slot, sock, tunnel, updraft, type Mood } from './props';
 import { CALM, FLUTTER, GUST } from './timing';
-
-/** A block that turns into another after some ticks. */
-interface Timed {
-  name: string;
-  next: string;
-  ticks: number;
-}
 
 export interface Level {
   file: string;
@@ -70,32 +64,16 @@ export const HUT_W = 3;
 /** Level 2: the columns of the three windsocks on the hill. */
 export const SOCKS = [15, 25, 35] as const;
 
-type SignName = 'flutter' | 'lift' | 'socks' | 'shelter';
-const SIGNS: Record<SignName, string> = {
-  flutter: 'LEAVES FLUTTER FIRST, THEN A GUST',
-  lift: 'A GUST LIFTS YOU. WAIT IN THE SHAFT',
-  socks: 'THE WINDSOCK SHOWS THE WIND',
-  shelter: 'WAIT IN A SHELTER WHILE IT BLOWS',
+type SignName = string;
+const WORDS: Record<string, { lines: string[]; post?: boolean }> = {
+  lift: { lines: ['WAIT', 'HERE'] },
+  shelter: { lines: ['WAIT', 'HERE'] },
 };
 
 function startBook(pal: Pal, names: SignName[]): { book: Book; signs: Record<string, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
-  const { blocks, signs } = buildTiledSigns(Object.fromEntries(Object.entries(SIGNS).map(([name, text]) => [name, { rows: [[text]] }])), {
-    include: names,
-    compact: true,
-    maxWidth: 5,
-    maxBlocks: Math.min(100, 150 - book.index.size),
-    colors: {
-      background: skyOf(pal),
-      paper: pal.c('parch', 3),
-      ink: pal.c('ink', 0),
-      wood: pal.c('wood', 2),
-      highlight: pal.c('wood', 4),
-      shadow: pal.c('wood', 0),
-    },
-  });
-  for (const [name, pic] of blocks) book.add(name, pic, { grav: PULL.down });
+  const signs = addMicroPlaques(book, pal, Object.fromEntries(names.filter((n) => WORDS[n]).map((n) => [n, WORDS[n]]))) as Record<SignName, Sign>;
   return { book, signs };
 }
 
@@ -148,8 +126,7 @@ function waitForTheGust(pal: Pal): Level {
     [8, 22],
   );
   const m = new StarterMap(book, g.rows());
-  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 4, onGround(G, signs.flutter), signs.flutter);
-  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 9, onGround(G, signs.lift), signs.lift);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 16, onGround(G, signs.lift), signs.lift);
   for (let x = SHAFT[0]; x <= SHAFT[1]; x++) {
     m.set(x, G, 'slot');
     for (let y = LEDGE_ROW + 1; y < G; y++) m.set(x, y, ringBlock('up', 'calm'));
@@ -197,8 +174,7 @@ function windsocksAndShelter(pal: Pal): Level {
   const m = new StarterMap(book, g.rows());
   m.start[0] += 1; // Stand beside the door, on the right half of the step.
   // Hang the first board above the door, with its post ending at the raised step.
-  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 2, 4, signs.socks, G - 2 - 4 - signs.socks.board.length);
-  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 7, 6, signs.shelter, G - 6 - signs.shelter.board.length);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 7, onGround(G, signs.shelter), signs.shelter);
   for (let x = TUNNEL[0]; x <= TUNNEL[1]; x++) {
     m.set(x, G, 'flags')
       .setOnSky(x, G - 4, 'roof')

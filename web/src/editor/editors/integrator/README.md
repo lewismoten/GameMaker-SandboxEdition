@@ -33,3 +33,5 @@ npx vitest run src/editor/editors/integrator
 ```
 
 The side panel scrolls in both directions within its height limit, including at the narrowest resize setting. Its tabs omit counts and the collapse button stays at the right edge; the collapsed panel has a single vertical opener on wide screens. Scene fields list each file once. Level scenes link directly to layout generation; creation actions name the instructions, intro, opening files, or recording they produce.
+
+The Links panel shows the shared DOS limit note when all 20 scene links are used (one link for the start scene). Removing a link clears the note.

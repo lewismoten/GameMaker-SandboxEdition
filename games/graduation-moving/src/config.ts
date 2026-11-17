@@ -47,6 +47,10 @@ You can grab power-ups, throw things, slide on ice, swim, and push back against 
 
 The next stage is waiting whenever you are ready.
 `),
-    credits: creditsPage('GRADUATION: MOVING AND PUSHING', about.version, 'A graduation: it comes after Moving and Pushing and Worlds That Push Back.'),
+    credits: creditsPage(
+      'GRADUATION: MOVING AND PUSHING',
+      about.version,
+      'A graduation: it comes after Moving and Pushing and Worlds That Push Back. Micro-sign plaques by OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten.',
+    ),
   },
 };

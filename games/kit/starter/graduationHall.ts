@@ -4,18 +4,13 @@
 // times, so the cheering is not in step) and Doc Leo beside the lectern. The wall is the Starters' sky
 // color, so the sign boards (which are drawn on it) sit flush.
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
-import { Book, PULL, SOLID } from './book';
+import { Book, PULL, SOLID, type Timed } from './book';
 import { skyOf, type Pal } from './palette';
 import { helperHead, leoPoses } from './graduationCast';
 import { cameoFrames, type CameoName } from './graduationCameo';
 import type { HallTheme } from './graduationTheme';
 
-/** A block that turns into another after some ticks (the engine's only clock). */
-export interface Timed {
-  name: string;
-  next: string;
-  ticks: number;
-}
+export type { Timed };
 
 const air = { grav: PULL.down };
 

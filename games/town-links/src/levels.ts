@@ -11,26 +11,23 @@
 import { Book } from '../../kit/starter/book';
 import { Grid } from '../../kit/starter/grid';
 import { ORIGIN } from '../../kit/starter/map';
-import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
-import type { Sign } from '../../kit/starter/sign';
+import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
+import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
 import { addOverBlocks, type Ground } from '../../overhead/src/blocks';
 import { OverMap } from '../../overhead/src/overMap';
-import { SEA, addGroundSign, addWorldBlocks, landName } from './worldBlocks';
+import { SEA, addWorldBlocks, landName } from './worldBlocks';
 
 /** A block of a map, in world blocks (a map's own corner is ORIGIN). */
 export type Spot = [number, number];
 const at = (x: number, y: number): Spot => [x + ORIGIN, y + ORIGIN];
 
-/** The words on every sign: [name, text, board width, board height, on 'land', 'grass' or 'floor']. */
+/** Compact labels keep the shared board pixels on the three overhead surfaces. */
 const SIGNS = {
-  scale: ['scale', 'A TOWN IS ONE BLOCK. STEP ON IT', 4, 3, 'land'],
-  key: ['key', 'KEYS ARE DOWN THERE. TAKE THEM', 4, 2, 'land'],
-  arrive: ['arrive', 'YOU LAND AT THE GATE, NOT THE START', 4, 2, 'grass'],
-  big: ['big', 'HERE A HOUSE IS THREE BLOCKS WIDE', 4, 3, 'grass'],
-  locked: ['locked', 'LOCKED. KEYS ARE ON THE WORLD MAP', 4, 2, 'grass'],
-  gate: ['gate', 'THIS GATE LEADS TO THE WORLD', 4, 2, 'grass'],
-  inside: ['inside', 'WALK OUT AND SEE WHERE YOU LAND', 4, 2, 'floor'],
-  exit: ['exit', 'EXIT →', 3, 1, 'floor'],
+  scale: { lines: ['STEP', 'ON'] },
+  key: { lines: ['GET', 'KEYS'] },
+  locked: { lines: ['NEED', 'KEY'] },
+  exit: { lines: ['EXIT', '→'], post: false },
 } as const;
 export type SignName = keyof typeof SIGNS;
 
@@ -81,8 +78,29 @@ export function buildBlocks(pal: Pal): {
   const over = addOverBlocks(book, pal);
   const { land } = addWorldBlocks(book, pal, over.grass);
   const ground = { ...over, land };
-  const signs = {} as Record<SignName, Sign>;
-  for (const [key, [name, words, w, h, on]] of Object.entries(SIGNS)) signs[key as SignName] = addGroundSign(book, pal, on, ground[on], name, words, w, h);
+  const signs = addMicroPlaques(book, pal, SIGNS);
+  // Overhead air has no downward pull. Only supports need a surface-colored background;
+  // the plaque boards retain the kit's exact shared pixels and palette indices.
+  const surfaces = { scale: 'land', key: 'land', locked: 'grass' } as const;
+  for (const [name, surface] of Object.entries(surfaces)) {
+    const sign = signs[name as keyof typeof surfaces];
+    const post = sign.post!;
+    const on = ground[surface as keyof typeof ground];
+    const adapt = (block: string) => {
+      const mounted = `${block}.${surface}`;
+      if (!book.has(mounted))
+        book.add(
+          mounted,
+          book.pics
+            .get(block)!
+            .crop(0, 0, 20, 20)
+            .map((x, y, c) => (c === skyOf(pal) ? on.get(x, y) : c)),
+        );
+      return mounted;
+    };
+    sign.post = { ...post, block: adapt(post.block), ...(post.rightBlock ? { rightBlock: adapt(post.rightBlock) } : {}) };
+  }
+  for (const [name, index] of book.index) if (name.startsWith('microPlaque.')) book.finish()[index].grav = 0;
   return { book, signs, ground };
 }
 
@@ -129,7 +147,9 @@ function worldLevel(book: Book, s: Record<SignName, Sign>): OverMap {
       .join(''),
   );
   const m = new OverMap(book, rows, legend, 'sea');
-  m.sign(4, 3, s.scale).sign(14, 6, s.key);
+  // Beside the approach trail, before the town; the key label is northwest of its pickup.
+  stampTiledSign(m, 8, 5, s.scale);
+  stampTiledSign(m, 17, 6, s.key);
   return m;
 }
 
@@ -210,7 +230,7 @@ function townLevel(book: Book, s: Record<SignName, Sign>): OverMap {
   ] as const)
     g.put(x, y, 'T');
   const m = new OverMap(book, g.rows(), TOWN_LEGEND, 'tree');
-  m.sign(12, 21, s.arrive).sign(20, 18, s.big).sign(22, 11, s.locked).sign(12, 17, s.gate);
+  stampTiledSign(m, 22, 11, s.locked);
   return m;
 }
 
@@ -246,7 +266,7 @@ function houseLevel(book: Book, s: Record<SignName, Sign>): OverMap {
   g.put(HOUSE_OUT[0] - ORIGIN, HOUSE_OUT[1] - ORIGIN, 'D');
   g.put(HOUSE_EXIT[0] - ORIGIN, HOUSE_EXIT[1] - ORIGIN, 'D');
   const m = new OverMap(book, g.rows(), HOUSE_LEGEND, 'wall');
-  m.sign(3, 7, s.inside).sign(14, 6, s.exit);
+  stampTiledSign(m, 15, 5, s.exit);
   return m;
 }
 
