@@ -6,7 +6,7 @@ import { CEREMONIES, needed, stageGames } from '../../project/ceremonies';
 import { gpa, isB, parseGrades, type Grade, type Grades } from '../../project/grades';
 import { COURIER_KEY, loadCourier, saveCourier } from '../../courier/courierStore';
 import { LETTERS } from '../../courier/tables';
-import { CHICKEN_KEY, chickenNow, setChicken } from '../../chicken/chickenState';
+import { chickenNow, setChicken } from '../../chicken/chickenState';
 import { SEEN_KEY, isDay, readSeen, writeSeen } from '../../tour/seenDay';
 import { clearHonorDates } from '../../achievements/honorDates';
 import { deskNow } from '../dos/deskClock';
@@ -232,6 +232,3 @@ const specials: FlagItem = {
 };
 
 export const DESK_ITEMS: readonly FlagItem[] = [gradesItem, courierItem, buddyItem, chickenItem, tourItem, specials];
-
-/** The keys these items keep (FLAGS /BACKUP holds them). */
-export const DESK_KEYS = [GRADES_KEY, COURIER_KEY, BUDDY_KEY, CHICKEN_KEY, SEEN_KEY, 'gm-honors-dates'] as const;
