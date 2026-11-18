@@ -241,7 +241,6 @@ remain intact. The shared `microFont` includes all eight arrows, with the existi
 right/left arrow pixels preserved. Do not combine this option with `compact` or
 `lettersPerBlock`. Existing font selection stays the default.
 
-
 `stampMicroPlaques(map, x, y, plaques, postHeight = 1)` places a vertical stack of
 one-row micro plaques of the same width (one or two blocks). Plaques touch vertically,
 sharing only the bottom plaque's centered post. Set height to zero to float the stack;
