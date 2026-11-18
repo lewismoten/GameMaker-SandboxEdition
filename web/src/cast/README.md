@@ -16,8 +16,7 @@ chicken variants. Its typed groups live in `castSandbox.ts`, `castStarters.ts` (
 his helpers) and `castBizarre.ts`; `castGames.ts` holds the ordered game catalog and
 `castTypes.ts` their shared types. New cameos still go in `cameos.json` as
 `{ "<member id>": [{ "game": "<game id>", "as": "what they do" }] }`; list each game in
-`CAST_GAMES` first. `castDataIdentity.test.ts` pins the SHA-256 of the full serialized
-exports, chicken variants and family results captured before the split.
+`CAST_GAMES` first.
 
 `castPage.ts` keeps the selected tab and card in `tab` and `who` address parameters;
 the stage's character choice is a separate `on` parameter (`castStage.ts`). The stage has
