@@ -94,11 +94,72 @@ This folder holds the build's Vite plugins and the scripts run by hand (from
   interactions that may change it, before axe or screenshots. Keep palette baselines in step with deliberate theme redesigns.
   Historical private axe runners that only emulate the media scheme do not qualify as light coverage.
 - `tourCheck.ts` (`npm run tour:check -- <chapter>[,<chapter>]`, or `all`): starts its own vite on a
-  free port from 5190 (never 5173) with a scratch cache, plays the tour chapters in headless Chrome
-  (playwright-core) at 1440 and 390 wide, light and dark, stepping through paused, and prints a table
-  of each step (`ok`, `skipped` for an optional step with no control, `MISSING`) plus the axe
-  violations seen on every step (so on what a chapter opens too) and any horizontal scroll. It exits
-  non-zero on a missing non-optional step and stops its server.
+  free port from 5190 (never 5173) with a scratch cache, plays the tour chapters in headless Chromium
+  (playwright-core) at 1440, 390 and 375 wide, light and dark, stepping through paused, and prints a table
+  of each step (`ok`, `skipped` for an optional absent control or a deliberately omitted `pageOnly` step,
+  `MISSING`) plus axe violations and horizontal scroll. It exits nonzero on missing required steps.
+  Before starting its server or browser, `tourCheckInputs.ts` checks for nonempty public game `.gam`
+  files, the selected chapters' explicit editor files and `public/cast/sprites.json`. Missing inputs
+  print `missing prerequisite: <path> (run <command>)` and exit 2, rather than a misleading step table.
+  These are presence checks, not a freshness or complete disk-integrity check. Refresh generated
+  disks after source changes. Node-only regression tests: `npx vitest run scripts/tourCheckInputs.test.ts`.
+
+  **Fresh worktree preparation (dependencies already installed; no copying from another checkout):**
+
+  ```sh
+  # From the repository root, before checking or running the web app:
+  npm run heavy -- npm run build:packages
+  npm run heavy -- npm run build:games
+  cd web
+  npm run tour:check -- all
+  ```
+
+  `build:games` is the existing cached builder; it also refreshes box extras, which this check does
+  not need to download. Its per-game remediation command is printed when a disk is absent.
+  `tour:check` calls Vite directly, so neither npm's `predev` nor `prebuild` prepares disks for it.
+  Package distributions/declarations are needed for package consumers, lint and TypeScript;
+  this Vite server resolves the SDK's `gamemaker-source` condition to workspace source.
+  Do not install or regenerate recordings just to run this check.
+
+  **What the chapters open** (exact files and controls: [`chapters/`](../src/tour/chapters/),
+  with the per-chapter address table in [`tour/README.md`](../src/tour/README.md#the-chapters)):
+
+  | Chapters | Inputs and opened views |
+  | --- | --- |
+  | `home` | CD catalog plus public generated `games/*/disk/`; collection tabs and Settings/header controls. Every check starts here, even a single chapter. |
+  | `library` | Catalog's `about.json`, `manual.json`, `printables.json` and existing `walkthrough.json` source fixtures; manual, label, walkthrough, magazine and Guide shelves. No walkthrough is recorded or played. |
+  | `achievements`, `cast` | Achievement catalog and clean browser saves; checked-in cast pictures and `web/public/cast/sprites.json`. |
+  | `guide` | Guide source, Owner's Guide and Ultimate Owner's Guide rendered in the box viewer; catalog/game data supplies gallery screenshots. No prebuilt PDF/manual is required. |
+  | `settings` | Credits tabs and Settings menu only. Play offline is pointed at, never started: no production `offline.json`, service worker or scratch site build is required. |
+  | `editor`, `edit-around`, `edit-map`, `edit-export`, `edit-assistant` | Read-only `logic` disk, initially `kitchen.map`; overview also visits `watt.pal`. Assets, shortcuts/Play Level menu, Download chooser or Assistant panel. No export or AI request. |
+  | `edit-blocks`, `edit-monsters`, `edit-palette`, `edit-sounds`, `edit-animation` | `logic` disk: `kitchen.bbl`/`watt.cbl`, `garage.mon`/`watt.chr`, `watt.pal`, `watt.snd`/`kitchen.cmf`, `intro.fli`/`blender.gif`/`blender.lst`, plus referenced disk assets. Color/picture dialogs are canceled. |
+  | `edit-integrator`, `edit-player`, `edit-walkthrough` | `logic/ohmsweet.gam` plus its assets; scene board, DOS player settings or Make a walkthrough dialog. No recording starts. |
+  | `edit-check` | `sleuth/act1.map` and referenced disk assets; runs the Level check. Result-dependent steps are optional while its bot is still running. |
+  | `desk`, `box` | Public catalog/disks, manuals/printables rendered at runtime, desk artwork; power, large pad controls, face-out box, magazine, hint postcard/red film. Box contents depend on the chosen game. No trinket download or phone call starts. |
+  | `bbs` | Desk's simulated PC, CD/DOS resources and public game archives built/served on demand by `cdGames.ts`; guest call, file list/download and logoff. |
+  | `dos` | Separate `dos.html`, checked-in CD/DOS resources, recreated Game-Maker and copy-check/guide UI; the tour hands off with a page load. No external DOS emulator. |
+
+  `games/*/walkthrough.json` and demos are source fixtures; don't re-record them. `walkPaths.json`
+  is generated by game builds, not an extra tour recording prerequisite. Cast sprites, desk art,
+  narration (`public/tour/voice/index.json` and chapter `.ogg` files), barks and phone clips are
+  checked-in assets. Only regenerate sprites with `npm run heavy -- npx vite-node scripts/castSprites.ts`
+  from `web/` if absent. The check sets `gm-tour-sound=off`: it does not validate narration, music,
+  bark playback or phone audio. Voice clips are not a prerequisite for this muted selector check;
+  use `tour:audit` separately for narration. A production/offline check has different prerequisites.
+
+  **Browser state:** each size/theme gets a new nonpersistent context (empty local/session storage,
+  IndexedDB, caches and no service worker), `gm-ui=web`, sound off, reduced motion and forced theme.
+  State persists between chapters, including across the DOS handoff, but never comes from the
+  maintainer's browser. Imports, ratings, deleted projects, earned achievements, felt eggs, hearts,
+  trophies and a remembered face-out shelf box are absent initially. Don't seed eggs or achievements
+  to make steps pass. Conditional and phone-hidden targets may be skipped when optional; genuine
+  required-selector failures still need investigation. The shelf defaults to its first available
+  game (`desk/boxes/shelf.ts`), so incomplete disks change the box shown. Tour actions suppress
+  achievement unlocks; the BBS restores account/download state on leaving. The runner budgets the
+  selected steps (not a fixed 120) and allows a held BBS act's 45-second timeout before declaring
+  a stall. It does not change the tour's timing or content. Missing prerequisites cannot explain
+  every failure: for example, the Achievements chapter's section-heading selectors must still be
+  checked against the current tabbed Achievements page.
 - `tourAudit.ts` (`npm run tour:audit -- [--chapter <id>[,<id>]] [--url <url>] [--sizes 1440x900,390x844] [--max 240]`):
   plays chapters in real time in headless Chrome (own vite when no `--url`, never 5173; run it alone,
   two Chromes at once give false voice cuts) and flags, per step, a bubble far from its speaker or over

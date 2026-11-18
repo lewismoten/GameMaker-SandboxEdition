@@ -1322,3 +1322,5 @@ maker "ZORP" is invented. The shell is untested: nothing has been printed.
 - **Adversarial review fixes (November 18, 2026):** OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, fixed animation-loop checking, offline copy controls, ZIP comment handling, archive cancellation and the Pages publishing lease, and added regression tests. The findings were reviewed by OpenAI Codex (GPT-6.2 Astra) and verified by Claude Sonnet 5.5. No third-party material was added.
 
 - **Small review fixes (November 18, 2026):** OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, fixed malformed Level check reasons, terminal block chains, privacy sweep output, firmware paths and plaque capacity checks, with regression tests. The findings were made by OpenAI Codex (GPT-6.2 Astra). No third-party material was added.
+
+- **Tour check prerequisites (November 18, 2026):** OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, added fresh-worktree prerequisite diagnostics, preparation documentation and Node-only regression tests, and corrected the checker’s step budget and held-action wait. No tour content or third-party material was added.
