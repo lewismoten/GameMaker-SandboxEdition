@@ -3,6 +3,7 @@
 // rolled on it, and the people: the helpers of The Basics leaning on the rail (each in a loop of their own
 // times, so the cheering is not in step) and Doc Leo beside the lectern. The wall is the Starters' sky
 // color, so the sign boards (which are drawn on it) sit flush.
+import { applyBlockTimers } from '@lewismoten/gamemaker-sandbox-tools/kit/blockTimers';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { Book, PULL, SOLID, type Timed } from './book';
 import { skyOf, type Pal } from './palette';
@@ -210,11 +211,5 @@ export function addHallBlocks(
 
 /** A level's finished blocks: the book's, with each timed block given its next block and its ticks. */
 export function finishBlocks(l: { book: Book; timed: Timed[] }) {
-  const blocks = l.book.finish();
-  for (const t of l.timed) {
-    const b = blocks[l.book.n(t.name)];
-    b.nextBl = l.book.n(t.next);
-    b.ntime = t.ticks;
-  }
-  return blocks;
+  return applyBlockTimers(l.book.finish(), (name) => l.book.n(name), l.timed);
 }

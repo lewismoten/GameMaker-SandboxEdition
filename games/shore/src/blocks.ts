@@ -1,6 +1,7 @@
 // The small blocks both levels share: the pier's planks, the entrance mat and exit doors (drawn on whatever ground they
 // stand on), the signs (their board is a picture, set on the ground they stand on), and a ring of blocks that turn into
 // each other over time. Water and shore tiles are in water.ts and shoreTiles.ts.
+import { applyBlockTimers } from '@lewismoten/gamemaker-sandbox-tools/kit/blockTimers';
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { bevel } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';
@@ -85,11 +86,5 @@ export function addSignOn(book: Book, pal: Pal, ground: Pixels, name: string, li
 
 /** A level's finished blocks: the book's, with each timed block given its next block and its ticks. */
 export function finishBlocks(l: { book: Book; timed: Timed[] }): Block[] {
-  const blocks = l.book.finish();
-  for (const t of l.timed) {
-    const b = blocks[l.book.n(t.name)];
-    b.nextBl = l.book.n(t.next);
-    b.ntime = t.ticks;
-  }
-  return blocks;
+  return applyBlockTimers(l.book.finish(), (name) => l.book.n(name), l.timed);
 }

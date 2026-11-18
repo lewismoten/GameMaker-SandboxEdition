@@ -1,6 +1,7 @@
 // What every LUCKY CAT level is made of, and the helpers its levels share: a room painted on a Grid (see
 // games/kit/starter/map.ts for what the letters mean; ground.ts draws them in the game's woodcut), the Committee's
 // handbills, scenery and the level's own block set.
+import { applyBlockTimers } from '@lewismoten/gamemaker-sandbox-tools/kit/blockTimers';
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { Book, type Timed } from '../../kit/starter/book';
 import { Grid } from '../../kit/starter/grid';
@@ -35,13 +36,7 @@ export const GROUND = 10;
 
 /** The finished block set: the book's, with each timed block given its next block and its ticks. */
 export function finishBlocks(l: Pick<Level, 'book' | 'timed'>): Block[] {
-  const blocks = l.book.finish();
-  for (const t of l.timed) {
-    const b = blocks[l.book.n(t.name)];
-    b.nextBl = l.book.n(t.next);
-    b.ntime = t.ticks;
-  }
-  return blocks;
+  return applyBlockTimers(l.book.finish(), (name) => l.book.n(name), l.timed);
 }
 
 /** A new block set: the ground and walls, then the named prop groups and this level's charms. */

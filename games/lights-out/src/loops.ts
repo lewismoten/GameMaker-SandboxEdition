@@ -1,6 +1,7 @@
 // Loops of blocks. A block can turn into another block after some ticks (its "Next block" and "Time" in the Blocks tab);
 // a ring of them is an animation. The engine keeps one clock for each block number, so every cell of one block changes
 // in the same tick. Everything that moves in this game is such a ring.
+import { applyBlockTimers } from '@lewismoten/gamemaker-sandbox-tools/kit/blockTimers';
 import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { Book, PULL, type Timed } from '../../kit/starter/book';
 
@@ -17,11 +18,5 @@ export function addRing(book: Book, timed: Timed[], base: string, frames: Pixels
 
 /** A level's finished blocks: the book's, with each timed block given its next block and its ticks. */
 export function finishBlocks(l: { book: Book; timed: Timed[] }) {
-  const blocks = l.book.finish();
-  for (const t of l.timed) {
-    const b = blocks[l.book.n(t.name)];
-    b.nextBl = l.book.n(t.next);
-    b.ntime = t.ticks;
-  }
-  return blocks;
+  return applyBlockTimers(l.book.finish(), (name) => l.book.n(name), l.timed);
 }
