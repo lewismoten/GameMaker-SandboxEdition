@@ -17,7 +17,8 @@ import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { KEYS } from '../../kit/starter/blocks';
 import { SOLID } from '../../kit/starter/book';
 import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 
 /** A gold gate that costs two keys (Effect amount -2), with a second key hole so it looks the part. */
 function addGateTwo(book: Book, pal: Pal): void {
@@ -68,7 +69,7 @@ const onGround = (ground: number, s: Sign) => ground - 1 - s.board.length;
 
 /** Refuse to cover scenery, pickups, walls or another board. */
 const place = (m: StarterMap, x: number, y: number, sign: Sign, postHeight = 1) =>
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, x, y, sign, postHeight);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, x, y, sign, postHeight, { maxPostHeight: 1 });
 
 /** A wall of brick from row `from` down to a door: an arch (`top`) and the locked door (`gate`) on the last two rows. */
 function wall(g: Grid, x: number, ground: number, top: string, gate: string, from = 0): void {

@@ -12,7 +12,8 @@ import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
 import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { BOX, COIN, GEM, STUCK } from './monsters';
 
 export type SignName = 'monster' | 'stuck' | 'exit';
@@ -92,8 +93,8 @@ function aNumber(book: Book, signs: Record<SignName, Sign>): StarterMap {
   const m = new StarterMap(book, g.rows());
   const safe = { set: (x: number, y: number, block: string) => m.setOnSky(x, y, block) };
   // Explain the monster coins before the first prize, clear of its rising number.
-  stampTiledSign(safe, 15, onGround(GROUND, signs.monster), signs.monster, 1);
-  stampTiledSign(safe, 37, onGround(GROUND, signs.exit), signs.exit, 1);
+  stampTiledSign(safe, 15, onGround(GROUND, signs.monster), signs.monster, 1, { maxPostHeight: 1 });
+  stampTiledSign(safe, 37, onGround(GROUND, signs.exit), signs.exit, 1, { maxPostHeight: 1 });
   for (const [x, y] of L1_COINS) m.mon(COIN, x, y);
   return m;
 }
@@ -115,8 +116,8 @@ function itsOwn(book: Book, signs: Record<SignName, Sign>): StarterMap {
   const m = new StarterMap(book, g.rows());
   const safe = { set: (x: number, y: number, block: string) => m.setOnSky(x, y, block) };
   // Explain the persistent number before its coin, clear of the rising prizes.
-  stampTiledSign(safe, 21, onGround(GROUND, signs.stuck), signs.stuck, 1);
-  stampTiledSign(safe, 37, onGround(GROUND, signs.exit), signs.exit, 1);
+  stampTiledSign(safe, 21, onGround(GROUND, signs.stuck), signs.stuck, 1, { maxPostHeight: 1 });
+  stampTiledSign(safe, 37, onGround(GROUND, signs.exit), signs.exit, 1, { maxPostHeight: 1 });
   m.mon(GEM, L2_GEM, HEAD).mon(BOX, L2_BOX, HEAD).mon(STUCK, L2_STUCK, HEAD).mon(COIN, L2_COIN, HEAD);
   return m;
 }

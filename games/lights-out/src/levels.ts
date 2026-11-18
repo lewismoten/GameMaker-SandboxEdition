@@ -15,7 +15,8 @@ import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { ORIGIN, StarterMap } from '../../kit/starter/map';
 import { skyOf, type Pal } from '../../kit/starter/palette';
-import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { AIR, air, drip, floor, lantern, post, rock } from './cave';
 import { type Timed } from './loops';
@@ -267,7 +268,7 @@ function lay(
       }
       m.set(cx, cy, id);
     };
-    stampTiledSign({ set: (cx, cy, pic) => stamp(pic, cx, cy) }, x, y, sign, GROUND - y - sign.board.length);
+    stampTiledSign({ set: (cx, cy, pic) => stamp(pic, cx, cy) }, x, y, sign, GROUND - y - sign.board.length, { maxPostHeight: 1 });
     return [x, y];
   };
   return { map: m, timed, cells, signAt };

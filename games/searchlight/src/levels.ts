@@ -14,7 +14,8 @@ import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
 import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { speckle } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';
 import { CONE } from './lightArt';
@@ -128,9 +129,9 @@ function waitAndGo(book: Book, signs: Record<SignName, Sign>): StarterMap {
   );
   const m = new StarterMap(book, g.rows());
   hang(m, 0);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 11, onGround(GROUND, signs.seen), signs.seen);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 17, onGround(GROUND, signs.hide), signs.hide);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 41, 7, signs.exit, 2);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 11, onGround(GROUND, signs.seen), signs.seen, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 17, onGround(GROUND, signs.hide), signs.hide, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 41, 7, signs.exit, 2, { maxPostHeight: 1 });
   return m;
 }
 
@@ -152,8 +153,8 @@ function twoLights(book: Book, signs: Record<SignName, Sign>): StarterMap {
   );
   const m = new StarterMap(book, g.rows());
   hang(m, 1);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 33, onGround(GROUND, signs.rest), signs.rest);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 51, 7, signs.exitLarge, 2);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 33, onGround(GROUND, signs.rest), signs.rest, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 51, 7, signs.exitLarge, 2, { maxPostHeight: 1 });
   return m;
 }
 

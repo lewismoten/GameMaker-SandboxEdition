@@ -6,7 +6,8 @@
 //      sees red and green alike can't tell which is which. Both levels use the simulated palette during play.
 //   2. Shape and Brightness: the same stretch with spikes (dark, pointed) in place of the red plates
 //      and light striped plates for the safe ones. Nothing depends on color any more.
-import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
@@ -87,9 +88,9 @@ function redAndGreen(book: Book, signs: Record<SignName, Sign>): StarterMap {
   );
   const m = new StarterMap(book, g.rows());
   lay(m, 'plateSafe', 'plateHot');
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 4, onGround(GROUND, signs.sting), signs.sting);
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 12, onGround(GROUND, signs.alike), signs.alike);
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 35, 7, signs.exit);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 4, onGround(GROUND, signs.sting), signs.sting, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 12, onGround(GROUND, signs.alike), signs.alike, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 35, 7, signs.exit, 1, { maxPostHeight: 1 });
   return m;
 }
 
@@ -109,10 +110,10 @@ function shapeAndBrightness(book: Book, signs: Record<SignName, Sign>): StarterM
   );
   const m = new StarterMap(book, g.rows());
   lay(m, 'plateStripe', 'spikeRed');
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 4, onGround(GROUND, signs.shape), signs.shape);
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 12, onGround(GROUND, signs.stripe), signs.stripe);
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 25, onGround(GROUND, signs.any), signs.any);
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 35, 7, signs.exit2);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 4, onGround(GROUND, signs.shape), signs.shape, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 12, onGround(GROUND, signs.stripe), signs.stripe, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 25, onGround(GROUND, signs.any), signs.any, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 35, 7, signs.exit2, 1, { maxPostHeight: 1 });
   return m;
 }
 

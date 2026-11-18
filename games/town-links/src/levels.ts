@@ -13,7 +13,8 @@ import { Grid } from '../../kit/starter/grid';
 import { ORIGIN } from '../../kit/starter/map';
 import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
 import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { addOverBlocks, type Ground } from '../../overhead/src/blocks';
 import { OverMap } from '../../overhead/src/overMap';
 import { SEA, addWorldBlocks, landName } from './worldBlocks';
@@ -148,8 +149,8 @@ function worldLevel(book: Book, s: Record<SignName, Sign>): OverMap {
   );
   const m = new OverMap(book, rows, legend, 'sea');
   // Beside the approach trail, before the town; the key label is northwest of its pickup.
-  stampTiledSign(m, 8, 5, s.scale);
-  stampTiledSign(m, 17, 6, s.key);
+  stampTiledSign(m, 8, 5, s.scale, 1, { maxPostHeight: 1 });
+  stampTiledSign(m, 17, 6, s.key, 1, { maxPostHeight: 1 });
   return m;
 }
 
@@ -230,7 +231,7 @@ function townLevel(book: Book, s: Record<SignName, Sign>): OverMap {
   ] as const)
     g.put(x, y, 'T');
   const m = new OverMap(book, g.rows(), TOWN_LEGEND, 'tree');
-  stampTiledSign(m, 22, 11, s.locked);
+  stampTiledSign(m, 22, 11, s.locked, 1, { maxPostHeight: 1 });
   return m;
 }
 
@@ -266,7 +267,7 @@ function houseLevel(book: Book, s: Record<SignName, Sign>): OverMap {
   g.put(HOUSE_OUT[0] - ORIGIN, HOUSE_OUT[1] - ORIGIN, 'D');
   g.put(HOUSE_EXIT[0] - ORIGIN, HOUSE_EXIT[1] - ORIGIN, 'D');
   const m = new OverMap(book, g.rows(), HOUSE_LEGEND, 'wall');
-  stampTiledSign(m, 15, 5, s.exit);
+  stampTiledSign(m, 15, 5, s.exit, 1, { maxPostHeight: 1 });
   return m;
 }
 

@@ -13,7 +13,8 @@ import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
 import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { GUARD, TARGET } from './monsters';
 
 export type SignName = 'throw' | 'exit';
@@ -83,9 +84,9 @@ function throwAStar(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [8, 21, 31],
   );
   const m = new StarterMap(book, g.rows());
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 6, onGround(GROUND, signs.throw), signs.throw);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 6, onGround(GROUND, signs.throw), signs.throw, 1, { maxPostHeight: 1 });
 
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 38, onGround(GROUND, signs.exit), signs.exit);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 38, onGround(GROUND, signs.exit), signs.exit, 1, { maxPostHeight: 1 });
   for (const x of TARGETS_1) m.mon(TARGET, x, STAND);
   return m;
 }
@@ -109,7 +110,7 @@ function narrowWay(book: Book, signs: Record<SignName, Sign>): StarterMap {
   );
   const m = new StarterMap(book, g.rows());
 
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 38, onGround(GROUND, signs.exit), signs.exit);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 38, onGround(GROUND, signs.exit), signs.exit, 1, { maxPostHeight: 1 });
   m.mon(GUARD, GUARD_X, STAND);
   return m;
 }

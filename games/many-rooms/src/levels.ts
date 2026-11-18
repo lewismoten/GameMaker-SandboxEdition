@@ -12,7 +12,8 @@ import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { ORIGIN, StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
-import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { addRoomBricks, wallOf, type RoomColor } from './roomBrick';
 
@@ -117,7 +118,7 @@ function built(book: Book, g: Grid, start: Spot): StarterMap {
 }
 
 const sign = (m: StarterMap, r: Spot0, lx: number, s: Sign, top = onGround(FLOOR, s)) =>
-  stampTiledSign({ set: m.setOnSky.bind(m) }, r.rl + lx, r.rt + top, s, FLOOR - top - s.board.length);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, r.rl + lx, r.rt + top, s, FLOOR - top - s.board.length, { maxPostHeight: 1 });
 const coinRow = (g: Grid, r: Spot0, from: number, to: number) => g.row(r.rt + FLOOR - 1, r.rl + from, r.rl + to, 'c');
 
 type Rooms = Record<string, Spot0>;

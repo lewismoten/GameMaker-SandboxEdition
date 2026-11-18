@@ -11,7 +11,8 @@ import { Grid } from '../../kit/starter/grid';
 import { ORIGIN, StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
 import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { addWordBlocks } from './wordBlocks';
 
 export type SignName = 'words' | 'takes' | 'tray' | 'again' | 'noTray' | 'gone' | 'last';
@@ -48,7 +49,7 @@ const onGround = (ground: number, s: Sign) => ground - 1 - s.board.length;
 
 /** A single grounded post keeps each plaque beside the words and scenery. */
 function place(m: StarterMap, x: number, sign: Sign): void {
-  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, x, onGround(10, sign), sign);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, x, onGround(10, sign), sign, 1, { maxPostHeight: 1 });
 }
 
 /** A wall of brick from the top down to a lock: the lock and its arch are set after. */

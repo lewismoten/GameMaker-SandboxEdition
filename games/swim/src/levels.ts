@@ -14,7 +14,8 @@ import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
 import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { addWater } from './water';
 
 export type SignName = keyof typeof WORDS;
@@ -132,9 +133,9 @@ function theCreek(book: Book, signs: Record<SignName, Sign>): StarterMap {
   const m = new StarterMap(book, g.rows());
   for (let x = c0; x <= c1; x++) m.set(x, G, 'creekTop').set(x, G + 1, 'creek');
   for (const x of L1.stones) m.set(x, G, 'stone');
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 5, onGround(G, signs.pull), signs.pull);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 9, onGround(G, signs.stones), signs.stones);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 35, 7, signs.exit, 2);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 5, onGround(G, signs.pull), signs.pull, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 9, onGround(G, signs.stones), signs.stones, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 35, 7, signs.exit, 2, { maxPostHeight: 1 });
   return m;
 }
 
@@ -165,9 +166,9 @@ function theFloat(book: Book, signs: Record<SignName, Sign>): StarterMap {
     m.set(x, G, 'deepTop');
     for (let y = G + 1; y < G + L2.depth; y++) m.set(x, y, 'deep');
   }
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 5, onGround(G, signs.float), signs.float);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 8, onGround(G, signs.top), signs.top);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 38, 7, signs.exit, 2);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 5, onGround(G, signs.float), signs.float, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 8, onGround(G, signs.top), signs.top, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 38, 7, signs.exit, 2, { maxPostHeight: 1 });
   return m;
 }
 
@@ -199,10 +200,10 @@ function theLift(book: Book, signs: Record<SignName, Sign>): StarterMap {
     m.set(x, L3.top, 'liftTop');
     for (let y = L3.top + 1; y < F; y++) m.set(x, y, 'lift');
   }
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 31, onGround(F, signs.lift), signs.lift);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 31, onGround(F, signs.lift), signs.lift, 1, { maxPostHeight: 1 });
   // Float beside the upper water row: the approach has no nearby ground for a short post.
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 26, 4, signs.ledge, 0);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 1, 3, signs.back, 2);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 26, 4, signs.ledge, 0, { maxPostHeight: 1 });
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 1, 3, signs.back, 2, { maxPostHeight: 1 });
   return m;
 }
 

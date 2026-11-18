@@ -8,7 +8,8 @@
 // The gallery is a single file (GALLERY.MAP). Each door leads to its own SCENE of the game; the scenes list
 // the same map and blocks and differ in one slot, the palette (game.ts). So the same blocks are drawn in
 // five sets of colors, and the way back from each lands you at the door you came through.
-import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { ORIGIN, StarterMap } from '../../kit/starter/map';
 import { Book, PULL } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
@@ -97,6 +98,8 @@ function hall(book: Book, signs: Record<string, Sign>): Level {
       x,
       y,
       s,
+      1,
+      { maxPostHeight: 1 },
     );
   HALL_DOORS.forEach((x, i) => board(signs[`door${i}`], x - Math.floor(signs[`door${i}`].board[0].length / 2), SIGN_ROW));
   board(signs.finish, HALL_FINISH - 2, GROUND - 2);
@@ -147,6 +150,8 @@ function gallery(book: Book, signs: Record<string, Sign>): Level {
       x,
       SIGN_ROW + 2,
       signs[`name${s.word}`],
+      1,
+      { maxPostHeight: 1 },
     );
   });
   // the traffic light, on its pole (the lamps are one block each: red, amber, green from the top)
@@ -160,10 +165,10 @@ function gallery(book: Book, signs: Record<string, Sign>): Level {
   ['apple', 'banana', 'lime', 'grapes', 'orange'].forEach((f, i) => m.set(TABLE_X + i, GROUND - 3, f));
   // the garden bed
   ['rose', 'sun', 'iris', 'bluebell'].forEach((f, i) => m.set(FLOWERS_X + i, GROUND - 1, f));
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 5, onGround(signs.same), signs.same);
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, LIGHT_X - 2, GROUND - 3, signs.light, 2);
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, TABLE_X - 2, onGround(signs.fruit), signs.fruit);
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, GALLERY_END - 1, GROUND - 3, signs.back);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 5, onGround(signs.same), signs.same, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, LIGHT_X - 2, GROUND - 3, signs.light, 2, { maxPostHeight: 1 });
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, TABLE_X - 2, onGround(signs.fruit), signs.fruit, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, GALLERY_END - 1, GROUND - 3, signs.back, 1, { maxPostHeight: 1 });
   return { file: 'gallery', title: 'The Gallery', map: m };
 }
 

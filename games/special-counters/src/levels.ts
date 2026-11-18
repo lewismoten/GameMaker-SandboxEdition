@@ -11,7 +11,8 @@ import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
 import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { addGoldBlocks, addGreenBlocks } from './lockBlocks';
 
 const WORDS = {
@@ -93,10 +94,10 @@ function takeBoth(book: Book, signs: Record<SignName, Sign>): StarterMap {
   for (const x of [7, 21, 43]) g.put(x, GROUND - 1, 'f');
   const m = new StarterMap(book, g.rows());
   m.wallToSky(24);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 5, onGround(GROUND, signs.both), signs.both);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 19, onGround(GROUND, signs.one), signs.one);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 33, onGround(GROUND, signs.spare), signs.spare);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 39, onGround(GROUND, signs.exit), signs.exit);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 5, onGround(GROUND, signs.both), signs.both, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 19, onGround(GROUND, signs.one), signs.one, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 33, onGround(GROUND, signs.spare), signs.spare, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 39, onGround(GROUND, signs.exit), signs.exit, 1, { maxPostHeight: 1 });
   return m;
 }
 
@@ -115,9 +116,9 @@ function spareFits(book: Book, signs: Record<SignName, Sign>): StarterMap {
   for (const x of [10, 26, 44]) g.put(x, GROUND - 1, 'f');
   const m = new StarterMap(book, g.rows());
   m.wallToSky(16);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 5, onGround(GROUND, signs.none), signs.none);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 18, onGround(GROUND, signs.again), signs.again);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 39, onGround(GROUND, signs.exit), signs.exit);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 5, onGround(GROUND, signs.none), signs.none, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 18, onGround(GROUND, signs.again), signs.again, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 39, onGround(GROUND, signs.exit), signs.exit, 1, { maxPostHeight: 1 });
   return m;
 }
 
@@ -144,9 +145,9 @@ function notThat(book: Book, signs: Record<SignName, Sign>): StarterMap {
     .set(24, GROUND - 1, 'gateGreen')
     .set(22, 2, 'keyGreen');
   m.wallToSky(24).wallToSky(34);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 12, onGround(GROUND, signs.number), signs.number);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 28, onGround(GROUND, signs.saved), signs.saved);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 39, onGround(GROUND, signs.exit), signs.exit);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 12, onGround(GROUND, signs.number), signs.number, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 28, onGround(GROUND, signs.saved), signs.saved, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 39, onGround(GROUND, signs.exit), signs.exit, 1, { maxPostHeight: 1 });
   return m;
 }
 

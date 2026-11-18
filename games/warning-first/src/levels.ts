@@ -18,7 +18,8 @@ import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
 import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { MOODS, fog, grate, mat, pit, plank, type Mood } from './props';
 import { FLICKER_STEPS, GONE, PLANK_FIRST, PUFF, PUFF_HURT, REST, RUMBLE, SHAKE_STEPS, SOLID, VENT_FIRST } from './timing';
 
@@ -132,7 +133,7 @@ function rumbleThenPuff(pal: Pal): Level {
     [23, 30],
   );
   const m = new StarterMap(book, g.rows());
-  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 10, onGround(GROUND, signs.puff), signs.puff);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 10, onGround(GROUND, signs.puff), signs.puff, 1, { maxPostHeight: 1 });
   VENT_X.forEach((x, k) => {
     m.set(x, GROUND, ventBlock(k, 'g', 'start'))
       .set(x, GROUND - 1, ventBlock(k, 'a', 'start'))
@@ -181,7 +182,7 @@ function flickerThenGone(pal: Pal): Level {
   // the pits: open the ground under each bridge
   for (const x0 of BRIDGE_X) g.fill(x0, GROUND, BRIDGE_W, 4, ' ');
   const m = new StarterMap(book, g.rows());
-  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 4, onGround(GROUND, signs.flicker), signs.flicker);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 4, onGround(GROUND, signs.flicker), signs.flicker, 1, { maxPostHeight: 1 });
   BRIDGE_X.forEach((x0, k) => {
     for (let x = x0; x < x0 + BRIDGE_W; x++) {
       m.set(x, GROUND, `p${k}.start`).set(x, PIT_ROWS[0], 'pit').set(x, PIT_ROWS[1], 'mat');

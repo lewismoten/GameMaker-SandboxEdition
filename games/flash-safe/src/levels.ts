@@ -20,7 +20,8 @@ import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
 import type { Sign as Panel } from '../../kit/starter/sign';
 import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { BURR } from './monsters';
 import { STORM, bolt, lamp, lampPost, nope, onSky } from './props';
 import { BLINK_OFF, BLINK_ON, PULSE_STEP, SKY_CALM, SKY_FIRST, SKY_HOLD, SKY_STEP } from './timing';
@@ -154,8 +155,8 @@ function hitWithoutAFlash(pal: Pal): Level {
     [12, 16],
   );
   const m = new StarterMap(book, g.rows());
-  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 5, onGround(GROUND, signs.cues), signs.cues);
-  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 28, onGround(GROUND, signs.nope), signs.nope);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 5, onGround(GROUND, signs.cues), signs.cues, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 28, onGround(GROUND, signs.nope), signs.nope, 1, { maxPostHeight: 1 });
   m.sign(33, onGround(GROUND, panel), panel);
   for (const x of BURR_X) m.mon(BURR, x, GROUND - 1);
   return { file: 'one', title: 'Hit Without a Flash', hint: 'Show a hit some other way.', map: m, book, timed: [] };
@@ -202,11 +203,11 @@ function slowAndSmall(pal: Pal): Level {
     [7, 22, 26],
   );
   const m = new StarterMap(book, g.rows());
-  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 4, onGround(GROUND, signs.slow), signs.slow);
-  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 13, onGround(GROUND, signs.soft), signs.soft);
-  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 23, onGround(GROUND, signs.noper), signs.noper);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 4, onGround(GROUND, signs.slow), signs.slow, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 13, onGround(GROUND, signs.soft), signs.soft, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 23, onGround(GROUND, signs.noper), signs.noper, 1, { maxPostHeight: 1 });
   m.sign(28, onGround(GROUND, panel), panel);
-  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 34, onGround(GROUND, signs.fade), signs.fade);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 34, onGround(GROUND, signs.fade), signs.fade, 1, { maxPostHeight: 1 });
   LAMP_X.forEach((x, k) => {
     m.setOnSky(x, GROUND - 1, 'post.lower')
       .setOnSky(x, GROUND - 2, 'post.upper')
@@ -287,8 +288,8 @@ function stormHeld(pal: Pal): Level {
   const g = room(40);
   for (const x of [15, 24, 28, 31]) g.put(x, GROUND - 1, 'c');
   const m = new StormMap(book, g.rows());
-  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 5, onGround(GROUND, signs.storm), signs.storm);
-  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 10, onGround(GROUND, signs.bolt), signs.bolt);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 5, onGround(GROUND, signs.storm), signs.storm, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 10, onGround(GROUND, signs.bolt), signs.bolt, 1, { maxPostHeight: 1 });
   for (const x of [15, 24, 28, 31]) m.set(x, GROUND - 1, 'st.coin.start');
   m.set(3, 8, 'st.doorwayTop.start').set(3, 9, 'st.doorwayBottom.start').set(40, 8, 'st.doorTop.start').set(40, 9, 'st.doorBottom.start');
   for (let row = 0; row < 3; row++) m.set(BOLT_X, BOLT_TOP + row, `st.bolt${row}.start`);

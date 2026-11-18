@@ -15,7 +15,8 @@ import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
 import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { MONS } from './monsters';
 
 /** A flier's kind as `[column, MONS number]` gives it: the name for `patrol()`. */
@@ -77,7 +78,7 @@ const onGround = (ground: number, s: Sign) => ground - 1 - s.board.length;
 
 /** Refuse to cover scenery, awnings, doors or coins with either the board or its post. */
 function putSign(m: StarterMap, x: number, y: number, sign: Sign, post = 1): void {
-  stampTiledSign({ set: (col, row, block) => m.setOnSky(col, row, block) }, x, y, sign, post);
+  stampTiledSign({ set: (col, row, block) => m.setOnSky(col, row, block) }, x, y, sign, post, { maxPostHeight: 1 });
 }
 
 /**

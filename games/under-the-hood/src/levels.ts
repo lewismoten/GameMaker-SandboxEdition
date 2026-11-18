@@ -15,7 +15,8 @@ import { Grid } from '../../kit/starter/grid';
 import { ORIGIN, StarterMap } from '../../kit/starter/map';
 import { skyOf, type Pal } from '../../kit/starter/palette';
 import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { addHoodBlocks, hoodPalette, PLAY_BYTES } from './hoodBlocks';
 
 const SIGNS = {
@@ -120,8 +121,8 @@ function whatIsAnExe(book: Book, signs: Record<SignName, Sign>, pal: Pal): Start
   m.set(33, GROUND - 2, 'arch').set(33, GROUND - 1, 'playGate');
   PLAY_BYTES.forEach(([hex], i) => m.set(20 + i * 2, GROUND - 1, `b${hex}`));
 
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 15, onGround(GROUND, signs.play), signs.play);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 28, onGround(GROUND, signs.gate), signs.gate);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 15, onGround(GROUND, signs.play), signs.play, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 28, onGround(GROUND, signs.gate), signs.gate, 1, { maxPostHeight: 1 });
 
   dump(book, pal, m);
   return m;
@@ -143,9 +144,9 @@ function sameSize(book: Book, signs: Record<SignName, Sign>, pal: Pal): StarterM
   m.set(25, LEDGE - 2, 'arch').set(25, LEDGE - 1, 'goPlate');
   m.set(25, GROUND - 2, 'arch').set(25, GROUND - 1, 'startPlate');
 
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 20, onGround(GROUND, signs.long), signs.long);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 20, onGround(LEDGE, signs.fits), signs.fits);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 22, onGround(LEDGE, signs.spaces), signs.spaces);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 20, onGround(GROUND, signs.long), signs.long, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 20, onGround(LEDGE, signs.fits), signs.fits, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 22, onGround(LEDGE, signs.spaces), signs.spaces, 1, { maxPostHeight: 1 });
 
   dump(book, pal, m);
   return m;
@@ -161,11 +162,11 @@ function askFirst(book: Book, signs: Record<SignName, Sign>, pal: Pal): StarterM
   m.set(16, GROUND - 2, 'arch').set(16, GROUND - 1, 'backupGate');
   m.set(10, GROUND - 1, 'floppy');
   m.set(23, 5, 'creditsL').set(24, 5, 'creditsR');
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 5, onGround(GROUND, signs.copy), signs.copy);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 5, onGround(GROUND, signs.copy), signs.copy, 1, { maxPostHeight: 1 });
 
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 17, onGround(GROUND, signs.own), signs.own);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 22, onGround(GROUND, signs.credits), signs.credits);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 28, onGround(GROUND, signs.paid), signs.paid);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 17, onGround(GROUND, signs.own), signs.own, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 22, onGround(GROUND, signs.credits), signs.credits, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 28, onGround(GROUND, signs.paid), signs.paid, 1, { maxPostHeight: 1 });
 
   dump(book, pal, m);
   return m;

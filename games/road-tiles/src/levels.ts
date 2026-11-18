@@ -8,7 +8,8 @@
 import { Book } from '../../kit/starter/book';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
 import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { addRoadBlocks } from './blocks';
 import { RoadMap } from './overMap';
 import type { Grounds } from './roadArt';
@@ -171,8 +172,8 @@ function groundLevel(book: Book, s: Record<SignName, Sign>): RoadMap {
     },
   };
   // Before each junction in the left-to-right reading order, clear of every road tile.
-  stampTiledSign(target, 2, 5, s.cross, 0);
-  stampTiledSign(target, 10, 5, s.tee, 0);
+  stampTiledSign(target, 2, 5, s.cross, 0, { maxPostHeight: 1 });
+  stampTiledSign(target, 10, 5, s.tee, 0, { maxPostHeight: 1 });
   return m;
 }
 

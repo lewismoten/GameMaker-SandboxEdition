@@ -15,7 +15,8 @@ import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
 import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { demoMeter, menuThumb, type Mural } from './props';
 
 /** A link: touching the world cell `from` takes the hero to scene `to` (a key of the scenes, or 'end'), standing at that scene's entrance. */
@@ -79,7 +80,7 @@ function hall(book: Book, door: number, signs: { x: number; sign: Sign }[], mura
   mural.m.names.forEach((row, dy) => row.forEach((n, dx) => m.set(mural.x + dx, mural.y + dy, n)));
   // Check against the finished mural and garden, not just the hall's blank sky.
   const sky = { set: (x: number, y: number, block: string) => m.setOnSky(x, y, block) };
-  signs.forEach((s) => stampTiledSign(sky, s.x, onGround(GROUND, s.sign), s.sign));
+  signs.forEach((s) => stampTiledSign(sky, s.x, onGround(GROUND, s.sign), s.sign, 1, { maxPostHeight: 1 }));
   return m;
 }
 

@@ -167,7 +167,7 @@ Source is MIT licensed; no game assets or decoder binaries are bundled.
 
 ## Tiled signs
 
-`kit/tiledSigns` exports `buildTiledSigns(texts, options)` and `stampTiledSign(map, x, y, sign, postHeight = 1)`.
+`kit/tiledSigns` exports `buildTiledSigns(texts, options)` and `stampTiledSign(map, x, y, sign, postHeight = 1, options = {})`.
 Supply every sign from every level together as a record of `{ rows: string[][], post?: boolean }`.
 Each row is a line: chunks are joined without tile padding, whitespace becomes single spaces,
 and lowercase becomes uppercase. Letters pack continuously across tile boundaries, with each
@@ -200,6 +200,12 @@ retain their native 3×5 pixels inside the 4×8 cell, while uppercase letters an
 Centered fragments can cost more unique tiles.
 Add the returned pictures to your block set with the game's passable-background rules, once for the whole game or separately for each map selected by `include`.
 The stamp helper accepts any map with `set(x, y, blockName)`; taller posts reuse the same centered tile or pair.
+Both `stampTiledSign` and `stampMicroPlaques` accept a final `{ maxPostHeight }` option,
+measured in 20-pixel blocks. When `postHeight` exceeds this limit, the whole post is
+omitted so the board floats; it is never shortened. For stacks, the distance is measured
+from the bottom plaque. Omit the option for unlimited post heights (the existing behavior),
+or use `{ maxPostHeight: 1 }` for a one-block limit. A zero limit always floats the mount.
+Post heights and explicit limits must be nonnegative integers.
 
 `font: 'micro'` opts into Lewis Moten’s two-line 3×5 boards. Text flows continuously
 across the whole board: N blocks hold 4N characters per line, with a one-pixel gap.

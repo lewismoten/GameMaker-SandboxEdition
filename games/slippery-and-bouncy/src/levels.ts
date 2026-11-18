@@ -12,7 +12,8 @@ import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
 import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { addSlick } from './slick';
 
 export type SignName = 'ice' | 'ledge' | 'exit';
@@ -94,9 +95,9 @@ function iceLevel(book: Book, signs: Record<SignName, Sign>): StarterMap {
   const m = new StarterMap(book, g.rows());
   floor(m, ICE[0], ICE[1], 'ice', 'slickAir');
   // Taller posts keep the boards below the camera top and clear of ground art.
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 6, GROUND - 2, signs.ice);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 24, GROUND - 2, signs.ledge);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 43, 7, signs.exit, 2);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 6, GROUND - 2, signs.ice, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 24, GROUND - 2, signs.ledge, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 43, 7, signs.exit, 2, { maxPostHeight: 1 });
   m.set(ICE_SPIKE, GROUND - 1, 'spikeUp');
   return m;
 }
@@ -121,7 +122,7 @@ function beltLevel(book: Book, signs: Record<SignName, Sign>): StarterMap {
   );
   const m = new StarterMap(book, g.rows());
   floor(m, BELT[0], BELT[1], 'belt', 'beltAir');
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 34, 7, signs.exit, 2);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 34, 7, signs.exit, 2, { maxPostHeight: 1 });
   m.set(BELT_SPIKE, GROUND - 1, 'spikeUp');
   return m;
 }
@@ -158,7 +159,7 @@ function windLevel(book: Book, signs: Record<SignName, Sign>): StarterMap {
     m.set(x, GROUND, 'fan');
     for (let y = SHELF_ROW + 3; y < GROUND; y++) m.set(x, y, 'windAir');
   }
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 23, SHELF_ROW - 1 - signs.exit.board.length, signs.exit);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 23, SHELF_ROW - 1 - signs.exit.board.length, signs.exit, 1, { maxPostHeight: 1 });
   m.set(SHELF_SPIKE, SHELF_ROW - 1, 'spikeUp');
   return m;
 }

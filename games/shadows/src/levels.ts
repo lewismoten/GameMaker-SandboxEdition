@@ -14,7 +14,8 @@ import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
 import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { addMicroPlaques, stampTiledSign, type MicroPlaqueText } from '../../kit/starter/microPlaque';
+import { addMicroPlaques, type MicroPlaqueText } from '../../kit/starter/microPlaque';
+import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { CRITTER } from './critters';
 import { addYardBlocks, type Ground } from './blocks';
 import type { Look } from './text';
@@ -154,6 +155,7 @@ const board = (m: StarterMap, book: Book, s: Sign, x: number, y: number) =>
     y,
     s,
     0,
+    { maxPostHeight: 1 },
   );
 
 /** The yard, with the signs that say how its shadows are painted (`look` is 'solid' or 'dither'). */

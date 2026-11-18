@@ -11,7 +11,8 @@
 // A "stage" is one scene of a level: a palette and the links that lead out of it. A level with
 // several stages loads the same .MAP and .BBL in each; only the palette slot differs. Nothing in
 // the map or the blocks knows what time it is.
-import { addMicroPlaques, stampTiledSign, stampMicroPlaques } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign, stampMicroPlaques } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { Book, PULL, SOLID } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
@@ -120,9 +121,9 @@ function oneMapTwoLooks(pal: Pal): Level {
     m.set(x, y, 'star');
   // Short hints stand on clear ground before the porch.
   const signsOnSky = { set: m.setOnSky.bind(m) };
-  stampMicroPlaques(signsOnSky, 5, 7, [signs.palettes, signs.look]);
-  stampTiledSign(signsOnSky, 11, 8, signs.sun);
-  stampTiledSign(signsOnSky, 16, 8, signs.door);
+  stampMicroPlaques(signsOnSky, 5, 7, [signs.palettes, signs.look], 1, { maxPostHeight: 1 });
+  stampTiledSign(signsOnSky, 11, 8, signs.sun, 1, { maxPostHeight: 1 });
+  stampTiledSign(signsOnSky, 16, 8, signs.door, 1, { maxPostHeight: 1 });
   const door = world(DOOR_ONE, 9);
   const enter = m.start;
   return {
@@ -196,8 +197,8 @@ function sundownStreet(pal: Pal): Level {
     m.set(x, y, 'star');
   const signsOnSky = { set: m.setOnSky.bind(m) };
   // Gate arrivals open at row 4: keep the whole board readable in every palette.
-  stampMicroPlaques(signsOnSky, 4, 7, [signs.gate, signs.look]);
-  stampTiledSign(signsOnSky, 7, 8, signs.steps);
+  stampMicroPlaques(signsOnSky, 4, 7, [signs.gate, signs.look], 1, { maxPostHeight: 1 });
+  stampTiledSign(signsOnSky, 7, 8, signs.steps, 1, { maxPostHeight: 1 });
   const through = (mid: number): [number, number][] => [world(mid, 9), world(mid, 8)];
   const door = world(DOOR_TWO, 9);
   return {

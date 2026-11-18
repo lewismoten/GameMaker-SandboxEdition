@@ -8,7 +8,8 @@
 //   3. The Open Road: a short road with one hill and its scene sets NO character file: the hero you picked
 //                    last is still the hero. Nothing on it needs a particular hero; every one can finish it.
 // Every edge is a hedge or a wall you can see, so nobody is stopped by something they can't.
-import { addMicroPlaques, stampTiledSign, stampMicroPlaques } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign, stampMicroPlaques } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
@@ -125,9 +126,9 @@ function twoDoors(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [10, 21, 26],
   );
   const m = new StarterMap(book, g.rows());
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 3, 9, signs.fast);
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 18, 10, signs.pick);
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 32, 9, signs.big);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 3, 9, signs.fast, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 18, 10, signs.pick, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 32, 9, signs.big, 1, { maxPostHeight: 1 });
   return m;
 }
 
@@ -157,8 +158,8 @@ function theClimb(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [11, 36, 45, 48],
   );
   const m = new StarterMap(book, g.rows());
-  stampMicroPlaques({ set: (x, y, name) => m.setOnSky(x, y, name) }, 12, 14, [signs.high, signs.back]);
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 50, 14, signs.exit);
+  stampMicroPlaques({ set: (x, y, name) => m.setOnSky(x, y, name) }, 12, 14, [signs.high, signs.back], 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 50, 14, signs.exit, 1, { maxPostHeight: 1 });
   return m;
 }
 
@@ -188,8 +189,8 @@ function openRoad(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [8, 30, 36],
   );
   const m = new StarterMap(book, g.rows());
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 5, 12, signs.carry);
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 40, 11, signs.exit);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 5, 12, signs.carry, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 40, 11, signs.exit, 1, { maxPostHeight: 1 });
   return m;
 }
 

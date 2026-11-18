@@ -8,7 +8,8 @@
 //      right edge as well, and comes out on the left.
 // A dashed white line marks the map's top row and left column wherever the road crosses them. Hedges you can see
 // close the road in, so nothing stops Mia that she can't see.
-import { addMicroPlaques, stampTiledSign, stampMicroPlaques } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign, stampMicroPlaques } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
@@ -110,8 +111,8 @@ function build(book: Book, course: Course, signs: Record<SignName, Sign>, placed
         set(x, y, block);
       },
     };
-    if (name === 'length2') stampMicroPlaques(target, 0, 0, [s, signs.distance], 0);
-    else stampTiledSign(target, 0, 0, s);
+    if (name === 'length2') stampMicroPlaques(target, 0, 0, [s, signs.distance], 0, { maxPostHeight: 1 });
+    else stampTiledSign(target, 0, 0, s, 1, { maxPostHeight: 1 });
   }
   return { start: [sx, sy], exits, done: () => map };
 }

@@ -18,7 +18,8 @@ import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
 import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { addCrateBlocks } from './blocks';
 import { PIP, PLOP } from './monsters';
 
@@ -94,7 +95,7 @@ function room(book: Book, width: number, r: Room): StarterMap {
   // Every board and centered post must fit the existing tunnel, scenery and pickups.
   for (const [s, x] of r.signs) {
     const target = { set: (x: number, y: number, name: string) => m.setOnSky(x, y, name) };
-    stampTiledSign(target, x, onGround(GROUND, s), s);
+    stampTiledSign(target, x, onGround(GROUND, s), s, 1, { maxPostHeight: 1 });
   }
   return m;
 }

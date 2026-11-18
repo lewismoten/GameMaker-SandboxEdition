@@ -15,7 +15,8 @@ import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
-import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { STAGES, bed, hole, sandAt, sandRamps, stone, tuft, type Kind } from './props';
 
@@ -131,9 +132,9 @@ function dontStandStill(pal: Pal): Level {
   );
   const m = new StarterMap(book, g.rows());
   const signMap = { set: (x: number, y: number, block: string) => m.setOnSky(x, y, block) };
-  stampTiledSign(signMap, 4, onGround(G, signs.sinks), signs.sinks);
+  stampTiledSign(signMap, 4, onGround(G, signs.sinks), signs.sinks, 1, { maxPostHeight: 1 });
   // Both reminders precede the first sand; their short posts stand on firm turf.
-  stampTiledSign(signMap, 9, onGround(G, signs.walk), signs.walk);
+  stampTiledSign(signMap, 9, onGround(G, signs.walk), signs.walk, 1, { maxPostHeight: 1 });
   lay(m, G, SAND_ONE[0], SAND_ONE[1], 'sand');
   m.set(SAND_ONE[0] - 1, G - 1, 'tuft').set(SAND_ONE[1] + 1, G - 1, 'tuft');
   return { file: 'one', title: "Don't Stand Still", hint: 'Sand sinks under your feet.', map: m, book };
@@ -159,7 +160,7 @@ function steppingStones(pal: Pal): Level {
   );
   const m = new StarterMap(book, g.rows());
   const signMap = { set: (x: number, y: number, block: string) => m.setOnSky(x, y, block) };
-  stampTiledSign(signMap, 4, onGround(G, signs.stones), signs.stones);
+  stampTiledSign(signMap, 4, onGround(G, signs.stones), signs.stones, 1, { maxPostHeight: 1 });
 
   lay(m, G, SAND_TWO[0], SAND_TWO[1], 'sand');
   lay(m, G, WET_TWO[0], WET_TWO[1], 'wet');
