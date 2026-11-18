@@ -11,6 +11,14 @@ sprites (`castSprite.ts`, from `web/public/cast/sprites.json`) to the Teddy game
 (`castSound.ts`), and the games each appears in (`castThumbs.ts`; `cameos.json` for new cameos,
 `hidden.json` for the Easter eggs and tin hearts, written by `web/scripts/castHidden.ts`).
 
+`castData.ts` assembles the original cast order and applies cameos, hidden placements and
+chicken variants. Its typed groups live in `castSandbox.ts`, `castStarters.ts` (Kit and
+his helpers) and `castBizarre.ts`; `castGames.ts` holds the ordered game catalog and
+`castTypes.ts` their shared types. New cameos still go in `cameos.json` as
+`{ "<member id>": [{ "game": "<game id>", "as": "what they do" }] }`; list each game in
+`CAST_GAMES` first. `castDataIdentity.test.ts` pins the SHA-256 of the full serialized
+exports, chicken variants and family results captured before the split.
+
 `castPage.ts` keeps the selected tab and card in `tab` and `who` address parameters;
 the stage's character choice is a separate `on` parameter (`castStage.ts`). The stage has
 Play/Pause, Previous/Next and a character picker. With reduced motion, characters stand

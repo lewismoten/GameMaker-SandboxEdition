@@ -53,6 +53,7 @@ const sources = {
   'kit/blockRoles': 'kit/blockRoles',
   'kit/clips': 'kit/clips',
   'kit/eventLog': 'kit/eventLog',
+  'kit/flashMeter': 'kit/flashMeter',
   'kit/gameSim': 'kit/gameSim',
   'kit/levelGen': 'kit/levelGen/index',
   'kit/laserClearance': 'kit/laserClearance',
