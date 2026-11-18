@@ -51,6 +51,7 @@ const sources = {
   images: 'images',
   'kit/blit': 'kit/blit',
   'kit/blockRoles': 'kit/blockRoles',
+  'kit/blockTimers': 'kit/blockTimers',
   'kit/clips': 'kit/clips',
   'kit/eventLog': 'kit/eventLog',
   'kit/flashMeter': 'kit/flashMeter',

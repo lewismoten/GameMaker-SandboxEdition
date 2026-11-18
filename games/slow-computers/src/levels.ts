@@ -8,6 +8,7 @@
 //
 // What the signs ask is for a player that has a speed setting; the game itself never names a button (a DOS
 // player has none). Every room ends in a visible hedge, so Kit is never stopped by something he can't see.
+import { applyBlockTimers } from '@lewismoten/gamemaker-sandbox-tools/kit/blockTimers';
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { Book, PULL, type Timed } from '../../kit/starter/book';
@@ -34,13 +35,7 @@ export interface Level {
 
 /** The finished block set: the book's, with each timed block given its next block and its ticks. */
 export function finishBlocks(l: Pick<Level, 'book' | 'timed'>): Block[] {
-  const blocks = l.book.finish();
-  for (const t of l.timed) {
-    const b = blocks[l.book.n(t.name)];
-    b.nextBl = l.book.n(t.next);
-    b.ntime = t.ticks;
-  }
-  return blocks;
+  return applyBlockTimers(l.book.finish(), (name) => l.book.n(name), l.timed);
 }
 
 const AIR = { grav: PULL.down };

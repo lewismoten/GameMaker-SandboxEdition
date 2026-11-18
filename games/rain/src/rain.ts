@@ -3,6 +3,7 @@
 // A puddle's splash under the hero is touch blocks (PLAYGAME's touchbl): each tick he stands in a
 // cell swaps it for the next picture of the splash, and the first one adds a point, which plays the
 // score sound (the splash). See addStepSplash.
+import { applyBlockTimers } from '@lewismoten/gamemaker-sandbox-tools/kit/blockTimers';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { Book, PULL, SOLID, type Timed } from '../../kit/starter/book';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
@@ -209,11 +210,5 @@ export function addRain(book: Book, pal: Pal, timed: Timed[], withPuddles: boole
 }
 
 export function finishBlocks(l: { book: Book; timed: Timed[] }) {
-  const blocks = l.book.finish();
-  for (const t of l.timed) {
-    const b = blocks[l.book.n(t.name)];
-    b.nextBl = l.book.n(t.next);
-    b.ntime = t.ticks;
-  }
-  return blocks;
+  return applyBlockTimers(l.book.finish(), (name) => l.book.n(name), l.timed);
 }

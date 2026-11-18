@@ -8,6 +8,7 @@
 //   2  The Gust     a maple, an oak and a birch. Each drops leaves of its own kind on its own timers. Every few seconds a
 //                   gust bends all three crowns at once and blows three more leaves off each, far to the right. A leaf
 //                   that lands lies on the grass a moment and is gone.
+import { applyBlockTimers } from '@lewismoten/gamemaker-sandbox-tools/kit/blockTimers';
 import { Book, PULL, type Timed } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
@@ -204,12 +205,7 @@ export function gust(pal: Pal): Level {
 
 /** A level's finished blocks: the book's, with each timed block given its next block and ticks, each branch its birth. */
 export function finishBlocks(l: Level) {
-  const blocks = l.book.finish();
-  for (const t of l.timed) {
-    const b = blocks[l.book.n(t.name)];
-    b.nextBl = l.book.n(t.next);
-    b.ntime = t.ticks;
-  }
+  const blocks = applyBlockTimers(l.book.finish(), (name) => l.book.n(name), l.timed);
   for (const s of l.births) {
     const b = blocks[l.book.n(s.name)];
     b.birthMon = s.mon;

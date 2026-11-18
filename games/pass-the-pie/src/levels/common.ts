@@ -11,6 +11,7 @@
 //   Z a house's siding     W a window             o a pot               O the bone                       Q a dog (takes the bone)
 //   monsters: 1 squirrel  2 short vacuum  3 long vacuum  4 quick vacuum  5 mower  6 drone  7 swooping drone
 //             8 kick bag  9 lawn turkey  0 high drone  ! tether stake  @ the blower  & little Mr. Plume
+import { applyBlockTimers } from '@lewismoten/gamemaker-sandbox-tools/kit/blockTimers';
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import type { Pal } from '@lewismoten/gamemaker-sandbox-tools/kit/palRamps';
 import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
@@ -244,12 +245,7 @@ export function need(book: Book, pal: Pal, name: string, timed: Timed[]): void {
 
 /** A level's finished block set, with its timed blocks given their next block and ticks. */
 export function finishBook(level: Level): Block[] {
-  const blocks = level.book.finish();
-  for (const t of level.timed) {
-    const b = blocks[level.book.n(t.name)];
-    b.nextBl = level.book.n(t.next);
-    b.ntime = t.ticks;
-  }
+  const blocks = applyBlockTimers(level.book.finish(), (name) => level.book.n(name), level.timed);
   for (const b of level.births ?? []) {
     const block = blocks[level.book.n(b.name)];
     block.birthMon = b.mon;

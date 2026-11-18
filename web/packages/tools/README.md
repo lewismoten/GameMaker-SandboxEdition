@@ -95,6 +95,12 @@ const iso = createIso([
   These are suggestions to inspect, not verdicts: screen size and viewing distance
   are unknown, and scrolling patterns or a walking hero can register as flashing.
 
+- `kit/blockTimers`: `applyBlockTimers(blocks, resolve, timed)` applies named
+  `{ name, next, ticks }` records after the caller finishes its block set. It resolves
+  both names, assigns `nextBl` and `ntime` in record order, and returns the same
+  array. Tick values are preserved, including zero and fractions; later records for
+  the same block win. The caller supplies name lookup and its errors propagate.
+  For a Book, use `applyBlockTimers(book.finish(), (name) => book.n(name), timed)`.
 - `kit/ticks`: `ticks(seconds, { rate?, round? })` converts seconds using the engine's
   PIT interrupt rate divided by eight (`TICKS_PER_SECOND`, about 18.209 Hz). Rounding
   defaults to `round`; `floor`, `ceil` and `none` are also available. Pass `rate: 18`

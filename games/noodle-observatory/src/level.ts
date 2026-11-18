@@ -1,6 +1,7 @@
 // What every level is made of: a place's block set (the backdrop and its props, drawn by art.ts), the parts it
 // uses, its signs, the map, its clocks, which monster file and song it plays with, and the hero file (Nell on foot,
 // or Nell in the ring). levels/*.ts make the levels; tools/route.ts plays them.
+import { applyBlockTimers } from '@lewismoten/gamemaker-sandbox-tools/kit/blockTimers';
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { addStarterBlocks } from '../../kit/starter/blocks';
@@ -75,13 +76,7 @@ const air = { grav: PULL.down };
 
 /** The finished block set: the book's, with each timed block given its next block and its ticks. */
 export function finishBlocks(l: Pick<Level, 'book' | 'timed'>): Block[] {
-  const blocks = l.book.finish();
-  for (const t of l.timed) {
-    const b = blocks[l.book.n(t.name)];
-    b.nextBl = l.book.n(t.next);
-    b.ntime = t.ticks;
-  }
-  return blocks;
+  return applyBlockTimers(l.book.finish(), (name) => l.book.n(name), l.timed);
 }
 
 export interface BookOptions {

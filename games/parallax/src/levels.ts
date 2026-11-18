@@ -8,6 +8,7 @@
 //      drift at 0.25 and 0.5 pixels a tick over the slow hills. Three suns in the sky fill in
 //      one by one, and when the last one fills the bars across the door lift.
 // Both rooms are closed in by hedges you can see, so Rima is never stopped by something she can't.
+import { applyBlockTimers } from '@lewismoten/gamemaker-sandbox-tools/kit/blockTimers';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { Book, PULL, SOLID, type Timed } from '../../kit/starter/book';
@@ -287,13 +288,7 @@ function driftingClouds(st: Stage): StarterMap {
 
 /** The finished block set: the book's, with each timed block given its next block and its ticks. */
 export function finishBlocks(st: Pick<Stage, 'book' | 'timed'>): Block[] {
-  const blocks = st.book.finish();
-  for (const t of st.timed) {
-    const b = blocks[st.book.n(t.name)];
-    b.nextBl = st.book.n(t.next);
-    b.ntime = t.ticks;
-  }
-  return blocks;
+  return applyBlockTimers(st.book.finish(), (name) => st.book.n(name), st.timed);
 }
 
 /** The levels in order. */
