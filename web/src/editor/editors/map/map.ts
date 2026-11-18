@@ -1,94 +1,49 @@
 // Map editor (MAPMAKER.EXE): paint background blocks onto the 100x100 map and place monsters.
-import { lastZoom, recallView, rememberView, type MapView } from './mapViews';
+import { BACKBL, BLEN, MONBL, newBlockSet, parseBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { LASTMM, MLEN, MWID, parseMap, serializeMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { LASTMON, parseMonsters, type Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { fromCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
-import { MAX_ZOOM, MIN_ZOOM, clampZoom, pictureScale, wheelZoom, zoomFromUrl, zoomToUrl } from './mapZoom';
-import { drawTile } from './mapTile';
-import { mapViewport } from './mapViewport';
-import { nativeCell } from './mapWrap';
-import { rememberWrap, wrapFor } from './mapWrapPref';
+import { normalize } from '../../../project/files';
+import { viewState } from '../../../urlState';
+import { blockImages } from '../../core/draw';
+import { History } from '../../core/history';
+import type { FileKind, Project } from '../../core/project';
+import { clear, debounce, h, toast } from '../../core/ui';
+import { assetMenu, type AssetAction } from '../../shell/assetMenu';
+import { fileField, pickFile } from '../../widgets/filePicker';
+import { paletteChooser } from '../../widgets/paletteChooser';
 import { panelTabs } from '../../widgets/panelTabs';
 import { rovingGrid } from '../../widgets/rovingGrid';
-import { History } from '../../core/history';
-import { registerEditor } from '../registry';
-import { viewState } from '../../../urlState';
-import { h, clear, selectField, toast, debounce, modal, download } from '../../core/ui';
-import { blockButton } from '../../widgets/blockChooser';
-import { blockCanvas, blockImages } from '../../core/draw';
-import { paletteChooser } from '../../widgets/paletteChooser';
-import type { FileKind, Project } from '../../core/project';
 import { takeNewestMonster } from '../monsters/newestMonster';
-import { fileField, pickFile } from '../../widgets/filePicker';
-import { BACKBL, BLEN, MONBL, newBlockSet, parseBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
-import { LASTMM, MLEN, MWID, parseMap, reindexMonsters, serializeMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
-import { LASTMON, parseMonsters, type Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
-import { normalize } from '../../../project/files';
-import { WHOLE_MAP, contentBounds, dragRect, gameView, type BlockRect, type Handle } from './mapClip';
-import { drawOverlay, type OverlayState } from './tools/overlay';
-import { blockMarksLayer } from './tools/blockMarksDraw';
-import { blockMarksControls } from './tools/blockMarksControls';
-import { describeBehavior } from './tools/blockMarks';
-import { MapTools, type ToolMode } from './tools/toolController';
-import { findBlock, floodCells, replaceAll } from './tools/cellOps';
-import type { checkPanel } from './check/checkPanel';
 import { simulate } from '../palette/colorVision';
-import { findPlayersView, posterPng, posterScene } from './mapPoster';
-import type { Level } from '../../../manual/printables/levelMapLayout';
-import { monsterName } from '../monsters/monsterNames';
-import { blockLabel } from '../blocks/blockNames';
+import { registerEditor } from '../registry';
+import type { checkPanel } from './check/checkPanel';
 import { linkMarkers } from './links/linkMarkers';
-import { touchGestures } from './mapTouchGestures';
-import { assetMenu, type AssetAction } from '../../shell/assetMenu';
 import './mapExport.css';
-import './tools/mapTools.css';
-import { playSpot } from './playSpot';
+import { mapKeyboard } from './mapKeyboard';
+import { createMapPainting } from './mapPainting';
+import { createMapPickers } from './mapPickers';
+import { createMapPicture } from './mapPicture';
+import { createMapPlacement } from './mapPlacement';
+import { bindMapPointer } from './mapPointer';
+import { drawTile } from './mapTile';
+import { mapToolbar } from './mapToolbar';
+import { TOOLS, isTool, nowTool, type Mode } from './mapToolModes';
+import { createMapTooltip } from './mapTooltip';
+import { touchGestures } from './mapTouchGestures';
+import { mapViewMemory } from './mapViewMemory';
+import { mapViewport } from './mapViewport';
+import { lastZoom, recallView } from './mapViews';
+import { wrapFor } from './mapWrapPref';
+import { clampZoom, pictureScale, zoomFromUrl, zoomToUrl } from './mapZoom';
+import { createMapZoomControls } from './mapZoomControls';
 import { roleFilter } from './roleFilter';
-
-type Mode = 'paint' | 'fill' | 'pick' | 'monster' | 'pan' | 'zoom' | ToolMode;
-const TOOL_MODES = new Set<string>(['line', 'rect', 'select', 'terrain', 'stamp', 'building', 'paste']);
-const isTool = (m: Mode): m is ToolMode => TOOL_MODES.has(m);
-
-/** The tool buttons: mode, icon, name, key, what it does. */
-const nowTool = (m: Mode): Node[] => {
-  const t = TOOLS.find((x) => x[0] === m);
-  return t ? [h('strong', null, t[2]), document.createTextNode(` ${t[4]}`)] : [];
-};
-const TOOLS: [Mode, string, string, string, string][] = [
-  ['paint', '✎', 'Paint', 'B', 'Drag to paint the chosen block'],
-  ['line', '╱', 'Line', 'L', 'Drag a straight line of the chosen block'],
-  ['rect', '▭', 'Rectangle', 'R', 'Drag out a rectangle of the chosen block'],
-  ['fill', '▣', 'Fill', 'F', 'Fill the area of one block with the chosen block'],
-  ['pick', '⌖', 'Pick', 'I', 'Click a block on the map to paint with it (eyedropper)'],
-  ['select', '⬚', 'Select', 'S', 'Select a rectangle or polygon to fill, copy, cut, paste or save'],
-  ['terrain', '⛰', 'Terrain', 'T', 'Paint grass, water or paths: edges and corners are chosen for you'],
-  ['stamp', '★', 'Stamp', 'P', 'Place a saved stamp (a house, a tree…)'],
-  ['building', '⌂', 'Building', 'H', 'Drag out a rectangle to build a house of that size from its parts'],
-  ['monster', '👾', 'Monsters', 'M', 'Click to place the chosen monster; right-click to remove one'],
-  ['pan', '✋', 'Scroll', '', 'Touch screens: drag to scroll the map instead of drawing; pinch to zoom'],
-  ['zoom', '🔍', 'Zoom', '', 'Tap the map to zoom in there (Shift-click or the − button zooms out)'],
-];
-
-/** The map picture's choices for the whole map, the level and a game screen. */
-const OPT_LABELS = { monsters: 'Monsters where they start', grid: 'Block grid (yellow lines every 10 blocks)', links: 'Scene links and start points' };
-
-/** The zoom menu's round presets; the wheel and pinch zoom continuously between 1 pixel per block and 400%. */
-const ZOOMS: [number, string][] = [
-  [MIN_ZOOM, '5% (1 pixel per block)'],
-  [0.1, '10%'],
-  [0.15, '15%'],
-  [0.2, '20%'],
-  [0.25, '25%'],
-  [1 / 3, '33%'],
-  [0.5, '50%'],
-  [2 / 3, '67%'],
-  [0.75, '75%'],
-  [1, '100%'],
-  [1.25, '125%'],
-  [1.5, '150%'],
-  [1.75, '175%'],
-  [2, '200%'],
-  [3, '300%'],
-  [MAX_ZOOM, '400%'],
-];
+import { blockMarksControls } from './tools/blockMarksControls';
+import { blockMarksLayer } from './tools/blockMarksDraw';
+import { findBlock } from './tools/cellOps';
+import './tools/mapTools.css';
+import { drawOverlay, type OverlayState } from './tools/overlay';
+import { MapTools } from './tools/toolController';
 
 /** A remembered on/off choice (the grid); off when storage is unavailable. */
 function readPref(key: string): boolean {
@@ -313,64 +268,45 @@ registerEditor(['map'], (host, project, file) => {
     draw();
   }
 
-  /** The block palette: every block, or only those the role filter shows. */
-  function renderPicker(): void {
-    clear(
-      picker,
-      ...bg.flatMap((b, i) =>
-        filter.shows(i) || i === brush
-          ? [
-              h(
-                'button',
-                {
-                  class: i === brush ? 'selected' : '',
-                  'data-block': String(i),
-                  title: blockLabel(project, bblName, i),
-                  'aria-label': blockLabel(project, bblName, i),
-                  onclick: () => (
-                    (brush = i),
-                    setMode(['paint', 'line', 'rect', 'fill', 'select'].includes(mode) ? mode : 'paint'),
-                    rebuildPickers(),
-                    redrawOverlay()
-                  ),
-                },
-                blockCanvas(b.pixels, chooser.palette),
-                h('small', null, i),
-              ),
-            ]
-          : [],
-      ),
-    );
-  }
-
-  function rebuildPickers(): void {
-    [...picker.children].forEach((b) => b.classList.toggle('selected', (b as HTMLElement).dataset.block === String(brush)));
-  }
-
-  function firstPic(m: Monster | undefined): number {
-    const p = m?.pic[0]?.[0] ?? MONBL;
-    return p >= 0 && p < MONBL ? p : -1;
-  }
-
-  function rebuildMonsters(): void {
-    clear(
-      monPicker,
-      ...mons.map((m, i) => {
-        const pic = firstPic(m);
-        const name = monsterName(project, monName, i);
-        return h(
-          'button',
-          {
-            class: mode === 'monster' && i === monBrush ? 'selected' : '',
-            title: name ? `Monster ${i}: ${name}` : `Monster ${i}`,
-            onclick: () => ((monBrush = i), setMode('monster'), rebuildMonsters()),
-          },
-          pic >= 0 ? blockCanvas(mblk[pic].pixels, chooser.palette, { transparent: true, className: 'checker' }) : h('span', null, '—'),
-          h('small', null, i),
-        );
-      }),
-    );
-  }
+  const { renderPicker, rebuildPickers, firstPic, rebuildMonsters } = createMapPickers({
+    picker,
+    get bg() {
+      return bg;
+    },
+    filter,
+    get brush() {
+      return brush;
+    },
+    set brush(value) {
+      brush = value;
+    },
+    project,
+    get bblName() {
+      return bblName;
+    },
+    get mode() {
+      return mode;
+    },
+    setMode,
+    redrawOverlay,
+    chooser,
+    monPicker,
+    get mons() {
+      return mons;
+    },
+    get monName() {
+      return monName;
+    },
+    get monBrush() {
+      return monBrush;
+    },
+    set monBrush(value) {
+      monBrush = value;
+    },
+    get mblk() {
+      return mblk;
+    },
+  });
 
   function draw(): void {
     clearTimeout(redrawTimer);
@@ -412,286 +348,42 @@ registerEditor(['map'], (host, project, file) => {
     markers.render();
   }
 
-  /** The map (or the part of it in `area`) at one pixel per block pixel, as the scene draws it. */
-  function renderWhole(opts: { monsters: boolean; grid: boolean; links: boolean }, scale = 1, area: BlockRect = WHOLE_MAP): HTMLCanvasElement {
-    const s = BLEN * scale;
-    const c = h('canvas', { width: area.w * s, height: area.h * s });
-    const g = c.getContext('2d')!;
-    g.imageSmoothingEnabled = false;
-    g.translate(-area.x * s, -area.y * s);
-    for (let y = area.y; y < area.y + area.h; y++)
-      for (let x = area.x; x < area.x + area.w; x++) g.drawImage(bgImgs[map.blocks[y * MLEN + x]] ?? bgImgs[0], x * s, y * s, s, s);
-    if (opts.monsters)
-      for (const m of map.monsters) {
-        if (m.monnum >= LASTMON) continue;
-        const pic = firstPic(mons[m.monnum]);
-        if (pic >= 0) g.drawImage(monImgs[pic], m.curx * s, m.cury * s, s, s);
-      }
-    if (opts.grid) {
-      g.fillStyle = 'rgba(255,255,255,0.22)';
-      for (let i = 1; i < MLEN && s >= 8; i++) g.fillRect(i * s, 0, 1, MWID * s);
-      for (let i = 1; i < MWID && s >= 8; i++) g.fillRect(0, i * s, MLEN * s, 1);
-      g.fillStyle = 'rgba(255,212,0,0.55)'; // every 10 blocks, to count by
-      for (let i = 10; i < MLEN; i += 10) g.fillRect(i * s, 0, 1, MWID * s);
-      for (let i = 10; i < MWID; i += 10) g.fillRect(0, i * s, MLEN * s, 1);
-    }
-    if (opts.links)
-      for (const mk of linkMarks()) {
-        g.lineWidth = Math.max(1, 2 * scale);
-        g.strokeStyle = mk.kind === 'from' ? '#ffd400' : '#00e0ff';
-        g.strokeRect(mk.x * s + 1, mk.y * s + 1, s - 2, s - 2);
-      }
-    return c;
-  }
-
-  async function exportImage(): Promise<void> {
-    const opts = { monsters: true, grid: false, links: false };
-    const level = contentBounds(
-      map.blocks,
-      map.monsters.filter((m) => m.monnum < LASTMON).map((m) => ({ x: m.curx, y: m.cury })),
-    );
-    // where the character can start in this map (the game shows a screen round it)
-    const starts = linkMarks()
-      .filter((m) => m.kind === 'to')
-      .filter((m, i, all) => all.findIndex((o) => o.x === m.x && o.y === m.y) === i);
-    const startChoices: [number, string][] = starts.length
-      ? starts.map((m, i) => [i, `${m.label} (${m.x}, ${m.y})`])
-      : [[0, `the middle of the level (${level.x + (level.w >> 1)}, ${level.y + (level.h >> 1)})`]];
-    const startAt = (i: number) => starts[i] ?? { x: level.x + (level.w >> 1), y: level.y + (level.h >> 1) };
-    type AreaMode = 'whole' | 'level' | 'screen' | 'players';
-    // "As players see it": found once, the first time it is chosen (the explorer plays the map)
-    let players: ReturnType<typeof findPlayersView> | undefined;
-    let playersLevel: Level | undefined;
-    let playersNote = '';
-    /** The poster's width at 1×, in pixels. */
-    let posterWide = 0;
-    const PREVIEW_POSTER = 0.25;
-    let mode: AreaMode = level.w < MLEN || level.h < MWID ? 'level' : 'whole';
-    let start = 0;
-    let screens = 1;
-    let scale = 1;
-    let area: BlockRect = mode === 'level' ? { ...level } : { ...WHOLE_MAP };
-    const PREVIEW = 4; // preview pixels per block
-
-    await modal<void>('Download a picture of the map', (close) => {
-      let shot: HTMLElement = renderWhole(opts, PREVIEW / BLEN);
-      shot.className = 'pixel map-export-shot';
-      const frame = h('div', { class: 'map-export-frame' });
-      for (const hd of ['n', 's', 'e', 'w', 'ne', 'nw', 'se', 'sw'] as Handle[])
-        frame.append(h('span', { class: `map-export-handle h-${hd}`, dataset: { handle: hd } }));
-      const preview = h('div', { class: 'map-export-preview' }, shot, frame);
-      const info = h('p', { class: 'meta map-export-info' });
-      const modeBar = h('div', { class: 'map-export-modes', role: 'radiogroup', 'aria-label': 'Which part of the map' });
-      const screenOpts = h('div', { class: 'map-export-screen row' });
-      const scaleSel = selectField(
-        'Picture size',
-        [
-          [0.05, '0.05× (a block is 1 pixel)'],
-          [0.25, '0.25× (a block is 5 pixels)'],
-          [0.5, '0.5× (a block is 10 pixels)'],
-          [1, '1× (a block is 20 pixels)'],
-          [2, '2×'],
-          [3, '3×'],
-        ],
-        () => scale,
-        (v) => ((scale = v), refresh()),
-      );
-      const fixed = () => mode === 'screen';
-      const mapOpts = h('div', { class: 'stack', style: 'gap:4px' }, ...(['monsters', 'grid', 'links'] as const).map((k) => opt(OPT_LABELS[k], k)));
-      const setShot = (next: HTMLElement) => {
-        next.className = 'pixel map-export-shot';
-        shot.replaceWith(next);
-        shot = next;
-      };
-      const refresh = () => {
-        const poster = mode === 'players';
-        frame.hidden = poster;
-        mapOpts.hidden = poster;
-        preview.classList.toggle('poster', poster);
-        [...modeBar.children].forEach((b) => b.setAttribute('aria-checked', String((b as HTMLElement).dataset.mode === mode)));
-        if (poster) {
-          screenOpts.hidden = true;
-          info.textContent = playersNote + (playersLevel && posterWide ? ` A ${Math.round(posterWide * scale)}-pixel-wide PNG picture.` : '');
-          downloadBtn.disabled = !playersLevel;
-          return;
-        }
-        downloadBtn.disabled = false;
-        if (!(shot instanceof HTMLCanvasElement)) setShot(renderWhole(opts, PREVIEW / BLEN));
-        const p = (v: number) => `${(v / MLEN) * 100}%`;
-        Object.assign(frame.style, { left: p(area.x), top: p(area.y), width: p(area.w), height: `${(area.h / MWID) * 100}%` });
-        frame.classList.toggle('fixed', fixed());
-        frame.title = fixed() ? 'Drag to move the screen' : 'Drag to move; drag an edge or corner to resize';
-        info.textContent = `Blocks ${area.x}–${area.x + area.w - 1} across, ${area.y}–${area.y + area.h - 1} down (${area.w}×${area.h}): a ${area.w * BLEN * scale}×${area.h * BLEN * scale} PNG picture.`;
-        screenOpts.hidden = mode !== 'screen';
-      };
-      // the poster: the explorer plays the map once, then it is drawn the printed Level Maps' way
-      const showPlayers = () => {
-        if (!players) {
-          playersNote = 'Playing the level from every way in to see where it goes…';
-          players = findPlayersView(project, file, (done, total) => {
-            playersNote = `Playing the level from every way in to see where it goes… (way in ${Math.min(done + 1, total)} of ${total})`;
-            if (mode === 'players') info.textContent = playersNote;
-          });
-          void players.done.then(
-            async (found) => {
-              const l = found?.level;
-              playersLevel = l;
-              if (!l) playersNote = 'No scene plays on this map, so there is no way in to follow.';
-              else {
-                const b = await posterPng(project, l, PREVIEW_POSTER);
-                const img = h('img', { alt: `${l.name}, as the player goes through it` });
-                const wide = b ? (await createImageBitmap(b)).width / PREVIEW_POSTER : 0;
-                if (b) img.src = URL.createObjectURL(b);
-                const joins = l.unrolled?.loops.some(Boolean);
-                playersNote = `Scene ${l.group.scenes.join(', ')} · ${l.area.w}×${l.area.h} blocks: what the player sees${
-                  l.unrolled ? ', laid out as the player goes past the map’s edge' : ''
-                }${joins ? ' (dashed edges join up)' : ''}, with where you arrive and the ways out.${
-                  found.complete ? '' : ' The level is big: the bot ran out of time, so a corner it never reached may be left off.'
-                }`;
-                posterWide = wide;
-                if (mode === 'players') setShot(img);
-              }
-              if (mode === 'players') refresh();
-            },
-            (e: unknown) => {
-              if (e instanceof DOMException && e.name === 'AbortError') return;
-              playersNote = `The level could not be played: ${e instanceof Error ? e.message : String(e)}`;
-              if (mode === 'players') refresh();
-            },
-          );
-        }
-        refresh();
-      };
-      const setMode = (m: AreaMode) => {
-        mode = m;
-        if (m === 'players') return showPlayers();
-        area = m === 'whole' ? { ...WHOLE_MAP } : m === 'level' ? { ...level } : gameView(startAt(start), { w: screens, h: screens });
-        if (m === 'screen' && scale === 1) scale = 2;
-        scaleSel.querySelector('select')!.value = String(scale);
-        refresh();
-      };
-      const modeBtn = (m: AreaMode, label: string, title: string) =>
-        h('button', { role: 'radio', dataset: { mode: m }, title, onclick: () => setMode(m) }, label);
-      modeBar.append(
-        modeBtn('whole', 'Whole map', `All ${MLEN}×${MWID} blocks`),
-        modeBtn('level', 'Just the level', 'Leaves out the background fill round the level, which the character never sees'),
-        modeBtn('screen', 'Game screen', 'One screen as the game shows it when the character starts there (a screenshot)'),
-        modeBtn(
-          'players',
-          'As players see it',
-          'The map as a strategy guide or poster shows it: what the player sees, laid out as they go (on past an edge the map wraps over), with where you arrive and the ways out',
-        ),
-      );
-      if (!posterScene(project, file)) {
-        const b = modeBar.lastElementChild as HTMLButtonElement;
-        b.disabled = true;
-        b.title = 'No scene plays on this map yet, so there is no way in to follow.';
-      }
-      screenOpts.append(
-        selectField(
-          'Start point',
-          startChoices,
-          () => start,
-          (v) => ((start = v), setMode('screen')),
-        ),
-        selectField(
-          'Size',
-          [
-            [1, '1 screen (16×10 blocks)'],
-            [2, '2×2 screens'],
-            [3, '3×3 screens'],
-          ],
-          () => screens,
-          (v) => ((screens = v), setMode('screen')),
-        ),
-      );
-      // drag the frame, its edges or its corners (in whole blocks)
-      frame.addEventListener('pointerdown', (e) => {
-        e.preventDefault();
-        frame.setPointerCapture(e.pointerId);
-        const handle = ((e.target as HTMLElement).dataset.handle as Handle | undefined) ?? 'move';
-        const r = preview.getBoundingClientRect();
-        const from = { ...area };
-        const move = (ev: PointerEvent) => {
-          const dx = Math.round(((ev.clientX - e.clientX) / r.width) * MLEN);
-          const dy = Math.round(((ev.clientY - e.clientY) / r.height) * MWID);
-          area = dragRect(from, handle, dx, dy, fixed());
-          if (mode === 'whole' && (area.w < MLEN || area.h < MWID)) mode = 'level';
-          refresh();
-        };
-        const up = () => (frame.removeEventListener('pointermove', move), frame.removeEventListener('pointerup', up));
-        frame.addEventListener('pointermove', move);
-        frame.addEventListener('pointerup', up);
-      });
-      function opt(label: string, k: keyof typeof opts) {
-        const input = h('input', { type: 'checkbox', checked: opts[k], style: 'width:auto;margin:0' });
-        input.addEventListener('change', () => {
-          opts[k] = input.checked;
-          setShot(renderWhole(opts, PREVIEW / BLEN));
-        });
-        return h('label', { style: 'display:flex;flex-direction:row;align-items:center;gap:8px;font-weight:normal' }, input, label);
-      }
-      const downloadBtn = h(
-        'button',
-        {
-          class: 'primary',
-          onclick: () => {
-            const name = file.replace(/\.map$/i, '');
-            if (mode === 'players') {
-              if (!playersLevel) return;
-              void posterPng(project, playersLevel, scale).then(async (b) => {
-                if (!b) return toast('The picture could not be made.', 'error');
-                download(`${name}-players.png`, new Uint8Array(await b.arrayBuffer()), 'image/png');
-                close(undefined);
-              });
-              return;
-            }
-            renderWhole(opts, scale, area).toBlob(async (b) => {
-              if (!b) return toast('The picture could not be made.', 'error');
-              const suffix = mode === 'screen' ? 'screen' : area.w === MLEN && area.h === MWID ? 'map' : 'level';
-              download(`${name}-${suffix}.png`, new Uint8Array(await b.arrayBuffer()), 'image/png');
-              close(undefined);
-            }, 'image/png');
-          },
-        },
-        '⤓ Download PNG',
-      );
-      setMode(mode);
-      return h(
-        'div',
-        { class: 'stack map-export' },
-        modeBar,
-        screenOpts,
-        preview,
-        info,
-        h('div', { class: 'map-export-opts' }, mapOpts, scaleSel),
-        h('div', { class: 'buttons' }, h('button', { onclick: () => close(undefined) }, 'Cancel'), downloadBtn),
-      );
-    });
-    players?.cancel();
-  }
+  const { exportImage } = createMapPicture({
+    project,
+    file,
+    map,
+    get bgImgs() {
+      return bgImgs;
+    },
+    get monImgs() {
+      return monImgs;
+    },
+    get mons() {
+      return mons;
+    },
+    linkMarks,
+    firstPic,
+  });
 
   const cell = (e: PointerEvent) => viewport.cell(e);
 
   let painting = false;
 
-  function paintCell(x: number, y: number, v = brush): void {
-    if (wrapping) ({ x, y } = nativeCell({ x, y }));
-    if (x < 0 || y < 0 || x >= MLEN || y >= MWID) return;
-    map.blocks[y * MLEN + x] = v;
-    drawTile(ctx, onScreen().bg[v], x, y, BLEN * scale());
-  }
-
-  /** Cells the tools changed: draw just them (with the links over them) and save. */
-  function changedCells(cells: number[]): void {
-    if (!cells.length) return;
-    const s = BLEN * scale();
-    const bgI = onScreen().bg;
-    for (const i of cells) drawTile(ctx, bgI[map.blocks[i]] ?? bgI[0], i % MLEN, Math.floor(i / MLEN), s);
-    if (cells.length > 400) draw();
-    else redrawOverlay();
-    save();
-  }
+  const { paintCell, changedCells } = createMapPainting({
+    map,
+    get brush() {
+      return brush;
+    },
+    get wrapping() {
+      return wrapping;
+    },
+    ctx,
+    onScreen,
+    scale,
+    draw,
+    redrawOverlay,
+    save,
+  });
 
   const tools = new MapTools(
     {
@@ -718,165 +410,98 @@ registerEditor(['map'], (host, project, file) => {
     h('div', { class: 'stack mt-panel', role: 'region', 'aria-label': 'Tool options' }),
   );
 
-  function placeMonster(x: number, y: number, remove: boolean): void {
-    const at = map.monsters.findIndex((m) => m.monnum < LASTMON && m.curx === x && m.cury === y);
-    if (at >= 0) map.monsters[at].monnum = LASTMON;
-    if (!remove) {
-      const slot = map.monsters.findIndex((m) => m.monnum >= LASTMON);
-      if (slot < 0) {
-        toast(`A map holds at most ${LASTMM} monsters.`, 'error');
-        return;
-      }
-      Object.assign(map.monsters[slot], { monnum: monBrush, curx: x, cury: y });
-    }
-    reindexMonsters(map);
-    draw();
-    save();
-  }
-
-  function floodFill(x: number, y: number): void {
-    if (map.blocks[y * MLEN + x] === brush) return;
-    const cells = floodCells(map.blocks, { x, y }, MLEN, MWID, wrapping).map((c) => c.y * MLEN + c.x);
-    for (const i of cells) map.blocks[i] = brush;
-    changedCells(cells);
-  }
-
-  // Tap to place: after "Add an exit" the next tap on the map puts the exit there (a drag works as before)
-  let placingExit = false;
-  canvas.addEventListener(
-    'pointerdown',
-    (e) => {
-      if (!placingExit) return;
-      placingExit = false;
-      e.stopImmediatePropagation();
-      e.preventDefault();
-      const p = cell(e);
-      markers.moveExit({ x: p.x, y: p.y });
+  const { placeMonster, floodFill } = createMapPlacement({
+    map,
+    get monBrush() {
+      return monBrush;
     },
-    true,
-  );
+    get brush() {
+      return brush;
+    },
+    get wrapping() {
+      return wrapping;
+    },
+    draw,
+    save,
+    changedCells,
+  });
 
-  canvas.addEventListener('pointerdown', (e) => {
-    if (mode === 'pan') return;
-    if (mode === 'zoom') return;
-    const p = cell(e);
-    if (isTool(mode)) {
-      canvas.setPointerCapture(e.pointerId);
-      tools.pointerDown(viewport.gestureCell(e), e.button);
-      return;
-    }
-    if (mode !== 'pick') remember();
-    if (mode === 'monster') {
-      placeMonster(p.x, p.y, e.button === 2);
-      return;
-    }
-    if (mode === 'pick') {
-      brush = map.blocks[p.y * MLEN + p.x];
-      rebuildPickers();
-      setMode('paint');
-      redrawOverlay();
-      return;
-    }
-    if (mode === 'fill') {
-      floodFill(p.x, p.y);
-      return;
-    }
-    canvas.setPointerCapture(e.pointerId);
-    painting = true;
-    const at = viewport.gestureCell(e);
-    paintCell(at.x, at.y);
-    viewport.render();
-  });
-  // the Zoom tool zooms when a finger lifts, so a pinch (whose fingers the gesture code swallows) never also taps
-  canvas.addEventListener('pointerup', (e) => {
-    if (mode !== 'zoom') return;
-    const r = scroller.getBoundingClientRect();
-    setZoom(zoom * (e.shiftKey ? 1 / 1.5 : 1.5), { x: e.clientX - r.left - scroller.clientLeft, y: e.clientY - r.top - scroller.clientTop });
-  });
+  let placingExit = false;
   let lastPaint: { x: number; y: number } | undefined;
-  canvas.addEventListener('pointermove', (e) => {
-    let p = cell(e);
-    const b = map.blocks[p.y * MLEN + p.x];
-    const mon = map.monsters.find((m) => m.monnum < LASTMON && m.curx === p.x && m.cury === p.y);
-    const links = linkMarks().filter((m) => m.x === p.x && m.y === p.y);
-    const does = marks.any() && bg[b] ? describeBehavior(bg[b], b) : '';
-    status.textContent = `(${p.x}, ${p.y}) block ${b}${does ? ` · ${does}` : ''}${mon ? ` · monster ${mon.monnum}` : ''}${links.map((m) => ` · link ${m.label}`).join('')}${finding ? ` · block ${brush} is used ${overlay.found.length} times` : ''}`;
-    if (isTool(mode)) return tools.pointerMove(viewport.gestureCell(e), e.buttons);
-    if (!painting || !canvas.hasPointerCapture(e.pointerId)) return;
-    // a fast stroke skips cells: fill them in along a line
-    p = viewport.gestureCell(e);
-    const from = lastPaint ?? p;
-    const n = Math.max(Math.abs(p.x - from.x), Math.abs(p.y - from.y));
-    for (let k = 1; k <= n; k++) paintCell(Math.round(from.x + ((p.x - from.x) * k) / n), Math.round(from.y + ((p.y - from.y) * k) / n));
-    paintCell(p.x, p.y);
-    lastPaint = p;
-    viewport.render();
+  bindMapPointer({
+    map,
+    get mode() {
+      return mode;
+    },
+    get brush() {
+      return brush;
+    },
+    set brush(value) {
+      brush = value;
+    },
+    get painting() {
+      return painting;
+    },
+    set painting(value) {
+      painting = value;
+    },
+    get placingExit() {
+      return placingExit;
+    },
+    set placingExit(value) {
+      placingExit = value;
+    },
+    get lastPaint() {
+      return lastPaint;
+    },
+    set lastPaint(value) {
+      lastPaint = value;
+    },
+    canvas,
+    scroller,
+    cell,
+    viewport,
+    tools,
+    remember,
+    placeMonster,
+    rebuildPickers,
+    setMode,
+    redrawOverlay,
+    floodFill,
+    paintCell,
+    get zoom() {
+      return zoom;
+    },
+    setZoom,
+    linkMarks,
+    marks,
+    get bg() {
+      return bg;
+    },
+    status,
+    get finding() {
+      return finding;
+    },
+    overlay,
+    revealTool,
+    save,
+    get markers() {
+      return markers;
+    },
   });
-  canvas.addEventListener('pointerdown', (e) => (lastPaint = viewport.gestureCell(e)));
-  const endStroke = (e: PointerEvent) => {
-    if (isTool(mode)) {
-      tools.pointerUp(viewport.gestureCell(e));
-      if (mode === 'select') revealTool(mode);
-      return;
-    }
-    if (painting) {
-      painting = false;
-      lastPaint = undefined;
-      redrawOverlay();
-      save();
-    }
-  };
-  canvas.addEventListener('pointerup', endStroke);
-  canvas.addEventListener('pointercancel', endStroke);
-  canvas.addEventListener('dblclick', (event) => {
-    if (tools.finishPolygon()) {
-      event.preventDefault();
-      revealTool('select');
-    }
-  });
-  canvas.addEventListener('pointerleave', () => tools.leave());
 
-  // the Level check's marks and links, told in words when the pointer rests on them; it never
-  // takes a click (pointer-events: none), and hides while drawing
-  const tip = h('div', { class: 'mt-tip', 'aria-hidden': 'true', hidden: true });
-  document.body.append(tip);
-  let tipTimer: ReturnType<typeof setTimeout> | undefined;
-  let tipCell = -1;
-  const hideTip = () => {
-    clearTimeout(tipTimer);
-    tip.hidden = true;
-    tipCell = -1;
-  };
-  canvas.addEventListener('pointermove', (e) => {
-    if (e.buttons || e.pointerType === 'touch') return hideTip();
-    const p = cell(e);
-    const c = p.y * MLEN + p.x;
-    if (c === tipCell) return;
-    hideTip();
-    tipCell = c;
-    const { clientX, clientY } = e;
-    tipTimer = setTimeout(() => {
-      // zoomed out, a mark is a dot or two: the nearest one within about 6 pixels
-      const s = BLEN * zoom;
-      const lines = [
-        ...(check?.describe(c, s < 8 ? Math.ceil(6 / s) : 0) ?? []),
-        ...linkMarks()
-          .filter((m) => m.x === p.x && m.y === p.y)
-          .map((m) => (m.kind === 'to' ? `▢ The hero comes in here (${m.label})` : `▢ A link: touching it takes the hero ${m.label}`)),
-      ];
-      if (!lines.length) return;
-      clear(tip, ...lines.map((l) => h('div', null, l)));
-      tip.hidden = false;
-      const w = tip.offsetWidth;
-      const ht = tip.offsetHeight;
-      tip.style.left = `${Math.max(4, Math.min(innerWidth - w - 4, clientX + 14))}px`;
-      tip.style.top = `${clientY + 18 + ht > innerHeight ? Math.max(4, clientY - ht - 10) : clientY + 18}px`;
-    }, 250);
+  const { hideTip, tip } = createMapTooltip({
+    canvas,
+    scroller,
+    cell,
+    get zoom() {
+      return zoom;
+    },
+    get check() {
+      return check;
+    },
+    linkMarks,
   });
-  canvas.addEventListener('pointerleave', hideTip);
-  canvas.addEventListener('pointerdown', hideTip);
-  scroller.addEventListener('scroll', hideTip, { passive: true });
-  canvas.addEventListener('contextmenu', (e) => e.preventDefault());
 
   // the links' markers over the map: ways in and exits, to drag, nudge and open (links/)
   let showLinks = (() => {
@@ -897,182 +522,67 @@ registerEditor(['map'], (host, project, file) => {
     redraw: () => draw(),
   });
   markers.setShown(showLinks);
-  const linksBtn = h(
-    'button',
-    {
-      type: 'button',
-      class: 'mt-tool',
-      'aria-label': 'Links',
-      title: 'Show the ways in (cyan) and exits (gold) to drag or open',
-      onclick: () => {
-        showLinks = !showLinks;
-        writePref('gm-map-links', showLinks);
-        markers.setShown(showLinks);
-        syncToggles();
-      },
+  const { linksBtn, exitBtn, hereBtn, gridBtn, wrapBtn, findBtn, replaceBtn, toggleGrid } = mapToolbar({
+    project,
+    file,
+    set,
+    viewport,
+    markers,
+    get showLinks() {
+      return showLinks;
     },
-    '⛓',
-    h('span', { class: 'mt-label' }, 'Links'),
-  );
-  const exitBtn = h(
-    'button',
-    {
-      type: 'button',
-      class: 'mt-tool',
-      'aria-label': 'Add an exit',
-      title: set.scenes.length ? 'Add an exit in the middle of the view: touching it takes the hero to another scene' : 'No scene plays this map yet',
-      disabled: !set.scenes.length || !!project.readOnly,
-      onclick: () => {
-        if (!showLinks) linksBtn.click();
-        const at = viewport.at();
-        markers.addExit({ x: Math.min(MLEN - 1, Math.floor(at.x)), y: Math.min(MWID - 1, Math.floor(at.y)) });
-        placingExit = true;
-        toast('Tap the map where the exit goes, or drag the gold marker. Esc cancels.');
-      },
+    set showLinks(value) {
+      showLinks = value;
     },
-    '＋',
-    h('span', { class: 'mt-label' }, 'Exit'),
-  );
-  // Test the level from where you are looking: a play test that starts in the middle of the view, leaving the game's links alone.
-  const hereBtn = h(
-    'button',
-    {
-      type: 'button',
-      class: 'mt-tool',
-      'aria-label': 'Play from here',
-      title: set.scenes.length ? 'Play test this level starting in the middle of the view (the game’s start does not change)' : 'No scene plays this map yet',
-      disabled: !set.scenes.length || !project.playAt,
-      onclick: () => {
-        const at = viewport.at();
-        project.playAt?.(set.scenes[0], playSpot(at, MLEN, MWID));
-      },
+    get placingExit() {
+      return placingExit;
     },
-    '▶',
-    h('span', { class: 'mt-label' }, 'Play here'),
-  );
-  const pressed = (on: boolean) => ({ 'aria-pressed': String(on) });
-  const gridBtn = h(
-    'button',
-    { type: 'button', class: 'mt-tool', 'aria-label': 'Grid', title: 'Show the block grid (G)', onclick: () => toggleGrid() },
-    '#',
-    h('span', { class: 'mt-label' }, 'Grid'),
-  );
-  const wrapBtn = h(
-    'button',
-    {
-      type: 'button',
-      class: 'mt-tool',
-      'aria-label': 'Wrap scrolling',
-      title: 'Keep scrolling through the map edges; the opposite side follows',
-      onclick: () => {
-        tools.cancel();
-        if (painting) save();
-        painting = false;
-        lastPaint = undefined;
-        wrapping = !wrapping;
-        overlay.wrap = wrapping;
-        redrawOverlay();
-        viewport.setWrapped(wrapping);
-        writePref('gm-map-wrap', wrapping);
-        rememberWrap(project, file, wrapping);
-        syncToggles();
-      },
+    set placingExit(value) {
+      placingExit = value;
     },
-    '∞',
-    h('span', { class: 'mt-label' }, 'Wrap'),
-  );
-  const findBtn = h(
-    'button',
-    {
-      type: 'button',
-      class: 'mt-tool',
-      'aria-label': 'Find block',
-      title: 'Find block: highlight every use of the chosen block on the map',
-      onclick: () => toggleFind(),
+    tools,
+    get painting() {
+      return painting;
     },
-    '◎',
-    h('span', { class: 'mt-label' }, 'Find'),
-  );
-  const replaceBtn = h(
-    'button',
-    { type: 'button', class: 'mt-tool', 'aria-label': 'Replace…', title: 'Replace every use of one block with another', onclick: () => void replaceDialog() },
-    '⇄',
-    h('span', { class: 'mt-label' }, 'Replace…'),
-  );
-  function syncToggles(): void {
-    for (const [b, on] of [
-      [gridBtn, overlay.grid],
-      [wrapBtn, wrapping],
-      [findBtn, finding],
-      [linksBtn, showLinks],
-    ] as const)
-      Object.entries(pressed(on)).forEach(([k, v]) => b.setAttribute(k, v));
-  }
-  function toggleGrid(): void {
-    overlay.grid = !overlay.grid;
-    writePref('gm-map-grid', overlay.grid);
-    syncToggles();
-    redrawOverlay();
-  }
-  function toggleFind(): void {
-    finding = !finding;
-    syncToggles();
-    redrawOverlay();
-    if (finding) toast(`Block ${brush} is used ${overlay.found.length} time${overlay.found.length === 1 ? '' : 's'} on this map.`);
-  }
-  async function replaceDialog(): Promise<void> {
-    let from = brush;
-    let to = brush;
-    const go = await modal<boolean>('Replace a block everywhere', (close) => {
-      const count = h('p', { class: 'meta', 'aria-live': 'polite' });
-      const sync = () => (count.textContent = `Block ${from} is used ${findBlock(map.blocks, from).length} times on this map.`);
-      const pick = (label: string, get: () => number, set: (v: number) => void) => {
-        const b = blockButton(
-          () => bg,
-          () => chooser.palette,
-          get,
-          (v) => (set(v), sync()),
-          { title: label, transparent: false, name: (index) => blockLabel(project, bblName, index) },
-        );
-        b.setAttribute('aria-label', `${label}: ${blockLabel(project, bblName, get())}`);
-        return h('div', { class: 'field' }, h('span', null, label), b);
-      };
-      sync();
-      return h(
-        'div',
-        { class: 'stack' },
-        h(
-          'div',
-          { class: 'toolbar' },
-          pick(
-            'Replace block',
-            () => from,
-            (v) => (from = v),
-          ),
-          h('span', { 'aria-hidden': 'true' }, '→'),
-          pick(
-            'With block',
-            () => to,
-            (v) => (to = v),
-          ),
-        ),
-        count,
-        h(
-          'div',
-          { class: 'buttons' },
-          h('button', { type: 'button', onclick: () => close(false) }, 'Cancel'),
-          h('button', { type: 'button', class: 'primary', onclick: () => close(true) }, 'Replace all'),
-        ),
-      );
-    });
-    if (!go || from === to) return;
-    remember();
-    const n = replaceAll(map.blocks, from, to);
-    draw();
-    save();
-    toast(`Replaced block ${from} with block ${to} in ${n} place${n === 1 ? '' : 's'}.`);
-  }
-  syncToggles();
+    set painting(value) {
+      painting = value;
+    },
+    get lastPaint() {
+      return lastPaint;
+    },
+    set lastPaint(value) {
+      lastPaint = value;
+    },
+    get wrapping() {
+      return wrapping;
+    },
+    set wrapping(value) {
+      wrapping = value;
+    },
+    overlay,
+    redrawOverlay,
+    writePref,
+    get finding() {
+      return finding;
+    },
+    set finding(value) {
+      finding = value;
+    },
+    get brush() {
+      return brush;
+    },
+    map,
+    get bg() {
+      return bg;
+    },
+    chooser,
+    get bblName() {
+      return bblName;
+    },
+    remember,
+    draw,
+    save,
+  });
 
   // the level check: a panel beside the map, its heat map and marks on the overlay (loaded when
   // first opened; until then a hidden slot holds its place in the side column)
@@ -1223,96 +733,31 @@ registerEditor(['map'], (host, project, file) => {
     if (!viewport.wrapped && marks.any()) marks.redraw();
     noteView();
   }
-  let viewReady = false;
-  /** True while the opening spot may still be put back; no view is saved until the reader acts or it ends. */
-  let restoring = true;
-  let stopRestoring = () => {};
-  let rememberTimer: ReturnType<typeof setTimeout> | undefined;
-  let latest: MapView | undefined;
-  /** Notes the view now (zoom and the block at the middle); it is saved once things settle. */
-  function noteView(): void {
-    if (!viewReady || restoring) return;
-    const at = viewport.at();
-    const c = wrapping ? nativeCell({ x: Math.round(at.x), y: Math.round(at.y) }) : at;
-    latest = { z: zoom, x: c.x, y: c.y };
-    if (!wrapping) {
-      const s = BLEN * zoom;
-      Object.assign(latest, { sx: scroller.scrollLeft / s, sy: scroller.scrollTop / s, w: scroller.clientWidth, h: scroller.clientHeight });
-    }
-    clearTimeout(rememberTimer);
-    rememberTimer = setTimeout(flushView, 300);
-  }
-  function flushView(): void {
-    clearTimeout(rememberTimer);
-    if (latest) rememberView(project.id, file, latest);
-    latest = undefined;
-  }
-  const zoomControl = selectField(
-    'Zoom',
-    ZOOMS,
-    () => zoom,
-    (value) => setZoom(value),
-  );
-  /** The menu shows a round preset, or the exact percentage the wheel reached. */
-  const zoomSelect = zoomControl.querySelector('select')!;
-  zoomSelect.classList.add('mt-big');
-  // visible + and − beside the menu: a finger has no wheel (44 px on touch, mapTools.css)
-  const zoomStep = (label: string, name: string, factor: number) =>
-    h('button', { type: 'button', class: 'mt-zoom-step', 'aria-label': name, title: name, onclick: () => setZoom(zoom * factor) }, label);
-  // phones: the block-set, monster and palette pickers and Download picture fold behind one button, so the tools and the map
-  // come first (mapTools.css); wider screens show them all and the button is hidden
-  const filesToggle = h(
-    'button',
-    {
-      type: 'button',
-      class: 'mt-files-toggle',
-      'aria-expanded': 'false',
-      'aria-controls': 'mt-files-body',
-      onclick: () => setFilesOpen(filesToggle.getAttribute('aria-expanded') !== 'true'),
+  const { noteView, flushView, restoreView, stopRestoring } = mapViewMemory({
+    project,
+    file,
+    host,
+    scroller,
+    viewport,
+    get wrapping() {
+      return wrapping;
     },
-    'Blocks & palette ▸',
-  );
-  function setFilesOpen(open: boolean): void {
-    filesToggle.setAttribute('aria-expanded', String(open));
-    filesToggle.textContent = open ? 'Blocks & palette ▾' : 'Blocks & palette ▸';
-    filesToggle.parentElement?.classList.toggle('mt-files-open', open);
-    requestAnimationFrame(() => window.dispatchEvent(new Event('resize')));
-  }
-  const zoomRow = h('div', { class: 'mt-zoom-row' });
-  zoomSelect.replaceWith(zoomRow);
-  zoomRow.append(zoomSelect, zoomStep('−', 'Zoom out', 1 / 1.5), zoomStep('+', 'Zoom in', 1.5));
-  const zoomCustom = h('option', { value: 'custom', hidden: true });
-  zoomSelect.append(zoomCustom);
-  function showZoom(): void {
-    const preset = ZOOMS.find(([z]) => Math.abs(z - zoom) < 0.0005);
-    zoomCustom.hidden = !!preset;
-    zoomCustom.textContent = `${Math.round(zoom * 100)}%`;
-    zoomSelect.value = preset ? String(preset[0]) : 'custom';
-  }
-  showZoom();
-  scroller.title = 'Mouse wheel or pinch zooms around the pointer; Shift+wheel scrolls.';
-  // wheel and pinch turn into one zoom change per animation frame, around the last pointer position
-  let wheelTarget = zoom;
-  let wheelPointer = { x: 0, y: 0 };
-  let wheelFrame = 0;
-  scroller.addEventListener(
-    'wheel',
-    (event) => {
-      if (event.shiftKey || !event.deltaY || (!event.ctrlKey && Math.abs(event.deltaX) > Math.abs(event.deltaY))) return;
-      event.preventDefault();
-      if (!wheelFrame) wheelTarget = zoom;
-      const unit = event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? scroller.clientHeight : 1;
-      wheelTarget = wheelZoom(wheelTarget, event.deltaY * unit, event.ctrlKey);
-      const bounds = scroller.getBoundingClientRect();
-      wheelPointer = { x: event.clientX - bounds.left - scroller.clientLeft, y: event.clientY - bounds.top - scroller.clientTop };
-      if (wheelFrame) return;
-      wheelFrame = requestAnimationFrame(() => {
-        wheelFrame = 0;
-        setZoom(wheelTarget, wheelPointer);
-      });
+    get zoom() {
+      return zoom;
     },
-    { passive: false },
-  );
+    view,
+    saved,
+    linkMarks,
+    map,
+  });
+  const { zoomControl, filesToggle, showZoom } = createMapZoomControls({
+    get zoom() {
+      return zoom;
+    },
+    setZoom,
+    scroller,
+  });
+
   // fingers: two pinch and pan with any tool; one held still opens a menu; the Hand tool scrolls (mapTouchGestures.ts)
   let strokeFrom = 0;
   touchGestures({
@@ -1534,102 +979,26 @@ registerEditor(['map'], (host, project, file) => {
   const fitter = new ResizeObserver(() => requestAnimationFrame(fit));
   for (const el of [host, sideCol, tools.panel]) fitter.observe(el);
   addEventListener('resize', fit);
-  const onKey = (e: KeyboardEvent) => {
-    const t = e.target as HTMLElement | null;
-    if (t instanceof HTMLInputElement || t instanceof HTMLSelectElement || t instanceof HTMLTextAreaElement || t?.closest('dialog')) return;
-    const k = e.key.toLowerCase();
-    if (e.ctrlKey || e.metaKey) {
-      if (k === 'z' || k === 'y') {
-        e.preventDefault();
-        step(k === 'z' && !e.shiftKey);
-      } else if ((k === 'c' || k === 'x') && tools.selection && !window.getSelection()?.toString()) {
-        e.preventDefault();
-        tools.copy(k === 'x');
-      } else if (k === 'v') {
-        e.preventDefault();
-        tools.paste();
-      }
-      return;
-    }
-    if (e.altKey) return;
-    if (e.key === 'Escape' && placingExit) return ((placingExit = false), toast('Exit placing cancelled.'), e.preventDefault());
-    if (e.key === 'Escape' && tools.cancel()) return e.preventDefault();
-    if (e.key === 'Enter' && tools.finishPolygon()) {
-      e.preventDefault();
-      revealTool('select');
-      return;
-    }
-    if (e.key === 'Backspace' && tools.removePolygonCorner()) return e.preventDefault();
-    if ((e.key === 'Delete' || e.key === 'Backspace') && tools.selection && mode === 'select') {
-      e.preventDefault();
-      return tools.fillSelection();
-    }
-    if (k === 'g' && !e.shiftKey) return toggleGrid();
-    const tool = TOOLS.find(([, , , key]) => key && key.toLowerCase() === k);
-    if (tool && !e.shiftKey) {
-      setMode(tool[0]);
-      revealTool(tool[0]);
-      rebuildMonsters();
-    }
-  };
-  window.addEventListener('keydown', onKey);
-  // Open where the address says, else where the action is: where the character starts, else the first placed monster.
-  requestAnimationFrame(() => {
-    if (!host.isConnected) return;
-    viewport.setWrapped(wrapping);
-    const urlX = view.num('x');
-    const urlY = view.num('y');
-    const start = linkMarks().find((m) => m.kind === 'to') ?? map.monsters.find((m) => m.monnum < LASTMON) ?? undefined;
-    const at = saved
-      ? { x: saved.x, y: saved.y }
-      : urlX !== undefined && urlY !== undefined
-        ? { x: urlX, y: urlY }
-        : start
-          ? 'curx' in start
-            ? { x: start.curx, y: start.cury }
-            : start
-          : undefined;
-    // the same window size (a scroll bar aside): the exact scroll; else the same middle
-    const place = () => {
-      if (
-        saved?.sx !== undefined &&
-        saved.sy !== undefined &&
-        !wrapping &&
-        Math.abs((saved.w ?? 0) - scroller.clientWidth) < 40 &&
-        Math.abs((saved.h ?? 0) - scroller.clientHeight) < 40
-      )
-        viewport.goTo({ x: saved.sx, y: saved.sy }, { x: 0, y: 0 });
-      else if (at) viewport.goTo(at);
-    };
-    place();
-    viewReady = true;
-    if (saved) view.set({ zoom: zoomToUrl(zoom) }); // the address says the zoom the map opened at
-    // The window may still change size as the editor settles, which would shift the middle: keep
-    // putting the spot back until the reader does something.
-    const keepSpot = new ResizeObserver(() => {
-      if (restoring) place();
-    });
-    keepSpot.observe(scroller);
-    const stopKeeping = () => {
-      restoring = false;
-      keepSpot.disconnect();
-      noteView();
-    };
-    for (const e of ['wheel', 'pointerdown', 'keydown', 'touchstart'] as const) scroller.addEventListener(e, stopKeeping, { passive: true, once: true });
-    setTimeout(stopKeeping, 800);
-    stopRestoring = stopKeeping;
-    // from now on, scrolling updates the address (once it settles)
-    let settle: ReturnType<typeof setTimeout> | undefined;
-    scroller.addEventListener('scroll', () => {
-      clearTimeout(settle);
-      settle = setTimeout(() => {
-        const at = viewport.at();
-        const center = wrapping ? nativeCell({ x: Math.round(at.x), y: Math.round(at.y) }) : { x: Math.round(at.x), y: Math.round(at.y) };
-        view.set({ x: center.x, y: center.y });
-      }, 300);
-      noteView();
-    });
+  const { onKey } = mapKeyboard({
+    step,
+    tools,
+    get placingExit() {
+      return placingExit;
+    },
+    set placingExit(value) {
+      placingExit = value;
+    },
+    revealTool,
+    get mode() {
+      return mode;
+    },
+    toggleGrid,
+    setMode,
+    rebuildMonsters,
   });
+
+  window.addEventListener('keydown', onKey);
+  restoreView();
   return () => {
     hideTip();
     flushView();
