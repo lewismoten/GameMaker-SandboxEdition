@@ -66,7 +66,8 @@ game folder opens in the browser unchanged.
 
 - **Shared block timer finalization (November 18, 2026):** OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, extracted the shared timer helper and added regression tests. Existing game art and content credits remain; no third-party material was added.
 
-- **Achievement catalog organization (November 18, 2026)**: OpenAI Codex, directed by Lewis Moten, split the existing achievement catalog into typed modules by group. No new third-party code or assets were added.
+- **Achievement catalog organization (November 18, 2026):** OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, split the existing achievement catalog into typed modules by group. No new third-party code or assets were added.
+
 - **Sample CD build organization (November 18, 2026)**: OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, split the existing catalog build script into modules by responsibility. No new third-party code or assets were added.
 - **SEO build organization (November 18, 2026)**: OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, split the existing crawlable-page generator into modules by responsibility. No new third-party code or assets were added.
 - **Tour engine organization (November 18, 2026)**: OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, split the existing guided-tour player into modules by responsibility. No new third-party code or assets were added.
