@@ -53,11 +53,17 @@ if (dist) {
   const offline = join(resolve(dist), 'offline.json');
   if (existsSync(offline)) {
     const list = JSON.parse(readFileSync(offline, 'utf8')).files;
-    row(
-      `Offline copy (${list.length} files, transfer)`,
-      list.reduce((n, f) => n + f[1], 0),
-      budgets.offline.transferMB * MB,
-    );
+    // Entries are {path, stored, wire} (wire = bytes a visitor downloads, gzipped for text); the old format was [path, wire].
+    const wire = (f) => (Array.isArray(f) ? f[1] : f?.wire);
+    const total = Array.isArray(list) ? list.reduce((n, f) => n + wire(f), 0) : NaN;
+    if (!Number.isFinite(total)) {
+      console.error('FAIL offline.json: could not total the files (each needs a numeric wire size, or be a [path, size] pair)');
+      process.exit(1);
+    }
+    row(`Offline copy (${list.length} files, transfer)`, total, budgets.offline.transferMB * MB);
+  } else {
+    console.error(`FAIL no offline.json in ${dist}: the offline copy cannot be checked`);
+    process.exit(1);
   }
   console.log('Largest folders:');
   for (const [k, s] of [...groups].sort((x, y) => y[1] - x[1]).slice(0, 8)) console.log(`  ${mb(s).padStart(9)}  ${k}`);
