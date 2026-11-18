@@ -103,6 +103,11 @@
       "gamemaker-source": "./src/kit/laserClearance.ts",
       "import": "./dist/kit/laserClearance.js"
     },
+    "./kit/flashMeter": {
+      "types": "./dist/types/kit/flashMeter.d.ts",
+      "gamemaker-source": "./src/kit/flashMeter.ts",
+      "import": "./dist/kit/flashMeter.js"
+    },
     "./kit/ticks": {
       "types": "./dist/types/kit/ticks.d.ts",
       "gamemaker-source": "./src/kit/ticks.ts",
