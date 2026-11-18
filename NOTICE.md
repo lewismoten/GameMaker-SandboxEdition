@@ -64,6 +64,8 @@ game folder opens in the browser unchanged.
 
 ## Credits
 
+- **SEO build organization (November 18, 2026)**: OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, split the existing crawlable-page generator into modules by responsibility. No new third-party code or assets were added.
+
 - **Map editor organization (November 18, 2026)**: OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, split the existing map editor into modules by responsibility. No new third-party code or assets were added.
 
 - **OpenAI Codex** helped audit imported archive walkthroughs and wrote the walkthrough
