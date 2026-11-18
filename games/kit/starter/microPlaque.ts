@@ -28,7 +28,7 @@ export function addMicroPlaques<K extends string>(book: Book, pal: Pal, texts: R
       font: 'micro',
       maxWidth: 2,
       prefix: 'microPlaque',
-      maxBlocks: Math.min(100, 150 - book.index.size),
+      maxBlocks: Math.min(100, book.size - book.index.size),
       colors: {
         background: skyOf(pal),
         paper: pal.c('parch', 3),

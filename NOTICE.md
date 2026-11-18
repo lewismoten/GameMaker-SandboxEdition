@@ -1311,3 +1311,5 @@ maker "ZORP" is invented. The shell is untested: nothing has been printed.
 
 - **Editor DOS limit feedback (November 16, 2026):** OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, added instrument-bank, scene-link and VGA channel limit messages and node-only regression tests. No third-party material was added.
 - **Offline copy no longer lists hidden walkthrough data (November 18, 2026):** The finding was made by OpenAI Codex (GPT-6.2 Astra); the fix and its regression tests are by Claude Sonnet 5.5, directed by Lewis Moten. No third-party material was added.
+
+- **Small review fixes (November 18, 2026):** OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, fixed malformed Level check reasons, terminal block chains, privacy sweep output, firmware paths and plaque capacity checks, with regression tests. The findings were made by OpenAI Codex (GPT-6.2 Astra). No third-party material was added.
