@@ -312,6 +312,15 @@
     display: block;
   }
 }
+/* a window under 390 px with a mouse (a narrow desktop window, headless checks) overflowed by 15 px the same way */
+@media (max-width: 389px) {
+  .topbar-nav > a.nav-games {
+    display: none;
+  }
+  .topbar .topbar-menu > .menu-games {
+    display: block;
+  }
+}
 
 /* the Settings menu's "New version ready" item exists only while an update waits */
 .topbar .topbar-menu > [hidden] {
