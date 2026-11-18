@@ -79,6 +79,9 @@ export function flashing(d: SceneData): Finding[] {
     if (done.has(n)) continue;
     const cycle = blockCycle(d.bbl, n);
     if (cycle.length < 2) continue;
+    // a chain that ends on a block that stays put changes once, it doesn't flash
+    const last = d.bbl[cycle[cycle.length - 1].n];
+    if (last.ntime <= 0 || last.nextBl === cycle[cycle.length - 1].n) continue;
     cycle.forEach((c) => done.add(c.n));
     // flashes in the busiest second: the changes of light that fall inside one second, two to a flash
     const rate = flashesPerSecond(d, cycle);

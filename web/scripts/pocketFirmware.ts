@@ -7,6 +7,7 @@
 import { createHash } from 'node:crypto';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 interface Entry {
   board: string;
@@ -41,7 +42,7 @@ for (const e of pin.files) {
     if (bytes.length !== e.size) throw new Error(`size ${bytes.length}, pinned ${e.size}`);
     const got = sha(bytes);
     if (got !== e.sha256) throw new Error(`sha256 ${got}, pinned ${e.sha256}`);
-    mkdirSync(dirname(path.pathname), { recursive: true });
+    mkdirSync(dirname(fileURLToPath(path)), { recursive: true });
     writeFileSync(path, bytes);
     console.log(`fetched  ${label}`);
   } catch (err) {

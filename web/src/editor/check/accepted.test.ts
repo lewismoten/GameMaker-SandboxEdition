@@ -1,6 +1,6 @@
 // Accepted findings: the stable key a finding goes by, and leaving accepted ones out.
 import { describe, expect, it } from 'vitest';
-import { findingKey, splitAccepted } from './accepted';
+import { acceptedWhy, entriesWithoutReason, findingKey, reasonFor, splitAccepted, type AcceptedEntry } from './accepted';
 import type { Finding } from './findings';
 
 const hold = (scene: number, x: number): Finding => ({
@@ -52,4 +52,17 @@ describe('accepted entries with a reason', () => {
     expect(splitAccepted([f], [{ finding: k, why: 'boss' }]).accepted).toEqual([f]);
     expect(splitAccepted([f], [k]).accepted).toEqual([f]);
   });
+});
+
+// Companion JSON can contain values outside AcceptedEntry's TypeScript shape.
+it('treats non-string reasons as empty', () => {
+  const malformed = { finding: 'k', why: 5 } as unknown as AcceptedEntry;
+  expect(acceptedWhy(malformed)).toBe('');
+  expect(reasonFor([malformed], 'k')).toBe('');
+  expect(entriesWithoutReason([malformed])).toEqual(['k']);
+  expect(acceptedWhy({ finding: 'k', why: '  deliberate  ' })).toBe('deliberate');
+});
+
+it('skips null and malformed entries before reading their reason', () => {
+  expect(entriesWithoutReason([null, undefined, {}, { finding: 5 }, 'k'] as unknown as AcceptedEntry[])).toEqual(['k']);
 });

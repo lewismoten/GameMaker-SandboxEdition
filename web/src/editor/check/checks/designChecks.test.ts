@@ -161,6 +161,18 @@ describe('exits, music and flashing', () => {
     expect(flashing(d)).toEqual([]);
   });
 
+  it.each([0, 1])('does not repeat a chain ending in a terminal block (ticks %i)', (ticks) => {
+    const d = sceneOf(testGame(['S E']));
+    d.map.blocks.fill(10);
+    d.palette.fill(0);
+    d.palette.set([63, 63, 63], 3);
+    d.bbl[10].pixels.fill(0);
+    d.bbl[11].pixels.fill(1);
+    Object.assign(d.bbl[10], { ntime: 1, nextBl: 11 });
+    Object.assign(d.bbl[11], { ntime: ticks, nextBl: 11 });
+    expect(flashing(d)).toEqual([]);
+  });
+
   it('does not call one quick change among slow pictures flashing', () => {
     const t = testGame(ROWS);
     const d = sceneOf(t);
