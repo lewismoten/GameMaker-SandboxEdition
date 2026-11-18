@@ -17,7 +17,8 @@ import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
-import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { CAR } from './monsters';
 import { drawLoop, drawRoad, lamp, stripAt } from './scene';
@@ -94,7 +95,7 @@ class Stage {
       if (!this.book.has(name)) this.book.add(name, pic, AIR);
       m.set(x, y, name);
     };
-    stampTiledSign({ set: put }, at[0], at[1], this.signs[n], GROUND_ROW - at[1] - 1);
+    stampTiledSign({ set: put }, at[0], at[1], this.signs[n], GROUND_ROW - at[1] - 1, { maxPostHeight: 1 });
   }
 
   /** The exit door standing at column `x`, its bottom on row 8, over whatever is behind it; `barred` for a version with two red and white bars. */

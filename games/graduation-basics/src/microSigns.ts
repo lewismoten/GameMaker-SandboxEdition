@@ -3,7 +3,8 @@ import { Book } from '../../kit/starter/book';
 import type { Graduation } from '../../kit/starter/graduationConfig';
 import type { buildLevels } from '../../kit/starter/graduationLevel';
 import { StarterMap, ORIGIN } from '../../kit/starter/map';
-import { addMicroPlaques, stampTiledSign, type MicroPlaqueText } from '../../kit/starter/microPlaque';
+import { addMicroPlaques, type MicroPlaqueText } from '../../kit/starter/microPlaque';
+import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 
 const BANNERS: Record<string, string[]> = {
   'graduation-basics': ['FIRST', 'STEPS'],
@@ -127,7 +128,7 @@ export function microSigns(built: ReturnType<typeof buildLevels>, cfg: Graduatio
       };
       const x = name === 'helpers' && !diploma ? 7 : at.x;
       // The Doc Leo board is narrower; only the lower board carries their shared post.
-      stack.forEach((plaque, i) => stampTiledSign(target, x, y + i, plaque, posted && i === stack.length - 1 ? 1 : 0));
+      stack.forEach((plaque, i) => stampTiledSign(target, x, y + i, plaque, posted && i === stack.length - 1 ? 1 : 0, { maxPostHeight: 1 }));
     }
     return { ...level, book, map };
   });

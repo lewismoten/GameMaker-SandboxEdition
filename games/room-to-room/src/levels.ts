@@ -15,7 +15,8 @@ import { addLockBlocks } from '../../kit/starter/locks';
 import { ORIGIN, StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
 import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 
 const SIGNS = {
   door: { lines: ['TO', 'DOOR'] },
@@ -98,7 +99,7 @@ function built(book: Book, g: Grid): StarterMap {
   return m;
 }
 const place = (m: StarterMap, x: number, s: Sign, ground = GROUND, postHeight = 1) =>
-  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, x, ground - postHeight - s.board.length, s, postHeight);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, x, ground - postHeight - s.board.length, s, postHeight, { maxPostHeight: 1 });
 const room = (file: string, title: string, map: StarterMap, exits: Room['exits'], ways: Room['ways']): Room => ({ file, title, map, exits, ways });
 
 /** Level 1, room 1: a door to another room. */

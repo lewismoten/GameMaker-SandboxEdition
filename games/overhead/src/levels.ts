@@ -12,7 +12,8 @@ import { Grid } from '../../kit/starter/grid';
 import { ORIGIN } from '../../kit/starter/map';
 import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
 import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { addOverBlocks, type Ground } from './blocks';
 import { OverMap } from './overMap';
 
@@ -167,7 +168,7 @@ export function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sig
 
 /** The top-down ground is directly beneath a short post; board pixels stay shared. */
 function plaque(m: OverMap, x: number, y: number, s: Sign, on: 'floor' | 'grass'): void {
-  stampTiledSign({ set: (sx, sy, block) => m.set(sx, sy, block.includes('post') ? `${block}.${on}` : block) }, x, y, s);
+  stampTiledSign({ set: (sx, sy, block) => m.set(sx, sy, block.includes('post') ? `${block}.${on}` : block) }, x, y, s, 1, { maxPostHeight: 1 });
 }
 
 const LEGEND_ONE: Record<string, string> = {

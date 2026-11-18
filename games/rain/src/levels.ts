@@ -4,7 +4,8 @@ import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { ORIGIN, StarterMap } from '../../kit/starter/map';
-import { addMicroPlaques, stampMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampMicroPlaques, stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { addHouse, HOUSE } from './house';
 import { addRain, rainPalette, stormPalette, type Timed } from './rain';
 import type { Pal } from '../../kit/starter/palette';
@@ -54,9 +55,9 @@ function lesson(pal: Pal, pools: boolean): Level {
     const signs = addMicroPlaques(book, pal, texts);
     const signMap = { set: (x: number, y: number, name: string) => map.setOnSky(x, y, name) };
     // Before the first puddle; keep the post off every wet touch cell.
-    stampTiledSign(signMap, 5, 8, signs.touch);
+    stampTiledSign(signMap, 5, 8, signs.touch, 1, { maxPostHeight: 1 });
     // Two plaques on one short grounded post, before the palette-changing door.
-    stampMicroPlaques(signMap, 33, 7, [signs.same, signs.look]);
+    stampMicroPlaques(signMap, 33, 7, [signs.same, signs.look], 1, { maxPostHeight: 1 });
   }
   if (pools) {
     // the house, its roof and spout on the rain's clock (same phase as the rain around each cell)

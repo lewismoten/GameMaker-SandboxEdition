@@ -77,7 +77,7 @@ export async function openOfflineDialog(): Promise<void> {
           `${sizeText(s.wireMissing)} still needed; about ${sizeText(s.storedMissing)} free space needed for a safe replacement.${room ? '' : ' There is not enough room.'}`,
         ),
         h('p', { class: 'meta' }, 'Video playback needs the internet. You can change tiers later.'),
-        h('div', { class: 'buttons' }, closeButton(), s.ready ? remove : go),
+        h('div', { class: 'buttons' }, closeButton(), !s.ready && go, s.removable && remove),
       );
     };
     const download = async (s: OfflineStatus) => {

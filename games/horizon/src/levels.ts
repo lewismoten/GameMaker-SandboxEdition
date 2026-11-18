@@ -18,7 +18,8 @@ import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
 import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { BALL } from './monsters';
 import { drawArch, drawScene } from './scene';
 import { COLS, DOOR_COL, GROUND_ROW, HORIZON_ROW, ROWS, SPAWN_COL, START, WIDTH } from './view';
@@ -106,7 +107,7 @@ class Stage {
 
   /** Stamp the shared floating plaque without compositing its board pixels. */
   sign(m: StarterMap, n: SignName, at: readonly [number, number]): void {
-    stampTiledSign(m, at[0], at[1], this.signs[n], 0);
+    stampTiledSign(m, at[0], at[1], this.signs[n], 0, { maxPostHeight: 1 });
   }
 
   /** A copy of a door block with two red and white bars across it. */

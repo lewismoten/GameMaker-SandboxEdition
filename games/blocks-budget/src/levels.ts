@@ -8,7 +8,8 @@
 // Every room is closed in by brick walls you can see, so Lena is never stopped by something she can't.
 import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
-import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
@@ -60,7 +61,7 @@ const onGround = (ground: number, s: Sign) => ground - 1 - s.board.length;
 
 /** Signs may replace only sky; later scenery is also checked against their final cells. */
 function sign(m: StarterMap, x: number, y: number, s: Sign): void {
-  stampTiledSign({ set: (col, row, name) => m.setOnSky(col, row, name) }, x, y, s, GROUND - y - s.board.length);
+  stampTiledSign({ set: (col, row, name) => m.setOnSky(col, row, name) }, x, y, s, GROUND - y - s.board.length, { maxPostHeight: 1 });
 }
 
 /** The ground, brick walls at both ends (rows 0 to 9, so the room is closed in), the entrance on the left (x 3) and the exit door at `exitX`. */

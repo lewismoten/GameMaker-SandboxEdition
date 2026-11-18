@@ -15,7 +15,8 @@ import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
 import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { drawBoards, drawCurtain, drawValance } from './actorArt';
 import { CAMEO, MON, WALK } from './monsters';
 
@@ -107,8 +108,8 @@ function curtainUp(book: Book, signs: Record<SignName, Sign>): StarterMap {
   const m = new StarterMap(book, g.rows());
   const s = STAGE_ONE;
   build(m, s);
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 34, onGround(GROUND, signs.encore), signs.encore);
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 47, 7, signs.exit, 2);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 34, onGround(GROUND, signs.encore), signs.encore, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 47, 7, signs.exit, 2, { maxPostHeight: 1 });
   // the actors wait behind the curtains, peeking
   m.mon(MON.pipPeek, s.left, STAND);
   m.mon(MON.bluPeek, s.right, STAND);
@@ -139,8 +140,8 @@ function sayHello(book: Book, signs: Record<SignName, Sign>): StarterMap {
   // the doorway the cameo waits in, to the right of the stage
   const doorX = DOORWAY;
   m.set(doorX, 8, 'doorwayTop').set(doorX, 9, 'doorwayBottom');
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 16, onGround(GROUND, signs.encore), signs.encore);
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 53, onGround(GROUND, signs.exit), signs.exit);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 16, onGround(GROUND, signs.encore), signs.encore, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 53, onGround(GROUND, signs.exit), signs.exit, 1, { maxPostHeight: 1 });
   m.mon(MON.camWait, doorX, STAND);
   m.mon(MON.camCue, doorX - CAMEO.walkIn, STAND - 1);
   return m;

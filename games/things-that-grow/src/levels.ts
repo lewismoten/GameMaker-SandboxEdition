@@ -15,7 +15,8 @@ import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
 import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { BIRD, BLUEBIRD } from './monsters';
 
 export type SignName = 'wait' | 'stop' | 'exit';
@@ -131,8 +132,8 @@ function aNest(book: Book, signs: Record<SignName, Sign>): StarterMap {
   const m = new StarterMap(book, g.rows());
   m.set(24, 6, 'nestShelf');
 
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 15, onGround(GROUND, signs.wait), signs.wait);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 38, onGround(GROUND, signs.exit), signs.exit);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 15, onGround(GROUND, signs.wait), signs.wait, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 38, onGround(GROUND, signs.exit), signs.exit, 1, { maxPostHeight: 1 });
   return m;
 }
 
@@ -160,8 +161,8 @@ function emptyNest(book: Book, signs: Record<SignName, Sign>): StarterMap {
   m.set(SHELF_NEST_X, 6, 'nestShelf');
   m.set(PATH_NEST_X, STAND, 'nestPath');
 
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 24, onGround(GROUND, signs.stop), signs.stop);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 38, onGround(GROUND, signs.exit), signs.exit);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 24, onGround(GROUND, signs.stop), signs.stop, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 38, onGround(GROUND, signs.exit), signs.exit, 1, { maxPostHeight: 1 });
   return m;
 }
 

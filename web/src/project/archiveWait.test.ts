@@ -23,16 +23,32 @@ beforeEach(() => {
   writes.length = 0;
   vi.stubGlobal('document', { createElement: () => region, body: { append: () => undefined } });
 });
-afterEach(() => vi.unstubAllGlobals());
+afterEach(() => {
+  vi.unstubAllGlobals();
+  vi.useRealTimers();
+});
 
 describe('archiveWait', () => {
-  it('clears pending feedback on cancellation without claiming the archive opened', async () => {
-    vi.stubGlobal('fetch', async () => new Response(null, { status: 202 }));
+  it('rejects immediately and clears feedback when aborted during a 30 second wait', async () => {
+    vi.useFakeTimers();
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () => new Response(null, { status: 202, headers: { 'retry-after': '30' } })),
+    );
     const stop = new AbortController();
-    const response = await fetchArchive('./games/x/y/y.zip', { signal: stop.signal }, async () => stop.abort());
-    expect(response.status).toBe(202);
+    const reason = new Error('Canceled archive');
+    const pending = fetchArchive('./games/x/y/y.zip', { signal: stop.signal });
+    const rejected = expect(pending).rejects.toBe(reason);
+    await vi.advanceTimersByTimeAsync(0);
+    expect(region.hidden).toBe(false);
+    stop.abort(reason);
+    await vi.advanceTimersByTimeAsync(0);
     expect(region.hidden).toBe(true);
     expect(region.textContent).toBe('');
+    await vi.advanceTimersByTimeAsync(30000);
+    await rejected;
+    expect(fetch).toHaveBeenCalledTimes(1);
+    expect(vi.getTimerCount()).toBe(0);
   });
   it('does not rewrite identical pending text on every retry', async () => {
     let count = 0;

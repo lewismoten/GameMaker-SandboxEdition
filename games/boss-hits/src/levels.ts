@@ -9,7 +9,8 @@
 // Both rooms are closed in by brick walls you can see, so Kit is never stopped by something he can't.
 import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
-import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
@@ -93,9 +94,9 @@ function fiveHits(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [11, 31, 40],
   );
   const m = new StarterMap(book, g.rows());
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 5, onGround(GROUND, signs.meet), signs.meet);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 12, onGround(GROUND, signs.sting), signs.sting);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 41, 7, signs.exit);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 5, onGround(GROUND, signs.meet), signs.meet, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 12, onGround(GROUND, signs.sting), signs.sting, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 41, 7, signs.exit, 1, { maxPostHeight: 1 });
   m.mon(PLAIN, BUG_X[0], STAND);
   return m;
 }
@@ -117,8 +118,8 @@ function countTheLights(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [8, 24, 28],
   );
   const m = new StarterMap(book, g.rows());
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 16, onGround(GROUND, signs.poof), signs.poof);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 42, 7, signs.exit);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 16, onGround(GROUND, signs.poof), signs.poof, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 42, 7, signs.exit, 1, { maxPostHeight: 1 });
   m.mon(LAMPED, BUG_X[1], STAND);
   return m;
 }

@@ -11,7 +11,8 @@ import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
 import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { addHealth } from './health';
 
 type SignName = string;
@@ -48,7 +49,7 @@ export interface Level {
  */
 function sign(map: StarterMap, x: number, board: Sign): void {
   const y = GROUND - 1 - board.board.length;
-  stampTiledSign({ set: (x, y, block) => map.setOnSky(x, y, block) }, x, y, board);
+  stampTiledSign({ set: (x, y, block) => map.setOnSky(x, y, block) }, x, y, board, 1, { maxPostHeight: 1 });
 }
 
 export const GROUND = 10;

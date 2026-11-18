@@ -6,7 +6,8 @@
 //   2. A Crowd: Pip, Moss and Dot stand together. One touch opens a talk of four voices that
 //      runs to a second card, because a card holds 16 rows of words.
 // Every room is closed in by hedges you can see, so Kit is never stopped by something he can't.
-import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
@@ -107,8 +108,8 @@ function twoVoices(book: Book, signs: Record<SignName, Sign>): Level {
     [13, 18, 24, 41],
   );
   const m = new StarterMap(book, g.rows());
-  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 21, onGround(GROUND, signs.walkin), signs.walkin);
-  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 41, 7, signs.exit);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 21, onGround(GROUND, signs.walkin), signs.walkin, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 41, 7, signs.exit, 1, { maxPostHeight: 1 });
   const talks: Talk[] = [];
   stand(m, 'pip', PIP_X, true);
   talk(talks, 'pip', 'hello', PIP_X, PIP_X + 3);
@@ -136,8 +137,8 @@ function crowd(book: Book, signs: Record<SignName, Sign>): Level {
     [13, 18, 33, 41],
   );
   const m = new StarterMap(book, g.rows());
-  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 20, onGround(GROUND, signs.group), signs.group);
-  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 43, 7, signs.exit);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 20, onGround(GROUND, signs.group), signs.group, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 43, 7, signs.exit, 1, { maxPostHeight: 1 });
   const talks: Talk[] = [];
   stand(m, 'pip', PIP2_X, true);
   stand(m, 'moss', MOSS_X, false);

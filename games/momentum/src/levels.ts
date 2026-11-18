@@ -13,7 +13,8 @@ import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
 import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 
 export type SignName = 'glide' | 'faster' | 'exit' | 'run' | 'longer' | 'last';
 
@@ -42,7 +43,7 @@ export interface Level {
 
 /** Keep every board and its post clear of existing art and pickups. */
 function placeSign(m: StarterMap, x: number, y: number, sign: Sign, postHeight = 1): void {
-  stampTiledSign({ set: (sx, sy, block) => m.setOnSky(sx, sy, block) }, x, y, sign, postHeight);
+  stampTiledSign({ set: (sx, sy, block) => m.setOnSky(sx, sy, block) }, x, y, sign, postHeight, { maxPostHeight: 1 });
 }
 
 /** The top row of a sign standing on ground row `ground`. */

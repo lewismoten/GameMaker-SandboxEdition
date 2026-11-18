@@ -11,7 +11,8 @@ import { addLockBlocks } from '../../kit/starter/locks';
 import { ORIGIN, StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
 import { addAwning, addCash, addSold, addStall, stallName } from '../../kit/starter/shop';
-import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 
@@ -134,6 +135,8 @@ function shop(book: Book, pal: Pal, signs: Record<SignName, Sign>): StarterMap {
       x,
       y,
       sign,
+      1,
+      { maxPostHeight: 1 },
     );
   place(5, onGround(GROUND, signs.street), signs.street);
   place(26, onGround(GROUND, signs.both), signs.both);

@@ -14,7 +14,8 @@ import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
 import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { addDigBlocks } from './digBlocks';
 
 export type SignName = 'soil' | 'rock' | 'gold' | 'sink' | 'spikes' | 'exit';
@@ -119,10 +120,10 @@ function theTunnel(book: Book, signs: Record<SignName, Sign>): StarterMap {
   }
   m.set(L1.rock, G - 1, 'rock');
   for (const [x, y] of L1.nuggets) m.set(x, y, 'nugget');
-  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 4, onGround(G, signs.soil), signs.soil);
-  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 8, onGround(G, signs.rock), signs.rock);
-  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 12, onGround(G, signs.gold), signs.gold);
-  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 37, onGround(G, signs.exit), signs.exit);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 4, onGround(G, signs.soil), signs.soil, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 8, onGround(G, signs.rock), signs.rock, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 12, onGround(G, signs.gold), signs.gold, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 37, onGround(G, signs.exit), signs.exit, 1, { maxPostHeight: 1 });
   return m;
 }
 
@@ -157,9 +158,9 @@ function theSink(book: Book, signs: Record<SignName, Sign>): StarterMap {
   for (let y = S + 1; y < L2.floor; y++) m.set(L2.ladder, y, 'mineLadder');
   m.set(L2.ladder, S, 'ladder').set(L2.ladder, S - 1, 'ladder');
   for (const [x, y] of L2.nuggets) m.set(x, y, 'nugget');
-  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 3, onGround(S, signs.sink), signs.sink);
-  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 7, onGround(S, signs.spikes), signs.spikes);
-  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 39, onGround(S, signs.exit), signs.exit);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 3, onGround(S, signs.sink), signs.sink, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 7, onGround(S, signs.spikes), signs.spikes, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 39, onGround(S, signs.exit), signs.exit, 1, { maxPostHeight: 1 });
   return m;
 }
 

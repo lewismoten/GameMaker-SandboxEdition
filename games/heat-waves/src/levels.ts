@@ -19,7 +19,8 @@ import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { skyOf, type Pal } from '../../kit/starter/palette';
 import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { MIRAGE } from './monsters';
 import { buildPalettes } from './palettes';
 import { BAND_W, CLEAR, bandCell, bandPicture, rockCell, stillCell } from './scene';
@@ -108,7 +109,7 @@ export class Stage {
 
   /** Stamp an opaque shared plaque above the scenery, without a post. */
   sign(m: StarterMap, n: SignName, at: readonly [number, number]): void {
-    stampTiledSign(m, at[0], at[1], this.signs[n], 0);
+    stampTiledSign(m, at[0], at[1], this.signs[n], 0, { maxPostHeight: 1 });
   }
 
   /** The exit door standing on the road at column `x`, its bottom on row 8. */

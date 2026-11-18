@@ -18,7 +18,8 @@ import { ORIGIN, StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
 import { addRideBlocks, addSpaceRamp } from './rideBlocks';
 import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 
 export interface Level {
   file: string;
@@ -125,8 +126,8 @@ function climbIn(pal: Pal): Level {
   for (const x of [17, 18, 19, 20]) g.put(x, 6, 'c');
   const m = new RideMap(book, g.rows(), 'brick');
   m.set(EXIT, 8, 'rocketTop').set(EXIT, 9, 'rocketBottom');
-  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 13, onTop(GROUND, signs.ledge), signs.ledge);
-  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 32, onTop(GROUND, signs.into), signs.into);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 13, onTop(GROUND, signs.ledge), signs.ledge, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 32, onTop(GROUND, signs.into), signs.into, 1, { maxPostHeight: 1 });
   return { file: 'one', title: 'Climb In', hint: 'Walk into the rocket.', book, map: m, exits: [[EXIT + ORIGIN, 9 + ORIGIN]] };
 }
 
@@ -244,7 +245,7 @@ function shaftRows(h: number, start: [number, number]): string[] {
 
 /** Plaque `name` at level (x, y), its board's top-left. */
 function plaque(m: RideMap, signs: Record<string, Sign>, name: string, x: number, y: number): void {
-  stampTiledSign({ set: (x, y, block) => m.setOnBackdrop(x, y, block) }, x, y, signs[name]);
+  stampTiledSign({ set: (x, y, block) => m.setOnBackdrop(x, y, block) }, x, y, signs[name], 1, { maxPostHeight: 1 });
 }
 
 /** A level 2 (night) or level 3 (river) filled in: `fill(x, y)` is the open block there. */
