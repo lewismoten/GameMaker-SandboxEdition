@@ -1,6 +1,6 @@
 // flashMeter.ts: a strobe is counted, a slow blink and a small blink and a fade are not.
 import { describe, expect, it } from 'vitest';
-import { FlashMeter, LocalFlashMeter } from '../../games/kit/flashMeter';
+import { FlashMeter, LocalFlashMeter } from './flashMeter';
 
 /** A palette: 0 black, 1 white, 2 saturated red, 3 dark gray, 4 a little lighter gray, all 6-bit. */
 const PAL = new Uint8Array(768);

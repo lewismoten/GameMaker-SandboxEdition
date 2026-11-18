@@ -78,6 +78,15 @@ const iso = createIso([
 
 ## Checks and build helpers
 
+- `kit/flashMeter`: `FlashMeter(fps = 60)` measures general and red flashes in
+  320×200 indexed frames with 6-bit VGA palettes. Call `push(pixels, palette)` for
+  each frame and `reset()` at scene boundaries; `general.worst` and `red.worst`
+  report `{ flashes, at, area }` for the busiest second. `AREA` is the minimum
+  changed screen share and `MAX_FLASHES` is three. `LocalFlashMeter` also reports
+  the busiest 20×20 spot as `{ flashes, at, x, y }`, without the area rule.
+  These are suggestions to inspect, not verdicts: screen size and viewing distance
+  are unknown, and scrolling patterns or a walking hero can register as flashing.
+
 - `kit/ticks`: `ticks(seconds, { rate?, round? })` converts seconds using the engine's
   PIT interrupt rate divided by eight (`TICKS_PER_SECOND`, about 18.209 Hz). Rounding
   defaults to `round`; `floor`, `ceil` and `none` are also available. Pass `rate: 18`

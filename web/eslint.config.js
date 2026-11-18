@@ -26,6 +26,7 @@ export default defineConfig(
             'packages/tools/src/fliCheck.test.ts',
             'packages/tools/src/kit/levelPicture.test.ts',
             'packages/tools/src/kit/ticks.test.ts',
+            'packages/tools/src/kit/flashMeter.test.ts',
           ],
         },
         tsconfigRootDir: import.meta.dirname,
