@@ -412,6 +412,7 @@ Colors That Work plays both lessons with a simulated scene palette (`alike.pal`)
 - `starter/graduationCast.ts` — allocates and recolors the Starter helpers’ and Doc Leo’s hall blocks.
 - `starter/graduationConfig.ts` — the `Graduation` data shape for the stage, hall, arrival, text, song and guests. Its optional `startLedge` sets each entrance’s two- or three-row step and locks that level’s vertical view; omitting `arrival` preserves a climbing arrival, and omitting `startLedge` preserves both original layouts.
 - `starter/graduationFriends.ts` — draws the Starter friends in their own colors, clapping in graduation robes.
+- `starter/sceneSequence.ts` — appends sequential Starter level scenes, links each first exit to the next level or ending, and connects the title to the first entrance; callers supply scene files and settings.
 - `starter/graduationGame.ts` — builds the graduation’s title, ending and level scenes and their links.
 - `starter/graduationHall.ts` — draws hall blocks, the stage, balcony, drapes, lectern, certificate and guests.
 - `starter/graduationPreview.ts` — writes block, hero, monster, whole-map and disk-picture PNG previews for a game’s `tools/preview.ts`.
