@@ -5,6 +5,10 @@ A Special (a limited-time game for Monkey Day): thirty-nine scenes, five of them
 Each room is painted from a plan (`src/place.ts`): the things Nell meets from left to right. The bot plays the same
 plan, so a room's map and its route cannot drift apart.
 
+Block art keeps its public entry in `src/art.ts`: `artSurfaces.ts` draws place backdrops, floors, walls and light;
+`artFixtures.ts` draws shelves, openings and furniture; `artParts.ts` draws collectible parts, sockets and pads.
+`artTile.ts` supplies their shared backdrop canvas and transparent color.
+
 - `check.ts`: the bot plays every scene without losing a life and prints how long each took it. It also fails on
   an invisible wall (a solid block drawn as backdrop). `route.ts` holds the orders, at human timing: it reads every
   sign, climbs to every shelf, waits on the ladder for a wobbly shelf to come level, hops the gaps, takes every part
