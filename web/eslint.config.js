@@ -25,6 +25,7 @@ export default defineConfig(
             'packages/tools/src/iso9660.test.ts',
             'packages/tools/src/fliCheck.test.ts',
             'packages/tools/src/kit/levelPicture.test.ts',
+            'packages/tools/src/kit/ticks.test.ts',
           ],
         },
         tsconfigRootDir: import.meta.dirname,

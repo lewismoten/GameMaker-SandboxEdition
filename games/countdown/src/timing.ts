@@ -4,8 +4,9 @@
 // about a second (18 ticks are 0.99 of one, so a count of 99 runs a second short of 100).
 // Everything below is in ticks.
 
+import { ticks } from '@lewismoten/gamemaker-sandbox-tools/kit/ticks';
 /** Ticks a digit stays on one number: the nearest whole number to a second (18.2). */
-export const SECOND = 18;
+export const SECOND = ticks(1, { rate: 18 });
 /** Level 1 counts 9 to 0, and the door opens when it shows 0. */
 export const DOOR_AT = 9 * SECOND;
 /** Level 2 counts 99 to 0: a tens digit changes every ten of the ones digit's steps. */

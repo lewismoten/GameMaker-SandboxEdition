@@ -1,4 +1,5 @@
 // Five warm kitchen lights drain toward the watched scene's opening, using spare Starter slots.
+import { segmentedBar } from '@lewismoten/gamemaker-sandbox-tools/kit/ticks';
 import { emptyBlock } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import type { Pal } from '../../kit/starter/palette';
@@ -11,6 +12,7 @@ const FRAMES = ['cloudL', 'cloudR', 'bush', 'flower', 'sky', 'ladder'];
 /** Reuse unused slots without moving any existing block or changing the doorway's clock. */
 export function addExitMeter(pal: Pal, l: Level): void {
   const ticks = l.timed.find((t) => t.name === 'shutTop')!.ticks;
+  const bar = segmentedBar({ segments: 5, totalTicks: ticks, round: 'floor' });
   const blocks = l.book.finish();
   for (const name of FRAMES) {
     const n = l.book.n(name);
@@ -30,7 +32,7 @@ export function addExitMeter(pal: Pal, l: Level): void {
     // Once open, a bright arrow remains, rather than a timer that starts again.
     if (i === 5) p.line(5, 10, 14, 10, pal.c('glass', 3)).line(11, 7, 14, 10, pal.c('glass', 3)).line(14, 10, 11, 13, pal.c('glass', 3));
     l.book.redraw(name, p);
-    if (i < 5) l.timed.push({ name, next: FRAMES[i + 1], ticks: Math.floor(((i + 1) * ticks) / 5) - Math.floor((i * ticks) / 5) });
+    if (i < 5) l.timed.push({ name, next: FRAMES[i + 1], ticks: bar[i].duration });
   }
   // Complete copies beside the path, or above the counter when lower rows are full.
   // Preserve every sign, actor's scenery and prop.

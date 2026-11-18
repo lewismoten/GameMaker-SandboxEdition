@@ -1,6 +1,7 @@
 // The parade's other blocks, in the poster inks: the gust meter and the card box (Gust), the fire hall crew, the
 // float's parts and the float (The Float), Gigi's confetti cannons, the beat drums and the notes (Drum-Off), the
 // confetti and balloons (Step Off), and the Ridgemont band in purple with, at the end, a llama in a parade blanket.
+import { segmentedBar } from '@lewismoten/gamemaker-sandbox-tools/kit/ticks';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { text } from '@lewismoten/gamemaker-sandbox-tools/kit/pcText';
 import { PULL, SOLID } from '../../kit/starter/book';
@@ -37,12 +38,12 @@ export function addGust(book: PBook, pal: Pal, ticksEach: number): void {
   const cap = panel();
   cap.rect(17, 5, 3, 13, c('ink', 0));
   book.add('gustCap', cap, air);
-  for (let i = 0; i < 5; i++) {
+  for (const { index: i, end } of segmentedBar({ segments: 5, ticksPerSegment: ticksEach })) {
     const p = panel();
     p.rect(1, 7, 18, 9, c('teal', 3));
     stripes(p, 1, 7, 18, 9, c('teal', 4), 10, 3);
     book.add(`gust${i}`, p, air);
-    book.time(`gust${i}`, 'gustOff', ticksEach * (i + 1));
+    book.time(`gust${i}`, 'gustOff', end);
   }
   const off = panel();
   off.rect(1, 7, 18, 9, c('blue', 0));

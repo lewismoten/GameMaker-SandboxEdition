@@ -73,6 +73,7 @@ const sources = {
   'kit/mumble': 'kit/mumble',
   'kit/textBounds': 'kit/textBounds',
   'kit/tune': 'kit/tune',
+  'kit/ticks': 'kit/ticks',
   'kit/microText': 'kit/microText',
   'kit/tiledSigns': 'kit/tiledSigns',
   'kit/transforms': 'kit/transforms',
