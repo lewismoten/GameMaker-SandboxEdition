@@ -1,7 +1,7 @@
 // The CD tab's Gameware and Shareware games grouped by who made them (the catalog's company, or
 // its author when it has none): Recreational Software Designs' own first, then the makers with
 // the most games, ties by name. home.ts packs the groups into rows like the Bard's collections.
-import type { HomeGame } from './homeCards';
+import type { HomeGame } from './homeGames';
 
 const RSD = 'Recreational Software Designs';
 

@@ -8,7 +8,7 @@ import { isStarterGame, starterGroupOf } from '../../project/starter';
 import { questionsOf } from '../../project/howDoI';
 import { worthReading } from './deepExtract';
 import type { DeepSource } from './deepIndex';
-import type { HomeGame } from './homeCards';
+import type { HomeGame } from './homeGames';
 import type { Part } from './searchMatch';
 
 const stripTags = (html: string) =>

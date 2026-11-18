@@ -2,7 +2,7 @@
 // edition's (Starters and Sandbox, and Bizarre once it has enough games), then the CD's (Gameware,
 // one CD tab). The one opened first, the one remembered, and the featured game a collection
 // shows when it is chosen (pickFeatured) are here too.
-import type { GameKind } from './homeCards';
+import type { GameKind } from './homeGames';
 import type { IconName } from './homeIcons';
 
 /** A collection: a kind of game, with your own games split into those made here and those imported. */

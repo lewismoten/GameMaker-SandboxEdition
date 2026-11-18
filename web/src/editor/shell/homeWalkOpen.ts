@@ -9,7 +9,7 @@ import { GameFiles } from '../../project/files';
 import { loadProject } from '../../project/storage';
 import { keepLookOnly } from '../check/walk/keptWalk';
 import type { WalkDialogOptions } from '../widgets/walkDialog';
-import type { HomeGame } from './homeCards';
+import type { HomeGame } from './homeGames';
 import { lookId } from './lookId';
 
 interface Loaded {

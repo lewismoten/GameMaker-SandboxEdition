@@ -1,5 +1,5 @@
 // Community previews use creator images or immediate title cards, never native game downloads.
-import type { HomeGame } from '../editor/shell/homeCards';
+import type { HomeGame } from '../editor/shell/homeGames';
 import type { CommunityGame } from './catalog';
 
 function loadImage(url: string): Promise<HTMLImageElement | undefined> {

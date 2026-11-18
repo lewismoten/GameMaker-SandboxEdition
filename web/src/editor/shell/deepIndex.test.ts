@@ -4,7 +4,7 @@ import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
 import { createDeepIndex, hintOf, type DeepSource, type DeepStore } from './deepIndex';
 import { extractDeep, type DeepPart } from './deepExtract';
 import { homeDeepSearch } from './homeDeepSearch';
-import type { HomeGame } from './homeCards';
+import type { HomeGame } from './homeGames';
 
 const enc = (s: string) => new TextEncoder().encode(s);
 const memoryStore = () => {
