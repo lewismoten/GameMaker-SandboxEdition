@@ -24,6 +24,8 @@ export function offlineInventory(
   for (const path of [...new Set(paths)].sort()) {
     if (/^(og\/|og-image\.|robots\.txt$|sitemap\.xml$|llms\.txt$|sw\.js$|offline\.|archive\.|web-player\.html$|player\/|games\/extra-\d+\.json$)/.test(path))
       continue;
+    // A secret game's walkthrough descriptor names it; the page fetches it only once the game is revealed.
+    if (/^videos\/walk-[0-9a-f]+\.json$/.test(path)) continue;
     if (/^(tour|phone)\/voice\/README\.md$/.test(path)) continue;
     if (/^games\/(gameware|shareware|originals)\//.test(path) && !/\.(zip|zpart|gmpak)$|\/walkthrough\.json\.gz$/.test(path)) continue;
     if (path.endsWith('.zip') && split.has(path.slice(0, -4))) continue;
