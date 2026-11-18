@@ -80,7 +80,7 @@ Making the files:
   in the PC font with a dark outline in the picture's own lightest and darkest colors. `Disk.write()` does it for every
   game; a game whose menu has a line of its own there moves it (`disk.menuVersion = { y: 186 }`).
 - `license.ts` — `LICENSE.TXT` for every disk (what's real, what's story, the MIT License), in 30-column pages.
-- `sandlogo.ts` — the Sandbox Software logo sting every game's `title.lst` opens with (`SANDLOGO.FLI`): a sandbox with a
+- `sandlogo.ts` (entry; [parts in `sandlogo/`](sandlogo/README.md)) — the Sandbox Software logo sting every game's `title.lst` opens with (`SANDLOGO.FLI`): a sandbox with a
   sand castle, a red pail and a blue shovel that pats the sand, then -= S A N D B O X =- drops in, a letter at a time, in
   THE SANDBOX BBS colors over bold yellow SOFTWARE outlined in black. Ray traced with `@lewismoten/gamemaker-sandbox-tools/kit/raytrace` (boxes, cones, discs, spheres, capsules and
   triangles, Phong shading, hard shadows; only what moves is traced again each frame) and `@lewismoten/gamemaker-sandbox-tools/kit/sdftext` (extruded, beveled
