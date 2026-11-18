@@ -23,9 +23,10 @@ export const L06: RoomSpec = {
   legend: {
     '1': { mon: (b) => KINDS.redcoat(b, beat) },
   },
+  // A short wall return stops an upward step on the doorway row before turning right.
   rows: [
     '################################',
-    '#Z@..#...1.....1.....1....#...k#',
+    '#Z@..#...1.....1.....1...##...k#',
     '#....>......HH......HH....>....#',
     '#.T..#............[.......#....#',
     '#.##########.################v##',

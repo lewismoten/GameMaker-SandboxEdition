@@ -5,15 +5,10 @@
 // when they show the bolt. One flash every 120 ticks (about 6.6 seconds), lit for 3 (a sixth of a second), and lit to a
 // gray-blue, not white: a flash this gentle and this rare is well under three flashes a second (flashCheck measures it).
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
-import { Book, PULL, SOLID } from '../../kit/starter/book';
+import { Book, PULL, SOLID, type Timed } from '../../kit/starter/book';
 import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
 
-/** A block that turns into another after some ticks (the engine's only clock). */
-export interface Timed {
-  name: string;
-  next: string;
-  ticks: number;
-}
+export type { Timed };
 
 /** Ticks the sky stays dark, then lit. Together they are one flash's round: 120 ticks, the length of 16 beats of the song. */
 export const DARK = 117;

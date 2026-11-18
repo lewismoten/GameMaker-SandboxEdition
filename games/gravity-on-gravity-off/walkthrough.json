@@ -8,7 +8,7 @@
  "segments": [
   {
    "scene": 2,
-   "keys": "AU0PzQM5ArlHTR7NA00LzSg5ArkATRLNB00KzQM5ArkATQ/NBU0PzQtNDc0rTQ=="
+   "keys": "AU0IzQc5CLlBTR7NA00LzSg5CLkATQ3NB00UzQM5CLkGTRTNC00NzStN"
   },
   {
    "scene": 3,
@@ -27,7 +27,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 8788,
+  "frames": 9285,
   "chapters": [
    {
     "title": "Opening",
@@ -46,18 +46,18 @@
    },
    {
     "title": "Level 2: Gravity Off",
-    "frame": 3678,
-    "time": 61299.999999996806
+    "frame": 3694,
+    "time": 61566.666666663434
    },
    {
     "title": "Ending",
-    "frame": 5507,
-    "time": 91783.33333333716
+    "frame": 5523,
+    "time": 92050.0000000039
    },
    {
     "title": "Credits",
-    "frame": 7714,
-    "time": 128566.6666666812
+    "frame": 7730,
+    "time": 128833.33333334794
    }
   ]
  }

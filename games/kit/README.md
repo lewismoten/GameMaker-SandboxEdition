@@ -22,6 +22,15 @@ A name with no folder is a file here; `starter/`, `scans/`, `song/` and `cdDemos
 This folder keeps game artwork and repository policy: `disk.ts` reads `about.json`, honors
 `GAME_DISK_OUT` and reports build totals; `photo.ts` locates this repository's scans;
 `align.ts` selects a repository disk and prints its audit. The portable work is in the package.
+`vocRates.ts` is the build's explicit opt-in list of synthesized non-voice effects.
+`Disk.put` applies it to source-generated VOCs before writing: try half rate, then an
+8 kHz cap, never raise a rate. Both the lost Nyquist band and the filter transition
+band must contain at most 0.01% of signal energy. Speech, song recordings, mixed
+voice clips, recorded barks, vocal imitations and unknown files keep their original
+bytes. Slow Computers keeps its intentional large/short disk-read demonstration.
+The generic spectral measurement and study-matched sinc filter live in the tools
+package's `kit/vocRate`. Rate selection preserves each effect's engine wait ticks.
+
 The descriptions below cover the remaining repository tools. Package helpers are named by their import paths.
 
 Nested developer-only diagnostics live under `testdisks/`, with their own build/check
@@ -169,6 +178,7 @@ Making the files:
 - `starter/monsters.ts` — the gumdrop, buzzer and shelly monsters and their two-frame pictures.
 - `starter/palette.ts` — shared bright color ramps, `skyOf` and a palette using the chosen hero’s ramps.
 - `starter/screens.ts` — title, menu, paper, cards and ending pictures, with the title’s group style.
+- `starter/screenSharing.ts` — shares ordinary course menus, text-page backdrops, level/ending backdrops and Kit’s intro when `Disk.write` finishes a Starter. Card wording moves to DOS `.txt` overlays with the same pause; unique text-page headings move into spare lines in their text files, retaining full pages’ pictured headings, while the shared How to Play and Credits headings keep their pagination; title pages, added lesson artwork, palette/visibility lessons and graduations keep their own pictures. Pictures and Cartoons keeps its GIF-only level cards so its format contrasts stay visible. Scores keep their pictured captions because DOS draws only its fixed score labels. `screens.ts` records each unmodified picture’s wording for this step; the fixed kit palette leaves gameplay palettes alone.
 - `starter/shop.ts` — coin, price, purchase and sold blocks for Starter shops, using the DOS Money counter.
 - `starter/sign.ts` — short words on a wooden board, cut into blocks, with two posts.
 - `starter/songStyle.ts` — each group’s instruments, bass, comping, drums and tempo, arranged around a game’s A and B sections.
@@ -184,7 +194,7 @@ Making the files:
 
 - `starter/returnScenes.ts` — `addReturnScenes(game, levelScenes)`: PLAYGAME shows a scene's intro card on every entry, so a level the hero leaves for a talk, a picture or a room and comes back to would show its level card again. It appends a copy of each level scene without the card (same files and links) and points every return link into the level at that copy, so the card shows only on the first arrival. Entering the copy is an ordinary scene entry (the map and monsters load fresh, what the hero carries, the score and meters stay).
 - `starter/graduationArrive.ts`, `starter/graduationArriveArt.ts`, `starter/graduationNods.ts`, `starter/graduationNodRoutes.ts` — a graduation's first level, the outside arrival (the second is the hall, `starter/graduationLevel.ts`). `buildArrival(cfg, pal)` lays a campus path with trees, banner poles and the hall's front, with the stage's nods (`cfg.arrive.nods`, ids from the `NODS` catalog) in a row along it; each nod is a few blocks echoing one Starter (a ladder, a key before a gate, wind, a lever, twinkling stars ...), its sign names the course (`COURSE 211 WIND LIFTS YOU`), and nothing in it hurts or traps. The level has its own block set (`arrive.bbl`, so the diploma's full hall set is not crowded). `arrivalRoute(ids)` is the bot's way through and asserts each nod happened; `games/kit/graduationManual.ts` writes the arrival's pages and "How do I" questions into each graduation's manual.json.
-- `starter/graduationBuild.ts` — writes the shared graduation disk files from its configuration and levels. Each graduation supplies its own `src/song.ts` through `Graduation.song`; `starter/graduationBuild.ts` writes that score without changing the shared hall data. The scores use `starterSong` and their stage’s band; First Steps retains “Up the Aisle” as its A section.
+- `starter/graduationBuild.ts` — writes the shared graduation disk files from its configuration and levels. Its optional final `HeroOptions` argument selects held-rise controls per game; `makePlay` in `starter/graduationTools.ts` accepts the matching optional jump hold in ticks. Each graduation supplies its own `src/song.ts` through `Graduation.song`; `starter/graduationBuild.ts` writes that score without changing the shared hall data. The scores use `starterSong` and their stage’s band; First Steps retains “Up the Aisle” as its A section.
 - `starter/graduationConfetti.ts` — the graduation monster set: the diploma's existing paper art on a clear background, falling four rows past the balcony and resetting at the top; other halls keep the ordinary Starter monsters. `starter/graduationLevel.ts` shares the balcony's rail row; the halls seat everyone in two compact tiers beside the lectern, with a block of headroom in the standing camera. `starter/graduationTools.ts` pauses the recorded ceremony for about five seconds before collecting the certificate. After rebuilding all seven disks, run `npx vitest run --dir ../games/kit/starter graduationLevel.test.ts`: it replays each actual walkthrough and checks every guest's full horizontal and vertical bounds on every final ceremony frame, including a sustained motionless pause. The separate `inViewCheck --standing 19` CLI checks the whole aisle route with alternative rectangles, not all guests simultaneously.
 - `carlCameo.ts` — Carl the fly (A Fly Named Carl) as a guest in another game, drawn in the host game's palette.
 - `@lewismoten/gamemaker-sandbox-tools/kit/road3d` — a road that comes at you, the pseudo-3D one-screen scene of year2000's Cloud Lane and blaster's data
@@ -383,6 +393,7 @@ Maximus has a machine-embroidery patch as a feelie (`games/maximus/patch/`: `des
 
 - `vocCues.ts` — `npx vite-node ../games/kit/vocCuesCli.ts <id>...` (logic in `vocCues.ts`): the editor's `voc-stutter` suggestions for a built game: a `.VOC` of 10,000 bytes or more (a 286 reading it from a hard disk loses about a game tick; 32,000 about two) and a long sound on a score or healing block that stays put, so DOS restarts it every tick. Estimates from the programmer's guide notes, dismissible; it can't see the player's disk. `checkGames.ts` prints a count line (advisory, never fails).
 - `inViewCheck.ts` (logic in `inView.ts`) — `npx vite-node ../games/kit/inViewCheck.ts <id> --scene <n> [--standing <row>] --rect x,y,w,h [--rect ...] [--scene ...]`: in view. Replays the game's walkthrough on the engine and checks that something the player must watch (a timer bar, a meter, a sign) is on screen: every frame of the scene, at least one of the rectangles (map cells, world blocks) is wholly inside the 312x196 picture PLAYGAME shows. `--standing` counts only the frames the hero stands with his feet in that map row (not mid-jump or falling). Prints PASS or FAIL per scene with the frames that missed; exits 1 on a FAIL. `--rows` lists the map rows and columns each scene ever shows. It sees only the walkthrough's route, not every way a player could scroll.
+- `timerRoutes.test.ts` — countdown regressions for Pass the Pie and The Thank-You Parade: complete meters at alternate street, roof and pond-bed camera heights, sub-tile scroll margins and the Freezer Raid’s wrapped upper view; the engine must drain each small five-light copy on the same ticks as the large bar.
 - `viewCheck.ts` (with `viewCheckCli.ts`) — `npx vite-node ../games/kit/viewCheckCli.ts [<id>...]` (logic in `viewCheck.ts`): view edge. Replays each game's walkthrough on the engine and lists monsters PLAYGAME doesn't draw (so they can't hurt) because their map cell is in the screen's left column or top row, or past the right or bottom bound (`ScrnLowBnd`/`onscrn`, PLAYGAME.C:294), while most of their pixels would be on screen for half a second or more at a stretch: scene, monster number, frames hidden, edge, first cell. A suggestion an author can dismiss: it can't tell a monster meant to hide, and sees only the walkthrough's route. `checkGames.ts` prints a count line (advisory, never fails).
 
 Colors That Work plays both lessons with a simulated scene palette (`alike.pal`); its cards still compare the original and simulated colors. Beat the Clock writes valid empty monster and monster-block sets because its maps place no monsters.
@@ -398,7 +409,7 @@ Colors That Work plays both lessons with a simulated scene palette (`alike.pal`)
 - `scans/blacklight.py` — makes the desk’s day and night black-light portraits from the maintainer’s private photo (`python3 games/kit/scans/blacklight.py` from the root; needs Pillow and NumPy).
 - `starter/graduationCameo.ts` — recolors the Cast’s existing sprites, Teddy, Gwinn and THE CHEZ into a graduation hall’s palette.
 - `starter/graduationCast.ts` — allocates and recolors the Starter helpers’ and Doc Leo’s hall blocks.
-- `starter/graduationConfig.ts` — the `Graduation` data shape for the stage, hall, arrival, text, song and guests.
+- `starter/graduationConfig.ts` — the `Graduation` data shape for the stage, hall, arrival, text, song and guests. Its optional `startLedge` sets each entrance’s two- or three-row step and locks that level’s vertical view; omitting `arrival` preserves a climbing arrival, and omitting `startLedge` preserves both original layouts.
 - `starter/graduationFriends.ts` — draws the Starter friends in their own colors, clapping in graduation robes.
 - `starter/graduationGame.ts` — builds the graduation’s title, ending and level scenes and their links.
 - `starter/graduationHall.ts` — draws hall blocks, the stage, balcony, drapes, lectern, certificate and guests.
@@ -467,3 +478,24 @@ Colors That Work plays both lessons with a simulated scene palette (`alike.pal`)
 - `testdisks/sound-stress/floppy.ts` — makes a nonbootable 1.44 MB FAT12 image with the DOS runtime and notices.
 - `testdisks/sound-stress/image.ts` — writes a new private floppy image and refuses replacement (`npx vite-node ../games/kit/testdisks/sound-stress/image.ts --out <new SOUNDTST.img>`).
 - `testdisks/sound-stress/rooms.ts` — two flat rooms with one-shot effect pads, score pads and doors that reset the course.
+
+
+### Reusable micro plaques
+
+`starter/microPlaque.ts` exports `addMicroPlaques(book, pal, texts)`: supply a named
+record of `{ lines: ['WALK', 'IN'], post?: boolean }`. Each plaque has one outer
+one-pixel frame, one or two blocks across, one block tall, and at most two explicit
+lines of eight characters each. Words stay whole. N/W/M widen when the line fits (N keeps its capital diagonal);
+all eight directional arrows come from the kit font. Large-font signs keep their frame.
+Boards contain only the shared paper, ink and wood indices, so they are byte-identical
+across Starter palettes. Only post tiles use `skyOf(pal)`, and all tiles are passable
+with downward gravity.
+
+Place one with `stampTiledSign(map, x, y, sign, postHeight, options)` from
+`starter/microPlaque`; `postHeight` is the full distance to the supporting ground in
+20-pixel blocks. The default `options.maxPostHeight` is 1: farther plaques float
+with no support, rather than hanging on a shortened post. Use `post: false` for
+floating labels at any height. `stampMicroPlaques` from the same module places a
+stack such as TOO/SLOW above GO/BACK, measuring the mount from its bottom plaque.
+Stacked plaques must have the same width. `microPlaquePostHeight` applies the same
+limit to Around the Room's supports directed toward its rotated ground.

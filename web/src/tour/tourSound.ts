@@ -4,6 +4,7 @@
 // step's recorded voice line when there is one (public/tour/voice/<id>.ogg). Nothing plays
 // until a tour starts from a click; the mute switch is remembered in this browser, and a
 // browser whose demo sound is "None" starts muted.
+import { availableOffline } from '../offline/availability';
 import { AudioEngine } from '@lewismoten/gamemaker-sandbox-engine/audio/engine';
 import { channelGain, onMix } from '@lewismoten/gamemaker-sandbox-engine/audio/mix';
 import { peekGameFile, loadGameList } from '../project/files';
@@ -121,28 +122,32 @@ export class TourSound {
   /** Starts loading a coming step's clip while the current one plays, so it is ready to start at once. */
   prefetch(url: string | undefined): void {
     if (!url || !this.on || this.warm.has(url)) return;
-    const a = new Audio();
-    a.preload = 'auto';
-    a.src = url;
-    this.warm.set(url, a);
-    // a few at most: the oldest goes
-    if (this.warm.size > 4) {
-      const [old] = this.warm.keys();
-      this.warm.get(old)?.removeAttribute('src');
-      this.warm.delete(old);
-    }
+    void availableOffline(url).then((available) => {
+      if (!available) return;
+      const a = new Audio();
+      a.preload = 'auto';
+      a.src = url;
+      this.warm.set(url, a);
+      // a few at most: the oldest goes
+      if (this.warm.size > 4) {
+        const [old] = this.warm.keys();
+        this.warm.get(old)?.removeAttribute('src');
+        this.warm.delete(old);
+      }
+    });
   }
 
   /**
    * A step's recorded line, if there is one: resolves with its length in ms once it is ready
    * to play (and plays it), or 0 when there is none (the bubble's own timing is used).
    */
-  speak(url: string | undefined): Promise<number> {
+  async speak(url: string | undefined): Promise<number> {
     this.stopVoice();
     // a step with no recorded line: nothing to ask for
     if (!url) return Promise.resolve(0);
     // Voice off in the sound settings: the bubble's own timing is used, as with a step that has no clip
     if (!this.on || channelGain('voice') === 0) return Promise.resolve(0);
+    if (!(await availableOffline(url))) return 0;
     const early = this.warm.get(url);
     this.warm.delete(url);
     const a = early ?? new Audio();

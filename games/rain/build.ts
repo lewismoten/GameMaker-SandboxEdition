@@ -44,7 +44,7 @@ disk.put('storm.pal', serializePalette(storm));
 disk.put('rain.mbl', serializeBlocks(monsterBlocks.finish()));
 disk.put('rain.mon', serializeMonsters(buildMonsters(monsterBlocks)));
 disk.put('hero.cbl', serializeBlocks(heroBlocks.finish()));
-disk.put('hero.chr', serializeCharacter(buildHero(heroBlocks)));
+disk.put('hero.chr', serializeCharacter(buildHero(heroBlocks, { heldRise: { push: 12 } })));
 disk.put('rain.snd', serializeSoundSet(buildSoundSet()));
 for (const [name, voc] of Object.entries(buildVocs())) disk.put(`${name}.voc`, voc);
 disk.put('rain.cmf', song());

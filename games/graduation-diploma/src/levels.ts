@@ -18,6 +18,7 @@ import type { Timed } from '../../kit/starter/graduationHall';
 import { CONFETTI } from '../../kit/starter/graduationConfetti';
 import { addFriendBlocks } from '../../kit/starter/graduationFriends';
 import { cfg } from './config';
+import { microSigns } from '../../graduation-basics/src/microSigns';
 
 export const W = 88;
 export const H = 13;
@@ -64,7 +65,7 @@ function tinyScroll(pal: Pal): Pixels {
 }
 
 /** The levels (one) and the block set, palette and timers they share. */
-export function buildLevels() {
+function originalLevels() {
   const pal = buildPalette(cfg);
   const { book, timed, hall, signs } = buildBlocks(pal, cfg, false);
   // a banner is as wide as its word needs (three blocks hold six letters), which leaves room for the gowned friends' blocks
@@ -76,19 +77,22 @@ export function buildLevels() {
   car.forEach((px, i) => book.add(`chez.${i}`, px, air));
 
   const g = new Grid(W, H);
-  g.put(2, 8, 's').put(2, 9, 'S');
+  // A two-row carpeted step raises the opening without covering the stage banners.
+  g.put(2, 6, 's').put(2, 7, 'S');
   const m = new HallMap(book, g.rows(), W);
   for (let x = 1; x < W - 1; x++) {
     m.set(x, FLOOR, x < STAGE_FROM ? 'carpet' : 'stage');
     m.set(x, FLOOR + 1, 'subfloor').set(x, FLOOR + 2, 'subfloor');
   }
+  m.set(2, FLOOR - 2, 'carpet').set(2, FLOOR - 1, 'subfloor');
   for (let y = 0; y < H; y++) m.set(0, y, 'curtainEdge').set(W - 1, y, 'curtainEdge');
-  // the valance and pennants hang in the standing view (rows above VIEW_TOP are never seen)
+  // the valance and pennants hang in the fixed view
   for (let x = 1; x < W - 1; x++) m.set(x, VIEW_TOP, 'valance');
   for (let x = 1; x < STAGE_FROM - 1; x++) m.set(x, VIEW_TOP + 1, x % 2 ? 'bunting0' : 'bunting1');
   // the wall: a banner for each stage, confetti in the visible row above the crowd
   const bannerAt = (x: number): boolean => STAGES.some((_t, i) => x >= 3 + i * 10 && x < 7 + i * 10);
-  for (let x = 2; x < STAGE_FROM - 1; x++) if (!bannerAt(x) && x % 2 === 0) m.set(x, VIEW_TOP + 2, chain[(x >> 1) % 2]);
+  // Keep the first confetti tile beside the raised doorway rather than over its arch.
+  for (let x = 2; x < STAGE_FROM - 1; x++) if (!bannerAt(x) && x % 2 === 0) m.set(x === 2 ? 1 : x, VIEW_TOP + 2, chain[(x >> 1) % 2]);
   banners.forEach((b, i) => stamp(m, b, 3 + i * 10, VIEW_TOP + 2, false));
   // Clear-backed paper falls past the guests and rail without replacing their pictures.
   for (let x = 3, i = 0; x < W - 2; x += 5, i++) m.mon(CONFETTI[i % CONFETTI.length], x, VIEW_TOP - 1);
@@ -132,8 +136,22 @@ export function buildLevels() {
   m.exits.push({ from: [LECTERN + ORIGIN, 9 + ORIGIN] });
   const arrival = buildArrival(cfg, pal);
   const levels: Level[] = [
-    { file: ARRIVE, title: cfg.arrive.title, hint: cfg.arrive.hint, map: arrival.map, book: arrival.book, timed: arrival.timed, bbl: ARRIVE },
-    { file: 'hall', title: cfg.level.title, hint: cfg.level.hint, map: m, book, timed, bbl: 'grad' },
+    {
+      lockVertical: false,
+      file: ARRIVE,
+      title: cfg.arrive.title,
+      hint: cfg.arrive.hint,
+      map: arrival.map,
+      book: arrival.book,
+      timed: arrival.timed,
+      bbl: ARRIVE,
+    },
+    { lockVertical: true, file: 'hall', title: cfg.level.title, hint: cfg.level.hint, map: m, book, timed, bbl: 'grad' },
   ];
   return { book, pal, timed, levels };
+}
+
+/** Keep the finale's own scenery and replace its boards with shared micro plaques. */
+export function buildLevels() {
+  return microSigns(originalLevels(), cfg);
 }

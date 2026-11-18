@@ -6,7 +6,7 @@ import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { ORIGIN, StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
-import { addSign } from '../../kit/starter/sign';
+import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
 import { openLevel } from './open';
 
 /** A level's map and where it starts and leaves (a StarterMap, or the top-down level's OverMap with the same two). */
@@ -123,10 +123,7 @@ function level(pal: Pal, grow: boolean): Level {
   drifts(book, pal);
   book.add('powder', powder(pal, false), { grav: PULL.down, touch: 'footprints' });
   book.add('footprints', powder(pal, true), { grav: PULL.down });
-  const words = grow
-    ? ['WATCH THE SNOW DRIFT GET DEEPER', 'BOOT MARKS STAY UNTIL YOU RESTART']
-    : ['SNOW KEEPS YOUR BOOT MARKS', 'HOP OVER SNOW. THEN WALK BACK'];
-  const signs = words.map((s, i) => addSign(book, pal, `lesson${i}`, s, 4, 3));
+  const signs = addMicroPlaques(book, pal, { lesson: { lines: grow ? ['LOOK'] : ['LOOK', 'BACK'] } });
   const g = new Grid(WIDTH, 14);
   g.row(GROUND, 0, WIDTH - 1, 'G').fill(0, GROUND + 1, WIDTH, 3, 'D');
   g.col(0, 0, GROUND - 1, 'X').col(WIDTH - 1, 0, GROUND - 1, 'X');
@@ -135,7 +132,7 @@ function level(pal: Pal, grow: boolean): Level {
   const map = new StarterMap(book, g.rows());
   for (let x = 4; x < WIDTH - 3; x++) map.set(x, GROUND - 1, 'powder');
   for (let col = 0; col < 3; col++) map.set(8 + col, GROUND - 1, `drift${col}.${grow ? 0 : 2}`);
-  signs.forEach((s, i) => map.sign(i ? (grow ? 17 : 11) : 4, GROUND - 1 - s.board.length, s));
+  stampTiledSign({ set: map.setOnSky.bind(map) }, 3, GROUND - 2, signs.lesson);
   // Scatter only on remaining sky. Phase offsets and alternating loops break up rows of identical flakes.
   for (let y = 0; y < GROUND; y++)
     for (let x = 1; x < WIDTH - 1; x++) {

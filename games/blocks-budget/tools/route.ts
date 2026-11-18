@@ -57,6 +57,7 @@ export async function useItAgain(bot: StarterBot): Promise<void> {
   if (bot.px.y !== raised) throw new Error('Kit climbed onto the houses; they are only pictures');
   await must(bot, bot.walk(18, 'the high coins'), 'the high coins');
   await must(bot, bot.jump('right', 21), 'the high coins jump');
+  await must(bot, bot.jump('left', 20), 'the remaining village coins');
   await must(bot, bot.walk(WALL_X - 2, 'the wall'), 'to the wall');
   // the mistake, once: the brick wall is brick everywhere it stands, so walking at it gets nowhere
   const before = bot.px.x;
@@ -69,6 +70,7 @@ export async function useItAgain(bot: StarterBot): Promise<void> {
   await must(bot, bot.walk(40, 'the coins'), 'the coins');
   await must(bot, bot.walk(48, 'the high coins'), 'the high coins');
   await must(bot, bot.jump('right', 50), 'the high coins jump');
+  await must(bot, bot.jump(), 'the last high coin');
   coins(bot, score, 9, 'level 2');
   await leave(bot, bot.walk(56, 'the door'), 'the door');
 }

@@ -7,6 +7,7 @@ import { song } from './song';
 
 export const cfg: Graduation = {
   id: 'graduation-blocks',
+  startLedge: { arrival: 2, hall: 2 },
   stage: 'Blocks and Showcase',
   groups: ['Drawing with Blocks', 'Weather', 'Showcase Tricks'],
   cameos: ['lewie', 'gwinn', 'camel', 'joe', 'chicken', 'watt', 'teddy', 'will'],
@@ -47,6 +48,10 @@ You can draw and animate your own blocks, play with light and dark and use the b
 
 The Sandbox Diploma is waiting once every stage has its honors.
 `),
-    credits: creditsPage('GRADUATION: BLOCKS AND SHOWCASE', about.version, 'A graduation: it comes after Drawing with Blocks, Weather and Showcase Tricks.'),
+    credits: creditsPage(
+      'GRADUATION: BLOCKS AND SHOWCASE',
+      about.version,
+      'A graduation: it comes after Drawing with Blocks, Weather and Showcase Tricks. Held-rise controls, bot timing, raised-start camera layout and micro-sign plaques by OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten.',
+    ),
   },
 };

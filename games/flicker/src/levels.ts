@@ -9,8 +9,9 @@ import { Book, PULL } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
-import { skyOf, type Pal } from '../../kit/starter/palette';
-import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import type { Pal } from '../../kit/starter/palette';
+import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { FIRE, FIRE_TICKS, SPARKS, fireFrame, logs, sparkFrame } from './camp';
 import { BODY_TICKS, COLS, LIP_TICKS, SPLASH_TICKS, bodyFrame, lipFrame, poolBlock, rockBlock, splashFrame } from './falls';
@@ -44,18 +45,16 @@ export interface Thing {
   kind: 'pulse' | 'flicker' | 'flag' | 'fall' | 'lip' | 'splash' | 'fire' | 'spark';
 }
 
-const WORDS = {
-  pulse: { rows: [['EVEN TIMES MAKE A PULSE']] },
-  flicker: { rows: [['UNEVEN TIMES MAKE IT FLICKER']] },
-  two: { rows: [['TWO LOOPS KEEP'], ['TORCHES APART']] },
-  flag: { rows: [['A WAVE MOVES'], ['ALONG TWO BLOCKS']] },
-  fall: { rows: [['STREAKS SLIDE DOWN'], ['5 PIXELS A FRAME']] },
-  ends: { rows: [['THE TOP AND FOOT ARE LOOPS TOO']] },
-  wide: { rows: [['FOUR BLOCKS MAKE A WIDE FALL']] },
-  fire: { rows: [['A BIG FIRE: BIGGER FRAMES, UNEVEN TIMES']] },
-  sparks: { rows: [['SPARKS ARE 3 LOOPS, NEVER SIDE BY SIDE']] },
-} as const;
-export type SignName = keyof typeof WORDS;
+export type SignName = 'pulse' | 'flicker' | 'two' | 'fall' | 'fire' | 'sparks';
+
+const WORDS: Record<SignName, { lines: string[]; post?: boolean }> = {
+  pulse: { lines: ['EVEN =', 'PULSE'] },
+  flicker: { lines: ['UNEVEN =', 'FLICKER'] },
+  two: { lines: ['OWN', 'TIME'] },
+  fall: { lines: ['5 PIXELS', 'A FRAME'] },
+  fire: { lines: ['UNEVEN =', 'FLICKER'] },
+  sparks: { lines: ['OWN', 'TIME'] },
+};
 
 /** The ground's top row in every level: signs stand on it. */
 export const GROUND = 11;
@@ -72,27 +71,14 @@ function start(pal: Pal, names: SignName[]): Built {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
   // Pack every level's sign text together; keep only the tiles used in this palette.
-  const { blocks: tiles, signs } = buildTiledSigns(WORDS, {
-    colors: {
-      background: skyOf(pal),
-      paper: pal.c('parch', 3),
-      ink: pal.c('ink', 0),
-      wood: pal.c('wood', 2),
-      highlight: pal.c('wood', 4),
-      shadow: pal.c('wood', 0),
-    },
-    lettersPerBlock: 3,
-    maxBlocks: 100,
-  });
-  const needed = new Set(names.flatMap((k) => [...signs[k].board.flat(), signs[k].post!.block]));
-  for (const [name, pic] of tiles) if (needed.has(name)) book.add(name, pic, { grav: PULL.down });
+  const signs = addMicroPlaques(book, pal, Object.fromEntries(names.map((name) => [name, WORDS[name]]))) as Record<SignName, Sign>;
   return { book, timed: [], signs };
 }
 
 /** Level 1: the castle hall, 58 blocks wide. */
 function torchHall(): Level {
   const pal = hallPalette();
-  const { book, timed, signs } = start(pal, ['pulse', 'flicker', 'two', 'flag']);
+  const { book, timed, signs } = start(pal, ['pulse', 'flicker', 'two']);
   const bg = pal.c('sky', 3);
   const things: Thing[] = [];
   const { c } = pal;
@@ -138,7 +124,9 @@ function torchHall(): Level {
     .row(GROUND, 0, W - 1, 'B')
     .fill(0, GROUND + 1, W, 3, 'D');
   g.col(0, 0, GROUND - 1, 'B').col(W - 1, 0, GROUND - 1, 'B');
-  g.put(3, GROUND - 2, 's').put(3, GROUND - 1, 'S');
+  // A narrow two-row entrance ledge keeps the lesson in the locked view.
+  g.put(3, GROUND - 2, 'B').put(3, GROUND - 1, 'B');
+  g.put(3, GROUND - 4, 's').put(3, GROUND - 3, 'S');
   g.put(54, GROUND - 2, 'e').put(54, GROUND - 1, 'E');
   const m = new StarterMap(book, g.rows());
   const torch = (x: number, ring: string, kind: Thing['kind']) => {
@@ -150,8 +138,7 @@ function torchHall(): Level {
   for (const x of [8, 20, 37, 47]) m.set(x, 5, 'window.top').set(x, 6, 'window.bot');
   stampTiledSign({ set: m.setOnSky.bind(m) }, 5, onGround(signs.pulse), signs.pulse);
   stampTiledSign({ set: m.setOnSky.bind(m) }, 18, onGround(signs.flicker), signs.flicker);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 34, onGround(signs.two), signs.two);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 41, onGround(signs.flag), signs.flag);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 22, onGround(signs.two), signs.two);
   // two flags: each a pole (top, flag, then the pole down to the floor)
   for (const x of [48, 51]) {
     m.set(x, 7, 'pole.top')
@@ -167,7 +154,7 @@ function torchHall(): Level {
 /** Level 2: the cliff and the waterfall, 60 blocks wide. */
 function falls(): Level {
   const pal = dayPalette();
-  const { book, timed, signs } = start(pal, ['fall', 'ends', 'wide']);
+  const { book, timed, signs } = start(pal, ['fall']);
   const bg = pal.c('sky', 3);
   const things: Thing[] = [];
   const rocks: Pixels[] = [];
@@ -216,7 +203,9 @@ function falls(): Level {
   const g = new Grid(W, 15);
   g.row(GROUND, 0, W - 1, 'G').fill(0, GROUND + 1, W, 3, 'D');
   g.col(0, 0, GROUND - 1, 'X').col(W - 1, 0, GROUND - 1, 'X');
-  g.put(3, GROUND - 2, 's').put(3, GROUND - 1, 'S');
+  // A two-row turf ledge raises the entrance, clear of signs and scenery.
+  g.put(3, GROUND - 2, 'G').put(3, GROUND - 1, 'D');
+  g.put(3, GROUND - 4, 's').put(3, GROUND - 3, 'S');
   g.put(56, GROUND - 2, 'e').put(56, GROUND - 1, 'E');
   g.put(12, GROUND - 1, 'b')
     .put(35, GROUND - 1, 'f')
@@ -227,7 +216,7 @@ function falls(): Level {
   const L = 15;
   const R = 31;
   const F = 21;
-  // the view keeps the hero about 5 rows down, so rows above 5 are never on screen (ground row 11, view clamped to the map bottom): the cliff and lip start at row 5
+  // The cliff and lip start at row 5, inside the fixed view from the raised entrance (rows 3..12).
   for (let y = 5; y <= 10; y++)
     for (let x = L; x <= R; x++) {
       const side = x === L ? 'L' : x === R ? 'R' : '';
@@ -246,8 +235,6 @@ function falls(): Level {
   [18, 19, 20].forEach((x, i) => m.set(x, 10, `pool.${i % 2}`));
   [25, 26, 27].forEach((x, i) => m.set(x, 10, `pool.${(i + 1) % 2}`));
   stampTiledSign({ set: m.setOnSky.bind(m) }, 6, onGround(signs.fall), signs.fall);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 36, onGround(signs.ends) - 2, signs.ends, 3);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 45, onGround(signs.wide), signs.wide);
   return { file: 'falls', title: 'The Falls', hint: 'A cliff, a waterfall and its pool.', pal, palFile: 'day.pal', book, timed, map: m, things };
 }
 
@@ -286,7 +273,9 @@ function fireOnTheHill(): Level {
   const g = new Grid(W, 15);
   g.row(GROUND, 0, W - 1, 'G').fill(0, GROUND + 1, W, 3, 'D');
   g.col(0, 0, GROUND - 1, 'X').col(W - 1, 0, GROUND - 1, 'X');
-  g.put(3, GROUND - 2, 's').put(3, GROUND - 1, 'S');
+  // A two-row turf ledge raises the entrance, clear of signs and scenery.
+  g.put(3, GROUND - 2, 'G').put(3, GROUND - 1, 'D');
+  g.put(3, GROUND - 4, 's').put(3, GROUND - 3, 'S');
   g.put(42, GROUND - 2, 'e').put(42, GROUND - 1, 'E');
   const m = new StarterMap(book, g.rows());
   const H0 = 18;
@@ -300,7 +289,7 @@ function fireOnTheHill(): Level {
     m.set(x, y, `fire.${q}.0`);
     things.push({ ring: `fire.${q}`, x, y, kind: 'fire' });
   });
-  // Sparks fly up and out from the flame; none sits above row 5, the screen's top row from the ground.
+  // Sparks fly up and out from the flame; all stay inside the fixed view.
   const sparks: [number, number, number][] = [
     [cx, top - 4, 0],
     [cx + 1, top - 4, 1],
@@ -312,8 +301,8 @@ function fireOnTheHill(): Level {
     m.set(x, y, `spark${i}.0`);
     things.push({ ring: `spark${i}`, x, y, kind: 'spark' });
   }
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 6, onGround(signs.fire) - 1, signs.fire, 2);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 30, onGround(signs.sparks) - 1, signs.sparks, 2);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 6, onGround(signs.fire), signs.fire);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 12, onGround(signs.sparks), signs.sparks);
   return { file: 'camp', title: 'The Fire on the Hill', hint: 'A big fire and its sparks.', pal, palFile: 'night.pal', book, timed, map: m, things };
 }
 

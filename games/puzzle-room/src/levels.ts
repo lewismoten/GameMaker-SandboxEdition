@@ -12,63 +12,32 @@
 //      The blue pair builds the bridge. The red lever puts two on counter 24, and the hatch spends one a cell:
 //      it opens and drops Lian into a hole, where a link sends him back to the way in. No hurt anywhere.
 // Every room is closed in by hedges you can see, so Lian is never stopped by something he can't.
-import { Book, PULL } from '../../kit/starter/book';
+import { Book } from '../../kit/starter/book';
+import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
-import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
-import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { MICRO_GLYPHS } from '@lewismoten/gamemaker-sandbox-tools/microFont';
+import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
+import { type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { addWireBlocks, HATCH_CELLS, PLANKS } from './wireBlocks';
 
-export type SignName = 'each' | 'six' | 'soft' | 'blue' | 'upstairs' | 'redOdd' | 'hatch' | 'both' | 'exit' | 'exitOne';
+export type SignName = 'each' | 'six' | 'soft' | 'upstairs' | 'both' | 'exit' | 'exitOne';
 
 /** The block set the levels share: the Starter blocks, wire blocks and tiled signs. */
 function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
   addWireBlocks(book, pal);
-  // Keep the bridge lesson large; the busier wired room needs compact lettering throughout.
-  const texts = {
-    each: { rows: [['← EACH LEVER'], ['ADDS 3 PLANKS']], maxWidth: 7 },
-    six: { rows: [['THE BRIDGE'], ['NEEDS 6 PLANKS']], maxWidth: 7 },
-    soft: { rows: [['A SOFT POOL:'], ['YOU JUST'], ['START OVER']], maxWidth: 7 },
-    blue: { rows: [['BLUE LEVERS'], ['BUILD'], ['THE BRIDGE']], maxWidth: 5 },
-    upstairs: { rows: [['ONE BLUE'], ['LEVER IS UP'], ['THE LADDER']], maxWidth: 5 },
-    redOdd: { rows: [['RED LEVER OPENS'], ['THE HATCH']], maxWidth: 7 },
-    hatch: { rows: [['← A HATCH'], ['IN THE PATH']], maxWidth: 5 },
-    both: { rows: [['6 PLANKS'], ['NEED BOTH'], ['BLUE LEVERS']], maxWidth: 5 },
-    exit: { rows: [['EXIT →']], maxWidth: 5 },
-    exitOne: { rows: [['EXIT →']], maxWidth: 5 },
-  };
-  const colors = {
-    background: skyOf(pal),
-    paper: pal.c('parch', 3),
-    ink: pal.c('ink', 0),
-    wood: pal.c('wood', 2),
-    highlight: pal.c('wood', 4),
-    shadow: pal.c('wood', 0),
-  };
-  const glyphs = { ...MICRO_GLYPHS, '←': '001011111011001', '→': '100110111110100' };
-  const large = buildTiledSigns(texts, {
-    include: ['each', 'six', 'soft', 'exitOne'],
-    colors,
-    glyphs,
-    lettersPerBlock: 3,
-    prefix: 'largeSign',
-    maxBlocks: Math.min(100, 150 - book.index.size),
+  // Exact mapped hints; dropped sentences remain in the instructions and level cards.
+  const signs = addMicroPlaques(book, pal, {
+    each: { lines: ['← LEVER', '= +3'] },
+    six: { lines: ['6', 'PLANKS'], post: false },
+    soft: { lines: ['STARTS', 'OVER'] },
+    upstairs: { lines: ['GO', 'UP'] },
+    both: { lines: ['6', 'PLANKS'], post: false },
+    exit: { lines: ['EXIT', '→'], post: false },
+    exitOne: { lines: ['EXIT', '→'], post: false },
   });
-  for (const [name, pic] of large.blocks) book.add(name, pic, { grav: PULL.down });
-  const compact = buildTiledSigns(texts, {
-    include: ['blue', 'upstairs', 'redOdd', 'hatch', 'both', 'exit'],
-    colors,
-    glyphs,
-    compact: true,
-    prefix: 'compactSign',
-    maxBlocks: Math.min(100 - large.blocks.size, 150 - book.index.size),
-  });
-  for (const [name, pic] of compact.blocks) book.add(name, pic, { grav: PULL.down });
-  const signs = { ...large.signs, ...compact.signs };
   return { book, signs };
 }
 
@@ -147,8 +116,8 @@ function twoLevers(book: Book, signs: Record<SignName, Sign>): { map: StarterMap
   const signMap = { set: (x: number, y: number, block: string) => m.setOnSky(x, y, block) };
   stampTiledSign(signMap, 18, 6, signs.each, 2);
   stampTiledSign(signMap, 10, onGround(GROUND, signs.soft), signs.soft);
-  // The far bank has a clear post cell between the two coin rows.
-  stampTiledSign(signMap, 27, onGround(GROUND, signs.six), signs.six);
+  // Read before stepping onto the pool, floating clear of its coins.
+  stampTiledSign(signMap, 24, 7, signs.six, 0);
   stampTiledSign(signMap, 36, 7, signs.exitOne, 2);
   m.set(L1.leverA, GROUND - 1, 'leverRed');
   m.set(L1.leverB, LEDGE_ROW, 'leverRed');
@@ -179,11 +148,8 @@ function wiredRoom(book: Book, signs: Record<SignName, Sign>): { map: StarterMap
   );
   const m = new StarterMap(book, g.rows());
   const signMap = { set: (x: number, y: number, block: string) => m.setOnSky(x, y, block) };
-  stampTiledSign(signMap, 38, onGround(GROUND, signs.hatch), signs.hatch);
-  stampTiledSign(signMap, 32, onGround(GROUND, signs.both), signs.both);
-  stampTiledSign(signMap, 26, onGround(GROUND, signs.blue), signs.blue);
+  stampTiledSign(signMap, 44, 7, signs.both, 0);
   stampTiledSign(signMap, 20, onGround(GROUND, signs.upstairs), signs.upstairs);
-  stampTiledSign(signMap, 9, LEDGE_ROW - signs.redOdd.board.length, signs.redOdd);
   stampTiledSign(signMap, 56, 7, signs.exit, 2);
   m.set(L2.leverA, GROUND - 1, 'leverBlue');
   m.set(L2.leverB, LEDGE_ROW, 'leverBlue');

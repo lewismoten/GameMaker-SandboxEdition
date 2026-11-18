@@ -8,7 +8,7 @@
  "segments": [
   {
    "scene": 2,
-   "keys": "AU1GzQNNPM0DSwDLA00PzQNNBc0DTQ/NA00FzQNNHs0AS1rLA0sFywNIJ8gDTRTNA0sPywNLA8sDUB3QA00DOQK5EzkCuRw5ArlJzQNND80DTSPNA00KzQNNCs0DTQ=="
+   "keys": "AU1EzQNNPM0DSwDLA00PzQNNBc0DTQ/NA00FzQNNHs0AS1rLA0sFywNIJ8gDTRTNA0sPywNLA8sDUB3QA00DOQi5GjkIuVDNA00PzQNNI80DTQrNA00KzQNN"
   }
  ],
  "chapters": [
@@ -19,7 +19,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 7972,
+  "frames": 8433,
   "chapters": [
    {
     "title": "Opening",
@@ -38,13 +38,13 @@
    },
    {
     "title": "Ending",
-    "frame": 4693,
-    "time": 78216.66666666654
+    "frame": 4673,
+    "time": 77883.33333333311
    },
    {
     "title": "Credits",
-    "frame": 6900,
-    "time": 115000.00000001058
+    "frame": 6880,
+    "time": 114666.66666667715
    }
   ]
  }

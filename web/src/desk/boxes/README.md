@@ -12,9 +12,9 @@ Entry points: `desk/deskShelf.ts` and `desk/deskGmBox.ts` use `shelf.ts` and `bo
 
 Never name, count or hint at a secret game on a box, shelf or list.
 
-Must not: be imported from outside `desk/` except through the dynamic load of `desk/desk.ts` (the desk is its own chunk), and never from `dos.html` or `retro/` (`dosPage/boundary.test.ts`).
+Must not: be reached from `dos.html`'s page or the PC core, `retro/computer.ts` (`dosPage/boundary.test.ts`); nothing in `retro/` imports it. The desk loads it through `desk/desk.ts`, its own chunk, which `main.ts` imports dynamically. Some of it is also imported from outside `desk/`: by the manual and its printables (`manual/gameManual.ts`, `manual/printables/retailBoxArt.ts`, `gmBoxPrint.ts` and `feelieItems.ts` statically; `manual/printables/kitNotes.ts`, `manual/magazine/goRun.ts` and `manual/ultimate/openUltimate.ts` dynamically), by the Library's toy box (`library/toyCloseUp.ts` statically, `library/toyBox.ts` dynamically) and by build-time code (`scripts/cdGames.ts`, `games/kit/playtime.ts`, `games/kit/syncCheck.ts`).
 
-Tests: `boxAddress`, `boxUv`, `feelies`, `laserKits` and `playtime`, each a `.test.ts` here.
+Tests: `boxAddress`, `boxUv`, `boxUvRelease`, `feelies`, `kitAssemblyModel`, `laserKits` and `playtime`, each a `.test.ts` here; `web/test/boxFacts.test.ts`, `boxShotCaption.test.ts`, `diskFacts.test.ts` and `shelfLayout.test.ts` test `boxFacts.ts`, `gameBox.ts` and `shelfLayout.ts` from outside.
 
 Check: `cd web && npx vitest run src/desk/boxes`; then turn a box and a trinket in the viewer and look at them zoomed.
 
@@ -22,11 +22,12 @@ Check: `cd web && npx vitest run src/desk/boxes`; then turn a box and a trinket 
 with a pose and assembly caption for each physical piece. `kitAssemblyDraw.ts` extrudes these loops (including holes)
 through 3 mm plywood and shares the feelie turntable camera. `kitAssemblyViewer.ts` loads only when a supported kit
 is selected: labeled step slider, Back/Next/Play, no automatic playback, and immediate steps for reduced motion.
-The kit tiles use their existing sheet preview PNGs without loading the assembly chunk.
+A kit tile without an assembly view uses its first sheet preview PNG (`feelies.ts` `stillThumb`); a kit with one draws its tile
+assembled with `kitAssemblyModel.ts` and `kitAssemblyDraw.ts` (`feelieThumbs.ts`), without loading `kitAssemblyViewer.ts`.
 A kit with sub-assemblies (the cryptex, `kitAssemblyCryptex.ts`, from `games/year2000/laser/cryptexGroups.ts`) has steps of three
 kinds: a part slides into its group, the finished group is shown as one solid with its ID (the other groups are left out and the
 view fits it), and a whole group moves (into the kit, then out and back for "Set your own code": a washer lifted, turned and
 dropped back). `poseAt` gives a part's offset and spin; a "Jump to" list in the viewer goes to each group, the final assembly and
 setting a code. Each slab is painted whole, from the bottom up, so hollow rings stack correctly.
 
-The kit views (kitAssemblyViewer.ts and the die's balloonCubeFoldView.ts) share manual/printables/orbitCamera.ts (drag, wheel, pinch, keys, and the Zoom in, Zoom out and Reset view buttons); a kit's SVG downloads open in manual/printables/svgViewer.ts. `withInches` in laserKits.ts adds the inch size after a thickness in a kit's summary.
+The kit views (kitAssemblyViewer.ts and the die's balloonCubeFoldView.ts) share manual/printables/orbitCamera.ts's Zoom in, Zoom out and Reset view buttons and its zoom limits. The die turns with that camera (drag, wheel, pinch, keys); the assembly view turns with the feelie turntable (trinketTurntable.ts), as noted above. A kit's SVG downloads open in manual/printables/svgViewer.ts. `withInches` in laserKits.ts adds the inch size after a thickness in a kit's summary.

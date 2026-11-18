@@ -1,0 +1,9 @@
+{
+  "levels": [
+    {
+      "scene": 2,
+      "teaches": "Space hops the stones to cross water whose current carries the hero back",
+      "rules": [{"rule": "uses", "move": "Space", "min": 1}, {"rule": "needs", "move": "Space"}]
+    }
+  ]
+}

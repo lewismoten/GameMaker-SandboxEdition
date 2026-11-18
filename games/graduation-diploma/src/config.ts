@@ -7,6 +7,7 @@ import { song } from './song';
 
 export const cfg: Graduation = {
   id: 'graduation-diploma',
+  startLedge: { hall: 2 },
   stage: 'The Sandbox Diploma',
   title: 'DIPLOMA',
   groups: [
@@ -60,6 +61,10 @@ Game Maker, first class.
 Everyone is cheering, Teddy has a diploma of his own, and Doc Leo is grinning.
 
 Now go and make something of your own.`),
-    credits: creditsPage('THE SANDBOX DIPLOMA', about.version, 'The last graduation: it comes after the other six.'),
+    credits: creditsPage(
+      'THE SANDBOX DIPLOMA',
+      about.version,
+      'The last graduation: it comes after the other six. Held-rise controls, bot timing, raised-start camera layout and micro-sign plaques by OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten.',
+    ),
   },
 };

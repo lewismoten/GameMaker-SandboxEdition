@@ -77,11 +77,11 @@ async function bump(bot: StarterBot, l: Level, what: string): Promise<number> {
   return last;
 }
 
-/** Space, then the forward arrow held until step `landU`, then he waits to come down. */
+/** One Space tap, then the forward arrow until `landU`: no second jump before landing. */
 async function leap(bot: StarterBot, l: Level, landU: number, what: string): Promise<Result> {
   const key = SCAN[forwardKey(l.frame)];
   bot.sim.press(SCAN.space);
-  let r = await bot.wait(2);
+  let r = await bot.wait(1);
   bot.sim.release(SCAN.space);
   if (r) return r;
   bot.sim.press(key);
@@ -113,7 +113,7 @@ export async function playLevel(bot: StarterBot, index: number): Promise<void> {
   bot.sim.press(SCAN.space);
   let top = 0;
   for (let t = 0; t < 30; t++) {
-    if (t === 2) bot.sim.release(SCAN.space);
+    if (t === 1) bot.sim.release(SCAN.space);
     const r = await bot.tick();
     if (r) throw new Error(`jumping: ${r}`);
     top = Math.max(top, at(bot, l).h);

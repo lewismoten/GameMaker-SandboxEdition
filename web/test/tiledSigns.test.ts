@@ -9,7 +9,9 @@ import { buildGame as smashGame } from '../../games/breakable-walls/src/game';
 import { buildLevels as heroLevels } from '../../games/choose-hero/src/levels';
 import { buildGame as heroGame } from '../../games/choose-hero/src/game';
 import { CREDITS } from '../../games/first-steps/src/text';
+import { buildLevels as monsterLevels } from '../../games/meet-the-monsters/src/levels';
 
+import { microSignLine } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSignFont';
 import { MICRO_GLYPHS } from '@lewismoten/gamemaker-sandbox-tools/microFont';
 
 const options = { colors: { background: 0, paper: 1, ink: 2, wood: 3, highlight: 4, shadow: 5 } };
@@ -24,7 +26,7 @@ describe('game-wide tiled signs', () => {
     expect(signs.first.board).toHaveLength(1);
     expect(signs.first.board[0][0]).toBe(signs.other.board[0][0]);
     expect(signs.first.board[0].at(-1)).toBe(signs.other.board[0].at(-1));
-    expect(signs.first.post).toEqual(signs.other.post);
+    expect(signs.first.post).toEqual(signs.nextLevel.post);
     expect([...blocks.keys()].filter((k) => k.endsWith('.post'))).toHaveLength(1);
     expect(new Set([...blocks.values()].map((p) => p.px.join(','))).size).toBe(blocks.size);
     for (const p of blocks.values()) expect([p.w, p.h]).toEqual([20, 20]);
@@ -39,8 +41,8 @@ describe('game-wide tiled signs', () => {
       expect(signs.packed).toEqual(signs.chunks);
       const board = signs.packed.board;
       expect(board).toHaveLength(2);
-      const pitch = count === 3 ? 6 : count === 4 ? 5 : 4;
-      const glyphWidth = count === 3 ? 5 : 3;
+      const pitch = count === 3 ? 7 : count === 4 ? 5 : 4;
+      const glyphWidth = count === 3 ? 6 : 3;
       const glyphHeight = count === 3 ? 10 : 5;
       ['GRAVITY PULLS YOU DOWN', 'EXIT >'].forEach((line, y) => {
         const ink: [number, number][] = [];
@@ -52,33 +54,145 @@ describe('game-wide tiled signs', () => {
           ys = ink.map(([, y]) => y);
         // Every ink pixel stays on the continuous character grid, including tiles
         // where a letter straddles the boundary. Text margins differ by at most 1 px.
-        const x0 = 20 + Math.floor(((board[y].length - 2) * 20 - ((line.length - 1) * pitch + glyphWidth)) / 2);
+        const advance = (ch: string) => (ch === ' ' && count === 3 ? 3 : pitch);
+        const textWidth = [...line].reduce((sum, ch) => sum + advance(ch), 0) - pitch + glyphWidth;
+        const x0 = 20 + Math.floor(((board[y].length - 2) * 20 - textWidth) / 2);
         expect(Math.min(...xs)).toBe(x0);
         expect(Math.abs(Math.min(...xs) - (board[y].length * 20 - 1 - Math.max(...xs)))).toBeLessThanOrEqual(1);
         expect(Math.abs(Math.min(...ys) - (19 - Math.max(...ys)))).toBeLessThanOrEqual(1);
         expect(Math.max(...ys) - Math.min(...ys) + 1).toBe(glyphHeight);
-        for (const [x] of ink) {
-          const index = Math.floor((x - x0) / pitch);
-          expect(line[index]).not.toBe(' ');
-          expect((x - x0) % pitch).toBeLessThan(glyphWidth);
+        let pen = x0;
+        for (const ch of line) {
+          const glyph = MICRO_GLYPHS[ch];
+          const scale = count === 3 ? 2 : 1;
+          for (let gy = 0; gy < glyphHeight; gy++)
+            for (let gx = 0; gx < glyphWidth; gx++) {
+              const bx = Math.floor((pen + gx) / 20);
+              const p = blocks.get(board[y][bx])!;
+              if (glyph[Math.floor(gy / scale) * 3 + Math.floor(gx / scale)] === '1')
+                expect(p.get((pen + gx) % 20, Math.floor((20 - glyphHeight) / 2) + gy)).toBe(options.colors.ink);
+            }
+          pen += advance(ch);
         }
       });
     }
   });
 
-  it('uses the minimum odd interior width and stamps one centered post column', () => {
+  it('uses minimum interior width and centers posts even at a tile boundary', () => {
     for (const text of ['ONE', 'ONE TWO', 'ONE TWO THREE']) {
-      const { signs } = buildTiledSigns({ sign: { rows: [[text]] } }, options);
-      const writes: [number, number, string][] = [];
-      stampTiledSign({ set: (...cell) => writes.push(cell) }, 10, 20, signs.sign, 2);
-      const width = signs.sign.board[0].length;
+      const { blocks, signs } = buildTiledSigns({ sign: { rows: [[text]] } }, options);
+      const sign = signs.sign;
+      const width = sign.board[0].length;
       const needed = Math.ceil(((text.length - 1) * 4 + 3 + 4) / 20);
-      expect(width - 2).toBe(needed % 2 ? needed : needed + 1);
-      expect(writes.slice(-2)).toEqual([
-        [10 + (width - 1) / 2, 21, 'tiledSign.post'],
-        [10 + (width - 1) / 2, 22, 'tiledSign.post'],
-      ]);
+      expect(width - 2).toBe(needed);
+      const cells = new Map<string, string>();
+      stampTiledSign({ set: (x, y, block) => cells.set(`${x},${y}`, block) }, 0, 0, sign, 2);
+      for (const y of [1, 2]) {
+        const wood: number[] = [];
+        for (let bx = 0; bx < width; bx++) {
+          const id = cells.get(`${bx},${y}`);
+          if (id) for (let x = 0; x < 20; x++) if (blocks.get(id)!.get(x, 0) !== options.colors.background) wood.push(bx * 20 + x);
+        }
+        expect(wood).toEqual([width * 10 - 2, width * 10 - 1, width * 10, width * 10 + 1]);
+      }
     }
+  });
+
+  it('expands every source font pixel to an identical 2×2 square', () => {
+    for (let sourceY = 0; sourceY < 5; sourceY++)
+      for (let sourceX = 0; sourceX < 3; sourceX++) {
+        const glyph = '0'.repeat(sourceY * 3 + sourceX) + '1' + '0'.repeat(14 - sourceY * 3 - sourceX);
+        const { blocks, signs } = buildTiledSigns({ a: { rows: [['A']] } }, { ...options, lettersPerBlock: 3, glyphs: { A: glyph } });
+        const ink: number[][] = [];
+        signs.a.board[0].forEach((id, bx) => {
+          const p = blocks.get(id)!;
+          for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) if (p.get(x, y) === options.colors.ink) ink.push([bx * 20 + x, y]);
+        });
+        const x = 27 + sourceX * 2,
+          y = 5 + sourceY * 2;
+        expect(ink).toEqual([
+          [x, y],
+          [x + 1, y],
+          [x, y + 1],
+          [x + 1, y + 1],
+        ]);
+      }
+  });
+
+  it('packs JUMP OVER IT into four large text tiles without per-word or per-tile padding', () => {
+    const settings = { ...options, lettersPerBlock: 3 as const };
+    const whole = buildTiledSigns({ a: { rows: [['JUMP OVER IT']] } }, settings);
+    expect(whole.signs.a.board[0]).toHaveLength(6); // four text tiles plus two edges
+    expect(whole).toEqual(buildTiledSigns({ a: { rows: [['JU', 'MP O', 'VER ', 'IT']] } }, settings));
+    const canvas = whole.signs.a.board[0].flatMap((id) => [whole.blocks.get(id)!]);
+    // The M's strokes cross the first text tile boundary: neither half is discarded.
+    expect(canvas[2].px.some((c) => c === options.colors.ink)).toBe(true);
+    let pen = 22;
+    for (let i = 0; i < 12; i++) {
+      if ('JUMP OVER IT'[i] === ' ') {
+        pen += 3;
+        continue;
+      }
+      const glyph = MICRO_GLYPHS['JUMP OVER IT'[i]];
+      for (let y = 0; y < 10; y++)
+        for (let x = 0; x < 6; x++) {
+          const px = pen + x;
+          expect(canvas[Math.floor(px / 20)].get(px % 20, 5 + y)).toBe(
+            glyph[Math.floor(y / 2) * 3 + Math.floor(x / 2)] === '1' ? options.colors.ink : options.colors.paper,
+          );
+        }
+      pen += 7;
+    }
+  });
+
+  it('wraps whole words across a single micro board, centering both text lines', () => {
+    const cases = [
+      ['JUMP OVER IT', 2, ['JUMP', 'OVER IT']],
+      ['MONSTERS WALK A PATH', 3, ['MONSTERS', 'WALK A PATH']],
+      ['TOUCHING HURTS', 2, ['TOUCHING', 'HURTS']],
+      ['WATCH YOUR LIVES', 3, ['WATCH YOUR', 'LIVES']],
+    ] as const;
+    for (const [text, width, lines] of cases) {
+      const { blocks, signs } = buildTiledSigns({ a: { rows: [[text]] } }, { ...options, font: 'micro' });
+      const board = signs.a.board;
+      expect(board).toHaveLength(1);
+      expect(board[0]).toHaveLength(width);
+      const pixel = (x: number, y: number) => blocks.get(board[0][Math.floor(x / 20)])!.get(x % 20, y);
+      // Compare the continuous line, including wide W/M and letters crossing tile seams.
+      lines.forEach((line, row) => {
+        const rendered = microSignLine(line, MICRO_GLYPHS, width * 20 - 2);
+        const x0 = Math.floor((width * 20 - rendered.width) / 2);
+        let pen = x0;
+        const expected = new Map<string, boolean>();
+        for (const glyph of rendered.glyphs) {
+          const gw = glyph.length / 5;
+          for (let y = 0; y < 5; y++) for (let x = 0; x < gw; x++) if (glyph[y * gw + x] === '1') expected.set(`${pen + x},${y}`, true);
+          pen += gw + 1;
+        }
+        for (let y = 0; y < 5; y++)
+          for (let x = 1; x < width * 20 - 1; x++)
+            expect(pixel(x, 4 + row * 7 + y)).toBe(expected.has(`${x},${y}`) ? options.colors.ink : options.colors.paper);
+      });
+      expect(pixel(0, 10)).toBe(options.colors.highlight);
+      expect(pixel(width * 20 - 1, 10)).toBe(options.colors.shadow);
+    }
+    for (const ch of Object.keys(MICRO_GLYPHS).filter((ch) => ch !== ' '))
+      expect(() => buildTiledSigns({ a: { rows: [[ch]] } }, { ...options, font: 'micro' })).not.toThrow();
+    expect(() => buildTiledSigns({ a: { rows: [['MONSTERS']] } }, { ...options, font: 'micro', maxWidth: 1 })).toThrow('exceeds maxWidth');
+    expect(() => buildTiledSigns({ a: { rows: [['A']] } }, { ...options, font: 'micro', compact: true })).toThrow('Micro signs');
+  });
+
+  it('keeps a micro frame around multiple block rows and centers an unpaired line', () => {
+    const { blocks, signs } = buildTiledSigns({ a: { rows: [['JUMP OVER IT']] } }, { ...options, font: 'micro', maxWidth: 1 });
+    expect(signs.a.board).toHaveLength(2);
+    const top = blocks.get(signs.a.board[0][0])!,
+      bottom = blocks.get(signs.a.board[1][0])!;
+    for (let x = 2; x < 18; x++) {
+      expect(top.get(x, 19)).toBe(options.colors.paper);
+      expect(bottom.get(x, 0)).toBe(options.colors.paper);
+    }
+    const ys = [...bottom.px].flatMap((color, i) => (color === options.colors.ink ? [Math.floor(i / 20)] : []));
+    expect([Math.min(...ys), Math.max(...ys)]).toEqual([7, 11]);
   });
 
   it('omits posts for wall signs and rejects missing glyphs, empty rows and budget overflow', () => {
@@ -107,17 +221,17 @@ describe('game-wide tiled signs', () => {
     expect(() => buildTiledSigns(texts, { ...limited, include: ['missing' as 'roomA'] })).toThrow('Unknown sign');
   });
 
-  it('fits compact text to the total width, including odd interiors and both frame tiles', () => {
+  it('fits compact text to the total width, including both frame tiles', () => {
     for (const post of [true, false])
       for (const maxWidth of [5, 6, 7, 8, 9]) {
         const { signs } = buildTiledSigns({ a: { rows: [['AAAA AAAA AAAA AAAA AAAA AAAA']], post } }, { ...options, compact: true, maxWidth });
-        const interior = maxWidth - 2 - (post && (maxWidth - 2) % 2 === 0 ? 1 : 0);
+        const interior = maxWidth - 2;
         const capacity = Math.floor((interior * 20 - 8) / 5) + 1;
         const wordsPerLine = Math.floor((capacity + 1) / 5);
         const lineCount = Math.ceil(6 / wordsPerLine);
         expect(signs.a.board[0].length).toBeLessThanOrEqual(maxWidth);
         expect(signs.a.board).toHaveLength(Math.ceil((lineCount * 9 + 5) / 20));
-        if (post) expect(signs.a.post!.x).toBe((signs.a.board[0].length - 1) / 2);
+        if (post) expect(signs.a.post!.x).toBe(Math.floor((signs.a.board[0].length - 1) / 2));
       }
   });
 
@@ -147,13 +261,14 @@ describe('game-wide tiled signs', () => {
   });
 
   it('draws compact capitals and digits at four by eight pixels, retaining shared frame and post art', () => {
-    const compact = buildTiledSigns(
+    buildTiledSigns(
       { a: { rows: [['ABCDEFGHIJKLMNOPQRSTUVWXYZ 0123456789 .,:!?→']] } },
       { ...options, compact: true, maxWidth: 13, glyphs: { ...MICRO_GLYPHS, '→': '100110111110100' } },
     );
     const standard = buildTiledSigns({ a: { rows: [['A'], ['B'], ['C']] } }, options);
+    const compactFrame = buildTiledSigns({ a: { rows: [['A'], ['B'], ['C'], ['D'], ['E']] } }, { ...options, compact: true });
     for (const name of ['top-left', 'top-right', 'bottom-left', 'bottom-right', 'post'])
-      expect(compact.blocks.get(`tiledSign.${name}`)).toEqual(standard.blocks.get(`tiledSign.${name}`));
+      expect(compactFrame.blocks.get(`tiledSign.${name}`)).toEqual(standard.blocks.get(`tiledSign.${name}`));
     const { blocks, signs } = buildTiledSigns({ a: { rows: [['H']] } }, { ...options, compact: true });
     const ink = signs.a.board.flatMap((row, by) =>
       row.flatMap((id, bx) =>
@@ -162,6 +277,18 @@ describe('game-wide tiled signs', () => {
     );
     expect(Math.max(...ink.map(([x]) => x)) - Math.min(...ink.map(([x]) => x)) + 1).toBe(4);
     expect(Math.max(...ink.map(([, y]) => y)) - Math.min(...ink.map(([, y]) => y)) + 1).toBe(8);
+  });
+
+  it('keeps Meet the Monsters pickups while placing one-block plaques on grounded posts', () => {
+    const { book, levels } = monsterLevels();
+    expect(book.index.size).toBeLessThanOrEqual(24);
+    for (const level of levels) expect(level.map.done().blocks.filter((n) => n === book.n('coin'))).toHaveLength(8);
+    const cells = levels[0].map.done().blocks;
+    const at = (x: number, y: number) => cells[(ORIGIN + y) * MLEN + ORIGIN + x];
+    expect(at(19, 9)).toBe(book.n('flower'));
+    expect(at(20, 9)).toBe(book.n('microPlaque.post'));
+    expect(at(20, 10)).toBe(book.n('grass'));
+    expect(at(21, 9)).toBe(book.n('sky'));
   });
 
   it('keeps pickups and gameplay block IDs intact when maps load separate sign books', () => {
@@ -183,10 +310,14 @@ describe('game-wide tiled signs', () => {
 
   it('keeps First Steps pickups, terrain and doors intact while sharing signs across both levels', () => {
     const { book, levels } = buildLevels();
-    // An extra credit page changes the committed walkthrough's running time.
-    expect(CREDITS.split('\n')).toHaveLength(32);
-    expect(book.index.size).toBeLessThan(55);
-    expect([...book.index.keys()].filter((k) => k.startsWith('tiledSign.post'))).toEqual(['tiledSign.post']);
+    // The scroll review credit adds a page; the walkthrough was re-recorded with it.
+    expect(CREDITS.split('\n')).toHaveLength(48);
+    expect(book.index.size).toBeLessThanOrEqual(30);
+    expect([...book.index.keys()].filter((k) => k.startsWith('microPlaque.post')).sort()).toEqual([
+      'microPlaque.post',
+      'microPlaque.post-left',
+      'microPlaque.post-right',
+    ]);
     // Original first-level coins under the wider gravity sign must survive stamping.
     const map = levels[0].map.done();
     const at = (x: number, y: number) => map.blocks[(ORIGIN + y) * MLEN + ORIGIN + x];

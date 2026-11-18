@@ -16,6 +16,7 @@
 //  13. Big Gobble    PLUME  the boss against the bar: its puffed-out balloons, three tether stakes, the blower, the hall
 // Rory's streets are printed in storybook inks and Mr. Plume's in fight-poster inks (palette.ts).
 import type { Pal } from '@lewismoten/gamemaker-sandbox-tools/kit/palRamps';
+import { repeatRouteBars } from './timing';
 import { dress } from './dress';
 import type { Level } from './levels/common';
 import { aisle } from './levels/aisle';
@@ -52,6 +53,9 @@ export function buildLevels(pal: Pal): Level[] {
     chase(pal),
     gobble(pal),
   ];
-  for (const l of levels) dress(l, pal);
+  for (const l of levels) {
+    repeatRouteBars(l.file, l.map, l.book);
+    dress(l, pal);
+  }
   return levels;
 }

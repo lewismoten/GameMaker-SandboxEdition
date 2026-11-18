@@ -85,7 +85,7 @@ export function phoneLineFor(el: HTMLElement): WallPhoneLine {
           for (const piece of captionPieces(text)) {
             if (current.signal.aborted) break;
             pad?.caption(v.who, piece);
-            await speakLine(piece, text, v, current.signal);
+            await speakLine(piece, text, v, current.signal, () => status('Not in your offline copy'));
           }
           live();
         } finally {

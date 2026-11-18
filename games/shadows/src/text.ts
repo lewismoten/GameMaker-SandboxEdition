@@ -5,41 +5,6 @@ import about from '../about.json';
 
 export type Look = 'solid' | 'dither';
 
-type Words = Record<string, [string, number, number]>;
-
-/** The signs of each room: name → [words, blocks wide, blocks high]. */
-export const SIGNS = {
-  yard: {
-    solid: {
-      start: ['A SOLID SHADOW.', 4, 2],
-      sand: ['STRONG ON SAND.', 4, 2],
-      grass: ['STRONG ON GRASS.', 4, 2],
-      soil: ['DARK ON DARK SOIL.', 4, 2],
-      next: ['NEXT: CHECKERS.', 4, 2],
-    },
-    dither: {
-      start: ['A DITHERED SHADOW.', 4, 2],
-      sand: ['SOFT ON SAND.', 4, 2],
-      grass: ['SOFT ON GRASS.', 4, 2],
-      soil: ['GROUND SHOWS THROUGH.', 4, 2],
-      next: ['NEXT: A HOP.', 4, 2],
-    },
-  },
-  hop: {
-    start: ['WATCH THE HOPS.', 4, 2],
-    none: ['NONE. IT FLOATS.', 4, 2],
-    same: ['ALWAYS THE SAME.', 4, 2],
-    shrink: ['SMALL AT THE TOP.', 4, 2],
-    next: ['NEXT: A BEE.', 4, 2],
-  },
-  hover: {
-    start: ['A BEE AND A SHADOW.', 4, 2],
-    low: ['BEE OVER SHADOW.', 4, 2],
-    high: ['HIGHER: A BIGGER GAP.', 4, 2],
-    next: ['THAT IS IT.', 4, 2],
-  },
-} satisfies { yard: Record<Look, Words>; hop: Words; hover: Words };
-
 /** The card before each room: its name and a line. */
 export const CARDS = {
   solid: ['The Yard: Solid', 'One dark color under each foot.'],
@@ -75,6 +40,10 @@ export const CREDITS = withCreditPage(
   wrap(`
 |LITTLE SHADOWS  v${about.version}
 |(c) 1994 Sandbox Software
+
+Held-rise controls and bot timing by OpenAI Codex (GPT-6.1 Sol).
+
+Camera review by OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten.
 
 Design, pixels, beeps and levels by Claude Sonnet 5.5, an AI model made by Anthropic.
 

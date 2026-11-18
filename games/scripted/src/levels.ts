@@ -13,13 +13,13 @@ import { SOLID, Book, PULL } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
-import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
-import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { MICRO_GLYPHS } from '@lewismoten/gamemaker-sandbox-tools/microFont';
+import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
+import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
 import { drawBoards, drawCurtain, drawValance } from './actorArt';
 import { CAMEO, MON, WALK } from './monsters';
 
-export type SignName = 'path' | 'start' | 'chain' | 'encore' | 'once' | 'late' | 'exit';
+export type SignName = 'encore' | 'exit';
 
 /** The block set both levels share: the Starter blocks, the stage, then this game's signs. */
 function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
@@ -28,32 +28,10 @@ function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
   book.add('curtain', drawCurtain(pal), { grav: PULL.down });
   book.add('valance', drawValance(pal), { grav: PULL.down });
   book.add('boards', drawBoards(pal), { solid: SOLID, grav: PULL.down });
-  const { blocks, signs } = buildTiledSigns(
-    {
-      path: { rows: [['A SCENE IS'], ['MONSTERS'], ['ON PATHS']] },
-      start: { rows: [['IT STARTS'], ['WHEN THE'], ['LEVEL DOES']] },
-      chain: { rows: [['EACH ACT'], ['BECOMES THE'], ['NEXT ONE']] },
-      encore: { rows: [['MISSED IT?'], ['←'], ['ENCORE DOOR']] },
-      once: { rows: [['A CAMEO'], ['SAYS'], ['HELLO ONCE']] },
-      late: { rows: [['GONE?'], ['IT WILL'], ['NOT WAIT']] },
-      exit: { rows: [['EXIT →']] },
-    },
-    {
-      colors: {
-        background: skyOf(pal),
-        paper: pal.c('parch', 3),
-        ink: pal.c('ink', 0),
-        wood: pal.c('wood', 2),
-        highlight: pal.c('wood', 4),
-        shadow: pal.c('wood', 0),
-      },
-      glyphs: { ...MICRO_GLYPHS, '←': '001011111011001', '→': '100110111110100' },
-      compact: true,
-      maxWidth: 5,
-      maxBlocks: Math.min(100, 150 - book.index.size),
-    },
-  );
-  for (const [name, pic] of blocks) book.add(name, pic, { grav: PULL.down });
+  const signs = addMicroPlaques(book, pal, {
+    encore: { lines: ['MISSED?', '← ENCORE'] },
+    exit: { lines: ['EXIT', '→'], post: false },
+  });
   return { book, signs };
 }
 
@@ -90,7 +68,9 @@ function base(width: number, exitX: number, encoreX: number): Grid {
   const g = new Grid(width, 15);
   g.row(GROUND, 0, width - 1, 'G').fill(0, GROUND + 1, width, 4, 'D');
   g.col(0, 0, 9, 'B').col(width - 1, 0, 9, 'B');
-  g.put(3, 8, 's').put(3, 9, 'S');
+  // One-way boards leave the return walk to the encore door open below.
+  g.put(3, 8, '=').put(3, 9, '=');
+  g.put(3, 6, 's').put(3, 7, 'S');
   g.put(encoreX, 8, 'e').put(encoreX, 9, 'E');
   g.put(exitX, 8, 'e').put(exitX, 9, 'E');
   return g;
@@ -127,11 +107,8 @@ function curtainUp(book: Book, signs: Record<SignName, Sign>): StarterMap {
   const m = new StarterMap(book, g.rows());
   const s = STAGE_ONE;
   build(m, s);
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 4, onGround(GROUND, signs.path), signs.path);
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 10, onGround(GROUND, signs.start), signs.start);
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 28, onGround(GROUND, signs.chain), signs.chain);
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 33, onGround(GROUND, signs.encore), signs.encore);
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 46, 7, signs.exit, 2);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 34, onGround(GROUND, signs.encore), signs.encore);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 47, 7, signs.exit, 2);
   // the actors wait behind the curtains, peeking
   m.mon(MON.pipPeek, s.left, STAND);
   m.mon(MON.bluPeek, s.right, STAND);
@@ -162,9 +139,7 @@ function sayHello(book: Book, signs: Record<SignName, Sign>): StarterMap {
   // the doorway the cameo waits in, to the right of the stage
   const doorX = DOORWAY;
   m.set(doorX, 8, 'doorwayTop').set(doorX, 9, 'doorwayBottom');
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 5, onGround(GROUND, signs.once), signs.once);
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 11, onGround(GROUND, signs.late), signs.late);
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 17, onGround(GROUND, signs.encore), signs.encore);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 16, onGround(GROUND, signs.encore), signs.encore);
   stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 53, onGround(GROUND, signs.exit), signs.exit);
   m.mon(MON.camWait, doorX, STAND);
   m.mon(MON.camCue, doorX - CAMEO.walkIn, STAND - 1);

@@ -3,25 +3,22 @@ import { withCreditPage } from '../../kit/license';
 import { wrap } from '../../kit/starter/text';
 import about from '../about.json';
 
-type Words = Record<string, [string, number, number]>;
+import { type MicroPlaqueText } from '../../kit/starter/microPlaque';
 
-/** The signs of each room: name → [words, blocks wide, blocks high]. */
+/** The approved plaques; omitted old sign rows are intentionally dropped. */
 export const SIGNS = {
   tumble: {
-    start: ['EVERY LEAF IS A MONSTER.', 4, 2],
-    stiff: ['1 FRAME, STRAIGHT DOWN: STIFF.', 4, 2],
-    spin: ['8 FRAMES TURN IT. STILL STIFF.', 4, 2],
-    float: ['A ZIGZAG PATH: NOW IT FLOATS.', 4, 2],
-    next: ['NEXT: THE WIND.', 4, 2],
+    stiff: { lines: ['1 FRAME', 'STIFF'] },
+    spin: { lines: ['8 FRAMES', 'STIFF'] },
+    float: { lines: ['ZIGZAG', 'FLOATS'] },
+    next: { lines: ['NEXT', '→'] },
   },
   gust: {
-    start: ['BRANCHES DROP LEAVES ON TIMERS.', 4, 2],
-    gust: ['ONE CLOCK BENDS ALL 3 TREES.', 4, 2],
-    land: ['PATH ENDS: THE LEAF LIES DOWN.', 4, 2],
-    model: ['GUST LEAVES FLY FAR AND FAST.', 4, 2],
-    next: ['THAT IS THE LOT.', 4, 2],
+    gust: { lines: ['SAME', 'TIME'] },
+    model: { lines: ['FAR,', 'FAST'] },
+    next: { lines: ['ALL', 'DONE'] },
   },
-} satisfies Record<string, Words>;
+} satisfies Record<string, Record<string, MicroPlaqueText>>;
 
 /** The card before each room: its name and a line. */
 export const CARDS = {
@@ -58,6 +55,12 @@ export const CREDITS = withCreditPage(
 |(c) 1994 Sandbox Software
 
 Design, pixels, beeps and levels by Claude Opus 5.5, an AI model made by Anthropic.
+
+Held-rise jump and bot timing by OpenAI Codex (GPT-6.1 Sol).
+
+Raised-start camera review by OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten.
+
+Micro plaques by Hermes Agent using OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten.
 
 Made with GAME-MAKER 3.0 from Recreational Software Designs.
 

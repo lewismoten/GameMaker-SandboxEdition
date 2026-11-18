@@ -3,6 +3,7 @@
 // title screen (drawn when the tile scrolls into view; the first level when it has none) with buttons over it
 // for the keys and the manual, and its title. Choosing a tile shows the game in the panel
 // at the top (homeShowcase.ts), which plays its demo and offers everything else with gameActions().
+import { markOfflineAction } from '../../offline/availability';
 import { h, toast, promptText, modal } from '../core/ui';
 import { Project } from '../core/project';
 import { renderShot, renderTitle } from '../../gfx/gameShots';
@@ -531,7 +532,7 @@ export function gameActions(game: HomeGame, nav: HomeNav, refresh: () => Promise
   // the Bard of Bizarre's games are this project's own (MIT, like the Sandbox games): editable, with their notice as well
   const playOnly = (game.kind === 'shareware' || game.kind === 'bizarre') && !isBizarreGame(e);
   const notice = h('button', { class: 'with-ico', onclick: () => void showNotice(e) }, svgIcon('notice'), 'Notice');
-  return (
+  const actions = (
     [
       play(href),
       // Look inside opens it as released; editing it there offers the copy (released.ts)
@@ -543,6 +544,11 @@ export function gameActions(game: HomeGame, nav: HomeNav, refresh: () => Promise
       hasMapsOnly(game) ? loadingButton('map', 'Maps', `The ${game.title} World Map and Level Maps`, (ready) => openGameMaps(e, ready)) : null,
     ] as (HTMLElement | null)[]
   ).filter((x): x is HTMLElement => !!x);
+  for (const control of actions.slice(0, playOnly ? 3 : 2)) {
+    if (control === notice) continue;
+    markOfflineAction(control, `./${e.path}${e.parts ?? e.pack}`);
+  }
+  return actions;
 }
 
 /** 🔍 Look inside: the game's files in the editor as released, changing nothing (released.ts); a change offers a copy. */

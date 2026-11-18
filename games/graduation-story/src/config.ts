@@ -7,6 +7,7 @@ import { song } from './song';
 
 export const cfg: Graduation = {
   id: 'graduation-story',
+  startLedge: { arrival: 2, hall: 2 },
   stage: 'Story and Finish',
   groups: ['Telling a Story', 'Putting It Together'],
   cameos: ['teddy', 'chicken', 'will', 'gwinn', 'seed', 'joe', 'camel', 'carl'],
@@ -47,6 +48,9 @@ You can tell a story with words, pictures and sound, time a scene and put a whol
 
 The next stage is waiting whenever you are ready.
 `),
-    credits: creditsPage('GRADUATION: STORY AND FINISH', about.version, 'A graduation: it comes after Telling a Story and Putting It Together.'),
+    credits:
+      creditsPage('GRADUATION: STORY AND FINISH', about.version, 'A graduation: it comes after Telling a Story and Putting It Together.') +
+      '\n' +
+      wrap('Held-rise jump, raised starts and micro-sign plaques: OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten.'),
   },
 };

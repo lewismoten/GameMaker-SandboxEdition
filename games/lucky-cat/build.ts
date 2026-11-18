@@ -54,13 +54,13 @@ const monsterBlocks = monsterPictures(pal);
 
 // the shared data: the cat, her two characters (the second swaps Left and Right), Rascal, the crows, the sounds and the songs
 disk.put('hero.cbl', serializeBlocks(heroBlocks.finish()));
-const heroChar = buildHero(heroBlocks);
+const heroChar = buildHero(heroBlocks, { heldRise: { push: 12 } });
 heroChar.meter[0] = HERO_HIT_POINTS;
 heroChar.meter[1] = HERO_LIVES;
 disk.put('hero.chr', serializeCharacter(heroChar));
 disk.put('mirror.chr', serializeCharacter(mirrored(heroChar)));
 disk.put('rascal.cbl', serializeBlocks(rascalBlocks.finish()));
-const rascalChar = buildHero(rascalBlocks);
+const rascalChar = buildHero(rascalBlocks, { heldRise: { push: 12 } });
 rascalChar.meter[0] = HERO_HIT_POINTS;
 rascalChar.meter[1] = HERO_LIVES;
 disk.put('rascal.chr', serializeCharacter(rascalChar));

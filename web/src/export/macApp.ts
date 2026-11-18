@@ -12,6 +12,7 @@
 //
 // The app is not notarized by Apple (that needs a paid Apple Developer ID), so the first
 // time it is opened macOS asks to confirm (the Download chooser, editor/shell/download.ts, and the #/mac page say how).
+import { requireOfflineFile } from '../offline/availability';
 import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { decodeGif, isGif, type IndexedImage } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
 import { applyFliFrame, isFli, newFliCanvas, parseFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
@@ -201,6 +202,7 @@ export async function macAppDmg(o: MacAppOptions, date?: Date): Promise<Uint8Arr
 
 /** The player program, from where the web app is served. */
 export async function fetchMacPlayer(appBase = new URL('./', location.href).href): Promise<Uint8Array> {
+  await requireOfflineFile(new URL(PLAYER_PATH, appBase).href);
   const res = await fetch(new URL(PLAYER_PATH, appBase)).catch(() => undefined);
   if (!res?.ok) throw new Error('Could not load the Mac player. Reload Game-Maker: Sandbox Edition while online and try again.');
   return new Uint8Array(await res.arrayBuffer());

@@ -1,6 +1,6 @@
 // "In The Year 2000!" cryptex assembly sheet: ordered cards drawn from the real cut outlines, then the lock itself (the
 // ridge in a washer's notch, aligned and turned) and how to change the combination. Not a cutting template.
-import { CORE, COMBO, STEP, coreShape, washerHole, decagon, WASHER } from './cryptexDims';
+import { CORE, COMBO, STEP, T, coreShape, washerHole, decagon, WASHER } from './cryptexDims';
 import { rotate } from '@lewismoten/gamemaker-sandbox-tools/kit/laserJoints';
 import type { Pt } from '@lewismoten/gamemaker-sandbox-tools/kit/laserSvg';
 import { makeParts } from './cryptexParts';
@@ -46,25 +46,35 @@ export function legend(kerf: number): { id: string; what: string; where: string;
     const marked = m.part.texts.some((t) => t.text === key);
     return {
       id: marked ? key : `(${key})`,
-      what: m.note,
-      where: marked ? WHERE(key) : ['E2', 'HEAD', 'LID'].includes(key) ? 'unmarked: bare on top' : 'unmarked: too narrow for letters',
+      what: key === 'E2' ? 'E2: the remaining digit slice, no ID' : m.note,
+      where: marked
+        ? WHERE(key)
+        : key === 'E2'
+          ? 'ring 1: the only digit slice left after B2, C2 and D2 are placed'
+          : m.hidden.length
+            ? `${m.face} face: hidden artwork, no ID`
+            : 'unmarked: glue face or no hidden space for an ID',
       qty: m.qty,
     };
   });
   return rows;
 }
 const WHERE = (key: string) =>
-  key === 'A1'
-    ? 'center of the floor, under the core'
-    : /^A\dR$/.test(key)
-      ? 'glued face, in the rim'
-      : /^A\dC$/.test(key)
-        ? 'glued face, in the collar'
-        : /^G/.test(key)
-          ? 'glued face, in the washer'
-          : key.endsWith('1')
-            ? 'glued face, in the rim'
-            : 'under the next ring up';
+  /^A[234][RC]$/.test(key)
+    ? 'upper glued face, covered by the next base layer'
+    : /^G[1-4]B$/.test(key)
+      ? 'upper glued face, covered by the upper washer'
+      : key === 'A1'
+        ? 'center of the floor, under the core'
+        : /^A\dR$/.test(key)
+          ? 'top of the rim, under the loose ring'
+          : /^A\dC$/.test(key)
+            ? 'top of the collar, under the loose washers'
+            : /^G/.test(key)
+              ? 'top of the upper washer; blank reverse takes glue'
+              : key.endsWith('1')
+                ? 'underside of the rim; blank reverse takes glue'
+                : 'under the next ring up';
 
 interface Card {
   title: string;
@@ -79,7 +89,11 @@ const cardList = (): Card[] => {
     { title: 'Stacks B, C, D, E: the four rings', keys: ['B1', 'B2', 'E1', 'E2'], text: [ring('B'), ring('C'), ring('D'), ring('E'), g('B').why] },
     { title: 'Stack F: the core', keys: ['CORE0', 'CORER', 'COREC'], text: [g('F').build, g('F').why, g('F').done] },
     { title: 'G1 to G4: the washer pairs', keys: ['G1', 'G2'], text: [1, 2, 3, 4].map((n) => `${g(`G${n}`).build} ${g(`G${n}`).done}`).concat(g('G1').why) },
-    { title: 'H the head and I the lid', keys: ['HEAD', 'LID', 'LIDP'], text: [g('H').build, g('H').done, g('H').why, g('I').build, g('I').done, g('I').why] },
+    {
+      title: 'H head, I posts and J retaining bridge',
+      keys: ['HEAD', 'LID', 'LIDP'],
+      text: [g('H').build, g('H').done, g('H').why, g('I').build, g('I').done, g('I').why, g('J').build, g('J').done, g('J').why],
+    },
   ];
 };
 
@@ -146,7 +160,7 @@ export function assemblySvg(kerf = 0.2): string {
   });
   y += Math.ceil(legend(kerf).length / 2) * 14 + 8;
   const [note, ny] = wrap(
-    'An ID is engraved only on a face that ends up covered, so it never shows. Unmarked parts are listed in (brackets): the core slices and the plugs are too narrow, the digit slice of ring 1, the head and the lid are bare on top.',
+    'IDs use covered faces, including small marks on glue faces. Hidden pictures use unglued faces. Cut and engrave face up in one pass. During assembly orient ring bottoms, CORE0 ceiling, head and bridge artwork down; other art faces up. Unmarked parts are in (brackets). Spread glue across the small ID marks too.',
     20,
     y,
     150,
@@ -181,6 +195,6 @@ ${leg}${cards}${fit}${setCode}
 <text y="68" font-size="11">Each washer can sit ten ways, one per digit: 10,000 combinations.</text>
 <text y="92" font-size="11">The ridge is ${CORE.ridgeHw * 2} mm wide, the notch ${WASHER.notchHw * 2} mm: a ring only has to be near its digit</text>
 <text y="107" font-size="11">(about 5 degrees), not exact. There are no detents, so look at the marker.</text></g>
-<text x="20" y="${h - 14}" font-size="10">Stack height 36 mm: four base layers (12), four rings of two slices (24). The core is 12 slices; the head sits on top.</text>
+<text x="20" y="${h - 14}" font-size="10">Core height ${(13 * T).toFixed(2)} mm: four pocket layers (${(4 * T).toFixed(2)}), eight ring slices (${(8 * T).toFixed(2)}), one ceiling (${T}). Stock ${T} mm; fixed bridge above the rings, head above the bridge.</text>
 </svg>`;
 }

@@ -30,6 +30,8 @@ export function buildGame(levels: Level[]): Game {
 
   levels.forEach((l, i) => {
     const scene = emptyScene(ADVTYPE);
+    // Nine to Zero is flat; Ninety-Nine drops ten rows to its exit mat.
+    if (l.file === 'one') scene.scroll.up = scene.scroll.down = 0;
     scene.desc = l.title.slice(0, 19);
     scene.pos = { x: 60 + i * 80, y: 110 };
     scene.files = [

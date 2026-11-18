@@ -124,6 +124,17 @@ export function addMeter(book: PBook, pal: Pal, id: string, labels: [string, str
     book.add(`${id}${i}`, p, air);
     book.time(`${id}${i}`, `${id}Off`, ticksEach * (i + 1));
   }
+  // The narrow spaces beside Bakery Row's placards carry a complete five-light copy.
+  if (id === 'shut') {
+    for (let step = 0; step <= segments; step++) {
+      const p = new Pixels(20, 20, paperOf(pal));
+      for (let i = 0; i < segments; i++) {
+        p.rect(1, 2 + i * 3, 18, 2, c('blue', 1)).rect(2, 2 + i * 3, 16, 1, i >= step ? c('orange', 3) : c('blue', 0));
+      }
+      book.add(`${id}Mini${step}`, p, air);
+      if (step < segments) book.time(`${id}Mini${step}`, `${id}Mini${step + 1}`, ticksEach);
+    }
+  }
 }
 
 /** A roll-up shutter over a doorway: open at the start of the level, shut (a solid gray wall) after `ticks`. */

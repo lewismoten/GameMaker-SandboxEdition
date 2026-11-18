@@ -86,7 +86,7 @@ export async function pickups(bot: StarterBot): Promise<void> {
 export async function quietRoom(bot: StarterBot): Promise<void> {
   const score = bot.sim.ci.score;
   await must(bot, bot.walk(13, 'the jump sign'), 'to the jump sign');
-  await must(bot, bot.walk(LEDGE.x0 - 2, 'the ledge'), 'to the ledge');
+  await must(bot, bot.walk(LEDGE.x0 - 1, 'the ledge'), 'to the ledge');
   await must(bot, bot.jump('right', LEDGE.x0 + 1), 'up onto the ledge');
   await must(bot, bot.walk(LEDGE.x1 - 0, 'along the ledge'), 'along the ledge');
   await must(bot, bot.walk(LEDGE.x1 + 3, 'down from the ledge'), 'down from the ledge');

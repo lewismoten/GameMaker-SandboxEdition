@@ -9,3 +9,5 @@ safe fixes across every level that uses the palette (`visionFallback.ts` supplie
 artwork when the level preview is empty). `colorPicker.ts` stages an HSV color choice;
 `paletteCopy.ts` copies a color range into the open palette; `paletteReservationFields.ts` edits
 shared reservations; `pictureColors.ts` reduces a GIF's pixels to a chosen color budget.
+
+`channelValue.ts` preserves the integer clamp and supplies its feedback. Typing a red, green or blue value outside 0–63 shows the shared range message with the requested and kept values, explaining the DOS VGA range at the moment it clamps. Saving keeps the existing clamp and palette bytes.

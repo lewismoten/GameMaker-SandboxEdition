@@ -36,12 +36,18 @@ export function levelShop(pal: Pal): Level {
   g.row(6, SHOP.mezzanine[0], SHOP.mezzanine[1], '=');
   const m = new StarterMap(book, g.rows());
   for (let x = 4; x < 66; x += 2) m.set(x, 1, 'bunting');
-  // a crack in the floor between each pair of pillars: hop pillar to pillar, not down between them
-  for (const x of [SHOP.pillars[0] + 2, SHOP.pillars[1] + 2]) m.set(x, GROUND - 1, 'crack');
+  // A continuous mirror plinth supports the display between its taller panels.
+  for (const x of [SHOP.pillars[0] + 2, SHOP.pillars[1] + 2]) m.set(x, GROUND - 1, 'mirrorWall2');
   // the display: pillars one, two and one block high
   [1, 2, 1].forEach((h, i) => {
     for (let k = 0; k < h; k++) m.set(SHOP.pillars[i], GROUND - 1 - k, 'mirrorWall').set(SHOP.pillars[i] + 1, GROUND - 1 - k, 'mirrorWall2');
   });
+  // Short display ladders give unhurried hands a resting place at each rising panel.
+  for (const [x, top] of [
+    [SHOP.pillars[0] - 1, 8],
+    [SHOP.pillars[1] - 1, 7],
+  ])
+    for (const y of [top, top + 1]) m.set(x, y, 'ladder');
   m.set(SHOP.key1, 5, 'mirrorKey');
   for (const x of [SHOP.gate1, SHOP.gate2]) {
     for (let y = -10; y < GROUND - 2; y++) m.set(x, y, y % 2 ? 'mirrorWall' : 'mirrorWall2');

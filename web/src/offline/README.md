@@ -1,84 +1,74 @@
 # `offline/`: working without a network
 
-Part of the [source map](../README.md). "Make available offline": the site's offline manifest and
-the games in this browser's catalog in the service worker's cache at once, and the notices around it.
-The separate web-player pages, trinket and laser-kit downloads, firmware and link-preview files
-are not part of it (`offlineFiles` in `web/vite.config.ts`).
+Part of the [source map](../README.md). Play offline and the desk's OFFLINE.EXE prepare
+an explicit offline copy. Ordinary browsing still caches what the visitor opens.
+Nothing starts a bulk download until the visitor chooses Download (Y on the desk).
 
-Entry points: `offline.ts` (the service worker's notices) imports `loadFailure.ts`, `replay.ts` and
-`updateState.ts`; `settingsMenu.ts` loads `offlineDialog.ts` on demand; `retro/computer.ts` loads
-`offlineExe.ts` when OFFLINE.EXE runs.
+- `tiers.ts`: manifest file metadata and the nine independent tier boundaries. Core always
+  includes the application code, editor, desk, catalogs, lessons, previews and narration
+  metadata. Starters, Sandbox, Specials, Bizarre and CD independently add their catalog group’s public packs
+  and compressed walkthroughs. CD holds the original CD gameware and shareware. Shared ZIP
+  blobs (including Starter kit files) stay with their sole consuming group, or Core when
+  several public groups need them. Specials holds the limited-time games marked `series: "special"`.
+  Feelies & library adds craft files and library resources. Spoken tour & phone adds the
+  recordings and tour effects. Hardware & native exports adds firmware, installer files
+  and native players. In-game sound stays with its game pack. Videos need the internet.
+- `offlineCopy.ts`: reads the production inventory, resolves the selected tiers and
+  already-revealed games, checks actual cached bodies and storage estimates, and prepares
+  or removes the copy. The default first selection is Core; subsequent visits use the
+  last requested selection (an old Games choice expands to all five game groups; an old Sandbox choice expands to Sandbox and Specials), so a closed tab can resume an unfinished choice. Removing an optional tier prepares a smaller replacement while
+  retaining Core. Saved selections and committed pointers carry a tier-schema version so
+  migrated Sandbox selections can later drop Specials independently. Browser storage estimates are advisory, with 10% headroom required.
+- `archiveStore.ts`: per-file downloads with four workers, checking both stored length and
+  SHA-256 before accepting a file. A version/selection-specific staging cache retains
+  verified responses after interruption, quota failure or cancellation. Retries check its
+  bodies again. Unchanged files are reused from committed copies, previous staging or
+  ordinary browsing only after matching the new manifest's hash. Changed files use
+  `cache: no-store`, which the worker passes directly to the network. The old ZIP is never
+  requested. The filename remains for continuity with the earlier implementation.
+- `availability.ts`: checks actual committed and browsing cache entries when offline;
+  absent game packs/actions say “Not in your offline copy.” Local imported projects remain
+  usable. The worker also sends a missing-content notice when both cache and network fail.
+  Phone captions remain readable without substituting browser speech for missing recordings;
+  the written tour remains available without its spoken tier.
+- `offlineDialog.ts`, `offline.css`: today's web tier picker with bytes still needed,
+  space required for safe replacement, verified-file progress, cancellation and removal.
+  Wide, short screens show the tier list in two columns without removing names or sizes.
+- `offlineExe.ts`: the same operation in the desk's text UI. Keys 1–8 toggle optional
+  tiers, Y saves the selection, R removes the prepared copy and Esc stops/quits.
+- `loadFailure.ts`, `replay.ts`, `updateState.ts`: load notices, archive replay detection,
+  and the explicit Reload handshake for a waiting worker.
 
-- `offlineCopy.ts`: reads `offline.json`, checks the committed snapshot's version and complete file coverage, and prepares or removes it for the dialog and OFFLINE.EXE.
-- `archiveStore.ts`: downloads the single `offline.<sha256>.zip`, reports streamed download bytes then unpacked file counts, verifies length/SHA-256 and the exact ZIP directory, and unpacks with the existing archives package into a separate Cache API snapshot. Exact-case site-relative URLs and MIME types are restored, with `index.html` also stored under the site's root URL. No archive entry is served implicitly: `../siteWorker.ts` explicitly reads and serves the committed cache.
-- `offlineDialog.ts`: today's web: the Offline dialog (header button and ⋯ menu); `offline.css` styles it.
-- `offlineExe.ts`: OFFLINE.EXE in `C:\DOS` on the desk PC, the same job as a 1995 text program.
-- `loadFailure.ts`: a part of the site that cannot load (a missing chunk, a deploy that replaced it) says so instead of leaving a blank page.
-- `updateState.ts`: the new version waiting for a Reload, shared by the notice and the Settings menu; a game playing in a play page is never covered.
-- `replay.ts`: tells whether the page is a Wayback Machine replay (no service workers there).
+The production build uses `scripts/offlineManifest.ts` from `vite.config.ts` to emit
+`offline.json`: version, shell, and files with `path`, exact `stored` bytes, estimated
+compressed `wire` bytes, `sha256`, and `tier`. It excludes crawlers, link previews, capture
+pages, legacy ZIP aliases and unrevealed games. Shared blobs needed only by private games
+are excluded too. Per-game inventories at gated paths are read only for entries the
+browser has already revealed, using the existing catalog gate. Public manifests never
+name or advertise those extras. `archive.json` retains its separate capture format.
 
-Must not: `offlineDialog.ts` and `offlineExe.ts` are loaded on demand (`settingsMenu.ts`, `retro/computer.ts`); keep
-them dynamic so the first-load chunk stays small. `retro/computer.ts` is shared with `dos.html`, so nothing here may import `desk/`.
+A scoped Web Lock serializes installations/removal across tabs. After all selected files
+are verified, the stage stores the public inventory and one Cache.put publishes its pointer
+and selection atomically. Until that write the worker can serve only the old complete
+snapshot. Cleanup runs after publication; unsuccessful stages stay resumable. Replacement
+space includes duplicated unchanged responses while the previous copy remains protected.
+The root URL aliases `index.html`. Removing the explicit copy removes stages and its
+control pointer, leaving the shell and ordinary browsing cache alone.
 
-## Current release
+Worker activation preserves committed snapshots, including complete legacy copies. An older
+snapshot is a fallback before the newer partial browsing cache when the network fails.
+A new worker still waits for Reload. Cache eviction is detected by checking actual bodies;
+a saved completion flag alone never makes a copy Ready. Browser eviction can still remove
+an entire copy, so persistence is requested but cannot be guaranteed.
 
-Production builds no longer produce or publish `offline.<sha256>.zip` and omit the
-`archive` entry from `offline.json`. Play offline and OFFLINE.EXE show “Offline copies
-are coming back in a later update.” New downloads are paused until per-file downloads
-with selectable tiers arrive. Existing committed copies and ordinary browsing caches
-are preserved; the service worker still serves them. The archive builder and acquisition
-code below remain for reference.
+Keep dialog and EXE imports dynamic (`settingsMenu.ts`, `retro/computer.ts`). Nothing in
+this area imports the desk: `dos.html` shares the computer but must not load desk code.
 
-`check:offline` checks the pause notice and absence of download controls and ZIP requests
-when the manifest has no archive, then skips the full-copy offline navigation checks.
-
-## Acquisition and lifecycle (when an archive is available)
-
-Installation still downloads **only the app shell**, never the offline archive. Nothing starts
-an offline download until the visitor presses Download in Play offline or Y in OFFLINE.EXE.
-Ordinary browsing continues to cache files on first use in `gm-site-v2`. A public offline copy is
-one ZIP request, not a fetch for every entry in `offline.json`. Already-revealed secret game
-packs/walkthroughs are the only supplemental requests: neither their files nor gate catalogs
-may appear in the public ZIP. An unchanged complete copy is reused without fetching the ZIP.
-
-When enabled, the production Vite plugin builds the ZIP from the same selected resources as the old explicit
-copy, plus the complete shell (including `index.html`); `scripts/offlineArchive.ts` uses sorted
-entries, a fixed local ZIP date and a SHA-256 filename. `offline.json` records its path, exact
-byte length and SHA-256. The manifest is saved beside the extracted entries, not inside the ZIP
-(which would create a circular hash). A payload change changes the archive identity; the worker
-still uses the build's version to invalidate readiness across deployments.
-
-A base-URL-scoped Web Lock serializes preparation/removal across tabs. A unique staging cache
-is invisible to the worker until one atomic pointer write to the scoped control cache. Cancel,
-truncation, a bad checksum, extraction failure or quota failure discards staging, not the last
-committed copy. The browser must have Web Locks, Cache Storage and service workers. Retries
-restart the whole archive (no partial-download resume); replacements need free space for the
-new unpacked copy while the old one is retained. Progress at 100% downloaded does not mean
-Ready: extraction and publication must finish too.
-
-A new worker still waits for Reload. Activation preserves committed offline snapshots rather
-than deleting them with obsolete shell/staging caches. With a current snapshot it serves entries
-cache-first; with an older snapshot it tries the network, falling back to that complete snapshot
-before any new partial browsing cache. Thus an offline navigation can still load the old home,
-its hashed code and its matching catalogs after a failed replacement. While connected the dialog
-reports the current build as needing an update, not Ready for the old copy. On successful
-replacement, the old snapshot is deleted; abandoned staging is cleaned up on the next preparation.
-Removing the prepared copy leaves the shell and ordinary browsing cache alone. Legacy per-file
-`gm-site` is adopted in place only if its cached legacy manifest and every listed/shell URL
-are present. This preserves a previously complete per-file copy without a second allocation or
-network fanout. It remains an old-version fallback until a successful explicit ZIP replacement
-(or removal) deletes it. Incomplete legacy browsing caches are not declared ready and are cleaned
-up during activation. Subsequent browsing uses `gm-site-v2`, retaining group invalidation.
-
-Tests: `replay.test.ts`, `archiveStore.test.ts`, `../../test/offlineArchiveFlow.test.ts`,
-`../../test/siteWorkerArchive.test.ts` and `../../scripts/offlineArchive.test.ts`.
-
-To reproduce the network check, use a fresh browser profile on a scratch production preview:
-wait for the worker to control the page, open Play offline, count requests from Download until
-Ready, then disconnect and reload. There must be one `offline.<sha256>.zip` request, no
-per-entry provisioning fanout, and no ZIP request on a normal first visit, refresh, or reopening
-a ready dialog. Normal page/catalog/prefetch requests are separate from provisioning. The
-existing `check:offline` exercises real navigation, a Starter, desk and recorded audio offline.
-
-Check: `cd web && npx vitest run src/offline src/firstLoad.test.ts`. The real offline run is
-`npm run check:offline -- --dist <scratch build>` (3 to 6 minutes, through `npm run heavy --`).
+Checks: `npx vitest run src/offline scripts/offlineManifest.test.ts test/offlineArchiveFlow.test.ts
+test/siteWorkerArchive.test.ts test/siteWorker.test.ts src/firstLoad.test.ts` from `web/`.
+Fake Cache/fetch tests cover secret inventory exclusion, tier selection/removal, integrity,
+resume, changed-file reuse, failure preservation, eviction and concurrency. The browser check
+is `npm run check:offline -- --dist <scratch production build>`: Core-only cold start, then
+all tiers, a Starter, desk, recorded phone and tour voice. It also checks that no offline ZIP
+is requested. Browser layout, light/dark accessibility, cancellation during transfer, worker
+updates and real storage eviction still need live checks. Hardware flashing needs a board.

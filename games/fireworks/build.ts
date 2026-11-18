@@ -36,9 +36,9 @@ const monsters = buildMonsterBlocks(pal);
 const hero = heroPicture(heroBlocks, 'stand.top', 'stand');
 const cheer = heroPicture(heroBlocks, 'cheer.top', 'jump');
 
-// the game's shared data: one block set, one palette, one hero, one set of monsters, one song
+// Each level has its own sign book; palette, hero, monsters and song are shared.
 disk.put('fw.pal', serializePalette(pal.pal));
-disk.put('fw.bbl', serializeBlocks(finishBlocks(book)));
+for (const level of levels) disk.put(`${level.file}.bbl`, serializeBlocks(finishBlocks(level.book)));
 disk.put('fw.mbl', serializeBlocks(monsters.book.finish()));
 disk.put('fw.mon', serializeMonsters(buildMonsters(monsters.book, monsters.frames)));
 disk.put('hero.cbl', serializeBlocks(heroBlocks.finish()));

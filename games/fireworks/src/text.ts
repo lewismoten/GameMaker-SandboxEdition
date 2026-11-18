@@ -22,7 +22,7 @@ export const HOWTO = wrap(`
 
 Walk along the field to the door at the end. Look up as you go: the fireworks are the lesson.
 
-Level 1 has two launchers. Level 2 is a big show over a sleeping town. Nothing here can hurt you.
+Level 1 has two launchers. Level 2 is a big show over a sleeping town. Nine monsters in step make one big burst. Nothing here can hurt you.
 
 |ESC for the menu.
 `);
@@ -33,6 +33,8 @@ export const CREDITS = withCreditPage(
 |(c) 1994 Sandbox Software
 
 Design, pixels, beeps, music and levels by Claude Opus 5.5, an AI model made by Anthropic.
+
+Micro plaques by OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten.
 
 Made with GAME-MAKER 3.0 from Recreational Software Designs.
 

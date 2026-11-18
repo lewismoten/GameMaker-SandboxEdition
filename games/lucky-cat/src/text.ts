@@ -19,9 +19,11 @@ export const HOWTO = wrap(`
 |HOW TO PLAY
 
 |LEFT, RIGHT   walk
-|SPACE         jump
+|SPACE         hold to rise
 |UP, DOWN      climb a ladder
 |F2            lives, score
+
+Hold Space to jump higher; release to fall. Steer with Left and Right.
 
 Touch a lucky charm to take it. There are 13.
 
@@ -40,6 +42,8 @@ export const CREDITS = withCreditPage(
 |(c) 1994 Sandbox Software
 
 First made by Claude Sonnet 5.5. Redrawn as a woodcut, rewritten and rescored by Claude Opus 5.5. Seven more levels by Claude Sonnet 5.5. All three are AI models made by Anthropic.
+
+Held-rise jumping, crossing adjustments and bell meters by OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten.
 
 Made with GAME-MAKER 3.0 from Recreational Software Designs.
 

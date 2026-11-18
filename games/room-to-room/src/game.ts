@@ -40,6 +40,8 @@ export function buildGame(rooms: Room[]): Game {
 
   rooms.forEach((r, i) => {
     const scene = emptyScene(ADVTYPE);
+    // The hall needs vertical scrolling; the bedroom's arrival stays below its score board.
+    if (r.file !== 'hall' && r.file !== 'bedroom') scene.scroll.up = scene.scroll.down = 0;
     scene.desc = r.title.slice(0, 19);
     scene.pos = { x: 40 + (i % 4) * 80, y: 80 + Math.floor(i / 4) * 80 };
     const before = CARDS.find((c) => c.before === r.file);

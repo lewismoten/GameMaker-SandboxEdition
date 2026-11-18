@@ -16,22 +16,21 @@ import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
-import { addSign, type Sign } from '../../kit/starter/sign';
+import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
 import { BUBBLE, SLEEPER } from './monsters';
 
-export type SignName = 'life' | 'shrink' | 'wakes' | 'eyes' | 'exit';
+export type SignName = 'shrink' | 'eyes' | 'exit';
 
 /** The block set both levels share: the Starter blocks, then this game's signs. */
 function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
-  const signs = {
-    life: addSign(book, pal, 'life.sign', 'THIS BUBBLE POPS ON ITS OWN', 4, 2),
-    shrink: addSign(book, pal, 'shrink.sign', 'WATCH IT SHRINK', 3, 2),
-    wakes: addSign(book, pal, 'wakes.sign', 'THIS ONE WAKES UP AS ANOTHER', 4, 2),
-    eyes: addSign(book, pal, 'eyes.sign', 'WATCH ITS EYES', 3, 2),
-    exit: addSign(book, pal, 'exit.sign', 'EXIT →', 3),
-  };
+  const signs = addMicroPlaques(book, pal, {
+    shrink: { lines: ['LOOK'] },
+    eyes: { lines: ['LOOK'] },
+    exit: { lines: ['EXIT', '→'], post: false },
+  });
   return { book, signs };
 }
 
@@ -58,7 +57,9 @@ function base(width: number, exitX: number): Grid {
   const g = new Grid(width, 15);
   g.row(GROUND, 0, width - 1, 'G').fill(0, GROUND + 1, width, 4, 'D');
   g.col(0, 0, 9, 'B').col(width - 1, 0, 9, 'B');
-  g.put(ENTRANCE, 8, 's').put(ENTRANCE, 9, 'S');
+  // A narrow turf step supports the hero before walking down onto the path.
+  g.put(ENTRANCE, 8, 'G').put(ENTRANCE, 9, 'D');
+  g.put(ENTRANCE, 6, 's').put(ENTRANCE, 7, 'S');
   g.put(exitX, 8, 'e').put(exitX, 9, 'E');
   return g;
 }
@@ -98,9 +99,8 @@ function aBubble(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [23],
   );
   const m = new StarterMap(book, g.rows());
-  m.sign(1, onGround(GROUND, signs.life), signs.life);
-  m.sign(7, onGround(GROUND, signs.shrink), signs.shrink);
-  m.sign(20, onGround(GROUND, signs.exit), signs.exit);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 7, onGround(GROUND, signs.shrink), signs.shrink);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 20, onGround(GROUND, signs.exit), signs.exit);
   m.mon(BUBBLE, BUBBLE_X, STAND);
   return m;
 }
@@ -123,9 +123,8 @@ function wakeUp(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [25],
   );
   const m = new StarterMap(book, g.rows());
-  m.sign(1, onGround(GROUND, signs.wakes), signs.wakes);
-  m.sign(7, onGround(GROUND, signs.eyes), signs.eyes);
-  m.sign(22, onGround(GROUND, signs.exit), signs.exit);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 7, onGround(GROUND, signs.eyes), signs.eyes);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 22, onGround(GROUND, signs.exit), signs.exit);
   m.mon(SLEEPER, SLEEPER_X, STAND);
   return m;
 }

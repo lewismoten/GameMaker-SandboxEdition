@@ -31,6 +31,8 @@ export function buildGame(levels: Level[]): Game {
   levels.forEach((l, i) => {
     const scene = emptyScene(ADVTYPE);
     scene.desc = l.title.slice(0, 19);
+    // These short routes fit in the raised entrance's view; hops keep the same sky.
+    scene.scroll = { ...scene.scroll, up: 0, down: 0 };
     scene.pos = { x: 60 + i * 80, y: 110 };
     scene.files = [
       l.palFile,

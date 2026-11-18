@@ -1,4 +1,4 @@
-// CORNER VIEW's two levels. Each is one screen, 16 blocks by 10, that never scrolls. The whole room is painted
+// CORNER VIEW's three levels. Each is one screen, 16 blocks by 10, that never scrolls. The whole room is painted
 // as one 320x200 picture (iso.ts: a floor of diamonds, cubes with a top and two sides) and cut into 20x20 blocks;
 // cells that come out alike share one block. The game underneath is the plain top view of Gravity Off:
 // Lena walks on the square grid, the four arrows only, and every block's Gravity is none.
@@ -8,31 +8,23 @@
 //   3. The Diamond Floor: a room whose floor is a diamond. Here Lena walks only diagonally: each arrow walks one
 //      diagonal of the drawn floor (cornerHero.ts), so she goes the way the room is laid out. The room's edges are
 //      cubes in steps of two blocks across and one down, the same slope she walks, with dark blocks outside them.
-// Both rooms are closed in by cubes you can see, so Lena is never stopped by something she can't.
+// All three rooms are closed in by cubes you can see, so Lena is never stopped by something she can't.
 import { newMap, MLEN, type GameMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { Book, SOLID } from '../../kit/starter/book';
 import { ORIGIN, type Exit } from '../../kit/starter/map';
 import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
-import { addSign, type Sign } from '../../kit/starter/sign';
+import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
 import { cubeShades, floor, pad, tower } from './iso';
 
-export type SignName = 'floor' | 'cube' | 'square' | 'tall' | 'front' | 'lean' | 'upright' | 'downleft' | 'zig';
+export type SignName = 'upright' | 'downleft' | 'zig';
 
 export const COLS = 16;
 export const ROWS = 10;
-/** The sign boards' size in blocks (four across, three high) and where each level's signs stand: board top-left blocks. */
-const SIGN = { w: 4, h: 3 } as const;
-const WORDS: Record<SignName, string> = {
-  floor: 'DIAMOND FLOOR, SQUARE GRID',
-  cube: 'A CUBE IS ONE BLOCK: A TOP AND TWO SIDES',
-  square: 'ARROWS WALK THE SQUARES, NOT THE DIAMONDS',
-  tall: 'TALL TOWERS COVER THE BLOCKS ABOVE THEM',
-  front: 'LENA IS ALWAYS IN FRONT, NEVER BEHIND',
-  lean: 'EACH ARROW TAKES THE NEAREST SLANT',
-  upright: 'UP IS UPPER RIGHT. RIGHT IS LOWER RIGHT.',
-  downleft: 'DOWN IS LOWER LEFT. LEFT IS UPPER LEFT.',
-  zig: 'TAP TWO IN TURN FOR A LINE',
+const WORDS = {
+  upright: { lines: ['↑ ↗', '→ ↘'], post: false },
+  downleft: { lines: ['↓ ↙', '← ↖'], post: false },
+  zig: { lines: ['TAP TWO', 'IN TURN'], post: false },
 };
 
 /** A tower: the block it stands on (`row` is its lowest) and how many blocks tall its picture is (1, 2 or 3). */
@@ -93,20 +85,13 @@ export const STAIRS: Tower[] = [
 const SPECS: Spec[] = [
   {
     towers: [...ring, ...DIAGONAL],
-    signs: [
-      ['floor', 1, 1],
-      ['cube', 6, 1],
-      ['square', 1, 5],
-    ],
+    signs: [],
     start: START,
     exit: EXITS[0],
   },
   {
     towers: [...ring, ...STAIRS],
-    signs: [
-      ['tall', 9, 1],
-      ['front', 10, 5],
-    ],
+    signs: [],
     start: START,
     exit: EXITS[1],
   },
@@ -114,9 +99,8 @@ const SPECS: Spec[] = [
     towers: RING3,
     signs: [
       ['upright', 0, 0],
-      ['downleft', 12, 0],
-      ['lean', 0, 7],
-      ['zig', 12, 7],
+      ['downleft', 14, 0],
+      ['zig', 13, 7],
     ],
     start: START,
     exit: EXITS[2],
@@ -200,23 +184,31 @@ function build(pal: Pal, file: string, spec: Spec, title: string, hint: string):
   };
   const cells = Array.from({ length: ROWS }, (_, y) => Array.from({ length: COLS }, (_, x) => plain(cellOf(base, x, y), solid.has(`${x},${y}`))));
 
-  // the signs: the kit's boards and posts, with the floor showing where they are sky-colored
+  // Plaques hang in the dark corners, clear of every cube, pad and floor cell.
+  // The last hint floats over the dark margin, which has no ground for a post.
   const scratch = new Book('bbl');
+  const signs = spec.signs.length ? addMicroPlaques(scratch, pal, WORDS) : undefined;
   const sky = skyOf(pal);
   for (const [name, col, top] of spec.signs) {
-    const s: Sign = addSign(scratch, pal, name, WORDS[name], SIGN.w, SIGN.h);
-    const put = (src: string, x: number, y: number) => {
-      const pic = scratch.pics.get(src)!;
-      const under = cellOf(base, x, y);
-      cells[y][x] = plain(
-        under.crop(0, 0, 20, 20).map((px, py, c) => (pic.get(px, py) !== sky ? pic.get(px, py) : c)),
-        false,
-      );
-    };
-    s.board.forEach((row, dy) => row.forEach((n, dx) => put(n, col + dx, top + dy)));
-    if (spec.room) continue; // a sign in a dark corner hangs on the wall: no posts
-    put(s.legs[0], col, top + SIGN.h);
-    put(s.legs[1], col + SIGN.w - 1, top + SIGN.h);
+    stampTiledSign(
+      {
+        set: (x, y, src) => {
+          if (spec.room?.[y][x] || ringed.has(`${x},${y}`)) throw new Error(`Plaque covers room art at ${x},${y}`);
+          if (!book.has(src)) {
+            const pic = scratch.pics.get(src)!;
+            book.add(
+              src,
+              src.includes('.post') ? pic.crop(0, 0, 20, 20).map((_x, _y, c) => (c === sky ? dark : c)) : pic,
+              solid.has(`${x},${y}`) ? { solid: SOLID } : {},
+            );
+          }
+          cells[y][x] = src;
+        },
+      },
+      col,
+      top,
+      signs![name],
+    );
   }
   const map = new IsoMap(
     book,

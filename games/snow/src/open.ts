@@ -4,7 +4,6 @@
 import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { Book, SOLID } from '../../kit/starter/book';
 import { ORIGIN } from '../../kit/starter/map';
-import { addOverSign } from '../../overhead/src/blocks';
 import { OverMap } from '../../overhead/src/overMap';
 import type { Pal } from '../../kit/starter/palette';
 import type { Level } from './levels';
@@ -166,18 +165,11 @@ export function openLevel(pal: Pal): Level {
     p.disc(13, 10, 1.4, c('gold', 5));
     book.add('gate', p);
   }
-  const signs = [
-    addOverSign(book, pal, snow, 'lessonA', 'WALK ANY WAY AND LEAVE PRINTS', 4, 3),
-    addOverSign(book, pal, snow, 'lessonB', 'PRINTS FADE IN A FEW SECONDS', 4, 3),
-    addOverSign(book, pal, snow, 'lessonC', 'WALK AROUND THE SNOWMAN', 4, 3),
-  ];
   const map = new OverMap(book, rows, { '.': 'snow', T: 'pine', R: 'rock', P: 'pine2', H: 'snowman-head', B: 'snowman-body', F: 'fence', g: 'gate' }, 'pine');
   // the woods around the field: pines in three looks, so no row of them repeats exactly
   for (let y = -8; y < OPEN_H + 8; y++)
     for (let x = -10; x < OPEN_W + 10; x++)
       if (y < 0 || y >= OPEN_H || x < 0 || x >= OPEN_W) map.set(x, y, ['pine', 'pine2', 'pine3'][(((x * 5 + y * 3 + ((x * y) & 3)) % 3) + 3) % 3]);
-  // the first sign stands by the start so the goal is seen before the how; the second beside the way back east
-  map.sign(3, 4, signs[0]).sign(18, 8, signs[1]).sign(6, 10, signs[2]);
   return {
     file: 'three',
     title: 'Open Snow',

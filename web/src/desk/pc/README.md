@@ -13,8 +13,8 @@ Entry points: `desk/deskPc.ts` switches the PC on and off and loads these; `desk
 
 Each `.ts` with a `.css` of the same name owns that style.
 
-Must not: be imported from outside `desk/` except through the dynamic load of `desk/desk.ts` (the desk is its own chunk), and never from `dos.html` or `retro/` (`dosPage/boundary.test.ts`).
+Must not: be reached from `dos.html`'s page or the PC core, `retro/computer.ts` (`dosPage/boundary.test.ts`); nothing in `retro/` imports it. The desk loads it through `desk/desk.ts`, its own chunk, which `main.ts` imports dynamically. Outside `desk/`, TURBO BUTTON uses two of these modules: `manual/magazine/art.ts` imports `gamePadArt.ts` statically, and `manual/magazine/goRun.ts` imports `padChooser.ts` dynamically.
 
-Tests: `bootSounds.test.ts`, `cdTray.test.ts`, `driveSounds.test.ts`, `machineSettings.test.ts`, `keyStrip.test.ts`, `padChoice.test.ts`.
+Tests: `bootSounds.test.ts`, `cdTray.test.ts`, `driveSounds.test.ts`, `machineSettings.test.ts`, `keyStrip.test.ts`, `padChoice.test.ts`; `web/test/keyCardRows.test.ts` tests `keyCardRows.ts` from outside.
 
 Check: `cd web && npx vitest run src/desk/pc`; then look at the desk at 1440 and 390 wide, light and dark.

@@ -9,9 +9,19 @@ import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
-import { addSign, type Sign } from '../../kit/starter/sign';
+import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { addMicroPlaques, stampTiledSign, stampMicroPlaques } from '../../kit/starter/microPlaque';
 import { addAwning, addCash, addSold, addStall, stallName } from '../../kit/starter/shop';
 import { addGoldBlocks } from './lockBlocks';
+
+const WORDS = {
+  money: { lines: ['TRY', 'F2'] },
+  cost: { lines: ['KEY', '3¢'], post: false },
+  five: { lines: ['KEY', '5¢'], post: false },
+  getFive: { lines: ['GET', '5'], post: false },
+  exact: { lines: ['JUST', 'ENOUGH'] },
+  exit: { lines: ['EXIT', '→'], post: false },
+};
 
 export function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
   const book = new Book('bbl');
@@ -23,20 +33,11 @@ export function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sig
   addStall(book, pal, 'key', 3);
   addAwning(book, pal, 5);
   addStall(book, pal, 'key', 5);
-  const signs = {
-    money: addSign(book, pal, 'money', 'COINS ARE MONEY. F2 SHOWS HOW MUCH', 4, 4),
-    cost: addSign(book, pal, 'cost', 'THE KEY COSTS 3 COINS', 4, 3),
-    paid: addSign(book, pal, 'paid', 'PAYING TAKES 3 COINS. THE REST STAY WITH YOU', 4, 4),
-    door: addSign(book, pal, 'door', 'THE KEY OPENS THE DOOR', 4, 3),
-    carry: addSign(book, pal, 'carry', 'COINS LEFT OVER COME TOO', 4, 3),
-    five: addSign(book, pal, 'five', 'THE KEY COSTS 5 COINS. TAKE ALL 5', 4, 4),
-    exact: addSign(book, pal, 'exact', 'EXACTLY ENOUGH IS ENOUGH', 4, 3),
-    exit: addSign(book, pal, 'exit', 'EXIT →', 3),
-  };
+  const signs = addMicroPlaques(book, pal, WORDS) as Record<SignName, Sign>;
   return { book, signs };
 }
 
-export type SignName = 'money' | 'cost' | 'paid' | 'door' | 'carry' | 'five' | 'exact' | 'exit';
+export type SignName = keyof typeof WORDS;
 
 export interface Level {
   file: string;
@@ -62,7 +63,9 @@ function frame(width: number, exitX: number): { g: Grid; GROUND: number } {
   const GROUND = 10;
   g.row(GROUND, 0, width - 1, 'G').fill(0, GROUND + 1, width, 4, 'D');
   g.col(0, 0, 9, 'X').col(width - 1, 0, 9, 'X');
-  g.put(3, 8, 's').put(3, 9, 'S');
+  // A two-row turf step supports Kit at the raised entrance, clear of the signs.
+  g.put(3, 8, 'G').put(3, 9, 'D');
+  g.put(3, 6, 's').put(3, 7, 'S');
   g.put(exitX, 8, 'e').put(exitX, 9, 'E');
   return { g, GROUND };
 }
@@ -91,11 +94,9 @@ function keyFor3(book: Book, signs: Record<SignName, Sign>): StarterMap {
   for (const x of [13, 31, 44]) g.put(x, GROUND - 1, 'f');
   const m = cash(new StarterMap(book, g.rows()), g.rows());
   m.set(16, GROUND - 1, stallName('key', 3)).set(16, GROUND - 2, 'awning3');
-  m.sign(5, onGround(GROUND, signs.money), signs.money);
-  m.sign(11, onGround(GROUND, signs.cost), signs.cost);
-  m.sign(27, onGround(GROUND, signs.paid), signs.paid);
-  m.sign(35, onGround(GROUND, signs.door), signs.door);
-  m.sign(40, onGround(GROUND, signs.exit), signs.exit);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 4, onGround(GROUND, signs.money), signs.money);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 10, onGround(GROUND, signs.cost), signs.cost);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 40, 7, signs.exit, 2);
   return m;
 }
 
@@ -114,10 +115,9 @@ function saveUp(book: Book, signs: Record<SignName, Sign>): StarterMap {
   for (const x of [12, 29, 44]) g.put(x, GROUND - 1, 'f');
   const m = cash(new StarterMap(book, g.rows()), g.rows());
   m.set(25, GROUND - 1, stallName('key', 5)).set(25, GROUND - 2, 'awning5');
-  m.sign(4, onGround(GROUND, signs.carry), signs.carry);
-  m.sign(21, onGround(GROUND, signs.five), signs.five);
-  m.sign(27, onGround(GROUND, signs.exact), signs.exact);
-  m.sign(40, onGround(GROUND, signs.exit), signs.exit);
+  stampMicroPlaques({ set: m.setOnSky.bind(m) }, 6, 7, [signs.five, signs.getFive], 0);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 23, onGround(GROUND, signs.exact), signs.exact);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 40, 7, signs.exit, 2);
   return m;
 }
 

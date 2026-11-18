@@ -12,3 +12,42 @@
 .offline-copy .offline-note {
   font-weight: 600;
 }
+.offline-copy .offline-tiers {
+  display: grid;
+  gap: 2px;
+  padding: 4px 8px;
+}
+/* dialog.modal sets labels to a column; a tier is one row: its box, then its name. */
+dialog.modal .offline-copy label {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  min-height: 24px;
+  font-size: 0.85rem;
+  text-align: start;
+}
+/* The checkbox sits beside its tier name, not stretched above it by the dialog's input rule. */
+.offline-copy label input[type='checkbox'] {
+  flex: none;
+  width: auto;
+  margin: 0;
+}
+
+/* Keep all tier names and sizes visible on a wide, short phone. */
+@media (min-width: 600px) and (max-height: 500px) {
+  dialog.modal:has(.offline-copy) {
+    width: min(780px, calc(100vw - 16px));
+  }
+  .offline-copy {
+    max-width: 44rem;
+  }
+  .offline-copy .offline-tiers {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 16px;
+  }
+  .offline-copy p {
+    margin-block: 4px;
+  }
+}

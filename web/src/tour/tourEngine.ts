@@ -7,6 +7,7 @@
 // page (the DOS page, dos.html) carries the tour on there with a full page load (handOff).
 // While a tour plays, the page hears 'gm-tour' events ('start', 'end'): the desk makes room for
 // the caption bar, and achievement notes wait until it ends.
+import { availableOffline } from '../offline/availability';
 import './tour.css';
 import { h } from '../editor/core/ui';
 import { Actor, loadSprites } from './actor';
@@ -298,6 +299,15 @@ export class Tour {
     if (!this.live(token)) return;
     this.clearBar(target);
     this.caption.textContent = captionOf(chapter, step);
+    const clip = this.clipUrl(chapter, step);
+    if (clip && !(await availableOffline(clip))) {
+      if (!this.live(token)) return;
+      this.soundBtn.title = 'Spoken tour: Not in your offline copy';
+      this.soundBtn.textContent = 'No voice offline';
+    } else {
+      this.soundBtn.removeAttribute('title');
+      this.showSound();
+    }
     // the clip starts with the bubble (after the hosts have walked), never before it
     let voice: Promise<number> = Promise.resolve(0);
     const speak = () => (voice = this.sound.speak(this.clipUrl(chapter, step)));

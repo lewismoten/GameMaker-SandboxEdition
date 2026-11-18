@@ -14,6 +14,7 @@
 //
 // Linux asks nothing about signatures; some file managers need "Allow executing file as
 // program" ticked (or "Run" chosen) for play.sh.
+import { requireOfflineFile } from '../offline/availability';
 import { drawIcon, encodeRgbaPng, type IconColors } from './macIcon';
 import { shrink } from './winIcon';
 import { createTarGz, type TarEntry } from '@lewismoten/gamemaker-sandbox-tools/kit/tar';
@@ -215,6 +216,7 @@ export async function linuxTarGz(o: LinuxAppOptions, date?: Date): Promise<Uint8
 /** The player programs, from where the web app is served. */
 export async function fetchLinuxPlayers(appBase = new URL('./', location.href).href): Promise<Record<LinuxArch, Uint8Array>> {
   const get = async (a: LinuxArch) => {
+    await requireOfflineFile(new URL(LINUX_PLAYER_PATHS[a], appBase).href);
     const res = await fetch(new URL(LINUX_PLAYER_PATHS[a], appBase)).catch(() => undefined);
     if (!res?.ok) throw new Error('Could not load the Linux player. Reload Game-Maker: Sandbox Edition while online and try again.');
     return new Uint8Array(await res.arrayBuffer());

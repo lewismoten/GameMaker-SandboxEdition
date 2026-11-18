@@ -12,16 +12,16 @@
 //      door: the one key pays for both (1 and 2).
 //   3. Keys Add Up: a gold door costs 3. The bronze key (1) alone does nothing, silver (2) is one
 //      short, and the two together are enough.
-import { Book, PULL } from '../../kit/starter/book';
+import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
-import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
-import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { MICRO_GLYPHS } from '@lewismoten/gamemaker-sandbox-tools/microFont';
+import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
+import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
 import { addLadderBlocks, type Grade } from './ladderBlocks';
 
-export type SignName = 'bronzeKey' | 'silverKey' | 'silverDoor' | 'change' | 'goldKey' | 'stronger' | 'goldDoor' | 'adds' | 'exit';
+export type SignName = 'bronzeKey' | 'silverKey' | 'silverDoor' | 'goldKey' | 'goldDoor' | 'adds' | 'exit';
 
 /** The block set the levels share: the Starter blocks, the keys and doors, then this game's signs. */
 export function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
@@ -29,33 +29,15 @@ export function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sig
   addStarterBlocks(book, pal);
   addLadderBlocks(book, pal);
   // Share centered lettering, borders and posts across every level's vocabulary.
-  const { blocks, signs } = buildTiledSigns(
-    {
-      bronzeKey: { rows: [['BRONZE'], ['KEY:'], ['WORTH 1']], maxWidth: 5 },
-      silverKey: { rows: [['SILVER'], ['KEY:'], ['WORTH 2']], maxWidth: 5 },
-      silverDoor: { rows: [['SILVER'], ['DOOR'], ['COSTS 2']], maxWidth: 5 },
-      change: { rows: [['THE CHANGE STAYS'], ['WITH YOU']], maxWidth: 7 },
-      goldKey: { rows: [['GOLD KEY:'], ['WORTH 3']], maxWidth: 5 },
-      stronger: { rows: [['A STRONGER'], ['KEY OPENS'], ['WEAKER DOORS']], maxWidth: 7 },
-      goldDoor: { rows: [['GOLD DOOR'], ['COSTS 3']], maxWidth: 5 },
-      adds: { rows: [['BRONZE +'], ['SILVER = GOLD']], maxWidth: 7 },
-      exit: { rows: [['EXIT →']], maxWidth: 5 },
-    },
-    {
-      colors: {
-        background: skyOf(pal),
-        paper: pal.c('parch', 3),
-        ink: pal.c('ink', 0),
-        wood: pal.c('wood', 2),
-        highlight: pal.c('wood', 4),
-        shadow: pal.c('wood', 0),
-      },
-      glyphs: { ...MICRO_GLYPHS, '←': '001011111011001', '→': '100110111110100' },
-      lettersPerBlock: 3,
-      maxBlocks: Math.min(100, 150 - book.index.size),
-    },
-  );
-  for (const [name, pic] of blocks) book.add(name, pic, { grav: PULL.down });
+  const signs = addMicroPlaques(book, pal, {
+    bronzeKey: { lines: ['BRONZE', '= 1'], post: false },
+    silverKey: { lines: ['SILVER', '= 2'], post: false },
+    silverDoor: { lines: ['SILVER', 'DOOR: 2'], post: false },
+    goldKey: { lines: ['GOLD', '= 3'], post: false },
+    goldDoor: { lines: ['GOLD', 'DOOR: 3'], post: false },
+    adds: { lines: ['1+2', '= 3'] },
+    exit: { lines: ['EXIT', '→'], post: false },
+  });
   return { book, signs };
 }
 
@@ -88,7 +70,9 @@ function base(width: number, exitX: number): Grid {
   const g = new Grid(width, 15);
   g.row(GROUND, 0, width - 1, 'G').fill(0, GROUND + 1, width, 4, 'D');
   g.col(0, 0, 9, 'X').col(width - 1, 0, 9, 'X');
-  g.put(3, 8, 's').put(3, 9, 'S');
+  // Three rows of turf and dirt frame both the ground and the upper keys in one view.
+  g.put(3, 7, 'G').put(3, 8, 'D').put(3, 9, 'D');
+  g.put(3, 5, 's').put(3, 6, 'S');
   g.put(exitX, 8, 'e').put(exitX, 9, 'E');
   return g;
 }
@@ -132,7 +116,6 @@ function smallKeyBigDoor(book: Book, signs: Record<SignName, Sign>): StarterMap 
   stampTiledSign(signMap, 4, onGround(GROUND, signs.bronzeKey), signs.bronzeKey);
   stampTiledSign(signMap, 9, onGround(GROUND, signs.silverKey), signs.silverKey);
   stampTiledSign(signMap, 22, onGround(GROUND, signs.silverDoor), signs.silverDoor);
-  stampTiledSign(signMap, 29, onGround(GROUND, signs.change), signs.change);
   stampTiledSign(signMap, 38, onGround(GROUND, signs.exit), signs.exit);
   return m;
 }
@@ -160,9 +143,8 @@ function oneGoldKey(book: Book, signs: Record<SignName, Sign>): StarterMap {
   m.set(15, 2, 'key_gold');
   door(m, 25, 'bronze');
   door(m, 35, 'silver');
-  // Raise the board above the entrance and keep its post left of the ladder.
-  stampTiledSign(signMap, 2, 5, signs.goldKey, 3);
-  stampTiledSign(signMap, 17, onGround(GROUND, signs.stronger), signs.stronger);
+  // Keep the board above the raised entrance, with its post left of the ladder.
+  stampTiledSign(signMap, 3, 2, signs.goldKey, GROUND - 2 - signs.goldKey.board.length);
   // The taller post clears the flower and keeps the board above the exit door.
   stampTiledSign(signMap, 40, 7, signs.exit, 2);
   return m;
@@ -190,7 +172,7 @@ function keysAddUp(book: Book, signs: Record<SignName, Sign>): StarterMap {
   m.set(9, 9, 'key_bronze').set(20, 2, 'key_silver');
   door(m, 30, 'gold');
   stampTiledSign(signMap, 18, onGround(GROUND, signs.goldDoor), signs.goldDoor);
-  stampTiledSign(signMap, 23, onGround(GROUND, signs.adds), signs.adds);
+  stampTiledSign(signMap, 10, onGround(GROUND, signs.adds), signs.adds);
   stampTiledSign(signMap, 38, onGround(GROUND, signs.exit), signs.exit);
   return m;
 }

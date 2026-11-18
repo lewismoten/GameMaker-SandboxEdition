@@ -107,7 +107,17 @@ function flower(pal: Pal): Pixels {
 
 /** Adds the ground, clouds, bush and flower, under the names the map letters use (G, D, ( ), b, f). */
 export function addPencilScenery(book: Book, pal: Pal): void {
+  const { c } = pal;
   const air = { grav: PULL.down };
+  // Reuse the kit's solid brick slot: dense crossed-out pencil strokes on the sheet.
+  // No new tiles or collision rules, and no masonry pattern around any gate.
+  const scribble = new Pixels(20, 20, skyOf(pal));
+  for (let y = 0; y < 20; y++)
+    for (let x = 0; x < 20; x++) {
+      if ((x + y) % 7 < 2) scribble.set(x, y, c('stone', hash(x, y) % 5 === 0 ? 2 : 1));
+      if ((x - y + 20) % 9 === 0) scribble.set(x, y, c('stone', 0));
+    }
+  book.redraw('brick', scribble);
   book.add('grass', grassTile(pal), { solid: SOLID });
   book.add('dirt', dirtTile(pal), { solid: SOLID });
   const k = cloud(pal);

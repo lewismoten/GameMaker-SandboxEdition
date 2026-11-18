@@ -47,7 +47,7 @@ for (const hour of ['day', 'dusk', 'night'] as const) disk.put(`${hour}.pal`, se
 disk.put('dn.mbl', serializeBlocks(monsterBlocks.finish()));
 disk.put('dn.mon', serializeMonsters(buildMonsters(monsterBlocks)));
 disk.put('hero.cbl', serializeBlocks(heroBlocks.finish()));
-const heroChar = buildHero(heroBlocks);
+const heroChar = buildHero(heroBlocks, { heldRise: { push: 12 } });
 heroChar.meter[KEYS] = INF_REPEAT; // no keys in this game
 heroChar.meter[0] = HERO_HIT_POINTS; // nothing here takes any
 heroChar.meter[1] = HERO_LIVES;

@@ -1,0 +1,14 @@
+{
+  "levels": [
+    {
+      "scene": 2,
+      "teaches": "P picks up three crates; D puts them down to build a stair",
+      "rules": [{"rule": "uses", "move": "P", "min": 3}, {"rule": "uses", "move": "D", "min": 3}, {"rule": "before", "a": "key:P", "b": "key:D"}, {"rule": "needs", "move": "P"}]
+    },
+    {
+      "scene": 3,
+      "teaches": "pick up the flame and star, then put the flame down to throw the star",
+      "rules": [{"rule": "uses", "move": "P", "min": 3}, {"rule": "uses", "move": "D", "min": 1}, {"rule": "uses", "move": "Enter", "min": 3}, {"rule": "before", "a": "key:P", "b": "key:D"}]
+    }
+  ]
+}

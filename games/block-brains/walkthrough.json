@@ -8,11 +8,11 @@
  "segments": [
   {
    "scene": 2,
-   "keys": "AU0PzTBNFM2LAU0ezTBNGc0DTQHNAEsGywNNFM0DTQrNA00UzQNNCs0DTRTNA00UzQNN"
+   "keys": "AU0NzTBNFM2LAU0ezTBNGc0DTQHNAEsGywNNFM0DTQrNA00UzQNNCs0DTRTNA00UzQNN"
   },
   {
    "scene": 3,
-   "keys": "AU0PzTBNGc15TQrNME0FzQNNFM0DTQ/NA00BzQBLBssDTRTNA00KzQNNFM0DTQrNCk0UzQNNFM0DTQ=="
+   "keys": "AU0NzTBNGc15TQrNME0FzQNNFM0DTQ/NA00BzQBLBcsDTRTNA00KzQRNFM0DTQrNDE0UzQNNFM0DTQ=="
   }
  ],
  "chapters": [
@@ -27,7 +27,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 9248,
+  "frames": 9723,
   "chapters": [
    {
     "title": "Opening",
@@ -46,18 +46,18 @@
    },
    {
     "title": "Out of Step",
-    "frame": 3581,
-    "time": 59683.333333330374
+    "frame": 3575,
+    "time": 59583.33333333039
    },
    {
     "title": "Ending",
-    "frame": 5486,
-    "time": 91433.33333333705
+    "frame": 5480,
+    "time": 91333.33333333702
    },
    {
     "title": "Credits",
-    "frame": 8174,
-    "time": 136233.3333333456
+    "frame": 8168,
+    "time": 136133.33333334565
    }
   ]
  }

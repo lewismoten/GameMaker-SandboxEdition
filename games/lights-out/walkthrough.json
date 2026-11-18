@@ -8,15 +8,15 @@
  "segments": [
   {
    "scene": 2,
-   "keys": "FU0ZzStNGc0DTSjNK00jzQNNDTkCuSHNK00="
+   "keys": "FU0XzStNGc0DTSjNK00jzQNNDTkIuSHNK00="
   },
   {
    "scene": 3,
-   "keys": "FU0ZzStNKM0DOQK5FU0ezStNQc0rTQ=="
+   "keys": "FU0XzStNKM0DOQi5CU0ezStNQc0rTQ=="
   },
   {
    "scene": 4,
-   "keys": "0QFNGc0DTUHNK00IOQK5"
+   "keys": "0QFNF80DTUHNK00IOQi5"
   }
  ],
  "chapters": [
@@ -35,7 +35,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 10306,
+  "frames": 10787,
   "chapters": [
    {
     "title": "Opening",
@@ -54,13 +54,13 @@
    },
    {
     "title": "Level 2: Light Your Way",
-    "frame": 3707,
-    "time": 61783.33333333007
+    "frame": 3721,
+    "time": 62016.66666666337
    },
    {
     "title": "Level 3: The Lights Come On",
-    "frame": 5263,
-    "time": 87716.6666666693
+    "frame": 5250,
+    "time": 87500.00000000258
    },
    {
     "title": "Ending",

@@ -9,46 +9,29 @@
 //      two hits. After the first a part blinks red for about two seconds, and a star goes straight
 //      through it; then it is cracked and the second hit pops it.
 // Both rooms are closed in by brick walls you can see, so Rima is never stopped by something she can't.
-import { MICRO_GLYPHS } from '@lewismoten/gamemaker-sandbox-tools/microFont';
-import { Book, PULL } from '../../kit/starter/book';
+import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
-import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
-import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
+import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
 import { addCeiling } from './ceilingArt';
 import { FRESH, ROCKY } from './monsters';
 
-export type SignName = 'four' | 'head' | 'ouch' | 'wait' | 'exit';
+export type SignName = 'head' | 'wait' | 'exit';
+
+const WORDS: Record<SignName, { lines: string[]; post?: boolean }> = {
+  head: { lines: ['STEP', 'UP'] },
+  wait: { lines: ['WAIT'] },
+  exit: { lines: ['EXIT', '→'], post: false },
+};
 
 /** The block set both levels share: the Starter blocks, this game's signs, then the tunnel ceiling. */
 function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
-  const { blocks, signs } = buildTiledSigns(
-    {
-      four: { rows: [['THE GIANT IS 4 MONSTERS']] },
-      head: { rows: [['STAND ON THE STEP FOR ITS HEAD']] },
-      ouch: { rows: [['A HIT PART BLINKS RED']] },
-      wait: { rows: [['WAIT FOR IT TO STOP']] },
-      exit: { rows: [['EXIT →']] },
-    },
-    {
-      compact: true,
-      glyphs: { ...MICRO_GLYPHS, '→': '100110111110100' },
-      maxWidth: 5,
-      maxBlocks: Math.min(100, 150 - book.index.size),
-      colors: {
-        background: skyOf(pal),
-        paper: pal.c('parch', 3),
-        ink: pal.c('ink', 0),
-        wood: pal.c('wood', 2),
-        highlight: pal.c('wood', 4),
-        shadow: pal.c('wood', 0),
-      },
-    },
-  );
-  for (const [name, pic] of blocks) book.add(name, pic, { grav: PULL.down });
+  const signs = addMicroPlaques(book, pal, WORDS) as Record<SignName, Sign>;
   addCeiling(book, pal);
   return { book, signs };
 }
@@ -140,9 +123,8 @@ function theGiant(book: Book, signs: Record<SignName, Sign>): StarterMap {
   );
   const m = new StarterMap(book, g.rows());
   ceiling(m, WALL[0]);
-  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 6, onGround(GROUND, signs.four), signs.four);
-  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 11, onGround(GROUND, signs.head), signs.head);
-  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 36, onGround(GROUND, signs.exit), signs.exit);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 12, onGround(GROUND, signs.head), signs.head);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 37, onGround(GROUND, signs.exit), signs.exit);
   giant(m, GIANT_X[0], ROCKY);
   return m;
 }
@@ -160,14 +142,13 @@ function ouchWait(book: Book, signs: Record<SignName, Sign>): StarterMap {
       [32, 3],
       [40, 1],
     ],
-    [10, 36],
+    [10, 37],
     [8, 31, 41],
   );
   const m = new StarterMap(book, g.rows());
   ceiling(m, WALL[1]);
-  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 5, onGround(GROUND, signs.ouch), signs.ouch);
   stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 11, onGround(GROUND, signs.wait), signs.wait);
-  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 37, onGround(GROUND, signs.exit), signs.exit);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 34, onGround(GROUND, signs.exit), signs.exit);
   giant(m, GIANT_X[1], FRESH);
   return m;
 }

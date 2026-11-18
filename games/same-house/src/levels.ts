@@ -15,7 +15,8 @@ import { Grid } from '../../kit/starter/grid';
 import { ORIGIN, StarterMap } from '../../kit/starter/map';
 import { skyOf, type Pal } from '../../kit/starter/palette';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
-import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { addMicroPlaques, stampTiledSign, stampMicroPlaques } from '../../kit/starter/microPlaque';
 import { PAL_NAMES, buildPalettes, type PalName, type Palettes } from './palettes';
 import { banner, cap, carpet, frontWindow, lamp, merlon, painting, plate, roofTile, siding, slab, slit, sofa, towerWall, wallpaper, windowIn } from './props';
 
@@ -63,36 +64,23 @@ const COINS_TOWER: [number, number][] = [
   [16, 9],
 ];
 
-type SignName = 'one' | 'last' | 'inside' | 'wood' | 'ice' | 'lava' | 'three' | 'room';
-// All four places draw from the same vocabulary; each block file keeps only its signs.
 const SIGNS = {
-  one: { rows: [['THREE DOORS,'], ['ONE HOUSE MAP,'], ['THREE PALETTES']] },
-  last: { rows: [['THE LAST DOOR'], ['GOES ON']] },
-  inside: { rows: [['SAME MAP. NEW CARPET, PAPER, ROOF']] },
-  wood: { rows: [['WOOD ROOM']] },
-  ice: { rows: [['ICE ROOM']] },
-  lava: { rows: [['LAVA ROOM']] },
-  three: { rows: [['ONE ROOM MAP,'], ['THREE PLACES']] },
-  room: { rows: [['SAME ROOM. A NEW PLACE']] },
+  one: { lines: ['PICK', 'DOOR'] },
+  last: { lines: ['LAST', 'DOOR'] },
+  inside: { lines: ['SAME', 'MAP'] },
+  newlook: { lines: ['NEW', 'LOOK'] },
+  wood: { lines: ['WOOD', 'ROOM'], post: false },
+  ice: { lines: ['ICE', 'ROOM'], post: false },
+  lava: { lines: ['LAVA', 'ROOM'], post: false },
+  three: { lines: ['SAME', 'MAP'] },
+  room: { lines: ['SAME', 'ROOM'] },
 };
+type SignName = keyof typeof SIGNS;
 
 function startBook<K extends SignName>(pal: Pal, include: K[]): { book: Book; signs: Record<K, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
-  const { blocks, signs } = buildTiledSigns<SignName, K>(SIGNS, {
-    include,
-    colors: {
-      background: skyOf(pal),
-      paper: pal.c('parch', 3),
-      ink: pal.c('ink', 0),
-      wood: pal.c('wood', 2),
-      highlight: pal.c('wood', 4),
-      shadow: pal.c('wood', 0),
-    },
-    lettersPerBlock: 3,
-    maxBlocks: Math.min(100, 150 - book.index.size),
-  });
-  for (const [name, pic] of blocks) book.add(name, pic, { grav: PULL.down });
+  const signs = addMicroPlaques(book, pal, Object.fromEntries(include.map((name) => [name, SIGNS[name]]))) as Record<K, Sign>;
   return { book, signs };
 }
 
@@ -107,8 +95,8 @@ function onWall(pal: Pal, pic: Pixels, bg: Pixels): Pixels {
 }
 
 /** Interior signs may replace only the wall, leaving furniture, pictures and coins intact. */
-function wallSign(map: StarterMap, book: Book, wall: string, x: number, y: number, sign: Sign, postHeight = 1): void {
-  stampTiledSign(
+function wallSign(map: StarterMap, book: Book, wall: string, x: number, y: number, signs: Sign[], postHeight = 1): void {
+  stampMicroPlaques(
     {
       set: (col, row, block) => {
         if (map.map.blocks[(row + ORIGIN) * 100 + col + ORIGIN] !== book.n(wall)) throw new Error(`Sign would cover interior art at ${col},${row}`);
@@ -117,7 +105,7 @@ function wallSign(map: StarterMap, book: Book, wall: string, x: number, y: numbe
     },
     x,
     y,
-    sign,
+    signs,
     postHeight,
   );
 }
@@ -145,7 +133,9 @@ function street(pal: Pal): Level['hub'] {
   const g = new Grid(W, 15);
   g.row(GROUND, 0, W - 1, 'G').fill(0, GROUND + 1, W, 4, 'D');
   g.col(0, 0, 9, 'B').col(W - 1, 0, 9, 'B');
-  g.put(1, 8, 's').put(1, 9, 'S');
+  // A turf doorstep at the outside entrance leaves the house fronts and labels clear.
+  g.put(1, 8, 'G').put(1, 9, 'D');
+  g.put(1, 6, 's').put(1, 7, 'S');
   for (const [x, y] of [
     [4, 3],
     [20, 2],
@@ -189,12 +179,12 @@ function street(pal: Pal): Level['hub'] {
 
 /** Level 1's room: a house cut in half, so you see the roof, the wallpaper, the carpet and the curtains. */
 function house(pal: Pal): Level['room'] {
-  const { book, signs } = startBook(pal, ['inside']);
+  const { book, signs } = startBook(pal, ['inside', 'newlook']);
   book.add('wallpaper', wallpaper(pal), air);
   const wp = book.pics.get('wallpaper')!;
   addInside(book, pal, 'wallpaper');
   const inside = signs.inside;
-  for (const [name, pic] of book.pics) if (name.startsWith('tiledSign.')) book.redraw(name, onWall(pal, pic, wp));
+  for (const [name, pic] of book.pics) if (name.startsWith('microPlaque.')) book.redraw(name, onWall(pal, pic, wp));
   book.add('carpet', carpet(pal), { solid: SOLID });
   book.add('roof', roofTile(pal), { solid: SOLID });
   book.add('window', windowIn(pal, wp), air);
@@ -224,8 +214,8 @@ function house(pal: Pal): Level['room'] {
   for (const [y, a, b] of rows) for (let x = a; x <= b; x++) m.set(x, y, 'roof');
   m.set(11, 6, 'window').set(15, 6, 'window').set(13, 6, 'painting');
   m.set(12, 9, 'sofa.l').set(13, 9, 'sofa.r');
-  // Below the pictures; the centered post clears both the sofa and all four coins.
-  wallSign(m, book, 'wallpaper', 5, 7, inside, 2);
+  // Two plaques share one wall-matched post, before the coins and furniture.
+  wallSign(m, book, 'wallpaper', 7, 7, [inside, signs.newlook]);
   return {
     file: 'house',
     map: m,
@@ -244,7 +234,9 @@ function plaza(pal: Pal): Level['hub'] {
   const g = new Grid(W, 15);
   g.row(GROUND, 0, W - 1, 'G').fill(0, GROUND + 1, W, 4, 'D');
   g.col(0, 0, 9, 'B').col(W - 1, 0, 9, 'B');
-  g.put(1, 8, 's').put(1, 9, 'S');
+  // A turf doorstep at the outside entrance leaves the house fronts and labels clear.
+  g.put(1, 8, 'G').put(1, 9, 'D');
+  g.put(1, 6, 's').put(1, 7, 'S');
   for (const [x, y] of [
     [6, 3],
     [22, 2],
@@ -261,10 +253,10 @@ function plaza(pal: Pal): Level['hub'] {
   const sky = { set: (x: number, y: number, name: string) => m.setOnSky(x, y, name) };
   PLAZA_DOORS.forEach((d, i) => {
     const sign = signs[names[i]];
-    // Raise the two right labels above the doors; posts use the clear ground beside them.
-    stampTiledSign(sky, d - (i ? 4 : 5), i ? 7 : onGround(GROUND, sign), sign, i ? 2 : 1);
+    // Floating labels precede their doors along the rightward route.
+    stampTiledSign(sky, d - 2, 8, sign, 0);
   });
-  stampTiledSign(sky, 33, onGround(GROUND, signs.three), signs.three);
+  stampTiledSign(sky, 3, onGround(GROUND, signs.three), signs.three);
   return {
     file: 'plaza',
     map: m,
@@ -280,12 +272,12 @@ function plaza(pal: Pal): Level['hub'] {
 
 /** Level 2's room: a tower room with a battlement, bricks, two lamps, a banner and a slit of sky. */
 function tower(pal: Pal): Level['room'] {
-  const { book, signs } = startBook(pal, ['room']);
+  const { book, signs } = startBook(pal, ['room', 'newlook']);
   book.add('tower.wall', towerWall(pal), air);
   const tw = book.pics.get('tower.wall')!;
   addInside(book, pal, 'tower.wall');
   const room = signs.room;
-  for (const [name, pic] of book.pics) if (name.startsWith('tiledSign.')) book.redraw(name, onWall(pal, pic, tw));
+  for (const [name, pic] of book.pics) if (name.startsWith('microPlaque.')) book.redraw(name, onWall(pal, pic, tw));
   book.add('slab', slab(pal), { solid: SOLID });
   book.add('cap', cap(pal), { solid: SOLID });
   book.add('merlon', merlon(pal), { ...air, solid: SOLID });
@@ -307,7 +299,7 @@ function tower(pal: Pal): Level['room'] {
   for (let x = 3; x <= 22; x++) m.set(x, GROUND, 'slab').set(x, 4, 'cap').set(x, 3, 'cap');
   for (let x = 3; x <= 22; x += 2) m.set(x, 2, 'merlon');
   m.set(11, 6, 'lamp').set(17, 6, 'lamp').set(13, 6, 'banner').set(15, 6, 'slit');
-  wallSign(m, book, 'tower.wall', 7, onGround(GROUND, room), room);
+  wallSign(m, book, 'tower.wall', 6, 7, [room, signs.newlook]);
   return {
     file: 'tower',
     map: m,

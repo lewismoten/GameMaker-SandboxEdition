@@ -123,79 +123,97 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 49478,
+  "frames": 50440,
   "chapters": [
    {
     "title": "Opening",
-    "frame": 0
+    "frame": 0,
+    "time": 0
    },
    {
     "title": "Story",
-    "frame": 1624
+    "frame": 1624,
+    "time": 27066.666666667206
    },
    {
     "title": "Room 1: The Pantry",
-    "frame": 4893
+    "frame": 4893,
+    "time": 81550.00000000084
    },
    {
     "title": "Room 2: The Larder",
-    "frame": 6096
+    "frame": 6096,
+    "time": 101600.00000000668
    },
    {
     "title": "Room 3: The Spice Parlor",
-    "frame": 8942
+    "frame": 8942,
+    "time": 149033.33333333815
    },
    {
     "title": "Room 4: The Bakehouse",
-    "frame": 11537
+    "frame": 11537,
+    "time": 192283.33333331297
    },
    {
     "title": "Room 5: The Cold Cellar",
-    "frame": 13743
+    "frame": 13743,
+    "time": 229049.99999995824
    },
    {
     "title": "Room 6: The Tea Room",
-    "frame": 17672
+    "frame": 17672,
+    "time": 294533.33333331003
    },
    {
     "title": "Room 7: The Sugar Room",
-    "frame": 20341
+    "frame": 20341,
+    "time": 339016.66666669515
    },
    {
     "title": "Interlude: Under the Stove",
-    "frame": 22397
+    "frame": 22397,
+    "time": 373283.3333334017
    },
    {
     "title": "Room 8: The Brewery",
-    "frame": 24586
+    "frame": 24586,
+    "time": 409766.6666667775
    },
    {
     "title": "Room 9: The Clock Room",
-    "frame": 27871
+    "frame": 27871,
+    "time": 464516.66666684125
    },
    {
     "title": "Room 10: The Bottling Line",
-    "frame": 30619
+    "frame": 30619,
+    "time": 510316.66666689457
    },
    {
     "title": "Room 11: The Lightning Loft",
-    "frame": 32635
+    "frame": 32635,
+    "time": 543916.6666668651
    },
    {
     "title": "Room 12: The Cistern",
-    "frame": 35839
+    "frame": 35839,
+    "time": 597316.6666667408
    },
    {
     "title": "Room 13: The Vault",
-    "frame": 38486
+    "frame": 38486,
+    "time": 641433.3333333047
    },
    {
     "title": "Ending",
-    "frame": 41631
+    "frame": 41631,
+    "time": 693849.9999998494
    },
    {
     "title": "Credits",
-    "frame": 47442
+    "frame": 47923,
+    "time": 798716.6666662719
    }
   ]
  }

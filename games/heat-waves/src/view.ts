@@ -7,10 +7,9 @@
 /** The screen in blocks. */
 export const COLS = 16;
 export const ROWS = 10;
-/** The road (solid) that Kit walks on, and where he starts (his feet): mid-screen, a few blocks above the road, so he
- * drops in (PLAYGAME puts the view so the hero starts in the middle of it, so that cell is where the level's screen starts). */
+/** The solid road and the hero's feet on a two-row entrance step. This start keeps the signs, hills and road inside the fixed view. */
 export const GROUND_ROW = 9;
-export const START: [number, number] = [8, 5];
+export const START: [number, number] = [8, 6];
 /** The exit door's column in the one-screen levels (its bottom block is on row 8). */
 export const DOOR_COL = 14;
 /** Level 2's road: its width in blocks, the rock wall that ends it, the door before the wall, and the

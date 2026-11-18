@@ -4,33 +4,22 @@
 //
 //   1. Gravity On:  side.bbl, every air block has Gravity "down".
 //   2. Gravity Off: top.bbl, every block has Gravity "none", and top.chr walks in four directions.
-import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
-import { MICRO_GLYPHS } from '@lewismoten/gamemaker-sandbox-tools/microFont';
+import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
 import { Book, PULL } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
-import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
+import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
 import { addTopBlocks } from './topBlocks';
 import { TopMap } from './topMap';
 
 export type SignName = 'jump' | 'wall' | 'ledge' | 'exit';
 
 /** The signs' words in both levels (the same four ideas, said for each view). */
-const WORDS: Record<'side' | 'top', Record<SignName, string>> = {
-  side: {
-    jump: 'GRAVITY IS ON. SPACE JUMPS AND YOU FALL BACK',
-    wall: 'A WALL IS A STEP. JUMP OVER IT',
-    ledge: 'WALK OFF THE LEDGE AND GRAVITY PULLS YOU DOWN',
-    exit: 'EXIT →',
-  },
-  top: {
-    jump: 'GRAVITY IS OFF. THE ARROWS WALK IN FOUR WAYS',
-    wall: 'SPACE DOES NOTHING NOW. WALK AROUND THE WALL',
-    ledge: 'WALK OFF THE DECK. NOTHING PULLS YOU DOWN',
-    exit: 'EXIT →',
-  },
+const WORDS = {
+  side: { jump: ['GRAVITY', 'ON'], wall: ['JUMP', 'OVER'], ledge: ['PULL', '↓'], exit: ['EXIT', '→'] },
+  top: { jump: ['GRAVITY', 'OFF'], wall: ['NO', 'JUMP'], ledge: ['NO', 'PULL'], exit: ['EXIT', '→'] },
 };
 
 export interface Level {
@@ -54,27 +43,16 @@ export const WALL_BOTTOM = 6;
 export const ROUND_Y = 8;
 export const TOP_HEIGHT = 11;
 
-/** Each narrow room shares its frame, letter fragments and single post. */
-function compactSigns(book: Book, pal: Pal, view: 'side' | 'top', lawn?: Pixels): Record<SignName, Sign> {
-  const texts = Object.fromEntries(
-    (Object.keys(WORDS[view]) as SignName[]).map((name) => [name, { rows: [[WORDS[view][name]]], maxWidth: name === 'wall' ? 5 : 7 }]),
-  ) as Record<SignName, { rows: string[][]; maxWidth: number }>;
-  const { blocks, signs } = buildTiledSigns(texts, {
-    compact: true,
-    colors: {
-      background: skyOf(pal),
-      paper: pal.c('parch', 3),
-      ink: pal.c('ink', 0),
-      wood: pal.c('wood', 2),
-      highlight: pal.c('wood', 4),
-      shadow: pal.c('wood', 0),
-    },
-    glyphs: { ...MICRO_GLYPHS, '→': '100110111110100' },
-    maxBlocks: 100 - book.index.size,
-  });
-  for (const [name, pic] of blocks)
-    book.add(name, lawn ? pic.map((x, y, c) => (c === skyOf(pal) ? lawn.get(x, y) : c)) : pic, { grav: view === 'side' ? PULL.down : PULL.none });
-  return signs;
+/** Shared opaque boards float above the top view's lawn. */
+function compactSigns(book: Book, pal: Pal, view: 'side' | 'top'): Record<SignName, Sign> {
+  const plaques = view === 'top' ? new Book('bbl') : book;
+  const signs = addMicroPlaques(
+    plaques,
+    pal,
+    Object.fromEntries(Object.entries(WORDS[view]).map(([name, lines]) => [name, { lines, post: view === 'side' && name !== 'exit' }])),
+  );
+  if (view === 'top') for (const [name, pic] of plaques.pics) book.add(name, pic, { grav: PULL.none });
+  return signs as Record<SignName, Sign>;
 }
 
 /** Level 1: a side view, 40 blocks wide. */
@@ -82,7 +60,8 @@ function sideLevel(book: Book, signs: Record<SignName, Sign>): StarterMap {
   const g = new Grid(40, 15);
   g.row(GROUND, 0, 39, 'G').fill(0, GROUND + 1, 40, 4, 'D');
   g.col(0, 0, 9, 'X').col(39, 0, 9, 'X');
-  g.put(3, 8, 's').put(3, 9, 'S').put(EXIT_X, 8, 'e').put(EXIT_X, 9, 'E');
+  // A two-column turf step supports the hero beside the readable entrance door.
+  g.put(3, 6, 's').put(3, 7, 'S').row(8, 3, 4, 'G').row(9, 3, 4, 'D').put(EXIT_X, 8, 'e').put(EXIT_X, 9, 'E');
   g.col(WALL_X, 8, 9, 'B'); // the wall: two blocks high, a jump clears it
   g.row(8, LEDGE_X[0], LEDGE_X[1], '='); // the ledge
   g.row(7, LEDGE_X[0], LEDGE_X[1], 'c'); // its five coins
@@ -95,10 +74,12 @@ function sideLevel(book: Book, signs: Record<SignName, Sign>): StarterMap {
   for (const x of [21, 28, 34]) g.put(x, GROUND - 1, 'b');
   for (const x of [10, 17, 30]) g.put(x, GROUND - 1, 'f');
   const m = new StarterMap(book, g.rows());
-  stampTiledSign(m, 1, 5, signs.jump);
-  stampTiledSign(m, 8, 5, signs.wall);
-  stampTiledSign(m, 25, 5, signs.ledge);
-  stampTiledSign(m, 34, 5, signs.exit);
+  m.start[0] += 1; // Stand beside the door, on the right half of the step.
+  // The introduction stands beside the raised entrance, before the wall lesson.
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 5, 8, signs.jump);
+  stampTiledSign(m, 11, 8, signs.wall);
+  stampTiledSign(m, 18, 8, signs.ledge);
+  stampTiledSign(m, 34, 7, signs.exit);
   return m;
 }
 
@@ -123,7 +104,7 @@ function topLevel(book: Book, signs: Record<SignName, Sign>): TopMap {
   const m = new TopMap(book, g.rows());
   stampTiledSign(m, 1, 1, signs.jump);
   stampTiledSign(m, 8, 1, signs.wall);
-  stampTiledSign(m, 25, 1, signs.ledge);
+  stampTiledSign(m, 18, 1, signs.ledge);
   stampTiledSign(m, 34, 2, signs.exit);
   return m;
 }
@@ -135,8 +116,8 @@ export function buildLevels(): { book: Book; topBook: Book; pal: Pal; levels: Le
   addStarterBlocks(book, pal);
   const side = compactSigns(book, pal, 'side');
   const topBook = new Book('bbl');
-  const lawn = addTopBlocks(topBook, pal, book);
-  const top = compactSigns(topBook, pal, 'top', lawn);
+  addTopBlocks(topBook, pal, book);
+  const top = compactSigns(topBook, pal, 'top');
   const levels: Level[] = [
     { file: 'one', title: 'Gravity On', hint: 'Jump, and fall back down.', book, map: sideLevel(book, side) },
     { file: 'two', title: 'Gravity Off', hint: 'The same place, from above.', book: topBook, map: topLevel(topBook, top) },

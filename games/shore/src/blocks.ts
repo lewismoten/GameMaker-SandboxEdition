@@ -4,17 +4,13 @@
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { bevel } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';
-import { Book, SOLID } from '../../kit/starter/book';
+import { Book, SOLID, type Timed } from '../../kit/starter/book';
 import type { Pal } from '../../kit/starter/palette';
 import { skyOf } from '../../kit/starter/palette';
-import { addSign, type Sign } from '../../kit/starter/sign';
+import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
 
-/** A block that turns into another after some ticks (the engine's only clock). */
-export interface Timed {
-  name: string;
-  next: string;
-  ticks: number;
-}
+export type { Timed };
 
 /**
  * Adds a ring of `pics`: block `${base}.0` shows the first picture, then turns into `${base}.1`, and so on round to
@@ -67,21 +63,24 @@ export function addExit(book: Book, pal: Pal, ground: Pixels): void {
   book.add('exitBottom', q.crop(0, 20, 20, 20));
 }
 
-/** A sign standing on `ground`: its board is solid (Nova walks round it), its posts are not. */
-export function addSignOn(book: Book, pal: Pal, ground: Pixels, name: string, text: string, w: number, h: number): Sign {
+/** A solid micro plaque resting on the walking surface. */
+export function addSignOn(book: Book, pal: Pal, ground: Pixels, name: string, lines: string[]): Sign {
   const scratch = new Book('bbl');
-  const sign = addSign(scratch, pal, name, text, w, h);
+  const sign = addMicroPlaques(scratch, pal, { [name]: { lines, post: false } })[name];
   const sky = skyOf(pal);
-  const board = new Set(sign.board.flat());
-  for (const [n, pic] of scratch.pics) {
-    if (book.has(n)) continue;
+  const renamed = new Map<string, string>();
+  for (const n of sign.board.flat()) {
+    if (renamed.has(n)) continue;
+    const target = `sign.${name}.${renamed.size}`;
+    renamed.set(n, target);
+    const pic = scratch.pics.get(n)!;
     book.add(
-      n,
-      pic.crop(0, 0, 20, 20).map((x, y, col) => (col === sky ? ground.get(x, y) : col)),
-      board.has(n) ? { solid: SOLID } : {},
+      target,
+      pic.map((x, y, col) => (col === sky ? ground.get(x, y) : col)),
+      { solid: SOLID },
     );
   }
-  return sign;
+  return { board: sign.board.map((row) => row.map((n) => renamed.get(n)!)) };
 }
 
 /** A level's finished blocks: the book's, with each timed block given its next block and its ticks. */

@@ -9,33 +9,33 @@
 //      in a row show that a new sound cuts off the last.
 // Every room is closed in by hedges you can see, so Nova is never stopped by something she can't.
 import { Book } from '../../kit/starter/book';
+import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
-import { addSign, type Sign } from '../../kit/starter/sign';
 import { addPickups } from './pickups';
 
-export type SignName = 'room' | 'loop' | 'next' | 'score' | 'money' | 'hurt' | 'heal' | 'quiet' | 'jump' | 'one' | 'exit';
+export type SignName = keyof typeof WORDS;
 
-/** The block set the levels share: the Starter blocks, this game's signs, then the pickups. */
-function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
+const WORDS = {
+  room: { lines: ['OWN', 'SONG'] },
+  next: { lines: ['NEW', 'SONG'] },
+  score: { lines: ['SCORE'], post: false },
+  money: { lines: ['MONEY'], post: false },
+  hurt: { lines: ['HURT'], post: false },
+  heal: { lines: ['HELP'], post: false },
+  quiet: { lines: ['NO', 'SONG'] },
+  exit: { lines: ['EXIT', '→'], post: false },
+};
+
+/** One level’s block set: shared gameplay blocks and only that level’s signs. */
+function buildBlocks(pal: Pal, include: readonly SignName[]): { book: Book; signs: Record<SignName, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
-  const signs = {
-    room: addSign(book, pal, 'room.sign', 'EACH ROOM HAS ITS OWN SONG', 4, 2),
-    loop: addSign(book, pal, 'loop.sign', 'A SONG REPEATS UNTIL YOU LEAVE', 4, 2),
-    next: addSign(book, pal, 'next.sign', 'THE NEXT ROOM PLAYS A NEW SONG', 4, 2),
-    score: addSign(book, pal, 'score.sign', 'COINS PLAY THE SCORE SOUND', 4, 2),
-    money: addSign(book, pal, 'money.sign', 'A BAG PLAYS THE MONEY SOUND', 4, 2),
-    hurt: addSign(book, pal, 'hurt.sign', 'A SPIKE PLAYS THE HURT SOUND', 4, 2),
-    heal: addSign(book, pal, 'heal.sign', 'A HEART PLAYS THE HELP SOUND', 4, 2),
-    quiet: addSign(book, pal, 'quiet.sign', 'THIS ROOM HAS NO SONG', 4, 2),
-    jump: addSign(book, pal, 'jump.sign', 'JUMPING HAS A SOUND TOO', 4, 2),
-    one: addSign(book, pal, 'one.sign', 'A NEW SOUND CUTS OFF THE LAST ONE', 4, 3),
-    exit: addSign(book, pal, 'exit.sign', 'EXIT →', 3),
-  };
   addPickups(book, pal);
+  const signs = addMicroPlaques(book, pal, Object.fromEntries(include.map((name) => [name, WORDS[name]]))) as Record<SignName, Sign>;
   return { book, signs };
 }
 
@@ -47,6 +47,7 @@ export interface Level {
   /** The song file the level's scene names ('' = the room has no song). */
   song: string;
   map: StarterMap;
+  book: Book;
 }
 
 /** The two songs (song.ts writes them). */
@@ -63,7 +64,9 @@ function base(width: number, exitX: number): Grid {
   const g = new Grid(width, 15);
   g.row(GROUND, 0, width - 1, 'G').fill(0, GROUND + 1, width, 4, 'D');
   g.col(0, 0, 9, 'X').col(width - 1, 0, 9, 'X');
-  g.put(3, 8, 's').put(3, 9, 'S');
+  // A two-row turf step supports Kit at the raised entrance, clear of the signs.
+  g.put(3, 8, 'G').put(3, 9, 'D');
+  g.put(3, 6, 's').put(3, 7, 'S');
   g.put(exitX, 8, 'e').put(exitX, 9, 'E');
   return g;
 }
@@ -89,10 +92,10 @@ function songRoom(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [9, 17, 20, 29],
   );
   const m = new StarterMap(book, g.rows());
-  m.sign(5, onGround(GROUND, signs.room), signs.room);
-  m.sign(12, onGround(GROUND, signs.loop), signs.loop);
-  m.sign(25, onGround(GROUND, signs.next), signs.next);
-  m.sign(32, onGround(GROUND, signs.exit), signs.exit);
+  const sky = { set: m.setOnSky.bind(m) };
+  stampTiledSign(sky, 5, onGround(GROUND, signs.room), signs.room);
+  stampTiledSign(sky, 25, onGround(GROUND, signs.next), signs.next);
+  stampTiledSign(sky, 32, 7, signs.exit, 2);
   return m;
 }
 
@@ -118,11 +121,12 @@ function pickupRoom(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [13, 21, 30, 36],
   );
   const m = new StarterMap(book, g.rows());
-  m.sign(5, onGround(GROUND, signs.score), signs.score);
-  m.sign(14, onGround(GROUND, signs.money), signs.money);
-  m.sign(22, onGround(GROUND, signs.hurt), signs.hurt);
-  m.sign(31, onGround(GROUND, signs.heal), signs.heal);
-  m.sign(42, onGround(GROUND, signs.exit), signs.exit);
+  const sky = { set: m.setOnSky.bind(m) };
+  stampTiledSign(sky, 5, onGround(GROUND, signs.score), signs.score);
+  stampTiledSign(sky, 14, onGround(GROUND, signs.money), signs.money);
+  stampTiledSign(sky, 22, onGround(GROUND, signs.hurt), signs.hurt);
+  stampTiledSign(sky, 31, onGround(GROUND, signs.heal), signs.heal);
+  stampTiledSign(sky, 42, 7, signs.exit, 2);
   for (const x of BAGS) m.set(x, GROUND - 1, 'bag');
   m.set(SPIKE_X, GROUND - 1, 'spikeUp');
   for (const x of HEARTS) m.set(x, GROUND - 1, 'heart');
@@ -151,21 +155,28 @@ function quietRoom(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [10, 17, 31, 43],
   );
   const m = new StarterMap(book, g.rows());
-  m.sign(5, onGround(GROUND, signs.quiet), signs.quiet);
-  m.sign(11, onGround(GROUND, signs.jump), signs.jump);
-  m.sign(27, onGround(GROUND, signs.one), signs.one);
-  m.sign(38, onGround(GROUND, signs.exit), signs.exit);
+  const sky = { set: m.setOnSky.bind(m) };
+  stampTiledSign(sky, 4, onGround(GROUND, signs.quiet), signs.quiet);
+  stampTiledSign(sky, 38, 7, signs.exit, 2);
   return m;
 }
 
 /** The levels in order. */
 export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
   const pal = buildStarterPalette(undefined, 'sounds-and-music');
-  const { book, signs } = buildBlocks(pal);
+  const sets = [buildBlocks(pal, ['room', 'next', 'exit']), buildBlocks(pal, ['score', 'money', 'hurt', 'heal', 'exit']), buildBlocks(pal, ['quiet', 'exit'])];
+  const [first, second, third] = sets;
   const levels: Level[] = [
-    { file: 'one', title: 'A Song Per Room', hint: 'Listen: this room has a song.', song: MEADOW, map: songRoom(book, signs) },
-    { file: 'two', title: 'Sounds on Pickups', hint: 'Each pickup has its own sound.', song: WALTZ, map: pickupRoom(book, signs) },
-    { file: 'three', title: 'A Quiet Room', hint: 'No song here. Jump!', song: '', map: quietRoom(book, signs) },
+    { file: 'one', title: 'A Song Per Room', hint: 'Listen: this room has a song.', song: MEADOW, book: first.book, map: songRoom(first.book, first.signs) },
+    {
+      file: 'two',
+      title: 'Sounds on Pickups',
+      hint: 'Each pickup has its own sound.',
+      song: WALTZ,
+      book: second.book,
+      map: pickupRoom(second.book, second.signs),
+    },
+    { file: 'three', title: 'A Quiet Room', hint: 'No song here. Jump!', song: '', book: third.book, map: quietRoom(third.book, third.signs) },
   ];
-  return { book, pal, levels };
+  return { book: first.book, pal, levels };
 }

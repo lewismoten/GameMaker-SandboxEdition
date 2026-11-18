@@ -4,14 +4,10 @@
 // cell swaps it for the next picture of the splash, and the first one adds a point, which plays the
 // score sound (the splash). See addStepSplash.
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
-import { Book, PULL, SOLID } from '../../kit/starter/book';
+import { Book, PULL, SOLID, type Timed } from '../../kit/starter/book';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
 
-export interface Timed {
-  name: string;
-  next: string;
-  ticks: number;
-}
+export type { Timed };
 
 /** Rain moves every game tick (18 a second): five pixels down a frame, one tile in a four-frame loop. */
 export const RAIN_TICKS = 1;

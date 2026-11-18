@@ -10,7 +10,7 @@
     },
     "57": {
       "short": "Jump",
-      "long": "Jump, to pick a high star out of the night sky. Steer with Left and Right while you are in the air."
+      "long": "Hold Space to rise. Release to steer with Left and Right. Land before jumping again."
     },
     "30": {
       "short": "Walk left",
@@ -32,7 +32,7 @@
     },
     "1": {
       "short": "Jump",
-      "long": "Jump."
+      "long": "Hold to rise. Release to steer. Land before jumping again."
     }
   },
   "sounds": {

@@ -34,7 +34,13 @@ export const CREDITS = withCreditPage(
 |SHOW THE COUNT  v${about.version}
 |(c) 1994 Sandbox Software
 
+Held-rise controls and bot timing by OpenAI Codex (GPT-6.1 Sol).
+
+Camera review by OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten.
+
 Design, pixels, beeps and levels by Claude Sonnet 5.5, an AI model made by Anthropic.
+
+Tiled signs adapted with Hermes Agent, OpenAI Codex GPT-6.1 Sol.
 
 Made with GAME-MAKER 3.0 from Recreational Software Designs.
 

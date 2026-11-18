@@ -47,7 +47,7 @@ disk.put('sw.bbl', serializeBlocks(book.finish()));
 disk.put('sw.mbl', serializeBlocks(monsterBlocks.finish()));
 disk.put('sw.mon', serializeMonsters(buildMonsters(monsterBlocks)));
 disk.put('hero.cbl', serializeBlocks(heroBlocks.finish()));
-const heroChar = buildHero(heroBlocks);
+const heroChar = buildHero(heroBlocks, { heldRise: { push: 12 } });
 heroChar.meter[KEYS] = INF_REPEAT; // no keys in this game
 heroChar.meter[RED] = 1; // planks the red lever has paid for (a counter shows one less than it holds)
 heroChar.meter[BLUE] = 1;

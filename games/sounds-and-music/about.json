@@ -6,7 +6,7 @@
   "hero": "NOVA",
   "year": 1994,
   "price": "Free",
-  "version": "1.0",
+  "version": "1.1",
   "blurb": "Three short levels about what a game sounds like. A room names its own song, and the next room can play a different one, or none. Coins, bags, hearts and spikes each play a sound of their own, and jumping has one too. Signs say how. Play it with the sound up, then open it in Game-Maker and change a song or a beep.",
   "exe": "SOUNDS.EXE",
   "dosName": "SOUNDS",

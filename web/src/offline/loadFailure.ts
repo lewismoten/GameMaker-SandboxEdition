@@ -5,7 +5,7 @@
 export function loadFailureText(online: boolean): string {
   return online
     ? 'Part of the page could not be loaded. Reload to try again.'
-    : 'This part of the site has not been saved for offline use yet. Reconnect to open it, or choose Settings, then Play offline, once to keep everything.';
+    : 'Not in your offline copy. Reconnect to open it, or choose Settings, then Play offline to keep this content for offline use.';
 }
 
 /** Shows `show(text)` when a lazily loaded part of the site fails to load. */

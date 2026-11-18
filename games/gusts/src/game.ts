@@ -31,6 +31,8 @@ export function buildGame(levels: Level[]): Game {
   levels.forEach((l, i) => {
     const scene = emptyScene(ADVTYPE);
     scene.desc = l.title.slice(0, 19);
+    // The tunnel is flat; the seven-row gust shaft still follows the hero upward.
+    if (l.file === 'two') scene.scroll = { ...scene.scroll, up: 0, down: 0 };
     scene.pos = { x: 60 + i * 80, y: 110 };
     scene.files = [
       'gust.pal',

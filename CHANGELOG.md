@@ -6,6 +6,34 @@ changelog: [engine](web/packages/engine/CHANGELOG.md), [archives](web/packages/a
 
 ## [Unreleased]
 
+## [3.8.0] - 2026-11-17
+
+Most Starters get the held-Space jump from First Steps, small plaques in place of long signs and a steadier view in flat rooms; Play offline lets you pick what to keep; the timed levels in Lucky Cat, Pass the Pie and The Thank-You Parade keep their whole countdown in view; and the Owner's Guide explains smaller BBS uploads.
+
+### Added
+
+- The Ultimate Owner's Guide explains how to make smaller BBS uploads with DOS Game-Maker 3.0, with illustrated advice for pictures, cartoons, blocks, sound and text, and modem download times.
+- The Mountain Moved Next Door and The Noodle Observatory show countdown lights before their timed exits.
+
+### Changed
+
+- Play offline and the desk's OFFLINE.EXE let you pick Starters, Sandbox, Specials, Bizarre and CD games separately; downloads resume, and the last complete copy stays until an update is ready.
+- Most Starters, Stick Man Stars and two Lucky Cat levels use the jump from First Steps: hold Space to rise, let go to steer, and land before jumping again.
+- Long signs in the Starters are now small plaques beside the path, on short posts or floating, placed before each lesson.
+- Flat Starter rooms open on a raised step and keep the view steady after a jump.
+- Starters share their common backgrounds, pictures and Kit's intro, and quiet sound effects use lower sample rates, so downloads are smaller; voices and recordings are unchanged.
+- The music, scene links and palette editors explain DOS limits where you reach them.
+- The In The Year 2000! laser cryptex kit has bigger hollows, hidden engravings, sheets for 12×12 and 12×20 boards, a part ID on every piece and a note compartment that opens only with the combination.
+
+### Fixed
+
+- Lucky Cat, Pass the Pie and The Thank-You Parade keep their whole countdown meter in view along timed streets, with more room for slower hands.
+- Songs and voices in Shakespeare in Sweatpants are no longer cut off by monster and hop sounds.
+- Pass the Pie's level cards keep their headings readable and their subtitles inside the frame.
+- The home page no longer jumps as the library row finishes drawing.
+
+Full list: [changes/release/pages/3.8.0.md](https://github.com/lewismoten/GameMaker-SandboxEdition/blob/pages-v3.8.0/changes/release/pages/3.8.0.md)
+
 ## [3.7.0] - 2026-11-15
 
 Stick Man Stars moves onto paper, Lucky Cat 4.0 plays harder, First Steps gets a jump you can steer, the Starters' signs are centered and easier to read, the editor fits phones better, and the big offline download is paused while it is rebuilt.
@@ -183,7 +211,8 @@ for every Game-Maker file type; the web player; and the set of new games built i
 - Exports to a web page, a DOS ZIP and native players, and opening a game another site links to.
 - Achievements, a guided tour with voice clips, and offline use as an installable app.
 
-[Unreleased]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/pages-v3.7.0...HEAD
+[Unreleased]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/pages-v3.8.0...HEAD
+[3.8.0]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/pages-v3.7.0...pages-v3.8.0
 [3.7.0]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/pages-v3.6.0...pages-v3.7.0
 [3.6.0]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/pages-v3.5.0...pages-v3.6.0
 [3.5.0]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/pages-v3.4.0...pages-v3.5.0

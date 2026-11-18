@@ -15,21 +15,15 @@
 // visible hedge, so Mara is never stopped by something she can't see.
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
-import { Book, PULL, SOLID } from '../../kit/starter/book';
+import { Book, PULL, SOLID, type Timed } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
+import { addMicroPlaques, stampTiledSign, stampMicroPlaques } from '../../kit/starter/microPlaque';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
-import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
-import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
+import { type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { HUES, cap, gate, lamp, type Hue } from './props';
 import { SPELL, TURN } from './timing';
-
-/** A block that turns into another after some ticks. */
-interface Timed {
-  name: string;
-  next: string;
-  ticks: number;
-}
 
 export interface Level {
   file: string;
@@ -80,32 +74,20 @@ function addRing(book: Book, timed: Timed[], ring: string, turns: number, ticks:
   for (let i = 0; i < turns; i++) timed.push({ name: `${ring}.${i}`, next: `${ring}.${(i + 1) % turns}`, ticks });
 }
 
-type SignName = 'lamps' | 'gates' | 'sun' | 'moon' | 'step';
+type SignName = 'lamps' | 'gates' | 'sun' | 'moon' | 'moonOpen' | 'step';
 const SIGNS = {
-  lamps: { rows: [['THREE LAMPS'], ['TAKE TURNS']] },
-  gates: { rows: [['THE LIT LAMP'], ['OPENS ITS GATE.'], ['GO IN ORDER']] },
-  sun: { rows: [['SUN GATES'], ['ALL OPEN'], ['TOGETHER']] },
-  moon: { rows: [['MOON'], ['GATES'], ['OPEN AS'], ['SUN SHUTS']] },
-  step: { rows: [['CROSS'], ['ONE,'], ['WAIT,'], ['CROSS THE'], ['NEXT']] },
+  lamps: { lines: ['TAKE', 'TURN'] },
+  gates: { lines: ['IN ORDER'] },
+  sun: { lines: ['SUN', 'OPEN'] },
+  moon: { lines: ['SUN', 'SHUT'] },
+  moonOpen: { lines: ['MOON', 'OPEN'] },
+  step: { lines: ['WAIT'] },
 };
 
 function startBook(pal: Pal, names: SignName[]): { book: Book; signs: Record<string, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
-  const { blocks, signs } = buildTiledSigns(SIGNS, {
-    include: names,
-    lettersPerBlock: 3,
-    maxBlocks: 100 - book.index.size,
-    colors: {
-      background: skyOf(pal),
-      paper: pal.c('parch', 3),
-      ink: pal.c('ink', 0),
-      wood: pal.c('wood', 2),
-      highlight: pal.c('wood', 4),
-      shadow: pal.c('wood', 0),
-    },
-  });
-  for (const [name, pic] of blocks) book.add(name, pic, AIR);
+  const signs = addMicroPlaques(book, pal, Object.fromEntries(names.map((name) => [name, SIGNS[name]])));
   return { book, signs };
 }
 
@@ -128,8 +110,10 @@ function room(width: number, gateCols: number[]): Grid {
   const g = new Grid(width, 15);
   g.row(GROUND, 0, width - 1, 'G').fill(0, GROUND + 1, width, 4, 'D');
   g.col(0, 0, 9, 'X').col(width - 1, 0, 9, 'X');
-  g.put(3, 8, 's')
-    .put(3, 9, 'S')
+  // A two-row turf plinth opens the fixed view higher; walk right to step down.
+  g.row(8, 2, 3, 'G').row(9, 2, 3, 'D');
+  g.put(3, 6, 's')
+    .put(3, 7, 'S')
     .put(width - 5, 8, 'e')
     .put(width - 5, 9, 'E');
   for (const x of gateCols) g.col(x, 0, CAP_ROW - 1, 'B');
@@ -176,7 +160,7 @@ function takeYourTurn(pal: Pal): Level {
 
 /** Level 2: the sun's ring and the moon's ring, two blocks each, one step apart. */
 function outOfStep(pal: Pal): Level {
-  const { book, signs } = startBook(pal, ['sun', 'moon', 'step']);
+  const { book, signs } = startBook(pal, ['sun', 'moon', 'moonOpen', 'step']);
   const timed: Timed[] = [];
   const rings: [string, Hue, number][] = [
     ['sun', 'gold', 1],
@@ -197,8 +181,8 @@ function outOfStep(pal: Pal): Level {
       [30, 3],
       [42, 1],
     ],
-    [7, 14, 37],
-    [19, 26, 32],
+    [8, 14, 37],
+    [19, 27, 32],
   );
   const m = new StarterMap(book, g.rows());
   // the sun is open on the first turn, the moon on the second: the same ring, started one block along
@@ -208,8 +192,8 @@ function outOfStep(pal: Pal): Level {
     stampGate(m, x, sun ? 'cap.sun' : 'cap.moon', sun ? startOf('sun.gate', 2, 0) : startOf('moon.gate', 2, 1));
   });
   sign(m, 4, signs.sun);
-  sign(m, 10, signs.moon);
-  sign(m, 23, signs.step);
+  stampMicroPlaques({ set: m.setOnSky.bind(m) }, 12, 7, [signs.moon, signs.moonOpen]);
+  sign(m, 25, signs.step);
   return { file: 'two', title: 'Out of Step', hint: 'Two rings, one step apart.', map: m, book, timed };
 }
 

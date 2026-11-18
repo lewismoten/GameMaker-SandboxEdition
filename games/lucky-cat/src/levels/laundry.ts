@@ -6,7 +6,7 @@
 // No charms. Chores score 7 points each (three cleats on the stairs, one on the line, three doorsteps) and the key 25.
 import { StarterMap } from '../../../kit/starter/map';
 import type { Pal } from '../print';
-import { GROUND, addSigns, onGround, room, startBook, type Level } from '../level';
+import { GROUND, crackCrossing, addSigns, onGround, room, startBook, type Level } from '../level';
 
 export const LAUNDRY = {
   step1: 9,
@@ -36,6 +36,12 @@ export function levelLaundry(pal: Pal): Level {
   // the awnings (stand on them, jump up through them) and the long line
   for (const { x, row } of LAUNDRY.stairs) for (let i = 0; i < STAIR_W; i++) m.set(x + i, row, i % 2 ? 'awning' : 'awning2');
   for (let x = LAUNDRY.line[0]; x <= LAUNDRY.line[1]; x++) m.set(x, 3, x % 2 ? 'awning' : 'awning2');
+  // Short ladders join the final two rising edges, with room to pause before stepping off.
+  for (const [x, top] of [
+    [LAUNDRY.stairs[5].x - 1, 3],
+    [LAUNDRY.line[0] - 1, 2],
+  ])
+    for (const y of [top, top + 1]) m.set(x, y, 'ladder');
   // the banner: bunting along the line's top (it is the Committee's banner, in little flags)
   for (let x = LAUNDRY.line[0]; x <= LAUNDRY.line[1]; x++) m.set(x, 1, 'bunting');
   // chores: a cleat on each awning and the line, saucers on three doorsteps, the key
@@ -43,12 +49,13 @@ export function levelLaundry(pal: Pal): Level {
   m.set(LAUNDRY.cleatLine, 2, 'cleat');
   m.set(LAUNDRY.key, 2, 'binKey');
   for (const x of [LAUNDRY.step1, LAUNDRY.step2, LAUNDRY.step3]) m.set(x, GROUND - 1, 'step');
-  for (const x of [LAUNDRY.cracks, LAUNDRY.cracks + 1, LAUNDRY.cracks + 2, LAUNDRY.cracks2, LAUNDRY.cracks2 + 1]) m.set(x, GROUND - 1, 'crack');
   // the padlocked gate, with the bins beside it
   for (let y = -10; y < GROUND - 2; y++) m.set(LAUNDRY.wall, y, 'brick');
   m.set(LAUNDRY.wall, GROUND - 2, 'saltArch').set(LAUNDRY.wall, GROUND - 1, 'padlock');
   for (const x of [69, 70]) m.set(x, GROUND - 2, 'binTop').set(x, GROUND - 1, 'bin');
   m.sign(4, onGround(GROUND, s.banner), s.banner);
+  crackCrossing(m, LAUNDRY.cracks, 3);
+  crackCrossing(m, LAUNDRY.cracks2, 2);
   return {
     file: 'wash',
     title: 'Wash Day',

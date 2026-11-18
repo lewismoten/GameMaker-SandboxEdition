@@ -80,9 +80,12 @@ export async function lightTheWay(bot: StarterBot): Promise<void> {
   await flash(bot, 1, 'the stones');
   for (const s of stones) {
     await must(bot, bot.jump('right', s[0] + 0.5), `the jump to the stone at ${s[0]}`);
+    // A short steer can land in the harmless ditch; jump again only after landing, up onto the stone.
+    if (bot.px.y / 20 > GROUND - 1) await must(bot, bot.jump('right', s[0] + 0.5), `up from the ditch at ${s[0]}`);
     if (bot.px.y / 20 !== GROUND - 1) throw new Error(`she should stand on the stone at ${s[0]}, not at row ${bot.px.y / 20}`);
     await must(bot, bot.wait(8), 'a breath');
   }
   await must(bot, bot.jump('right', 29), 'the jump to the far side');
+  if (bot.px.y / 20 > GROUND - 1) await must(bot, bot.jump('right', 29), 'up from the ditch to the far side');
   await leave(bot, bot.walk(42, 'the door'), 'the door');
 }

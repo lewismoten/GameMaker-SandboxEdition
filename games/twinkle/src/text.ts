@@ -37,6 +37,8 @@ Design, pixels, beeps and levels by Claude Sonnet 5.5, an AI model made by Anthr
 
 Music: the old French tune "Ah! vous dirai-je, maman" (1761), in the public domain, arranged for this game.
 
+Held-rise controls, bot timing and raised-start camera design by OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten.
+
 Made with GAME-MAKER 3.0 from Recreational Software Designs.
 
 One of the Starters: small games that each show one idea.

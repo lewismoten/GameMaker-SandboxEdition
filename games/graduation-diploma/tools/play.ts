@@ -5,4 +5,4 @@ import { cfg } from '../src/config';
 import { aisle } from './route';
 import { GameSim } from './sim';
 
-export const play = makePlay(GameSim, [arrivalRoute(cfg.arrive.nods), aisle]);
+export const play = makePlay(GameSim, [arrivalRoute(cfg.arrive.nods), aisle], 8);

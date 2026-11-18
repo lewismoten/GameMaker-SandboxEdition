@@ -8,15 +8,15 @@
  "segments": [
   {
    "scene": 2,
-   "keys": "AU1QzQNNVc17TQ=="
+   "keys": "AU1OzQNNVc17TQ=="
   },
   {
    "scene": 3,
-   "keys": "AU1QzQNNVc17TQ=="
+   "keys": "AU1OzQNNVc17TQ=="
   },
   {
    "scene": 4,
-   "keys": "AU1QzQNNVc17TQ=="
+   "keys": "AU1OzQNNVc17TQ=="
   }
  ],
  "chapters": [
@@ -35,7 +35,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 10345,
+  "frames": 10805,
   "chapters": [
    {
     "title": "Opening",
@@ -54,23 +54,23 @@
    },
    {
     "title": "Level 2: A Cartoon Between",
-    "frame": 3833,
-    "time": 63883.33333332976
+    "frame": 3826,
+    "time": 63766.66666666311
    },
    {
     "title": "Level 3: Keep It Short",
-    "frame": 5432,
-    "time": 90533.33333333679
+    "frame": 5418,
+    "time": 90300.00000000339
    },
    {
     "title": "Ending",
-    "frame": 7061,
-    "time": 117683.3333333447
+    "frame": 7040,
+    "time": 117333.33333334459
    },
    {
     "title": "Credits",
-    "frame": 9271,
-    "time": 154516.6666666683
+    "frame": 9250,
+    "time": 154166.6666666685
    }
   ]
  }

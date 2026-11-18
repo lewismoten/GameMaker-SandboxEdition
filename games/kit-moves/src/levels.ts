@@ -7,48 +7,31 @@
 //   2. Once Per Press: ENTER is a dash to the right, once per press. Holding it gives one dash; to go
 //                    farther, let go and press again. Three gaps, each wider than the last.
 // Every edge is a hedge or a wall you can see, so Kit is never stopped by something he can't.
-import { Book, PULL } from '../../kit/starter/book';
+import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
-import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
-import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { MICRO_GLYPHS } from '@lewismoten/gamemaker-sandbox-tools/microFont';
+import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
+import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 
-export type SignName = 'hop' | 'hold' | 'lift' | 'top' | 'exit' | 'dash' | 'again' | 'last';
+export type SignName = 'hop' | 'hold' | 'lift' | 'top' | 'exit' | 'dash' | 'right' | 'press' | 'twice';
 
-/** Complete phrases wrap within the gaps beside the walls and under the roof. */
-const texts = {
-  hop: { rows: [['SPACE HOPS ONCE'], ['PER PRESS. HOLD IT'], ['AND KIT STILL'], ['HOPS ONCE']] },
-  hold: { rows: [['TOO TALL TO HOP.'], ['THE UP KEY'], ['IS DIFFERENT']] },
-  lift: { rows: [['HOLD UP. KIT KEEPS'], ['LIFTING WHILE'], ['THE KEY IS DOWN']] },
-  top: { rows: [['LET GO OF UP AND KIT FALLS. NOW WALK RIGHT']], maxWidth: 9 },
-  exit: { rows: [['EXIT →']], maxWidth: 5 },
-  dash: { rows: [['ENTER DASHES'], ['RIGHT, ONCE PER'], ['PRESS. HOLDING IT'], ['DASHES ONCE']] },
-  again: { rows: [['A WIDER GAP. HOP,'], ['KEEP RIGHT HELD,'], ['PRESS ENTER']] },
-  last: { rows: [['THE WIDEST GAP.'], ['HOP, KEEP RIGHT'], ['HELD, ENTER TWICE']] },
-};
-
-/** The block set the levels share: the Starter blocks, then this game's signs. */
+/** Both lessons share the approved short plaque vocabulary. */
 function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
-  // Both levels have shallow spaces: above the cliff, and below the dash course's roof.
-  const { blocks, signs } = buildTiledSigns(texts, {
-    colors: {
-      background: skyOf(pal),
-      paper: pal.c('parch', 3),
-      ink: pal.c('ink', 0),
-      wood: pal.c('wood', 2),
-      highlight: pal.c('wood', 4),
-      shadow: pal.c('wood', 0),
-    },
-    glyphs: { ...MICRO_GLYPHS, '→': '100110111110100' },
-    compact: true,
-    maxWidth: 7,
-    maxBlocks: Math.min(100, 150 - book.index.size),
+  const signs = addMicroPlaques(book, pal, {
+    hop: { lines: ['SPACE', 'HOPS'] },
+    hold: { lines: ['TOO', 'TALL'] },
+    lift: { lines: ['HOLD', 'UP'] },
+    top: { lines: ['WALK', '→'] },
+    exit: { lines: ['EXIT', '→'], post: false },
+    dash: { lines: ['ENTER', 'DASHES'] },
+    right: { lines: ['HOLD', '→'] },
+    press: { lines: ['PRESS', 'ENTER'] },
+    twice: { lines: ['ENTER', 'TWICE'] },
   });
-  for (const [name, pic] of blocks) book.add(name, pic, { grav: PULL.down });
   return { book, signs };
 }
 
@@ -143,9 +126,10 @@ function tapAndHold(book: Book, signs: Record<SignName, Sign>): StarterMap {
   for (let x = 0; x < L1.width; x++) m.set(x, -1, 'brick');
   place(m, 4, onGround(G, signs.hop), signs.hop);
   place(m, 15, onGround(G, signs.hold), signs.hold);
-  place(m, 23, 9, signs.lift, 3);
+  // One cell right of the old board: its centered post clears the flower at 23.
+  place(m, 24, onGround(G, signs.lift), signs.lift);
   place(m, 32, onGround(L1.cliffTop, signs.top), signs.top);
-  place(m, 44, 1, signs.exit, 3);
+  place(m, 44, 2, signs.exit);
   return m;
 }
 
@@ -179,8 +163,11 @@ function oncePerPress(book: Book, signs: Record<SignName, Sign>): StarterMap {
   g.fill(16, 6, 4, 3, 'B');
   const m = new StarterMap(book, g.rows());
   place(m, 4, onGround(G, signs.dash), signs.dash);
-  place(m, 20, onGround(G, signs.again), signs.again);
-  place(m, 36, onGround(G, signs.last), signs.last);
+  // Unequal-width phrases sit side by side rather than making an off-center stack.
+  place(m, 21, onGround(G, signs.right), signs.right);
+  place(m, 22, onGround(G, signs.press), signs.press);
+  place(m, 34, onGround(G, signs.right), signs.right);
+  place(m, 36, onGround(G, signs.twice), signs.twice);
   place(m, 59, onGround(G, signs.exit), signs.exit);
   return m;
 }

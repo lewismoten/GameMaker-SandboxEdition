@@ -8,11 +8,11 @@
  "segments": [
   {
    "scene": 2,
-   "keys": "AU0tzQNN"
+   "keys": "AU0rzQNN"
   },
   {
    "scene": 3,
-   "keys": "AU1BzQNN"
+   "keys": "AU0/zQNN"
   },
   {
    "scene": 4,
@@ -20,7 +20,7 @@
   },
   {
    "scene": 5,
-   "keys": "AU1LzQNL"
+   "keys": "AU1JzQNL"
   },
   {
    "scene": 4,
@@ -48,7 +48,7 @@
   },
   {
    "scene": 9,
-   "keys": "AU0ozQM5ArkATQXNC00SzQ5NBc0DTRnNA00="
+   "keys": "AU0mzQM5CLkATUbNDk0KzQM5CLkATQrNA00DzQ5NBc0DTRnNA00="
   }
  ],
  "chapters": [
@@ -99,7 +99,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 10860,
+  "frames": 11614,
   "chapters": [
    {
     "title": "Opening",
@@ -118,43 +118,43 @@
    },
    {
     "title": "Level 1: Out the Door (the second room)",
-    "frame": 2270,
-    "time": 37833.333333333554
+    "frame": 2263,
+    "time": 37716.666666666904
    },
    {
     "title": "Level 2: There and Back (the hall)",
-    "frame": 2995,
-    "time": 49916.66666666513
+    "frame": 2982,
+    "time": 49699.999999998494
    },
    {
     "title": "Level 2: There and Back (the kitchen)",
-    "frame": 4261,
-    "time": 71016.66666666445
+    "frame": 4248,
+    "time": 70799.99999999772
    },
    {
     "title": "Level 2: There and Back (the bedroom)",
-    "frame": 5326,
-    "time": 88766.66666666961
+    "frame": 5306,
+    "time": 88433.33333333618
    },
    {
     "title": "Level 3: Two Doors (the fork)",
-    "frame": 6965,
-    "time": 116083.33333334423
+    "frame": 6945,
+    "time": 115750.0000000108
    },
    {
     "title": "Level 3: Two Doors (the attic)",
-    "frame": 7498,
-    "time": 124966.66666668015
+    "frame": 7471,
+    "time": 124516.66666668002
    },
    {
     "title": "Ending",
-    "frame": 8055,
-    "time": 134250.00000001342
+    "frame": 8328,
+    "time": 138800.00000001077
    },
    {
     "title": "Credits",
-    "frame": 9786,
-    "time": 163099.99999999662
+    "frame": 10059,
+    "time": 167649.99999999398
    }
   ]
  }

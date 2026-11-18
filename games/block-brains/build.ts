@@ -46,7 +46,7 @@ disk.put('brains.pal', serializePalette(pal.pal));
 disk.put('brains.mbl', serializeBlocks(monsterBlocks.finish()));
 disk.put('brains.mon', serializeMonsters(buildMonsters(monsterBlocks)));
 disk.put('hero.cbl', serializeBlocks(heroBlocks.finish()));
-const heroChar = buildHero(heroBlocks);
+const heroChar = buildHero(heroBlocks, { heldRise: { push: 12 } });
 heroChar.meter[0] = HERO_HIT_POINTS;
 heroChar.meter[1] = HERO_LIVES;
 disk.put('hero.chr', serializeCharacter(heroChar));

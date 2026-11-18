@@ -10,7 +10,7 @@ import { page } from '@lewismoten/gamemaker-sandbox-tools/kit/screenText';
  * README spell it out to fit their columns; about.json says the same in its blurb).
  */
 export const SONG_CREDIT =
-  "monologues shaped with ChatGPT from Lewis Moten's prompts; audio and vocals made with Riffusion (now Google Flow Music); game code, art, levels and music made by Claude Opus 5.5; the coffee house is inspired by Lewis's memories of the Beehive in Oakland, Pittsburgh";
+  "monologues shaped with ChatGPT from Lewis Moten's prompts; audio and vocals made with Riffusion (now Google Flow Music); game code, art, levels and music made by Claude Opus 5.5; sound-cut fix by OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten; the coffee house is inspired by Lewis's memories of the Beehive in Oakland, Pittsburgh";
 
 export const STORY = [
   page([
@@ -140,6 +140,9 @@ const CREDITS_TEXT = page(
     'files. Made with GAME-MAKER',
     'by Recreational Software',
     'Designs.',
+    'Sound-cut fix: OpenAI Codex',
+    '(GPT-6.1 Sol), directed by',
+    'Lewis Moten.',
     '',
     'Take your spatula.',
     'Make your move.',
@@ -253,9 +256,12 @@ CREDITS (NOW)
   code, art, levels and music
   by Claude Opus 5.5, built with
   GAME-MAKER 3.0 by Recreational
-  Software Designs. The logo was
-  made with DeepAI; the Doc Leo
-  photo is Lewis's own.
+  Software Designs. OpenAI Codex
+  (GPT-6.1 Sol), directed by
+  Lewis Moten, fixed the sounds
+  that cut off clips. The logo
+  was made with DeepAI; the Doc
+  Leo photo is Lewis's own.
 
 Make your move.
 `;

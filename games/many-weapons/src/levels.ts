@@ -7,78 +7,32 @@
 //                   pouch sits up on a ledge. Flames go before stars, and a star is thrown when the flames
 //                   are gone.
 // Both rooms are closed in by brick walls you can see, so Lena is never stopped by something she can't.
-import { Book, PULL } from '../../kit/starter/book';
+import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
-import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
-import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { MICRO_GLYPHS } from '@lewismoten/gamemaker-sandbox-tools/microFont';
+import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
+import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { FLAME_POUCH, FROSTY, STAR_POUCH, TARGET } from './monsters';
 
-export type SignName = 'empty' | 'pouch' | 'out' | 'frost' | 'flame' | 'order' | 'exit';
+export type SignName = keyof typeof WORDS;
 
 /** Complete sign text, with line breaks chosen for the clear space beside each lesson. */
 const WORDS = {
-  empty: { rows: [['NOTHING TO THROW'], ['YET. ENTER'], ['JUST SHRUGS']] },
-  pouch: { rows: [['WALK INTO THE POUCH'], ['FOR TWO STARS.'], ['ENTER THROWS ONE']] },
-  out: { rows: [['OUT OF STARS? ENTER'], ['SHRUGS AGAIN.'], ['THE POUCH FILLS UP']] },
-  frost: { rows: [["A STAR CAN'T MELT"], ['FROST. TAKE STARS'], ['AND TRY']], maxWidth: 7 },
-  flame: { rows: [['A FLAME'], ['CAN. JUMP'], ['UP TO THE'], ['FLAME POUCH']], maxWidth: 5 },
-  order: { rows: [['FLAMES GO FIRST.'], ['WHEN THEY ARE GONE,'], ['ENTER THROWS A STAR']] },
-  exit: { rows: [['EXIT →']] },
+  empty: { lines: ['ENTER', 'SHRUGS'] },
+  walk: { lines: ['WALK', 'IN'] },
+  pouch: { lines: ['ENTER', 'THROWS'] },
+  exit: { lines: ['EXIT', '→'], post: false },
+  flame: { lines: ['FLAME', 'MELTS'] },
+  jump: { lines: ['JUMP', 'UP'] },
 } as const;
 
-/** One shared set: larger signs for the open room, compact signs for the crowded ledge and tunnel. */
+/** One shared micro-plaque vocabulary for both rooms. */
 function buildBlocks(pal: Pal) {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
-  const colors = {
-    background: skyOf(pal),
-    paper: pal.c('parch', 3),
-    ink: pal.c('ink', 0),
-    wood: pal.c('wood', 2),
-    highlight: pal.c('wood', 4),
-    shadow: pal.c('wood', 0),
-  };
-  const glyphs = { ...MICRO_GLYPHS, '→': '100110111110100' };
-  const fullLines = Object.fromEntries(
-    Object.entries(WORDS).map(([key, text]) => [key, { rows: [[text.rows.map((row) => row.join('')).join(' ')]] }]),
-  ) as Record<SignName, { rows: string[][] }>;
-  const large = buildTiledSigns(
-    { ...fullLines, empty: WORDS.empty, pouch: { rows: [['WALK INTO THE'], ['POUCH FOR TWO'], ['STARS. ENTER'], ['THROWS ONE']] } },
-    {
-      colors,
-      glyphs,
-      lettersPerBlock: 3,
-      maxWidth: 7,
-      prefix: 'largeSign',
-      include: ['empty', 'pouch', 'out', 'exit'],
-      maxBlocks: Math.min(100, 150 - book.index.size),
-    },
-  );
-  for (const [name, pic] of large.blocks) book.add(name, pic, { grav: PULL.down });
-  const compact = buildTiledSigns(WORDS, {
-    colors,
-    glyphs,
-    include: ['frost', 'flame', 'order', 'exit'],
-    compact: true,
-    maxWidth: 7,
-    maxBlocks: Math.min(100, 150 - book.index.size),
-  });
-  // Both font sizes use the same frame and post pictures in this shared background set.
-  const shared = new Map([...large.blocks].map(([name, pic]) => [pic.px.join(','), name]));
-  const aliases = new Map<string, string>();
-  for (const [name, pic] of compact.blocks) {
-    const existing = shared.get(pic.px.join(','));
-    aliases.set(name, existing ?? name);
-    if (!existing) book.add(name, pic, { grav: PULL.down });
-  }
-  for (const sign of Object.values(compact.signs)) {
-    sign.board = sign.board.map((row) => row.map((name) => aliases.get(name)!));
-    if (sign.post) sign.post.block = aliases.get(sign.post.block)!;
-  }
-  return { book, large: large.signs, compact: compact.signs };
+  return { book, signs: addMicroPlaques(book, pal, WORDS) };
 }
 
 export interface Level {
@@ -150,7 +104,7 @@ export const L2 = {
 } as const;
 
 /** Level 1: a pouch, and three mint gumdrops in a row. 46 blocks wide; the ground is row 10. */
-function emptyHands(book: Book, signs: Record<'empty' | 'pouch' | 'out' | 'exit', Sign>): StarterMap {
+function emptyHands(book: Book, signs: Record<SignName, Sign>): StarterMap {
   const g = base(L1.width, L1.exit);
   for (const [x, y] of L1.coins) g.put(x, y, 'c');
   scenery(
@@ -166,16 +120,17 @@ function emptyHands(book: Book, signs: Record<'empty' | 'pouch' | 'out' | 'exit'
   );
   const m = new StarterMap(book, g.rows());
   stamp(m, 4, onGround(GROUND, signs.empty), signs.empty);
+  // Both pouch lessons precede their first use; never cover pouch or target starts.
+  stamp(m, 10, onGround(GROUND, signs.walk), signs.walk);
   m.mon(STAR_POUCH, L1.pouch, STAND);
   stamp(m, 14, onGround(GROUND, signs.pouch), signs.pouch);
-  stamp(m, 22, onGround(GROUND, signs.out), signs.out);
   stamp(m, 37, onGround(GROUND, signs.exit), signs.exit);
   for (const x of L1.targets) m.mon(TARGET, x, STAND);
   return m;
 }
 
 /** Level 2: two frosty grumps in a tunnel through a brick wall, a star pouch on the ground and a flame pouch on a ledge. 50 blocks wide. */
-function starOrFlame(book: Book, signs: Record<'frost' | 'flame' | 'order' | 'exit', Sign>): StarterMap {
+function starOrFlame(book: Book, signs: Record<SignName, Sign>): StarterMap {
   const g = base(L2.width, L2.exit);
   // the wall: brick from the top of the room down to a two-block-high tunnel (rows 8 and 9)
   g.fill(L2.wall[0], 0, L2.wall[1] - L2.wall[0] + 1, 8, 'B');
@@ -194,13 +149,14 @@ function starOrFlame(book: Book, signs: Record<'frost' | 'flame' | 'order' | 'ex
     [12, 33, 40],
   );
   const m = new StarterMap(book, g.rows());
-  stamp(m, 3, 5, signs.frost, 3);
+  // The high intro floats; the jump hint stands before the unchanged ledge jump.
+  stamp(m, 3, 5, signs.flame, GROUND - 6);
   m.mon(STAR_POUCH, L2.starPouch, STAND);
   // Beside the ledge, with the post clear of both pouches and the coins.
-  stamp(m, 11, 5, signs.flame, 2);
+  stamp(m, 11, onGround(GROUND, signs.jump), signs.jump);
   m.mon(FLAME_POUCH, L2.flamePouch, L2.ledgeRow - 1);
-  stamp(m, 17, 6, signs.order, 2);
-  stamp(m, 42, 7, signs.exit, 2);
+
+  stamp(m, 43, 7, signs.exit, 2);
   for (const x of L2.frosty) m.mon(FROSTY, x, STAND);
   m.mon(TARGET, L2.target, STAND);
   return m;
@@ -209,10 +165,10 @@ function starOrFlame(book: Book, signs: Record<'frost' | 'flame' | 'order' | 'ex
 /** The levels in order. */
 export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
   const pal = buildStarterPalette(undefined, 'many-weapons');
-  const { book, large, compact } = buildBlocks(pal);
+  const { book, signs } = buildBlocks(pal);
   const levels: Level[] = [
-    { file: 'one', title: 'Empty Hands', hint: 'Walk into a pouch for stars.', map: emptyHands(book, large) },
-    { file: 'two', title: 'Star or Flame', hint: 'Flames first, then stars.', map: starOrFlame(book, compact) },
+    { file: 'one', title: 'Empty Hands', hint: 'Walk into a pouch for stars.', map: emptyHands(book, signs) },
+    { file: 'two', title: 'Star or Flame', hint: 'Flames first, then stars.', map: starOrFlame(book, signs) },
   ];
   return { book, pal, levels };
 }

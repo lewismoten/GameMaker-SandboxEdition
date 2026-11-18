@@ -6,7 +6,7 @@
   "hero": "RIMA",
   "year": 1994,
   "price": "Free",
-  "version": "1.2",
+  "version": "1.3",
   "blurb": "Three short levels about things that hurt. Spikes cost a few hit points, and only once. A pool in the ground costs a whole life, and the room starts again where you came in. The third level has a safe way past both. Signs say how. Play it, then open it in Game-Maker and change a hazard.",
   "exe": "STEP.EXE",
   "dosName": "HAZARDS",
@@ -36,5 +36,15 @@
       ["three.map", 16, 6]
     ],
     "rating": "Everyone"
+  },
+  "acceptedFindings": [
+  {
+    "finding": "hazard-art s3 Block 29 hurts through its whole cell, but its art fills 17% of it",
+    "why": "This is the unchanged pool warning already recorded for Block 62 in the shared baseline. Plaque reduction renumbered it to Block 29 with identical art and damage."
+  },
+  {
+    "finding": "hazard-art s4 Block 29 hurts through its whole cell, but its art fills 17% of it",
+    "why": "This is the unchanged pool warning already recorded for Block 62 in the shared baseline. Plaque reduction renumbered it to Block 29 with identical art and damage."
   }
+]
 }

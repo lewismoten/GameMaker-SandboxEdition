@@ -1,0 +1,19 @@
+{
+  "levels": [
+    {
+      "scene": 2,
+      "teaches": "coins add ten points, including those reached by climbing the ladder",
+      "rules": [{"rule": "before", "a": "score:10", "b": "leave"}, {"rule": "uses", "move": "Up", "min": 1}]
+    },
+    {
+      "scene": 3,
+      "teaches": "gems add fifty points before the optional rock takes twenty away",
+      "rules": [{"rule": "before", "a": "score:50", "b": "score:-20"}, {"rule": "before", "a": "score:-20", "b": "leave"}]
+    },
+    {
+      "scene": 4,
+      "teaches": "coins add points before the ladder leads to a life-giving heart",
+      "rules": [{"rule": "before", "a": "score:10", "b": "key:Up"}, {"rule": "uses", "move": "Up", "min": 1}]
+    }
+  ]
+}

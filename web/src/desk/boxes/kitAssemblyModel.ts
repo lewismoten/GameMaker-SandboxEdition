@@ -14,6 +14,8 @@ export interface AssemblyPart {
   caption: string;
   cut: number[][][];
   art: number[][][];
+  /** Engraved face after assembly; defaults to the upper face. */
+  artFace?: 'up' | 'down';
   origin: V3;
   right: V3;
   down: V3;

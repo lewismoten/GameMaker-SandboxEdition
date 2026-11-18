@@ -6,6 +6,7 @@ import { registerEditor } from '../registry';
 import { viewState } from '../../../urlState';
 import { fileField } from '../../widgets/filePicker';
 import { h, clear, toast } from '../../core/ui';
+import { channelValue } from './channelValue';
 import { parsePalette, paletteCss, serializePalette, defaultPalette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 import { isGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
 import { spread as spreadRange } from './ramps';
@@ -107,10 +108,12 @@ registerEditor(['pal'], (host, project, file) => {
     const range = h('input', { type: 'range', min: 0, max: 63, step: 1, 'aria-label': name, style: 'flex:1;min-width:0' });
     const num = h('input', { type: 'number', min: 0, max: 63, 'aria-label': `${name} (0 to 63)`, style: 'width:64px' });
     const set = (v: number) => {
+      const { value, note } = channelValue(v, name);
       remember(true);
-      pal[selected * 3 + c] = Math.max(0, Math.min(63, v | 0));
+      pal[selected * 3 + c] = value;
       save();
       refresh();
+      if (note) toast(note);
     };
     range.addEventListener('input', () => set(Number(range.value)));
     num.addEventListener('change', () => set(Number(num.value)));

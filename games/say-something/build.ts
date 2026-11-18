@@ -45,7 +45,7 @@ disk.put('say.bbl', serializeBlocks(book.finish()));
 disk.put('say.mbl', serializeBlocks(monsterBlocks.finish()));
 disk.put('say.mon', serializeMonsters(buildMonsters(monsterBlocks)));
 disk.put('hero.cbl', serializeBlocks(heroBlocks.finish()));
-disk.put('hero.chr', serializeCharacter(buildHero(heroBlocks)));
+disk.put('hero.chr', serializeCharacter(buildHero(heroBlocks, { heldRise: { push: 12 } })));
 // the pass map every talk's scene loads: a little ground, and the hero starts on the exit cell, which
 // takes him straight back; its palette is all black, so the trip shows nothing but the talk's own pictures
 const passGrid = new Grid(8, 15);

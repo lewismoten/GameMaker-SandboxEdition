@@ -45,7 +45,7 @@ disk.put('blocks.bbl', serializeBlocks(book.finish()));
 disk.put('blocks.mbl', serializeBlocks(monsterBlocks.finish()));
 disk.put('blocks.mon', serializeMonsters(buildMonsters(monsterBlocks)));
 disk.put('hero.cbl', serializeBlocks(heroBlocks.finish()));
-disk.put('hero.chr', serializeCharacter(buildHero(heroBlocks)));
+disk.put('hero.chr', serializeCharacter(buildHero(heroBlocks, { heldRise: { push: 12 } })));
 disk.put('blocks.snd', serializeSoundSet(buildSounds()));
 disk.put('blocks.cmf', song());
 

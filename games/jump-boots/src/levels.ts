@@ -7,26 +7,28 @@
 //                fine for two; blue bubbles (boot charges, three in a row, one tap each) fill the boots up. A bubble
 //                is used up when touched. A ladder in the pit leads back out for anyone who falls.
 // Every edge is a hedge or a wall you can see, so Nova is never stopped by something she can't.
-import { Book, PULL } from '../../kit/starter/book';
+import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
-import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
-import { buildTiledSigns, stampTiledSign, type TiledSign as Sign, type TiledSignText } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { MICRO_GLYPHS } from '@lewismoten/gamemaker-sandbox-tools/microFont';
+import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
+import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { addMicroPlaques, stampTiledSign, stampMicroPlaques } from '../../kit/starter/microPlaque';
 import { addBootBlocks } from './bootBlocks';
 
-export type SignName = 'rise' | 'fly' | 'exit' | 'two' | 'third' | 'step' | 'gap';
+type SignName = string;
 
 /** All sign words, with widths limited by the existing scenery. */
-const WORDS: Record<SignName, TiledSignText> = {
-  rise: { rows: [['TAP SPACE IN THE AIR AND NOVA RISES AGAIN']], maxWidth: 9 },
-  fly: { rows: [['HOLD RIGHT, KEEP TAPPING, FLY ACROSS']], maxWidth: 9 },
-  exit: { rows: [['EXIT →']], maxWidth: 5 },
-  two: { rows: [['THESE BOOTS HOLD TWO JUMPS. EACH TAP USES ONE']], maxWidth: 7 },
-  third: { rows: [['NO JUMPS LEFT?'], ['WALK INTO'], ['A BLUE BUBBLE']], maxWidth: 7 },
-  step: { rows: [['TOO TALL FOR ONE JUMP. TAP AGAIN']], maxWidth: 7 },
-  gap: { rows: [['TWO TAPS'], ['CROSS IT.'], ['FILL UP FIRST']], maxWidth: 7 },
+const WORDS: Record<string, { lines: string[]; post?: boolean }> = {
+  rise: { lines: ['SPACE', 'AGAIN'] },
+  fly: { lines: ['HOLD', '→'] },
+  exit: { lines: ['EXIT', '→'], post: false },
+  two: { lines: ['2 JUMPS'] },
+  third: { lines: ['NO', 'JUMP'] },
+  walk: { lines: ['WALK', 'IN'] },
+  step: { lines: ['TOO', 'TALL'] },
+  again: { lines: ['SPACE', 'AGAIN'] },
+  gap: { lines: ['FILL', 'UP'] },
 };
 
 /** The block set the levels share: the Starter blocks, the boot charges, then this game's signs. */
@@ -34,17 +36,7 @@ function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
   addBootBlocks(book, pal);
-  const colors = {
-    background: skyOf(pal),
-    paper: pal.c('parch', 3),
-    ink: pal.c('ink', 0),
-    wood: pal.c('wood', 2),
-    highlight: pal.c('wood', 4),
-    shadow: pal.c('wood', 0),
-  };
-  const glyphs = { ...MICRO_GLYPHS, '→': '100110111110100' };
-  const { blocks, signs } = buildTiledSigns(WORDS, { colors, glyphs, lettersPerBlock: 3, maxBlocks: Math.min(100, 150 - book.index.size) });
-  for (const [name, pic] of blocks) book.add(name, pic, { grav: PULL.down });
+  const signs = addMicroPlaques(book, pal, WORDS) as Record<SignName, Sign>;
   return { book, signs };
 }
 
@@ -180,8 +172,9 @@ function boots(book: Book, signs: Record<SignName, Sign>): StarterMap {
   );
   const m = new StarterMap(book, g.rows());
   stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 4, onTop(G, signs.two), signs.two);
-  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 11, onTop(G, signs.third), signs.third);
+  stampMicroPlaques({ set: (x, y, block) => m.setOnSky(x, y, block) }, 11, G - 3, [signs.third, signs.walk]);
   stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 20, onTop(G, signs.step), signs.step);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 22, onTop(G, signs.again), signs.again);
   stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 35, onTop(G, signs.gap), signs.gap);
   stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, L2.stair2[0] + 1, onTop(G - 2 * L2.step, signs.exit) - 1, signs.exit, 2);
   for (const [a, b, y] of L2.pods) for (let x = a; x <= b; x++) m.set(x, y, 'pod');

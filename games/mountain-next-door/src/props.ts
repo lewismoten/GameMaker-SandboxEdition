@@ -31,7 +31,7 @@
 //   high       screeUp/screeHalf/screeUnder/screeRise (wobbly rocks in a path, on the stones' clock), dent0..2 (the summit's damp dent: a ledge)
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { KEYS } from '../../kit/starter/blocks';
-import { LEDGE, PULL, SOLID, type Book } from '../../kit/starter/book';
+import { LEDGE, PULL, SOLID, type Book, type Timed } from '../../kit/starter/book';
 import type { Pal } from '../../kit/starter/palette';
 import {
   FOOT,
@@ -74,6 +74,8 @@ import { EXCUSE_COUNTER } from './voice';
 import { deeperProps } from './propsDeeper';
 import { apple } from './art/orchard';
 
+export type { Timed };
+
 /** Points: a painted blaze, an acorn, a gate taken off the mountain, a gate put back home. */
 export const POINTS = {
   blaze: 10,
@@ -95,13 +97,6 @@ export const BEAD_COUNTER = 24;
 export const PIE_HP = 10;
 /** The counter a gate adds to while Tess carries it (the kit's key counter). */
 export const GATE_COUNTER = KEYS;
-
-/** A block that turns into another after some ticks. */
-export interface Timed {
-  name: string;
-  next: string;
-  ticks: number;
-}
 
 /** Ticks a stepping stone stays up, half, under and rising (one loop is their sum). */
 export const STONE_TICKS = { up: 80, half: 10, under: 30, rise: 10 } as const;

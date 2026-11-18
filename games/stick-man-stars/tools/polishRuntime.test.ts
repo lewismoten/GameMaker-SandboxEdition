@@ -19,6 +19,7 @@ describe('built Stick Man Stars polish', () => {
     files.set(name, serializeGame(game));
     const sim = new GameSim(files, 1);
     const bot = new StarterBot(sim);
+    bot.jumpHold = 8;
     await bot.land();
     const pos = { ...bot.px };
     const hp = sim.ci.hitpts;
@@ -46,6 +47,7 @@ describe('built Stick Man Stars polish', () => {
     for (let run = 0; run < 2; run++) {
       const sim = new GameSim(undefined, 1);
       const bot = new StarterBot(sim);
+      bot.jumpHold = 8;
       if (!initialMap) {
         initialMap = Uint8Array.from(sim.w.map);
         initialBlocks = Uint8Array.from(sim.w.blkmap);

@@ -14,10 +14,11 @@ import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
-import { addSign, type Sign } from '../../kit/starter/sign';
+import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
 import { BIRD, BLUEBIRD } from './monsters';
 
-export type SignName = 'hatch' | 'wait' | 'loop' | 'stop' | 'exit';
+export type SignName = 'wait' | 'stop' | 'exit';
 
 /** Ticks between births: the shelf nest hatches a yellow bird every 4 seconds, the one on the path a blue one every 3. */
 export const SHELF_EVERY = 73;
@@ -57,13 +58,11 @@ function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
   book.add('nestShelf', nest(pal, true), air);
   book.add('nestPath', nest(pal, true), { ...air, touch: 'nestEmpty' });
   book.add('nestEmpty', nest(pal, false), air);
-  const signs = {
-    hatch: addSign(book, pal, 'hatch.sign', 'THIS NEST HATCHES A BIRD', 4, 4),
-    wait: addSign(book, pal, 'wait.sign', 'WAIT AND WATCH THE NEST', 4, 4),
-    loop: addSign(book, pal, 'loop.sign', 'IT HATCHES ONE AFTER ANOTHER', 4, 4),
-    stop: addSign(book, pal, 'stop.sign', 'WALK INTO A NEST AND IT STOPS', 4, 4),
-    exit: addSign(book, pal, 'exit.sign', 'EXIT →', 3),
-  };
+  const signs = addMicroPlaques(book, pal, {
+    wait: { lines: ['WAIT'] },
+    stop: { lines: ['WALK', 'IN'] },
+    exit: { lines: ['EXIT', '→'], post: false },
+  });
   return { book, signs };
 }
 
@@ -95,7 +94,9 @@ function base(width: number, exitX: number): Grid {
   const g = new Grid(width, 15);
   g.row(GROUND, 0, width - 1, 'G').fill(0, GROUND + 1, width, 4, 'D');
   g.col(0, 0, 9, 'B').col(width - 1, 0, 9, 'B');
-  g.put(3, 8, 's').put(3, 9, 'S');
+  // A two-row turf step supports Kit at the raised entrance, clear of the signs.
+  g.put(3, 8, 'G').put(3, 9, 'D');
+  g.put(3, 6, 's').put(3, 7, 'S');
   g.put(exitX, 8, 'e').put(exitX, 9, 'E');
   return g;
 }
@@ -129,9 +130,9 @@ function aNest(book: Book, signs: Record<SignName, Sign>): StarterMap {
   );
   const m = new StarterMap(book, g.rows());
   m.set(24, 6, 'nestShelf');
-  m.sign(6, onGround(GROUND, signs.hatch), signs.hatch);
-  m.sign(15, onGround(GROUND, signs.wait), signs.wait);
-  m.sign(38, onGround(GROUND, signs.exit), signs.exit);
+
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 15, onGround(GROUND, signs.wait), signs.wait);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 38, onGround(GROUND, signs.exit), signs.exit);
   return m;
 }
 
@@ -158,9 +159,9 @@ function emptyNest(book: Book, signs: Record<SignName, Sign>): StarterMap {
   const m = new StarterMap(book, g.rows());
   m.set(SHELF_NEST_X, 6, 'nestShelf');
   m.set(PATH_NEST_X, STAND, 'nestPath');
-  m.sign(6, onGround(GROUND, signs.loop), signs.loop);
-  m.sign(24, onGround(GROUND, signs.stop), signs.stop);
-  m.sign(38, onGround(GROUND, signs.exit), signs.exit);
+
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 24, onGround(GROUND, signs.stop), signs.stop);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 38, onGround(GROUND, signs.exit), signs.exit);
   return m;
 }
 

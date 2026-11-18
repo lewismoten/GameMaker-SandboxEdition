@@ -28,10 +28,10 @@ export async function readAt(bot: StarterBot, col: number, what: string): Promis
   await must(bot, bot.wait(READ), `reading ${what}`);
 }
 
-/** Jumps the hazards at `col` .. `col + n - 1` from two blocks before (from the edge for a run of three), landing past them with every hit point. */
+/** Clears the cracked gap on its wooden landing in one held rise, keeping every hit point. */
 export async function hop(bot: StarterBot, col: number, n = 1, what = 'the hazard'): Promise<void> {
   const hp = bot.sim.ci.hitpts;
-  await must(bot, bot.walk(col - (n >= 3 ? 1 : 2), what), `to ${what}`);
+  await must(bot, bot.walk(col - 1, what), `to ${what}`);
   await must(bot, bot.jump('right', col + n + 1), `over ${what}`);
   if (bot.sim.ci.hitpts !== hp) throw new Error(`${what} hurt: hit points ${hp} -> ${bot.sim.ci.hitpts}`);
 }

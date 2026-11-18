@@ -1,6 +1,7 @@
 // Stick Man Stars' DOS-native polish contracts, including the first visible lighting frame.
 import { Buffer } from 'node:buffer';
 import { describe, expect, it } from 'vitest';
+import { paletteFor } from '../src/moods';
 import { buildLevels, L2 } from '../src/levels';
 import { monsterPictures, monsterSet, CONF_BIG, CONF_COT, CONF_TOW, CONF_SHED, LIT_BIG, LIT_COT, LIT_TOW, LIT_SHED } from '../src/monsters';
 import { houseLitVoc, throwSounds } from '../src/sounds';
@@ -83,5 +84,31 @@ describe('ending cartoon', () => {
     expect(canvas.palette).not.toEqual(first);
     expect(canvas.palette).toEqual(hold);
     expect(Buffer.compare(cartoons.endingFli(pal, book, monsterPictures(pal), hero), bytes)).toBe(0);
+  });
+});
+
+// Decode the shipped animation format, including every title and its final reading hold.
+describe('paper level openings', () => {
+  it('finishes every notebook card in about two seconds and holds the complete name and hint', () => {
+    const { pal, levels } = buildLevels();
+    const hero = heroPicture(buildStickBlocks(pal), 'stand.top', 'stand');
+    levels.forEach((level, i) => {
+      const cardPal = paletteFor(pal, level.mood, 'notebook');
+      const anim = parseFli(cartoons.paperOpening(cardPal, hero, i + 1, levels.length, level.title, level.hint));
+      expect(anim.frames.length).toBe(anim.frameCount);
+      expect((anim.frameCount * anim.speed) / 70).toBeLessThan(2.1);
+      const canvas = newFliCanvas(anim);
+      let first: Uint8Array | undefined;
+      let hold: Uint8Array | undefined;
+      for (let f = 0; f < anim.frameCount; f++) {
+        applyFliFrame(anim, f, canvas);
+        if (f === 0) first = canvas.pixels.slice();
+        if (f === 29) hold = canvas.pixels.slice();
+        if (f >= 29) expect(canvas.pixels).toEqual(hold);
+      }
+      expect(canvas.pixels).not.toEqual(first);
+      expect(canvas.pixels).toEqual(Uint8Array.from(cartoons.paperCard(cardPal, hero, i + 1, levels.length, level.title, level.hint).px));
+      expect(canvas.palette).toEqual(cardPal.pal);
+    });
   });
 });

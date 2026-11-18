@@ -5,6 +5,20 @@ Changes to `@lewismoten/gamemaker-sandbox-tools`, released as `tools-v*` tags. T
 
 ## [Unreleased]
 
+## [3.8.0] - 2026-11-17
+
+Tiled signs pack tighter and can wrap two lines of small letters, and a new VOC measurement lets builds lower sample rates only where nobody can hear the difference.
+
+### Changed
+
+- Add VOC band-energy measurements and filtered PCM rate reduction for build tools.
+
+### Fixed
+
+- Tiled signs use uniform font pixels and tighter packing, with optional two-line 3×5 boards that wrap whole words inside one frame.
+
+Full list: [changes/release/tools/3.8.0.md](https://github.com/lewismoten/GameMaker-SandboxEdition/blob/tools-v3.8.0/changes/release/tools/3.8.0.md)
+
 ## [3.7.0] - 2026-11-15
 
 ### Added
@@ -77,7 +91,8 @@ The first release of the development tools as an npm package: drawing, palettes,
 - CP437 and micro text drawn as indexed game pixels, with documented font, text-effect and lighting APIs.
 - Reusable color ramps and time-of-day VGA lighting.
 
-[Unreleased]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/tools-v3.7.0...HEAD
+[Unreleased]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/tools-v3.8.0...HEAD
+[3.8.0]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/tools-v3.7.0...tools-v3.8.0
 [3.7.0]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/tools-v3.6.0...tools-v3.7.0
 [3.6.0]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/tools-v3.5.0...tools-v3.6.0
 [3.5.0]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/tools-v3.4.0...tools-v3.5.0

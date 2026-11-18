@@ -3,7 +3,7 @@
 // much game making a Starter asks. 'meadow' (The Basics) is the sunny scene in screens.ts and is not
 // drawn here. Every look uses only the Starter palette's ramps, so any Starter can wear any of them.
 import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
-import { gradient, pool } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';
+import { gradient } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';
 import type { Pal } from './palette';
 
 /** The group looks: meadow (The Basics), sunset (Moving and Pushing), breeze (Worlds That Push Back), dressing (Changing Your Hero), arena (Foes and Bosses), circuit (Wiring and Puzzles), stage (Telling a Story), workbench (Putting It Together), atlas (Bigger Worlds), neon (Showcase Tricks). */
@@ -206,7 +206,11 @@ function dressing(p: Pixels, pal: Pal): void {
 function arena(p: Pixels, pal: Pal): void {
   const c = pal.c;
   gradient(p, 0, 0, W, GROUND, pal.r('red'), 1, 3, true);
-  pool(p, 160, 70, 150, 70, pal.r('red'), 3, 4);
+  // A clean, solid oval keeps the warm spotlight without a dithered pixel field.
+  for (let y = 0; y < 140; y++) {
+    const half = Math.round(150 * Math.sqrt(Math.max(0, 1 - ((y - 70) / 70) ** 2)));
+    p.rect(160 - half, y, half * 2, 1, c('red', 3));
+  }
   // bunting: a string sagging between the corners, hung with little gold, white and teal flags
   const sag = (x: number) => 10 + Math.round(Math.sin((x / W) * Math.PI) * 14);
   for (let x = 0; x < W; x++) p.set(x, sag(x), c('ink', 0));
@@ -293,7 +297,11 @@ function circuit(p: Pixels, pal: Pal): void {
 function stage(p: Pixels, pal: Pal): void {
   const c = pal.c;
   gradient(p, 0, 0, W, GROUND, pal.r('purple'), 0, 2, true);
-  pool(p, 160, 150, 130, 70, pal.r('purple'), 2, 3);
+  // The spotlight has a solid fill and a crisp elliptical edge.
+  for (let y = 80; y < GROUND; y++) {
+    const half = Math.round(130 * Math.sqrt(Math.max(0, 1 - ((y - 150) / 70) ** 2)));
+    p.rect(160 - half, y, half * 2, 1, c('purple', 3));
+  }
   // wooden stage: planks running across, with their joints staggered
   p.rect(0, GROUND, W, H - GROUND, c('wood', 2));
   for (let y = GROUND; y < H; y += 8) {

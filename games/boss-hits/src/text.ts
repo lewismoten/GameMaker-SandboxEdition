@@ -39,9 +39,13 @@ export const CREDITS = withCreditPage(
 
 Design, pixels, beeps and levels by Claude Sonnet 5.5, an AI model made by Anthropic.
 
+Held-rise controls by OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten.
+
 Made with GAME-MAKER 3.0 from Recreational Software Designs.
 
 One of the Starters: small games that each show one idea.
+
+Raised starts and scroll framing by OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten.
 `),
 );
 

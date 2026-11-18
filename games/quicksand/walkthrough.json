@@ -8,11 +8,11 @@
  "segments": [
   {
    "scene": 2,
-   "keys": "AU0PzTBNGc0wTRnNQzkCuQBNCs0NTSjNA00KzQNN"
+   "keys": "AU0NzTBNGc0wTRnNQzkIuQBNCs0DTSjNA00KzQNN"
   },
   {
    "scene": 3,
-   "keys": "AU0KzTBNGc0wTS3NO00ezTtNCs0zOQK5AE0KzQ1ND80fTSPNA00="
+   "keys": "AU0IzTRNGc0wTS3NO00ezTtNCs0zOQi5AE0KzQNND80fTSPNA00="
   }
  ],
  "chapters": [
@@ -27,7 +27,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 8857,
+  "frames": 9312,
   "chapters": [
    {
     "title": "Opening",
@@ -46,18 +46,18 @@
    },
    {
     "title": "Level 2: Stepping Stones",
-    "frame": 3562,
-    "time": 59366.666666663754
+    "frame": 3543,
+    "time": 59049.99999999713
    },
    {
     "title": "Ending",
-    "frame": 5576,
-    "time": 92933.33333333749
+    "frame": 5550,
+    "time": 92500.00000000403
    },
    {
     "title": "Credits",
-    "frame": 7783,
-    "time": 129716.66666668153
+    "frame": 7757,
+    "time": 129283.33333334807
    }
   ]
  }

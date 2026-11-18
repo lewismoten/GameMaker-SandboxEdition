@@ -10,7 +10,8 @@ import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { ORIGIN, StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
-import { addSign, type Sign } from '../../kit/starter/sign';
+import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
 import { addTokenBlocks } from './tokenBlocks';
 
 export type SignName = 'count' | 'takes3' | 'exit' | 'all5' | 'isExit';
@@ -20,13 +21,13 @@ export function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sig
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
   addTokenBlocks(book, pal);
-  const signs = {
-    count: addSign(book, pal, 'count', 'TOKENS ADD UP. GET 3', 4, 2),
-    takes3: addSign(book, pal, 'takes3', 'THIS GATE TAKES 3 TOKENS', 4, 2),
-    exit: addSign(book, pal, 'exit', 'EXIT →', 3),
-    all5: addSign(book, pal, 'all5', 'FIVE TOKENS ARE HERE', 4, 2),
-    isExit: addSign(book, pal, 'isExit', 'THE GATE IS THE EXIT', 4, 2),
-  };
+  const signs = addMicroPlaques(book, pal, {
+    count: { lines: ['GET', '3'] },
+    takes3: { lines: ['NEED', '3'] },
+    exit: { lines: ['EXIT', '→'], post: false },
+    all5: { lines: ['5', 'HERE'], post: false },
+    isExit: { lines: ['EXIT', '→'], post: false },
+  });
   return { book, signs };
 }
 
@@ -75,9 +76,9 @@ function threeForTheGate(book: Book, signs: Record<SignName, Sign>): StarterMap 
     .set(15, GROUND - 1, 'token')
     .set(26, 2, 'token');
   m.set(28, GROUND - 2, 'tokenTop').set(28, GROUND - 1, 'gateThree');
-  m.sign(5, onGround(GROUND, signs.count), signs.count);
-  m.sign(22, onGround(GROUND, signs.takes3), signs.takes3);
-  m.sign(38, onGround(GROUND, signs.exit), signs.exit);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 5, onGround(GROUND, signs.count), signs.count);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 22, onGround(GROUND, signs.takes3), signs.takes3);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 38, onGround(GROUND, signs.exit), signs.exit);
   return m;
 }
 
@@ -114,8 +115,8 @@ function gateIsTheExit(book: Book, signs: Record<SignName, Sign>): StarterMap {
   // the gate is the door out: its block is the level's only link
   m.set(40, GROUND - 2, 'tokenTop').set(40, GROUND - 1, 'gateFive');
   m.exits.push({ from: [40 + ORIGIN, GROUND - 1 + ORIGIN] });
-  m.sign(5, onGround(GROUND, signs.all5), signs.all5);
-  m.sign(34, onGround(GROUND, signs.isExit), signs.isExit);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 5, onGround(GROUND, signs.all5), signs.all5);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 34, onGround(GROUND, signs.isExit), signs.isExit);
   return m;
 }
 

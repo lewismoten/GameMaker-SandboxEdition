@@ -31,6 +31,8 @@ export function buildGame(levels: Level[]): Game {
   levels.forEach((l, i) => {
     const scene = emptyScene(ADVTYPE);
     scene.desc = l.title.slice(0, 19);
+    // Both lessons fit vertically; only the long path follows horizontally.
+    scene.scroll.up = scene.scroll.down = 0;
     scene.pos = { x: 60 + i * 80, y: 110 };
     if (!l.scroll) scene.scroll = { up: 0, down: 0, left: 0, right: 0, style: 0, xtra: new Uint8Array(11) };
     scene.files = [

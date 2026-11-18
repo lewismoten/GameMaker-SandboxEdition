@@ -15,18 +15,16 @@ import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { ORIGIN, StarterMap } from '../../kit/starter/map';
 import type { Pal } from '../../kit/starter/palette';
-import { addSign, type Sign } from '../../kit/starter/sign';
+import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
 import { buildPalette } from './haze';
 import { addScenery, type Scenery } from './art';
 
-const SIGNS = {
-  closeUp: ['closeUp', 'LIAN IS 40 PIXELS TALL. FAR UP THAT ROAD THEY ARE SMALL', 4, 3],
-  quick: ['quick', 'TOO FAST. THE SAME STEPS AS UP CLOSE', 4, 2],
-  slow: ['slow', 'SLOW STEPS. THEY ARE ONLY 8 PIXELS TALL', 4, 3],
-  front: ['front', 'BIG THINGS IN FRONT MAKE THEM FAR AWAY', 4, 3],
-  contrast: ['contrast', 'DARK AND RED ON PALE: THEY STAY CLEAR', 4, 3],
-} as const;
-export type SignName = keyof typeof SIGNS;
+const WORDS = {
+  closeUp: { lines: ['LIAN: 40', 'PIXELS'] },
+  slow: { lines: ['8 PIXELS', 'SLOW'] },
+};
+export type SignName = keyof typeof WORDS;
 
 /** A block of the map, in world blocks. */
 export type Spot = [number, number];
@@ -78,17 +76,15 @@ const at = (x: number, y: number): Spot => [x + ORIGIN, y + ORIGIN];
 export function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign>; art: Scenery } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
-  const art = addScenery(book, pal);
-  const signs = {} as Record<SignName, Sign>;
-  for (const [key, [name, words, w, h]] of Object.entries(SIGNS)) signs[key as SignName] = addSign(book, pal, name, words, w, h);
+  const signs = addMicroPlaques(book, pal, WORDS);
+  const post = signs.closeUp.post!;
+  const art = addScenery(book, pal, [book.pics.get(post.block)!, book.pics.get(post.rightBlock!)!]);
+  for (const s of Object.values(signs)) s.post = { ...s.post!, block: art.posts[0], rightBlock: art.posts[1] };
   return { book, signs, art };
 }
 
-/** A sign standing on the path; over the hills (`posts`) its posts are drawn on them, not on sky. */
-const sign = (m: StarterMap, x: number, s: Sign, posts?: Scenery['posts']) => {
-  m.sign(x, FLOOR - 1 - s.board.length, s);
-  if (posts) m.set(x, FEET, posts[0]).set(x + s.board[0].length - 1, FEET, posts[1]);
-};
+/** Shared plaques keep their own colors against the hills, on one short grounded post. */
+const sign = (m: StarterMap, x: number, s: Sign) => stampTiledSign(m, x, FLOOR - 1 - s.board.length, s);
 
 /** A map that, when finished, paints its scenery on past both ends: StarterMap.done() leaves only sky there, and the view reaches 8 blocks past Lian, who can stand at an end. */
 class Scenic extends StarterMap {
@@ -151,20 +147,17 @@ function mapsAndRooms(book: Book, s: Record<SignName, Sign>, a: Scenery): { file
   // 1. near
   const near = windowMap(book, a, NEAR_W, 'hedge', 'dirt');
   near.set(NEAR_GATE, FLOOR - 2, 'doorTop').set(NEAR_GATE, FEET, 'doorBottom');
-  sign(near, 11, s.closeUp, a.posts);
+  sign(near, 11, s.closeUp);
   // 2a. quick
   const quick = windowMap(book, a, FAR_W, 'grove', 'slope');
   gate(quick, a);
-  sign(quick, 12, s.quick, a.posts);
   // 2b. slow
   const slow = windowMap(book, a, FAR_W, 'grove', 'slope');
   gate(slow, a);
-  sign(slow, 12, s.slow, a.posts);
+  sign(slow, 12, s.slow);
   // 3. front
   const front = windowMap(book, a, FAR_W, 'grove', 'front');
   gate(front, a);
-  sign(front, 12, s.front, a.posts);
-  sign(front, 22, s.contrast, a.posts);
   const farExit: Room['exits'] = { gate: at(FAR_GATE, FEET) };
   return {
     files: [

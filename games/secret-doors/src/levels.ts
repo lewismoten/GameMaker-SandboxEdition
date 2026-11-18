@@ -8,62 +8,31 @@
 //   3. Coins in the Wall: a wall of fake bricks with coins showing in it. A secret is fair when
 //      the level hints at it.
 // Every room is closed in by hedges you can see, so Mia is never stopped by something she can't.
-import { Book, PULL } from '../../kit/starter/book';
+import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
-import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
-import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { MICRO_GLYPHS } from '@lewismoten/gamemaker-sandbox-tools/microFont';
+import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
+import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
 import { addWallBlocks } from './wallBlocks';
 
-export type SignName = 'alike' | 'real' | 'picture' | 'setting' | 'bump' | 'twice' | 'own' | 'window' | 'fair' | 'exit' | 'exitLarge';
+export type SignName = 'real' | 'picture' | 'bump' | 'twice' | 'window' | 'exit' | 'exitLarge';
 
 /** The block set the levels share: the Starter blocks, this game's signs, then the wall blocks. */
 function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
   addWallBlocks(book, pal);
-  const texts = {
-    alike: { rows: [['A WALL AND A PICTURE OF A WALL CAN LOOK THE SAME']], maxWidth: 7 },
-    real: { rows: [['THIS WALL IS REAL. JUMP OVER IT']], maxWidth: 7 },
-    picture: { rows: [['THIS ONE IS ONLY A PICTURE. WALK IN']], maxWidth: 7 },
-    setting: { rows: [['SOLID IS A BLOCK SETTING, NOT A LOOK']], maxWidth: 7 },
-    bump: { rows: [['BUMP IT AND'], ['IT CRACKS']], maxWidth: 7 },
-    twice: { rows: [['THE CRACK IS A BLOCK TOO. WALK INTO IT AGAIN']], maxWidth: 7 },
-    own: { rows: [['EACH BLOCK CHANGES ON ITS OWN']], maxWidth: 7 },
-    window: { rows: [['COINS SHOWING IN A WALL? WALK IN']], maxWidth: 9 },
-    fair: { rows: [['A FAIR SECRET GETS A HINT']], maxWidth: 11 },
-    exit: { rows: [['EXIT →']], maxWidth: 7 },
-    exitLarge: { rows: [['EXIT →']] },
-  };
-  const colors = {
-    background: skyOf(pal),
-    paper: pal.c('parch', 3),
-    ink: pal.c('ink', 0),
-    wood: pal.c('wood', 2),
-    highlight: pal.c('wood', 4),
-    shadow: pal.c('wood', 0),
-  };
-  const glyphs = { ...MICRO_GLYPHS, '→': '100110111110100' };
-  const compact = buildTiledSigns(texts, {
-    include: ['alike', 'real', 'picture', 'setting', 'bump', 'twice', 'own', 'exit'],
-    compact: true,
-    colors,
-    glyphs,
-    maxBlocks: Math.min(100, 150 - book.index.size),
+  const signs = addMicroPlaques(book, pal, {
+    real: { lines: ['JUMP', 'OVER'] },
+    picture: { lines: ['WALK', 'IN'] },
+    bump: { lines: ['BUMP', 'IT!'] },
+    twice: { lines: ['BUMP', 'IT!'] },
+    window: { lines: ['WALK', 'IN'] },
+    exit: { lines: ['EXIT', '→'], post: false },
+    exitLarge: { lines: ['EXIT', '→'], post: false },
   });
-  for (const [name, pic] of compact.blocks) book.add(name, pic, { grav: PULL.down });
-  const large = buildTiledSigns(texts, {
-    include: ['window', 'fair', 'exitLarge'],
-    lettersPerBlock: 3,
-    colors,
-    glyphs,
-    prefix: 'largeSign',
-    maxBlocks: Math.min(100, 150 - book.index.size),
-  });
-  for (const [name, pic] of large.blocks) book.add(name, pic, { grav: PULL.down });
-  const signs = { ...compact.signs, ...large.signs };
   return { book, signs };
 }
 
@@ -99,7 +68,9 @@ function base(width: number, exitX: number): Grid {
   const g = new Grid(width, 15);
   g.row(GROUND, 0, width - 1, 'G').fill(0, GROUND + 1, width, 4, 'D');
   g.col(0, 0, 9, 'X').col(width - 1, 0, 9, 'X');
-  g.put(3, 8, 's').put(3, 9, 'S');
+  // A narrow turf step supports the hero before walking down onto the path.
+  g.put(3, 8, 'G').put(3, 9, 'D');
+  g.put(3, 6, 's').put(3, 7, 'S');
   g.put(exitX, 8, 'e').put(exitX, 9, 'E');
   return g;
 }
@@ -133,11 +104,9 @@ function sameLook(book: Book, signs: Record<SignName, Sign>): StarterMap {
   const m = new StarterMap(book, g.rows());
   stack(m, 'wall', L1.real, 1, L1.realRows);
   stack(m, 'fake', L1.fake, 1, L1.fakeRows);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 4, onGround(GROUND, signs.alike), signs.alike);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 11, onGround(GROUND, signs.real), signs.real);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 26, onGround(GROUND, signs.picture), signs.picture);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 36, onGround(GROUND, signs.setting), signs.setting);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 45, 7, signs.exit, 2);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 12, onGround(GROUND, signs.real), signs.real);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 27, onGround(GROUND, signs.picture), signs.picture);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 43, 7, signs.exit, 2);
   return m;
 }
 
@@ -160,9 +129,8 @@ function bumpThenBump(book: Book, signs: Record<SignName, Sign>): StarterMap {
   stack(m, 'loose', L2.wallA, 1, L2.rows);
   stack(m, 'loose', L2.wallB, L2.wallBWidth, L2.rows);
   stampTiledSign({ set: m.setOnSky.bind(m) }, 4, onGround(GROUND, signs.bump), signs.bump);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 11, onGround(GROUND, signs.twice), signs.twice);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 27, onGround(GROUND, signs.own), signs.own);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 45, 7, signs.exit, 2);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 12, onGround(GROUND, signs.twice), signs.twice);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 43, 7, signs.exit, 2);
   return m;
 }
 
@@ -185,8 +153,7 @@ function coinsInTheWall(book: Book, signs: Record<SignName, Sign>): StarterMap {
   stack(m, 'fake', L3.x, L3.width, 2);
   for (let i = 0; i < L3.width; i++) m.set(L3.x + i, L3.roofRow, 'wall');
   for (const [x, y] of L3.windows) m.set(x, y, 'coin');
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 6, onGround(GROUND, signs.window), signs.window);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 18, onGround(GROUND, signs.fair), signs.fair);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 4, onGround(GROUND, signs.window), signs.window);
   stampTiledSign({ set: m.setOnSky.bind(m) }, 45, 7, signs.exitLarge, 2);
   return m;
 }

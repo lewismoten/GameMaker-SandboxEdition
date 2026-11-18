@@ -1,6 +1,7 @@
 // Regressions for physical inventory, sliding poses, cut holes and the builders' assembly text.
 import { describe, expect, it } from 'vitest';
 import { assemblyModel, poseAt } from './kitAssemblyModel';
+import { T } from '../../../../games/year2000/laser/cryptexDims';
 import { makeParts as cryptexParts } from '../../../../games/year2000/laser/cryptexParts';
 import { makeParts as plowedParts } from '../../../../games/snowbound/laser/plowedParts';
 import { assemblySvg as cryptexInstructions } from '../../../../games/year2000/laser/cryptexSteps';
@@ -16,7 +17,7 @@ for (const [kind, builder, instructions] of [
     const model = assemblyModel(kind);
     const stock = builder(0);
     it('has one step per physical cut piece, with the exact nominal outline and holes', () => {
-      expect(model.thickness).toBe(3);
+      expect(model.thickness).toBe(kind === 'cryptex' ? T : 3);
       expect(new Set(model.parts.map((p) => p.id)).size).toBe(model.parts.length);
       for (const [name, made] of Object.entries(stock)) {
         const parts = model.parts.filter((p) => p.name === name);
@@ -66,22 +67,29 @@ describe('cryptex sub-assemblies', () => {
   const m = assemblyModel('cryptex');
   const at = (name: string) => m.parts.find((p) => p.name === name)!;
   it('seats the base layers, rings and head at the heights of the lock', () => {
-    expect(m.parts.filter((p) => /^A\dR$/.test(p.name)).map((p) => p.origin[2])).toEqual([3, 6, 9, 12]);
-    expect(at('B1').origin[2]).toBe(15);
-    expect(at('E2').origin[2]).toBe(36);
-    expect(at('HEAD').origin[2]).toBe(39);
+    // Heights are whole layers of the cryptex stock (T mm each).
+    const layers = (z: number) => Math.round((z / T) * 1000) / 1000;
+    expect(m.parts.filter((p) => /^A\dR$/.test(p.name)).map((p) => layers(p.origin[2]))).toEqual([1, 2, 3, 4]);
+    expect(layers(at('B1').origin[2])).toBe(5);
+    expect(layers(at('E2').origin[2])).toBe(12);
+    expect(layers(at('HEAD').origin[2])).toBe(14);
     expect(at('CORE0').cut).toHaveLength(1);
+    expect(layers(at('CORE0').origin[2])).toBe(13);
+    expect(at('CORE0').artFace).toBe('down');
+    expect(m.parts.filter((p) => p.name === 'CORER').map((p) => layers(p.origin[2]))).toEqual([5, 7, 9, 11]);
     expect(m.parts.filter((p) => p.name === 'COREC').every((p) => p.cut.length === 2)).toBe(true);
   });
   it('keeps every ring slice hollow and gives the base plates a hollow ring', () => {
     for (const k of ['B1', 'C1', 'D1', 'E1', 'A2R']) expect(at(k).cut, k).toHaveLength(2);
   });
   it('builds each group, shows it finished, puts the groups together, then sets a code', () => {
-    expect(m.groups.map((g) => g.id)).toEqual(['A', 'B', 'C', 'D', 'E', 'F', 'G4', 'G3', 'G2', 'G1', 'H', 'I']);
+    expect(m.groups.map((g) => g.id)).toEqual(['A', 'B', 'C', 'D', 'E', 'F', 'G4', 'G3', 'G2', 'G1', 'H', 'I', 'J']);
     expect(m.steps.filter((s) => s.kind === 'done')).toHaveLength(m.groups.length);
     expect(m.sections.map((s) => s.title)).toContain('Set your own code');
     const last = m.steps.length + 1;
     // lifted and turned washer: G1 is up and turned in the "G1 turns" step, back and seated at the end
+    expect(m.steps.filter((s) => s.moves?.some((move) => move.group === 'I'))).toHaveLength(1);
+    expect(m.parts.filter((p) => p.name === 'LIDP').every((p) => p.down[2] === 1)).toBe(true);
     const turns = m.steps.findIndex((s) => s.label === 'G1 turns');
     const g1 = m.parts.findIndex((p) => p.group === 'G1');
     expect(poseAt(m, g1, turns + 1).spin).toBe(108);

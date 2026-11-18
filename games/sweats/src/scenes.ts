@@ -30,8 +30,28 @@ export const HIVE_GROUP: Group = {
 export const SETS: Group[] = [work, errands, home, outside];
 export const GROUPS: Group[] = [HIVE_GROUP, ...SETS];
 
-/** Which VOC each sound slot of a scene's .SND plays (sound/sounds.ts fills in the rest). */
-export type SoundPlan = Partial<Record<'score' | 'spend' | 'line' | 'declaim' | 'hurt' | 'die' | 'kill' | 'gain', string>>;
+/** Which VOC each sound slot plays; '' keeps its PC speaker effect (sound/sounds.ts fills in the rest). */
+export type SoundPlan = Partial<Record<'score' | 'spend' | 'line' | 'declaim' | 'hurt' | 'die' | 'kill' | 'gain' | 'hop' | 'money', string>>;
+
+/** Prototype: keep ordinary effects off the sampled channel in scenes where they interrupt words. */
+const SPEAKER_EFFECTS: Record<string, SoundPlan> = {
+  meeting: { kill: '' },
+  cgoat: { kill: '' },
+  chair: { kill: '', hop: '' },
+  ficus: { kill: '' },
+  checkout: { kill: '' },
+  cashier: { kill: '', hop: '' },
+  plates: { kill: '', money: '' },
+  banquet: { kill: '', money: '', gain: '' },
+  blanket: { kill: '', money: '' },
+  socks: { kill: '', hop: '', gain: '', money: '' },
+  pizza: { kill: '' },
+  itch: { kill: '' },
+  dbltap: { kill: '', money: '' },
+  ants: { kill: '', hop: '' },
+  cardbrd: { kill: '' },
+  umbrella: { kill: '', hop: '' },
+};
 
 export interface SceneDef {
   /** The scene's name (links name scenes by it). */
@@ -115,7 +135,7 @@ function monologue(group: Group, mono: Monologue, setIndex: number, i: number): 
     build: (m) => mono.build(m),
     monsters: (set, mb) => mono.monsters(set, mb),
     song: mono.song,
-    sounds: { score: mono.clips.open, spend: mono.clips.punch, line: mono.clips.line, declaim: mono.clips.word },
+    sounds: { score: mono.clips.open, spend: mono.clips.punch, line: mono.clips.line, declaim: mono.clips.word, ...SPEAKER_EFFECTS[mono.file] },
     intro: `card${n}.lst`,
     exit: 'bravo.lst',
     card: n,

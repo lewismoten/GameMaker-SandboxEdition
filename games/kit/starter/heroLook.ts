@@ -155,8 +155,8 @@ export const helperPalettes: Helper[] = [
   },
 ];
 
-/** Every two-letter block there is ('·' is blank): Lewis's set, plus T· for Kit. */
-export const NAME_BLOCK_IDS = ['··', 'A·', 'AL', 'AN', 'CO', 'KA', 'KI', 'LA', 'LE', 'LI', 'LO', 'MA', 'MI', 'NA', 'NE', 'NI', 'RA', 'RI', 'TA', 'YA', 'T·'];
+/** Every two-letter block there is ('·' is blank): Lewis's set with NE/KA replaced by NOVA's NO/VA, plus T· for Kit. */
+export const NAME_BLOCK_IDS = ['··', 'A·', 'AL', 'AN', 'CO', 'KI', 'LA', 'LE', 'LI', 'LO', 'MA', 'MI', 'NA', 'NI', 'NO', 'RA', 'RI', 'TA', 'VA', 'YA', 'T·'];
 
 /** The block ids that spell a name, two letters each ('MIA' is MI + A·). */
 export function nameBlockIds(name: string): string[] {

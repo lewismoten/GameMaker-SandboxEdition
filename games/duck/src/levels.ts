@@ -7,31 +7,31 @@
 //   2. High or Low: a bird at head height again (duck), a ball rolling on the ground (hop with Space: a duck is still on
 //                   the ground, so it does not help), and one of each, one after the other.
 // Every edge is a hedge or a wall you can see, and every roof is a drawn awning on drawn poles, so nothing is invisible.
-import { MICRO_GLYPHS } from '@lewismoten/gamemaker-sandbox-tools/microFont';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { bevel } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';
-import { Book, PULL, SOLID } from '../../kit/starter/book';
+import { Book, SOLID } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
-import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
 import { MONS } from './monsters';
 
 /** A flier's kind as `[column, MONS number]` gives it: the name for `patrol()`. */
 export const KIND = ['bird', 'birdQuick', 'ball', 'ballQuick'] as const;
 
-export type SignName = 'duck' | 'roof' | 'walk' | 'exit' | 'height' | 'ball' | 'both';
+export type SignName = 'duck' | 'roof' | 'walk' | 'exit' | 'height' | 'hops' | 'both';
 
-/** The signs' words, unchanged when their boards are resized. */
-const WORDS: Record<SignName, { text: string }> = {
-  duck: { text: 'A BIRD FLIES AT HEAD HEIGHT. HOLD DOWN AND KIT DUCKS UNDER IT' },
-  roof: { text: 'THE ROOF IS TOO LOW TO HOP OVER. DUCK AS EACH BIRD PASSES' },
-  walk: { text: 'LET GO OF DOWN AND KIT STANDS. WALK ON TO THE DOOR' },
-  exit: { text: 'EXIT →' },
-  height: { text: 'HIGH BIRD, SO DUCK. LOW BALL, SO HOP WITH SPACE' },
-  ball: { text: 'A DUCK IS STILL ON THE GROUND. A BALL ROLLS UNDER YOU: HOP' },
-  both: { text: 'A BIRD, THEN A BALL. DUCK, THEN HOP' },
+/** Lewis’s approved compact vocabulary. */
+const WORDS: Record<SignName, { lines: string[]; post?: boolean }> = {
+  duck: { lines: ['HOLD', 'DOWN'] },
+  roof: { lines: ['DUCK'] },
+  walk: { lines: ['TO', 'DOOR'] },
+  exit: { lines: ['EXIT', '→'], post: false },
+  height: { lines: ['DUCK'] },
+  hops: { lines: ['SPACE', 'HOPS'] },
+  both: { lines: ['DUCK', 'HOP'] },
 };
 
 /** The block set the levels share: the Starter blocks, this game's awning and pole, then its signs. */
@@ -60,20 +60,7 @@ function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
   const pole = new Pixels(20, 20, skyOf(pal));
   pole.rect(8, 0, 4, 20, wood[2]).rect(8, 0, 1, 20, wood[4]).rect(11, 0, 1, 20, wood[0]);
   book.add('pole', pole, { grav: 4 });
-  const { blocks, signs } = buildTiledSigns(
-    Object.fromEntries(Object.entries(WORDS).map(([name, { text }]) => [name, { rows: [[text]], ...(name === 'duck' ? { maxWidth: 7 } : {}) }])) as Record<
-      SignName,
-      { rows: string[][] }
-    >,
-    {
-      compact: true,
-      glyphs: { ...MICRO_GLYPHS, '→': '100110111110100' },
-      maxWidth: 5,
-      maxBlocks: Math.min(100, 150 - book.index.size),
-      colors: { background: skyOf(pal), paper: c('parch', 3), ink: c('ink', 0), wood: c('wood', 2), highlight: c('wood', 4), shadow: c('wood', 0) },
-    },
-  );
-  for (const [name, pic] of blocks) book.add(name, pic, { grav: PULL.down });
+  const signs = addMicroPlaques(book, pal, WORDS) as Record<SignName, Sign>;
   return { book, signs };
 }
 
@@ -177,8 +164,8 @@ function headHeight(book: Book, signs: Record<SignName, Sign>): StarterMap {
   awning(m, L1.roof[0], L1.roof[1], L1.roofRow, G);
   // birds fly in the row of Kit's head: his top block is row G-2
   for (const [x, kind] of L1.birds) m.mon(kind, x, G - 2);
-  // the first board is seven wide (three lines), raised a row so its post stands clear of the entrance door
-  putSign(m, 1, onGround(G, signs.duck) - 2, signs.duck, 3);
+  // Short plaques introduce ducking before the awning.
+  putSign(m, 5, onGround(G, signs.duck), signs.duck);
   putSign(m, 9, onGround(G, signs.roof), signs.roof);
   putSign(m, L1.roof[1] + 2, onGround(G, signs.walk), signs.walk);
   return m;
@@ -210,9 +197,9 @@ function highOrLow(book: Book, signs: Record<SignName, Sign>): StarterMap {
   for (const [x, kind] of L2.balls) m.mon(kind, x, G - 1);
   m.mon(L2.both.bird[1], L2.both.bird[0], G - 2);
   m.mon(L2.both.ball[1], L2.both.ball[0], G - 1);
-  putSign(m, 6, onGround(G, signs.height), signs.height);
-  putSign(m, 29, onGround(G, signs.ball), signs.ball);
-  putSign(m, 42, onGround(G, signs.both), signs.both);
+  putSign(m, 6, G - 2, signs.height);
+  putSign(m, 31, G - 2, signs.hops);
+  putSign(m, 44, onGround(G, signs.both), signs.both);
   putSign(m, L2.exit - 6, onGround(G, signs.exit), signs.exit);
   return m;
 }

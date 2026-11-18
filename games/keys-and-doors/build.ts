@@ -45,7 +45,7 @@ disk.put('keys.bbl', serializeBlocks(book.finish()));
 disk.put('keys.mbl', serializeBlocks(monsterBlocks.finish()));
 disk.put('keys.mon', serializeMonsters(buildMonsters(monsterBlocks)));
 disk.put('hero.cbl', serializeBlocks(heroBlocks.finish()));
-const heroChar = buildHero(heroBlocks);
+const heroChar = buildHero(heroBlocks, { heldRise: { push: 12 } });
 heroChar.meter[SILVER_KEYS] = 1; // silver keys carried (a counter shows one less than it holds)
 disk.put('hero.chr', serializeCharacter(heroChar));
 disk.put('keys.snd', serializeSoundSet(buildSounds()));

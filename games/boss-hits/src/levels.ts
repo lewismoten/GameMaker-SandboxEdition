@@ -7,44 +7,27 @@
 //   2. Count the Lights: the same bug in a tunnel again, now with five lights on its shell. Each hit
 //      puts one out, so the picture is a meter. When the last goes out it poofs and the way opens.
 // Both rooms are closed in by brick walls you can see, so Kit is never stopped by something he can't.
-import { Book, PULL } from '../../kit/starter/book';
+import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
+import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
-import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
-import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { MICRO_GLYPHS } from '@lewismoten/gamemaker-sandbox-tools/microFont';
+import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
+import { type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { LAMPED, PLAIN } from './monsters';
 
-export type SignName = 'meet' | 'sting' | 'lights' | 'poof' | 'exit';
+export type SignName = 'meet' | 'sting' | 'poof' | 'exit';
 
 /** The block set both levels share: the Starter blocks, then this game's signs. */
 function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
-  const { blocks, signs } = buildTiledSigns(
-    {
-      meet: { rows: [['BIG BUG TAKES'], ['FIVE HITS']] },
-      sting: { rows: [['TOUCHING IT'], ['ONLY STINGS']] },
-      lights: { rows: [['A LIGHT GOES'], ['OUT EACH HIT']] },
-      poof: { rows: [['THE LAST ONE'], ['MAKES IT POOF']] },
-      exit: { rows: [['EXIT →']] },
-    },
-    {
-      colors: {
-        background: skyOf(pal),
-        paper: pal.c('parch', 3),
-        ink: pal.c('ink', 0),
-        wood: pal.c('wood', 2),
-        highlight: pal.c('wood', 4),
-        shadow: pal.c('wood', 0),
-      },
-      glyphs: { ...MICRO_GLYPHS, '→': '100110111110100' },
-      lettersPerBlock: 3,
-      maxBlocks: 100 - book.index.size,
-    },
-  );
-  for (const [name, pic] of blocks) book.add(name, pic, { grav: PULL.down });
+  const signs = addMicroPlaques(book, pal, {
+    meet: { lines: ['5', 'HITS'] },
+    sting: { lines: ['ONLY', 'STINGS'] },
+    poof: { lines: ['ONE', 'MORE'] },
+    exit: { lines: ['EXIT', '→'], post: false },
+  });
   return { book, signs };
 }
 
@@ -68,7 +51,9 @@ function base(width: number, exitX: number): Grid {
   const g = new Grid(width, 15);
   g.row(GROUND, 0, width - 1, 'G').fill(0, GROUND + 1, width, 4, 'D');
   g.col(0, 0, 9, 'B').col(width - 1, 0, 9, 'B');
-  g.put(3, 8, 's').put(3, 9, 'S');
+  // A two-row turf plinth opens the fixed view higher; walk right to step down.
+  g.row(8, 2, 3, 'G').row(9, 2, 3, 'D');
+  g.put(3, 6, 's').put(3, 7, 'S');
   g.put(exitX, 8, 'e').put(exitX, 9, 'E');
   return g;
 }
@@ -110,7 +95,7 @@ function fiveHits(book: Book, signs: Record<SignName, Sign>): StarterMap {
   const m = new StarterMap(book, g.rows());
   stampTiledSign({ set: m.setOnSky.bind(m) }, 5, onGround(GROUND, signs.meet), signs.meet);
   stampTiledSign({ set: m.setOnSky.bind(m) }, 12, onGround(GROUND, signs.sting), signs.sting);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 39, 6, signs.exit, 3);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 41, 7, signs.exit);
   m.mon(PLAIN, BUG_X[0], STAND);
   return m;
 }
@@ -132,9 +117,8 @@ function countTheLights(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [8, 24, 28],
   );
   const m = new StarterMap(book, g.rows());
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 6, onGround(GROUND, signs.lights), signs.lights);
   stampTiledSign({ set: m.setOnSky.bind(m) }, 16, onGround(GROUND, signs.poof), signs.poof);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 40, 6, signs.exit, 3);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 42, 7, signs.exit);
   m.mon(LAMPED, BUG_X[1], STAND);
   return m;
 }

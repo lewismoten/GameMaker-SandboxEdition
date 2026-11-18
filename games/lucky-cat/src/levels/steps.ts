@@ -7,7 +7,7 @@
 import { StarterMap } from '../../../kit/starter/map';
 import type { Pal } from '../print';
 import { CROW } from '../monsters';
-import { GROUND, addSigns, onGround, room, scenery, startBook, type Level } from '../level';
+import { GROUND, crackCrossing, addSigns, onGround, room, scenery, startBook, type Level } from '../level';
 
 const TOP = GROUND - 1 - 12; // the top tread's row
 
@@ -49,13 +49,15 @@ export function levelSteps(pal: Pal): Level {
   for (let k = 0; k < 13; k++)
     for (const x of [STEPS.first + 2 * k, STEPS.first + 2 * k + 1]) for (let y = TOP + (12 - k); y < GROUND; y++) m.set(x, y, 'brick');
   for (let x = STEPS.landing[0]; x <= STEPS.landing[1]; x++) m.set(x, TOP, 'brick');
-  for (const x of [STEPS.cracks, STEPS.cracks + 1]) m.set(x, STEPS.stand, 'crack');
+  // Short runged risers let a cat stop, climb and step onto each of the thirteen treads.
+  for (let k = 0; k < 13; k++) for (const y of [GROUND - 2 - k, GROUND - 1 - k]) m.set(STEPS.first + 2 * k - 1, y, 'ladder');
   m.set(STEPS.shaker, STEPS.stand, 'shaker');
   m.mon(CROW.bobbing, STEPS.crow, STEPS.crowRow);
   for (let y = -10; y < GROUND - 2; y++) m.set(STEPS.wall, y, 'brick');
   m.set(STEPS.wall, GROUND - 2, 'saltArch').set(STEPS.wall, GROUND - 1, 'saltPile');
   for (const x of [55]) m.set(x, 8, 'lampHead').set(x, 9, 'lampPost');
   m.sign(4, onGround(GROUND, s.count), s.count);
+  crackCrossing(m, STEPS.cracks, 2, STEPS.stand);
   return {
     file: 'steps',
     title: 'Thirteen Steps',

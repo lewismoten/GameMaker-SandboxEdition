@@ -10,7 +10,7 @@
     },
     "57": {
       "short": "Jump",
-      "long": "Jump in level 1, where gravity pulls you back down. In level 2 there is no gravity and Space does nothing."
+      "long": "Hold Space to rise. Release, then steer with Left and Right. Land before jumping again."
     },
     "72": {
       "short": "Walk up",

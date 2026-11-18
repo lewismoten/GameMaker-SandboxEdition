@@ -1,5 +1,5 @@
-// The 320x200 pictures every Starter needs, drawn from the Starter blocks so they match the
-// game: a sunny scene (sky, clouds, hills and the same grass and dirt blocks as the levels),
+// The 320x200 pictures every Starter needs, with clean sky bands, clouds, hills and layered
+// grass and dirt in the Starter colors: a sunny scene behind
 // the title, the menu, the paper behind text pages, level cards, the save and load lists and
 // the ending cards. PLAYGAME writes its own words over the menu, the text pages and the lists,
 // so those leave a plain place for them.
@@ -17,8 +17,22 @@ export type { GroupStyle } from './titleStyles';
 export const W = 320;
 export const H = 200;
 
+/** Wording that DOS can draw separately from a shared picture. */
+export type ScreenRecipe = { kind: 'menu' | 'paper' | 'slots' | 'scores' | 'card' | 'end'; words: string };
+const pictures = new WeakMap<Pixels, { recipe: ScreenRecipe; pixels: Uint8Array }>();
+function remember(p: Pixels, recipe: ScreenRecipe): void {
+  pictures.set(p, { recipe, pixels: p.px.slice() });
+}
+/** Screen wording retained for DOS text overlays when the disk shares the backdrop. */
+export const screenRecipes = new WeakMap<Uint8Array, ScreenRecipe>();
 /** A picture as a GIF file in the given palette. */
-export const gif = (p: Pixels, pal: Pal): Uint8Array => encodeGif({ width: p.w, height: p.h, pixels: p.px, palette: pal.pal });
+export function gif(p: Pixels, pal: Pal): Uint8Array {
+  const bytes = encodeGif({ width: p.w, height: p.h, pixels: p.px, palette: pal.pal });
+  const saved = pictures.get(p);
+  // A caller may add lesson art after making paper: that picture must stay its own.
+  if (saved && p.px.every((value, i) => value === saved.pixels[i])) screenRecipes.set(bytes, saved.recipe);
+  return bytes;
+}
 
 /** A cloud from (x, y), `s` puffs wide. */
 function cloud(p: Pixels, pal: Pal, x: number, y: number, s = 1): void {
@@ -34,14 +48,16 @@ function cloud(p: Pixels, pal: Pal, x: number, y: number, s = 1): void {
 }
 
 /**
- * A sunny scene: sky, clouds, two rows of hills, then the grass and dirt blocks of the levels from
- * `ground` down. The sky blends in whole rows (a much smaller GIF); `rows` false keeps the 4x4
+ * A sunny scene: sky, clouds, two rows of hills, then horizontal grass and dirt strata from
+ * `ground` down. The sky uses solid horizontal bands; `rows` false keeps the 4x4
  * dither, for a Special's title picture and title cartoon.
  */
 export function scene(pal: Pal, book: Book, ground = 160, seed = 3, rows = true): Pixels {
   const { c, r } = pal;
   const p = new Pixels(W, H);
-  gradient(p, 0, 0, W, ground, r('sky'), 1, 4, rows);
+  if (rows) {
+    for (let y = 0; y < ground; y++) p.rect(0, y, W, 1, c('sky', 1 + Math.round((y / Math.max(1, ground - 1)) * 3)));
+  } else gradient(p, 0, 0, W, ground, r('sky'), 1, 4);
   const rand = rng(seed);
   for (let i = 0; i < 5; i++) cloud(p, pal, Math.floor(rand() * 300), 8 + Math.floor(rand() * 60), 1 + (i % 2) * 0.5);
   for (let x = 0; x < W; x++) {
@@ -52,7 +68,19 @@ export function scene(pal: Pal, book: Book, ground = 160, seed = 3, rows = true)
     p.rect(x, near, 1, ground - near, c('grass', 2));
     p.set(x, near, c('grass', 4));
   }
-  for (let y = ground; y < H; y += 20) for (let x = 0; x < W; x += 20) p.blit(book.pics.get(y === ground ? 'grass' : 'dirt')!, x, y, 255);
+  if (rows) {
+    // Long horizontal strata repeat well in both GIF and ZIP, without changing the level blocks.
+    p.rect(0, ground, W, H - ground, c('dirt', 2));
+    for (let y = ground + 8; y < H; y += 10) {
+      p.rect(0, y, W, 3, c('dirt', 3));
+      p.rect(0, y + 3, W, 1, c('dirt', 1));
+    }
+    p.rect(0, ground, W, 2, c('grass', 4));
+    p.rect(0, ground + 2, W, 3, c('grass', 2));
+    p.rect(0, ground + 5, W, 1, c('grass', 1));
+  } else {
+    for (let y = ground; y < H; y += 20) for (let x = 0; x < W; x += 20) p.blit(book.pics.get(y === ground ? 'grass' : 'dirt')!, x, y, 255);
+  }
   return p;
 }
 
@@ -130,6 +158,7 @@ export function menuPicture(pal: Pal, book: Book, hero: Pixels, name: string): P
   p.rect(56, 46, 208, 132, c('wood', 1)).rect(58, 48, 204, 128, c('wood', 3));
   p.rect(62, 52, 196, 120, c('parch', 4)).frame(62, 52, 196, 120, c('wood', 2));
   scaleBlit(p, hero, 272, 90, 2);
+  remember(p, { kind: 'menu', words: name });
   return p;
 }
 
@@ -146,6 +175,7 @@ export function paper(pal: Pal, book: Book, heading: string): Pixels {
     const at = spaces.reduce((a, b) => (Math.abs(b - heading.length / 2) < Math.abs(a - heading.length / 2) ? b : a));
     [heading.slice(0, at), heading.slice(at + 1)].forEach((l, i) => centered(p, 5 + i * 15, l, c('wood', 1), 2));
   }
+  remember(p, { kind: 'paper', words: heading });
   return p;
 }
 
@@ -153,6 +183,7 @@ export function paper(pal: Pal, book: Book, heading: string): Pixels {
 export function slotsPicture(pal: Pal, book: Book, heading: string): Pixels {
   const p = paper(pal, book, heading);
   for (let i = 0; i < 10; i++) p.rect(56, 37 + i * 14, 189, 13, pal.c('wood', 0)).rect(56, 49 + i * 14, 189, 1, pal.c('ink', 0));
+  remember(p, { kind: 'slots', words: heading });
   return p;
 }
 
@@ -164,6 +195,7 @@ export function scoresPicture(pal: Pal, book: Book, heading: string): Pixels {
   centered(p, 11, heading, c('wood', 1));
   const rule = textWidth(heading) + 16;
   p.rect(160 - rule / 2, 21, rule, 1, c('wood', 3));
+  remember(p, { kind: 'scores', words: heading });
   return p;
 }
 
@@ -177,6 +209,7 @@ export function cardPicture(pal: Pal, book: Book, hero: Pixels, n: number, of: n
   centered(p, 34, title, pal.c('ink', 0), title.length * 16 <= 272 ? 2 : 1);
   centered(p, 56, hint, pal.c('wood', 1));
   standing(p, hero, 60, 160, 2);
+  remember(p, { kind: 'card', words: `LEVEL ${n} OF ${of}\n\n${name.toUpperCase()}\n\n${hint}` });
   return p;
 }
 
@@ -196,5 +229,6 @@ export function endPicture(pal: Pal, book: Book, hero: Pixels, head: string, lin
       p.rect(x, y, 3, 2, col);
     }
   }
+  remember(p, { kind: 'end', words: `${head}\n\n${line}` });
   return p;
 }

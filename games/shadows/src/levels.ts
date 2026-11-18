@@ -13,10 +13,11 @@ import { Book, PULL } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
-import { buildTiledSigns, stampTiledSign, type TiledSign as Sign, type TiledSignText } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { addMicroPlaques, stampTiledSign, type MicroPlaqueText } from '../../kit/starter/microPlaque';
 import { CRITTER } from './critters';
-import { addYardBlocks, wallColor, type Ground } from './blocks';
-import { SIGNS, type Look } from './text';
+import { addYardBlocks, type Ground } from './blocks';
+import type { Look } from './text';
 
 /** The lane row (where feet are) and the first solid row. */
 export const LANE = 9;
@@ -56,27 +57,20 @@ function bookFor(pal: Pal, room: 'solid' | 'dither' | 'hop' | 'hover'): { book: 
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
   addYardBlocks(book, pal);
-  const rooms = { solid: SIGNS.yard.solid, dither: SIGNS.yard.dither, hop: SIGNS.hop, hover: SIGNS.hover };
-  const texts: Record<string, TiledSignText> = {};
-  for (const [name, words] of Object.entries(rooms))
-    for (const [key, [text]] of Object.entries(words)) texts[`${name}.${key}`] = { rows: [[text]], maxWidth: name === 'hop' ? 7 : 9 };
-  texts['hop.shrink'].rows = [['SMALL AT'], ['THE TOP.']];
-  texts['hop.next'] = { rows: [['NEXT:'], ['A BEE.']], maxWidth: 5 };
+  const rooms = {
+    solid: { start: ['SOLID'], next: ['NEXT', '→'] },
+    dither: { start: ['CHECKER'], next: ['NEXT', '→'] },
+    hop: { start: ['LOOK'], next: ['NEXT', '→'] },
+    hover: { next: ['ALL', 'DONE'] },
+  };
+  const texts: Record<string, MicroPlaqueText> = {};
   const yard = room === 'solid' || room === 'dither';
-  const include = Object.keys(texts).filter((key) => (yard ? key.startsWith('solid.') || key.startsWith('dither.') : key.startsWith(`${room}.`)));
-  const tiled = buildTiledSigns(texts, {
-    include,
-    lettersPerBlock: 3,
-    colors: {
-      background: wallColor(pal),
-      paper: pal.c('parch', 3),
-      ink: pal.c('ink', 0),
-      wood: pal.c('wood', 2),
-      highlight: pal.c('wood', 4),
-      shadow: pal.c('wood', 0),
-    },
-    maxBlocks: Math.min(100, 150 - book.index.size),
-  });
+  for (const [name, words] of Object.entries(rooms)) {
+    if (yard ? name !== 'solid' && name !== 'dither' : name !== room) continue;
+    for (const [key, lines] of Object.entries(words)) texts[`${name}.${key}`] = { lines, post: false };
+  }
+  const scratch = new Book('bbl');
+  const tiled = { signs: addMicroPlaques(scratch, pal, texts), blocks: scratch.pics };
   const signs: Record<string, Sign> = {};
   const pairs = new Map<string, string>();
   for (const key of Object.keys(rooms[room])) {
@@ -167,9 +161,6 @@ export function yard(pal: Pal, look: Look): Level {
   const { book, signs } = bookFor(pal, look);
   const m = courtyard(book, YARD.width, YARD.grounds, YARD.exit);
   board(m, book, signs.start, 1, 5);
-  board(m, book, signs.sand, 10, 5);
-  board(m, book, signs.grass, 17, 5);
-  board(m, book, signs.soil, 24, 5);
   board(m, book, signs.next, 33, 5);
   for (const x of YARD.pips) m.mon(CRITTER.pip, x, LANE);
   return { file: 'yard', title: 'The Yard', map: m, book, from: 3, exit: YARD.exit, grounds: YARD.grounds };
@@ -181,7 +172,6 @@ export function hop(pal: Pal): Level {
   const grounds: { ground: Ground; x: number }[] = [{ ground: 'grass', x: 1 }];
   const m = courtyard(book, HOP.width, grounds, HOP.exit);
   board(m, book, signs.start, 1, 5);
-  [signs.none, signs.same, signs.shrink].forEach((s, i) => board(m, book, s, [9, 17, 25][i], 5));
   board(m, book, signs.next, 33, 5);
   [CRITTER.hopNone, CRITTER.hopSame, CRITTER.hopShrink].forEach((n, i) => m.mon(n, HOP.hoppers[i], LANE));
   return { file: 'hop', title: 'The Hop', map: m, book, from: 3, exit: HOP.exit, grounds };
@@ -192,9 +182,6 @@ export function hover(pal: Pal): Level {
   const { book, signs } = bookFor(pal, 'hover');
   const grounds: { ground: Ground; x: number }[] = [{ ground: 'sand', x: 1 }];
   const m = courtyard(book, HOVER.width, grounds, HOVER.exit);
-  board(m, book, signs.start, 1, 5);
-  board(m, book, signs.low, 11, 5);
-  board(m, book, signs.high, 20, 5);
   board(m, book, signs.next, 30, 5);
   // the low bee is the block right above its shadow's; the high one is three blocks up
   m.mon(CRITTER.bee, HOVER.low, LANE - 1).mon(CRITTER.shade, HOVER.low, LANE);

@@ -13,6 +13,7 @@ export const LESSON_DEATHS = 0;
 export async function play(seed = SEED, upTo = LEVELS.length): Promise<{ sim: GameSim; bot: StarterBot }> {
   const sim = new GameSim(undefined, seed);
   const bot = new StarterBot(sim);
+  bot.jumpHold = 8; // Hold Space to rise, then release to steer.
   for (const level of LEVELS.slice(0, upTo)) {
     try {
       await level(bot);

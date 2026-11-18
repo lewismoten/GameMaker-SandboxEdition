@@ -1,17 +1,16 @@
-// When archives are paused, checks the notice and absence of a download button or ZIP requests.
-// With an archive: does the offline copy really work? In a headless browser it uses ⚙ Settings › Play offline to
-// download the whole site, switches the network off, and checks that the web home, a Starter, the
-// 1994 desk, the wall phone (recorded clips, never the browser's own voice) and the guided tour
-// (its voice clips) all still work, and that no request fails. Prints PASS/FAIL per check; exits 1
-// on a FAIL. About 3 to 6 minutes (it downloads about 75 MB into a throwaway browser profile).
+// Checks selectable per-file tiers, a Core-only cold start, then the five game groups and narration offline.
+// Never run against the maintainer's dev server.
 //
 // Needs a PRODUCTION build, because the service worker is only in one: build to a scratch folder
 // (`npx vite build --outDir <tmp>/dist`, through `npm run heavy --`), then
 //   npm run check:offline -- --dist <tmp>/dist [--port 5193]
 // (it previews that folder on --port, never 5173), or point it at a server you started yourself:
 //   npm run check:offline -- --url http://localhost:5193/
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { target, launch, arg } from './perfLib';
 import { forceTheme } from './forceTheme';
+import { measure } from './dialogsFitMeasure';
 
 interface Row {
   name: string;
@@ -39,6 +38,18 @@ const failed: string[] = [];
 const clips: string[] = [];
 try {
   const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 }, serviceWorkers: 'allow' });
+  // vite preview sends a .gz copy with Content-Encoding (the browser unpacks it); GitHub Pages sends
+  // it as application/gzip bytes, which the manifest hashes. Serve them the Pages way.
+  const dist = arg('dist');
+  if (dist)
+    await ctx.route(/\.gz(\?|$)/, async (route) => {
+      const path = decodeURIComponent(new URL(route.request().url()).pathname).replace(/^\/+/, '');
+      try {
+        await route.fulfill({ status: 200, contentType: 'application/gzip', body: readFileSync(resolve(dist, path)) });
+      } catch {
+        await route.fulfill({ status: 404, body: '' });
+      }
+    });
   await forceTheme(ctx, 'light');
   // counts every call of the browser's own speech
   await ctx.addInitScript(() => {
@@ -55,14 +66,46 @@ try {
     }
   });
   const page = await ctx.newPage();
+  // Failed requests and page errors, printed when the offline copy fails.
+  const failures: string[] = [];
+  ctx.on('requestfailed', (r) => failures.push(`failed ${r.url()} ${r.failure()?.errorText ?? ''}`));
+  ctx.on('response', (r) => {
+    if (r.status() >= 400) failures.push(`${r.status()} ${r.url()}`);
+  });
+  page.on('console', (m) => {
+    if (m.type() === 'error' || m.type() === 'warning') failures.push(`console ${m.type()}: ${m.text().slice(0, 300)}`);
+  });
+  page.on('pageerror', (e) => failures.push(`pageerror: ${e.message}`));
+  // Waits for the copy, printing the dialog's progress every 20 s so a stall shows where it stopped.
+  const waitReady = async () => {
+    const deadline = Date.now() + 900000;
+    while (!(await page.getByText(/Ready offline/).isVisible())) {
+      if (Date.now() > deadline) throw new Error('The offline copy did not finish in 15 minutes.');
+      if (await page.getByText(/could not finish/).isVisible()) throw new Error(`The offline copy failed:\n${failures.slice(-20).join('\n')}`);
+      const progress = await page
+        .locator('dialog[open]')
+        .innerText()
+        .catch(() => '(no dialog)');
+      console.log(`  … ${progress.replace(/\s+/g, ' ').slice(0, 200)}`);
+      await page.waitForTimeout(20000);
+    }
+  };
   const zipRequests: string[] = [];
   page.on('request', (r) => {
     if (/\/offline\.[^/]+\.zip(?:[?#]|$)/.test(r.url())) zipRequests.push(r.url());
   });
   const spoken = () => page.evaluate(() => (window as unknown as { __speak: number }).__speak);
   page.on('pageerror', (e) => failed.push(`${phase} page error: ${e.message.slice(0, 120)}`));
-  page.on('requestfailed', (r) => failed.push(`${phase} ${r.url().replace(base, '')} ${r.failure()?.errorText}`));
-  page.on('response', (r) => {
+  ctx.on('requestfailed', (r) => {
+    let from: string;
+    try {
+      from = r.serviceWorker() ? 'service worker' : r.frame().url().replace(base, '');
+    } catch {
+      from = 'a worker';
+    }
+    failed.push(`${phase} ${r.url().replace(base, '')} ${r.failure()?.errorText} (from ${from || '/'}, ${r.resourceType()})`);
+  });
+  ctx.on('response', (r) => {
     if (phase !== 'offline') return;
     const url = r.url().replace(base, '');
     if (/\.ogg$/.test(url) && r.status() === 200) clips.push(url);
@@ -84,27 +127,72 @@ try {
     .click();
   const manifestResponse = await ctx.request.get(`${base}offline.json`);
   if (!manifestResponse.ok()) throw new Error('Could not read the production offline manifest.');
-  const manifest = (await manifestResponse.json()) as { archive?: unknown };
-  if (!manifest.archive) {
-    await page.getByText('Offline copies are coming back in a later update.', { exact: true }).waitFor();
-    check('the offline dialog explains that copies are paused', true);
-    check('no download button is offered', (await page.locator('dialog[open] button.primary').count()) === 0);
-    check('no offline ZIP is requested', zipRequests.length === 0);
-    check('no online request failed', failed.length === 0, failed.slice(0, 8).join(' ; '));
-    console.log('SKIP  full-copy offline navigation: this build has no archive.');
-  } else {
+  const manifest = (await manifestResponse.json()) as { files: { path: string; sha256: string; tier: string }[] };
+  check(
+    'per-file manifest has integrity metadata',
+    manifest.files.every((f) => /^[a-f0-9]{64}$/.test(f.sha256)),
+  );
+  check(
+    'Core is always selected',
+    (await page.getByRole('checkbox', { name: /^Core/ }).isChecked()) && (await page.getByRole('checkbox', { name: /^Core/ }).isDisabled()),
+  );
+  // Measure the real production picker, including all tier names and their sizes.
+  for (const [width, height] of [
+    [375, 812],
+    [390, 844],
+    [844, 390],
+  ]) {
+    await page.setViewportSize({ width, height });
+    const fit = await measure(page);
+    check(`tier picker fits ${width}x${height}`, fit.open && fit.problems.length === 0, fit.problems.join('; '));
+  }
+  await page.setViewportSize({ width: 1440, height: 900 });
+  check('Specials has its own public choice', (await page.getByRole('checkbox', { name: /^Specials/ }).count()) === 1);
+  {
+    await page.locator('dialog[open] button.primary').click();
+    await waitReady();
+    check('Core-only copy finishes without a ZIP', zipRequests.length === 0);
+    await page.keyboard.press('Escape');
+    await ctx.setOffline(true);
+    phase = 'offline';
+    await page.goto(base);
+    await page.waitForTimeout(2500);
+    check('Core cold start loads offline', (await page.getByText('Web', { exact: true }).count()) > 0 || (await page.locator('.lib-cats').count()) > 0);
+    await page
+      .getByText('Web', { exact: true })
+      .first()
+      .click()
+      .catch(() => undefined);
+    await page.getByRole('tab', { name: /Starters/ }).click();
+    await page.locator('.lib-tiles .game-tile .tile-select').first().click();
+    await page
+      .getByText(/Not in your offline copy/)
+      .first()
+      .waitFor();
+    check('Core-only game actions explain absent packs', true);
+    await ctx.setOffline(false);
+    phase = 'online';
+    await page
+      .getByRole('button', { name: /Settings/i })
+      .first()
+      .click();
+    await page
+      .getByText(/Play offline|Make available offline/)
+      .first()
+      .click();
+    for (const name of [/^Starters/, /^Sandbox/, /^Specials/, /^Bizarre/, /^CD/, /^Feelies/, /^Spoken/, /^Hardware/]) {
+      await page.getByRole('checkbox', { name }).check();
+      await page.getByText(/Checking selected files/).waitFor({ state: 'hidden', timeout: 120000 });
+    }
     const go = page.locator('dialog[open] button.primary');
     await go.waitFor({ timeout: 30000 });
     await go.click();
-    await page.getByText(/Ready offline/).waitFor({ timeout: 900000 });
+    await waitReady();
     const ready = (await page.locator('dialog[open]').innerText()).replace(/\s+/g, ' ');
-    check(
-      'the offline copy finishes',
-      true,
-      ready.match(/All \d+ games.*?\(([\d.]+ \w+)\)/)?.[0].replace(/ the 1994 desk, the editors, the manuals and the boxes are kept in this browser/, '') ?? '',
-    );
+    check('the offline copy finishes', true, ready);
     await page.keyboard.press('Escape');
 
+    check('no offline ZIP was requested', zipRequests.length === 0);
     // 2. no network from here on
     await ctx.setOffline(true);
     phase = 'offline';

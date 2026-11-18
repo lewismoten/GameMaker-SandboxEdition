@@ -43,9 +43,10 @@ export const L13: RoomSpec = {
     },
     V: 'vault',
   },
+  // A short wall return stops an upward step on the doorway row before turning right.
   rows: [
     '######################################',
-    '#Z@..#...1...1....#.......hhhh.....k.#',
+    '#Z@.##...1...1....#.......hhhh.....k.#',
     '#....>............>.......hhhh.......#',
     '#.T..#...........$#.......hhhh.......#',
     '############QQQ%##################v###',

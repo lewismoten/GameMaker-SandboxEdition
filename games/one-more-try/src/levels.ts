@@ -6,54 +6,29 @@
 //   2. Ways Back: three pits, each with a way out built into it (a ladder, steps of planks, steps of
 //      solid blocks), so nobody needs a post. The better fix for a trap is not to build one.
 // Every room is closed in by hedges you can see, so Mia is never stopped by something she can't.
-import { Book, PULL } from '../../kit/starter/book';
+import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
-import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
-import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { MICRO_GLYPHS } from '@lewismoten/gamemaker-sandbox-tools/microFont';
+import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
+import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { addMicroPlaques, stampTiledSign, stampMicroPlaques } from '../../kit/starter/microPlaque';
 import { addPostBlocks } from './postBlocks';
 
-export type SignName = 'deep' | 'post' | 'again' | 'exit' | 'back' | 'ladder' | 'steps' | 'stairs' | 'largeExit';
+export type SignName = 'deep' | 'post' | 'again' | 'exit' | 'ladder' | 'steps';
 
 /** The block set the levels share: the Starter blocks, this game's signs, then the post. */
 function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
-  const texts = {
-    deep: { rows: [['TOO DEEP TO CLIMB OUT.'], ['JUMP IT']] },
-    post: { rows: [['A POST AT THE BOTTOM'], ['STARTS THE LEVEL OVER']] },
-    again: { rows: [['THE LEVEL IS NEW AGAIN.'], ['YOUR SCORE STAYS']] },
-    back: { rows: [['LET THEM FALL.'], ['GIVE THEM A'], ['WAY BACK']] },
-    ladder: { rows: [['A LADDER IS'], ['A WAY BACK']] },
-    steps: { rows: [['PLANKS ARE STEPS'], ['YOU JUMP UP THROUGH']] },
-    stairs: { rows: [['SO ARE SOLID BLOCKS']] },
-    exit: { rows: [['EXIT →']] },
-  };
-  const signs = {} as Record<SignName, Sign>;
-  // The close pair before the ladder needs compact letters; keep that whole level consistent.
-  for (const compact of [false, true]) {
-    const include: (keyof typeof texts)[] = compact ? ['back', 'ladder', 'steps', 'stairs', 'exit'] : ['deep', 'post', 'again', 'exit'];
-    const { blocks, signs: built } = buildTiledSigns(texts, {
-      colors: {
-        background: skyOf(pal),
-        paper: pal.c('parch', 3),
-        ink: pal.c('ink', 0),
-        wood: pal.c('wood', 2),
-        highlight: pal.c('wood', 4),
-        shadow: pal.c('wood', 0),
-      },
-      glyphs: { ...MICRO_GLYPHS, '→': '100110111110100' },
-      ...(compact ? { compact: true } : { lettersPerBlock: 3 as const }),
-      include,
-      prefix: compact ? 'compactSign' : 'largeSign',
-      maxBlocks: Math.min(100, 150 - book.index.size - 1),
-    });
-    for (const [name, pic] of blocks) book.add(name, pic, { grav: PULL.down });
-    Object.assign(signs, built);
-    if (!compact) signs.largeExit = built.exit;
-  }
+  const signs = addMicroPlaques(book, pal, {
+    deep: { lines: ['JUMP', 'OVER'] },
+    post: { lines: ['STARTS', 'OVER'] },
+    again: { lines: ['SCORE', 'STAYS'] },
+    ladder: { lines: ['GO', 'UP'] },
+    steps: { lines: ['JUMP', 'UP'] },
+    exit: { lines: ['EXIT', '→'], post: false },
+  });
   addPostBlocks(book, pal);
   return { book, signs };
 }
@@ -124,11 +99,10 @@ function aPostToStartOver(book: Book, signs: Record<SignName, Sign>): StarterMap
     [12, 31, 41],
   );
   const m = new StarterMap(book, g.rows());
-  placeSign(m, 6, onGround(GROUND, signs.deep), signs.deep);
-  // Raise this board above the pit coins, with its post on the bank.
-  placeSign(m, 18, 5, signs.post, 3);
-  placeSign(m, 30, onGround(GROUND, signs.again), signs.again);
-  placeSign(m, 42, onGround(GROUND, signs.largeExit), signs.largeExit);
+  placeSign(m, 18, onGround(GROUND, signs.deep), signs.deep);
+  // Explain the reset post on the clear bank before the pit.
+  stampMicroPlaques({ set: (x, y, block) => m.setOnSky(x, y, block) }, 20, GROUND - 3, [signs.post, signs.again]);
+  placeSign(m, 42, onGround(GROUND, signs.exit), signs.exit);
   m.set(L1.post, GROUND + DEPTH - 1, 'post');
   return m;
 }
@@ -160,10 +134,8 @@ function waysBack(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [8, 21, 45],
   );
   const m = new StarterMap(book, g.rows());
-  placeSign(m, 4, onGround(GROUND, signs.back), signs.back);
   placeSign(m, 11, onGround(GROUND, signs.ladder), signs.ladder);
-  placeSign(m, 21, onGround(GROUND, signs.steps), signs.steps);
-  placeSign(m, 33, onGround(GROUND, signs.stairs), signs.stairs);
+  placeSign(m, 24, onGround(GROUND, signs.steps), signs.steps);
   placeSign(m, 42, onGround(GROUND, signs.exit), signs.exit);
   // Two-block landings give a leftward jump from the cliff room to stop.
   // PLAYGAME.C:3682-3690 snaps partial edge landings toward a one-block gap.

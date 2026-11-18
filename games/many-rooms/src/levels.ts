@@ -12,20 +12,17 @@ import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { ORIGIN, StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
-import { addSign, type Sign } from '../../kit/starter/sign';
+import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { addRoomBricks, wallOf, type RoomColor } from './roomBrick';
 
 const SIGNS = {
-  four: ['four', 'FOUR ROOMS ONE MAP', 4],
-  lands: ['lands', 'THIS DOOR LANDS IN ANOTHER CELL', 4],
-  skips: ['skips', 'THIS DOOR SKIPS TO THE OTHER SIDE', 4],
-  back: ['back', 'THIS DOOR GOES BACK TO BLUE', 4],
-  on: ['on', 'THIS ONE GOES ON', 4],
-  exit: ['exit', 'EXIT →', 3],
-  here: ['here', '← ALL DOORS IN LAND HERE', 4],
-  view: ['view', 'THE VIEW STARTS WHERE YOU LAND', 4],
-  fresh: ['fresh', 'BACK IN THE HUB THE COINS ARE BACK', 4],
-  once: ['once', 'KEEP PRIZES WHERE YOU GO ONCE', 4],
+  four: { lines: ['4 ROOMS', '1 MAP'], post: false },
+  back: { lines: ['GO', 'BACK'] },
+  on: { lines: ['GO', 'ON'] },
+  exit: { lines: ['EXIT', '→'], post: false },
+  here: { lines: ['LAND', 'HERE'] },
+  fresh: { lines: ['COINS', 'ARE BACK'] },
 } as const;
 export type SignName = keyof typeof SIGNS;
 
@@ -62,7 +59,7 @@ export interface Card {
   after?: string;
 }
 
-/** A room is 16 blocks wide and 10 high; its ground is row 6, so the hero's feet stand on row 5 and the window opens on its top row. */
+/** A room is 16 blocks wide and 10 high; its ground is row 6. The raised landing's feet are on row 3, so the view includes two rows of ceiling above it. */
 export const ROOM_W = 16;
 export const ROOM_H = 10;
 export const FLOOR = 6;
@@ -76,8 +73,7 @@ export function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sig
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
   addRoomBricks(book, pal);
-  const signs = {} as Record<SignName, Sign>;
-  for (const [key, [name, words, w]] of Object.entries(SIGNS)) signs[key as SignName] = addSign(book, pal, name, words, w, key === 'exit' ? 1 : 2);
+  const signs = addMicroPlaques(book, pal, SIGNS);
   return { book, signs };
 }
 
@@ -87,7 +83,11 @@ interface Spot0 {
   rt: number;
 }
 const door = (g: Grid, r: Spot0, lx: number) => g.put(r.rl + lx, r.rt + FLOOR - 2, 'e').put(r.rl + lx, r.rt + FLOOR - 1, 'E');
-const doorway = (g: Grid, r: Spot0) => g.put(r.rl + LAND_X, r.rt + FLOOR - 2, 's').put(r.rl + LAND_X, r.rt + FLOOR - 1, 'S');
+const doorway = (g: Grid, r: Spot0) => {
+  // One-way planks keep the raised entrance clear on trips back across the room.
+  g.put(r.rl + LAND_X, r.rt + FLOOR - 2, '=').put(r.rl + LAND_X, r.rt + FLOOR - 1, '=');
+  g.put(r.rl + LAND_X, r.rt + FLOOR - 4, 's').put(r.rl + LAND_X, r.rt + FLOOR - 3, 'S');
+};
 
 /** The ground, ceiling and side walls of a room, and some scenery. The walls are painted in their color later (tint). */
 function paintRoom(g: Grid, r: Spot0, clouds: number[], bushes: number[], flowers: number[]): void {
@@ -104,7 +104,8 @@ function paintRoom(g: Grid, r: Spot0, clouds: number[], bushes: number[], flower
 /** Paints a room's ceiling and walls in its color. */
 function tint(m: StarterMap, r: Spot0, color: RoomColor): void {
   const name = wallOf(color);
-  for (let x = 0; x < ROOM_W; x++) m.set(r.rl + x, r.rt, name);
+  // Carry the ceiling into the two extra rows shown above the raised landing.
+  for (let y = -2; y <= 0; y++) for (let x = 0; x < ROOM_W; x++) m.set(r.rl + x, r.rt + y, name);
   for (let y = 0; y < FLOOR; y++) m.set(r.rl, r.rt + y, name).set(r.rl + ROOM_W - 1, r.rt + y, name);
 }
 
@@ -115,11 +116,12 @@ function built(book: Book, g: Grid, start: Spot): StarterMap {
   return m;
 }
 
-const sign = (m: StarterMap, r: Spot0, lx: number, s: Sign) => m.sign(r.rl + lx, r.rt + onGround(FLOOR, s), s);
+const sign = (m: StarterMap, r: Spot0, lx: number, s: Sign, top = onGround(FLOOR, s)) =>
+  stampTiledSign({ set: m.setOnSky.bind(m) }, r.rl + lx, r.rt + top, s, FLOOR - top - s.board.length);
 const coinRow = (g: Grid, r: Spot0, from: number, to: number) => g.row(r.rt + FLOOR - 1, r.rl + from, r.rl + to, 'c');
 
 type Rooms = Record<string, Spot0>;
-const landingOf = (r: Spot0): Spot => at(r.rl + LAND_X, r.rt + FLOOR - 1);
+const landingOf = (r: Spot0): Spot => at(r.rl + LAND_X, r.rt + FLOOR - 3);
 const exitOf = (r: Spot0, lx: number): Spot => at(r.rl + lx, r.rt + FLOOR - 1);
 
 /** Level 1: four rooms in a 2 x 2 block: red (top left), blue (top right), green (bottom left), gold (bottom right). */
@@ -139,11 +141,10 @@ function mapOne(book: Book, s: Record<SignName, Sign>): { file: MapFile; rooms: 
   coinRow(g, R.red, 6, 7);
   coinRow(g, R.blue, 3, 4);
   coinRow(g, R.gold, 3, 6);
-  const m = built(book, g, [R.red.rl + LAND_X, R.red.rt + FLOOR - 1]);
+  const m = built(book, g, [R.red.rl + LAND_X, R.red.rt + FLOOR - 3]);
   (['red', 'blue', 'green', 'gold'] as const).forEach((c) => tint(m, R[c], c));
   sign(m, R.red, 2, s.four);
-  sign(m, R.red, 9, s.lands);
-  sign(m, R.blue, 9, s.skips);
+
   sign(m, R.green, 4, s.back);
   sign(m, R.green, 9, s.on);
   sign(m, R.gold, 9, s.exit);
@@ -172,14 +173,14 @@ function mapTwo(book: Book, s: Record<SignName, Sign>): { file: MapFile; rooms: 
   door(g, R.hub, 13);
   door(g, R.east, 13);
   coinRow(g, R.hub, 4, 6);
-  const m = built(book, g, [R.hub.rl + LAND_X, R.hub.rt + FLOOR - 1]);
+  const m = built(book, g, [R.hub.rl + LAND_X, R.hub.rt + FLOOR - 3]);
   tint(m, R.west, 'green');
   tint(m, R.hub, 'red');
   tint(m, R.east, 'blue');
-  sign(m, R.hub, 9, s.here);
-  sign(m, R.west, 2, s.view);
-  sign(m, R.west, 9, s.fresh);
-  sign(m, R.east, 2, s.once);
+  // The landing hint floats left of the entrance before its next return landing.
+  sign(m, R.hub, 7, s.here, 3);
+  // Before the west return door, clear of bush 10 and the landing planks at 8.
+  sign(m, R.west, 11, s.fresh);
   sign(m, R.east, 9, s.exit);
   const room = (id: string, title: string, r: Spot0, exits: Room['exits']): Room => ({ id, file: 'two', title, exits, landing: landingOf(r) });
   return {

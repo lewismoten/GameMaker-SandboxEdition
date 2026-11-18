@@ -149,6 +149,7 @@ export const KEYS_NOT_BACKED_UP: Record<string, string> = {
   'gm-import-history': 'the last 20 imports and their failures, about files that are never backed up',
   'gm-received': 'games other sites sent, kept as imported games',
   'gm-offline': 'the offline copy, a cache that downloads again',
+  'gm-offline-tiers': 'which offline tiers this browser keeps, chosen again in Play offline',
   'gm-library-context': 'the Library’s start, noted as pages are viewed',
   'gm-library-context-used': 'the Library’s start, noted as pages are viewed',
   'gm-mus-track-clip': 'the music editor’s clipboard',

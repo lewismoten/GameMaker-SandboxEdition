@@ -9,7 +9,7 @@
 // Water is solid and drawn as water (Nova walks round it; for water she can swim in see Under the Surface).
 import { Book, SOLID } from '../../kit/starter/book';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
-import { type Sign } from '../../kit/starter/sign';
+import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { newMap, MLEN, type GameMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { FRAMES, WATER_TICKS, waterFrame } from './water';
 import { E, N, NE, NW, REACH, S, SE, SHORE_TICKS, SW, W, normalize, pebbleTile, sandTile, shoreFrame } from './shoreTiles';
@@ -37,15 +37,12 @@ export interface ShoreMap {
   done(): GameMap;
 }
 
-/** The words and board size of each sign (a 4x4 board holds 9 letters across and 8 lines). */
+/** Only the timing comparison needs labels; the shoreline art speaks for itself. */
 const WORDS = {
-  sea1: 'ONE BLOCK, STAMPED OVER AND OVER, IS THIS WHOLE SEA',
-  sea2: 'SAME START: THE WHOLE SEA TURNS AT ONCE. NEXT, 4 STARTS',
-  sea3: '4 STARTS, SO RIPPLES ROLL. THE ART IS THE SAME',
-  shore1: 'THE EDGE BLOCKS ARE A LOOP. WAVES RUN IN AND OUT',
-  shore2: 'ROUND CORNERS: MORE EDGE BLOCKS, DRAWN ROUND',
-  shore3: 'EACH EDGE STARTS AT ITS OWN FRAME, SO WAVES ROLL',
-} as const;
+  sea2: ['SAME', 'TIME'],
+  sea3: ['4 STARTS'],
+  shore3: ['OWN', 'TIME'],
+};
 
 /** The four water blocks (the ring), solid so Nova keeps out; they are all the same loop, one frame apart. */
 function addWater(book: Book, pal: Pal, timed: Timed[]): string[] {
@@ -65,8 +62,6 @@ class Canvas {
   }
   sign(s: Sign, x: number, y: number): void {
     s.board.forEach((row, dy) => row.forEach((b, dx) => this.set(x + dx, y + dy, b)));
-    this.set(x, y + s.board.length, s.legs[0]);
-    this.set(x + s.board[0].length - 1, y + s.board.length, s.legs[1]);
   }
 }
 
@@ -90,10 +85,7 @@ function openWater(): Level {
   book.add('plank', plank);
   addEntrance(book, pal, plank);
   addExit(book, pal, plank);
-  const signs = Object.fromEntries((['sea1', 'sea2', 'sea3'] as const).map((k) => [k, addSignOn(book, pal, plank, k, WORDS[k], 4, 4)])) as Record<
-    'sea1' | 'sea2' | 'sea3',
-    Sign
-  >;
+  const signs = Object.fromEntries((['sea2', 'sea3'] as const).map((k) => [k, addSignOn(book, pal, plank, k, WORDS[k])])) as Record<'sea2' | 'sea3', Sign>;
   const c = new Canvas(book);
   // the middle platform ends the first stretch: left of it the sea is one block, right of it four starts
   const mid = 28;
@@ -107,7 +99,6 @@ function openWater(): Level {
   for (let x = 10; x < 54; x++) for (const y of [6, 7]) if (c.map.blocks[(OY + y) * MLEN + OX + x] !== book.n('plank')) c.set(x, y, 'plank');
   c.set(3, 6, 'startTop');
   c.set(3, 7, 'startBottom');
-  c.sign(signs.sea1, 5, 2);
   c.sign(signs.sea2, 30, 2);
   c.sign(signs.sea3, 56, 2);
   const exits = doors(c, 62, 4, 7);
@@ -139,10 +130,7 @@ function shoreline(): Level {
   book.add('pebbles', pebbleTile(pal));
   addEntrance(book, pal, sand);
   addExit(book, pal, sand);
-  const signs = Object.fromEntries((['shore1', 'shore2', 'shore3'] as const).map((k) => [k, addSignOn(book, pal, sand, k, WORDS[k], 4, 4)])) as Record<
-    'shore1' | 'shore2' | 'shore3',
-    Sign
-  >;
+  const sign = addSignOn(book, pal, sand, 'shore3', WORDS.shore3);
   const c = new Canvas(book);
   c.fillAll((x, y) => sea[(((x + y) % FRAMES) + FRAMES) % FRAMES]);
   // which of the 8 cells round (x, y) are water
@@ -178,9 +166,7 @@ function shoreline(): Level {
     }
   c.set(4, 9, 'startTop');
   c.set(4, 10, 'startBottom');
-  c.sign(signs.shore1, 7, 5);
-  c.sign(signs.shore2, 25, 5);
-  c.sign(signs.shore3, 34, 5);
+  c.sign(sign, 34, 5);
   const exits = doors(c, 43, 2, 3).concat(doors(c, 44, 2, 3));
   return {
     file: 'two',

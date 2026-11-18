@@ -6,7 +6,7 @@
   "hero": "LENA",
   "year": 1994,
   "price": "Free",
-  "version": "1.0",
+  "version": "1.1",
   "blurb": "Three short levels about a game that talks. A voice is a sound file: a key's move can play one, and so can a counter going up or down. Only one voice plays at a time, and a new scene cuts it off, so a speaker stands far enough from the door for the whole line. Signs say how. Play it, then open it in Game-Maker and look at the Sounds tab.",
   "exe": "OUTLOUD.EXE",
   "dosName": "OUTLOUD",

@@ -11,22 +11,15 @@
 // at a touch is whatever the tick makes it (the manual says so). The room ends in visible
 // hedges, so Mara is never stopped by something she can't see.
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
-import { Book, PULL } from '../../kit/starter/book';
+import { Book, PULL, type Timed } from '../../kit/starter/book';
 import { addStarterBlocks, KEYS } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { SILVER_KEYS, addLockBlocks } from '../../kit/starter/locks';
 import { StarterMap } from '../../kit/starter/map';
-import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
-import { addSign, type Sign } from '../../kit/starter/sign';
+import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
+import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { face } from './props';
 import { FACE } from './timing';
-
-/** A block that turns into another after some ticks. */
-interface Timed {
-  name: string;
-  next: string;
-  ticks: number;
-}
 
 export interface Level {
   file: string;
@@ -65,11 +58,11 @@ export const rolling = (n: number) => `face${n}`;
 export const stopped = (n: number) => `stop${n}`;
 
 type SignName = 'roll' | 'touch' | 'odd' | 'even';
-const SIGNS: Record<SignName, string> = {
-  roll: 'A DIE ROLLS AND ROLLS',
-  touch: 'WALK INTO IT TO STOP IT',
-  odd: 'ODD: 1 3 5 GOLD DOOR AHEAD',
-  even: 'EVEN: 2 4 6 SILVER DOOR UP THE LADDER',
+const SIGNS = {
+  roll: { rows: [['A DIE ROLLS'], ['AND ROLLS']] },
+  touch: { rows: [['WALK INTO IT'], ['TO STOP IT']] },
+  odd: { rows: [['ODD: 1 3 5'], ['GOLD DOOR AHEAD']] },
+  even: { rows: [['EVEN: 2 4 6'], ['SILVER DOOR'], ['UP THE LADDER']] },
 };
 
 /** The top row of a sign standing on ground row `ground`. */
@@ -86,8 +79,19 @@ function buildBook(pal: Pal): { book: Book; signs: Record<SignName, Sign>; timed
     timed.push({ name: rolling(n), next: rolling((n % 6) + 1), ticks: FACE });
   }
   for (const n of FACES) book.add(stopped(n), face(pal, n, true), AIR);
-  const signs = {} as Record<SignName, Sign>;
-  for (const k of Object.keys(SIGNS) as SignName[]) signs[k] = addSign(book, pal, `${k}.sign`, SIGNS[k], 4, 3);
+  const { blocks, signs } = buildTiledSigns(SIGNS, {
+    colors: {
+      background: skyOf(pal),
+      paper: pal.c('parch', 3),
+      ink: pal.c('ink', 0),
+      wood: pal.c('wood', 2),
+      highlight: pal.c('wood', 4),
+      shadow: pal.c('wood', 0),
+    },
+    lettersPerBlock: 3,
+    maxBlocks: Math.min(100, 150 - book.index.size),
+  });
+  for (const [name, pic] of blocks) book.add(name, pic, AIR);
   return { book, signs, timed };
 }
 
@@ -97,8 +101,10 @@ function rollTheDice(pal: Pal): Level {
   const g = new Grid(WIDTH, 15);
   g.row(GROUND, 0, WIDTH - 1, 'G').fill(0, GROUND + 1, WIDTH, 4, 'D');
   g.col(0, 0, 9, 'X').col(WIDTH - 1, 0, 9, 'X');
-  g.put(3, 8, 's')
-    .put(3, 9, 'S')
+  // A two-row turf ledge lifts the opening view without changing the ladder route.
+  g.put(3, 8, 'G').put(3, 9, 'D');
+  g.put(3, 6, 's')
+    .put(3, 7, 'S')
     .put(WIDTH - 4, 8, 'e')
     .put(WIDTH - 4, 9, 'E');
   // the wall: brick between the two doors and over them, the way over blocked
@@ -121,10 +127,11 @@ function rollTheDice(pal: Pal): Level {
   m.set(DIE_X, GROUND - 1, rolling(1));
   m.set(WALL_X, LEDGE - 2, 'gateTopSilver').set(WALL_X, LEDGE - 1, 'gateSilver');
   m.set(WALL_X, GROUND - 2, 'gateTop').set(WALL_X, GROUND - 1, 'gate');
-  m.sign(5, onGround(GROUND, signs.roll), signs.roll);
-  m.sign(10, onGround(GROUND, signs.touch), signs.touch);
-  m.sign(19, onGround(GROUND, signs.even), signs.even);
-  m.sign(28, onGround(GROUND, signs.odd), signs.odd);
+  const stamp = { set: (x: number, y: number, name: string) => m.setOnSky(x, y, name) };
+  stampTiledSign(stamp, 4, onGround(GROUND, signs.roll), signs.roll);
+  stampTiledSign(stamp, 11, onGround(GROUND, signs.touch), signs.touch);
+  stampTiledSign(stamp, 18, onGround(GROUND, signs.even), signs.even);
+  stampTiledSign(stamp, 26, onGround(GROUND, signs.odd), signs.odd);
   return { file: 'one', title: 'Roll the Dice', hint: 'Your roll picks the door.', map: m, book, timed };
 }
 

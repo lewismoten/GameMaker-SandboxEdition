@@ -52,7 +52,7 @@ export function settingsItems(attrs: Record<string, string> = {}): HTMLElement[]
     updateItem(attrs),
     h(
       'button',
-      { ...attrs, type: 'button', onclick: openOffline, title: 'Download the whole site to play and make games with no connection' },
+      { ...attrs, type: 'button', onclick: openOffline, title: 'Download the parts of the site you pick to play and make games with no connection' },
       icon('⤓'),
       ' Play offline',
     ),

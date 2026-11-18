@@ -13,23 +13,23 @@ import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
-import { buildTiledSigns, stampTiledSign, type TiledSign as Sign, type TiledSignText } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { MICRO_GLYPHS } from '@lewismoten/gamemaker-sandbox-tools/microFont';
+import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
 import { drawCrate, drawItem } from './itemArt';
 import { FROSTY, TARGET } from './monsters';
 
-export type SignName = 'pick' | 'pack' | 'wall' | 'stair' | 'exit' | 'items' | 'order' | 'range';
+type SignName = string;
 
 /** All sign words, with widths limited by the existing scenery. */
-const WORDS: Record<SignName, TiledSignText> = {
-  pick: { rows: [['STAND IN FRONT'], ['OF A CRATE AND'], ['PRESS P. IT GOES'], ['IN YOUR PACK']], maxWidth: 7 },
-  pack: { rows: [['F2 SHOWS YOUR PACK. ANY KEY SHUTS IT']], maxWidth: 5 },
-  wall: { rows: [['TOO HIGH TO JUMP. AT THE WALL PRESS D, THEN ENTER']], maxWidth: 7 },
-  stair: { rows: [['THE CRATE STAYS WHERE YOU DROPPED IT. JUMP ON, DROP THE NEXT']], maxWidth: 7 },
-  exit: { rows: [['EXIT →']], maxWidth: 5 },
-  items: { rows: [['P TAKES THE FLAME,'], ['THEN THE STAR. ENTER'], ['THROWS WHAT YOU CARRY']], maxWidth: 9 },
-  order: { rows: [['A FLAME COMES FIRST. IT MELTS THE FROSTY GRUMP']], maxWidth: 7 },
-  range: { rows: [['A FLAME FALLS SHORT OF THAT GUMDROP. D, ENTER SETS IT DOWN. P TAKES IT BACK']], maxWidth: 9 },
+const WORDS: Record<string, { lines: string[]; post?: boolean }> = {
+  pick: { lines: ['P TO', 'TAKE'] },
+  pack: { lines: ['TRY', 'F2'] },
+  wall: { lines: ['D,ENTER', 'DROPS'] },
+  exit: { lines: ['EXIT', '→'], post: false },
+  items: { lines: ['P TO', 'TAKE'] },
+  throw: { lines: ['ENTER', 'THROWS'] },
+  order: { lines: ['FLAME', 'MELTS'] },
+  range: { lines: ['D,ENTER', 'DROPS'] },
 };
 
 /** Each map’s blocks: shared gameplay IDs for carried items, then its own sign tiles. */
@@ -49,27 +49,7 @@ function buildBlocks(pal: Pal, include: SignName[]): { book: Book; signs: Record
     spikes.map((_x, y, c) => (y < 11 ? skyOf(pal) : c)),
     { grav: PULL.down },
   );
-  const colors = {
-    background: skyOf(pal),
-    paper: pal.c('parch', 3),
-    ink: pal.c('ink', 0),
-    wood: pal.c('wood', 2),
-    highlight: pal.c('wood', 4),
-    shadow: pal.c('wood', 0),
-  };
-  const glyphs = { ...MICRO_GLYPHS, '→': '100110111110100' };
-  // Each map shares the full vocabulary, allocating only its own signs.
-  // Compact letters keep the narrowest boards below the top visible row.
-  // One size per level: if any board here needs the compact letters, every board here uses them.
-  const compact = include.some((n) => ['pack', 'stair'].includes(n));
-  const { blocks, signs } = buildTiledSigns(WORDS, {
-    colors,
-    glyphs,
-    ...(compact ? { compact: true } : { lettersPerBlock: 3, prefix: 'largeSign' }),
-    include,
-    maxBlocks: Math.min(100, 150 - book.index.size),
-  });
-  for (const [name, pic] of blocks) book.add(name, pic, { grav: PULL.down });
+  const signs = addMicroPlaques(book, pal, Object.fromEntries(include.filter((n) => WORDS[n]).map((n) => [n, WORDS[n]]))) as Record<SignName, Sign>;
   return { book, signs };
 }
 
@@ -161,7 +141,6 @@ function stepUp(book: Book, signs: Record<SignName, Sign>): StarterMap {
   for (const x of L1.crates) m.set(x, STAND, 'crate');
   stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 15, onGround(GROUND, signs.pack), signs.pack);
   stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 20, onGround(GROUND, signs.wall), signs.wall);
-  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 27, onGround(GROUND, signs.stair), signs.stair);
   stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 41, onGround(GROUND, signs.exit), signs.exit);
   return m;
 }
@@ -185,11 +164,12 @@ function yourPick(book: Book, signs: Record<SignName, Sign>): StarterMap {
   );
   const m = new StarterMap(book, g.rows());
   stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 5, onGround(GROUND, signs.items), signs.items);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 6, onGround(GROUND, signs.throw), signs.throw);
   m.set(L2.flame, STAND, 'flameItem').set(L2.star, STAND, 'starItem');
   stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 16, onGround(GROUND, signs.order), signs.order);
   m.mon(FROSTY, L2.frosty, STAND);
   for (let x = L2.spikes[0]; x <= L2.spikes[1]; x++) m.set(x, STAND, 'spikeUp');
-  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 31, onGround(GROUND, signs.range), signs.range);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 34, onGround(GROUND, signs.range), signs.range);
   m.mon(TARGET, L2.target, STAND);
   stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 46, onGround(GROUND, signs.exit), signs.exit);
   return m;
@@ -199,7 +179,7 @@ function yourPick(book: Book, signs: Record<SignName, Sign>): StarterMap {
 export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
   const pal = buildStarterPalette(undefined, 'inventory');
   const b0 = buildBlocks(pal, ['pick', 'pack', 'wall', 'stair', 'exit']);
-  const b1 = buildBlocks(pal, ['items', 'order', 'range', 'exit']);
+  const b1 = buildBlocks(pal, ['items', 'throw', 'order', 'range', 'exit']);
   const levels: Level[] = [
     { file: 'one', title: 'Step Up', hint: 'P picks up, D puts down.', book: b0.book, map: stepUp(b0.book, b0.signs) },
     { file: 'two', title: 'Your Pick', hint: 'What you carry is what you throw.', book: b1.book, map: yourPick(b1.book, b1.signs) },

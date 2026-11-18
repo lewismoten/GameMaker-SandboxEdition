@@ -12,7 +12,8 @@ import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { ORIGIN, StarterMap } from '../../kit/starter/map';
 import { type Pal } from '../../kit/starter/palette';
-import { addSign, type Sign } from '../../kit/starter/sign';
+import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { BUG, KINDS, STEP, reachOf, type Kind } from './bugs';
 import { GROUND, HEIGHT, addBands, addTrees, addTuft, addTurf, duskPalette, onSky, skyAt, treeAt } from './dusk';
 
@@ -36,12 +37,8 @@ export interface Bug {
 }
 
 const WORDS = {
-  step: 'SIX COPIES OF ONE FIREFLY BLINK AS ONE',
-  own: 'NOW EACH ONE IS ITS OWN MONSTER',
-  times: 'OWN TIMES, OWN PATH, NONE IN STEP',
-  dark: 'A FLASH, THEN A LONG DARK',
-  glow: 'THE GLOW IS DOTS, THE SKY SHOWS BETWEEN',
-  near: 'NO FIREFLY IS NEXT TO ITS OWN KIND',
+  step: { lines: ['SAME', 'TIME'] },
+  own: { lines: ['OWN', 'TIME'] },
 } as const;
 type SignName = keyof typeof WORDS;
 
@@ -69,13 +66,18 @@ class DuskMap extends StarterMap {
   }
   /** Lays `name` (a picture drawn on the Starters' plain sky) at (x, y) with the right sky or trees behind it. */
   front(x: number, y: number, name: string): this {
-    return this.set(x, y, onSky(this.blocks, this.pal, name, behind(x, y), this.blocks.has(name) ? this.blocks : this.signBook));
+    return this.set(x, y, onSky(this.blocks, this.pal, name, behind(x, y), this.signBook.has(name) ? this.signBook : this.blocks));
   }
   /** A sign standing on the grass, its board's left at x. */
-  stand(x: number, s: Sign): this {
-    const top = GROUND - 1 - s.board.length;
-    s.board.forEach((row, dy) => row.forEach((name, dx) => this.front(x + dx, top + dy, name)));
-    this.front(x, GROUND - 1, s.legs[0]).front(x + s.board[0].length - 1, GROUND - 1, s.legs[1]);
+  stand(x: number, s: Sign, top = GROUND - 1 - s.board.length): this {
+    // The setOnSky guard for this map's composited bands and tree line.
+    const sky = {
+      set: (col: number, row: number, name: string) => {
+        if (this.at(col, row) !== this.blocks.n(behind(col, row))) throw new Error(`Sign at ${col},${row} would overwrite scenery`);
+        return this.front(col, row, name);
+      },
+    };
+    stampTiledSign(sky, x, top, s, GROUND - top - s.board.length);
     return this;
   }
   override done(): GameMap {
@@ -93,7 +95,7 @@ class DuskMap extends StarterMap {
 }
 
 /** A level's block set (the Starter blocks and the dusk's), and its signs, drawn in a book of their own until they are laid. */
-function blocks(pal: Pal, used: SignName[]): { book: Book; signBook: Book; signs: Record<SignName, Sign> } {
+function blocks(pal: Pal, used: SignName[]): { book: Book; signBook: Book; signs: Record<string, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
   addBands(book, pal);
@@ -101,8 +103,7 @@ function blocks(pal: Pal, used: SignName[]): { book: Book; signBook: Book; signs
   addTuft(book, pal);
   addTurf(book, pal);
   const signBook = new Book('bbl');
-  const signs = {} as Record<SignName, Sign>;
-  for (const k of used) signs[k] = addSign(signBook, pal, k, WORDS[k], 4, 3);
+  const signs = addMicroPlaques(signBook, pal, Object.fromEntries(used.map((name) => [name, WORDS[name]])));
   return { book, signBook, signs };
 }
 
@@ -111,12 +112,14 @@ function meadow(pal: Pal, book: Book, signBook: Book, width: number, exit: numbe
   const g = new Grid(width, HEIGHT);
   g.row(GROUND, 0, width - 1, 'G').fill(0, GROUND + 1, width, HEIGHT - GROUND - 1, 'D');
   g.col(0, 0, GROUND - 1, 'X').col(width - 1, 0, GROUND - 1, 'X');
-  g.put(3, GROUND - 2, 's').put(3, GROUND - 1, 'S');
+  // A two-row bank of the meadow's turf lifts the fixed view without moving a firefly.
+  g.put(3, GROUND - 2, 'G').put(3, GROUND - 1, 'D');
+  g.put(3, GROUND - 4, 's').put(3, GROUND - 3, 'S');
   g.put(exit, GROUND - 2, 'e').put(exit, GROUND - 1, 'E');
   const m = new DuskMap(book, pal, signBook, g.rows());
   for (const [x, y, name] of [
-    [3, GROUND - 2, 'doorwayTop'],
-    [3, GROUND - 1, 'doorwayBottom'],
+    [3, GROUND - 4, 'doorwayTop'],
+    [3, GROUND - 3, 'doorwayBottom'],
     [exit, GROUND - 2, 'doorTop'],
     [exit, GROUND - 1, 'doorBottom'],
   ] as const)
@@ -162,11 +165,11 @@ function lay(m: DuskMap, bugs: Bug[], x: number, y: number, monnum: number, kind
 
 /** Level 1: 62 blocks wide; six copies of one firefly, then six fireflies each its own. */
 function inStep(pal: Pal): Level {
-  const { book, signBook, signs } = blocks(pal, ['step', 'own', 'times']);
+  const { book, signBook, signs } = blocks(pal, ['step', 'own']);
   const m = meadow(pal, book, signBook, STEP_ROOM.width, STEP_ROOM.exit, [10, 19, 30, 36, 52, 57]);
-  m.stand(STEP_ROOM.signs[0], signs.step);
-  m.stand(STEP_ROOM.signs[1], signs.own);
-  m.stand(STEP_ROOM.signs[2], signs.times);
+  m.stand(4, signs.step);
+  // One cell right of the old board: the centered one-block post clears tuft 30.
+  m.stand(31, signs.own);
   const bugs: Bug[] = [];
   // the copies: every one the same monster, on two rows, three blocks apart
   for (const [x, y] of STEP_ROOM.copies) lay(m, bugs, x, y, BUG.step, STEP);
@@ -177,12 +180,11 @@ function inStep(pal: Pal): Level {
 
 /** Level 2: 66 blocks wide; fireflies of all ten kinds over the meadow, two every three blocks, no two of a kind within 8 blocks, none starting on a sign. */
 function duskMeadow(pal: Pal): Level {
-  const { book, signBook, signs } = blocks(pal, ['dark', 'glow', 'near']);
+  const { book, signBook } = blocks(pal, []);
   const { width, exit } = DUSK_ROOM;
   const m = meadow(pal, book, signBook, width, exit, [10, 13, 24, 35, 41, 53, 57]);
-  m.stand(DUSK_ROOM.signs[0], signs.dark);
-  m.stand(DUSK_ROOM.signs[1], signs.glow);
-  m.stand(DUSK_ROOM.signs[2], signs.near);
+  // All three old boards are dropped. Retain DUSK_ROOM.signs below as the
+  // original monster sampling exclusions and bot waypoints.
   const bugs: Bug[] = [];
   const rand = rng(6);
   /** Whether level block (x, y) is on a sign's board (rows 5 to 7, four wide): a firefly may fly past a sign but not start on one. */

@@ -105,6 +105,9 @@ export async function twoDoors(bot: StarterBot): Promise<void> {
   const score = bot.sim.ci.score;
   await must(bot, bot.walk(11, 'the plank'), 'to the plank');
   await must(bot, bot.jump('right', 12), 'jump up');
+  // The short held rise lands before the plank; walk under it and hop again from the floor.
+  await must(bot, bot.walk(13, 'under the plank'), 'under the plank');
+  await must(bot, bot.jump('right', 15), 'onto the plank');
   await must(bot, bot.walk(16, 'the plank coins'), 'the plank coins');
   await must(bot, bot.walk(17, 'the ground'), 'off the plank');
   await must(bot, bot.walk(22, 'the ground coins'), 'the ground coins');

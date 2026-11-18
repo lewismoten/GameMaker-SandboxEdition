@@ -620,7 +620,7 @@ export const ACHIEVEMENTS: readonly Achievement[] = [
     icon: '💿',
     category: 'fun',
   },
-  { id: 'offline-copy', title: 'Off the grid', desc: 'Kept a copy of the whole site for playing offline.', icon: '📴', category: 'fun' },
+  { id: 'offline-copy', title: 'Off the grid', desc: 'Kept a copy of the site for playing offline.', icon: '📴', category: 'fun' },
   { id: 'link-in', title: 'Special delivery', desc: 'Opened a game sent from another site.', icon: '📬', category: 'fun' },
 
   // found it (the desk's room; reported by gm-achievement events)

@@ -126,6 +126,13 @@
   image-rendering: auto;
 }
 
+/* Compression diagrams retain their aspect ratio inside the measured page. */
+.mpage figure.ug-compression img {
+  width: 100%;
+  max-width: 480px;
+  height: auto;
+}
+
 /* the palette figures (paletteFigures.ts): each picture over its whole palette */
 .mpage .ug-palcols {
   display: grid;

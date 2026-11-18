@@ -3,32 +3,6 @@ import { withCreditPage } from '../../kit/license';
 import { wrap } from '../../kit/starter/text';
 import about from '../about.json';
 
-/** The complete sign vocabulary, grouped by room; layout is in levels.ts. */
-export const SIGNS = {
-  beams: {
-    start: 'GOAL: SEE HOW EACH BEAM IS MADE.',
-    solid: 'SOLID: THE BRICKS ARE GONE.',
-    checker: 'CHECKER: BRICKS STAY.',
-    soft: 'THREE CHECKERS: SOFT EDGE.',
-    next: 'NEXT: FOG.',
-  },
-  fog: {
-    start: 'FOG, TWO WAYS.',
-    flat: 'SOLID FOG: NO TREES.',
-    dither: 'CHECKER FOG: TREES STAY.',
-    thick: 'FAR 75, MID 50, NEAR 25.',
-    drift: 'MOVING FOG IS A MONSTER.',
-    next: 'NEXT: GLOWS.',
-  },
-  glow: {
-    start: 'LANTERNS THAT MOVE.',
-    solid: 'SOLID GLOW HIDES BRICKS.',
-    checker: 'CHECKER GLOW: BRICKS SHOW.',
-    soft: 'RINGS: 75, 50, 25.',
-    next: 'THAT IS IT.',
-  },
-} satisfies Record<string, Record<string, string>>;
-
 /** The card before each room: its name and a line. */
 export const CARDS = {
   beams: ['The Beams', 'A beam of light, painted in dots.'],
@@ -66,11 +40,15 @@ export const CREDITS = withCreditPage(
 
 Design, pixels, beeps and levels by Claude Sonnet 5.5, an AI model made by Anthropic.
 
+Held-rise controls by OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten.
+
 Made with GAME-MAKER 3.0 from Recreational Software Designs.
 
 One of the Starters: small games that each show one idea.
 
 Music and tiled signs by OpenAI Codex; original tune and B section by Claude.
+
+Raised starts and scroll framing by OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten.
 `),
 );
 

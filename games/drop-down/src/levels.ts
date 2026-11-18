@@ -12,49 +12,31 @@
 //      down is small) and soft (its picture is not solid), so after the bump it drifts down two blocks,
 //      through Lena if she walks on. No hole this time.
 // Both rooms are closed in by walls you can see, so Lena is never stopped by something she can't.
-import { Book, PULL } from '../../kit/starter/book';
+import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
-import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
-import { buildTiledSigns, stampTiledSign, type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { MICRO_GLYPHS } from '@lewismoten/gamemaker-sandbox-tools/microFont';
+import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
+import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
 import { addCrateBlocks } from './blocks';
 import { PIP, PLOP } from './monsters';
 
-export type SignName = 'gate' | 'break' | 'why' | 'slow' | 'wait' | 'speed' | 'exit';
+export type SignName = 'break' | 'hits' | 'wait' | 'exit';
+
+const WORDS: Record<SignName, { lines: string[]; post?: boolean }> = {
+  break: { lines: ['PRESS', 'ENTER'] },
+  hits: { lines: ['2', 'HITS'] },
+  wait: { lines: ['2', 'HITS'] },
+  exit: { lines: ['EXIT', '→'], post: false },
+};
 
 /** Each level keeps stable Starter/crate numbers, then allocates only its own sign tiles. */
 function buildBlocks(pal: Pal, include: SignName[]): { book: Book; signs: Record<SignName, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
   addCrateBlocks(book, pal);
-  const { blocks, signs } = buildTiledSigns(
-    {
-      gate: { rows: [['PLOP SITS ON'], ['A CRATE AND'], ['BLOCKS THE WAY']] },
-      break: { rows: [['PRESS ENTER BESIDE THE CRATE'], ['TO HIT IT. TWO HITS BREAK IT']] },
-      why: { rows: [['MONSTERS HAVE NO'], ['GRAVITY. PLOP STEPS'], ['DOWN OVER AND OVER']] },
-      slow: { rows: [['PIP IS THE SAME'], ['TRICK, BUT SLOW'], ['AND SOFT']] },
-      wait: { rows: [['HIT BOTH CRATES TWICE'], ['AND WATCH PIP DRIFT DOWN']] },
-      speed: { rows: [['HOW FAST IT'], ['FALLS AND IF IT'], ['IS SOLID ARE'], ['SETTINGS']] },
-      exit: { rows: [['EXIT →']] },
-    },
-    {
-      include,
-      colors: {
-        background: skyOf(pal),
-        paper: pal.c('parch', 3),
-        ink: pal.c('ink', 0),
-        wood: pal.c('wood', 2),
-        highlight: pal.c('wood', 4),
-        shadow: pal.c('wood', 0),
-      },
-      glyphs: { ...MICRO_GLYPHS, '→': '100110111110100' },
-      lettersPerBlock: 3,
-      maxBlocks: Math.min(100, 150 - book.index.size),
-    },
-  );
-  for (const [name, pic] of blocks) book.add(name, pic, { grav: PULL.down });
+  const signs = addMicroPlaques(book, pal, Object.fromEntries(include.map((name) => [name, WORDS[name]]))) as Record<SignName, Sign>;
   return { book, signs };
 }
 
@@ -110,16 +92,18 @@ function room(book: Book, width: number, r: Room): StarterMap {
   for (let i = 0; i < r.crates; i++) m.set(r.holeX, CORK_ROW - i, 'crate');
   m.mon(r.monster, r.holeX, MON_ROW - r.crates + 1);
   // Every board and centered post must fit the existing tunnel, scenery and pickups.
-  for (const [s, x] of r.signs)
-    stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, x, onGround(GROUND, s) - (s.board.length === 1 ? 1 : 0), s, s.board.length === 1 ? 2 : 1);
+  for (const [s, x] of r.signs) {
+    const target = { set: (x: number, y: number, name: string) => m.setOnSky(x, y, name) };
+    stampTiledSign(target, x, onGround(GROUND, s), s);
+  }
   return m;
 }
 
 /** The levels in order. */
 export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
   const pal = buildStarterPalette(undefined, 'drop-down');
-  const first = buildBlocks(pal, ['gate', 'break', 'why', 'exit']);
-  const second = buildBlocks(pal, ['slow', 'wait', 'speed', 'exit']);
+  const first = buildBlocks(pal, ['break', 'hits', 'exit']);
+  const second = buildBlocks(pal, ['wait', 'exit']);
   const { book, signs } = first;
   const one = room(book, 46, {
     mound: [19, 29],
@@ -128,9 +112,8 @@ export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
     crates: 1,
     monster: PLOP,
     signs: [
-      [signs.gate, 5],
-      [signs.break, 12],
-      [signs.why, 30],
+      [signs.break, 15],
+      [signs.hits, 17],
       [signs.exit, 39],
     ],
     coins: [
@@ -163,9 +146,7 @@ export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
     crates: 2,
     monster: PIP,
     signs: [
-      [second.signs.slow, 4],
-      [second.signs.wait, 21],
-      [second.signs.speed, 32],
+      [second.signs.wait, 11],
       [second.signs.exit, 39],
     ],
     coins: [
