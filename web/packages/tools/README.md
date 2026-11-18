@@ -78,6 +78,14 @@ const iso = createIso([
 
 ## Checks and build helpers
 
+- `kit/dastImage`: true-color `Pix` pictures, six-bit VGA `fromIndexed`, `toPng`,
+  `silhouette`, `rotate`, `shrink`, `grid`, `rotationSheet` and `shelfSheet` for picture
+  review. PNG output uses `CompressionStream`; no canvas is required.
+- `kit/dastSymmetry`: `findSwastikaLike(picture, allowEdge?)` returns candidate `Hit`
+  bounds, color mask, quarter-turn match and mirror match. It tests connected shapes,
+  contrast and arm tips. Pinwheels and some frets also match; findings are suggestions
+  for human review, and the heuristic cannot judge a picture's meaning or context.
+  Game selection, file reading and review policy belong to callers.
 - `kit/flashMeter`: `FlashMeter(fps = 60)` measures general and red flashes in
   320×200 indexed frames with 6-bit VGA palettes. Call `push(pixels, palette)` for
   each frame and `reset()` at scene boundaries; `general.worst` and `red.worst`
@@ -232,7 +240,6 @@ use three-pixel capital forms, spending spare pixels from left to right. Custom 
 remain intact. The shared `microFont` includes all eight arrows, with the existing
 right/left arrow pixels preserved. Do not combine this option with `compact` or
 `lettersPerBlock`. Existing font selection stays the default.
-
 
 `stampMicroPlaques(map, x, y, plaques, postHeight = 1)` places a vertical stack of
 one-row micro plaques of the same width (one or two blocks). Plaques touch vertically,

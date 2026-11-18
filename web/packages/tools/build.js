@@ -82,6 +82,8 @@ const sources = {
   'kit/palRamps': 'kit/palRamps',
   'kit/quantize': 'kit/quantize',
   'kit/sdftext': 'kit/sdftext',
+  'kit/dastImage': 'kit/dastImage',
+  'kit/dastSymmetry': 'kit/dastSymmetry',
   'kit/tar': 'kit/tar',
   'kit/raytrace': 'kit/raytrace',
   'kit/actors': 'kit/actors',

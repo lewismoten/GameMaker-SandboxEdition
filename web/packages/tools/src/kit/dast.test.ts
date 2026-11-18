@@ -1,8 +1,8 @@
-// games/kit/dastSymmetry and dastImage: the swastika-like shape search finds a drawn swastika (either way
+// Picture review helpers: the swastika-like shape search finds a drawn swastika (either way
 // round, at three sizes) and passes by plus signs, X marks and squares; the turns and silhouettes of a picture.
 import { describe, expect, it } from 'vitest';
-import { findSwastikaLike } from '../../games/kit/dastSymmetry';
-import { rotate, silhouette, type Pix } from '../../games/kit/dastImage';
+import { findSwastikaLike } from './dastSymmetry';
+import { rotate, silhouette, type Pix } from './dastImage';
 
 const pic = (rows: string[]): Pix => {
   const pad = '.'.repeat(rows[0].length + 4);

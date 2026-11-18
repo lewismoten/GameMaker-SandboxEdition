@@ -19,8 +19,8 @@ import { parsePalette } from '@lewismoten/gamemaker-sandbox-engine/formats/palet
 import { GameFiles } from '@lewismoten/gamemaker-sandbox-engine/core/gameFiles';
 import { readDisk } from '@lewismoten/gamemaker-sandbox-tools/kit/gameSim';
 import { scenePixels } from '../../web/src/gfx/levelPicture';
-import { fromIndexed, grid, rotationSheet, shelfSheet, silhouette, toPng, type Pix } from './dastImage';
-import { findSwastikaLike, type Hit } from './dastSymmetry';
+import { fromIndexed, grid, rotationSheet, shelfSheet, silhouette, toPng, type Pix } from '@lewismoten/gamemaker-sandbox-tools/kit/dastImage';
+import { findSwastikaLike, type Hit } from '@lewismoten/gamemaker-sandbox-tools/kit/dastSymmetry';
 
 // --sheet adds sheet.png per game: one contact sheet of every GIF, the middle frame of every FLI, the block, monster and
 // character sheets and the maps (shrunk to fit), block sheets with their silhouette beside them, so a first look is one picture. --unseen leaves out pictures an earlier game in the same run already showed.
