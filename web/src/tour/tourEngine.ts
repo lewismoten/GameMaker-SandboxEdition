@@ -10,12 +10,15 @@
 import { availableOffline } from '../offline/availability';
 import './tour.css';
 import { h } from '../editor/core/ui';
-import { Actor, loadSprites } from './actor';
+import { loadSprites } from './actor';
 import { findTarget, revealer, visible, waitFor } from './findTarget';
 import { menuHandle, overlayHandle, type Opened } from './tourOpen';
-import { barOnTop, steadyRect, offStage, placeBubble, standBy, type Point, type Rect } from './place';
+import { standBy } from './place';
+import { TourStage, rectOf } from './tourStage';
+import { TourClock, sleep } from './tourClock';
+import { titleCard } from './tourCard';
 import { hasClip, loadClipIndex, type ClipIndex } from './voiceIndex';
-import { HOSTS, PROPS, captionOf, cssList, stepMs, voiceUrl, type Chapter, type HostId, type PageAct, type TourStep } from './steps';
+import { captionOf, cssList, stepMs, voiceUrl, type Chapter, type HostId, type PageAct, type TourStep } from './steps';
 import { TourSound } from './tourSound';
 import { TourRecorder } from './tourRecorder';
 import { recordNoticeText, showRecordNotice } from './recordNotice';
@@ -27,7 +30,6 @@ const tourDemo = (what: 'play' | 'stop') => window.dispatchEvent(new CustomEvent
 import { askPage } from './pageAct';
 import { onDosPage, pageHere, pageOf } from './tourPages';
 import { parseHash, setHashParams } from '../urlState';
-import type { Sprite } from '../cast/castStageDraw';
 
 interface TourOptions {
   record?: boolean;
@@ -37,11 +39,6 @@ interface TourOptions {
   onEnd?: () => void;
 }
 
-const rectOf = (el: Element): Rect => {
-  const r = el.getBoundingClientRect();
-  return { x: r.left, y: r.top, w: r.width, h: r.height };
-};
-const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
 const announce = (what: 'start' | 'end') => window.dispatchEvent(new CustomEvent('gm-tour', { detail: what }));
 /** Asks the page to do something for a step (steps.ts PageAct; the desk's deskTour.ts listens). */
 const pageAct = (act: PageAct) => askPage(act);
@@ -68,19 +65,6 @@ const now: { tour?: Tour } = {};
 
 export const tourPlaying = (): boolean => !!now.tour;
 
-/** Waits until `el` stays put on the screen for a few frames (a scroll has finished), at most `max` ms. */
-async function settled(el: HTMLElement, max = 4000): Promise<void> {
-  const end = performance.now() + max;
-  let last = '';
-  for (let still = 0; still < 4 && performance.now() < end;) {
-    await new Promise((r) => requestAnimationFrame(r));
-    const r = el.getBoundingClientRect();
-    const at = `${Math.round(r.x)},${Math.round(r.y)}`;
-    still = at === last ? still + 1 : 0;
-    last = at;
-  }
-}
-
 export class Tour {
   private flat: { chapter: Chapter; step: TourStep; n: number }[];
   private i = -1;
@@ -88,9 +72,6 @@ export class Tour {
   private token = 0;
   private paused = false;
   private still = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  private sprites?: Map<string, Sprite>;
-  private hosts = new Map<HostId, Actor>();
-  private props: Actor[] = [];
   /** Menus and overlays the tour opened, by their handle's key (tourOpen.ts). */
   private opened = new Map<unknown, Opened>();
   /** Openers whose control was not on the page, so later steps behind them wait less for it. */
@@ -115,11 +96,16 @@ export class Tour {
   private moved = false;
   private returnFocus = document.activeElement as HTMLElement | null;
   private sound = new TourSound();
-  private hold?: { left: number; t0: number; timer: number; done: () => void };
 
-  private layer = h('div', { class: 'tour-layer', 'aria-hidden': 'true' });
-  private ring = h('div', { class: 'tour-ring', hidden: true }, h('div', { class: 'tour-arrow' }));
-  private bubble = h('div', { class: 'tour-bubble', hidden: true });
+  private clock = new TourClock();
+  private stage = new TourStage(
+    this.still,
+    () => now.tour === this,
+    () => this.flat[this.i],
+    () => this.card,
+    () => this.bar,
+  );
+  private onResize = () => this.stage.resize();
   private caption = h('p', { class: 'tour-caption', 'aria-live': 'polite' });
   private count = h('span', { class: 'tour-count' });
   private backBtn = h('button', { type: 'button', class: 'tour-back', onclick: () => this.go(this.i - 1) }, '◀ Back');
@@ -135,8 +121,6 @@ export class Tour {
     h('div', { class: 'tour-controls' }, this.backBtn, this.pauseBtn, this.nextBtn, this.soundBtn, this.closeBtn),
   );
   private card?: HTMLElement;
-  /** Which showing of the ring is current (an older one's watcher stops). */
-  private ringGen = 0;
   /** Recording the tab, a video a chapter (Record the whole tour), when the visitor agreed to share it. */
   private recorder?: TourRecorder;
   private barSize = new ResizeObserver(() => {
@@ -169,18 +153,18 @@ export class Tour {
     hushDemos(true);
     document.documentElement.classList.add('tour-on');
     tourDemo('stop');
-    this.layer.append(this.ring, this.bubble);
-    document.body.append(this.layer, this.bar);
+    this.stage.layer.append(this.stage.ring, this.stage.bubble);
+    document.body.append(this.stage.layer, this.bar);
     // the bar's height for a page that keeps its bottom clear of it (the DOS page's footer: tour.css)
     this.barSize.observe(this.bar);
     announce('start');
     this.showSound();
     // on the window, ahead of the overlays the tour opens (they take every key once they are up)
     window.addEventListener('keydown', this.onKey, true);
-    for (const el of [this.layer, this.bar]) this.uninert.observe(el, { attributes: true, attributeFilter: ['inert'] });
+    for (const el of [this.stage.layer, this.bar]) this.uninert.observe(el, { attributes: true, attributeFilter: ['inert'] });
     window.addEventListener('hashchange', this.onHash);
     window.addEventListener('resize', this.onResize);
-    this.sprites = await loadSprites();
+    this.stage.sprites = await loadSprites();
     if (now.tour !== this) return;
     // carried on from another page: the browser may let the sound start without a click (a
     // recording still asks for one, to share the new page)
@@ -213,7 +197,7 @@ export class Tour {
     if (i >= this.flat.length) return void this.finale();
     i = Math.max(0, i);
     const token = ++this.token;
-    this.cancelHold();
+    this.clock.cancelHold();
     this.i = i;
     void this.run(token).catch((e: unknown) => console.warn('Tour step failed:', e));
   }
@@ -229,15 +213,15 @@ export class Tour {
     this.nextBtn.textContent = this.i === this.flat.length - 1 ? 'Finish' : 'Next ▶';
     this.count.textContent = `${chapter.title} · ${n + 1} of ${chapter.steps.length}`;
     this.unpress();
-    this.ring.hidden = true;
-    this.bubble.hidden = true;
+    this.stage.ring.hidden = true;
+    this.stage.bubble.hidden = true;
     // a new chapter: its page, its music, and (recording, or more than one chapter) its title card
     if (chapter !== this.chapterShown) {
       // what the last chapter changed goes back while its page is still here
       await this.leaveChapter();
       if (!this.live(token)) return;
       this.chapterShown = chapter;
-      this.clearHosts();
+      this.stage.clearHosts();
       if ((chapter.file === 'dos.html') !== onDosPage()) return this.handOff(chapter);
       const elsewhere = pageHere() !== chapter.page;
       if (elsewhere || (chapter.always && !samePlace(location.hash, chapter.hash))) {
@@ -252,7 +236,7 @@ export class Tour {
       await this.recorder?.chapter(CHAPTERS.indexOf(chapter) + 1, chapter.id);
       if (!this.live(token)) return;
       if (this.opts.record || this.chapters.length > 1 || this.opts.cont) {
-        this.bubble.hidden = true;
+        this.stage.bubble.hidden = true;
         await this.titleCard(chapter.title, 'Game-Maker: Sandbox Edition', false, [...new Set([chapter.speaker, chapter.actor])]);
         if (!this.live(token)) return;
       }
@@ -263,7 +247,7 @@ export class Tour {
     // the address this step is shown at, on the chapter's page (the editor's palette after its map)
     const at = this.addressOf(this.i);
     if (at && !sameAddress(location.hash, at.hash)) {
-      this.bubble.hidden = true;
+      this.stage.bubble.hidden = true;
       this.navigating = true;
       this.moved = true;
       location.hash = at.hash;
@@ -295,9 +279,9 @@ export class Tour {
       this.bar.dataset.missing = step.id;
       if (step.optional) return this.go(this.i + 1);
     }
-    if (target) await this.bringIntoView(target);
+    if (target) await this.stage.bringIntoView(target);
     if (!this.live(token)) return;
-    this.clearBar(target);
+    this.stage.clearBar(target);
     this.caption.textContent = captionOf(chapter, step);
     const clip = this.clipUrl(chapter, step);
     if (clip && !(await availableOffline(clip))) {
@@ -317,9 +301,9 @@ export class Tour {
     if (!this.live(token)) return;
     const said = await voice;
     if (!this.live(token)) return;
-    await this.wait(Math.max(stepMs(step), said));
+    await this.clock.wait(Math.max(stepMs(step), said), this.paused);
     if (!this.live(token)) return;
-    if (step.action === 'exit') await this.exitAll();
+    if (step.action === 'exit') await this.stage.exitAll();
     if (this.live(token)) this.go(this.i + 1);
   }
 
@@ -371,7 +355,7 @@ export class Tour {
 
   /** The layer and the bar in the browser's top layer, above a modal dialog just opened. */
   private raise(): void {
-    for (const el of [this.layer, this.bar]) {
+    for (const el of [this.stage.layer, this.bar]) {
       el.popover = 'manual';
       if (el.matches(':popover-open')) el.hidePopover();
       el.showPopover();
@@ -431,116 +415,31 @@ export class Tour {
     return chapter.always ? { hash: chapter.hash, ready: chapter.ready } : undefined;
   }
 
-  /** Scrolls the control onto the screen, above the bar, when it isn't. */
-  private async bringIntoView(el: HTMLElement): Promise<void> {
-    const r = rectOf(el);
-    const bottom = innerHeight - this.floor();
-    const across = r.x >= 0 && r.x + Math.min(r.w, 200) <= this.view().w;
-    if (across && r.y >= 0 && r.y + Math.min(r.h, 200) <= bottom) return;
-    // centered in what the bar leaves of the window (a phone's bar is tall)
-    const margin = el.style.scrollMarginBottom;
-    el.style.scrollMarginBottom = `${this.floor()}px`;
-    el.scrollIntoView({ block: 'center', inline: 'nearest', behavior: this.still ? 'auto' : 'smooth' });
-    el.style.scrollMarginBottom = margin;
-    // a long smooth scroll outlasts any fixed wait: the hosts aim only once the control stops moving
-    await settled(el);
-  }
-
   // ---- the hosts ---------------------------------------------------------------------------
-
-  /** The room the bar takes at the bottom: none while it sits at the top for a control under it. */
-  private floor(): number {
-    return this.barTop ? 0 : this.bar.getBoundingClientRect().height;
-  }
-
-  /** The bar is at the top edge, out of the way of a control in a fixed footer. */
-  private barTop = false;
-
-  /** Puts the bar at the top while the control would be under it at the bottom, back at the bottom when it isn't. */
-  private clearBar(target: HTMLElement | undefined): boolean {
-    const h = this.bar.getBoundingClientRect().height;
-    const r = target && rectOf(target);
-    const w = this.view().w;
-    const under = !!r && barOnTop(r, { x: 0, y: innerHeight - h, w, h }, { x: 0, y: 0, w, h });
-    if (under === this.barTop) return false;
-    this.barTop = under;
-    this.bar.classList.toggle('tour-bar-top', under);
-    return true;
-  }
-
-  private view = () => ({ w: document.documentElement.clientWidth, h: innerHeight });
-
-  /** A host, on the layer (off the screen's edge until it walks on). */
-  private host(id: HostId): Actor | undefined {
-    let a = this.hosts.get(id);
-    if (!a) {
-      const sprite = this.sprites?.get(id);
-      if (!sprite) return undefined;
-      a = new Actor(sprite, this.scaleFor(HOSTS[id].scale), false);
-      // already in the Library (a regular wandering it, or Joe behind his desk, hidden while the tour is on):
-      // the tour takes them over where they stand, so they walk out from there
-      const visitor = document.querySelector<HTMLElement>(`.lib-visitor[data-cast="${id}"]`);
-      const there = visitor ?? (id === 'joe' ? document.querySelector<HTMLElement>('.lib-o-joe canvas') : null);
-      const r = there?.getBoundingClientRect();
-      if (r && r.width && r.right > 0 && r.left < this.view().w && r.bottom > 0 && r.top < this.view().h) {
-        // Joe steps out from the desk's back corner (his spot, as percents of the room), not onto the desk's front
-        const out = visitor ? undefined : document.querySelector<HTMLElement>('.lib-o-joe')?.dataset.out?.split(',').map(Number);
-        const room = document.querySelector('.lib-room')?.getBoundingClientRect();
-        if (out && room && out.length === 2 && out.every(Number.isFinite))
-          a.place({ x: room.left + (room.width * out[0]) / 100 - a.size.w / 2, y: room.top + (room.height * out[1]) / 100 - a.size.h });
-        else a.place({ x: r.left + r.width / 2 - a.size.w / 2, y: r.bottom - a.size.h });
-        visitor?.remove();
-        // Joe or the visitor starts as big as they stand in the room (a visitor is drawn bigger than a tour
-        // host), then shrinks to tour size as they walk to their spot, never popping smaller where they stood
-        if (r.width > a.size.w && !this.still) a.startAt({ w: r.width, h: (r.width * a.size.h) / a.size.w });
-      } else {
-        a.place(offStage(a.size, this.view(), this.floor(), false));
-        // a visitor still walking in from the edge is the same person: the host takes their place, never a second copy
-        visitor?.remove();
-      }
-      a.el.dataset.host = id;
-      this.layer.append(a.el);
-      this.hosts.set(id, a);
-    }
-    return a;
-  }
-
-  /** Smaller sprites on a phone. */
-  private scaleFor(scale: number): number {
-    return this.view().w < 600 ? Math.max(2, scale - 1) : scale;
-  }
-
-  /** Where the one talking waits: the bottom corner away from the control. */
-  private homeSpot(a: Actor, avoid: Rect | undefined, slot: number): Point {
-    const v = this.view();
-    const right = !!avoid && avoid.x + avoid.w / 2 < v.w / 2 && avoid.y + avoid.h > v.h / 2;
-    const x = 16 + slot * (a.size.w + 12);
-    return { x: right ? v.w - x - a.size.w : x, y: v.h - this.floor() - a.size.h - 8 };
-  }
 
   private async act(chapter: Chapter, step: TourStep, target: HTMLElement | undefined, token: number, speak: () => void): Promise<void> {
     const actorId = step.actor ?? chapter.actor;
     const speakerId = step.speaker ?? chapter.speaker;
-    const actor = this.host(actorId);
-    const speaker = this.host(speakerId);
-    const v = this.view();
-    const floor = this.floor();
+    const actor = this.stage.host(actorId);
+    const speaker = this.stage.host(speakerId);
+    const v = this.stage.view();
+    const floor = this.stage.floor();
     const box = target ? rectOf(target) : undefined;
-    this.bubble.hidden = true;
+    this.stage.bubble.hidden = true;
     const slot = (id: HostId) => (id === chapter.speaker ? 0 : 1);
     const moves: Promise<void>[] = [];
     // the one talking waits in the corner away from the control (walking on the first time)
-    if (speaker && speaker !== actor) moves.push(speaker.walk(this.homeSpot(speaker, box, slot(speakerId)), this.still));
+    if (speaker && speaker !== actor) moves.push(speaker.walk(this.stage.homeSpot(speaker, box, slot(speakerId)), this.still));
     if (actor) {
       const at = step.action === 'enter' || step.action === 'say' || step.action === 'exit' || !box;
-      const to = at ? this.homeSpot(actor, box, slot(actorId)) : standBy(box, actor.size, v, floor, step.action === 'press');
+      const to = at ? this.stage.homeSpot(actor, box, slot(actorId)) : standBy(box, actor.size, v, floor, step.action === 'press');
       moves.push(actor.walk(to, this.still));
     }
-    if (step.prop) void this.runProp(step, box);
+    if (step.prop) void this.stage.runProp(step, box);
     await Promise.all(moves);
     if (!this.live(token)) return;
     if (actor && box) actor.face(box.x + box.w / 2 < actor.pos.x + actor.size.w / 2);
-    if (target && (step.action === 'point' || step.action === 'press' || step.action === 'walk')) this.showRing(target, actor, !!step.target?.steady);
+    if (target && (step.action === 'point' || step.action === 'press' || step.action === 'walk')) this.stage.showRing(target, actor, !!step.target?.steady);
     if (step.action === 'press' && target) {
       await actor?.hop(this.still);
       this.sound.effect(step.sound);
@@ -567,147 +466,8 @@ export class Tour {
     // a held line waits for the page (the BBS's handle prompt on the screen)
     await held;
     if (!this.live(token)) return;
-    this.say(step, speaker, box);
+    this.stage.say(step, speaker, box);
     speak();
-  }
-
-  private say(step: TourStep, speaker: Actor | undefined, avoid: Rect | undefined): void {
-    this.bubble.textContent = step.say;
-    this.bubble.hidden = false;
-    const v = this.view();
-    const width = Math.min(320, v.w - 32);
-    this.bubble.style.width = `${width}px`;
-    // The pop-in animation scales its painted bounds; layout must use its full final height.
-    const size = { w: width, h: this.bubble.offsetHeight };
-    const anchor = speaker ? { ...speaker.pos, ...speaker.size } : { x: v.w / 2, y: v.h / 2, w: 0, h: 0 };
-    const others = [...this.hosts.values()].filter((host) => host !== speaker).map((host) => ({ ...host.pos, ...host.size }));
-    const p = placeBubble(anchor, size, v, this.floor(), avoid, 8, others, this.barTop ? this.bar.getBoundingClientRect().height + 8 : 8);
-    this.bubble.dataset.side = p.side;
-    this.bubble.style.left = `${Math.round(p.x)}px`;
-    this.bubble.style.top = `${Math.round(p.y)}px`;
-    this.bubble.style.setProperty('--tail', `${Math.round(p.tail)}px`);
-  }
-
-  /** The ring around the control, and the arrow on the side the host stands. */
-  private showRing(target: HTMLElement, by: Actor | undefined, steady = false): void {
-    const measure = () =>
-      steady ? steadyRect(rectOf(target.parentElement ?? target), 1.2 * Math.max(target.offsetWidth, target.offsetHeight)) : rectOf(target);
-    // the page may have settled or shifted since the step began: the bar moves for where the control is now
-    this.clearBar(target);
-    const r = measure();
-    Object.assign(this.ring.style, { left: `${r.x - 4}px`, top: `${r.y - 4}px`, width: `${r.w + 8}px`, height: `${r.h + 8}px` });
-    let side = 'below';
-    if (by) {
-      const cx = by.pos.x + by.size.w / 2;
-      const cy = by.pos.y + by.size.h / 2;
-      if (cy > r.y + r.h) side = 'below';
-      else if (cy < r.y) side = 'above';
-      else side = cx < r.x ? 'left' : 'right';
-    }
-    this.ring.dataset.side = side;
-    this.ring.hidden = false;
-    this.followRing(target, measure);
-  }
-
-  /**
-   * Keeps the ring on its control while it shows: it moves with it (a page that shifts), and
-   * goes when the control does (a pressed Next that turned the page).
-   */
-  private followRing(target: HTMLElement, measure: () => Rect): void {
-    const ring = this.ring;
-    const was = measure();
-    const gen = ++this.ringGen;
-    const look = () => {
-      if (gen !== this.ringGen || ring.hidden || now.tour !== this) return;
-      if (!target.isConnected || !visible(target) || this.covered(target)) {
-        // gone, or covered by what its press opened (a manual over its button): ring and press go
-        ring.hidden = true;
-        target.classList.remove('tour-pressed');
-        return;
-      }
-      const r = measure();
-      if (Math.abs(r.x - was.x) > 1 || Math.abs(r.y - was.y) > 1 || Math.abs(r.w - was.w) > 1 || Math.abs(r.h - was.h) > 1) {
-        Object.assign(was, r);
-        if (this.clearBar(target)) this.onResize();
-        Object.assign(ring.style, { left: `${r.x - 4}px`, top: `${r.y - 4}px`, width: `${r.w + 8}px`, height: `${r.h + 8}px` });
-      }
-      requestAnimationFrame(look);
-    };
-    requestAnimationFrame(look);
-  }
-
-  /** Something of the page's own lies over the middle of the control (an overlay its press opened). */
-  private covered(target: HTMLElement): boolean {
-    const r = target.getBoundingClientRect();
-    const x = r.left + r.width / 2;
-    const y = r.top + r.height / 2;
-    if (x < 0 || y < 0 || x >= innerWidth || y >= innerHeight) return false;
-    const top = document.elementFromPoint(x, y);
-    return !!top && !target.contains(top) && !top.contains(target) && !this.bar.contains(top) && !this.layer.contains(top) && !this.card?.contains(top);
-  }
-
-  private onResize = () => {
-    const current = this.flat[this.i];
-    if (!current) return;
-    const { step, chapter } = current;
-    const t = step?.target && findTarget(step.target);
-    const actorId = step.actor ?? chapter.actor,
-      speakerId = step.speaker ?? chapter.speaker;
-    const actor = this.hosts.get(actorId),
-      speaker = this.hosts.get(speakerId);
-    if (!this.bubble.hidden) {
-      const view = this.view(),
-        floor = this.floor(),
-        box = t ? rectOf(t) : undefined;
-      for (const host of this.hosts.values())
-        host.place({
-          x: Math.max(0, Math.min(view.w - host.size.w, host.pos.x)),
-          y: Math.max(0, Math.min(view.h - floor - host.size.h, host.pos.y)),
-        });
-      const slot = (id: HostId) => (id === chapter.speaker ? 0 : 1);
-      if (speaker && speaker !== actor) speaker.place(this.homeSpot(speaker, box, slot(speakerId)));
-      if (actor) {
-        const at = step.action === 'enter' || step.action === 'say' || step.action === 'exit' || !box;
-        actor.place(at ? this.homeSpot(actor, box, slot(actorId)) : standBy(box, actor.size, view, floor, step.action === 'press'));
-      }
-      this.say(step, speaker, box);
-    }
-    if (t && !this.ring.hidden) this.showRing(t, actor);
-  };
-
-  /** Something from the game wanders through: a chicken across the floor, a hat dropped by the control. */
-  private async runProp(step: TourStep, box: Rect | undefined): Promise<void> {
-    const cue = step.prop!;
-    const sprite = this.sprites?.get(cue.id);
-    if (!sprite) return;
-    const a = new Actor(sprite, this.scaleFor(PROPS[cue.id].scale), !sprite.sprite.walk);
-    this.props.push(a);
-    this.layer.append(a.el);
-    const v = this.view();
-    const floor = this.floor();
-    if (cue.run === 'across') {
-      a.place(offStage(a.size, v, floor, false));
-      await a.walk({ x: v.w + 8, y: a.pos.y }, false);
-    } else {
-      const spot = box ? standBy(box, a.size, v, floor) : { x: v.w / 2, y: v.h / 2 };
-      a.place({ x: spot.x, y: -a.size.h });
-      await a.walk(spot, this.still);
-      await sleep(2500);
-    }
-    a.dispose();
-  }
-
-  private clearHosts(): void {
-    for (const a of [...this.hosts.values(), ...this.props]) a.dispose();
-    this.hosts.clear();
-    this.props = [];
-  }
-
-  private async exitAll(): Promise<void> {
-    this.bubble.hidden = true;
-    this.ring.hidden = true;
-    const v = this.view();
-    await Promise.all([...this.hosts.values()].map((a) => a.walk(offStage(a.size, v, this.floor(), a.pos.x > v.w / 2), this.still)));
   }
 
   // ---- the page's own controls --------------------------------------------------------------
@@ -751,32 +511,12 @@ export class Tour {
 
   // ---- timing, pause, sound and keys ---------------------------------------------------------
 
-  private wait(ms: number): Promise<void> {
-    return new Promise((done) => {
-      this.hold = { left: ms, t0: performance.now(), timer: 0, done };
-      if (!this.paused) this.hold.timer = window.setTimeout(done, ms);
-    });
-  }
-
-  private cancelHold(): void {
-    if (this.hold) clearTimeout(this.hold.timer);
-    this.hold = undefined;
-  }
-
   private setPaused(paused: boolean): void {
     this.paused = paused;
     this.pauseBtn.textContent = paused ? 'Play' : 'Pause';
     this.pauseBtn.setAttribute('aria-label', paused ? 'Play the tour' : 'Pause the tour');
     this.sound.pause(paused);
-    const hold = this.hold;
-    if (!hold) return;
-    if (paused) {
-      clearTimeout(hold.timer);
-      hold.left -= performance.now() - hold.t0;
-    } else {
-      hold.t0 = performance.now();
-      hold.timer = window.setTimeout(hold.done, Math.max(400, hold.left));
-    }
+    this.clock.setPaused(paused);
   }
 
   private toggleSound(): void {
@@ -839,8 +579,8 @@ export class Tour {
   private async finale(): Promise<void> {
     const token = ++this.token;
     if (this.chapters.length > 1 || this.opts.record || this.opts.cont) {
-      this.clearHosts();
-      this.bubble.hidden = this.ring.hidden = true;
+      this.stage.clearHosts();
+      this.stage.bubble.hidden = this.stage.ring.hidden = true;
       this.sound.music(undefined);
       await this.titleCard('That’s the whole tour!', 'Thanks for watching · Game-Maker: Sandbox Edition', false, ['teddy', 'gwinn'], 5000);
       if (!this.live(token)) return;
@@ -854,9 +594,9 @@ export class Tour {
     const rest = this.chapters.slice(this.chapters.indexOf(chapter)).map((c) => c.id);
     const params = `tour=${rest.join(',')}${this.opts.record ? '&record' : ''}&cont`;
     const url = chapter.file ? `./${chapter.file}?${params}` : `./${chapter.hash}${chapter.hash.includes('?') ? '&' : '?'}${params}`;
-    this.cancelHold();
+    this.clock.cancelHold();
     this.sound.dispose();
-    this.bubble.hidden = this.ring.hidden = true;
+    this.stage.bubble.hidden = this.stage.ring.hidden = true;
     void this.titleCard(chapter.title, 'Game-Maker: Sandbox Edition', false, [...new Set([chapter.speaker, chapter.actor])]);
     // this page's last chapter saved (a recording ends with its page), then a moment for the card
     await this.recorder?.finish();
@@ -868,42 +608,21 @@ export class Tour {
 
   /** A chapter's title card for a moment; with `ask`, a Start button that waits for a click (false: closed). */
   private titleCard(title: string, sub: string, ask = false, who: HostId[] = ['teddy', 'gwinn'], ms = 2600): Promise<boolean> {
-    const hosts = who.map((id) => {
-      const s = this.sprites?.get(id);
-      return s ? new Actor(s, HOSTS[id].scale + 1, false) : undefined;
-    });
-    const start = ask ? h('button', { type: 'button', class: 'primary tour-start' }, '▶ Start') : undefined;
-    const card = h(
-      'div',
-      { class: 'tour-card', role: ask ? 'dialog' : undefined, 'aria-label': ask ? title : undefined },
-      h('div', { class: 'tour-card-hosts' }, ...hosts.map((a) => a?.el)),
-      h('p', { class: 'tour-card-sub' }, sub),
-      h('h2', { class: 'tour-card-title' }, title),
-      start,
+    return titleCard(
+      this.stage.sprites,
+      this.caption,
+      () => this.card,
+      (card) => {
+        this.card = card;
+      },
+      () => now.tour === this,
+      () => this.end(),
+      title,
+      sub,
+      ask,
+      who,
+      ms,
     );
-    this.card = card;
-    document.body.append(card);
-    this.caption.textContent = ask ? '' : title;
-    const done = (ok: boolean) => {
-      for (const a of hosts) a?.dispose();
-      card.remove();
-      if (this.card === card) this.card = undefined;
-      return ok;
-    };
-    if (start) {
-      start.focus();
-      return new Promise((resolve) => {
-        start.addEventListener('click', () => resolve(done(now.tour === this)));
-        card.addEventListener('keydown', (e) => {
-          if (e.key !== 'Escape') return;
-          e.preventDefault();
-          e.stopPropagation();
-          this.end();
-          resolve(done(false));
-        });
-      });
-    }
-    return sleep(ms).then(() => done(now.tour === this));
   }
 
   /** Ends the tour: everything taken away, menus it opened shut, the keyboard back where it was. */
@@ -913,10 +632,10 @@ export class Tour {
     this.token++;
     this.releaseFocusHold?.();
     this.focusLater = undefined;
-    this.cancelHold();
+    this.clock.cancelHold();
     this.unpress();
     void this.leaveChapter();
-    this.clearHosts();
+    this.stage.clearHosts();
     this.sound.dispose();
     // closed early: what was recorded so far is still saved
     void this.recorder?.finish();
@@ -925,7 +644,7 @@ export class Tour {
     document.documentElement.classList.remove('tour-on');
     this.notice?.remove();
     this.card?.remove();
-    this.layer.remove();
+    this.stage.layer.remove();
     this.bar.remove();
     this.barSize.disconnect();
     document.documentElement.style.removeProperty('--tour-bar-h');

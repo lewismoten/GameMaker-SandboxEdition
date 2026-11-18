@@ -66,6 +66,7 @@ game folder opens in the browser unchanged.
 
 - **Sample CD build organization (November 18, 2026)**: OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, split the existing catalog build script into modules by responsibility. No new third-party code or assets were added.
 - **SEO build organization (November 18, 2026)**: OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, split the existing crawlable-page generator into modules by responsibility. No new third-party code or assets were added.
+- **Tour engine organization (November 18, 2026)**: OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, split the existing guided-tour player into modules by responsibility. No new third-party code or assets were added.
 
 - **Map editor organization (November 18, 2026)**: OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, split the existing map editor into modules by responsibility. No new third-party code or assets were added.
 

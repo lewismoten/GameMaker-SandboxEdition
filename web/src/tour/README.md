@@ -171,11 +171,12 @@ as a plain tour (pointer and buttons back).
   (`firstLoad.test.ts`).
 - `editorChoice.ts`: which editor sub-chapter goes with the open file on the editor page.
 - `tourStart.ts`: starting a chapter or the whole tour, and the guides waiting in a page's corner.
-- `tourEngine.ts` (`tour.css`): the player: the layer over the page (it never takes a click),
-  the ring and arrow on the control, the bubble, the caption bar and its buttons, title cards
-  (with the chapter's hosts), menus and panels opened to show an item in them and shut again,
-  another address on the same page for a step (`go`: the editor's palette after its map; Back
-  goes back to it), a chapter that always plays at its own address (`always`), and the keys.
+- `tourEngine.ts` (`tour.css`): the player's public `Tour` and `tourPlaying` exports, step
+  orchestration, voice playback, chapter state restoration, navigation, keyboard and focus handling.
+- `tourStage.ts`: the layer, hosts and props, control scrolling, ring tracking, bubble layout,
+  caption-bar placement and resize handling.
+- `tourClock.ts`: step waits and their remaining time across pause and resume, plus short delays.
+- `tourCard.ts`: chapter title cards and the recording Start card, with their host sprites and cleanup.
 - `tourOpen.ts`: the menus and overlays the tour opens to show what is in them, and shuts again.
 - `findTarget.ts`: a step's control on the page: the first visible match of its selectors (so a
   narrow window's ⋯ menu stands in for a header link; one cut off by a box that hides its overflow,
