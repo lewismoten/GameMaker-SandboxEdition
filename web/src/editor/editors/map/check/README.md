@@ -6,7 +6,9 @@ Presents the level-check worker’s progress, heat and findings beside the map, 
 
 ## Main files
 
-- [`checkPanel.ts`](checkPanel.ts): Runs scene checks through the worker client and presents live/saved heat, findings, acceptance controls, fixes, legends, and comparison views.
+- [`checkPanel.ts`](checkPanel.ts): Coordinates the panel, map overlays, legends, and live/saved heat comparison views.
+- [`checkRun.ts`](checkRun.ts): Owns worker run/cancel progress, run settings, heat conversion, and saved companion results.
+- [`checkFindings.ts`](checkFindings.ts): Renders finding filters, acceptance controls, fixes, and their Undo.
 - [`myHeat.ts`](myHeat.ts): Records touched cells/deaths from elapsed ticks, merges sparse session data, and computes combined/comparison heat and coverage.
 - [`playSession.ts`](playSession.ts): Associates recorded frames with scenes sharing the selected map, extracts scene takes, and persists accumulated heat.
 - [`markInfo.ts`](markInfo.ts): Converts heat steps and overlay marks into tooltip/readout text.
@@ -15,7 +17,7 @@ Presents the level-check worker’s progress, heat and findings beside the map, 
 
 [`map.ts`](../map.ts) dynamically loads the check panel; [`playScene.ts`](../../../widgets/playScene.ts) records play-session heat.
 
-Results and author heat are companion data. Fixes change ordinary game files and use panel-owned Undo. Hiding the panel clears overlays but does not cancel an active worker.
+Results and author heat are companion data. Fixes change ordinary game files and use finding-controller-owned Undo. Hiding the panel clears overlays but does not cancel an active worker.
 
 ## Tests
 

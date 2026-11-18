@@ -20,24 +20,16 @@ import type { Project } from '../../../core/project';
 import type { MapSelection } from '../tools/selection';
 import type { OverlayState } from '../tools/overlay';
 import { HEAT_COLORS } from '../tools/overlay';
-import { startCheck, type RunningCheck } from '../../../check/client';
-import { CHECKS, STEADY_MS, at, isHard, kindOf, type Finding, type Kind } from '../../../check/findings';
-import type { Report, RunSummary } from '../../../check/report';
-import { guideLink } from '../../../widgets/guideLink';
-import { fixFor } from '../../../check/generators/fixes';
-import { unlockAchievement } from '../../../../achievements';
+import { STEADY_MS, at } from '../../../check/findings';
 import { mazeFor } from '../../../check/generators/mazeFor';
-import { companionPatches } from '../../../../dosPlayer/playerRecord';
-import { paletteReservations } from '../../palette/paletteReservations';
-import { markSame, sameEverySide, sameKeyOf } from '../../../check/sameEverySide';
-import { reasonField, reasonNote } from '../../../widgets/acceptReason';
-import { acceptedFindings, findingKey, reasonFor, setAccepted, splitAccepted, wasAcceptedButHard } from '../../../check/accepted';
-import type { LiveProgress } from '../../../check/live';
 import { MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { MARKS, describeCell, heatWords, type HeatView } from './markInfo';
 import { COMPARE_COLORS, combineSteps, compareSteps } from './myHeat';
 import { myHeatControls } from './myHeatControls';
 import { checkExtras } from './checkExtras';
+import { checkRun, heatSteps, unpack } from './checkRun';
+import { checkFindings } from './checkFindings';
+export { keepBotHeat, secondsText, liveText } from './checkRun';
 
 interface CheckHost {
   project: Project;
@@ -57,65 +49,6 @@ interface CheckHost {
   paint(cells: [number, number][]): void;
 }
 
-/** What the companion keeps of the last check of a map. */
-interface Saved {
-  when: string;
-  budget: number;
-  /** The heat map, one character per cell: '0' never reached, '1'..'6' rising (HEAT_COLORS). */
-  heat: string;
-  soon: string;
-  stuck: number[];
-  deaths: number[];
-  /** Tries that ended in each of `deaths` (older checks didn't keep them). */
-  deathTimes?: number[];
-  findings: Finding[];
-  places: number;
-  complete: boolean;
-  ms: number;
-  /** The check played again with steady hands, at this many ms between key changes (0 or none: it didn't). */
-  steadyMs?: number;
-}
-
-const SECTION = 'levelCheck';
-const LABEL: Record<Kind, string> = { error: 'Problem', warning: 'Warning', suggestion: 'Suggestion', info: 'Note' };
-const ICON: Record<Kind, string> = { error: '⛔', warning: '⚠', suggestion: '💡', info: 'ℹ' };
-
-/** Heat as steps: how often (log of ticks spent) or how soon (first tick reached). */
-function heatSteps(run: Pick<RunSummary, 'heat' | 'first'>, soon: boolean): Uint8Array {
-  const out = new Uint8Array(run.heat.length);
-  const n = HEAT_COLORS.length;
-  if (soon) {
-    let max = 0;
-    for (const t of run.first) max = Math.max(max, t);
-    // reached early is bright: the first steps of a level stand out
-    run.first.forEach((t, i) => t >= 0 && (out[i] = n - Math.min(n - 1, Math.floor((t / (max + 1)) * n))));
-  } else {
-    let max = 1;
-    for (const v of run.heat) max = Math.max(max, v);
-    run.heat.forEach((v, i) => v && (out[i] = 1 + Math.min(n - 1, Math.floor((Math.log(v) / Math.log(max + 1)) * n))));
-  }
-  return out;
-}
-
-const pack = (a: Uint8Array) => String.fromCharCode(...[...a].map((v) => 48 + v));
-
-/** Keeps a heat map that the walkthrough bot made as this map's last check, with a note saying so. */
-export function keepBotHeat(project: Project, map: string, scene: number, heat: Uint32Array, note: string): void {
-  const run = { heat, first: Int32Array.from(heat, (h) => (h ? 0 : -1)) };
-  const saved: Saved = {
-    when: new Date().toISOString(),
-    budget: 0,
-    heat: pack(heatSteps(run, false)),
-    soon: pack(heatSteps(run, false)),
-    stuck: [],
-    deaths: [],
-    findings: [{ check: 'coverage', severity: 'warning', title: note, where: { scene, map } }],
-    places: 0,
-    complete: false,
-    ms: 0,
-  };
-  project.setExtras(map, SECTION, saved);
-}
 /** "Gray level" is a way of looking, not part of the game, so it is kept per viewer (all maps). */
 const GRAY_KEY = 'gm-map-gray';
 function readGray(): boolean {
@@ -132,29 +65,6 @@ function writeGray(on: boolean): void {
     /* remembered for this visit only */
   }
 }
-/** The deaths kept of a run: the cells, and how many tries ended at each. */
-function deathsOf(run: RunSummary | undefined): Pick<Saved, 'deaths' | 'deathTimes'> {
-  const times = new Map<number, number>();
-  const c = run?.deathCounts ?? [];
-  for (let i = 0; i < c.length; i += 2) times.set(c[i], c[i + 1]);
-  const deaths = [...new Set([...(run?.deaths ?? []), ...times.keys()])].slice(0, 300);
-  return { deaths, deathTimes: deaths.map((d) => times.get(d) ?? 1) };
-}
-const unpack = (s: string) => Uint8Array.from(s, (c) => c.charCodeAt(0) - 48);
-
-/** Seconds, for "About 12 s left": whole seconds, or minutes and seconds past a minute. */
-export function secondsText(ms: number): string {
-  const s = Math.max(1, Math.ceil(ms / 1000));
-  return s < 60 ? `${s} s` : `${Math.floor(s / 60)} min ${String(s % 60).padStart(2, '0')} s`;
-}
-
-/** The running check's progress in words: time left (honest when it can only be the budget), places tried, and the scene. */
-export function liveText(p: Pick<LiveProgress, 'leftMs' | 'sure' | 'tried' | 'queued' | 'index' | 'total'>, sceneName?: string): string {
-  const left = `${p.sure ? 'About' : 'Up to'} ${secondsText(p.leftMs)} left`;
-  const scene = p.total > 1 ? ` · scene ${p.index + 1} of up to ${p.total}${sceneName ? ` (${sceneName})` : ''}` : '';
-  return `${left} · ${p.tried} place${p.tried === 1 ? '' : 's'} tried, ${p.queued} waiting${scene}`;
-}
-
 export function checkPanel(host: CheckHost): {
   el: HTMLElement;
   shown(): boolean;
@@ -164,20 +74,10 @@ export function checkPanel(host: CheckHost): {
   describe(cell: number, near?: number): string[];
 } {
   const { project, file } = host;
-  let saved = project.extras<Saved | undefined>(file, SECTION, undefined);
-  let budget = saved?.budget ?? 15;
-  let steady = !!saved?.steadyMs;
-  let steadyMs = saved?.steadyMs || STEADY_MS;
-  let running: RunningCheck | undefined;
   let showHeat = true;
   let gray = readGray();
   let soon = false;
   let showMarks = true;
-  let filter: Kind | 'all' = 'all';
-  let showAccepted = false;
-  /** What the bot has found so far in the check that is running. */
-  let live: { heat: Uint32Array; first: Int32Array; deaths: Map<number, number> } | undefined;
-  const undo: { files: [string, Uint8Array | undefined][]; what: string }[] = [];
 
   const status = h('p', { class: 'meta lc-status', role: 'status', 'aria-live': 'polite' });
   const bar = h('progress', { class: 'lc-progress', max: 1, value: 0, 'aria-label': 'Level check progress', hidden: true });
@@ -185,11 +85,34 @@ export function checkPanel(host: CheckHost): {
   const progressLine = h('p', { class: 'meta lc-status lc-live', hidden: true });
   // a mark picked from the legend or the list, read out
   const said = h('p', { class: 'sr-only', role: 'status', 'aria-live': 'polite' });
-  const runBtn = h('button', { type: 'button', class: 'primary', onclick: () => (running ? stop() : void run()) }, '▶ Run check');
-  const undoBtn = h('button', { type: 'button', hidden: true, onclick: () => undoFix() }, '↶ Undo fix');
-  const list = h('ol', { class: 'lc-list', 'aria-label': 'Findings' });
-  const acceptedBox = h('div', { class: 'lc-accepted' });
-  const counts = h('div', { class: 'lc-counts', role: 'group', 'aria-label': 'Show findings' });
+  const runBtn = h('button', { type: 'button', class: 'primary', onclick: () => (state.running ? runner.stop() : void runner.run()) }, '▶ Run check');
+  const runner = checkRun(host, {
+    runBtn,
+    bar,
+    status,
+    progressLine,
+    clearFocus: () => {
+      focus = undefined;
+    },
+    showToggles: () => {
+      toggles.hidden = false;
+    },
+    hidden: () => el.hidden,
+    paint,
+    render,
+  });
+  const { state } = runner;
+  const findings = checkFindings(host, state, {
+    said,
+    focus: (cell) => {
+      focus = cell;
+    },
+    paint,
+    describe,
+    render,
+    save: runner.save,
+  });
+  const { undoBtn, list, acceptedBox, counts } = findings;
   const heatLegend = h(
     'div',
     { class: 'lc-legend' },
@@ -263,7 +186,7 @@ export function checkPanel(host: CheckHost): {
     ),
   );
   /** The bot's heat steps as shown, and the author's. */
-  const botSteps = () => (live ? heatSteps(live, soon) : saved ? unpack(soon ? saved.soon : saved.heat) : undefined);
+  const botSteps = () => (state.live ? heatSteps(state.live, soon) : state.saved ? unpack(soon ? state.saved.soon : state.saved.heat) : undefined);
   const mineUi = myHeatControls({
     project,
     file,
@@ -292,22 +215,22 @@ export function checkPanel(host: CheckHost): {
           [60, 'Thorough (1 min)'],
           [240, 'Exhaustive (4 min)'],
         ],
-        () => budget,
-        (v) => (budget = v),
+        () => state.budget,
+        (v) => (state.budget = v),
         'How long the bot may play this scene',
       ),
       runBtn,
       undoBtn,
       checkField(
         'Slower hands',
-        () => steady,
-        (v) => (steady = v),
+        () => state.steady,
+        (v) => (state.steady = v),
         'Play the scene again the way a person might: one key at a time, with a pause between key changes, and say where that can’t get through',
       ),
       numberField(
         'ms between keys',
-        () => steadyMs,
-        (v) => (steadyMs = Math.max(50, Math.min(2000, v || STEADY_MS))),
+        () => state.steadyMs,
+        (v) => (state.steadyMs = Math.max(50, Math.min(2000, v || STEADY_MS))),
         { min: 50, max: 2000, step: 50, title: 'The slower-hands pace: the least time between two key changes' },
       ),
       h(
@@ -328,9 +251,9 @@ export function checkPanel(host: CheckHost): {
       project,
       file,
       scene: host.scene,
-      findings: () => saved?.findings ?? [],
-      item: (f, acc) => item(f, acc),
-      filter: () => filter,
+      findings: () => state.saved?.findings ?? [],
+      item: (f, acc) => findings.item(f, acc),
+      filter: () => findings.filter(),
       addedHeat: (ticks) => mineUi.added(ticks),
     }),
     mineUi.el,
@@ -384,7 +307,7 @@ export function checkPanel(host: CheckHost): {
     const ov = host.overlay;
     // while the bot plays, its heat map shows; after, whichever the author chose
     const mine = mineUi.mine();
-    const view: HeatView = live || !mine ? 'bot' : mineUi.view();
+    const view: HeatView = state.live || !mine ? 'bot' : mineUi.view();
     const bot = botSteps();
     const my = mine && heatSteps(mine, soon);
     ov.heatColors = undefined;
@@ -403,11 +326,11 @@ export function checkPanel(host: CheckHost): {
     drawn.findings = new Map();
     drawn.heat = ov.heat;
     drawn.view = view;
-    if (showMarks && live) drawn.deaths = live.deaths;
-    else if (showMarks && saved && view !== 'mine') {
-      saved.deaths.forEach((c, i) => drawn.deaths.set(c, saved?.deathTimes?.[i] ?? -1));
-      drawn.stuck = new Set(saved.stuck);
-      for (const f of split().open)
+    if (showMarks && state.live) drawn.deaths = state.live.deaths;
+    else if (showMarks && state.saved && view !== 'mine') {
+      state.saved.deaths.forEach((c, i) => drawn.deaths.set(c, state.saved?.deathTimes?.[i] ?? -1));
+      drawn.stuck = new Set(state.saved.stuck);
+      for (const f of findings.split().open)
         for (const c of (f.where.cells ?? (f.where.cell !== undefined ? [f.where.cell] : [])).slice(0, 40)) {
           const at = drawn.findings.get(c) ?? [];
           if (!at.includes(f.title)) at.push(f.title);
@@ -485,11 +408,8 @@ export function checkPanel(host: CheckHost): {
     }
   };
 
-  /** The saved findings, those still open and those accepted as meant to be. */
-  const split = () => splitAccepted(saved?.findings ?? [], acceptedFindings(project));
-
   function render(): void {
-    if (!saved) {
+    if (!state.saved) {
       status.textContent = host.scene === undefined ? 'No scene plays this map yet, so only its files can be checked.' : `Not checked yet.${passNote()}`;
       clear(list);
       clear(counts);
@@ -499,288 +419,10 @@ export function checkPanel(host: CheckHost): {
       return;
     }
     toggles.hidden = false;
-    const when = new Date(saved.when);
-    status.textContent = `Checked ${when.toLocaleString()}: ${saved.places} places tried in ${(saved.ms / 1000).toFixed(0)} s${saved.complete ? ', every move from every one' : ', then the time ran out'}.${passNote()}`;
-    const { open, accepted } = split();
-    const by = (s: Kind) => open.filter((f) => kindOf(f) === s).length;
-    clear(
-      counts,
-      ...(['all', 'error', 'warning', 'suggestion', 'info'] as const).map((s) =>
-        h(
-          'button',
-          { type: 'button', class: 'lc-count', 'aria-pressed': String(filter === s), onclick: () => ((filter = s), render()) },
-          s === 'all' ? `All ${open.length}` : `${ICON[s]} ${by(s)} ${LABEL[s].toLowerCase()}${by(s) === 1 ? '' : 's'}`,
-        ),
-      ),
-    );
-    const shown = open.filter((f) => filter === 'all' || kindOf(f) === filter);
-    clear(list, ...(shown.length ? shown.map((f) => item(f)) : [h('li', { class: 'meta' }, open.length ? 'None of these.' : 'Nothing to report.')]));
-    if (!accepted.length) showAccepted = false;
-    clear(
-      acceptedBox,
-      ...(accepted.length
-        ? [
-            h(
-              'button',
-              {
-                type: 'button',
-                class: 'lc-accepted-toggle',
-                'aria-expanded': String(showAccepted),
-                'aria-controls': 'lc-accepted-list',
-                title: 'Findings marked as checked: they are meant to be',
-                onclick: () => ((showAccepted = !showAccepted), render()),
-              },
-              `${accepted.length} accepted · ${showAccepted ? 'hide' : 'show'}`,
-            ),
-            h(
-              'ol',
-              { class: 'lc-list', id: 'lc-accepted-list', 'aria-label': 'Accepted findings', hidden: !showAccepted },
-              ...accepted.map((f) => item(f, true)),
-            ),
-          ]
-        : []),
-    );
+    const when = new Date(state.saved.when);
+    status.textContent = `Checked ${when.toLocaleString()}: ${state.saved.places} places tried in ${(state.saved.ms / 1000).toFixed(0)} s${state.saved.complete ? ', every move from every one' : ', then the time ran out'}.${passNote()}`;
+    findings.render();
     paint();
-  }
-
-  /** Accepts a finding as meant to be, or (with `on` false) brings it back to the list. */
-  function accept(f: Finding, on: boolean, why = ''): void {
-    setAccepted(project, findingKey(f), on, why);
-    render();
-    toast(
-      on
-        ? `${'taste' in CHECKS[f.check] ? 'Kept as you chose it' : 'Marked as checked'}: the finding is kept under “accepted”.`
-        : 'The finding is back in the list.',
-    );
-  }
-
-  function item(f: Finding, accepted = false): HTMLElement {
-    const reason = !accepted ? reasonField(() => accept(f, true, reason?.value() ?? '')) : null;
-    const why = accepted ? reasonFor(acceptedFindings(project), findingKey(f)) : '';
-    const info = CHECKS[f.check];
-    const cell = f.where.cell ?? f.where.cells?.[0];
-    const fix = fixFor(f, project);
-    const same = sameKeyOf(f);
-    const kind = kindOf(f);
-    const taste = 'taste' in info;
-    const hard = isHard(f);
-    return h(
-      'li',
-      { class: `lc-item lc-${kind}${accepted ? ' lc-is-accepted' : ''}` },
-      h(
-        'button',
-        {
-          type: 'button',
-          class: 'lc-go',
-          disabled: cell === undefined,
-          title: cell === undefined ? undefined : `Show ${at(cell)} on the map`,
-          onclick: () => {
-            if (cell === undefined) return;
-            focus = cell;
-            paint();
-            host.goTo(cell);
-            said.textContent = `${at(cell)}: ${describe(cell).join('. ')}.`;
-          },
-        },
-        h('span', { class: 'lc-sev' }, h('span', { 'aria-hidden': 'true' }, ICON[kind]), ` ${LABEL[kind]}: `),
-        h('span', { class: 'lc-what' }, f.title),
-      ),
-      f.detail ? h('p', { class: 'lc-detail' }, f.detail) : null,
-      h('p', { class: 'lc-why' }, h('strong', null, `${info.name}. `), info.why, ' ', guideLink(info.guide)),
-      fix && !accepted
-        ? h(
-            'button',
-            {
-              type: 'button',
-              class: 'lc-fix',
-              title: fix.detail,
-              onclick: () => {
-                const before = fix.files.map((n): [string, Uint8Array | undefined] => [n, project.files.get(n)?.slice()]);
-                const changed = fix.apply();
-                if (!changed.length) return toast('Nothing to change there.');
-                undo.push({ files: before.filter(([n]) => changed.includes(n)), what: fix.label });
-                undoBtn.hidden = false;
-                host.reload(changed);
-                unlockAchievement('check-fix');
-                toast(`${fix.label}: done. Run the check again to see the difference.`);
-              },
-            },
-            `✨ ${fix.label}`,
-          )
-        : null,
-      same && !accepted
-        ? h(
-            'button',
-            {
-              type: 'button',
-              class: 'lc-fix',
-              title: 'For a ball, a word or anything drawn to look the same from every side: the check stops asking about it.',
-              onclick: () => {
-                markSame(project, same);
-                if (saved) saved.findings = saved.findings.filter((x) => sameKeyOf(x) !== same);
-                if (saved) project.setExtras(file, SECTION, saved);
-                render();
-                toast(`${same} is marked as the same from every side.`);
-              },
-            },
-            'Looks the same from every side',
-          )
-        : null,
-      hard
-        ? h(
-            'div',
-            { class: 'lc-hard' },
-            h(
-              'p',
-              { class: 'meta' },
-              wasAcceptedButHard(f, acceptedFindings(project)) ? 'An earlier version let this be marked as checked. ' : '',
-              'This will fail for players, so it can be fixed but not set aside.',
-            ),
-            h(
-              'button',
-              {
-                type: 'button',
-                class: 'lc-fix lc-goto',
-                disabled: cell === undefined,
-                title: cell === undefined ? 'It is in a file or a scene, not on one cell: see the place named above.' : `Show ${at(cell)} on the map`,
-                onclick: () => {
-                  if (cell === undefined) return;
-                  focus = cell;
-                  paint();
-                  host.goTo(cell);
-                  said.textContent = `${at(cell)}: ${describe(cell).join('. ')}.`;
-                },
-              },
-              '➜ Go to it',
-            ),
-          )
-        : [
-            reason?.el ?? null,
-            h(
-              'button',
-              {
-                type: 'button',
-                class: 'lc-fix lc-accept',
-                title: accepted
-                  ? 'Puts this finding back in the list and the counts.'
-                  : taste
-                    ? 'A design suggestion, not a rule: if you chose this on purpose, the list, the counts, the badges and Before You Upload leave it out.'
-                    : 'You have looked at this and it is how you want it: the list, the counts, the badges and Before You Upload leave it out.',
-                onclick: () => accept(f, !accepted, reason?.value() ?? ''),
-              },
-              accepted ? '↺ Not meant to be: list it again' : taste ? '✓ That’s on purpose' : '✓ Mark as checked: it’s meant to be',
-            ),
-          ],
-      reasonNote(why),
-    );
-  }
-
-  function undoFix(): void {
-    const last = undo.pop();
-    if (!last) return;
-    for (const [n, b] of last.files) {
-      if (b) project.files.set(n, b);
-      else project.files.delete(n);
-    }
-    host.reload(last.files.map(([n]) => n));
-    undoBtn.hidden = !undo.length;
-    toast(`Undid: ${last.what}.`);
-  }
-
-  async function run(): Promise<void> {
-    let terminal = '';
-    runBtn.textContent = '■ Stop';
-    bar.hidden = false;
-    bar.removeAttribute('value');
-    bar.removeAttribute('aria-valuetext');
-    status.textContent = 'Starting the bot…';
-    progressLine.hidden = true;
-    let told = performance.now();
-    let shown = 0;
-    running = startCheck(
-      project.files,
-      {
-        scene: host.scene,
-        play: host.scene !== undefined,
-        budgetMs: budget * 1000,
-        sameEverySide: sameEverySide(project),
-        player: companionPatches(project.companion, project.gam),
-        reservations: paletteReservations(project),
-        steadyMs: steady ? steadyMs : undefined,
-      },
-      undefined,
-      (p) => {
-        if (p.scene === host.scene) {
-          if (!live) {
-            live = { heat: new Uint32Array(MLEN * MWID), first: new Int32Array(MLEN * MWID).fill(-1), deaths: new Map() };
-            focus = undefined;
-            toggles.hidden = false;
-          }
-          for (let i = 0; i < p.cells.length; i += 3) {
-            live.heat[p.cells[i]] = p.cells[i + 1];
-            live.first[p.cells[i]] = p.cells[i + 2];
-          }
-          live.deaths = new Map();
-          for (let i = 0; i < p.deaths.length; i += 2) live.deaths.set(p.deaths[i], p.deaths[i + 1]);
-          if (!el.hidden) paint();
-        }
-        // the bar never runs backwards, even when an estimate grows
-        shown = Math.max(shown, p.fraction);
-        bar.value = shown;
-        const text = liveText(p);
-        bar.setAttribute('aria-valuetext', text);
-        progressLine.hidden = false;
-        progressLine.textContent = text;
-        status.classList.add('sr-only');
-        // the live region is told at most every five seconds
-        if (performance.now() - told >= 5000 || status.textContent === 'Starting the bot…') {
-          told = performance.now();
-          status.textContent = `Checking: ${text}`;
-        }
-      },
-    );
-    try {
-      const report = await running.done;
-      keep(report);
-      unlockAchievement('check-run');
-    } catch (e) {
-      terminal = (e as Error).name === 'AbortError' ? 'Stopped.' : `The level check failed: ${(e as Error).message}`;
-      if (saved) terminal += ' Showing the previous result.';
-    } finally {
-      running = undefined;
-      live = undefined;
-      runBtn.textContent = '▶ Run check';
-      bar.hidden = true;
-      progressLine.hidden = true;
-      status.classList.remove('sr-only');
-      paint();
-    }
-    if (saved) render();
-    if (terminal) status.textContent = terminal;
-  }
-
-  function stop(): void {
-    running?.cancel();
-  }
-
-  function keep(r: Report): void {
-    const run = r.runs[0];
-    const cells = (f: Finding): Finding => ({ ...f, where: { ...f.where, cells: f.where.cells?.slice(0, 200) } });
-    saved = {
-      when: new Date().toISOString(),
-      budget,
-      heat: run ? pack(heatSteps(run, false)) : '0'.repeat(10000),
-      soon: run ? pack(heatSteps(run, true)) : '0'.repeat(10000),
-      stuck: run?.stuck.slice(0, 2000) ?? [],
-      ...deathsOf(run),
-      findings: r.findings.filter((f) => f.where.scene === undefined || f.where.scene === host.scene).map(cells),
-      places: run?.places ?? 0,
-      complete: run?.complete ?? true,
-      ms: r.ms,
-      steadyMs: steady ? steadyMs : 0,
-    };
-    focus = undefined;
-    project.setExtras(file, SECTION, saved);
   }
 
   render();
