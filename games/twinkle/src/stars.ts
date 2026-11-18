@@ -4,6 +4,7 @@
 // A sky that twinkles at random is therefore a sky of many blocks: six star blocks that differ in where the star sits,
 // each in its own loop with its own times (23, 32, 21, 37, 29 and 17 ticks round), and laid so that no two stars near
 // each other share a loop. The sky repeats, but nothing in it blinks in step.
+import { applyBlockTimers } from '@lewismoten/gamemaker-sandbox-tools/kit/blockTimers';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { Book, PULL, type Timed } from '../../kit/starter/book';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
@@ -92,11 +93,5 @@ export function addOwnStars(book: Book, timed: Timed[], pal: Pal): void {
 
 /** A level's finished blocks: the book's, with each timed block given its next block and its ticks. */
 export function finishBlocks(l: { book: Book; timed: Timed[] }) {
-  const blocks = l.book.finish();
-  for (const t of l.timed) {
-    const b = blocks[l.book.n(t.name)];
-    b.nextBl = l.book.n(t.next);
-    b.ntime = t.ticks;
-  }
-  return blocks;
+  return applyBlockTimers(l.book.finish(), (name) => l.book.n(name), l.timed);
 }

@@ -1,5 +1,6 @@
 // A level's block set: the parade's printed ground, door and lock blocks (blocks.ts), then each level's own, with timed blocks (a block that turns
 // into another after some ticks: the gust meter, a squirting puddle, a waved-off card). 18.2 ticks are one second.
+import { applyBlockTimers } from '@lewismoten/gamemaker-sandbox-tools/kit/blockTimers';
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { Book } from '../../kit/starter/book';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
@@ -20,12 +21,7 @@ export class PBook extends Book {
   }
 
   override finish(): Block[] {
-    const blocks = super.finish();
-    for (const t of this.timed) {
-      const b = blocks[this.n(t.name)];
-      b.nextBl = this.n(t.next);
-      b.ntime = t.ticks;
-    }
+    const blocks = applyBlockTimers(super.finish(), (name) => this.n(name), this.timed);
     return blocks;
   }
 }

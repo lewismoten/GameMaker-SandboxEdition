@@ -118,6 +118,11 @@
       "gamemaker-source": "./src/kit/flashMeter.ts",
       "import": "./dist/kit/flashMeter.js"
     },
+    "./kit/blockTimers": {
+      "types": "./dist/types/kit/blockTimers.d.ts",
+      "gamemaker-source": "./src/kit/blockTimers.ts",
+      "import": "./dist/kit/blockTimers.js"
+    },
     "./kit/ticks": {
       "types": "./dist/types/kit/ticks.d.ts",
       "gamemaker-source": "./src/kit/ticks.ts",

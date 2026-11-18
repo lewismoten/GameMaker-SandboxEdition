@@ -64,6 +64,7 @@ game folder opens in the browser unchanged.
 
 ## Credits
 
+- **Shared block timer finalization (November 18, 2026):** OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, extracted the shared timer helper and added regression tests. Existing game art and content credits remain; no third-party material was added.
 - **Sample CD build organization (November 18, 2026)**: OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, split the existing catalog build script into modules by responsibility. No new third-party code or assets were added.
 - **SEO build organization (November 18, 2026)**: OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, split the existing crawlable-page generator into modules by responsibility. No new third-party code or assets were added.
 - **Tour engine organization (November 18, 2026)**: OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, split the existing guided-tour player into modules by responsibility. No new third-party code or assets were added.
@@ -1323,4 +1324,6 @@ maker "ZORP" is invented. The shell is untested: nothing has been printed.
 
 - **Small review fixes (November 18, 2026):** OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, fixed malformed Level check reasons, terminal block chains, privacy sweep output, firmware paths and plaque capacity checks, with regression tests. The findings were made by OpenAI Codex (GPT-6.2 Astra). No third-party material was added.
 
-- **Starter scene sequence extraction (November 18, 2026):** OpenAI Codex (GPT-6), directed by Lewis Moten, extracted the shared Starter level links and title entry into `games/kit/starter/sceneSequence.ts` and updated its callers. No third-party material was added.
+- **Tour check prerequisites (November 18, 2026):** OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, added fresh-worktree prerequisite diagnostics, preparation documentation and Node-only regression tests, and corrected the checker’s step budget and held-action wait. No tour content or third-party material was added.
+
+- **Starter scene sequence extraction (November 18, 2026):** OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, extracted the shared Starter level links and title entry into `games/kit/starter/sceneSequence.ts` and updated its callers. No third-party material was added.
