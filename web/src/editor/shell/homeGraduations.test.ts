@@ -2,7 +2,7 @@
 import { describe, expect, it } from 'vitest';
 import { CEREMONIES, DIPLOMA, ceremonyState, stageGames } from '../../project/ceremonies';
 import { gradShowFor, readyCeremonies, sectionCeremonies, type GradShow } from './homeGraduations';
-import type { HomeGame } from './homeCards';
+import type { HomeGame } from './homeGames';
 
 const games = [...CEREMONIES, DIPLOMA].map((c) => ({ entry: { id: c.id }, title: c.stage }) as unknown as HomeGame);
 const stage = (n: number) => Object.fromEntries(stageGames(CEREMONIES[n]).map((id) => [id, 'A' as const]));

@@ -73,6 +73,8 @@ game folder opens in the browser unchanged.
 - **Project files organization (November 18, 2026)**: OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, split the existing catalog loading and hosted-file transport into modules. No new third-party code or assets were added.
 - **Tour engine organization (November 18, 2026)**: OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, split the existing guided-tour player into modules by responsibility. No new third-party code or assets were added.
 
+- **Home shell organization (November 18, 2026)**: OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, split the existing home game models, adapters, filters and address helpers into modules. No new third-party code or assets were added.
+
 - **Workspace shell organization (November 18, 2026)**: OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, split the existing editor workspace sidebar and play-session ownership into modules. No new third-party code or assets were added.
 
 - **Map editor organization (November 18, 2026)**: OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, split the existing map editor into modules by responsibility. No new third-party code or assets were added.

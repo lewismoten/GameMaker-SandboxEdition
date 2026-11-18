@@ -6,7 +6,7 @@ import { isSandboxGame, type CatalogEntry } from '../../project/files';
 import { isSpecialGame } from '../../project/special';
 import { byCollection, hasBizarreTab, isBizarreGame } from '../../project/bizarre';
 import type { listProjects } from '../../project/storage';
-import { catalogGame, projectGame, type GameKind, type HomeGame } from './homeCards';
+import { catalogGame, projectGame, type GameKind, type HomeGame } from './homeGames';
 import { CATEGORIES, type Category } from './homeCategories';
 import { findOriginal, isImported } from './homeOrigin';
 import { COMMUNITY_GAMES } from '../../community/catalog';
