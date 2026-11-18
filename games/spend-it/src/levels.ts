@@ -10,7 +10,8 @@ import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
 import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { addMicroPlaques, stampTiledSign, stampMicroPlaques } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign, stampMicroPlaques } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { addAwning, addCash, addSold, addStall, stallName } from '../../kit/starter/shop';
 import { addGoldBlocks } from './lockBlocks';
 
@@ -94,9 +95,9 @@ function keyFor3(book: Book, signs: Record<SignName, Sign>): StarterMap {
   for (const x of [13, 31, 44]) g.put(x, GROUND - 1, 'f');
   const m = cash(new StarterMap(book, g.rows()), g.rows());
   m.set(16, GROUND - 1, stallName('key', 3)).set(16, GROUND - 2, 'awning3');
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 4, onGround(GROUND, signs.money), signs.money);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 10, onGround(GROUND, signs.cost), signs.cost);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 40, 7, signs.exit, 2);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 4, onGround(GROUND, signs.money), signs.money, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 10, onGround(GROUND, signs.cost), signs.cost, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 40, 7, signs.exit, 2, { maxPostHeight: 1 });
   return m;
 }
 
@@ -115,9 +116,9 @@ function saveUp(book: Book, signs: Record<SignName, Sign>): StarterMap {
   for (const x of [12, 29, 44]) g.put(x, GROUND - 1, 'f');
   const m = cash(new StarterMap(book, g.rows()), g.rows());
   m.set(25, GROUND - 1, stallName('key', 5)).set(25, GROUND - 2, 'awning5');
-  stampMicroPlaques({ set: m.setOnSky.bind(m) }, 6, 7, [signs.five, signs.getFive], 0);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 23, onGround(GROUND, signs.exact), signs.exact);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 40, 7, signs.exit, 2);
+  stampMicroPlaques({ set: m.setOnSky.bind(m) }, 6, 7, [signs.five, signs.getFive], 0, { maxPostHeight: 1 });
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 23, onGround(GROUND, signs.exact), signs.exact, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 40, 7, signs.exit, 2, { maxPostHeight: 1 });
   return m;
 }
 

@@ -5,7 +5,8 @@
 //   2. Climb and Fall: up a ladder, across an island, and down two drops to the door.
 import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
-import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
@@ -67,13 +68,13 @@ function walkJumpFall(book: Book, signs: Record<SignName, Sign>): StarterMap {
   for (const x of [12, 38, 56]) g.put(x, GROUND - 1 + (x > 48 ? 2 : 0), 'b');
   for (const x of [19, 32, 47]) g.put(x, x === 47 ? 7 : GROUND - 1, 'f');
   const m = new StarterMap(book, g.rows());
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 6, onGround(GROUND, signs.start), signs.start);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 14, onGround(GROUND, signs.walk), signs.walk);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 26, onGround(GROUND, signs.jump), signs.jump);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 6, onGround(GROUND, signs.start), signs.start, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 14, onGround(GROUND, signs.walk), signs.walk, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 26, onGround(GROUND, signs.jump), signs.jump, 1, { maxPostHeight: 1 });
   // Stand beside the raised ground, clear of the coins above it.
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 39, 6, signs.gravity, 3);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 39, 6, signs.gravity, 3, { maxPostHeight: 1 });
   // Floating labels sit beside their doors.
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 54, 9, signs.exit);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 54, 9, signs.exit, 1, { maxPostHeight: 1 });
   return m;
 }
 
@@ -106,8 +107,8 @@ function climbAndFall(book: Book, signs: Record<SignName, Sign>): StarterMap {
   ] as const)
     g.put(x, y, 'f');
   const m = new StarterMap(book, g.rows());
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 5, onGround(GROUND, signs.climb), signs.climb);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 45, 12, signs.exit);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 5, onGround(GROUND, signs.climb), signs.climb, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 45, 12, signs.exit, 1, { maxPostHeight: 1 });
   return m;
 }
 

@@ -13,7 +13,7 @@ import { MLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { ORIGIN, StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
 import { type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { addMicroPlaques, microPlaquePostHeight } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
 import { roomBook } from './blocks';
 import { ACROSS, frameOf, type Frame, type Room } from './frame';
 
@@ -270,7 +270,7 @@ function roomMap(f: Frame, course: Course, book: Book, signs: Record<string, Sig
         x += toward[0];
         y += toward[1];
       }
-      if (grounded && microPlaquePostHeight(cells.length)) for (const [x, y] of cells) m.setOnSky(x, y, tile);
+      if (grounded && cells.length === 1) for (const [x, y] of cells) m.setOnSky(x, y, tile);
     }
   }
   const dirt = book.n('dirt');

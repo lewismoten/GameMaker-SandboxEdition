@@ -13,7 +13,8 @@ import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { type Pal } from '../../kit/starter/palette';
-import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { LEAF } from './leaves';
 import { autumnPalette, type Kind } from './palette';
@@ -128,7 +129,8 @@ function plant(
 }
 
 /** A sign standing on the grass with its left edge at x. */
-const stand = (m: StarterMap, s: Sign, x: number) => stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, x, BOTTOM - s.board.length, s);
+const stand = (m: StarterMap, s: Sign, x: number) =>
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, x, BOTTOM - s.board.length, s, 1, { maxPostHeight: 1 });
 
 /** Level 1: three maples, each with a branch that drops one kind of leaf. */
 export function tumble(pal: Pal): Level {

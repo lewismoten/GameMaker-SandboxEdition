@@ -13,7 +13,8 @@
 //      it opens and drops Lian into a hole, where a link sends him back to the way in. No hurt anywhere.
 // Every room is closed in by hedges you can see, so Lian is never stopped by something he can't.
 import { Book } from '../../kit/starter/book';
-import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
@@ -114,11 +115,11 @@ function twoLevers(book: Book, signs: Record<SignName, Sign>): { map: StarterMap
   );
   const m = new StarterMap(book, g.rows());
   const signMap = { set: (x: number, y: number, block: string) => m.setOnSky(x, y, block) };
-  stampTiledSign(signMap, 18, 6, signs.each, 2);
-  stampTiledSign(signMap, 10, onGround(GROUND, signs.soft), signs.soft);
+  stampTiledSign(signMap, 18, 6, signs.each, 2, { maxPostHeight: 1 });
+  stampTiledSign(signMap, 10, onGround(GROUND, signs.soft), signs.soft, 1, { maxPostHeight: 1 });
   // Read before stepping onto the pool, floating clear of its coins.
-  stampTiledSign(signMap, 24, 7, signs.six, 0);
-  stampTiledSign(signMap, 36, 7, signs.exitOne, 2);
+  stampTiledSign(signMap, 24, 7, signs.six, 0, { maxPostHeight: 1 });
+  stampTiledSign(signMap, 36, 7, signs.exitOne, 2, { maxPostHeight: 1 });
   m.set(L1.leverA, GROUND - 1, 'leverRed');
   m.set(L1.leverB, LEDGE_ROW, 'leverRed');
   return { map: m, drops: fillPool(m, L1.pool, 'Red') };
@@ -148,9 +149,9 @@ function wiredRoom(book: Book, signs: Record<SignName, Sign>): { map: StarterMap
   );
   const m = new StarterMap(book, g.rows());
   const signMap = { set: (x: number, y: number, block: string) => m.setOnSky(x, y, block) };
-  stampTiledSign(signMap, 44, 7, signs.both, 0);
-  stampTiledSign(signMap, 20, onGround(GROUND, signs.upstairs), signs.upstairs);
-  stampTiledSign(signMap, 56, 7, signs.exit, 2);
+  stampTiledSign(signMap, 44, 7, signs.both, 0, { maxPostHeight: 1 });
+  stampTiledSign(signMap, 20, onGround(GROUND, signs.upstairs), signs.upstairs, 1, { maxPostHeight: 1 });
+  stampTiledSign(signMap, 56, 7, signs.exit, 2, { maxPostHeight: 1 });
   m.set(L2.leverA, GROUND - 1, 'leverBlue');
   m.set(L2.leverB, LEDGE_ROW, 'leverBlue');
   m.set(L2.leverC, LEDGE_ROW, 'leverHatch');

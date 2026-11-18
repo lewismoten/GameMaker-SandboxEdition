@@ -7,7 +7,8 @@
 //   3. Points Are Not Lives: a row of coins changes the score and nothing else; a heart on a
 //      ledge adds a life. Game-Maker has no "extra life at a score": a block that adds to the
 //      lives counter does it.
-import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
@@ -85,8 +86,8 @@ function coinsAddPoints(book: Book, signs: Record<SignName, Sign>): StarterMap {
   ledge(g, 3, 20, 27, 19);
   g.row(GROUND - 1, 13, 18, 'c').row(2, 21, 25, 'c');
   const m = new StarterMap(book, g.rows());
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 7, onGround(GROUND, signs.scoreKey), signs.scoreKey);
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 41, 7, signs.exit);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 7, onGround(GROUND, signs.scoreKey), signs.scoreKey, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 41, 7, signs.exit, 1, { maxPostHeight: 1 });
   return m;
 }
 
@@ -108,10 +109,10 @@ function worthMore(book: Book, signs: Record<SignName, Sign>): StarterMap {
   const m = new StarterMap(book, g.rows());
   for (const x of [25, 27, 29]) m.set(x, 2, 'gem');
   m.set(39, GROUND - 1, 'rock');
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 9, 8, signs.coinTen);
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 24, 2, signs.gemFifty);
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 38, 8, signs.rockCosts);
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 47, 7, signs.exit);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 9, 8, signs.coinTen, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 24, 2, signs.gemFifty, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 38, 8, signs.rockCosts, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 47, 7, signs.exit, 1, { maxPostHeight: 1 });
   return m;
 }
 
@@ -132,9 +133,9 @@ function heartsAddLives(book: Book, signs: Record<SignName, Sign>): StarterMap {
   g.row(GROUND - 1, 10, 19, 'c');
   const m = new StarterMap(book, g.rows());
   m.set(31, 2, 'heart');
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 20, onGround(GROUND, signs.heartLife), signs.heartLife);
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 35, onGround(GROUND, signs.f2Lives), signs.f2Lives);
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 47, 7, signs.exit);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 20, onGround(GROUND, signs.heartLife), signs.heartLife, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 35, onGround(GROUND, signs.f2Lives), signs.f2Lives, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 47, 7, signs.exit, 1, { maxPostHeight: 1 });
   return m;
 }
 

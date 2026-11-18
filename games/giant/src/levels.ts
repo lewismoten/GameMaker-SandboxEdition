@@ -15,7 +15,8 @@ import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
 import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { addCeiling } from './ceilingArt';
 import { FRESH, ROCKY } from './monsters';
 
@@ -123,8 +124,8 @@ function theGiant(book: Book, signs: Record<SignName, Sign>): StarterMap {
   );
   const m = new StarterMap(book, g.rows());
   ceiling(m, WALL[0]);
-  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 12, onGround(GROUND, signs.head), signs.head);
-  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 37, onGround(GROUND, signs.exit), signs.exit);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 12, onGround(GROUND, signs.head), signs.head, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 37, onGround(GROUND, signs.exit), signs.exit, 1, { maxPostHeight: 1 });
   giant(m, GIANT_X[0], ROCKY);
   return m;
 }
@@ -147,8 +148,8 @@ function ouchWait(book: Book, signs: Record<SignName, Sign>): StarterMap {
   );
   const m = new StarterMap(book, g.rows());
   ceiling(m, WALL[1]);
-  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 11, onGround(GROUND, signs.wait), signs.wait);
-  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 34, onGround(GROUND, signs.exit), signs.exit);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 11, onGround(GROUND, signs.wait), signs.wait, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 34, onGround(GROUND, signs.exit), signs.exit, 1, { maxPostHeight: 1 });
   giant(m, GIANT_X[1], FRESH);
   return m;
 }

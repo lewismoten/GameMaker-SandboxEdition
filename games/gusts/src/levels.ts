@@ -18,7 +18,8 @@ import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
 import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { MOODS, awning, back, flags, lantern, pole, roof, rug, slot, sock, tunnel, updraft, type Mood } from './props';
 import { CALM, FLUTTER, GUST } from './timing';
 
@@ -126,7 +127,7 @@ function waitForTheGust(pal: Pal): Level {
     [8, 22],
   );
   const m = new StarterMap(book, g.rows());
-  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 16, onGround(G, signs.lift), signs.lift);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 16, onGround(G, signs.lift), signs.lift, 1, { maxPostHeight: 1 });
   for (let x = SHAFT[0]; x <= SHAFT[1]; x++) {
     m.set(x, G, 'slot');
     for (let y = LEDGE_ROW + 1; y < G; y++) m.set(x, y, ringBlock('up', 'calm'));
@@ -174,7 +175,7 @@ function windsocksAndShelter(pal: Pal): Level {
   const m = new StarterMap(book, g.rows());
   m.start[0] += 1; // Stand beside the door, on the right half of the step.
   // Hang the first board above the door, with its post ending at the raised step.
-  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 7, onGround(G, signs.shelter), signs.shelter);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 7, onGround(G, signs.shelter), signs.shelter, 1, { maxPostHeight: 1 });
   for (let x = TUNNEL[0]; x <= TUNNEL[1]; x++) {
     m.set(x, G, 'flags')
       .setOnSky(x, G - 4, 'roof')

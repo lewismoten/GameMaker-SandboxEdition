@@ -11,7 +11,8 @@ import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import type { Pal } from '../../kit/starter/palette';
 import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { FIRE, FIRE_TICKS, SPARKS, fireFrame, logs, sparkFrame } from './camp';
 import { BODY_TICKS, COLS, LIP_TICKS, SPLASH_TICKS, bodyFrame, lipFrame, poolBlock, rockBlock, splashFrame } from './falls';
@@ -136,9 +137,9 @@ function torchHall(): Level {
   for (const x of [13, 16]) torch(x, 'pulse', 'pulse');
   [24, 27, 30, 33].forEach((x, i) => torch(x, i % 2 ? 'flameB' : 'flameA', 'flicker'));
   for (const x of [8, 20, 37, 47]) m.set(x, 5, 'window.top').set(x, 6, 'window.bot');
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 5, onGround(signs.pulse), signs.pulse);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 18, onGround(signs.flicker), signs.flicker);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 22, onGround(signs.two), signs.two);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 5, onGround(signs.pulse), signs.pulse, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 18, onGround(signs.flicker), signs.flicker, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 22, onGround(signs.two), signs.two, 1, { maxPostHeight: 1 });
   // two flags: each a pole (top, flag, then the pole down to the floor)
   for (const x of [48, 51]) {
     m.set(x, 7, 'pole.top')
@@ -234,7 +235,7 @@ function falls(): Level {
   });
   [18, 19, 20].forEach((x, i) => m.set(x, 10, `pool.${i % 2}`));
   [25, 26, 27].forEach((x, i) => m.set(x, 10, `pool.${(i + 1) % 2}`));
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 6, onGround(signs.fall), signs.fall);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 6, onGround(signs.fall), signs.fall, 1, { maxPostHeight: 1 });
   return { file: 'falls', title: 'The Falls', hint: 'A cliff, a waterfall and its pool.', pal, palFile: 'day.pal', book, timed, map: m, things };
 }
 
@@ -301,8 +302,8 @@ function fireOnTheHill(): Level {
     m.set(x, y, `spark${i}.0`);
     things.push({ ring: `spark${i}`, x, y, kind: 'spark' });
   }
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 6, onGround(signs.fire), signs.fire);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 12, onGround(signs.sparks), signs.sparks);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 6, onGround(signs.fire), signs.fire, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 12, onGround(signs.sparks), signs.sparks, 1, { maxPostHeight: 1 });
   return { file: 'camp', title: 'The Fire on the Hill', hint: 'A big fire and its sparks.', pal, palFile: 'night.pal', book, timed, map: m, things };
 }
 

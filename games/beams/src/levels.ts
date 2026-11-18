@@ -8,7 +8,8 @@ import { MLEN, type GameMap } from '@lewismoten/gamemaker-sandbox-engine/formats
 import { ORIGIN, StarterMap } from '../../kit/starter/map';
 import { Book, PULL } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
-import { addMicroPlaques, stampMicroPlaques } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampMicroPlaques } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { Grid } from '../../kit/starter/grid';
 import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
 import { type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
@@ -131,6 +132,7 @@ function board(book: Book, pal: Pal, m: StarterMap, s: Sign | Sign[], x: number,
     y,
     plaques,
     plaques.at(-1)?.post ? postHeight : 0,
+    { maxPostHeight: 1 },
   );
 }
 

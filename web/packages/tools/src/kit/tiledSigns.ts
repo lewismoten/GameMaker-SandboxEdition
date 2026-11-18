@@ -180,9 +180,30 @@ export function buildTiledSigns<K extends string, S extends K = K>(
   return { blocks, signs };
 }
 
-/** Stamp a board and its centered post into a named-block map. A taller post reuses the same tile. */
-export function stampTiledSign(map: { set(x: number, y: number, block: string): unknown }, x: number, y: number, sign: TiledSign, postHeight = 1): void {
+/** Mount distances are in 20-pixel blocks, measured from the board to its surface. */
+interface TiledSignMountOptions {
+  /** Float the entire mount when the distance exceeds this limit; omitted means unlimited. */
+  maxPostHeight?: number;
+}
+
+/** Keep a post grounded or omit it entirely, never shorten it into a dangling stub. */
+function mountedPostHeight(postHeight: number, { maxPostHeight }: TiledSignMountOptions): number {
   if (!Number.isInteger(postHeight) || postHeight < 0) throw new Error('Post height must be a nonnegative integer');
+  if (maxPostHeight !== undefined && (!Number.isInteger(maxPostHeight) || maxPostHeight < 0))
+    throw new Error('Maximum post height must be a nonnegative integer');
+  return maxPostHeight === undefined || postHeight <= maxPostHeight ? postHeight : 0;
+}
+
+/** Stamp a board and its centered post into a named-block map. A taller post reuses the same tile. */
+export function stampTiledSign(
+  map: { set(x: number, y: number, block: string): unknown },
+  x: number,
+  y: number,
+  sign: TiledSign,
+  postHeight = 1,
+  options: TiledSignMountOptions = {},
+): void {
+  postHeight = mountedPostHeight(postHeight, options);
   sign.board.forEach((row, dy) => row.forEach((block, dx) => map.set(x + dx, y + dy, block)));
   if (sign.post)
     for (let dy = 0; dy < postHeight; dy++) {
@@ -198,9 +219,10 @@ export function stampMicroPlaques(
   y: number,
   plaques: readonly TiledSign[],
   postHeight = 1,
+  options: TiledSignMountOptions = {},
 ): void {
   if (!plaques.length) throw new Error('A plaque stack needs at least one plaque');
-  if (!Number.isInteger(postHeight) || postHeight < 0) throw new Error('Post height must be a nonnegative integer');
+  postHeight = mountedPostHeight(postHeight, options);
   const width = plaques[0].board[0]?.length;
   if (plaques.some((p) => p.board.length !== 1 || p.board[0].length !== width) || (width !== 1 && width !== 2))
     throw new Error('Stacked micro plaques must be one row and the same width (1 or 2 blocks)');

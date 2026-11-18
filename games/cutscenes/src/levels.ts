@@ -13,7 +13,8 @@
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { Book, PULL, SOLID, type Timed } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
-import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { Grid } from '../../kit/starter/grid';
 import { ORIGIN, StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
@@ -119,9 +120,9 @@ function menu(book: Book, signs: Record<string, Sign>): StarterMap {
   for (const x of [4, 17, 26, 35]) g.put(x, GROUND - 1, 'b');
   for (const x of [3, 16, 18, 25, 34, 38]) g.put(x, GROUND - 1, 'f');
   const m = new StarterMap(book, g.rows());
-  stampTiledSign({ set: m.setOnSky.bind(m) }, MENU_INFO_X, onGround(GROUND, signs.menu), signs.menu);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, MENU_INFO_X, onGround(GROUND, signs.menu), signs.menu, 1, { maxPostHeight: 1 });
   // Put each wall label beside its doorway, within the ground-level camera rows.
-  [signs.one, signs.two, signs.end].forEach((s, i) => stampTiledSign({ set: m.setOnSky.bind(m) }, MENU_LABELS[i] + 2, 4, s));
+  [signs.one, signs.two, signs.end].forEach((s, i) => stampTiledSign({ set: m.setOnSky.bind(m) }, MENU_LABELS[i] + 2, 4, s, 1, { maxPostHeight: 1 }));
   return m;
 }
 

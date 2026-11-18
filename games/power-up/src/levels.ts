@@ -5,7 +5,8 @@
 //   1. The High Ledge: the door is on a ledge five blocks up. A jump falls short; the stars give high jumps.
 //   2. The Wide Gap: a canyon too wide to jump. The sneakers (back the way you came) make a run and a jump reach.
 import { Book } from '../../kit/starter/book';
-import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
@@ -83,8 +84,8 @@ function highLedge(book: Book, signs: Record<SignName, Sign>): StarterMap {
   );
   const m = new StarterMap(book, g.rows());
   const signMap = { set: (x: number, y: number, block: string) => m.setOnSky(x, y, block) };
-  stampTiledSign(signMap, 7, onGround(GROUND, signs.ledge), signs.ledge);
-  stampTiledSign(signMap, 29, onGround(GROUND, signs.stars), signs.stars);
+  stampTiledSign(signMap, 7, onGround(GROUND, signs.ledge), signs.ledge, 1, { maxPostHeight: 1 });
+  stampTiledSign(signMap, 29, onGround(GROUND, signs.stars), signs.stars, 1, { maxPostHeight: 1 });
   m.set(35, GROUND - 1, 'star').set(37, GROUND - 1, 'star');
   return m;
 }
@@ -107,8 +108,8 @@ function wideGap(book: Book, signs: Record<SignName, Sign>): StarterMap {
   );
   const m = new StarterMap(book, g.rows());
   const signMap = { set: (x: number, y: number, block: string) => m.setOnSky(x, y, block) };
-  stampTiledSign(signMap, 8, onGround(GROUND, signs.sneakers), signs.sneakers);
-  stampTiledSign(signMap, 25, onGround(GROUND, signs.gap), signs.gap);
+  stampTiledSign(signMap, 8, onGround(GROUND, signs.sneakers), signs.sneakers, 1, { maxPostHeight: 1 });
+  stampTiledSign(signMap, 25, onGround(GROUND, signs.gap), signs.gap, 1, { maxPostHeight: 1 });
   m.set(3, GROUND - 1, 'sneakerL').set(4, GROUND - 1, 'sneakerR');
   return m;
 }

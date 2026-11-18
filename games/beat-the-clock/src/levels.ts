@@ -18,7 +18,8 @@
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { Book, PULL, SOLID, type Timed } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
-import { addMicroPlaques, stampTiledSign, stampMicroPlaques } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign, stampMicroPlaques } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
@@ -186,9 +187,9 @@ function race(pal: Pal): Level {
     [19, 26, 34],
   );
   const m = new StarterMap(book, g.rows());
-  stampMicroPlaques({ set: m.setOnSky.bind(m) }, 14, 7, [s.redo, s.back]);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 27, onGround(GROUND, s.gate), s.gate);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 41, 7, s.exit);
+  stampMicroPlaques({ set: m.setOnSky.bind(m) }, 14, 7, [s.redo, s.back], 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 27, onGround(GROUND, s.gate), s.gate, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 41, 7, s.exit, 1, { maxPostHeight: 1 });
   m.set(RESTART_X, 8, 'restartTop').set(RESTART_X, 9, 'restartBottom');
   for (const x of RACE_BARS) stampBar(m, x);
   stampGate(m, RACE_GATE);
@@ -223,10 +224,10 @@ function loopLevel(pal: Pal): Level {
     [14, 28, 36],
   );
   const m = new StarterMap(book, g.rows());
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 4, onGround(GROUND, s.loop), s.loop);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 4, onGround(GROUND, s.loop), s.loop, 1, { maxPostHeight: 1 });
   // Column 15 is the nearest clear post site beside the flower at 14.
-  stampMicroPlaques({ set: m.setOnSky.bind(m) }, 15, 7, [s.redo, s.wait]);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 41, 7, s.exit);
+  stampMicroPlaques({ set: m.setOnSky.bind(m) }, 15, 7, [s.redo, s.wait], 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 41, 7, s.exit, 1, { maxPostHeight: 1 });
   for (const x of LOOP_BARS) stampBar(m, x);
   stampGate(m, LOOP_GATE);
   return { file: 'two', title: 'Round and Round', hint: 'The clock starts itself over.', map: m, book, timed, gateX: LOOP_GATE };

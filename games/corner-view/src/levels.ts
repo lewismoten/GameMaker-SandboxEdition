@@ -14,7 +14,8 @@ import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { Book, SOLID } from '../../kit/starter/book';
 import { ORIGIN, type Exit } from '../../kit/starter/map';
 import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
-import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { cubeShades, floor, pad, tower } from './iso';
 
 export type SignName = 'upright' | 'downleft' | 'zig';
@@ -208,6 +209,8 @@ function build(pal: Pal, file: string, spec: Spec, title: string, hint: string):
       col,
       top,
       signs![name],
+      1,
+      { maxPostHeight: 1 },
     );
   }
   const map = new IsoMap(

@@ -10,7 +10,8 @@
 // Every room is closed in by hedges you can see, so Nova is never stopped by something she can't.
 import { Book } from '../../kit/starter/book';
 import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
@@ -93,9 +94,9 @@ function songRoom(book: Book, signs: Record<SignName, Sign>): StarterMap {
   );
   const m = new StarterMap(book, g.rows());
   const sky = { set: m.setOnSky.bind(m) };
-  stampTiledSign(sky, 5, onGround(GROUND, signs.room), signs.room);
-  stampTiledSign(sky, 25, onGround(GROUND, signs.next), signs.next);
-  stampTiledSign(sky, 32, 7, signs.exit, 2);
+  stampTiledSign(sky, 5, onGround(GROUND, signs.room), signs.room, 1, { maxPostHeight: 1 });
+  stampTiledSign(sky, 25, onGround(GROUND, signs.next), signs.next, 1, { maxPostHeight: 1 });
+  stampTiledSign(sky, 32, 7, signs.exit, 2, { maxPostHeight: 1 });
   return m;
 }
 
@@ -122,11 +123,11 @@ function pickupRoom(book: Book, signs: Record<SignName, Sign>): StarterMap {
   );
   const m = new StarterMap(book, g.rows());
   const sky = { set: m.setOnSky.bind(m) };
-  stampTiledSign(sky, 5, onGround(GROUND, signs.score), signs.score);
-  stampTiledSign(sky, 14, onGround(GROUND, signs.money), signs.money);
-  stampTiledSign(sky, 22, onGround(GROUND, signs.hurt), signs.hurt);
-  stampTiledSign(sky, 31, onGround(GROUND, signs.heal), signs.heal);
-  stampTiledSign(sky, 42, 7, signs.exit, 2);
+  stampTiledSign(sky, 5, onGround(GROUND, signs.score), signs.score, 1, { maxPostHeight: 1 });
+  stampTiledSign(sky, 14, onGround(GROUND, signs.money), signs.money, 1, { maxPostHeight: 1 });
+  stampTiledSign(sky, 22, onGround(GROUND, signs.hurt), signs.hurt, 1, { maxPostHeight: 1 });
+  stampTiledSign(sky, 31, onGround(GROUND, signs.heal), signs.heal, 1, { maxPostHeight: 1 });
+  stampTiledSign(sky, 42, 7, signs.exit, 2, { maxPostHeight: 1 });
   for (const x of BAGS) m.set(x, GROUND - 1, 'bag');
   m.set(SPIKE_X, GROUND - 1, 'spikeUp');
   for (const x of HEARTS) m.set(x, GROUND - 1, 'heart');
@@ -156,8 +157,8 @@ function quietRoom(book: Book, signs: Record<SignName, Sign>): StarterMap {
   );
   const m = new StarterMap(book, g.rows());
   const sky = { set: m.setOnSky.bind(m) };
-  stampTiledSign(sky, 4, onGround(GROUND, signs.quiet), signs.quiet);
-  stampTiledSign(sky, 38, 7, signs.exit, 2);
+  stampTiledSign(sky, 4, onGround(GROUND, signs.quiet), signs.quiet, 1, { maxPostHeight: 1 });
+  stampTiledSign(sky, 38, 7, signs.exit, 2, { maxPostHeight: 1 });
   return m;
 }
 

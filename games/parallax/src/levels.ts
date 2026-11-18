@@ -16,7 +16,8 @@ import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
 import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { CLEAR, backOf, layerOf, stillCell, type BandName } from './scene';
 import { CLOUDS, COLS, DOOR_COL, FENCE, GROUND_ROW, HILLS, ROWS, START, TOWN, WIDTH, WISPS, ringSize, type Band } from './view';
 
@@ -135,7 +136,7 @@ export class Stage {
 
   /** Keep the shared board and its short textured post entirely below the moving bands. */
   sign(m: StarterMap, n: SignName, at: readonly [number, number]): void {
-    stampTiledSign(m, at[0], at[1], this.signs[n], GROUND_ROW - at[1] - this.signs[n].board.length);
+    stampTiledSign(m, at[0], at[1], this.signs[n], GROUND_ROW - at[1] - this.signs[n].board.length, { maxPostHeight: 1 });
   }
 
   /** The raised doorway over the bands, with its clear corners kept in step with them. */

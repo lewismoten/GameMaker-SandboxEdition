@@ -14,7 +14,8 @@ import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
 import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { addSwitchBlocks, PLANKS } from './switchBlocks';
 
 export type SignName = keyof typeof WORDS;
@@ -96,8 +97,8 @@ function pullTheLever(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [15, 31, 42],
   );
   const m = new StarterMap(book, g.rows());
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 10, onGround(GROUND, signs.six), signs.six);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 39, onGround(GROUND, signs.exit), signs.exit);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 10, onGround(GROUND, signs.six), signs.six, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 39, onGround(GROUND, signs.exit), signs.exit, 1, { maxPostHeight: 1 });
   m.set(L1.lever, GROUND - 1, 'leverRed');
   fillPools(m, [L1.pool], 'Red');
   return m;
@@ -126,8 +127,8 @@ function redAndBlue(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [7, 30, 44],
   );
   const m = new StarterMap(book, g.rows());
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 13, onGround(GROUND, signs.ladder), signs.ladder);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 49, onGround(GROUND, signs.exit), signs.exit);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 13, onGround(GROUND, signs.ladder), signs.ladder, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 49, onGround(GROUND, signs.exit), signs.exit, 1, { maxPostHeight: 1 });
   m.set(L2.blueLever, GROUND - 1, 'leverBlue');
   m.set(L2.redLever, LEDGE_ROW, 'leverRed');
   fillPools(m, [L2.redPool], 'Red');
