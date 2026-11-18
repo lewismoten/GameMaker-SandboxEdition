@@ -78,6 +78,15 @@ const iso = createIso([
 
 ## Checks and build helpers
 
+- `kit/dastImage`: true-color `Pix` pictures, six-bit VGA `fromIndexed`, `toPng`,
+  `silhouette`, `rotate`, `shrink`, `grid`, `rotationSheet` and `shelfSheet` for picture
+  review. PNG output uses `CompressionStream`; no canvas is required.
+- `kit/dastSymmetry`: `findSwastikaLike(picture, allowEdge?)` returns candidate `Hit`
+  bounds, color mask, quarter-turn match and mirror match. It tests connected shapes,
+  contrast and arm tips. Pinwheels and some frets also match; findings are suggestions
+  for human review, and the heuristic cannot judge a picture's meaning or context.
+  Game selection, file reading and review policy belong to callers.
+
 - `kit/ticks`: `ticks(seconds, { rate?, round? })` converts seconds using the engine's
   PIT interrupt rate divided by eight (`TICKS_PER_SECOND`, about 18.209 Hz). Rounding
   defaults to `round`; `floor`, `ceil` and `none` are also available. Pass `rate: 18`

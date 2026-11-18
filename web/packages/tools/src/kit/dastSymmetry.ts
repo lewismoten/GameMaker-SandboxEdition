@@ -1,4 +1,4 @@
-// A search for swastika-like shapes in a picture (the DAST tool's automatic check, dast.ts).
+// A generic image heuristic that suggests swastika-like shapes for human review.
 // A swastika is chiral with four-fold rotational symmetry: one connected shape whose quarter turn about
 // its own center lands on itself, whose mirror images (across the center's vertical, horizontal and two
 // diagonal lines) do not, with four arms ending in four tips. Plus signs, squares and X marks are
@@ -130,6 +130,7 @@ function test(pts: [number, number][], p: Pix, mask: number, allowEdge: boolean)
     match(pts, set, cx, cy, (x, y) => [y, x], false),
     match(pts, set, cx, cy, (x, y) => [-y, -x], false),
   );
+  // eslint-disable-next-line no-console -- opt-in diagnostic output for callers investigating a candidate
   if (process.env.DAST_DEBUG) console.log('mirror', mirror);
   if (mirror > MIRROR_MAX) return undefined;
   if (!stands(pts, set, p)) return undefined;
