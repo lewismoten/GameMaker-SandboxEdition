@@ -13,9 +13,10 @@
   opacity: 0.85;
 }
 
-/* phones: one row. The edition sits under the logo, and the open game's name takes what is
-   left, shortened with … when it must be */
-@media (max-width: 600px) {
+/* phones and narrow windows: one row. Keep the stacked logo through 724px: the
+   full-size logo and gaps need about 721px even before the title gets any room.
+   The open game's name takes what is left, shortened with … when it must be. */
+@media (max-width: 724px) {
   .topbar .hide-narrow {
     display: none;
   }
@@ -231,12 +232,13 @@
   }
 }
 
-/* the narrowest phones: Guide moves from the bar into the ⋯ menu, so the bar stays one row */
+/* Guide needs the wider phone band: returning it at 431px overflowed through 485px.
+   Keep it in the ⋯ menu through 489px, with the compact spacing below. */
 .topbar .topbar-menu > .show-tiny {
   display: none;
 }
 
-@media (max-width: 430px) {
+@media (max-width: 489px) {
   .topbar-nav > a.hide-tiny {
     display: none;
   }
@@ -330,7 +332,7 @@
 /* 375 px iPhones and 360 px Android phones: the bar (logo, Desk | DOS | Web, ? and ⋯ at 44 px each) was 4 to
    11 px from the edge, and a real phone's text cut the ⋯ off. Tighter gaps and logo letters give it room,
    and the title slot, with no room left, gives up its gap. */
-@media (max-width: 430px) {
+@media (max-width: 489px) {
   .topbar {
     gap: 4px;
     padding: 6px;
@@ -348,5 +350,23 @@
   }
   .topbar .spacer {
     flex: 0 1 0;
+  }
+}
+
+/* Below 351px even the link-free touch bar was 31px too wide. Drop the empty nav
+   and spacer gaps and compact only the logo; all controls keep their 44px targets. */
+@media (hover: none) and (pointer: coarse) and (max-width: 350px) {
+  .topbar {
+    gap: 2px;
+  }
+  .topbar .topbar-nav,
+  .topbar .spacer {
+    display: none;
+  }
+  .topbar .brand-title {
+    font-size: 10px;
+  }
+  .topbar .brand-title .edition {
+    font-size: 7px;
   }
 }
