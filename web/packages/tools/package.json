@@ -103,6 +103,11 @@
       "gamemaker-source": "./src/kit/laserClearance.ts",
       "import": "./dist/kit/laserClearance.js"
     },
+    "./kit/ticks": {
+      "types": "./dist/types/kit/ticks.d.ts",
+      "gamemaker-source": "./src/kit/ticks.ts",
+      "import": "./dist/kit/ticks.js"
+    },
     "./kit/*": {
       "types": "./dist/types/kit/*.d.ts",
       "browser": null,

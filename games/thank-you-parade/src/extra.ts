@@ -4,6 +4,7 @@
 //   addMeter                  a countdown meter like the gust meter, with its own two-letter label
 //   shutter                   a roll-up shutter that stands open until its meter runs out, then shuts
 //   fuse, truck               the Cannon Truck's three fuse boxes and the truck's rear door
+import { segmentedBar } from '@lewismoten/gamemaker-sandbox-tools/kit/ticks';
 import { text } from '@lewismoten/gamemaker-sandbox-tools/kit/pcText';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { LEDGE, PULL, SOLID } from '../../kit/starter/book';
@@ -117,12 +118,12 @@ export function addMeter(book: PBook, pal: Pal, id: string, labels: [string, str
   off.rect(1, 7, 18, 9, c('blue', 0));
   halftone(off, 1, 7, 18, 9, c('blue', 2), 1);
   book.add(`${id}Off`, off, air);
-  for (let i = 0; i < segments; i++) {
+  for (const { index: i, end } of segmentedBar({ segments, ticksPerSegment: ticksEach })) {
     const p = panel();
     p.rect(1, 7, 18, 9, c('orange', 3));
     stripes(p, 1, 7, 18, 9, c('orange', 4), 10, 3);
     book.add(`${id}${i}`, p, air);
-    book.time(`${id}${i}`, `${id}Off`, ticksEach * (i + 1));
+    book.time(`${id}${i}`, `${id}Off`, end);
   }
   // The narrow spaces beside Bakery Row's placards carry a complete five-light copy.
   if (id === 'shut') {

@@ -2,8 +2,9 @@
 // changeblks): a block can turn into another block after a number of ticks, and that is the
 // only clock the editor gives you. Everything below is in ticks.
 
+import { ticks } from '@lewismoten/gamemaker-sandbox-tools/kit/ticks';
 /** Ticks in a second. */
-export const TICKS = 18.2;
+export const TICKS = ticks(1, { rate: 18.2, round: 'none' });
 
 /** Segments in the bar, and the ticks each lasts. */
 export const SEGMENTS = 5;

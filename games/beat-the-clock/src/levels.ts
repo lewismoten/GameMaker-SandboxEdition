@@ -15,6 +15,7 @@
 // walkthrough); the first hangs on the left-hand brick wall, its clock face set into the brick.
 // Each level has its own block file, so a kind can mean one timing here and another there.
 // Both rooms are closed in by brick walls you can see, so Kit is never stopped by something he can't.
+import { segmentedBar } from '@lewismoten/gamemaker-sandbox-tools/kit/ticks';
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { Book, PULL, SOLID, type Timed } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
@@ -69,7 +70,7 @@ export const LOOP_GATE = 24;
 export const RESTART_X = 1;
 
 /** Segment `i` goes out at this tick: the right-hand one first. */
-export const goesOutAt = (i: number, seg: number): number => (SEGMENTS - i) * seg;
+export const goesOutAt = (i: number, seg: number): number => segmentedBar({ segments: SEGMENTS, ticksPerSegment: seg })[SEGMENTS - i - 1].end;
 
 export type SignName = 'redo' | 'back' | 'gate' | 'loop' | 'wait' | 'exit';
 const SIGNS = {

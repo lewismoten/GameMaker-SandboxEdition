@@ -3,8 +3,9 @@
 // floor is planks that flash and then drop away, so the scene ends by itself. Everything below
 // is in ticks.
 
+import { ticks } from '@lewismoten/gamemaker-sandbox-tools/kit/ticks';
 /** Ticks in about a second: the nearest whole number to 18.2. */
-export const SECOND = 18;
+export const SECOND = ticks(1, { rate: 18 });
 /** The floor opens after this long (seventeen seconds, long enough to read two signs), so a scene lasts about that after its words. */
 export const FLOOR_AT = 17 * SECOND;
 /** How long the floor flashes its stripes before it opens (three seconds). */

@@ -4,6 +4,7 @@
 // step. Then the mountain wakes: it opens its eyes, yawns, and lifts its big foot off the sidewalk so Tess can
 // get by. Nothing to collect and nothing that hurts: walk along, read, watch.
 
+import { segmentedBar } from '@lewismoten/gamemaker-sandbox-tools/kit/ticks';
 import type { Pal } from '../../../kit/starter/palette';
 import { GROUND, addSigns, mountain, onGround, placeFace, room, startBook, MountainMap, type Level } from '../level';
 import { NEXT, PROLOGUE } from '../monsters';
@@ -38,6 +39,7 @@ export function levelNext(pal: Pal): Level {
   // Opaque stained boards avoid adding background variants to the block set.
   const lights = 10;
   const opens = PROLOGUE.wake + TOE_AFTER;
+  const bar = segmentedBar({ segments: lights, ticksPerSegment: opens / lights });
   for (let left = lights; left >= 0; left--) {
     const p = new Pixels(20, 20, pal.c('ink', 0));
     p.rect(1, 1, 18, 18, pal.c('wood', 1));
@@ -50,7 +52,7 @@ export function levelNext(pal: Pal): Level {
         p.rect(x, y, 2, 3, pal.c(j < left ? 'gold' : 'ink', j < left ? 3 : 0));
         if (j < left) p.set(x, y, pal.c('parch', 4));
       }
-      timed.push({ name: `toeWait${left}`, next: `toeWait${left - 1}`, ticks: opens / lights });
+      timed.push({ name: `toeWait${left}`, next: `toeWait${left - 1}`, ticks: bar[lights - left].duration });
     } else {
       p.line(4, 13, 15, 13, pal.c('parch', 4));
       p.line(12, 10, 15, 13, pal.c('parch', 4)).line(15, 13, 12, 16, pal.c('parch', 4));

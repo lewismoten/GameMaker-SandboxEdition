@@ -5,6 +5,7 @@
 // Every bell block is its own two-block loop (lit, then dark, then lit again), so all the meters and gates in a
 // level change together. Compact seven-bell strips repeat lower along both streets so a
 // complete meter stays inside the cropped DOS view as the cat walks and jumps.
+import { segmentedBar } from '@lewismoten/gamemaker-sandbox-tools/kit/ticks';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { PULL, SOLID, type Book } from '../../kit/starter/book';
 import type { Pal } from './print';
@@ -40,8 +41,8 @@ export function addMeter(book: Book, pal: Pal, openTicks = OPEN_TICKS): Timed[] 
   const cycle = openTicks + SHUT_TICKS;
   const timed: Timed[] = [];
   book.add('meterCap', cap(pal), { grav: PULL.down });
-  for (let j = 0; j < BELLS; j++) {
-    const lit = (openTicks * (j + 1)) / BELLS;
+  const bar = segmentedBar({ segments: BELLS, totalTicks: openTicks });
+  for (const { index: j, end: lit } of bar) {
     book.add(`bellOn${j}`, pip(pal, true), { grav: PULL.down });
     book.add(`bellOff${j}`, pip(pal, false), { grav: PULL.down });
     timed.push({ name: `bellOn${j}`, next: `bellOff${j}`, ticks: lit });
@@ -58,7 +59,7 @@ export function addMeter(book: Book, pal: Pal, openTicks = OPEN_TICKS): Timed[] 
       p.rect(x, 7, 2, 5, color).rect(x, 13, 1, 1, color);
     }
     book.add(`bellStrip${dark}`, p, { grav: PULL.down });
-    timed.push({ name: `bellStrip${dark}`, next: `bellStrip${(dark + 1) % (BELLS + 1)}`, ticks: dark < BELLS ? openTicks / BELLS : SHUT_TICKS });
+    timed.push({ name: `bellStrip${dark}`, next: `bellStrip${(dark + 1) % (BELLS + 1)}`, ticks: dark < BELLS ? bar[0].end : SHUT_TICKS });
   }
   // the gate: open (two posts and a ribbon of gold) or shut (planks, solid)
   const open = fairGate(pal, false);

@@ -78,6 +78,17 @@ const iso = createIso([
 
 ## Checks and build helpers
 
+- `kit/ticks`: `ticks(seconds, { rate?, round? })` converts seconds using the engine's
+  PIT interrupt rate divided by eight (`TICKS_PER_SECOND`, about 18.209 Hz). Rounding
+  defaults to `round`; `floor`, `ceil` and `none` are also available. Pass `rate: 18`
+  or `rate: 18.2` to preserve an existing game's chosen clock.
+  `segmentedBar({ segments, ticksPerSegment })` returns timing entries in drain order:
+  `{ index, remaining, start, end, duration }`. Alternatively supply `totalTicks` and
+  optional `round` to distribute ticks by cumulative boundaries, preserving the final
+  deadline. Segment boundaries default to no rounding. Names, block insertion order,
+  artwork, warning phases, terminal frames and loop resets stay with the caller.
+  For example, `segmentedBar({ segments: 5, totalTicks: 103, round: 'floor' })`
+  yields durations of 20, 21, 20, 21 and 21 ticks.
 - `fli-check`: `fliCheck(files)` accepts engine `GameFiles`' `get` and `byExtension`
   methods and returns warning findings for PLAYGAME animation decoder limits. It works
   in Node and browsers, reads no project metadata, and leaves accepting suggestions to callers.

@@ -2,6 +2,7 @@
 // numbers go): mall walls, CRT TVs, arcade cabinets, pinball, fountains, palms, the food
 // court, the switchboards and exchange walls, and the wrong-number places' flamingos,
 // shuffleboard, test pattern, sea floor, jungle, tar pits and launch pad.
+import { ticks } from '@lewismoten/gamemaker-sandbox-tools/kit/ticks';
 import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { BlockSet, SOLID } from './book';
 import { T, blob, gradient, oval, shadeAt } from '../art/draw';
@@ -295,7 +296,7 @@ function boardRamp(count = 0): Pixels {
  * 3), and ticks in a second (18.2 a second in PLAYGAME). */
 const COUNT_FROM = 6;
 const COUNT_TO = 4;
-const SECOND = 18;
+const SECOND = ticks(1, { rate: 18 });
 
 function numberSign(n: number): Pixels {
   const p = on('marble');
