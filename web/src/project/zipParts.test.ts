@@ -17,6 +17,17 @@ describe('zipParts', async () => {
   const ranges = zipDataRanges(zip);
   const blobs = new Map(ranges.map(([o, l], i) => [`b${i}`, zip.slice(o, o + l)]));
 
+  it('ignores an EOCD signature embedded in a legal archive comment', () => {
+    const commented = new Uint8Array(zip.length + 24);
+    commented.set(zip);
+    const view = new DataView(commented.buffer);
+    view.setUint16(zip.length - 2, 24, true);
+    view.setUint32(zip.length, 0x06054b50, true);
+    view.setUint16(zip.length + 10, 1, true);
+    expect(zipDataRanges(commented)).toEqual(ranges);
+    expect(joinPart(encodePart(commented, []), () => new Uint8Array())).toEqual(commented);
+  });
+
   it('finds each entry’s stored data', () => {
     expect(ranges).toHaveLength(3);
     expect(ranges.every(([o, l]) => o > 0 && o + l < zip.length)).toBe(true);

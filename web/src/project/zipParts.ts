@@ -23,7 +23,15 @@ const VERSION = 1;
 export function zipDataRanges(zip: Uint8Array): [start: number, length: number][] {
   const v = new DataView(zip.buffer, zip.byteOffset, zip.byteLength);
   let end = zip.length - 22;
-  while (end >= 0 && v.getUint32(end, true) !== 0x06054b50) end--;
+  while (end >= 0) {
+    if (
+      v.getUint32(end, true) === 0x06054b50 &&
+      end + 22 + v.getUint16(end + 20, true) === zip.length &&
+      v.getUint32(end + 16, true) + v.getUint32(end + 12, true) <= end
+    )
+      break;
+    end--;
+  }
   if (end < 0) throw new Error('zipParts: no end of central directory');
   const count = v.getUint16(end + 10, true);
   let p = v.getUint32(end + 16, true);

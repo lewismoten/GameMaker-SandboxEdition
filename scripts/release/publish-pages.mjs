@@ -61,6 +61,9 @@ try {
   process.exit(1);
 }
 
+// Capture the lease before building: an overlapping release must invalidate this push.
+const remote = git(['ls-remote', REMOTE, `refs/heads/${BRANCH}`]).split(/\s+/)[0] ?? '';
+
 const work = join(mkdtempSync(join(tmpdir(), 'gm-pages-')), 'site');
 git(['worktree', 'add', '--detach', '--quiet', work, sha]);
 let commit;
@@ -90,12 +93,10 @@ try {
   } else console.log(`Kept the build in ${work}`);
 }
 
-// the lease: gh-pages on origin must still be what it is now (or still missing)
-const remote = git(['ls-remote', REMOTE, `refs/heads/${BRANCH}`]).split(/\s+/)[0] ?? '';
 const pushArgs = ['push', `--force-with-lease=refs/heads/${BRANCH}:${remote}`, REMOTE, `${commit}:refs/heads/${BRANCH}`];
 if (!push) {
   console.log(`Not pushed. With --push and a supervised release it would run:\n  git ${pushArgs.join(' ')}`);
-  console.log(`(${BRANCH} on ${REMOTE} is now ${remote ? remote.slice(0, 9) : 'missing'}.)`);
+  console.log(`(${BRANCH} on ${REMOTE} was ${remote ? remote.slice(0, 9) : 'missing'}.)`);
 } else {
   run('git', pushArgs, root);
   console.log(`${BRANCH} is now ${commit.slice(0, 9)} (Site ${tag}).`);
