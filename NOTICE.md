@@ -1330,3 +1330,5 @@ maker "ZORP" is invented. The shell is untested: nothing has been printed.
 - **Tour check prerequisites (November 18, 2026):** OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, added fresh-worktree prerequisite diagnostics, preparation documentation and Node-only regression tests, and corrected the checker’s step budget and held-action wait. No tour content or third-party material was added.
 
 - **Starter scene sequence extraction (November 18, 2026):** OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, extracted the shared Starter level links and title entry into `games/kit/starter/sceneSequence.ts` and updated its callers. No third-party material was added.
+
+- **Level check panel organization (November 18, 2026)**: OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, split the existing level check panel into modules by responsibility. No new third-party code or assets were added.
