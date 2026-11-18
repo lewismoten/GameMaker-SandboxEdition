@@ -272,3 +272,23 @@ it.each(['localStorage', 'committed copy'])('migrates a legacy Sandbox selection
   saved.clear();
   expect((await offlineStatus()).tiers).toEqual(['core', 'sandbox']);
 });
+
+it('reports an older partial stage as removable without a completion flag or ready selection', async () => {
+  setup();
+  const { m, fetcher } = await fixture();
+  const { offlineStatus, removeOffline } = await import('./offlineCopy');
+  const { offlineNames } = await import('./archiveStore');
+  const stage = offlineNames(base).prefix + 'old-selection';
+  await (await caches.open(stage)).put(base + 'old.txt', new Response('partial'));
+  vi.stubGlobal('location', { href: base });
+  vi.stubGlobal('navigator', { serviceWorker: {}, locks: { request: (_key: string, run: () => Promise<unknown>) => run() }, storage: {} });
+  vi.stubGlobal('localStorage', { getItem: () => null, removeItem: vi.fn() });
+  fetcher.mockImplementation(async () => new Response(JSON.stringify(m), { headers: { 'content-type': 'application/json' } }));
+  const status = await offlineStatus(['core']);
+  expect(status.ready).toBe(false);
+  expect(status.copy).toBe('none');
+  expect(status.removable).toBe(true);
+  await removeOffline(status);
+  expect(await caches.has(stage)).toBe(false);
+  expect((await offlineStatus(['core'])).removable).toBe(false);
+});

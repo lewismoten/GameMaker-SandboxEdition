@@ -53,6 +53,8 @@ export interface OfflineStatus {
   ready: boolean;
   /** A copy was asked for here: 'unfinished' (stopped partway), or 'outdated' (finished for an older version of the site), else 'none'. */
   copy: 'none' | 'unfinished' | 'outdated';
+  /** A staged or committed copy exists and can be removed. */
+  removable?: boolean;
   /** navigator.storage.estimate(), when the browser tells. */
   usage?: number;
   quota?: number;
@@ -187,6 +189,7 @@ export async function offlineStatus(selection?: OfflineTier[]): Promise<OfflineS
     ready,
     version: m.version,
     copy: copyBefore(m.version),
+    removable: !!copy || (await caches.keys()).some((name) => name.startsWith(offlineNames(base).prefix)),
     ...est,
   };
 }
