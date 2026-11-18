@@ -213,14 +213,14 @@ export function counters(d: SceneData, gives: Set<number> = new Set(), ledger?: 
   return out;
 }
 
-/** A timed block's repeating cycle, or [] for a terminal chain: each block and its ticks. */
+/** A timed block's cycle: each block it shows in turn, and for how many ticks. */
 export function blockCycle(bg: Block[], n: number): { n: number; ticks: number }[] {
   const out: { n: number; ticks: number }[] = [];
   let k = n;
   for (let i = 0; i < 40 && k < BACKBL; i++) {
     const b = bg[k];
     out.push({ n: k, ticks: Math.max(1, b.ntime) });
-    if (b.ntime <= 0 || b.nextBl === k) return [];
+    if (b.ntime <= 0 || b.nextBl === k) return out.length > 1 ? out : [];
     k = b.nextBl;
     if (k === n) return out;
   }
