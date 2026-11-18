@@ -1,29 +1,23 @@
 // The project workspace: file list on the left, the selected file's editor on the right.
-import { sceneFileLabels, refreshSceneFileLabels } from './sceneFileLabels';
 import { onPatchesChanged } from '../../dosPlayer/patchesChanged';
-import { companionOrigin, originText } from '../../dosPlayer/playerOrigin';
 import { currentRoute, formatHash, setHashParams } from '../../urlState';
 import { overviewTabFrom, TAB_TITLES, type OverviewTab } from './overviewLink';
 import { migrateCounterNames } from '../core/gameControls';
 import { h, clear, download, pickFiles, toast, promptText, confirmDialog, modal } from '../core/ui';
 import { Project, kindOf, KIND_LABELS, validDosName, type FileKind } from '../core/project';
 import { pickFile } from '../widgets/filePicker';
-import { rovingFocus } from '../widgets/rovingFocus';
 import { MAKERS } from '../tools/makers';
 import { KIND_ICON } from '../widgets/thumbs';
 import { keyboardIcon, showShortcuts, wantsShortcuts } from '../widgets/shortcuts';
 import { icon } from './homeIcons';
 import { loadEditor, type EditorFn } from '../editors/registry';
-import { GameFiles, loadFileList, normalize } from '../../project/files';
+import { loadFileList, normalize } from '../../project/files';
 import { takeCompanion } from '../../project/companion';
-import { chooseDownload, downloadButton } from './download';
-import type { PlayerHandle } from '../../player/player';
-import { ADVTYPE, parseGame, serializeGame, type Game, gameTitle } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
-import { levelForMap } from '../editors/integrator/startAt';
-import { sceneName, sourceName } from '../editors/integrator/linkSpots';
-import { playButtons } from './playButtons';
-import { currentPick, gameFor, parsePick, pickParam, playChoices, type PlayPick } from './playLevel';
-import { keepPick, lastPick } from './playPickStore';
+import { chooseDownload } from './download';
+import { gameTitle } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { parsePick, pickParam, playChoices, type PlayPick } from './playLevel';
+import { WorkspaceSidebar } from './workspaceSidebar';
+import { WorkspacePlay } from './workspacePlay';
 import './workspace.css';
 import './shellTouch.css';
 import { noteLastPlace, resumeLastPlace, watchLastPlace } from './lastPlace';
@@ -41,99 +35,23 @@ import { saveNote } from './saveNote';
 import { crumbs } from './crumbs';
 import { foldRefs } from './refsFold';
 import './editorHead.css';
-import { keepScroll } from './keepScroll';
 import { restoreScroll, savedScroll, stampEntry, watchScroll } from './scrollMemory';
 import { assistantHost, setAssistantHost, type AssistantHost } from '../../assistant/hostSlot';
 import type { RunOptions } from '@lewismoten/gamemaker-sandbox-engine/engine/game';
 
-/** Sections with more files than this can be folded away; in a game this big, every section can. */
-const FOLD_AT = 8;
-/** A game with this many files opens with every section folded (but the open file's). */
-const FOLD_ALL_AT = 20;
-/** Each game's folds, by project id then kind. */
-const FOLD_KEY = 'gm-file-folds-by-game';
-
-function folds(project: string): Record<string, boolean> {
-  try {
-    return (JSON.parse(localStorage.getItem(FOLD_KEY) ?? '{}') as Record<string, Record<string, boolean>>)[project] ?? {};
-  } catch {
-    return {};
-  }
-}
-
-/** Folded unless chosen otherwise: a big game's sections start folded, and a very long list does. */
-function isFolded(project: string, kind: FileKind, count: number, total: number): boolean {
-  return folds(project)[kind] ?? (total >= FOLD_ALL_AT || count > 24);
-}
-
-function setFolded(project: string, kind: FileKind, folded: boolean): void {
-  try {
-    const all = JSON.parse(localStorage.getItem(FOLD_KEY) ?? '{}') as Record<string, Record<string, boolean>>;
-    localStorage.setItem(FOLD_KEY, JSON.stringify({ ...all, [project]: { ...all[project], [kind]: folded } }));
-  } catch {
-    /* private mode: the fold just isn't remembered */
-  }
-}
-
-/** Each kind's hue, for the colored extension that tells files apart at a glance (editor.css .ext). */
-const KIND_HUE: Partial<Record<FileKind, number>> = {
-  gam: 0,
-  pal: 320,
-  bbl: 25,
-  mbl: 280,
-  cbl: 200,
-  mon: 350,
-  chr: 240,
-  map: 140,
-  snd: 45,
-  gif: 180,
-  fli: 260,
-  bkd: 100,
-  txt: 215,
-  lst: 300,
-  cmf: 160,
-  voc: 10,
-  rec: 60,
-  his: 35,
-};
-
-/** A file's name with its extension colored by kind. */
-function fileLabel(name: string, k: FileKind): (string | HTMLElement)[] {
-  const dot = name.lastIndexOf('.');
-  if (dot <= 0 || KIND_HUE[k] === undefined) return [name];
-  return [name.slice(0, dot), h('span', { class: 'ext', style: `--ext-h:${KIND_HUE[k]}` }, name.slice(dot))];
-}
-
-/** Search: every word must appear in the name ("lev map" finds level1.map). */
-function matchesFile(name: string, query: string): boolean {
-  const n = name.toLowerCase();
-  return query
-    .toLowerCase()
-    .split(/\s+/)
-    .filter(Boolean)
-    .every((w) => n.includes(w));
-}
-
-const RAIL_KEY = 'gm-files-folded';
-
-function storedFolded(): boolean {
-  try {
-    return localStorage.getItem(RAIL_KEY) === '1';
-  } catch {
-    return false;
-  }
-}
-
 export class Workspace implements AssistantHost {
   readonly project: Project;
-  private sidebar = h('nav', { class: 'sidebar', 'aria-label': 'Game files' });
+  private sidebarView: WorkspaceSidebar;
+  private get sidebar(): HTMLElement {
+    return this.sidebarView.el;
+  }
   private main = h('main', { class: 'editor', 'aria-label': 'Editor' });
   private current?: string;
   private readonly unwatchScroll: () => void;
   private assetView?: { kind?: FileKind; tab: OverviewTab };
   private assetReturn?: { kind?: FileKind; tab: OverviewTab };
   private cleanup?: () => void;
-  private player?: PlayerHandle;
+  private playSession: WorkspacePlay;
   private unlisten: () => void;
   /** The beginner's checklist, in games started from the starter (firstSteps.ts). */
   private firstSteps?: FirstStepsPanel;
@@ -145,19 +63,33 @@ export class Workspace implements AssistantHost {
 
   constructor(root: HTMLElement, project: Project, file?: string) {
     this.project = project;
+    this.playSession = new WorkspacePlay(project, {
+      current: () => this.current,
+      play: (how, back) => this.play(how, back),
+      stopPlay: () => this.stopPlay(),
+    });
+    this.sidebarView = new WorkspaceSidebar(project, {
+      current: () => this.current,
+      assetView: () => this.assetView,
+      firstSteps: () => this.firstSteps,
+      saved: () => this.saved,
+      playButton: () => this.playButton(),
+      newFile: () => this.newFile(),
+      addFiles: () => this.addFiles(),
+      chooseDownload: () => this.chooseDownload(),
+      openAssets: (kind) => this.openAssets(kind),
+      addOfKind: (kind) => this.addOfKind(kind),
+      open: (file) => this.open(file),
+      remove: (file) => this.remove(file),
+    });
     this.unwatchScroll = watchScroll(this.main);
     this.bar = readOnlyBar(project);
     // the map editor's Play here: a play test from a spot of the open level, without changing the game's links
     project.playAt = (to, at) => this.play({ to, at, from: 0, link: 0 });
     this.saved = project.readOnly ? undefined : saveNote(project);
     clear(root, h('div', { class: 'workspace' }, this.sidebar, this.main));
-    if (storedFolded()) root.querySelector('.workspace')?.classList.add('rail-folded');
-    this.unlisten = project.onChange((name) => {
-      if (/\.(gam|map|bbl|lst)$/i.test(name)) refreshSceneFileLabels(project, this.sidebar);
-      if (this.listed.has(name) !== project.files.has(name)) this.renderSidebar();
-      // links changed (the map's markers, the integrator): Play Level's menu follows
-      else if (name === project.gam) this.playEl?.replaceWith((this.playEl = this.playButton()));
-    });
+    this.sidebarView.restoreFold(root);
+    this.unlisten = project.onChange((name) => this.sidebarView.changed(name));
     // per-character counter names from an older version become the game-wide ones (core/gameControls.ts)
     if (!project.readOnly) migrateCounterNames(project);
     this.renderSidebar();
@@ -168,32 +100,23 @@ export class Workspace implements AssistantHost {
     watchLastPlace();
     this.navigate(file);
     if (playing !== undefined) this.play(playing === 'title' ? 'title' : parsePick(playing));
-    // Phones: the dropped-down file list closes on Escape or a tap outside it.
-    const close = () => {
-      if (!this.sidebar.classList.contains('open')) return;
-      this.sidebar.classList.remove('open');
-      this.sidebar.querySelector('.files-toggle')?.setAttribute('aria-expanded', 'false');
-    };
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && this.sidebar.classList.contains('open')) {
-        close();
-        this.sidebar.querySelector<HTMLElement>('.files-toggle')?.focus();
-      }
-    };
-    const onDown = (e: PointerEvent) => {
-      if (!this.sidebar.contains(e.target as Node)) close();
-    };
-    this.sidebar.addEventListener('keydown', onKey);
-    document.addEventListener('pointerdown', onDown);
+    const unbindSidebar = this.sidebarView.bind();
     // ? lists the open editor's keyboard shortcuts (not while typing or play testing)
     const onHelpKey = (e: KeyboardEvent) => {
       // Ctrl+P / ⌘P: the quick switcher (instead of printing the page)
-      if ((e.ctrlKey || e.metaKey) && !e.altKey && !e.shiftKey && e.key.toLowerCase() === 'p' && !this.player && !document.querySelector('dialog[open]')) {
+      if (
+        (e.ctrlKey || e.metaKey) &&
+        !e.altKey &&
+        !e.shiftKey &&
+        e.key.toLowerCase() === 'p' &&
+        !this.playSession.player &&
+        !document.querySelector('dialog[open]')
+      ) {
         e.preventDefault();
         void this.quickOpen();
         return;
       }
-      if (this.player || !wantsShortcuts(e)) return;
+      if (this.playSession.player || !wantsShortcuts(e)) return;
       e.preventDefault();
       void showShortcuts(this.current ? kindOf(this.current) : undefined);
     };
@@ -206,7 +129,7 @@ export class Workspace implements AssistantHost {
           project.setExtras(project.gam, PLAYER_SECTION, playerRecord(patches));
       });
     });
-    this.unbind = () => (document.removeEventListener('pointerdown', onDown), document.removeEventListener('keydown', onHelpKey), offPatches());
+    this.unbind = () => (unbindSidebar(), document.removeEventListener('keydown', onHelpKey), offPatches());
     if (firstStepsState(project)) void this.loadFirstSteps();
     setAssistantHost(this);
   }
@@ -218,26 +141,23 @@ export class Workspace implements AssistantHost {
   }
 
   get playing(): boolean {
-    return !!this.playBack;
+    return !!this.playSession.back;
   }
-
-  /** The file a play test goes back to; set while one runs. */
-  private playBack?: string;
 
   playTest(scene: number | undefined, watch: Pick<RunOptions, 'onSession' | 'onPlayEnd'>): boolean {
     if (scene === undefined) {
-      this.play('title', this.current ?? this.playBack, watch);
+      this.play('title', this.current ?? this.playSession.back, watch);
       return true;
     }
     const pick = playChoices(this.project.game()).find((c) => c.to === scene);
     if (!pick) return false;
-    this.play(pick, this.current ?? this.playBack, watch);
+    this.play(pick, this.current ?? this.playSession.back, watch);
     return true;
   }
 
   stopPlay(): void {
     if (this.assetReturn) return this.openAssets(this.assetReturn.kind, this.assetReturn.tab);
-    const back = this.playBack;
+    const back = this.playSession.back;
     if (back !== undefined) this.open(this.project.files.has(back) ? back : this.project.gam);
   }
 
@@ -253,21 +173,6 @@ export class Workspace implements AssistantHost {
         onclick: () => void import('../../assistant/chat/panel').then((m) => m.toggleChat()),
       },
       h('span', { 'aria-hidden': 'true' }, '✦'),
-    );
-  }
-
-  /** An empty game's "Describe a game…": the Assistant chat, ready to build one. */
-  private describeButton(): HTMLElement | null {
-    if (this.looking || this.project.game().scenes.some((s) => s.gametype === ADVTYPE)) return null;
-    return h(
-      'button',
-      {
-        class: 'describe-btn',
-        title: 'Say what the game should be, and your own AI builds a first level',
-        onclick: () => void import('../../assistant/chat/panel').then((m) => m.openChat('describe')),
-      },
-      h('span', { 'aria-hidden': 'true' }, '✦ '),
-      'Describe a game…',
     );
   }
 
@@ -296,8 +201,6 @@ export class Workspace implements AssistantHost {
     if (f) this.open(f);
   }
 
-  private listed = new Set<string>();
-
   get currentFile(): string | undefined {
     return this.current;
   }
@@ -309,288 +212,14 @@ export class Workspace implements AssistantHost {
     this.saved?.dispose();
     this.firstSteps?.dispose();
     this.cleanup?.();
-    this.player?.stop();
+    this.playSession.dispose();
     this.unlisten();
     this.unbind?.();
     if (assistantHost() === this) setAssistantHost(undefined);
   }
 
   private renderSidebar(): void {
-    // the list keeps its place (the phone's drop-down list is the other scroller)
-    keepScroll(this.sidebar, '.side-files', () => this.drawSidebar());
-  }
-
-  private drawSidebar(): void {
-    const p = this.project;
-    const names = p.files.names();
-    this.listed = new Set(names);
-    const groups = new Map<FileKind, string[]>();
-    for (const n of names) {
-      const k = kindOf(n);
-      groups.set(k, [...(groups.get(k) ?? []), n]);
-    }
-    // Every kind of file a game can use is listed, even with nothing in it yet.
-    const sections = ORDER.filter((k) => k === 'gam' || SECTIONS.includes(k) || groups.has(k));
-    const open = this.sidebar.classList.contains('open');
-    clear(
-      this.sidebar,
-      h(
-        'div',
-        { class: 'side-top' },
-        this.railToggle(),
-        this.railHome(),
-        h(
-          'button',
-          {
-            class: 'files-toggle',
-            'aria-expanded': String(open),
-            'aria-controls': 'side-files',
-            onclick: () => {
-              const now = this.sidebar.classList.toggle('open');
-              this.sidebar.querySelector('.files-toggle')?.setAttribute('aria-expanded', String(now));
-            },
-          },
-          h('span', { 'aria-hidden': 'true' }, '☰ '),
-          `Files (${names.length})`,
-          this.current ? h('span', { class: 'files-toggle-current' }, ` · ${this.current}`) : null,
-        ),
-        (this.playEl = this.playButton()),
-        this.firstSteps?.button(),
-        this.describeButton(),
-      ),
-      h(
-        'div',
-        { class: 'side-files', id: 'side-files' },
-        this.looking
-          ? null
-          : h(
-              'div',
-              { class: 'toolbar side-actions' },
-              h('button', { onclick: () => void this.newFile() }, '+ Add a file…'),
-              h('button', { onclick: () => void this.addFiles(), title: 'Bring in several files from your computer at once' }, '⬆ Import…'),
-            ),
-        h(
-          'div',
-          { class: 'toolbar side-actions' },
-          downloadButton(this.project.name, () => this.chooseDownload()),
-        ),
-        this.saved?.el,
-        h(
-          'button',
-          {
-            type: 'button',
-            class: 'asset-home',
-            onclick: () => this.openAssets(),
-            'aria-current': this.assetView && !this.assetView.kind ? 'page' : undefined,
-          },
-          '▦ Overview',
-        ),
-        this.search,
-        ...sections.map((k) => this.section(k, groups.get(k) ?? [])),
-        this.playerEntry(),
-      ),
-    );
-    this.filter();
-    this.roveFiles();
-  }
-
-  /** The file buttons are one Tab stop: arrows, Home/End and typed letters move between them; Delete removes the focused file. */
-  private roveFiles(): void {
-    const box = this.sidebar.querySelector<HTMLElement>('.side-files');
-    if (!box) return;
-    rovingFocus(box, '.file-row .file', { list: true, label: (el) => el.closest<HTMLElement>('.file-row')?.dataset.name ?? '' });
-    // the focused row's Delete button joins the Tab order (it is visible then), the others stay out
-    box.addEventListener('focusin', () => {
-      for (const b of box.querySelectorAll<HTMLElement>('.file-row .icon-btn.danger'))
-        b.tabIndex = b.closest('.file-row')?.contains(document.activeElement) ? 0 : -1;
-    });
-    box.addEventListener('keydown', (e) => {
-      const t = e.target as HTMLElement;
-      if (e.key !== 'Delete' || !t.matches('.file-row .file')) return;
-      e.preventDefault();
-      t.closest('.file-row')?.querySelector<HTMLElement>('.icon-btn.danger')?.click();
-    });
-  }
-
-  /** Wide screens: the button that folds the file list into a thin bar and back (remembered per browser). */
-  private railToggle(): HTMLElement {
-    const folded = this.railFolded();
-    const b = h(
-      'button',
-      {
-        type: 'button',
-        class: 'rail-toggle',
-        'aria-expanded': String(!folded),
-        'aria-controls': 'side-files',
-        'aria-label': folded ? 'Show files' : 'Hide files',
-        title: folded ? 'Show files' : 'Hide files',
-        onclick: () => {
-          const now = !this.railFolded();
-          this.sidebar.parentElement?.classList.toggle('rail-folded', now);
-          try {
-            localStorage.setItem(RAIL_KEY, now ? '1' : '0');
-          } catch {
-            /* storage may be blocked: the bar still works for this visit */
-          }
-          const label = now ? 'Show files' : 'Hide files';
-          b.setAttribute('aria-expanded', String(!now));
-          b.setAttribute('aria-label', label);
-          b.title = label;
-          b.firstElementChild!.textContent = now ? '»' : '«';
-        },
-      },
-      h('span', { 'aria-hidden': 'true' }, folded ? '»' : '«'),
-      h('span', { class: 'rail-label' }, ' Hide files'),
-    );
-    return b;
-  }
-
-  /** A game imported with its own player .EXE: a Player entry under the files, showing what it was (playerInfo.ts). */
-  private playerEntry(): HTMLElement | null {
-    const o = companionOrigin(this.project.companion, this.project.gam);
-    if (!o) return null;
-    return h(
-      'button',
-      {
-        type: 'button',
-        class: 'asset-home side-player',
-        title: `${o.exe}: ${originText(o)}`,
-        onclick: () => void import('./playerInfo').then((m) => m.showPlayerInfo(this.project)),
-      },
-      '▣ Player',
-    );
-  }
-
-  /** In the folded bar, a button to the game's Overview (the same as ▦ Overview in the list). */
-  private railHome(): HTMLElement {
-    return h(
-      'button',
-      { type: 'button', class: 'rail-home', 'aria-label': 'Overview', title: 'Overview', onclick: () => this.openAssets() },
-      h('span', { 'aria-hidden': 'true' }, '▦'),
-    );
-  }
-
-  private railFolded(): boolean {
-    return this.sidebar.parentElement?.classList.contains('rail-folded') ?? storedFolded();
-  }
-
-  /** The file search box (kept across sidebar redraws so typing is never interrupted). */
-  private search: HTMLElement = (() => {
-    const input = h('input', {
-      type: 'search',
-      placeholder: 'Find a file…',
-      'aria-label': 'Find a file',
-      oninput: () => this.filter(),
-      onkeydown: (e: KeyboardEvent) => {
-        if (e.key === 'Escape') {
-          input.value = '';
-          this.filter();
-        } else if (e.key === 'Enter') {
-          const first = this.sidebar.querySelector<HTMLElement>('.file-row:not([hidden]) button.file');
-          first?.click();
-        }
-      },
-    });
-    return h('div', { class: 'file-search' }, input, h('span', { class: 'file-search-count', 'aria-live': 'polite' }));
-  })();
-
-  private get query(): string {
-    return (this.search.querySelector('input') as HTMLInputElement).value.trim().toLowerCase();
-  }
-
-  /** One kind of file: a heading (with a fold toggle once there are many) and its files. */
-  private section(k: FileKind, files: string[]): HTMLElement {
-    const p = this.project;
-    const total = p.files.names().length;
-    const foldable = k !== 'gam' && (files.length > FOLD_AT || (total >= FOLD_ALL_AT && files.length > 0));
-    // the open file's section is never folded away from it
-    const folded = foldable && !(this.current && files.includes(this.current)) && isFolded(p.id, k, files.length, total);
-    const sec = h('section', {
-      class: `file-section${foldable ? ' foldable' : ''}${folded ? ' folded' : ''}${files.length ? '' : ' none'}`,
-      'data-kind': k,
-    });
-    const toggle = () => {
-      const now = !sec.classList.contains('folded');
-      sec.classList.toggle('folded', now);
-      setFolded(p.id, k, now);
-      head.setAttribute('aria-expanded', String(!now));
-    };
-    const head = foldable
-      ? h(
-          'button',
-          { class: 'fold', 'aria-expanded': String(!folded), title: 'Show or hide these files', onclick: toggle },
-          h('span', { class: 'chev', 'aria-hidden': 'true' }, '▸'),
-          h('span', { class: 'kind-emoji', 'aria-hidden': 'true' }, KIND_ICON[k]),
-          h('span', null, KIND_LABELS[k]),
-          h('span', { class: 'count' }, String(files.length)),
-        )
-      : h(
-          'span',
-          null,
-          h('span', { class: 'kind-emoji', 'aria-hidden': 'true' }, KIND_ICON[k]),
-          KIND_LABELS[k],
-          files.length ? null : h('span', { class: 'none-yet' }, ' · none yet'),
-        );
-    const parts: (HTMLElement | null)[] = [
-      h(
-        'h2',
-        { class: 'file-kind' },
-        head,
-        k === 'gam' || this.looking
-          ? null
-          : h(
-              'button',
-              {
-                class: 'add',
-                title: `Add ${KIND_LABELS[k].toLowerCase()}`,
-                'aria-label': `Add ${KIND_LABELS[k].toLowerCase()}`,
-                onclick: () => void this.addOfKind(k),
-              },
-              '+',
-            ),
-      ),
-      ...files.map((n) =>
-        h(
-          'div',
-          { class: `file-row ${n === this.current ? 'active' : ''}`, 'data-name': n },
-          h('button', { class: 'file', onclick: () => this.open(n), title: `Edit ${n}` }, ...fileLabel(n, k), sceneFileLabels(p, n)),
-          // a pointer shortcut to the same action as the file button beside it: out of the Tab order and the reading order
-          h('button', { class: 'icon-btn', title: `Edit ${n}`, tabindex: '-1', 'aria-hidden': 'true', onclick: () => this.open(n) }, '✎'),
-          n === p.gam || this.looking
-            ? null
-            : h(
-                'button',
-                { class: 'icon-btn danger', title: `Delete ${n}`, tabindex: '-1', 'aria-label': `Delete ${n}`, onclick: () => void this.remove(n) },
-                '🗑',
-              ),
-        ),
-      ),
-    ];
-    sec.append(...parts.filter((x): x is HTMLElement => !!x));
-    return sec;
-  }
-
-  /** Applies the search box: matching files only, sections with no match hidden. */
-  private filter(): void {
-    const q = this.query;
-    this.sidebar.classList.toggle('searching', !!q);
-    let shown = 0;
-    let total = 0;
-    for (const sec of this.sidebar.querySelectorAll<HTMLElement>('.file-section')) {
-      let any = false;
-      for (const row of sec.querySelectorAll<HTMLElement>('.file-row')) {
-        const hit = !q || matchesFile(row.dataset.name ?? '', q);
-        row.hidden = !hit;
-        total++;
-        if (hit) {
-          shown++;
-          any = true;
-        }
-      }
-      sec.hidden = !!q && !any && !matchesFile(KIND_LABELS[sec.dataset.kind as FileKind] ?? '', q);
-    }
-    const count = this.search.querySelector('.file-search-count')!;
-    count.textContent = q ? `${shown} of ${total}` : '';
+    this.sidebarView.render();
   }
 
   /** Adds a file of one kind: new, from the library, or from your computer. */
@@ -624,9 +253,9 @@ export class Workspace implements AssistantHost {
     noteLastPlace();
     this.cleanup?.();
     this.cleanup = undefined;
-    this.player?.stop();
-    this.player = undefined;
-    this.playBack = undefined;
+    this.playSession.stop();
+    this.playSession.clear();
+    this.playSession.back = undefined;
     this.assetReturn = undefined;
     this.current = undefined;
     this.assetView = { kind, tab };
@@ -690,9 +319,9 @@ export class Workspace implements AssistantHost {
     this.main.classList.remove('asset-editor');
     this.cleanup?.();
     this.cleanup = undefined;
-    this.player?.stop();
-    this.player = undefined;
-    this.playBack = undefined;
+    this.playSession.stop();
+    this.playSession.clear();
+    this.playSession.back = undefined;
     this.current = file;
     noteOpened(this.project, file);
     this.sidebar.classList.remove('open');
@@ -875,35 +504,8 @@ export class Workspace implements AssistantHost {
     return strip;
   }
 
-  /** The level whose map is open (play testing starts there), if any. */
-  private levelHere(file = this.current): { game: Game; scene: number } | undefined {
-    if (!file || kindOf(file) !== 'map') return undefined;
-    try {
-      const game = parseGame(this.project.files.get(this.project.gam)!);
-      const scene = levelForMap(game, file);
-      return scene >= 0 ? { game, scene } : undefined;
-    } catch {
-      return undefined;
-    }
-  }
-
-  private playEl?: HTMLElement;
-
-  /** Play Game and the Play Level split button (playButtons.ts). */
   private playButton(): HTMLElement {
-    return playButtons({
-      game: () => {
-        try {
-          return parseGame(this.project.files.get(this.project.gam)!);
-        } catch {
-          return undefined;
-        }
-      },
-      here: () => this.levelHere()?.scene,
-      last: () => lastPick(this.project.id),
-      playGame: () => this.play('title'),
-      playLevel: (pick) => (keepPick(this.project.id, pick), this.play(pick)),
-    });
+    return this.playSession.button();
   }
 
   /**
@@ -917,79 +519,17 @@ export class Workspace implements AssistantHost {
     this.assetView = undefined;
     this.main.classList.remove('asset-editor');
     document.title = `Playing ${this.project.name} · ${SHORT}`;
-    const level = how === 'title' ? undefined : (how ?? this.defaultPick(back));
+    const level = how === 'title' ? undefined : (how ?? this.playSession.defaultPick(back));
     notePlayed(this.project);
     setHashParams({ play: level ? pickParam(level) : 'title' });
     this.cleanup?.();
     this.cleanup = undefined;
-    this.player?.stop();
-    this.player = undefined;
+    this.playSession.stop();
+    this.playSession.clear();
     this.current = undefined;
-    this.playBack = back ?? this.project.gam;
+    this.playSession.back = back ?? this.project.gam;
     this.renderSidebar();
-    const host = h('div', { class: 'player-host' });
-    const game = parseGame(this.project.files.get(this.project.gam)!);
-    const where = level ? `${sceneName(game, level.to)} at ${level.at.x},${level.at.y}` : '';
-    this.bar?.classList.remove('released-inline');
-    clear(
-      this.main,
-      this.bar,
-      h(
-        'div',
-        { class: 'row file-head', style: 'justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:8px' },
-        h('h1', { class: 'file-title' }, level ? `Playing ${where}` : `Playing ${this.project.name}`),
-        h(
-          'div',
-          { class: 'toolbar' },
-          level && h('button', { onclick: () => this.play('title', back), title: 'Play the whole game from its title screen' }, 'From the title screen'),
-          h(
-            'button',
-            { onclick: () => this.stopPlay(), title: this.assetReturn ? 'Stop and return to the overview' : back ? `Stop and go back to ${back}` : 'Stop' },
-            'Stop',
-          ),
-        ),
-      ),
-      host,
-      h(
-        'p',
-        { class: 'hint' },
-        level ? `It starts in ${where}, where ${sourceName(game, level)} leads, without the title and menu; they come after play ends. ` : '',
-        'Play testing uses a copy of the files: high scores and saved games are not added to your project.',
-      ),
-    );
-    const copy = new GameFiles(this.project.files.entries());
-    if (level) {
-      const start = gameFor(game, level);
-      if (start !== game) copy.set(this.project.gam, serializeGame(start));
-    }
-    // the player loads with the first play test; not if another file was opened meanwhile
-    void Promise.all([
-      import('../../player/player'),
-      import('../../dosPlayer/playerRecord'),
-      import('../../project/composeFiles'),
-      import('../../dosPlayer/playerOrigin'),
-    ]).then(([{ mountPlayer }, { companionPatches }, { composeFiles }, { companionOrigin, playerAbout }]) => {
-      const player = companionPatches(this.project.companion, this.project.gam);
-      if (!this.disposed && host.isConnected)
-        this.player = mountPlayer(host, composeFiles(copy, this.project.companion), this.project.gam, {
-          title: this.project.name,
-          hardwareId: `project:${this.project.id}`,
-          player,
-          playerAbout: playerAbout(companionOrigin(this.project.companion, this.project.gam)),
-          skipTitle: !!level,
-          ...watch,
-        });
-    });
-  }
-
-  /** Play Level's pick when none is given: the last one, else a way into the open map's level, else the first. */
-  private defaultPick(file = this.current): PlayPick | undefined {
-    try {
-      const game = parseGame(this.project.files.get(this.project.gam)!);
-      return currentPick(playChoices(game), lastPick(this.project.id), this.levelHere(file)?.scene);
-    } catch {
-      return undefined;
-    }
+    this.playSession.mount(this.main, this.bar, level, back, !!this.assetReturn, watch);
   }
 
   /** The "Add a file" dialog: a grid of every kind of file, with a picture of each. */
