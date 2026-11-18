@@ -7,6 +7,9 @@ Edits GAM scenes and links on a board of cards, with companion-backed boards and
 ## Main files
 
 - [`integrator.ts`](integrator.ts): Registers GAM editing and coordinates scene files/settings, validated link fields, board rendering, scene creation/deletion, play-test copies, and game-file Undo.
+- [`songPlayback.ts`](songPlayback.ts): Owns lazy audio loading, song state and play/stop buttons.
+- [`panelResize.ts`](panelResize.ts): Restores side-panel collapse/width and wires pointer and keyboard resizing.
+- [`sceneForm.ts`](sceneForm.ts): Renders selected-scene fields and actions with explicit save, redraw and selection callbacks.
 - [`sceneRole.ts`](sceneRole.ts): Reads scene roles from GAM links and, when available, timed map blocks and finite slide lists; it never writes game data. Timed-floor detection is conservative, not a playability simulation.
 - [`board.ts`](board.ts): Computes card geometry and renders scene/group cards, song controls, aggregated link arrows, and board pictures.
 - [`boardsController.ts`](boardsController.ts): Manages named boards/groups, arrangement tools, suggestions, active-board selection, and separate companion-layout Undo.

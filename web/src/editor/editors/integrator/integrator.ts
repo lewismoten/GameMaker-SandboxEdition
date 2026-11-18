@@ -4,44 +4,27 @@
 // screens). Card positions are the .GAM's integrator coordinates, so the DOS integrator
 // shows the same arrangement.
 //
-// The editor is one closure over the game. Its sections, in order: pictures (cached scene
-// shots), songs, the board, the toolbar (Auto-arrange, Spread out, zoom, PNG), the side
-// panel (screens and music: sideLists.ts), scenes (adding, playing from one), and the
-// selected scene's panel (its links table: sceneLinks.ts). Drawing the board is in board.ts,
+// The editor coordinates pictures, songPlayback.ts, the board, toolbar, side lists,
+// panelResize.ts, scene creation/play and sceneForm.ts (with links in sceneLinks.ts).
+// Drawing the board is in board.ts,
 // its camera in boardCamera.ts and its pointer and keys in boardInput.ts; the layout
 // algorithms are in integratorLayout.ts and layoutCells.ts.
+import { songPlayback } from './songPlayback';
+import { panelResize } from './panelResize';
+import { renderSceneForm } from './sceneForm';
 import { overviewHash } from '../../shell/overviewLink';
-import { fromCp437, toCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
+import { fromCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 import './integrator.css';
 import { gameProject } from '../../shell/gameProject';
 import { registerEditor } from '../registry';
-import { h, clear, selectField, textField, modal, confirmDialog, download, toast } from '../../core/ui';
-import type { FileKind } from '../../core/project';
-import { fileField } from '../../widgets/filePicker';
-import { upTo } from '../../widgets/limitNote';
+import { h, clear, modal, download, toast } from '../../core/ui';
 import { GameFiles } from '../../../project/files';
 import type { PlayerHandle } from '../../../player/player';
-import type { AudioEngine } from '@lewismoten/gamemaker-sandbox-engine/audio/engine';
-import {
-  ADVTYPE,
-  ENDTYPE,
-  GRAPHIC_EXTS,
-  NOSCENE,
-  SCENEDESCLEN,
-  STARTTYPE,
-  emptyScene,
-  serializeGame,
-  fileSlotsFor,
-  sceneKind,
-  slotExtensions,
-  type Point,
-  type Scene,
-} from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { ADVTYPE, ENDTYPE, NOSCENE, STARTTYPE, emptyScene, serializeGame, type Point } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { newMap, parseMap, serializeMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { WORLD, CARD_UNITS, clampPos } from './layoutCells';
 import { arrangements, closeGaps, gapSavings, spreadOut, type Arrangement } from './integratorLayout';
 import { graphicShot, levelShot } from './integratorArt';
-import { linksPanel } from './sceneLinks';
 import { BoardCamera } from './boardCamera';
 import { boardInput } from './boardInput';
 import { boardsController } from './boardsController';
@@ -71,7 +54,6 @@ registerEditor(['gam'], (host, owner, file) => {
   const view = viewState(['p', project.id, file]);
   const urlScene = view.num('scene');
   let selected = urlScene !== undefined && usedScenes(game).includes(urlScene) ? urlScene : 0;
-  let playing: string | undefined;
   /** Auto-arrange's layouts, best first, while the user steps through them. */
   let arranged: { list: Arrangement[]; k: number } | undefined;
   // Undo takes back any change to the .gam: cards moved, scenes added, files and links chosen
@@ -126,41 +108,8 @@ registerEditor(['gam'], (host, owner, file) => {
   });
 
   // ---- songs ---------------------------------------------------------------------------
-  // the audio engine (widgets/mediaShared.ts) loads with the first song played
-  let audio: AudioEngine | undefined;
-  async function toggleSong(file: string): Promise<void> {
-    if (playing === file) {
-      audio?.stopSong();
-      playing = undefined;
-    } else {
-      audio ??= (await import('../../widgets/mediaShared')).audio;
-      await audio.resume();
-      if (await audio.playSong(project.files.get(file))) playing = file;
-      else {
-        playing = undefined;
-        toast(`${file} can’t be played (it isn’t Game-Maker Sound Blaster music).`, 'error');
-      }
-    }
-    draw();
-    for (const b of host.querySelectorAll<HTMLButtonElement>('button[data-song]')) {
-      const on = b.dataset.song === playing;
-      b.textContent = on ? '■' : '▶';
-      b.classList.toggle('playing', on);
-      b.title = `${on ? 'Stop' : 'Play'} ${b.dataset.song}`;
-    }
-  }
-  const songButton = (file: string) =>
-    h(
-      'button',
-      {
-        class: `grator-play${playing === file ? ' playing' : ''}`,
-        dataset: { song: file },
-        title: `${playing === file ? 'Stop' : 'Play'} ${file}`,
-        'aria-label': `Play ${file}`,
-        onclick: () => void toggleSong(file),
-      },
-      playing === file ? '■' : '▶',
-    );
+  const songs = songPlayback(host, project.files, draw);
+  const { songButton, toggleSong } = songs;
 
   // ---- board -----------------------------------------------------------------------------
   const board = h('canvas', {
@@ -191,7 +140,7 @@ registerEditor(['gam'], (host, owner, file) => {
     },
   });
   boards.setScreen((p) => ({ x: (p.x - cam.x) * cam.z, y: (p.y - cam.y) * cam.z }));
-  boards.setBoardView(() => ({ project, game, selected, playing, screenOf, levelOf }));
+  boards.setBoardView(() => ({ project, game, selected, playing: songs.playing, screenOf, levelOf }));
   selected = boards.settle(selected);
   const cardRect = (i: number): Rect => (boards.on() ? boards.rectOf(i) : undefined) ?? cardRectOf(game, i);
   /** The scenes with a card on the board now (a group shows as its first member, or the selected one). */
@@ -210,7 +159,7 @@ registerEditor(['gam'], (host, owner, file) => {
 
   const cardButtons = (i: number, r: Rect) => cardButtonsOf(project, game, i, r);
   const paintBoard = (ctx: CanvasRenderingContext2D, view: Rect, forExport: boolean) =>
-    paintBoardOf(ctx, view, forExport, { project, game, selected, playing, screenOf, levelOf, boards: boards.view() });
+    paintBoardOf(ctx, view, forExport, { project, game, selected, playing: songs.playing, screenOf, levelOf, boards: boards.view() });
 
   let raf = 0;
   function draw(): void {
@@ -448,71 +397,7 @@ registerEditor(['gam'], (host, owner, file) => {
   const shownTab = () => (sideTab === 'scene' && !panelInSide() ? 'screens' : sideTab);
   const onWide = () => (renderSide(), requestAnimationFrame(fit));
   wide?.addEventListener?.('change', onWide);
-  /** The side panel folds away so the board gets the whole width (remembered; folded by default on phones). */
-  const setCollapsed = (on: boolean, remember = true) => {
-    grator.classList.toggle('side-collapsed', on);
-    if (remember) store.set('gm-grator-side-collapsed', on ? '1' : '0');
-    renderSide();
-    requestAnimationFrame(fit);
-  };
-  const savedCollapsed = store.get('gm-grator-side-collapsed');
-  grator.classList.toggle('side-collapsed', savedCollapsed ? savedCollapsed === '1' : window.matchMedia?.('(max-width: 820px)').matches);
-  const savedWidth = Number(store.get('gm-grator-side-w'));
-  if (savedWidth >= 160 && savedWidth <= 640) grator.style.setProperty('--grator-side-w', `${savedWidth}px`);
-  // drag the bar between the board and the panel to make the panel wider or narrower
-  const handle = h('div', {
-    class: 'grator-resize',
-    role: 'separator',
-    'aria-orientation': 'vertical',
-    'aria-label': 'Side panel width',
-    title: 'Drag to resize the side panel (or focus it and use ← →, Page Up/Down, Home/End)',
-    tabIndex: 0,
-    'aria-valuemin': 160,
-    'aria-valuemax': 640,
-  });
-  /** The handle reports the panel's real width (its default depends on the window), kept in step as it changes. */
-  const syncHandle = () => {
-    const w = Math.round(side.getBoundingClientRect().width);
-    if (!w) return;
-    handle.setAttribute('aria-valuenow', String(w));
-    handle.setAttribute('aria-valuetext', `${w} pixels wide`);
-  };
-  if (typeof ResizeObserver === 'function') new ResizeObserver(syncHandle).observe(side);
-  const setSideW = (w: number) => {
-    grator.style.setProperty('--grator-side-w', `${w}px`);
-    store.set('gm-grator-side-w', String(w));
-    syncHandle();
-    draw();
-  };
-  handle.addEventListener('pointerdown', (e) => {
-    e.preventDefault();
-    handle.setPointerCapture(e.pointerId);
-    const x0 = e.clientX;
-    const w0 = side.getBoundingClientRect().width;
-    const move = (ev: PointerEvent) => {
-      setSideW(Math.round(Math.max(160, Math.min(640, w0 - (ev.clientX - x0)))));
-    };
-    const up = () => (handle.removeEventListener('pointermove', move), handle.removeEventListener('pointerup', up));
-    handle.addEventListener('pointermove', move);
-    handle.addEventListener('pointerup', up);
-  });
-  // ← widens the panel (the handle moves left), → narrows it; Page Up/Down take bigger steps, Home is narrowest and End widest
-  handle.addEventListener('keydown', (e) => {
-    const w = Math.round(side.getBoundingClientRect().width);
-    const next: Record<string, number> = {
-      ArrowLeft: w + 20,
-      ArrowUp: w + 20,
-      ArrowRight: w - 20,
-      ArrowDown: w - 20,
-      PageUp: w + 80,
-      PageDown: w - 80,
-      Home: 160,
-      End: 640,
-    };
-    if (!(e.key in next)) return;
-    e.preventDefault();
-    setSideW(Math.max(160, Math.min(640, next[e.key])));
-  });
+  const { handle, setCollapsed } = panelResize({ grator, side, store, renderSide, fit, draw });
   function renderSide(): void {
     const { screens, songs } = screensAndSongs(game, project.files);
     const pick = (scene: number) => {
@@ -646,8 +531,7 @@ registerEditor(['gam'], (host, owner, file) => {
 
   /** Plays a copy of the game whose start link goes straight to this level. */
   function playFrom(scene: number): void {
-    audio?.stopSong();
-    playing = undefined;
+    songs.stopForPlay();
     const copy = startingAt(game, scene);
     const files = new GameFiles(project.files.entries());
     files.set(project.gam, serializeGame(copy));
@@ -675,192 +559,24 @@ registerEditor(['gam'], (host, owner, file) => {
   const panel = h('div', { class: 'stack grator-panel' });
   function renderPanel(): void {
     view.set({ scene: selected });
-    const s: Scene | undefined = game.scenes[selected];
-    if (!s) {
-      clear(panel);
-      return;
-    }
-    const kind = sceneKind(s);
-    const slots = fileSlotsFor(s);
-    const exts = slotExtensions(s);
-    const scrollOpt: [number, string][] = [
-      [0xff, 'Scroll when the character nears the edge'],
-      [0, 'Never scroll'],
-    ];
-    const changed = () => (save(), draw());
-    clear(
+    renderSceneForm({
+      project,
+      game,
       panel,
-      h(
-        'div',
-        { class: 'panel stack' },
-        h(
-          'h2',
-          { style: 'margin:0' },
-          kind === 'start' ? 'Start scene (title & menu)' : kind === 'end' ? 'End scene (game won / lost)' : `Level scene #${selected}`,
-        ),
-        textField(
-          `Description (the start scene’s is the game title; ${upTo(SCENEDESCLEN - 1)})`,
-          () => fromCp437(s.desc),
-          (v) => ((s.desc = toCp437(v).slice(0, SCENEDESCLEN - 1)), (s.descRaw = undefined), save(), draw(), renderSide()),
-          { maxLength: SCENEDESCLEN - 1 },
-        ),
-        kind === 'adventure' && s.files[1]
-          ? h(
-              'a',
-              {
-                class: 'button',
-                href: `#/p/${project.id}/${encodeURIComponent(s.files[1].toLowerCase())}?generate=1`,
-                title: 'Open this level’s map and generate a layout from its background blocks',
-              },
-              'Generate level layout…',
-            )
-          : null,
-        kind === 'start'
-          ? h(
-              'div',
-              { class: 'toolbar' },
-              h(
-                'button',
-                {
-                  onclick: () => void import('../../widgets/uploadChecklist').then((m) => m.uploadChecklist(project)),
-                  title: 'The guide’s Appendix B, ticked where the level check can tell',
-                },
-                '☑ Before you upload…',
-              ),
-              h(
-                'button',
-                {
-                  onclick: () => void import('../../widgets/walkDialog').then((m) => m.walkDialog(project)),
-                  title: 'Let a bot play the whole game and keep it as a walkthrough to watch or save as a video',
-                },
-                '🤖 Record a walkthrough…',
-              ),
-              h(
-                'button',
-                {
-                  onclick: async () => {
-                    const { openingDialog } = await import('../../tools/opening/openingDialog');
-                    if (!(await openingDialog(project, s, game.scenes))) return;
-                    save();
-                    draw();
-                    renderSide();
-                    renderPanel();
-                  },
-                  title:
-                    'Add, swap or remove the opening that plays before the title: a “Made with Game-Maker: Sandbox Edition” intro or the classic RSD one, and a “presents” card',
-                },
-                '🎬 Create opening files…',
-              ),
-              h(
-                'button',
-                {
-                  onclick: async () => {
-                    const { instructionCardDialog } = await import('../../tools/cards/cardDialog');
-                    if (!(await instructionCardDialog(project, s))) return;
-                    save();
-                    renderSide();
-                    renderPanel();
-                  },
-                  title: 'Make the instructions from the game’s own keys, with the goal, the dangers and the items, on a backdrop that always reads well',
-                },
-                '📝 Create instructions…',
-              ),
-            )
-          : null,
-        kind === 'adventure' || kind === 'unused'
-          ? h(
-              'div',
-              { class: 'toolbar' },
-              kind === 'adventure'
-                ? h(
-                    'button',
-                    { class: 'primary', onclick: () => playFrom(selected), title: 'Play this level straight away, without the title and menu' },
-                    '▶ Play from here',
-                  )
-                : null,
-              kind === 'adventure'
-                ? h(
-                    'button',
-                    {
-                      onclick: async () => {
-                        const { levelCardDialog } = await import('../../tools/cards/cardDialog');
-                        if (!(await levelCardDialog(project, game, selected))) return;
-                        save();
-                        renderSide();
-                        renderPanel();
-                      },
-                      title: 'Make the card shown as the level starts: its name, “level 3 of 10”, the goal and a hint (it shows again after every death)',
-                    },
-                    '🪧 Create level intro…',
-                  )
-                : null,
-              h(
-                'button',
-                {
-                  class: 'danger',
-                  onclick: async () => {
-                    if (!(await confirmDialog('Delete scene', `Delete “${fromCp437(s.desc)}” and every link to it?`, 'Delete'))) return;
-                    for (const other of game.scenes) for (const l of other.links) if (l.toScene === selected) l.toScene = NOSCENE;
-                    game.scenes[selected] = emptyScene();
-                    selected = 0;
-                    save();
-                    draw();
-                    renderSide();
-                    renderPanel();
-                  },
-                },
-                'Delete scene',
-              ),
-            )
-          : null,
-      ),
-      h(
-        'div',
-        { class: 'panel' },
-        h('h2', { style: 'margin-top:0' }, 'Files'),
-        h(
-          'div',
-          { class: 'grid-fields', style: 'grid-template-columns:repeat(auto-fill,minmax(190px,1fr))' },
-          ...slots.map((label, i) => {
-            const field = fileField(
-              project,
-              label,
-              (exts[i] === 'graphic' ? GRAPHIC_EXTS : [exts[i]]) as FileKind[],
-              () => s.files[i] ?? '',
-              (v) => {
-                s.files[i] = v;
-                save();
-                draw();
-                renderSide();
-                renderPanel();
-              },
-            );
-            const file = s.files[i];
-            return exts[i] === 'cmf' && file && project.files.has(file) ? h('div', { class: 'grator-song-field' }, field, songButton(file)) : field;
-          }),
-        ),
-      ),
-      kind === 'adventure'
-        ? h(
-            'div',
-            { class: 'panel' },
-            h('h2', { style: 'margin-top:0' }, 'Scrolling'),
-            h(
-              'div',
-              { class: 'grid-fields', style: 'grid-template-columns:repeat(auto-fill,minmax(230px,1fr))' },
-              ...(['up', 'down', 'left', 'right'] as const).map((d) =>
-                selectField(
-                  d[0].toUpperCase() + d.slice(1),
-                  scrollOpt,
-                  () => (s.scroll[d] === 0 ? 0 : 0xff),
-                  (v) => ((s.scroll[d] = v), save()),
-                ),
-              ),
-            ),
-          )
-        : null,
-      kind === 'end' ? null : linksPanel({ project, game, scene: selected, sceneOptions, changed, rerender: renderPanel }, s, kind),
-    );
+      get selected() {
+        return selected;
+      },
+      set selected(value: number) {
+        selected = value;
+      },
+      save,
+      draw,
+      renderSide,
+      renderPanel,
+      playFrom,
+      sceneOptions,
+      songButton,
+    });
   }
 
   /** How the board works, folded into a small ? in its corner. */
@@ -924,6 +640,6 @@ registerEditor(['gam'], (host, owner, file) => {
     toolsSize.disconnect();
     wide?.removeEventListener?.('change', onWide);
     if (raf) cancelAnimationFrame(raf);
-    audio?.stopSong();
+    songs.stop();
   };
 });
