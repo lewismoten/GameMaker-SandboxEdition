@@ -1326,6 +1326,10 @@ live in the [tools package](../web/packages/tools/README.md). Game folders conta
 art, colors, recorded inputs, routes and thin compatibility adapters. Rounded and square
 micro-font profiles retain their original glyph coverage, fallback and spacing.
 
+The Thank-You Parade keeps its hero-art entry in `src/figure.ts`: `pennyFigure.ts` and
+`margeFigure.ts` hold each hero's outfit and poses, and `figureDrawing.ts` holds their shared
+pose types and drawing strokes. The entry preserves character block order and the whole-figure API.
+
 The repeated countdown layouts for Pass the Pie (`src/timing.ts`) and The Thank-You Parade
 (`src/tall.ts`) keep complete five-segment bars across street, roof and pond-bed views.
 Their placement guards reject changes over gameplay tiles. Large copies reuse the original clock blocks;
