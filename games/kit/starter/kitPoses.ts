@@ -5,7 +5,6 @@
 import { outline } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';
-import type { Book } from './book';
 import { body, head, outlinedPair, type Legs } from './hero';
 import { kitRamp } from './heroLook';
 import { scaleDown } from './kitSizes';
@@ -110,16 +109,6 @@ export function sidePoses(pal: Pal): Pose[] {
   add('throw2', 'shoot', head(pal, 'smile'), body(pal, { arms: 'follow', legs: STAND }));
   add('cheer', 'cheer', head(pal, 'cheer', false, 0, 'both'), body(pal, { arms: 'high', legs: STAND }));
   return out;
-}
-
-/** Adds the poses the Starter hero doesn't have yet (dizzy, drop, reach, duck, sneak) to a block set, as `<name>.top` and `<name>`. */
-export function addExtraPoses(book: Book, pal: Pal): void {
-  const extra = ['dizzy0', 'dizzy1', 'drop', 'reach', 'duck0', 'duck1', 'sneak0', 'sneak1'];
-  for (const p of sidePoses(pal)) {
-    if (!extra.includes(p.name)) continue;
-    if (p.top) book.add(`${p.name}.top`, p.top);
-    book.add(p.name, p.bottom);
-  }
 }
 
 /** A pose as one 20x40 picture. */

@@ -10,6 +10,7 @@
 //
 // The tales are scenes too, but they are not levels: they load a stage map without signs.
 // Both rooms are closed in by brick you can see, so Mara is never stopped by something she can't.
+import { applyBlockTimers } from '@lewismoten/gamemaker-sandbox-tools/kit/blockTimers';
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { Book, PULL, SOLID, type Timed } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
@@ -62,13 +63,7 @@ const SIGNS = {
 
 /** The finished block set: the book's, with each timed block given its next block and its ticks. */
 export function finishBlocks(book: Book, timed: Timed[]): Block[] {
-  const blocks = book.finish();
-  for (const t of timed) {
-    const b = blocks[book.n(t.name)];
-    b.nextBl = book.n(t.next);
-    b.ntime = t.ticks;
-  }
-  return blocks;
+  return applyBlockTimers(book.finish(), (name) => book.n(name), timed);
 }
 
 const AIR = { grav: PULL.down };
