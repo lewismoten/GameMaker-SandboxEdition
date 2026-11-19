@@ -80,9 +80,9 @@ describe('ending cartoon', () => {
       expect(Buffer.compare(canvas.pixels, picture)).toBe(0);
       expect([...canvas.palette].every((c) => c <= 63)).toBe(true);
       if (i === 36) hold = canvas.palette.slice();
+      if (i >= 36) expect(canvas.palette, `frame ${i}`).toEqual(hold);
     }
     expect(canvas.palette).not.toEqual(first);
-    expect(canvas.palette).toEqual(hold);
     expect(Buffer.compare(cartoons.endingFli(pal, book, monsterPictures(pal), hero), bytes)).toBe(0);
   });
 });
