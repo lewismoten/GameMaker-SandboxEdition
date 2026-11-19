@@ -67,7 +67,7 @@ npm run look -- [<shot>] [--out f.jpg] [--ocr] [--expect "text"]  # a snapshot o
 npm run badges:similar                             # advisory: achievement badges that look alike in gray or to color-blind eyes; HTML report in .for-lewis/research/badges-similar/
 npm run release:draft -- <pages|engine|archives|tools>  # pending fragments and legacy Unreleased notes, plus commit suggestions (prints; never writes)
 npm run release:cut -- <target> <version>          # Unreleased becomes a dated version; sets a package's version
-npm run verify:changed [-- --base <ref>]           # the pre-merge check: prettier + eslint on changed files, tsc (whole project), vitest --changed, release:check if a package src changed; prints the check:games command for a changed game; the full one is root npm run verify
+npm run verify:changed [-- --base <ref>]           # the pre-merge check: prettier + eslint on changed files, tsc (whole project), vitest --changed, release:check if package src or a release fragment changed; prints the check:games command for a changed game; the full one is root npm run verify
 npm run release:check                              # a package whose src changed since its tag needs a fragment or Unreleased line (in root npm run verify)
 npm run domains:check                              # every made-up domain is still unregistered (whois + DNS; needs network)
 npm run dosbox                                     # dosbox/ (git-ignored) to mount as C: in DOSBox (open DOSBox or any window only when Lewis is away)
@@ -159,7 +159,7 @@ preserve what was there.
   when first used (`editor/editors/registry.ts` `loadEditor`, `main.ts`). Import their
   modules dynamically from elsewhere, not statically. `dos.html` must load nothing under
   `src/desk` (`dosPage/boundary.test.ts`).
-- **Release notes:** a merge into `develop` that changes something users or package consumers see adds one small fragment at `changes/unreleased/<target>/<branch-or-slug>.md` (`pages`, `engine`, `archives`, or `tools`), with one category heading (`### Added`, `Changed`, `Fixed`, `Removed`, or `Security`) and one bullet. Do not edit the shared changelog during branch work; `release:cut` collects fragments along with existing Unreleased lines. Plain words, US English, one voice, no secret games (`docs/package-releases.md`).
+- **Release notes:** a merge into `develop` that changes something users or package consumers see adds one small fragment at `changes/unreleased/<target>/<branch-or-slug>.md` (`pages`, `engine`, `archives`, or `tools`), with one category heading (`### Added`, `Changed`, `Fixed`, `Removed`, or `Security`), a blank line, then one `- ` bullet on a single line. Do not edit the shared changelog during branch work; `release:cut` collects fragments along with existing Unreleased lines. Plain words, US English, one voice, no secret games (`docs/package-releases.md`).
 - **Docs:** when you add an area, a module with a new job, or a command, add it to the area's
   README (indexed from `web/src/README.md`; `web/scripts/README.md` for build-time code,
   `games/kit/README.md` for the kit) in the same commit. A new area gets its own README and a

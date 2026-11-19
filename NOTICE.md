@@ -64,6 +64,7 @@ game folder opens in the browser unchanged.
 
 ## Credits
 
+- OpenAI Codex updated the pre-merge release fragment check, its tests and its documentation (November 19, 2026).
 - OpenAI Codex updated the tour checker and repaired tour targets on the cast page, in the Library and in the editor (November 19, 2026).
 - OpenAI Codex updated the DOS player headings, wall clock label, and modem speed landmark (November 19, 2026).
 - OpenAI Codex updated the library tile tooltips and wrote the library width sweep (November 19, 2026).
