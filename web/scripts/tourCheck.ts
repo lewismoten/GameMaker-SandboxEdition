@@ -72,7 +72,15 @@ async function play(page: Page, url: string, ids: string[], axeSrc: string, run:
       )
       .then((h) => h.jsonValue() as Promise<string>)
       .catch(() => 'TIMEOUT');
-    if (say === 'END') break;
+    if (say === 'END') {
+      // a chapter on another page (DOS) loads it with location.assign: the bar is gone until the new page boots
+      const back = await page.waitForSelector('.tour-bar', { timeout: 10_000 }).then(
+        () => true,
+        () => false,
+      );
+      if (back) continue;
+      break;
+    }
     if (say === 'TIMEOUT') {
       run.problems.push(`stuck after "${last.slice(0, 40)}"`);
       break;
