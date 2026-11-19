@@ -51,17 +51,17 @@ works for trying it out.
 
 A plain array of games (without `"title"`) works too. For each game:
 
-| Field      | Needed | What it is                                                                                                                      |
-| ---------- | ------ | ------------------------------------------------------------------------------------------------------------------------------- |
-| `"folder"` | yes    | The game's folder, relative to `games.json` (or a full `https://` address; a folder on another origin must allow CORS). |
-| `"gam"`    | no     | The game file in the folder. Without it, the player uses the first `.GAM` in `"files"`, or tries the folder's name (`castle/` → `castle.gam`, then `CASTLE.GAM`), then `<id>.gam`. |
-| `"title"`  | no     | The name shown in the list. The folder's name otherwise.                                                                        |
-| `"id"`     | no     | What `?game=` calls it, and what its saves are kept under. The folder's name otherwise (lower case, letters, digits, `-`, `_`). |
-| `"files"`  | no     | Extra file names to fetch from the folder, beyond the ones the `.GAM` names.                                                    |
-| `"author"` | no     | Shown under the title.                                                                                                          |
-| `"year"`   | no     | Shown under the title.                                                                                                          |
-| `"about"`  | no     | A line about the game, shown under the title.                                                                                   |
-| `"autoplay"` | no  | `true` starts the game at once, without its "Play" screen. Set it on the list itself (beside `"games"`) for every game; a game's own setting wins. |
+| Field        | Needed | What it is                                                                                                                                                                         |
+| ------------ | ------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `"folder"`   | yes    | The game's folder, relative to `games.json` (or a full `https://` address; a folder on another origin must allow CORS).                                                            |
+| `"gam"`      | no     | The game file in the folder. Without it, the player uses the first `.GAM` in `"files"`, or tries the folder's name (`castle/` → `castle.gam`, then `CASTLE.GAM`), then `<id>.gam`. |
+| `"title"`    | no     | The name shown in the list. The folder's name otherwise.                                                                                                                           |
+| `"id"`       | no     | What `?game=` calls it, and what its saves are kept under. The folder's name otherwise (lower case, letters, digits, `-`, `_`).                                                    |
+| `"files"`    | no     | Extra file names to fetch from the folder, beyond the ones the `.GAM` names.                                                                                                       |
+| `"author"`   | no     | Shown under the title.                                                                                                                                                             |
+| `"year"`     | no     | Shown under the title.                                                                                                                                                             |
+| `"about"`    | no     | A line about the game, shown under the title.                                                                                                                                      |
+| `"autoplay"` | no     | `true` starts the game at once, without its "Play" screen. Set it on the list itself (beside `"games"`) for every game; a game's own setting wins.                                 |
 
 A web host cannot list a folder, so the player works out which files a game needs from the
 `.GAM`: every level's files and its high-score file, then the files those name (a sound set's
@@ -70,6 +70,9 @@ sounds, a slide show's pictures, a backdrop's picture). It also fetches `README.
 A file nothing names, such as an extra picture a text screen does not list, needs `"files"`.
 Give games distinct `"id"` values across all player pages and lists on the same origin:
 their saves share that origin's store, even when the pages live in different folders.
+Give each game in a single `games.json` its own `"id"` too. When games repeat an id, the
+first keeps it and the others get suffixes like `-2` and `-3` in list order. Reordering
+those games can make one game open another game's saves.
 
 ## Addresses
 

@@ -1349,3 +1349,5 @@ maker "ZORP" is invented. The shell is untested: nothing has been printed.
 - **Level check panel organization (November 18, 2026)**: OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, split the existing level check panel into modules by responsibility. No new third-party code or assets were added.
 
 - **Offline dialog reopening (November 18, 2026)**: OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, added early saved-tier rendering, batched cache verification and regression tests. No third-party material was added.
+
+- **Game hosting and color reduction documentation (November 19, 2026)**: OpenAI Codex, directed by Lewis Moten, clarified CORS headers on missing files, save IDs within a game list and optional color reduction checkpoints.
