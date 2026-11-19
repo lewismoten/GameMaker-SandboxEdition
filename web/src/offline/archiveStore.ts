@@ -38,11 +38,11 @@ export async function verified(response: Response | undefined, file: OfflineFile
   return bytes.byteLength === file.stored && (await contentHash(bytes)) === file.sha256;
 }
 /** Bounded work, also used for checking cached bodies without allocating the whole site at once. */
-export async function fourWorkers<T>(items: T[], run: (item: T) => Promise<void>): Promise<void> {
+export async function fourWorkers<T>(items: T[], run: (item: T) => Promise<void>, concurrency = 4): Promise<void> {
   let cursor = 0;
   let failure: unknown;
   await Promise.all(
-    Array.from({ length: Math.min(4, items.length) }, async () => {
+    Array.from({ length: Math.min(concurrency, items.length) }, async () => {
       while (cursor < items.length && !failure) {
         const item = items[cursor++];
         try {
@@ -67,6 +67,57 @@ export async function findVerified(base: string, file: OfflineFile, stores: Cach
     if (response && (await verified(response.clone(), file))) return response;
   }
   return undefined;
+}
+/** One metadata/body snapshot per store; verification results live only for this status check. */
+export async function verificationStores(base: string) {
+  const names = offlineNames(base);
+  const keys = await caches.keys();
+  const stores = await Promise.all(
+    keys
+      .filter((key) => key.startsWith(names.prefix) || key === 'gm-site' || key === 'gm-site-v2')
+      .map(async (name) => {
+        const cache = await caches.open(name);
+        const [requests, responses] = await Promise.all([cache.keys(), cache.matchAll()]);
+        const exact = new Map<string, Response>();
+        const reusable = new Map<string, Response>();
+        requests.forEach((request, i) => {
+          const response = responses[i];
+          if (!response) return;
+          if (!exact.has(request.url)) exact.set(request.url, response);
+          const url = new URL(request.url);
+          url.search = '';
+          if (!reusable.has(url.href)) reusable.set(url.href, response);
+        });
+        return { name, cache, exact, reusable };
+      }),
+  );
+  return {
+    removable: keys.some((key) => key.startsWith(names.prefix)),
+    async check(file: OfflineFile, committedName: string | undefined, target: string) {
+      const url = siteUrl(base, file.path);
+      const results = new Map<Response, Promise<boolean>>();
+      const check = (response: Response | undefined) => {
+        if (!response) return Promise.resolve(false);
+        let result = results.get(response);
+        if (!result) {
+          result = verified(response, file);
+          results.set(response, result);
+        }
+        return result;
+      };
+      // A default Cache.match honors Vary and the query; reuse deliberately ignores both.
+      const current = stores.find((store) => store.name === committedName);
+      const exact = current?.exact.get(url);
+      const committed = await check(exact?.headers.has('vary') ? await current!.cache.match(url) : exact);
+      const pending = await check(stores.find((store) => store.name === target)?.reusable.get(url));
+      let have = false;
+      for (const store of stores) {
+        if (have) break;
+        have = await check(store.reusable.get(url));
+      }
+      return { have, committed, pending };
+    },
+  };
 }
 export async function stageName(base: string, version: string, wanted: OfflineFile[]): Promise<string> {
   return offlineNames(base).prefix + (await contentHash(new TextEncoder().encode(JSON.stringify([version, wanted])).buffer));
