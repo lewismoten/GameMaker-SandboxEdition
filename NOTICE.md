@@ -64,6 +64,7 @@ game folder opens in the browser unchanged.
 
 ## Credits
 
+- OpenAI Codex updated the DOS player headings, wall clock label, and modem speed landmark (November 19, 2026).
 - OpenAI Codex updated the library tile tooltips and wrote the library width sweep (November 19, 2026).
 - OpenAI Codex updated the editor tour to show the Assistant on phones (November 19, 2026).
 - OpenAI Codex updated the Achievements tour to show each category and the reset control (November 19, 2026).

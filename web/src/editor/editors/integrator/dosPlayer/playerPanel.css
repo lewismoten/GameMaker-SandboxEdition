@@ -62,7 +62,7 @@ dialog.modal:has(.dp) {
   padding: 4px 4px 8px 0;
 }
 
-.dp-section h3 {
+.dp-section h2 {
   margin: 12px 0 4px;
   font-size: 15px;
 }

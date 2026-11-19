@@ -46,7 +46,7 @@ export function deskModem(onClick: () => void): DeskModem {
   // the speed on the front: its own button, opening a little menu of speeds
   const brand = h('span', null);
   const speed = h('button', { type: 'button', class: 'modem-speed', 'aria-haspopup': 'true', 'aria-expanded': 'false' }, brand);
-  const menu = h('div', { class: 'modem-menu', hidden: true }, speedRadios(deskLifetime()));
+  const menu = h('div', { class: 'modem-menu', role: 'region', 'aria-label': 'Modem speed', hidden: true }, speedRadios(deskLifetime()));
   // the hint: how slow this really was, and two ways out: skip this wait, or change the speed
   const hintWords = h('p', null);
   const warpBtn = h('button', { type: 'button', class: 'modem-hint-warp' }, `⏩ ${WARP_TEXT}`);

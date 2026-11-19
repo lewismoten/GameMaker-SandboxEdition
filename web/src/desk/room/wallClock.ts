@@ -29,12 +29,13 @@ export function wallClock(): HTMLElement {
     const y = (r: number) => (CY - Math.cos(a) * r).toFixed(1);
     return `<line class="wc-lume" x1="${x(r1)}" y1="${y(r1)}" x2="${x(66)}" y2="${y(66)}" stroke="#222" stroke-width="${big ? 3 : 1}"/>`;
   }).join('');
-  const numbers = [12, 3, 6, 9]
+  const hours = [12, 3, 6, 9];
+  const numbers = hours
     .map((n) => {
       const a = (n * Math.PI) / 6;
       return `<text class="wc-lume" x="${CX + Math.sin(a) * 46}" y="${CY - Math.cos(a) * 46 + 7}" text-anchor="middle" font-size="20" font-weight="800" font-family="Arial Black, Arial, sans-serif" fill="#222">${n}</text>`;
     })
-    .join('');
+    .join(' ');
   const holes = Array.from({ length: 6 }, (_, i) => `<ellipse cx="${CX}" cy="${372 + i * 22}" rx="4" ry="5" fill="#050506"/>`).join('');
   const el = h('div', { class: 'wall-clock', role: 'img' });
   el.innerHTML = `<svg viewBox="0 0 180 540" aria-hidden="true">
@@ -109,9 +110,11 @@ export function wallClock(): HTMLElement {
     turn('wc-hour', ((now.getHours() % 12) + m / 60) * 30);
     date.textContent = String(now.getDate());
     const time = now.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
-    if (`${time}${set}` !== shown) {
-      shown = `${time}${set}`;
-      el.setAttribute('aria-label', `A giant wristwatch hung on the wall as a clock: ${time}${set ? ' (set at the DOS prompt, not the real time)' : ''}`);
+    const face = `${hours.join(' ')} Quartz Water Resistant ${date.textContent}`;
+    const label = `Wall clock: ${time}${set ? ' (set at the DOS prompt, not the real time)' : ''}. Watch face: ${face}`;
+    if (label !== shown) {
+      shown = label;
+      el.setAttribute('aria-label', label);
       // and a tooltip on the watch saying how to put it back
       const svg = el.querySelector('svg')!;
       svg.querySelector(':scope > title')?.remove();

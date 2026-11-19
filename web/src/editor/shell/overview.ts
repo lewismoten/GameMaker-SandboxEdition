@@ -68,7 +68,7 @@ export function overview(host: OverviewHost): { el: HTMLElement; dispose(): void
         disposers.push(() => page.dispose());
       } else {
         const { playerPanel } = await import('../editors/integrator/dosPlayer/playerPanel');
-        clear(slot, h('h2', { class: 'overview-title' }, 'DOS player'), playerPanel(host.project));
+        clear(slot, h('h1', { class: 'overview-title' }, 'DOS player'), playerPanel(host.project));
       }
     } catch (error) {
       filled.delete(tab);
