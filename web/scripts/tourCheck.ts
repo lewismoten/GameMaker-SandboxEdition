@@ -16,6 +16,7 @@ import { launch } from './perfLib';
 import { assertTheme, forceTheme } from './forceTheme';
 import { createServer } from 'vite';
 import { CHAPTERS } from '../src/tour/chapters/index';
+import { captionOf } from '../src/tour/steps';
 import { HOLD_MS } from '../src/tour/pageAct';
 import { checkedSteps, missingTourInputs } from './tourCheckInputs';
 
@@ -44,7 +45,7 @@ interface Run {
 }
 
 async function play(page: Page, url: string, ids: string[], axeSrc: string, run: Run): Promise<void> {
-  const bySay = new Map(CHAPTERS.flatMap((c) => c.steps.map((s) => [s.say, { id: s.id, optional: !!s.optional }] as const)));
+  const byCaption = new Map(CHAPTERS.flatMap((c) => c.steps.map((s) => [captionOf(c, s), s] as const)));
   const missing = new Set<string>();
   page.on('console', (m) => {
     const hit = /^Tour: nothing on the page for (\S+)/.exec(m.text());
@@ -60,19 +61,20 @@ async function play(page: Page, url: string, ids: string[], axeSrc: string, run:
   let last = '';
   const budget = checkedSteps(CHAPTERS.filter((c) => ids.includes(c.id))).length;
   for (let guard = 0; guard <= budget; guard++) {
-    const say = await page
+    const caption = await page
       .waitForFunction(
         (prev) => {
           if (!document.querySelector('.tour-bar')) return 'END';
           const b = document.querySelector<HTMLElement>('.tour-bubble');
-          return b && !b.hidden && b.textContent && b.textContent !== prev ? b.textContent : false;
+          const caption = document.querySelector('.tour-caption')?.textContent;
+          return b && !b.hidden && caption && caption !== prev ? caption : false;
         },
         last,
         { timeout: HOLD_MS + 15_000 },
       )
       .then((h) => h.jsonValue() as Promise<string>)
       .catch(() => 'TIMEOUT');
-    if (say === 'END') {
+    if (caption === 'END') {
       // a chapter on another page (DOS) loads it with location.assign: the bar is gone until the new page boots
       const back = await page.waitForSelector('.tour-bar', { timeout: 10_000 }).then(
         () => true,
@@ -81,13 +83,13 @@ async function play(page: Page, url: string, ids: string[], axeSrc: string, run:
       if (back) continue;
       break;
     }
-    if (say === 'TIMEOUT') {
+    if (caption === 'TIMEOUT') {
       run.problems.push(`stuck after "${last.slice(0, 40)}"`);
       break;
     }
-    last = say;
+    last = caption;
     await page.waitForTimeout(400);
-    const step = bySay.get(say);
+    const step = byCaption.get(caption);
     if (step) run.steps.set(step.id, 'ok');
     if (await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1))
       run.problems.push(`horizontal scroll at ${step?.id ?? '?'}`);

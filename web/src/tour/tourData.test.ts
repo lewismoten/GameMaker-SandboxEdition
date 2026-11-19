@@ -1,6 +1,7 @@
 // The tour's data: every step well formed, short enough for a phone's bubble, pointing at
 // controls the page's code really makes, and only Sandbox games' sprites, sounds and music
 // (never a secret game's, never the Bard of Bizarre's recordings).
+import { CAST } from '../cast/castData';
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { beforeAll, describe, expect, it } from 'vitest';
@@ -52,7 +53,12 @@ const sourceText = (paths: string[]) =>
 const sourceTexts = new Map<string, string>();
 /** A page's source text, read once however many chapters are on that page. */
 const pageText = (page: string) => {
-  if (!sourceTexts.has(page)) sourceTexts.set(page, sourceText(SOURCES[page] ?? []));
+  if (!sourceTexts.has(page)) {
+    let text = sourceText(SOURCES[page] ?? []);
+    // castPage renders each article's id from the member's id.
+    if (page === 'cast' && text.includes('id: `cast-${m.id}`')) text += '\n' + CAST.map((m) => `cast-${m.id}`).join('\n');
+    sourceTexts.set(page, text);
+  }
   return sourceTexts.get(page)!;
 };
 

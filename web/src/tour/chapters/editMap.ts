@@ -100,7 +100,7 @@ export const editMapChapter: Chapter = {
     {
       id: 'edit-map-find',
       action: 'point',
-      target: mode('Find', 'the Find button'),
+      target: mode('Find block', 'the Find button'),
       say: 'Find lights up every use of the chosen block on the map. Replace, beside it, swaps one block for another everywhere.',
     },
     {

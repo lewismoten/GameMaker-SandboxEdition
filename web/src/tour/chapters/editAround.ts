@@ -91,7 +91,7 @@ export const editAroundChapter: Chapter = {
       id: 'edit-around-assets-back',
       action: 'point',
       go: { hash: '#/p/look:logic/kitchen.map', ready: '.mt-toolset .mt-tool' },
-      target: { label: 'the Assets button', css: '[title="Browse this file category"]' },
+      target: { label: 'the Assets button', css: '[title="Browse this file category"]', reveal: '.file-more > summary' },
       say: 'Back in a file, Assets jumps to that kind’s gallery, so you can try another map or block set.',
     },
     {
