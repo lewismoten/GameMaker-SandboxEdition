@@ -2,7 +2,7 @@
   "pitch": "Watt the repair robot rolls home through twenty-three haywire circuit boards. Route the current, never touch it.",
   "keys": {
     "Arrows / W A S D / keypad": "Roll one block",
-    "R": "Reboot the board (costs a spare battery)"
+    "R or Enter": "Reboot the board (costs a spare battery)"
   },
   "news": [
     {
