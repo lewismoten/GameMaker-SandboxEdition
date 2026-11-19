@@ -190,7 +190,8 @@ as a plain tour (pointer and buttons back).
 
 Write its steps in `chapters/<id>.ts` (ids `<chapter>-<what>`, lowercase), add it to
 `chapters/index.ts` and its page to `tourPages.ts` `CHAPTER_PAGES`, and list the files that make
-its page's controls in `tourData.test.ts` `SOURCES`. A new host is a sprite in
+its page's controls in `tourData.test.ts` `SOURCES`. Directory entries include nested TypeScript
+modules, excluding tests, so splitting controls into smaller modules keeps them covered. A new host is a sprite in
 `scripts/castSprites.ts` (run it to rewrite `public/cast/sprites.json`) and an entry in `steps.ts`
 `HOSTS` with its voice; then `npm run voice` records the new lines. `tourData.test.ts` checks every selector is really made there, the text fits a phone's bubble, the ids are unique and the sprites, sounds and music are
 Sandbox games' own. Check what each control really does before describing it, and play it with `npm run tour:check -- <chapter>` (`scripts/README.md`): it reports each step's control found or missing at 1440 and 390, light and dark, with axe. A page outside
