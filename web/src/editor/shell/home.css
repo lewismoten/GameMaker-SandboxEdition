@@ -1298,6 +1298,11 @@ a.button.with-ico {
    "AI setup" links and the links of Getting started were 16 to 32 px tall (the touch audit's
    home route; the same rule as the rest of the shell: 44 px, or 24 px for a link inside a line). */
 @media (hover: none) and (pointer: coarse) {
+  /* Wider touch buttons leave less room to their right, even for invisible tips. */
+  .shot-tools .shot-icon[data-tip]::after {
+    right: 0;
+    left: auto;
+  }
   .lib-lead-more,
   .home-start .link-btn {
     min-height: 44px;
