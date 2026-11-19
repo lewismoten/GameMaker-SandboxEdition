@@ -64,7 +64,7 @@ export const castChapter: Chapter = {
     {
       id: 'cast-appears',
       action: 'point',
-      target: { label: 'the games Teddy is seen in', css: '.cast-grid .cast-card .cast-seen-box' },
+      target: { label: 'the games Teddy is seen in', css: '#cast-teddy .cast-seen', reveal: '#cast-teddy .cast-appears > summary' },
       say: 'And the games each one is seen in. Press a picture to go to that game.',
     },
     {

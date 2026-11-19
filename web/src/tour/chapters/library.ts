@@ -12,7 +12,7 @@ export const libraryChapter: Chapter = {
   place: 'Library',
   page: 'library',
   hash: '#/library',
-  ready: '.lib-spine-btn',
+  ready: '.lib-o-stacks',
   actor: 'lewie',
   speaker: 'joe',
   music: 'briefLibrary',
@@ -53,9 +53,12 @@ export const libraryChapter: Chapter = {
     {
       id: 'library-card',
       action: 'point',
-      target: { label: 'the first manual on the shelves', css: '.lib-spine-btn' },
-      // each kind of paper is shown with the catalog's drawer set to it, so its spines stand on the far wall
-      go: { hash: '#/library?by=type&only=manual', ready: '.lib-spine-btn' },
+      target: {
+        label: 'the first manual on the shelves',
+        css: '.lib-stacks .lib-card',
+        in: { label: 'the stacks', by: '.lib-o-stacks', shown: '.lib-stacks', close: '.modal .modal-close' },
+      },
+      go: { hash: '#/library?by=type&only=manual', ready: '.lib-o-stacks' },
       say: 'Each card opens its piece on screen: a manual, a hint book, a map, a key card. Most can be printed, too.',
       sound: 'ding',
     },

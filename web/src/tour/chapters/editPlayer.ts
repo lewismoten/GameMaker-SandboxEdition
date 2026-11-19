@@ -1,4 +1,4 @@
-// The tour's "The DOS player" chapter: Professor Fiddlesticks opens the Integrator's DOS player
+// The tour's "The DOS player" chapter: Professor Fiddlesticks opens Overview’s DOS player
 // customizer on Ohm Sweet Ohm (look-only, so every box is locked), and goes through its presets,
 // the tab per screen, the words, the live preview that words and frames can be dragged in, the
 // nudge keys, and the High scores, Colors and Files tabs. The tab is shown and its
@@ -14,8 +14,8 @@ export const editPlayerChapter: Chapter = {
   title: 'The DOS player',
   place: 'Editor',
   page: 'editor',
-  hash: '#/p/look:logic/ohmsweet.gam',
-  ready: '.grator-tools',
+  hash: '#/p/look:logic',
+  ready: '.overview [role="tab"]',
   always: true,
   actor: 'fiddle',
   speaker: 'fiddle',
@@ -30,13 +30,13 @@ export const editPlayerChapter: Chapter = {
     {
       id: 'edit-player-open',
       action: 'press',
-      target: { label: 'the DOS player button', css: '[aria-label="DOS player"]' },
+      target: { label: 'the DOS player tab', css: '.overview [role="tab"]', text: 'DOS player' },
       say: 'This button opens the DOS player. That is the program the DOS download uses to run a game outside the editor.',
     },
     {
       id: 'edit-player-intro',
       action: 'point',
-      // the button opens Overview's DOS player tab; the tour shows it without pressing the button
+      // Show the tab's contents after pointing out its button.
       go: { hash: '#/p/look:logic?tab=player', ready: '.dp-intro' },
       target: { label: 'the box’s introduction', css: '.dp-intro' },
       say: 'The player’s own words, colors, frames and timings can change, screen by screen. This game is look-only, so every box is locked.',
