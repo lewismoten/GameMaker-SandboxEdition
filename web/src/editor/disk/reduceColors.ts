@@ -3,7 +3,7 @@
 // of block may use: backgrounds their range, monsters theirs, characters theirs, plus the colors
 // nobody reserved. A block file that draws with another kind's reserved colors is a proposal: its
 // pixels would move to the nearest allowed color, with a difference score and the blocks before and
-// after to look at. Applying one makes a checkpoint first, like every change here.
+// after to look at. Applying one makes a checkpoint only when "Make a checkpoint first" is ticked. Undo works either way.
 import { BACKBL, CHARBL, MONBL, parseBlocks, serializeBlocks, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { LASTSL, parseMonsters } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { reduceBlocks, type ReduceScore } from '@lewismoten/gamemaker-sandbox-tools/color-reduce';
