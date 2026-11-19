@@ -5,6 +5,7 @@
 // against editor/shell/workspace.ts, playButtons.ts, released.ts, editors/map/map.ts, its Level
 // check panel (map/check/checkPanel.ts) and editors/palette/palette.ts.
 import type { Chapter, Target } from '../steps';
+import { assistantButton } from './targets';
 
 /** A map tool's button, by its name. */
 const tool = (name: string, label = `the ${name} tool`): Target => ({ label, css: `.mt-toolset .mt-tool[aria-label="${name}"]` });
@@ -118,7 +119,7 @@ export const editorChapter: Chapter = {
     {
       id: 'editor-assistant',
       action: 'point',
-      target: { label: 'the Assistant button', css: '.assistant-btn' },
+      target: assistantButton,
       say: 'The Assistant lets your own AI look at a game and change it with you. Set it up in Settings first.',
     },
     {
