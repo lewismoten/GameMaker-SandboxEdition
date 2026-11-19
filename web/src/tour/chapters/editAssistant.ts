@@ -4,13 +4,19 @@
 // do next?, the context gauge, the message box and the MCP link. It opens and shuts the panel only:
 // no message is sent, the AI setup dialog stays shut and nothing is asked of any provider. Checked
 // against assistant/chat/panel.ts, settingsDialog.ts and editor/shell/workspace.ts (assistantButton).
-import type { Chapter, Target } from '../steps';
+import type { Chapter, Opener, Target } from '../steps';
+import { assistantButton, assistantMenuItem } from './targets';
 
-/** The ✦ button: it shows the chat panel (and the tour shuts it again). */
-const ASSISTANT_BUTTON = '.assistant-btn';
+/** The file menu's Assistant action also works after the tour puts the menu away. */
+const panel: Opener = {
+  label: 'the Assistant panel',
+  by: assistantMenuItem,
+  hiddenBy: true,
+  shown: '.chat-panel',
+  close: '.chat-close',
+};
 
-/** A control in the Assistant's chat panel, which the tour opens by its button. */
-const chat = (label: string, css: string): Target => ({ label, css, reveal: ASSISTANT_BUTTON });
+const chat = (label: string, css: string): Target => ({ label, css, in: panel });
 
 export const editAssistantChapter: Chapter = {
   id: 'edit-assistant',
@@ -18,7 +24,7 @@ export const editAssistantChapter: Chapter = {
   place: 'Editor',
   page: 'editor',
   hash: '#/p/look:logic/kitchen.map',
-  ready: ASSISTANT_BUTTON,
+  ready: '.file-head',
   always: true,
   actor: 'dex',
   speaker: 'dex',
@@ -33,7 +39,7 @@ export const editAssistantChapter: Chapter = {
     {
       id: 'edit-assistant-button',
       action: 'point',
-      target: { label: 'the Assistant button', css: ASSISTANT_BUTTON },
+      target: assistantButton,
       say: 'The star button opens the chat beside the editor, or over the whole screen on a phone. Press it again, or Escape, to put it away.',
     },
     {

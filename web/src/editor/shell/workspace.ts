@@ -398,7 +398,7 @@ export class Workspace implements AssistantHost {
             { label: 'Assets', title: 'Browse this file category', phone: true, run: () => this.openAssets(kindOf(file)) },
             { label: 'Open a file by name', phone: true, run: () => void this.quickOpen() },
             { label: 'Keyboard shortcuts', phone: true, run: () => void showShortcuts(kindOf(file)) },
-            { label: 'Assistant', phone: true, run: () => void import('../../assistant/chat/panel').then((m) => m.toggleChat()) },
+            { label: 'Assistant', title: 'Assistant', phone: true, run: () => void import('../../assistant/chat/panel').then((m) => m.toggleChat()) },
             ...(isGam || !changes ? [] : [{ label: 'Rename', run: () => void this.rename(file) }]),
             ...(changes ? [{ label: 'Duplicate', run: () => void this.duplicate(file) }] : []),
             {
