@@ -57,7 +57,7 @@ describe('platform generator', () => {
       for (const c of [...r.treasure, ...r.locks.map((l) => l.key)]) expect(again.touched[c]).toBe(1);
       expect(r.platform!.proof.exit).toBe(true);
     }
-  }, 60_000);
+  });
 
   it('keeps a margin: at 50% a weaker hero (85% speed, 95% push) still gets through every layout', () => {
     const weak = weaker(physics, 0.85, 0.95);
@@ -65,7 +65,7 @@ describe('platform generator', () => {
       const r = make(ROLES, seed, 50);
       expect([seed, reachFrom(area(r), weak, r.entry, true).stood[r.exit]]).toEqual([seed, 1]);
     }
-  }, 60_000);
+  });
 
   it('asks no more pit width and step height than the share of the hero’s most that the difficulty names', () => {
     const cap = capability(physics);
@@ -84,7 +84,7 @@ describe('platform generator', () => {
     expect(most[100].gap).toBeGreaterThan(most[30].gap);
     expect(most[100].rise).toBeGreaterThanOrEqual(most[30].rise);
     expect(most[100].gap).toBeLessThanOrEqual(cap.maxGap);
-  }, 60_000);
+  });
 
   it('is the same every time for a seed, and different for another', () => {
     const a = make(ROLES, 11),
@@ -113,7 +113,8 @@ describe('platform generator', () => {
     noClimb.sequences[7].key = 0;
     noClimb.sequences[8].key = 0;
     const o = generatePlatform({ roles: ROLES, hero: noClimb, seed: 5, rect });
-    expect(o.ok && o.result.blocks.some((b) => b === 3)).toBe(false);
+    if (!o.ok) throw new Error(o.message);
+    expect(o.result.blocks.some((b) => b === 3)).toBe(false);
   });
 
   it('draws spikes in pits and over the ground, coins over pits, ledges and a tall locked door', () => {
@@ -134,7 +135,7 @@ describe('platform generator', () => {
     expect(coins).toBeGreaterThan(SEEDS.length * 3);
     expect(ledges).toBeGreaterThan(0);
     expect(doors).toBeGreaterThan(0);
-  }, 30_000); // 1 to 2 s alone, over 5 s when the machine is loaded
+  });
 
   it('proposes the entry on the left and the exit on the right, on the ground', () => {
     const r = make(ROLES, 99);
