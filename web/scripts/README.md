@@ -124,20 +124,20 @@ This folder holds the build's Vite plugins and the scripts run by hand (from
   **What the chapters open** (exact files and controls: [`chapters/`](../src/tour/chapters/),
   with the per-chapter address table in [`tour/README.md`](../src/tour/README.md#the-chapters)):
 
-  | Chapters | Inputs and opened views |
-  | --- | --- |
-  | `home` | CD catalog plus public generated `games/*/disk/`; collection tabs and Settings/header controls. Every check starts here, even a single chapter. |
-  | `library` | Catalog's `about.json`, `manual.json`, `printables.json` and existing `walkthrough.json` source fixtures; manual, label, walkthrough, magazine and Guide shelves. No walkthrough is recorded or played. |
-  | `achievements`, `cast` | Achievement catalog and clean browser saves; checked-in cast pictures and `web/public/cast/sprites.json`. |
-  | `guide` | Guide source, Owner's Guide and Ultimate Owner's Guide rendered in the box viewer; catalog/game data supplies gallery screenshots. No prebuilt PDF/manual is required. |
-  | `settings` | Credits tabs and Settings menu only. Play offline is pointed at, never started: no production `offline.json`, service worker or scratch site build is required. |
-  | `editor`, `edit-around`, `edit-map`, `edit-export`, `edit-assistant` | Read-only `logic` disk, initially `kitchen.map`; overview also visits `watt.pal`. Assets, shortcuts/Play Level menu, Download chooser or Assistant panel. No export or AI request. |
-  | `edit-blocks`, `edit-monsters`, `edit-palette`, `edit-sounds`, `edit-animation` | `logic` disk: `kitchen.bbl`/`watt.cbl`, `garage.mon`/`watt.chr`, `watt.pal`, `watt.snd`/`kitchen.cmf`, `intro.fli`/`blender.gif`/`blender.lst`, plus referenced disk assets. Color/picture dialogs are canceled. |
-  | `edit-integrator`, `edit-player`, `edit-walkthrough` | `logic/ohmsweet.gam` plus its assets; scene board, DOS player settings or Make a walkthrough dialog. No recording starts. |
-  | `edit-check` | `sleuth/act1.map` and referenced disk assets; runs the Level check. Result-dependent steps are optional while its bot is still running. |
-  | `desk`, `box` | Public catalog/disks, manuals/printables rendered at runtime, desk artwork; power, large pad controls, face-out box, magazine, hint postcard/red film. Box contents depend on the chosen game. No trinket download or phone call starts. |
-  | `bbs` | Desk's simulated PC, CD/DOS resources and public game archives built/served on demand by `cdGames.ts`; guest call, file list/download and logoff. |
-  | `dos` | Separate `dos.html`, checked-in CD/DOS resources, recreated Game-Maker and copy-check/guide UI; the tour hands off with a page load. No external DOS emulator. |
+  | Chapters                                                                        | Inputs and opened views                                                                                                                                                                                                                  |
+  | ------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+  | `home`                                                                          | CD catalog plus public generated `games/*/disk/`; collection tabs and Settings/header controls. Every check starts here, even a single chapter.                                                                                          |
+  | `library`                                                                       | Catalog's `about.json`, `manual.json`, `printables.json` and existing `walkthrough.json` source fixtures; manual, label, walkthrough, magazine and Guide shelves. No walkthrough is recorded or played.                                  |
+  | `achievements`, `cast`                                                          | Achievement catalog and clean browser saves; checked-in cast pictures and `web/public/cast/sprites.json`.                                                                                                                                |
+  | `guide`                                                                         | Guide source, Owner's Guide and Ultimate Owner's Guide rendered in the box viewer; catalog/game data supplies gallery screenshots. No prebuilt PDF/manual is required.                                                                   |
+  | `settings`                                                                      | Credits tabs and Settings menu only. Play offline is pointed at, never started: no production `offline.json`, service worker or scratch site build is required.                                                                          |
+  | `editor`, `edit-around`, `edit-map`, `edit-export`, `edit-assistant`            | Read-only `logic` disk, initially `kitchen.map`; overview also visits `watt.pal`. Assets, shortcuts/Play Level menu, Download chooser or Assistant panel. No export or AI request.                                                       |
+  | `edit-blocks`, `edit-monsters`, `edit-palette`, `edit-sounds`, `edit-animation` | `logic` disk: `kitchen.bbl`/`watt.cbl`, `garage.mon`/`watt.chr`, `watt.pal`, `watt.snd`/`kitchen.cmf`, `intro.fli`/`blender.gif`/`blender.lst`, plus referenced disk assets. Color/picture dialogs are canceled.                         |
+  | `edit-integrator`, `edit-player`, `edit-walkthrough`                            | `logic/ohmsweet.gam` plus its assets; scene board, DOS player settings or Make a walkthrough dialog. No recording starts.                                                                                                                |
+  | `edit-check`                                                                    | `sleuth/act1.map` and referenced disk assets; runs the Level check. Result-dependent steps are optional while its bot is still running.                                                                                                  |
+  | `desk`, `box`                                                                   | Public catalog/disks, manuals/printables rendered at runtime, desk artwork; power, large pad controls, face-out box, magazine, hint postcard/red film. Box contents depend on the chosen game. No trinket download or phone call starts. |
+  | `bbs`                                                                           | Desk's simulated PC, CD/DOS resources and public game archives built/served on demand by `cdGames.ts`; guest call, file list/download and logoff.                                                                                        |
+  | `dos`                                                                           | Separate `dos.html`, checked-in CD/DOS resources, recreated Game-Maker and copy-check/guide UI; the tour hands off with a page load. No external DOS emulator.                                                                           |
 
   `games/*/walkthrough.json` and demos are source fixtures; don't re-record them. `walkPaths.json`
   is generated by game builds, not an extra tour recording prerequisite. Cast sprites, desk art,
@@ -160,6 +160,7 @@ This folder holds the build's Vite plugins and the scripts run by hand (from
   a stall. It does not change the tour's timing or content. Missing prerequisites cannot explain
   every failure: for example, the Achievements chapter's section-heading selectors must still be
   checked against the current tabbed Achievements page.
+
 - `tourAudit.ts` (`npm run tour:audit -- [--chapter <id>[,<id>]] [--url <url>] [--sizes 1440x900,390x844] [--max 240]`):
   plays chapters in real time in headless Chrome (own vite when no `--url`, never 5173; run it alone,
   two Chromes at once give false voice cuts) and flags, per step, a bubble far from its speaker or over
@@ -497,3 +498,5 @@ The specialized web commands are listed with their scripts above or in the [kit 
 ## Paths of the maintainer's private notes
 
 `roundTrip.ts`, `fuzzFiles.ts` and `pocketData.ts` default their optional inputs to the main checkout's git-ignored `.for-lewis/` folder and `cd/` (`mainCheckout.ts` finds the main checkout from the repository's `.git`, so a worktree finds it too). Set `GM_MAIN_CHECKOUT` to name the checkout, `GM_FOR_LEWIS` to name the notes folder directly; `FUZZ_CD`, `FUZZ_ARCHIVE`, `--scores` and `--out` still override single paths. The Claude Code hooks in `scripts/hooks/` find the main checkout the same way (`GM_MAIN_CHECKOUT` overrides).
+
+- `homeOverflow.ts [url]`: scans today's web home from 320 to 1300 px in 5 px steps, with mouse and touch pointers in light and dark. Uses bundled Chromium, closes it on completion, and exits 1 for horizontal overflow above 1 px. Start a separate server first (default URL `http://127.0.0.1:6119`).
