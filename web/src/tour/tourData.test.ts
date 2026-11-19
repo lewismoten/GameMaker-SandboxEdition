@@ -22,32 +22,7 @@ const SOURCES: Record<string, string[]> = {
   cast: ['cast'],
   guide: ['manual/webManual.ts', 'manual/guideSections.ts', 'manual/printables/viewer.ts'],
   credits: ['main.ts', 'settingsMenu.ts', 'theme.ts', 'tour/tourButton.ts', 'credits', 'pageToc.ts'],
-  editor: [
-    'main.ts',
-    'editor/shell',
-    'editor/core/ui.ts',
-    'editor/editors/map/map.ts',
-    'editor/editors/map/check/checkPanel.ts',
-    'editor/editors/map/check/checkExtras.ts',
-    'editor/editors/map/links/linkMarkers.ts',
-    'editor/editors/blocks',
-    'editor/editors/monsters',
-    'editor/editors/character',
-    'editor/editors/palette',
-    'editor/editors/sounds',
-    'editor/editors/music',
-    'editor/editors/animation',
-    'editor/editors/animation/scene',
-    'editor/editors/picture',
-    'editor/editors/slideShow',
-    'editor/editors/integrator',
-    'editor/editors/integrator/dosPlayer',
-    'editor/widgets/colorChoice.ts',
-    'editor/widgets/walkDialog.ts',
-    'assistant/chat/panel.ts',
-    'editor/widgets/filePicker.ts',
-    'editor/widgets/panelTabs.ts',
-  ],
+  editor: ['main.ts', 'editor', 'assistant/chat/panel.ts'],
   desk: [
     'desk',
     'desk/pc',
@@ -64,18 +39,15 @@ const SOURCES: Record<string, string[]> = {
   ],
   dos: ['dosPage', 'retro/gmReg', 'viewSwitch.ts', 'tour/tourButton.ts'],
 };
+/** Include nested modules after controls are split out; never use test assertions as evidence. */
+const sourceFiles = (full: string): string[] =>
+  statSync(full).isDirectory()
+    ? readdirSync(full).flatMap((name) => sourceFiles(join(full, name)))
+    : full.endsWith('.ts') && !full.endsWith('.test.ts')
+      ? [full]
+      : [];
 const sourceText = (paths: string[]) =>
-  paths
-    .flatMap((p) => {
-      const full = join(__dirname, '..', p);
-      return p.endsWith('.ts')
-        ? [full]
-        : readdirSync(full)
-            .filter((f) => f.endsWith('.ts') && !f.endsWith('.test.ts'))
-            .map((f) => join(full, f));
-    })
-    .map((f) => readFileSync(f, 'utf8'))
-    .join('\n');
+  [...new Set(paths.flatMap((p) => sourceFiles(join(__dirname, '..', p))))].map((f) => readFileSync(f, 'utf8')).join('\n');
 
 const sourceTexts = new Map<string, string>();
 /** A page's source text, read once however many chapters are on that page. */

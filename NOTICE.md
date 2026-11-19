@@ -64,6 +64,8 @@ game folder opens in the browser unchanged.
 
 ## Credits
 
+- **Tour selector source coverage (November 19, 2026):** OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, updated the tour data test to scan nested page modules after controls are split into smaller files. No tour content or third-party material was added.
+
 - **Shared block timer finalization (November 18, 2026):** OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, extracted the shared timer helper and added regression tests. Existing game art and content credits remain; no third-party material was added.
 
 - **Achievement catalog organization (November 18, 2026):** OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, split the existing achievement catalog into typed modules by group. No new third-party code or assets were added.
