@@ -50,6 +50,10 @@ describe('release fragments', () => {
     const root = setup();
     add(root, 'engine', 'bad', 'A summary with no category.');
     expect(() => readFragments(root, 'engine')).toThrow(/expected/);
+    add(root, 'engine', 'bad', '### Fixed\n- Missing blank line.');
+    expect(() => readFragments(root, 'engine')).toThrow(/expected/);
+    add(root, 'engine', 'bad', '### Fixed\n\n- First.\n- Second.');
+    expect(() => readFragments(root, 'engine')).toThrow(/expected/);
     add(root, 'engine', 'bad', '### Fixed\n\n- Valid.\n');
     const fragments = readFragments(root, 'engine');
     expect(() => cutRelease(withPendingNotes(legacy, fragments), { version: 'bad', date: 'd', prefix: 'engine' })).toThrow();
