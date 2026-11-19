@@ -126,7 +126,9 @@ Design, art, music and wiring: Claude
 Published by Sandbox Software
 
 Made with Game-Maker 2.0 from Recreational Software Designs`,
-  `Thanks to the Bitmore family for leaving their toaster unplugged during testing.
+  `Keyboard controls draft: Hermes Agent running OpenAI Codex GPT-6.1 Sol.
+
+Thanks to the Bitmore family for leaving their toaster unplugged during testing.
 
 No robots were harmed in the making of this game. A few were mildly fizzled.`,
 ]);

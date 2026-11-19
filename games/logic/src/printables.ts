@@ -20,7 +20,7 @@ function printables(): unknown {
   sections.push(feltEgg());
   return {
     pitch: 'Watt the repair robot rolls home through twenty-three haywire circuit boards. Route the current, never touch it.',
-    keys: { 'Arrows / W A S D / keypad': 'Roll one block', R: 'Reboot the board (costs a spare battery)' },
+    keys: { 'Arrows / W A S D / keypad': 'Roll one block', 'R or Enter': 'Reboot the board (costs a spare battery)' },
     news: [
       {
         head: 'Ohm Sweet Ohm: puzzles made of pure Game-Maker',
