@@ -1,6 +1,6 @@
 // Cache/fetch boundary regressions for resumable atomic per-file copies.
 import { afterEach, expect, it, vi } from 'vitest';
-import { contentHash, installFiles, readOfflineCopy } from './archiveStore';
+import { contentHash, installFiles, readOfflineCopy, verificationStores } from './archiveStore';
 import type { OfflineGame, OfflineManifest, OfflineTier } from './tiers';
 const revealed = vi.hoisted(() => ({ entries: [] as (OfflineGame & { pack: string })[] }));
 vi.mock('../project/files', () => ({ loadCatalogList: async () => revealed.entries }));
@@ -10,6 +10,9 @@ class MemoryCache {
   entries = new Map<string, Response>();
   async match(key: string | Request) {
     return this.entries.get(new URL(typeof key === 'string' ? key : key.url, base).href)?.clone();
+  }
+  async matchAll() {
+    return [...this.entries.values()].map((response) => response.clone());
   }
   async put(key: string | Request, response: Response) {
     this.entries.set(new URL(typeof key === 'string' ? key : key.url, base).href, response.clone());
@@ -291,4 +294,110 @@ it('reports an older partial stage as removable without a completion flag or rea
   await removeOffline(status);
   expect(await caches.has(stage)).toBe(false);
   expect((await offlineStatus(['core'])).removable).toBe(false);
+});
+
+it.each(['intact', 'missing', 'damaged'] as const)('publishes saved choices before reading %s cached bodies, then verifies and repairs', async (condition) => {
+  setup();
+  const { m, fetcher } = await fixture();
+  const { offlineStatus, makeOffline } = await import('./offlineCopy');
+  vi.stubGlobal('location', { href: base });
+  vi.stubGlobal('navigator', { serviceWorker: {}, locks: { request: (_key: string, run: () => Promise<unknown>) => run() }, storage: {} });
+  vi.stubGlobal('localStorage', {
+    getItem: (key: string) => (key === 'gm-offline-tiers' ? JSON.stringify({ version: 2, tiers: ['core', 'cd'] }) : 'one'),
+    setItem: vi.fn(),
+  });
+  await install(m);
+  const copy = await readOfflineCopy(base);
+  const cache = (await caches.open(copy!.cache)) as unknown as MemoryCache;
+  const path = base + 'assets/File-1.js';
+  if (condition === 'missing') cache.entries.delete(path);
+  // Same length corruption requires SHA-256, not just a size check.
+  if (condition === 'damaged') await cache.put(path, new Response('XXXXXXXXXXX'));
+  const perFile = fetcher.getMockImplementation()!;
+  fetcher.mockImplementation(async (url) =>
+    url.endsWith('offline.json') ? new Response(JSON.stringify(m), { headers: { 'content-type': 'application/json' } }) : perFile(url),
+  );
+  const match = vi.spyOn(cache, 'matchAll');
+  let release!: () => void;
+  const gate = new Promise<void>((resolve) => {
+    release = resolve;
+  });
+  const original = MemoryCache.prototype.matchAll.bind(cache);
+  match.mockImplementation(async () => {
+    await gate;
+    return original();
+  });
+  let preview!: import('./offlineCopy').OfflineStatus;
+  let seen!: () => void;
+  const shown = new Promise<void>((resolve) => {
+    seen = resolve;
+  });
+  const checking = offlineStatus(undefined, (status) => {
+    preview = status;
+    expect(match).not.toHaveBeenCalled();
+    seen();
+  });
+  await shown;
+  expect(preview.tiers).toEqual(['core', 'cd']);
+  expect(preview.ready).toBe(false);
+  release();
+  const result = await checking;
+  expect(result.ready).toBe(condition === 'intact');
+  expect(result.missing.map((f) => f.path)).toEqual(condition === 'intact' ? [] : ['assets/File-1.js']);
+  fetcher.mockClear();
+  expect(await makeOffline(result, vi.fn(), new AbortController().signal)).toEqual({ ok: true });
+  expect(fetcher.mock.calls.map(([url]) => url)).toEqual(condition === 'intact' ? [] : [path]);
+  expect((await offlineStatus()).ready).toBe(true);
+});
+
+it('batches status reads and hashes each selected body once across reuse, committed and stage checks', async () => {
+  setup();
+  const { m, fetcher } = await fixture('one', 80);
+  await install(m);
+  vi.stubGlobal('location', { href: base });
+  vi.stubGlobal('navigator', { serviceWorker: {}, locks: {}, storage: {} });
+  vi.stubGlobal('localStorage', { getItem: () => null });
+  fetcher.mockImplementation(async () => new Response(JSON.stringify(m), { headers: { 'content-type': 'application/json' } }));
+  const open = vi.spyOn(caches, 'open');
+  const keys = vi.spyOn(caches, 'keys');
+  const match = vi.spyOn(MemoryCache.prototype, 'match');
+  const all = vi.spyOn(MemoryCache.prototype, 'matchAll');
+  const cacheKeys = vi.spyOn(MemoryCache.prototype, 'keys');
+  const digest = vi.spyOn(crypto.subtle, 'digest');
+  const { offlineStatus } = await import('./offlineCopy');
+  expect((await offlineStatus()).ready).toBe(true);
+  expect(open).toHaveBeenCalledTimes(2); // control pointer + selected copy
+  expect(keys).toHaveBeenCalledTimes(1);
+  expect(match).toHaveBeenCalledTimes(1); // control pointer only
+  expect(all).toHaveBeenCalledTimes(1);
+  expect(cacheKeys).toHaveBeenCalledTimes(1);
+  expect(digest).toHaveBeenCalledTimes(m.files.length + 1); // bodies + stage identifier
+});
+
+it('preserves first-match reuse, query-sensitive commitment and fallback to another store', async () => {
+  setup();
+  const { m } = await fixture();
+  const file = m.files[1];
+  const first = await caches.open('gm-site');
+  await first.put(base + file.path + '?old', new Response('XXXXXXXXXXX'));
+  await first.put(base + file.path, new Response('unchanged 1'));
+  let stores = await verificationStores(base);
+  expect(await stores.check(file, 'gm-site', 'absent')).toEqual({ have: false, committed: true, pending: false });
+  const second = await caches.open('gm-site-v2');
+  await second.put(base + file.path + '?new', new Response('unchanged 1'));
+  stores = await verificationStores(base);
+  expect(await stores.check(file, 'gm-site-v2', 'gm-site-v2')).toEqual({ have: true, committed: false, pending: true });
+});
+
+it('uses native Vary matching for commitment while allowing ignoreVary reuse', async () => {
+  setup();
+  const { m } = await fixture();
+  const file = m.files[1];
+  const cache = (await caches.open('gm-site')) as unknown as MemoryCache;
+  await cache.put(base + file.path, new Response('unchanged 1', { headers: { Vary: 'Accept-Language' } }));
+  // Simulate native Cache.match rejecting a stored request with different Vary headers.
+  const match = vi.spyOn(cache, 'match').mockResolvedValue(undefined);
+  const stores = await verificationStores(base);
+  expect(await stores.check(file, 'gm-site', 'absent')).toEqual({ have: true, committed: false, pending: false });
+  expect(match).toHaveBeenCalledExactlyOnceWith(base + file.path);
 });
