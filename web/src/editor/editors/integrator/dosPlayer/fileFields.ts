@@ -121,7 +121,7 @@ export function fileFields({ id, patches, save, locked }: FileFieldsContext): HT
       h(
         'section',
         { class: 'dp-section' },
-        h('h3', null, s.label),
+        h('h2', null, s.label),
         h('p', { class: 'dp-note' }, s.note),
         ...EXT_KINDS.filter((k) => !!k.offsets.length === s.own).map((k) => field(k.ext, k.label, k.note)),
       ),

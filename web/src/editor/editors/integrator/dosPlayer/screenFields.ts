@@ -82,7 +82,7 @@ export function screenFields(screen: PatchScreen, make: FieldMaker): HTMLElement
       h(
         'section',
         { class: 'dp-section' },
-        h('h3', null, s.label),
+        h('h2', null, s.label),
         NOTES[s.group] ? h('p', { class: s.group === 'play' ? 'dp-note dp-warn' : 'dp-note', role: s.group === 'play' ? 'note' : null }, NOTES[s.group]) : null,
         ...sectionFields(screen, s, make),
       ),
