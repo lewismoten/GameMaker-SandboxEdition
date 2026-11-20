@@ -1011,10 +1011,11 @@ games also share some art and music: THE CHEZ (`chez.ts`), the tin heart and the
 the cast's cameos (`cameos.ts`, `carlCameo.ts`), and Teddy's Theme (`teddyTheme.ts`), the melody every Teddy game plays. `checkGames.ts` runs every game's
 checks in one go (`npm run check:games`).
 
-Every game opens with the same Sandbox Software logo: `kit/sandlogo.ts` ray traces gold chrome
-"SANDBOX SOFTWARE" lettering spinning in over a mirrored sandstone floor, with a highlight sweep and a
-lens flare, and writes it as `SANDLOGO.FLI` (its own palette, delta frames). Each build puts it on the
-disk and lists it first in `title.lst`, ahead of the game's own intro.
+The shared Sandbox Software intro opens on a ray-traced sandbox on a checkered lawn. A shovel
+pats the sand, BBS-colored letters drop in to spell SANDBOX, and yellow SOFTWARE zooms in.
+Star glints appear before the fade to black. `kit/sandlogo.ts` writes `SANDLOGO.FLI` with
+its own palette and delta frames. Games using the sting list it first in `title.lst`, ahead of
+their own intro.
 
 `kit/cdDemos/` is not for these games: it records title demos for the games on the original
 Game-Maker CD that shipped without one (into `web/public/extras/demos/`, never into `cd/`).

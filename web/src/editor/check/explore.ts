@@ -1,4 +1,6 @@
-// Explores scene states with engine-backed moves, recording heat, exits, incidents and graph edges.
+// The scene explorer groups visits by map cell, alignment within the cell, what the hero
+// carries and which doors are open. Near lifts and timed blocks it also groups visits by
+// second. Depending on the search options, motion and combat state can distinguish visits.
 import { BACKBL, BLEN, SOLTOP } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { DIESEQ, HURTSEQ } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 import { MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';

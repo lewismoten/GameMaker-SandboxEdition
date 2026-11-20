@@ -5,11 +5,11 @@ export type Mode = 'paint' | 'fill' | 'pick' | 'monster' | 'pan' | 'zoom' | Tool
 const TOOL_MODES = new Set<string>(['line', 'rect', 'select', 'terrain', 'stamp', 'building', 'paste']);
 export const isTool = (m: Mode): m is ToolMode => TOOL_MODES.has(m);
 
-/** The tool buttons: mode, icon, name, key, what it does. */
 export const nowTool = (m: Mode): Node[] => {
   const t = TOOLS.find((x) => x[0] === m);
   return t ? [h('strong', null, t[2]), document.createTextNode(` ${t[4]}`)] : [];
 };
+/** The tool buttons: mode, icon, name, key, what it does. */
 export const TOOLS: [Mode, string, string, string, string][] = [
   ['paint', '✎', 'Paint', 'B', 'Drag to paint the chosen block'],
   ['line', '╱', 'Line', 'L', 'Drag a straight line of the chosen block'],

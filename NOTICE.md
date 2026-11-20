@@ -834,7 +834,8 @@ formats from their published descriptions and from Game-Maker's own source.
   dedication), chosen because it reads with every kind of color vision; its monster and
   text-screen contrast is the **relative luminance and contrast ratio** of the W3C's Web Content
   Accessibility Guidelines (WCAG) 2, and its flashing check follows WCAG 2's **three flashes a
-  second** threshold (success criterion 2.3.1). All are used as published; no code of theirs is
+  second** threshold (success criterion 2.3.1). The tools package’s `kit/flashMeter` also follows the relative
+  luminance and flashing thresholds. All are used as published; no code of theirs is
   included.
 - **Color-vision simulation matrices** (`web/packages/engine/src/gfx/colorVision.ts`, the one copy; used by
   the palette editor's Color vision check in `web/src/editor/editors/palette/colorVision.ts`, by the badge
