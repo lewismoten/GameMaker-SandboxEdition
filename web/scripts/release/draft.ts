@@ -3,7 +3,7 @@
 // Review suggestions for overlap with authored notes. Never writes files.
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { pendingNotes, readFragments } from './fragments';
+import { pendingNotes, readFragments, unknownTargetFolders } from './fragments';
 import { TARGETS, commitsSince, filtersFor, lastTag, repoRoot } from './git';
 import { groupCommits, renderDraft, skipReason } from './classify';
 
@@ -13,6 +13,8 @@ if (!target) {
   process.exit(1);
 }
 const root = repoRoot();
+const unknownFolders = unknownTargetFolders(root);
+if (unknownFolders.length) throw new Error(`Unknown target folder: ${unknownFolders.join(', ')}`);
 const tag = lastTag(root, target);
 const filters = filtersFor(root);
 const all = commitsSince(root, target, tag);
