@@ -18,7 +18,15 @@ for (const t of Object.values(TARGETS)) {
     continue;
   }
   const text = readFileSync(file, 'utf8');
-  const pending = pendingNotes(text, readFragments(root, t.name));
+  let fragments: ReturnType<typeof readFragments>;
+  try {
+    fragments = readFragments(root, t.name);
+  } catch (error) {
+    console.log(`FAIL ${t.name}: ${error instanceof Error ? error.message : String(error)}`);
+    failed = true;
+    continue;
+  }
+  const pending = pendingNotes(text, fragments);
   const tag = lastTag(root, t);
   const src = commitsSince(root, t, tag).filter((c) => c.files.some((f) => t.path === '' || f.startsWith(`${t.path}/src/`)));
   // A version cut but not yet tagged covers the commits since the last tag (the window between release:cut and the tag).
@@ -28,12 +36,15 @@ for (const t of Object.values(TARGETS)) {
     problems.push(`${src.length} commits since ${tag || 'the start'}, but Unreleased and fragments list nothing`);
   if (t.manifest) {
     const version = (JSON.parse(readFileSync(join(root, t.manifest), 'utf8')) as { version: string }).version;
-    const latest = latestVersion(text);
+    const latest = latestCut;
+    const taggedVersion = tag.slice(t.prefix.length + 2);
     const cmp = (a: string, b: string) => a.localeCompare(b, undefined, { numeric: true });
     if (!latest) {
       if (tag) problems.push(`${tag} exists but the changelog has no released version`);
-    } else if (cmp(latest, version) > 0) problems.push(`the changelog's ${latest} is newer than package.json's ${version}`);
-    else if (cmp(latest, version) < 0 && tag === `${t.prefix}-v${version}`) problems.push(`${version} is tagged but the changelog stops at ${latest}`);
+    } else {
+      if (cmp(latest, version) > 0) problems.push(`the changelog's ${latest} is newer than package.json's ${version}`);
+      if (tag && cmp(latest, taggedVersion) < 0) problems.push(`${taggedVersion} is tagged but the changelog stops at ${latest}`);
+    }
   }
   const label = t.manifest ? 'FAIL' : 'WARN';
   if (!problems.length) console.log(`ok   ${t.name}`);

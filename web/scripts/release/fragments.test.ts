@@ -1,4 +1,5 @@
 // Fragments coexist with legacy notes and remain target-scoped through a release cut.
+import { execFileSync, spawnSync } from 'node:child_process';
 import { afterEach, describe, expect, it } from 'vitest';
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -72,4 +73,46 @@ describe('release fragments', () => {
     expect(readFragments(root, 'pages')).toHaveLength(1);
     expect(readFragments(root, 'engine')).toEqual([]);
   });
+});
+
+function releaseRepo() {
+  const root = setup();
+  const git = (...args: string[]) => execFileSync('git', args, { cwd: root });
+  git('init', '--quiet');
+  writeFileSync(join(root, 'CHANGELOG.md'), legacy);
+  for (const target of ['engine', 'archives', 'tools']) {
+    const dir = join(root, 'web/packages', target);
+    mkdirSync(dir, { recursive: true });
+    writeFileSync(join(dir, 'CHANGELOG.md'), legacy);
+    writeFileSync(join(dir, 'package.json'), '{"version":"1.1.0"}');
+  }
+  git('add', '.');
+  git('-c', 'user.email=test@example.com', '-c', 'user.name=Test', '-c', 'commit.gpgsign=false', 'commit', '-qm', 'Release fixture');
+  git('tag', 'engine-v1.1.0');
+  return root;
+}
+
+function check(root: string) {
+  return spawnSync(process.execPath, [require.resolve('vite-node/vite-node.mjs'), join(__dirname, 'check.ts')], { cwd: root, encoding: 'utf8' });
+}
+
+it('reports a malformed pages fragment and checks the remaining targets', () => {
+  const root = releaseRepo();
+  add(root, 'pages', 'bad', '### Fixd\n\n- Typo.');
+  writeFileSync(join(root, 'web/packages/engine/CHANGELOG.md'), legacy.replace('1.0.0', '1.1.0'));
+  const malformed = check(root);
+  expect(malformed.status, malformed.stderr).toBe(1);
+  expect(malformed.stdout).toContain(`FAIL pages: ${join(root, 'changes/unreleased/pages/bad.md')}: expected one ### category, a blank line and one bullet.`);
+  expect(malformed.stdout).toContain('ok   engine');
+
+  expect(malformed.stdout).toContain('ok   archives');
+  expect(malformed.stdout).toContain('ok   tools');
+});
+
+it('fails when the latest tag is ahead of the changelog even after the manifest advances', () => {
+  const root = releaseRepo();
+  writeFileSync(join(root, 'web/packages/engine/package.json'), '{"version":"1.2.0"}');
+  const missingRelease = check(root);
+  expect(missingRelease.status, missingRelease.stderr).toBe(1);
+  expect(missingRelease.stdout).toContain('FAIL engine: 1.1.0 is tagged but the changelog stops at 1.0.0');
 });
