@@ -99,10 +99,15 @@ function check(root: string) {
 it('reports a malformed pages fragment and checks the remaining targets', () => {
   const root = releaseRepo();
   add(root, 'pages', 'bad', '### Fixd\n\n- Typo.');
+  add(root, 'pages', 'second', 'Missing heading.');
+  writeFileSync(join(root, 'changes/unreleased/pages/note.markdown'), '### Fixed\n\n- Valid content.');
+  for (const name of ['.keep', '.gitkeep']) writeFileSync(join(root, 'changes/unreleased/engine', name), '');
   writeFileSync(join(root, 'web/packages/engine/CHANGELOG.md'), legacy.replace('1.0.0', '1.1.0'));
   const malformed = check(root);
   expect(malformed.status, malformed.stderr).toBe(1);
   expect(malformed.stdout).toContain(`FAIL pages: ${join(root, 'changes/unreleased/pages/bad.md')}: expected one ### category, a blank line and one bullet.`);
+  expect(malformed.stdout).toContain(`FAIL pages: ${join(root, 'changes/unreleased/pages/second.md')}: expected one`);
+  expect(malformed.stdout).toContain(`FAIL pages: ${join(root, 'changes/unreleased/pages/note.markdown')}: expected a .md fragment file.`);
   expect(malformed.stdout).toContain('ok   engine');
 
   expect(malformed.stdout).toContain('ok   archives');
@@ -115,4 +120,24 @@ it('fails when the latest tag is ahead of the changelog even after the manifest 
   const missingRelease = check(root);
   expect(missingRelease.status, missingRelease.stderr).toBe(1);
   expect(missingRelease.stdout).toContain('FAIL engine: 1.1.0 is tagged but the changelog stops at 1.0.0');
+});
+
+it('requires a note for a source change when the newest release tag is on a side branch', () => {
+  const root = releaseRepo();
+  const git = (...args: string[]) =>
+    execFileSync('git', ['-c', 'user.email=test@example.com', '-c', 'user.name=Test', '-c', 'commit.gpgsign=false', ...args], { cwd: root });
+  git('switch', '-qc', 'release');
+  git('commit', '--allow-empty', '-qm', 'Tag release');
+  git('tag', 'engine-v1.2.0');
+  git('switch', '-q', '-');
+  const dir = join(root, 'web/packages/engine');
+  writeFileSync(join(dir, 'CHANGELOG.md'), '# Changelog\n\n## [Unreleased]\n\n## [1.2.0] - 2026-01-02\n\nReleased.\n');
+  writeFileSync(join(dir, 'package.json'), '{"version":"1.2.0"}');
+  mkdirSync(join(dir, 'src'));
+  writeFileSync(join(dir, 'src/index.ts'), 'export const version = 2;\n');
+  git('add', '.');
+  git('commit', '-qm', 'Change engine source');
+  const result = check(root);
+  expect(result.status, result.stderr).toBe(1);
+  expect(result.stdout).toContain('FAIL engine: 1 commits since engine-v1.2.0, but Unreleased and fragments list nothing');
 });

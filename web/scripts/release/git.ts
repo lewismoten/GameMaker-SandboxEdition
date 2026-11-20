@@ -31,20 +31,13 @@ const git = (root: string, ...args: string[]) => execFileSync('git', args, { cwd
 
 /** The newest tag of a target ("engine-v3.1.0"), or '' when it has none. */
 export function lastTag(root: string, t: Target): string {
-  try {
-    return execFileSync('git', ['describe', '--tags', '--abbrev=0', '--match', `${t.prefix}-v*`], {
-      cwd: root,
-      encoding: 'utf8',
-      stdio: ['ignore', 'pipe', 'ignore'],
-    }).trim();
-  } catch {
-    return '';
-  }
+  return git(root, 'tag', '-l', `${t.prefix}-v*`, '--sort=-v:refname').split('\n')[0];
 }
 
 /** Commits since the last tag (all history with no tag), no merges, newest first. */
 export function commitsSince(root: string, t: Target, tag: string): Commit[] {
-  const args = ['log', '--no-merges', '--name-only', '--format=%x01%H%x02%s', tag ? `${tag}..HEAD` : 'HEAD'];
+  const base = tag && git(root, 'merge-base', tag, 'HEAD').trim();
+  const args = ['log', '--no-merges', '--name-only', '--format=%x01%H%x02%s', base ? `${base}..HEAD` : 'HEAD'];
   if (t.path) args.push('--', t.path);
   return git(root, ...args)
     .split('\x01')
