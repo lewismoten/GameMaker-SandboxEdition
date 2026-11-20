@@ -203,6 +203,8 @@ FILES ON THIS DISK
  *.FLI *.GIF  cartoons, screens
  README.TXT   this file
 
+Keyboard controls draft: Hermes Agent running OpenAI Codex GPT-6.1 Sol.
+
 Thanks for playing!
 `);
 }

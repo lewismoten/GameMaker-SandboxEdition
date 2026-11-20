@@ -23,6 +23,7 @@
     "test/goatTrinket.test.ts",
     "test/integratorLayout.test.ts",
     "test/loafKeyboard.test.ts",
+    "test/logicKeyboard.test.ts",
     "test/monsterPathEngine.test.ts",
     "test/music.test.ts",
     "test/textfitMore.test.ts",

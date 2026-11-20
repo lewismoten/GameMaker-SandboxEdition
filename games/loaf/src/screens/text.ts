@@ -246,6 +246,9 @@ CREDITS (NOW)
   by Claude with GAME-MAKER 3.0
   by Recreational Software
   Designs.
+  Keyboard controls draft:
+  Hermes Agent running
+  OpenAI Codex GPT-6.1 Sol.
 
 Nothing's ever wasted.
 `.replace(/^\n/, '');
