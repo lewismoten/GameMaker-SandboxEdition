@@ -481,7 +481,6 @@ Colors That Work plays both lessons with a simulated scene palette (`alike.pal`)
 - `testdisks/sound-stress/image.ts` — writes a new private floppy image and refuses replacement (`npx vite-node ../games/kit/testdisks/sound-stress/image.ts --out <new SOUNDTST.img>`).
 - `testdisks/sound-stress/rooms.ts` — two flat rooms with one-shot effect pads, score pads and doors that reset the course.
 
-
 ### Reusable micro plaques
 
 `starter/microPlaque.ts` exports `addMicroPlaques(book, pal, texts)`: supply a named
@@ -502,3 +501,5 @@ tools module places a stack such as TOO/SLOW above GO/BACK, measuring the mount 
 its bottom plaque; pass the same option. Stacked plaques must have the same width.
 Around the Room's custom rotated supports also attach only across one block.
 Omitting `maxPostHeight` leaves tools callers' post heights unlimited.
+
+`starter/entranceWalk.ts` checks the built disk with arrow keys alone. It walks left from the doorway, settles, and crosses back past the start.

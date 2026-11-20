@@ -1355,3 +1355,5 @@ maker "ZORP" is invented. The shell is untested: nothing has been printed.
 - **Offline dialog reopening (November 18, 2026)**: OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, added early saved-tier rendering, batched cache verification and regression tests. No third-party material was added.
 
 - **Game hosting and color reduction documentation (November 19, 2026)**: OpenAI Codex, directed by Lewis Moten, clarified CORS headers on missing files, save IDs within a game list and optional color reduction checkpoints.
+
+- **Starter entrance fixes (November 20, 2026)**: OpenAI Codex adjusted entrance floors and added left-first play checks.

@@ -6,6 +6,7 @@
 import { assertNoInvisibleWalls } from '../../kit/starter/invisibleWalls';
 import { BUG, KINDS, roundOf } from '../src/bugs';
 import { buildLevels } from '../src/levels';
+import { checkEntranceWalk } from '../../kit/starter/entranceWalk';
 import { play } from './play';
 
 const built = buildLevels();
@@ -19,5 +20,6 @@ for (const l of built.levels) {
 }
 const rounds = KINDS.map(roundOf);
 if (new Set(rounds).size !== rounds.length) throw new Error(`every kind's blink should take its own time; they take ${rounds.join(' ')} ticks`);
+for (let completed = 0; completed < 2; completed++) await checkEntranceWalk((await play(undefined, completed)).bot, 1, 4);
 const { sim } = await play();
 console.log(`lightning-bugs: the bot walked both levels; ${sim.deaths} lives lost, scenes entered ${sim.trail.join(' ')}`);
