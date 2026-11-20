@@ -19,6 +19,7 @@ const hiddenOn = (map: string) => `hidden somewhere on the ${map.replace(/\.map$
  * Everyone, with the cameos from cameos.json added to their games, and the hidden things (the
  * Easter egg, the tin heart) in every game whose about.json places one (hidden.json, made by
  * scripts/castHidden.ts), in cameos.json's words where it has some.
+ * Cameos follow the listed games, adding each game only if it hasn't appeared yet (castData.test.ts).
  */
 export const CAST: CastMember[] = withHelpers(LISTED).map((m) => {
   const said = (CAMEOS as Record<string, Appearance[]>)[m.id] ?? [];
