@@ -85,7 +85,7 @@ function flashAndRumble(pal: Pal): Level {
   g.row(GROUND, 0, 43, 'G').fill(0, GROUND + 1, 44, 3, 'D');
   g.col(0, 0, GROUND - 1, 'X').col(43, 0, GROUND - 1, 'X');
   // A two-row turf ledge lifts the opening sky before the walk across the field.
-  g.put(3, GROUND - 2, 'G').put(3, GROUND - 1, 'D');
+  g.row(GROUND - 2, 1, 3, 'G').row(GROUND - 1, 1, 3, 'D');
   g.put(3, GROUND - 4, 's').put(3, GROUND - 3, 'S');
   g.put(40, GROUND - 2, 'e').put(40, GROUND - 1, 'E');
   for (const x of [10, 31]) g.put(x, GROUND - 1, 'b');

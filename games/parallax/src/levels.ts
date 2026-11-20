@@ -67,7 +67,8 @@ export class Stage {
   constructor(readonly pal: Pal) {
     addStarterBlocks(this.book, pal);
     Object.assign(this.signs, addMicroPlaques(this.book, pal, SIGN_WORDS));
-    // Only posts carry scene pixels; retain the lawn stripes around the shaft.
+    // Keep the lawn stripes behind the raised plank and the signposts.
+    this.book.redraw('plank', this.over(this.book.pics.get('plank')!, this.still(START[1] + 1)));
     for (const [name, pic] of this.book.pics) if (name.startsWith('microPlaque.post')) this.book.redraw(name, this.over(pic, this.still(GROUND_ROW - 1)));
   }
 
@@ -233,9 +234,8 @@ function paint(st: Stage, resting: Partial<Record<number, BandName>>): StarterMa
   g.put(DOOR_COL, GROUND_ROW - 2, 'e').put(DOOR_COL, GROUND_ROW - 1, 'E');
   const m = new StarterMap(st.book, g.rows());
   for (let y = 0; y < ROWS; y++) for (let x = 0; x < COLS; x++) m.set(x, y, st.plain(st.under(y, resting), y === GROUND_ROW));
-  // A three-row path ledge supports the existing landing cell, keeping every band aligned.
-  m.set(START[0], START[1] + 1, st.plain(st.still(GROUND_ROW), true));
-  for (let y = START[1] + 2; y < GROUND_ROW; y++) m.set(START[0], y, 'dirt');
+  // The doorway rests on a plank so Rima can cross underneath from either side.
+  m.set(START[0], START[1] + 1, 'plank');
   // hedges close the room in at both sides, from row 4 down to the path (the path's own row runs under them)
   for (const x of [0, COLS - 1]) for (let y = 4; y < GROUND_ROW; y++) m.set(x, y, 'edge');
   return m;

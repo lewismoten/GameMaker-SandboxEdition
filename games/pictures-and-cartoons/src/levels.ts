@@ -62,7 +62,7 @@ function base(exitX: number): Grid {
   g.row(GROUND, 0, WIDTH - 1, 'G').fill(0, GROUND + 1, WIDTH, 4, 'D');
   g.col(0, 0, 9, 'X').col(WIDTH - 1, 0, 9, 'X');
   // A two-row turf ledge opens on more sky, clear of every lesson board.
-  g.put(3, 8, 'G').put(3, 9, 'D');
+  g.row(8, 1, 3, 'G').row(9, 1, 3, 'D');
   g.put(3, 6, 's').put(3, 7, 'S');
   g.put(exitX, 8, 'e').put(exitX, 9, 'E');
   return g;

@@ -173,6 +173,7 @@ function lay(
   const timed: Timed[] = [];
   // A two-row rock ledge under the doorway, below the cave's existing ceiling.
   h[o.start] -= 2;
+  h.fill(h[o.start], 1, o.start);
   const g = new Grid(W, HEIGHT);
   g.put(o.start, h[o.start] - 2, 's').put(o.start, h[o.start] - 1, 'S');
   g.put(o.exit, h[o.exit] - 2, 'e').put(o.exit, h[o.exit] - 1, 'E');

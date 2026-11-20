@@ -6,7 +6,7 @@
 /** The screen in blocks. */
 export const COLS = 16;
 export const ROWS = 10;
-/** The row Rima stands on (the path, solid) and the column and row she starts in (her feet), on a three-row path ledge she walks down off. */
+/** The row Rima stands on (the path, solid) and the column and row she starts in (her feet), on a raised plank. */
 export const GROUND_ROW = 9;
 export const START: [number, number] = [8, 5];
 /** The level is as wide as the screen. */

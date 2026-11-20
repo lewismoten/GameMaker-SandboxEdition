@@ -72,7 +72,7 @@ function base(width: number, exitX: number): Grid {
   g.row(GROUND, 0, width - 1, 'G').fill(0, GROUND + 1, width, 4, 'D');
   g.col(0, 0, 9, 'X').col(width - 1, 0, 9, 'X');
   // Three rows of turf and dirt frame both the ground and the upper keys in one view.
-  g.put(3, 7, 'G').put(3, 8, 'D').put(3, 9, 'D');
+  g.row(7, 1, 3, 'G').fill(1, 8, 3, 2, 'D');
   g.put(3, 5, 's').put(3, 6, 'S');
   g.put(exitX, 8, 'e').put(exitX, 9, 'E');
   return g;
