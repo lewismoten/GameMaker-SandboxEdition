@@ -27,6 +27,12 @@ function parseView(s: string | undefined): View {
   return Number.isInteger(n) && n >= 1 && n <= SAVE_SLOTS ? n - 1 : 0;
 }
 
+export async function ensureSafetyBackup(p: Pick<Panel, 'backedUp' | 'target'>): Promise<void> {
+  if (p.backedUp) return;
+  await backupNow(p.target.saveId, { label: 'Before changes in Saves & scores', auto: true, by: 'web' });
+  p.backedUp = true;
+}
+
 /** Opens the panel for a game; `initial` is an address value (a slot number, 'scores', 'backups'). */
 export async function openSaves(target: SavesTarget, initial?: string): Promise<void> {
   unlockAchievement('saves-panel');
@@ -74,11 +80,7 @@ export async function openSaves(target: SavesTarget, initial?: string): Promise<
       p.saves = await loadGameSaves(target.saveId, { gam: target.gam ?? undefined, disk: p.disk ?? undefined });
       p.backups = await listBackups(target.saveId);
     },
-    safety: async () => {
-      if (p.backedUp) return;
-      p.backedUp = true;
-      await backupNow(target.saveId, { label: 'Before changes in Saves & scores', auto: true, by: 'web' });
-    },
+    safety: () => ensureSafetyBackup(p),
     dirtySlot: (slot) => {
       const w = p.work.get(slot);
       const s = p.saves?.slots[slot];
