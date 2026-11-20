@@ -131,7 +131,7 @@ function test(pts: [number, number][], p: Pix, mask: number, allowEdge: boolean)
     match(pts, set, cx, cy, (x, y) => [-y, -x], false),
   );
   // eslint-disable-next-line no-console -- opt-in diagnostic output for callers investigating a candidate
-  if (process.env.DAST_DEBUG) console.log('mirror', mirror);
+  if (typeof process !== 'undefined' && process.env.DAST_DEBUG) console.log('mirror', mirror);
   if (mirror > MIRROR_MAX) return undefined;
   if (!stands(pts, set, p)) return undefined;
   const t = tips(pts, cx, cy);

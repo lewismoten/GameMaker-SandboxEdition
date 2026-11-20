@@ -18,7 +18,7 @@ import { onCatalogChanged } from '../../project/catalogWatch';
 import './home.css';
 import { PRODUCT } from '../../edition';
 import type { HomeGame } from './homeGames';
-// the lists before the showcase, as the tiles' styles (homeCards.ts) come first
+// The showcase loads homeShowcase.css before the library cards load homeCopies.css.
 import { categoryOf, homeLibrary, isByMaker, isOwn } from './homeLibrary';
 import { showcase } from './homeShowcase';
 import { icon } from './homeIcons';
