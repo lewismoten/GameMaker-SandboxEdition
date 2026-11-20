@@ -3,9 +3,9 @@
 Part of the [source map](../README.md).
 
 The ⚙ menu's **Sound and tour…** dialog (`soundDialog.ts`, loaded when chosen from `settingsMenu.ts`).
-Changes apply as the controls move; **Done** and Escape close the dialog, not a separate save step.
-Music and volume choices are remembered when browser storage is available; if that write fails,
-the mix still applies until the page closes.
+Mix changes apply as the controls move. The browser remembers the mix when storage is available.
+If the write fails, the mix still applies until the page closes. The Tour switch needs browser storage
+to change which guides wait. **Done** and Escape close the dialog.
 
 - Music, Voice, Sound effects and Games each have an on/off switch and a 0-100 volume. The Tour switch turns the
   waiting guides on for every page that has a tour (`tour/tourPages.ts` `setAllGuides`, the same

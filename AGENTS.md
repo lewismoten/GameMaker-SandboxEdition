@@ -160,6 +160,7 @@ preserve what was there.
   modules dynamically from elsewhere, not statically. `dos.html` must load nothing under
   `src/desk` (`dosPage/boundary.test.ts`).
 - **Release notes:** a merge into `develop` that changes something users or package consumers see adds one small fragment at `changes/unreleased/<target>/<branch-or-slug>.md` (`pages`, `engine`, `archives`, or `tools`), with one category heading (`### Added`, `Changed`, `Fixed`, `Removed`, or `Security`), a blank line, then one `- ` bullet on a single line. Do not edit the shared changelog during branch work; `release:cut` collects fragments along with existing Unreleased lines. Plain words, US English, one voice, no secret games (`docs/package-releases.md`).
+  Omit the fragment when the only changes are source-tree README edits and any accompanying NOTICE.md credit. Review changes to public guides in `docs/` and package READMEs published on npm under the usual user-facing rule.
 - **Docs:** when you add an area, a module with a new job, or a command, add it to the area's
   README (indexed from `web/src/README.md`; `web/scripts/README.md` for build-time code,
   `games/kit/README.md` for the kit) in the same commit. A new area gets its own README and a
