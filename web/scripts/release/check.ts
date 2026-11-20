@@ -5,10 +5,12 @@ import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { extractSection, hasNoChanges, latestVersion } from '../../../scripts/release/changelog.mjs';
 import { TARGETS, commitsSince, lastTag, repoRoot } from './git';
-import { pendingNotes, readFragments } from './fragments';
+import { pendingNotes, readFragments, unknownTargetFolders } from './fragments';
 
 const root = repoRoot();
-let failed = false;
+const unknownFolders = unknownTargetFolders(root);
+for (const folder of unknownFolders) console.log(`FAIL fragments: unknown target folder ${folder}`);
+let failed = unknownFolders.length > 0;
 for (const t of Object.values(TARGETS)) {
   const file = join(root, t.changelog);
   const problems: string[] = [];

@@ -7,6 +7,8 @@ import { join } from 'node:path';
 import { cutRelease, extractSection, hasNoChanges } from '../../../scripts/release/changelog.mjs';
 import { consumeFragments, pendingNotes, readFragments, withPendingNotes } from './fragments';
 
+import { commitsSince, lastTag, TARGETS } from './git';
+
 const roots: string[] = [];
 afterEach(() => {
   for (const root of roots.splice(0)) rmSync(root, { recursive: true, force: true });
@@ -140,4 +142,39 @@ it('requires a note for a source change when the newest release tag is on a side
   const result = check(root);
   expect(result.status, result.stderr).toBe(1);
   expect(result.stdout).toContain('FAIL engine: 1 commits since engine-v1.2.0, but Unreleased and fragments list nothing');
+});
+
+it('ignores hidden files before checking extension or content', () => {
+  const root = setup();
+  for (const name of ['.DS_Store', '.note.md.swp', '.draft.md']) writeFileSync(join(root, 'changes/unreleased/pages', name), 'metadata');
+  expect(readFragments(root, 'pages')).toEqual([]);
+});
+
+it('rejects a note in a misspelled target folder', () => {
+  const root = releaseRepo();
+  mkdirSync(join(root, 'changes/unreleased/page'));
+  add(root, 'page', 'fix', '### Fixed\n\n- Site.');
+  const result = check(root);
+  expect(result.status).toBe(1);
+  expect(result.stdout).toContain(`FAIL fragments: unknown target folder ${join(root, 'changes/unreleased/page')}`);
+});
+
+it.each(['note.MD', 'note.markdown'])('rejects the visible filename %s', (name) => {
+  const root = setup();
+  writeFileSync(join(root, 'changes/unreleased/pages', name), '### Fixed\n\n- Site.');
+  expect(() => readFragments(root, 'pages')).toThrow(`${name}: expected a .md fragment file.`);
+});
+
+it('selects the final release ahead of its release candidate', () => {
+  const root = releaseRepo();
+  execFileSync('git', ['tag', 'engine-v1.1.0-rc.1'], { cwd: root });
+  expect(lastTag(root, TARGETS.engine)).toBe('engine-v1.1.0');
+});
+
+it('reads HEAD history when the tag belongs to an unrelated history', () => {
+  const root = releaseRepo();
+  const git = (...args: string[]) => execFileSync('git', args, { cwd: root });
+  git('switch', '--orphan', 'unrelated');
+  git('-c', 'user.email=test@example.com', '-c', 'user.name=Test', '-c', 'commit.gpgsign=false', 'commit', '--allow-empty', '-qm', 'Independent history');
+  expect(commitsSince(root, TARGETS.pages, 'engine-v1.1.0').map((c) => c.subject)).toEqual(['Independent history']);
 });

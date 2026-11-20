@@ -8,7 +8,7 @@ import { extractSection } from '../../../scripts/release/changelog.mjs';
 const state = vi.hoisted(() => ({ root: '' }));
 vi.mock('./git', () => ({
   repoRoot: () => state.root,
-  TARGETS: { engine: { name: 'engine', prefix: 'engine', changelog: 'CHANGELOG.md', manifest: 'package.json' } },
+  TARGETS: { pages: { name: 'pages' }, engine: { name: 'engine', prefix: 'engine', changelog: 'CHANGELOG.md', manifest: 'package.json' } },
 }));
 const argv = process.argv;
 afterEach(() => {

@@ -4,7 +4,7 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { cutRelease } from '../../../scripts/release/changelog.mjs';
 import { TARGETS, repoRoot } from './git';
-import { consumeFragments, readFragments, withPendingNotes } from './fragments';
+import { consumeFragments, readFragments, unknownTargetFolders, withPendingNotes } from './fragments';
 
 const [name, version, date] = process.argv.slice(2);
 const target = TARGETS[name ?? ''];
@@ -13,6 +13,8 @@ if (!target || !version) {
   process.exit(1);
 }
 const root = repoRoot();
+const unknownFolders = unknownTargetFolders(root);
+if (unknownFolders.length) throw new Error(`Unknown target folder: ${unknownFolders.join(', ')}`);
 const file = join(root, target.changelog);
 const fragments = readFragments(root, target.name);
 // Prepare every output before writing, so invalid input cannot consume fragments or alter files.

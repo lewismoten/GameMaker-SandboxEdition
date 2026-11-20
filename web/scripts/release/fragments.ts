@@ -3,7 +3,17 @@ import { existsSync, readFileSync, readdirSync, unlinkSync } from 'node:fs';
 import { join } from 'node:path';
 import { extractSection } from '../../../scripts/release/changelog.mjs';
 
+import { TARGETS } from './git';
+
 const sections = ['Added', 'Changed', 'Fixed', 'Removed', 'Security'];
+
+export function unknownTargetFolders(root: string): string[] {
+  const dir = join(root, 'changes/unreleased');
+  if (!existsSync(dir)) return [];
+  return readdirSync(dir, { withFileTypes: true })
+    .filter((entry) => entry.isDirectory() && !Object.keys(TARGETS).includes(entry.name))
+    .map((entry) => join(dir, entry.name));
+}
 
 export function readFragments(root: string, target: string): { path: string; text: string }[] {
   const dir = join(root, 'changes/unreleased', target);
@@ -11,7 +21,7 @@ export function readFragments(root: string, target: string): { path: string; tex
   const fragments = [];
   const problems = [];
   for (const name of readdirSync(dir).sort()) {
-    if (name === '.keep' || name === '.gitkeep') continue;
+    if (name.startsWith('.')) continue;
     const path = join(dir, name);
     if (!name.endsWith('.md')) {
       problems.push(`${path}: expected a .md fragment file.`);
