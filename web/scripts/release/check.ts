@@ -22,7 +22,8 @@ for (const t of Object.values(TARGETS)) {
   try {
     fragments = readFragments(root, t.name);
   } catch (error) {
-    console.log(`FAIL ${t.name}: ${error instanceof Error ? error.message : String(error)}`);
+    const message = error instanceof Error ? error.message : String(error);
+    for (const line of message.split('\n')) console.log(`FAIL ${t.name}: ${line}`);
     failed = true;
     continue;
   }

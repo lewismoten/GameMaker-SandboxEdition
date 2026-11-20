@@ -36,8 +36,8 @@ export function runGate(options, settings = {}) {
     result.steps.push({ name, argv, cwd, code: r.code, signal: r.signal, durationMs: Date.now() - started, log });
     process.stderr.write(`merge:gate ${name}: exit ${r.code}\n`);
     if (!accepted.includes(r.code)) {
-      // release-check: name the bad fragment (or failing target) in the message, not only the log.
-      const why = name === 'release-check' ? ((`${r.stdout ?? ''}${r.stderr ?? ''}`.match(/^.*(?:expected one|FAIL).*$/m) ?? [])[0] ?? '').trim() : '';
+      // release-check: name the bad fragments and failing targets in the message, not only the log.
+      const why = name === 'release-check' ? (`${r.stdout ?? ''}${r.stderr ?? ''}`.match(/^.*(?:expected one|FAIL).*$/gm) ?? []).join('\n') : '';
       throw new Error(`${name} failed${why ? `: ${why}` : ''}; see ${log}`);
     }
     return r;
