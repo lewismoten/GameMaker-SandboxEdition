@@ -6,11 +6,35 @@ import { GameSim } from './sim';
 import { parseGame, serializeGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { ORIGIN } from '../../kit/starter/map';
 import { L2, STAND } from '../src/levels';
+import { SCAN_JUMP } from '../src/hero';
 import { shiftY } from '../src/pack';
 import { stargazingHill, mainStreet, shyStreet, spamRow } from './route';
 import { BIG1, COTTAGE, TOWER, SHED, CONF_BIG, CONF_COT, CONF_TOW, CONF_SHED, LIT_BIG, LIT_COT, LIT_TOW, LIT_SHED } from '../src/monsters';
 
 describe('built Stick Man Stars polish', () => {
+  it.each([2, 3, 4])('keeps the camera from scrolling above its standing position during a held jump on level %i', async (level) => {
+    const files = new Map(new GameSim().files);
+    const name = [...files.keys()].find((n) => n.endsWith('.gam'))!;
+    const game = parseGame(files.get(name)!);
+    // Start at the ordinary entrance from the preceding level.
+    game.scenes[0].links[0] = game.scenes[level].links[0];
+    files.set(name, serializeGame(game));
+    const sim = new GameSim(files);
+    const bot = new StarterBot(sim);
+    expect(await bot.land()).toBeUndefined();
+    const cameraTop = () => sim.w.my * 20 + sim.w.scroll.ny + sim.w.scroll.littleShifty;
+    const standingTop = cameraTop();
+    const standingY = sim.pos.y;
+    let peakY = standingY;
+    sim.press(SCAN_JUMP);
+    for (let tick = 0; tick < 40; tick++) {
+      expect(await sim.tick()).toBeUndefined();
+      expect(cameraTop()).toBeGreaterThanOrEqual(standingTop);
+      peakY = Math.min(peakY, sim.pos.y);
+    }
+    expect(peakY).toBeLessThan(standingY);
+  });
+
   it('allows an untimed rest and a direct walk onward without a pickup, hit or lighting cue', async () => {
     const files = new Map(new GameSim(undefined, 1).files);
     const name = [...files.keys()].find((n) => n.endsWith('.gam'))!;
