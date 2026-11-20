@@ -1,6 +1,6 @@
 // Fragments coexist with legacy notes and remain target-scoped through a release cut.
 import { execFileSync, spawnSync } from 'node:child_process';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -11,6 +11,7 @@ import { commitsSince, lastTag, TARGETS } from './git';
 
 const roots: string[] = [];
 afterEach(() => {
+  vi.unstubAllEnvs();
   for (const root of roots.splice(0)) rmSync(root, { recursive: true, force: true });
 });
 const setup = () => {
@@ -78,6 +79,10 @@ describe('release fragments', () => {
 });
 
 function releaseRepo() {
+  // Isolate every Git probe, including those in the release checker subprocess.
+  for (const key of Object.keys(process.env)) {
+    if (key.startsWith('GIT_')) vi.stubEnv(key, undefined);
+  }
   const root = setup();
   const git = (...args: string[]) => execFileSync('git', args, { cwd: root });
   git('init', '--quiet');
@@ -93,6 +98,15 @@ function releaseRepo() {
   git('tag', 'engine-v1.1.0');
   return root;
 }
+
+it('uses the fixture repository when the caller sets GIT_DIR', () => {
+  const bogus = join(setup(), 'bogus.git');
+  vi.stubEnv('GIT_DIR', bogus);
+  const root = releaseRepo();
+  expect(existsSync(join(root, '.git', 'HEAD'))).toBe(true);
+  expect(lastTag(root, TARGETS.engine)).toBe('engine-v1.1.0');
+  expect(existsSync(bogus)).toBe(false);
+});
 
 function check(root: string) {
   return spawnSync(process.execPath, [require.resolve('vite-node/vite-node.mjs'), join(__dirname, 'check.ts')], { cwd: root, encoding: 'utf8' });
