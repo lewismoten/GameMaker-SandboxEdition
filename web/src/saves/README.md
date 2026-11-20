@@ -12,9 +12,10 @@ and the backups (`backupsView.ts`). `closeGuard.ts` asks before leaving unsaved 
 `panelText.ts` holds the shared words and the yes-or-no question.
 
 Slot fields and high-score edits stay in working copies until **Save changes**;
-**Undo changes** discards that working copy. Importing a save, making a new save and
-deleting a slot write immediately instead. Those writes and Save changes call the
-panel's safety-backup step first; importing or deleting a slot requests a fresh backup.
+**Undo changes** discards that working copy. Importing a save, making a new save, deleting
+a slot, and restoring a backup write immediately. Save changes and the slot actions call
+the panel's safety-backup step first. Import and delete request a fresh backup. Restore
+backs up the stored saves and scores first, then replaces them and discards unsaved edits.
 The underlying file formats, storage writes and backups belong to
 [`project/saveData/`](../project/saveData/README.md), not the views.
 

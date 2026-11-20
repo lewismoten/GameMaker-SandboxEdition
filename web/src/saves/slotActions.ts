@@ -48,13 +48,17 @@ export async function importSav(p: Panel, slot: number): Promise<void> {
     ))
   )
     return;
-  p.backedUp = false; // a fresh backup for each replace
-  await p.safety();
-  await writeSlotBytes(p.target.saveId, slot, bytes);
-  p.work.delete(slot);
-  await p.reload();
-  p.toast(`${file.name} is in slot ${slot + 1}.`);
-  p.render();
+  try {
+    p.backedUp = false; // a fresh backup for each replace
+    await p.safety();
+    await writeSlotBytes(p.target.saveId, slot, bytes);
+    p.work.delete(slot);
+    await p.reload();
+    p.toast(`${file.name} is in slot ${slot + 1}.`);
+    p.render();
+  } catch (e) {
+    p.toast(`Could not import the save: ${(e as Error).message}`, 'error');
+  }
 }
 
 /** An empty slot gets the game as it starts (saveData newGameSave), named; then it can be edited. */
@@ -79,10 +83,14 @@ export async function removeSlot(p: Panel, slot: number): Promise<void> {
     !(await confirmDialog('Delete this save?', `Slot ${slot + 1} will be empty. A backup is taken first, so it can be restored from Backups.`, 'Delete', true))
   )
     return;
-  p.backedUp = false;
-  await p.safety();
-  await deleteSlot(p.target.saveId, slot);
-  p.work.delete(slot);
-  await p.reload();
-  p.render();
+  try {
+    p.backedUp = false;
+    await p.safety();
+    await deleteSlot(p.target.saveId, slot);
+    p.work.delete(slot);
+    await p.reload();
+    p.render();
+  } catch (e) {
+    p.toast(`Could not delete the save: ${(e as Error).message}`, 'error');
+  }
 }
