@@ -2,7 +2,7 @@
 // Signs are rectangles (the board and the row of legs); a house's name board may stand over its own house.
 //   cd web && npx vite-node ../games/stick-man-stars/tools/layoutCheck.ts
 import { ORIGIN } from '../../kit/starter/map';
-import { PLACED, STAND, buildLevels, type Level } from '../src/levels';
+import { GROUND, PLACED, STAND, buildLevels, type Level } from '../src/levels';
 import { L0, L1, L2, L4 } from '../src/levels';
 
 type R = { what: string; x: number; y: number; w: number; h: number };
@@ -21,7 +21,7 @@ levels.forEach((l: Level, i) => {
     { what: 'the right wall', x: width - 1, y: 0, w: 1, h: 10 },
   ];
   const t = [L0.tunnel, L1.tunnel, L2.tunnel, L4.tunnel][i];
-  if (t) fixed.push({ what: 'the brick tunnel', x: t[0], y: 0, w: t[1] - t[0] + 1, h: 8 });
+  if (t) fixed.push({ what: 'the brick tunnel', x: t[0], y: 0, w: t[1] - t[0] + 1, h: GROUND });
   for (const m of l.map.map.monsters.slice(0, 200)) {
     if (!m || !m.monnum) continue;
     const x = m.curx - ORIGIN;

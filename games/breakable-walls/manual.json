@@ -57,7 +57,7 @@
     },
     {
       "head": "Level 1: Bump a Crate",
-      "html": "<h1>Level 1: Bump a Crate</h1><p>The first sign, <b>BUMP A CRATE AND IT BECOMES RUBBLE</b>, stands before a wall of four crates. Walk into it: the two crates at Yana's height turn to rubble and you walk through. The two above their head stay where they are, as an arch. <b>RUBBLE IS A BLOCK TOO. WALK ON</b> comes next, then <b>ONLY WHAT YOU TOUCH BREAKS</b>, then a wall two crates wide. One bump breaks the column you touch; the second column takes a second bump.</p><p>There are eight coins, worth ten points each, past the second wall.</p>"
+      "html": "<h1>Level 1: Bump a Crate</h1><p>The first sign, <b>BUMP IT!</b>, stands before a wall of four crates. Walk into it: the two crates at Yana's height turn to rubble and you walk through. The two above their head stay where they are, as an arch. The <b>WALK ON</b> sign stands just before a wall two crates wide. One bump breaks the column you touch; the second column takes a second bump.</p><p>There are eight coins, worth ten points each, past the second wall.</p>"
     },
     {
       "head": "How this level is made",

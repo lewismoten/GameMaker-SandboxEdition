@@ -49,6 +49,8 @@ Lighting chime, confetti, ending cartoon and quiet garden by Hermes / OpenAI Cod
 
 Longer fork, paper openings and pencil gate surrounds by OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten.
 
+Revised path and lantern signs by OpenAI Codex.
+
 Held-rise controls and bot timing by OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten.
 
 Made with GAME-MAKER 3.0 from Recreational Software Designs.
