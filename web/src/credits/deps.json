@@ -274,7 +274,7 @@
     },
     {
       "name": "@lewismoten/gamemaker-sandbox-engine",
-      "version": "3.3.3",
+      "version": "3.3.4",
       "license": "MIT",
       "runtime": true,
       "direct": true,
@@ -284,7 +284,7 @@
     },
     {
       "name": "@lewismoten/gamemaker-sandbox-tools",
-      "version": "3.8.0",
+      "version": "3.9.0",
       "license": "MIT",
       "runtime": true,
       "direct": true,

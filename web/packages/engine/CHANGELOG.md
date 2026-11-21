@@ -5,6 +5,16 @@ Changes to `@lewismoten/gamemaker-sandbox-engine`, released as `engine-v*` tags.
 
 ## [Unreleased]
 
+## [3.3.4] - 2026-11-20
+
+An internal reorganization with no change to exports or behavior.
+
+### Changed
+
+- The player patch table keeps its data in separate files beside the lookup code; exports and behavior are unchanged.
+
+Full list: [changes/release/engine/3.3.4.md](https://github.com/lewismoten/GameMaker-SandboxEdition/blob/engine-v3.3.4/changes/release/engine/3.3.4.md)
+
 ## [3.3.3] - 2026-11-12
 
 Tighter limits on GIF, JPEG, slide list, VOC and animation input.
@@ -63,7 +73,8 @@ for every Game-Maker file format, OPL2 and CMF audio, screen, input and fonts.
 
 - The engine, scoped as `@lewismoten/gamemaker-sandbox-engine` and published to GitHub Packages from version tags.
 
-[Unreleased]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/engine-v3.3.3...HEAD
+[Unreleased]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/engine-v3.3.4...HEAD
+[3.3.4]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/engine-v3.3.3...engine-v3.3.4
 [3.3.3]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/engine-v3.3.2...engine-v3.3.3
 [3.3.2]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/engine-v3.3.1...engine-v3.3.2
 [3.3.1]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/engine-v3.3.0...engine-v3.3.1
