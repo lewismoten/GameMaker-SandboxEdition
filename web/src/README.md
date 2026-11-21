@@ -1,6 +1,6 @@
 # web/src: a map
 
-Game-Maker: Sandbox Edition in the browser. Two pages load this code:
+Game-Maker: Sandbox Edition in the browser. Vite builds four HTML entry points from this source:
 
 - `index.html` → [`main.ts`](main.ts): the site. It opens on the **1994 desk** (`desk/`, a
   simulated DOS PC running the ported designers; no DOS or x86 code runs) or **today's web**
@@ -21,6 +21,9 @@ Game-Maker: Sandbox Edition in the browser. Two pages load this code:
   (`?game=<id>`, `?project=<id>`, or the game bundled in an exported web app). Each
   bundled game also has its own copy of the page, `play-<id>.html` (made at build time,
   naming its game with `<meta name="gm:game">`), so link previews show that game.
+- `archive.html` → [`archive/archive.ts`](archive/archive.ts): fetches files four at a time so a web archive can discover them.
+  Add `?games=1` to include game packs, phone files and kits. Use `?part=N` to fetch one numbered slice.
+  The [archive README](archive/README.md) describes the manifest and fetch order.
 
 Every module starts with a comment saying what it is for. Code ported from the original C
 source names the file it came from (`code/GM/*.C` in the repository root).
@@ -68,7 +71,7 @@ What kept pages small (2026-11-07, `npm run verify:perf` and its budgets):
 
 - [`main.ts`](main.ts), [`modernUi.ts`](modernUi.ts): the site's entry and today's web interface
   (see Main flows).
-- `archive.html` → [`archive/archive.ts`](archive/archive.ts) ([README](archive/README.md); nothing links to it): fetches every file in `archive.json` (the build writes it from the whole built site: the offline copy plus link previews, the pocket firmware, crawler files, trinkets and laser kits; never a secret game's or the gate lists), four at a time with a progress bar, so a web archive's "Save page" records them ([`archive/plan.ts`](archive/plan.ts) orders them: shell, home and desk, the rest, then game packs with `?games=1`; `?part=N` slices). [`offline/replay.ts`](offline/replay.ts) spots a Wayback replay (its `__wm` / `_WBWombat` globals or a `/web/<14 digits>/` address); there `offline.ts` registers no service worker and a missing chunk gets a calm note, not the reload notice.
+- [`offline/replay.ts`](offline/replay.ts) spots a Wayback replay (its `__wm` / `_WBWombat` globals or a `/web/<14 digits>/` address); there `offline.ts` registers no service worker and a missing chunk gets a calm note, not the reload notice.
 - [`play.ts`](play.ts): the play page's entry. [`dosPage/`](dosPage/README.md) is `dos.html`'s.
 - [`libraryStart.ts`](libraryStart.ts): the game the Library starts on, noted from the last game page, look or
   project view (`library/libraryPage.ts` reads it once).
