@@ -11,6 +11,20 @@ describe('CameraLog', () => {
   it('reads the screen origin in map pixels', () => {
     expect(screenOrigin(world(3, 5, 4))).toEqual({ x: 3 * BLEN, y: 5 * BLEN + 4 });
   });
+  it('looks up the packed feet and returns the fractional top row on the original level map', () => {
+    const log = new CameraLog();
+    log.add(7, 1, world(0, 36, 5), { x: 12, y: 42, sx: 0, sy: 0 });
+    expect(
+      log.top(
+        0,
+        [
+          { x: 12, y: 18 },
+          { x: 12, y: 19 },
+        ],
+        23,
+      ),
+    ).toBe(13 + 5 / BLEN);
+  });
   it('finds the resting screen nearest the hero and throws when he never went there', () => {
     const log = new CameraLog();
     log.add(7, 1, world(0, 2), { x: 4, y: 6, sx: 0, sy: 0 });

@@ -11,6 +11,7 @@ import { buildStickBlocks } from '../src/stick';
 import { ORIGIN } from '../../kit/starter/map';
 import { finishMonsterPictures, monsterPictures, monsterSet } from '../src/monsters';
 import { GROUND, buildLevels } from '../src/levels';
+import { shiftY } from '../src/pack';
 import { play } from './play';
 import { GameSim } from './sim';
 
@@ -46,7 +47,7 @@ const empty = (level: number) => {
 const save = (name: string, level: number, col: number, extra: Sprite[], w = 16, scale = 3, jump = false) =>
   writePng(
     join(out, name),
-    renderRegion(empty(level), bbl, mbl, set, ORIGIN + col, jump ? ORIGIN + 2 : cam.top(level, extra), w, 10, extra),
+    renderRegion(empty(level), bbl, mbl, set, ORIGIN + col, jump ? ORIGIN + 2 : cam.top(level, extra, shiftY(level)), w, 10, extra),
     levels[level].pal.pal,
     scale,
   );
