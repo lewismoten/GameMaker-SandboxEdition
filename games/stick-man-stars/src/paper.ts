@@ -151,6 +151,8 @@ function addFork(book: Book, pal: Pal): void {
         // a rim on a tile's own top or bottom edge is the fork's own edge (it never runs off the block)
         p.set(x, y, shade);
       }
+    // A ruled paper ledge marks the top edge Stick Man can stand on.
+    if (i < FORK.length) for (let x = 0; x < 20; x++) p.set(x, 0, c('stone', 2));
     // a glint
     if (i === 4) p.set(5, 7, c('white', 3)).set(6, 7, c('white', 3));
     if (i === 2) p.set(3, 6, c('white', 3)).set(4, 6, c('white', 3));

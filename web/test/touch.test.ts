@@ -1,6 +1,6 @@
 // Tests: On-screen touch controls (player/touch.ts).
 import { describe, expect, it } from 'vitest';
-import { padSector, touchLabel, touchLayout } from '../src/player/touch';
+import { actionScans, padSector, touchLabel, touchLayout } from '../src/player/touch';
 
 describe('touch controls', () => {
   it('maps a thumb on the pad to one of eight directions, with a dead zone', () => {
@@ -25,4 +25,13 @@ describe('touch controls', () => {
     expect(touchLabel(57)).toBe('Space');
     expect(touchLabel(76)).toBe('5');
   });
+});
+
+it('includes Enter once in the character action strip', () => {
+  expect(
+    actionScans(
+      [28, 57, 28, 1, 59, 77].map((scan) => ({ key: scan << 8 })),
+      new Set([77]),
+    ),
+  ).toEqual([28, 57]);
 });

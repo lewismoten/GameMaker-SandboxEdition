@@ -55,6 +55,12 @@ export function touchLabel(scan: number): string {
   return short[scan] ?? scanName(scan).replace(/ \/ .*/, '');
 }
 
+export function actionScans(sequences: readonly Pick<Sequence, 'key'>[], covered: ReadonlySet<number>): number[] {
+  // Leaves out the pad's keys, Esc and F1-F10 (only F1 and F2 have buttons, in the fixed row).
+  const scans = sequences.map((s) => s.key >> 8);
+  return [...new Set(scans.filter((s) => s && !covered.has(s) && s !== 1 && !(s >= 59 && s <= 68)))];
+}
+
 const HIDE_KEY = 'gm-touch-controls';
 
 /** The visitor hid the touch controls (they stay hidden in every game until shown again). */
@@ -259,10 +265,7 @@ export class TouchControls {
       // a thumb held through a change of character now sends the new character's keys
       if (this.sector !== undefined) this.setPad(this.plan.press[this.sector]);
     }
-    const covered = this.plan.covered;
-    // Leaves out the pad's keys, Esc, Enter and F1-F10 (only F1 and F2 have buttons, in the fixed row).
-    const scans = sequences.map((s) => s.key >> 8);
-    const list = [...new Set(scans.filter((s) => s && !covered.has(s) && s !== 1 && s !== 28 && !(s >= 59 && s <= 68)))];
+    const list = actionScans(sequences, this.plan.covered);
     if (list.join(',') !== this.keys.join(',')) this.page = 0;
     this.keys = list;
     this.drawActions();

@@ -124,9 +124,9 @@ function note(m: StarterMap, what: string, x: number, y: number, s: Sign): void 
   const posts = s.posts.map(([dx]) => ({ what: `${what} post`, x: x + dx, y: y + 1, w: 1, h: 1 }));
   PLACED.set(m, [...(PLACED.get(m) ?? []), { what, x, y, w: s.board.length, h: 1 }, ...posts]);
 }
-const signAt = (m: StarterMap, w: World, x: number, which: SignName) => {
-  note(m, which, x, onGround(GROUND), w.signs[which]);
-  stampSign(m, x, onGround(GROUND), w.signs[which]);
+const signAt = (m: StarterMap, w: World, x: number, which: SignName, ground = GROUND) => {
+  note(m, which, x, onGround(ground), w.signs[which]);
+  stampSign(m, x, onGround(ground), w.signs[which]);
 };
 /** A house with its name over the door (the name board is three wide, the house in the middle). */
 function named(m: StarterMap, w: World, kind: number, x: number, name: Name): void {
@@ -174,25 +174,29 @@ function stargazingHill(w: World): StarterMap {
 }
 
 /** Where level 1's houses and gate stand (block x). */
-export const L1 = { fork: 24, bonus: 53, cottages: [17, 34, 55] as const, tunnel: [42, 49] as const, gate: 46, exit: 60, width: 64 };
+export const L1 = { fork: 37, bonus: 53, cottages: [17, 34, 55] as const, tunnel: [42, 49] as const, gate: 46, exit: 60, width: 64 };
 function mainStreet(w: World): StarterMap {
   const g = base(L1.width, L1.exit);
   tunnel(g, L1.tunnel[0], L1.tunnel[1]);
-  g.row(9, 10, 12, 'c').row(8, 24, 27, 'c').row(9, 28, 28, 'c').row(9, 38, 40, 'c').row(9, 49, 51, 'c');
-  scenery(g, [8, 22, 36, 50], [14, 30, 44, 58], [11, 26, 38, 52]);
+  g.row(9, 10, 12, 'c')
+    .row(8, L1.fork - 1, L1.fork + 3, 'c')
+    .row(9, 28, 28, 'c')
+    .row(9, 24, 24, 'c')
+    .row(9, 49, 51, 'c');
+  scenery(g, [8, 22, 36, 50], [14, 30, 44, 58], [11, 27, 52]);
   const m = new StarterMap(w.book, g.rows());
   signAt(m, w, 5, 'how');
   signAt(m, w, 11, 'thx');
   signAt(m, w, 19, 'far');
   signAt(m, w, 28, 'readme');
-  signAt(m, w, 36, 'shed');
+  signAt(m, w, 36, 'shed', STAND);
   signAt(m, w, 57, 'exit');
   named(m, w, COTTAGE, L1.cottages[0], 'SOCKS');
   named(m, w, COTTAGE, L1.cottages[1], 'SOUP');
   named(m, w, COTTAGE, L1.cottages[2], 'TEAPOT');
   // a giant silver fork lies on the sheet: he hops onto it, takes the coins along it, and hops down
   FORK.forEach((name, i) => m.set(L1.fork + i, STAND, name));
-  // Clear paper under the far sign's right end cap; no pickup, post or platform moves.
+  // The rounded tip extends one decorative tile to the left.
   m.set(L1.fork - 1, STAND, 'forkTail');
   m.set(L1.bonus, 5, 'pickstar');
   m.mon(SHED, L1.gate, STAND);

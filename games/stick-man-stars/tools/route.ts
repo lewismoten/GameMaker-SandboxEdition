@@ -36,11 +36,19 @@ export function foes(bot: StarterBot, ...n: number[]): number[] {
 const THROW_WATCH = 45;
 
 /** Presses Enter like a person (a tap), then waits for the star to land or fizzle. */
-async function throwStar(bot: StarterBot, what: string): Promise<void> {
+async function throwStar(bot: StarterBot, what: string, checkRange = false): Promise<void> {
   bot.sim.press(SCAN_THROW);
   await must(bot, bot.wait(3), 'throwing');
   bot.sim.release(SCAN_THROW);
-  await must(bot, bot.wait(THROW_WATCH), 'watching the star');
+  if (checkRange) {
+    const origin = bot.px.x;
+    let farthest = origin;
+    for (let t = 0; t < THROW_WATCH; t++) {
+      farthest = Math.max(farthest, ...foes(bot, STAR));
+      await must(bot, bot.tick(), 'watching the star');
+    }
+    if (farthest - origin < 100) throw new Error('The star hit something before reaching its range');
+  } else await must(bot, bot.wait(THROW_WATCH), 'watching the star');
   bot.say(`threw a star ${what}, score ${bot.sim.ci.score}`);
 }
 
@@ -49,7 +57,7 @@ const countAll = (bot: StarterBot, kinds: number[]) => foes(bot, ...kinds).lengt
 /** Throws now (a still target): it must pop one of `kinds`, or (`miss`) nothing. */
 async function throwAt(bot: StarterBot, kinds: number[], what: string, miss = false): Promise<void> {
   const before = countAll(bot, kinds);
-  await throwStar(bot, what);
+  await throwStar(bot, what, miss);
   const after = countAll(bot, kinds);
   if (miss ? after !== before : after !== before - 1) throw new Error(`${what}: houses ${before} -> ${after}${miss ? ' (it should have missed)' : ''}`);
   if (foes(bot, STAR).length) throw new Error(`${what}: a star is still flying`);
@@ -132,10 +140,10 @@ export async function mainStreet(bot: StarterBot): Promise<void> {
   // the second sign says a star flies only so far: from 13 blocks away it falls short
   await must(bot, bot.walk(b - 13, 'too far'), 'to the second sign');
   await throwAt(bot, [COTTAGE], 'from too far', true);
-  // the giant fork lies across the street: hop onto it and walk its length, taking the coins along it
-  for (let i = 1; i <= 4; i++) await must(bot, bot.walk(L1.fork + i, 'the fork'), 'over the fork');
   await must(bot, bot.walk(b - 4, 'closer'), 'closer');
   await throwAt(bot, [COTTAGE], 'from close by');
+  // the giant fork lies across the street: hop onto it and walk its length, taking the coins along it
+  for (let i = 1; i <= 4; i++) await must(bot, bot.walk(L1.fork + i, 'the fork'), 'over the fork');
   await must(bot, bot.walk(L1.tunnel[0] - 1, 'the shed'), 'to the shed');
   await throwAt(bot, [SHED], 'at the shed');
   await must(bot, bot.wait(30), 'the party');

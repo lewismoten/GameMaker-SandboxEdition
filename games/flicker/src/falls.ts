@@ -47,10 +47,10 @@ function colors(pal: Pal): { base: number; shade: [number, number, number] } {
 }
 
 /** The body of the fall at frame k: the pattern moved down 5k pixels, with the rock's shadow on the outer edges. */
-export function bodyFrame(pal: Pal, col: Col, k: number, step = 5): Pixels {
+export function bodyFrame(pal: Pal, col: Col, k: number): Pixels {
   const { base, shade } = colors(pal);
   const p = new Pixels(20, 20, base);
-  for (const s of streaks(col)) for (let i = 0; i < s.len; i++) for (let w = 0; w < s.w; w++) p.set(s.x + w, (s.y + i + step * k) % 20, shade[s.shade]);
+  for (const s of streaks(col)) for (let i = 0; i < s.len; i++) for (let w = 0; w < s.w; w++) p.set(s.x + w, (s.y + i + 5 * k) % 20, shade[s.shade]);
   edges(p, pal, col);
   return p;
 }
@@ -70,7 +70,7 @@ function edges(p: Pixels, pal: Pal, col: Col): void {
         .set(17, y, p.get(17, y) === c('sky', 4) ? c('sky', 3) : p.get(17, y));
 }
 
-/** The lip at frame k: sky above a surface that curls over the rock's edge, ripples sliding across it, then the streaks beginning to fall (faster than the body's). */
+/** The lip at frame k: sky above a surface that curls over the rock's edge, ripples sliding across it, then the streaks beginning to fall in step with the body. */
 export function lipFrame(pal: Pal, col: Col, k: number, bg: number): Pixels {
   const { c } = pal;
   const { base, shade } = colors(pal);
