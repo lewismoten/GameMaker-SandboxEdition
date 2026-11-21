@@ -97,7 +97,7 @@ jobs:
             (cd "web/packages/$pkg" && npm publish --ignore-scripts)
             node scripts/release/section.mjs "web/packages/$pkg/CHANGELOG.md" "$version" > "$RUNNER_TEMP/$pkg-notes.md"
             sbom="$RUNNER_TEMP/$pkg-$version.sbom.cdx.json"
-            npm sbom --sbom-format cyclonedx --package-lock-only --omit=dev -w "@lewismoten/gamemaker-sandbox-$pkg" > "$sbom"
+            npm run release:sbom -- "$pkg" "$version" --out "$sbom"
             gh release create "$tag" --title "$pkg $version" --notes-file "$RUNNER_TEMP/$pkg-notes.md" "$sbom"
           done
         env:

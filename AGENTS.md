@@ -65,6 +65,7 @@ npm run replay:log -- <log.jsonl> [--session id] [--out dir]  # replay a game th
 npm run verify:perf                            # performance budgets (bytes, requests, INP at 4x) on a scratch production build, about 70 s; --update rewrites web/scripts/perfBudgets.json on purpose
 npm run look -- [<shot>] [--out f.jpg] [--ocr] [--expect "text"]  # a snapshot or saved shot of a screen through the Ghost Jack camera bridge (127.0.0.1:8787); --ocr prints the text tesseract reads, --expect exits 1 unless it is there
 npm run badges:similar                             # advisory: achievement badges that look alike in gray or to color-blind eyes; HTML report in .for-lewis/research/badges-similar/
+npm run release:sbom -- <pages|engine|archives|tools> [version] [--out file]  # write a CycloneDX release attachment; relative output paths start where the command was run
 npm run release:draft -- <pages|engine|archives|tools>  # pending fragments and legacy Unreleased notes, plus commit suggestions (prints; never writes)
 npm run release:cut -- <target> <version>          # Unreleased becomes a dated version; sets a package's version
 npm run verify:changed [-- --base <ref>]           # the pre-merge check: prettier + eslint on changed files, tsc (whole project), vitest --changed, release:check if package src or a release fragment changed; prints the check:games command for a changed game; the full one is root npm run verify
