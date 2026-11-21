@@ -61,7 +61,6 @@ function base(width: number, exitX: number): Grid {
   const g = new Grid(width, 15);
   g.row(GROUND, 0, width - 1, 'G').fill(0, GROUND + 1, width, 4, 'D');
   g.col(0, 0, 9, 'B').col(width - 1, 0, 9, 'B');
-  g.put(3, 8, 's').put(3, 9, 'S');
   g.put(exitX, 8, 'e').put(exitX, 9, 'E');
   return g;
 }
@@ -107,6 +106,8 @@ export const L2 = {
 /** Level 1: a pouch, and three mint gumdrops in a row. 46 blocks wide; the ground is row 10. */
 function emptyHands(book: Book, signs: Record<SignName, Sign>): StarterMap {
   const g = base(L1.width, L1.exit);
+  g.row(8, 2, 3, 'G').row(9, 2, 3, 'D');
+  g.put(3, 6, 's').put(3, 7, 'S');
   for (const [x, y] of L1.coins) g.put(x, y, 'c');
   scenery(
     g,
@@ -133,6 +134,7 @@ function emptyHands(book: Book, signs: Record<SignName, Sign>): StarterMap {
 /** Level 2: two frosty grumps in a tunnel through a brick wall, a star pouch on the ground and a flame pouch on a ledge. 50 blocks wide. */
 function starOrFlame(book: Book, signs: Record<SignName, Sign>): StarterMap {
   const g = base(L2.width, L2.exit);
+  g.put(3, 8, 's').put(3, 9, 'S');
   // the wall: brick from the top of the room down to a two-block-high tunnel (rows 8 and 9)
   g.fill(L2.wall[0], 0, L2.wall[1] - L2.wall[0] + 1, 8, 'B');
   // the ledge for the flame pouch: planks, stood on from above and jumped up through from below

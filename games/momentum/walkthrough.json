@@ -8,11 +8,11 @@
  "segments": [
   {
    "scene": 2,
-   "keys": "KU0EzVBNC808TQvNCU0AzSxNHs0LTQDNLE0LzQBLHssKTSDNC00="
+   "keys": "KU0EzVBNCs08TQzNCU0AzSxNHc0LTQDNLE0MzQBLHssKTR/NC00="
   },
   {
    "scene": 3,
-   "keys": "KTkCuSxNEc0KTRA5ArkVzTRNDzkCuRXNM00TOQK5Fc0MTQLNBk0="
+   "keys": "KTkCuSxNEM0JTRE5ArkVzTRNDzkCuRXNM00TOQK5Fc0MTQLNBk0="
   }
  ],
  "chapters": [
@@ -27,7 +27,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 8823,
+  "frames": 9294,
   "chapters": [
    {
     "title": "Opening",
@@ -46,18 +46,18 @@
    },
    {
     "title": "Level 2: Run-Up",
-    "frame": 3974,
-    "time": 66233.33333332972
+    "frame": 3971,
+    "time": 66183.3333333297
    },
    {
     "title": "Ending",
-    "frame": 5542,
-    "time": 92366.66666667066
+    "frame": 5532,
+    "time": 92200.00000000394
    },
    {
     "title": "Credits",
-    "frame": 7749,
-    "time": 129150.0000000147
+    "frame": 7739,
+    "time": 128983.33333334798
    }
   ]
  }

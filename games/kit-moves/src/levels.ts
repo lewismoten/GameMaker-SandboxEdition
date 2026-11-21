@@ -144,7 +144,8 @@ function oncePerPress(book: Book, signs: Record<SignName, Sign>): StarterMap {
   for (const [a, b] of L2.pits) {
     g.fill(a, G, b - a + 1, L2.depth, ' ');
   }
-  g.put(3, G - 2, 's').put(3, G - 1, 'S');
+  g.row(G - 1, 2, 3, 'G');
+  g.put(3, G - 3, 's').put(3, G - 2, 'S');
   g.put(L2.exit, G - 2, 'e').put(L2.exit, G - 1, 'E');
   for (const [x, y] of L2.coins) g.put(x, y, 'c');
   scenery(
