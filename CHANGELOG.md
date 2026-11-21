@@ -6,6 +6,13 @@ changelog: [engine](web/packages/engine/CHANGELOG.md), [archives](web/packages/a
 
 ## [Unreleased]
 
+## [3.9.1] - 2026-11-20
+
+### Fixed
+
+- The link preview picture shows the desk in its true colors (yellows had turned green) with Snowbound playing, its poster on the wall and Scoot by the PC.
+- With a Sandbox game in drive A, its poster hangs on the desk wall again on the published site, instead of the black-light poster staying up.
+
 ## [3.9.0] - 2026-11-20
 
 A fixes release: narrow screens no longer scroll sideways, Saves & scores handles storage trouble safely, Play offline reopens faster, seven Starters no longer trap you after walking left from a raised entrance, and the guided tour and screen readers reach more of the site.
@@ -230,7 +237,8 @@ for every Game-Maker file type; the web player; and the set of new games built i
 - Exports to a web page, a DOS ZIP and native players, and opening a game another site links to.
 - Achievements, a guided tour with voice clips, and offline use as an installable app.
 
-[Unreleased]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/pages-v3.9.0...HEAD
+[Unreleased]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/pages-v3.9.1...HEAD
+[3.9.1]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/pages-v3.9.0...pages-v3.9.1
 [3.9.0]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/pages-v3.8.0...pages-v3.9.0
 [3.8.0]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/pages-v3.7.0...pages-v3.8.0
 [3.7.0]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/pages-v3.6.0...pages-v3.7.0
