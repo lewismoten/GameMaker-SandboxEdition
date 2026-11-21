@@ -145,6 +145,22 @@ describe('separate rooms', () => {
     expect(passesThrough(game, [5])).toBe(true);
     expect(passesThrough(game, [2])).toBe(false);
   });
+
+  it('does not count a link back into its own scene as a way out', () => {
+    const game = {
+      scenes: [
+        scene(STARTTYPE, 'Title', [[1, 0, 0, 8, 5]]),
+        // its only link at the arrival cell goes back to itself
+        scene(ADVTYPE, 'Loop', [[1, 8, 5, 8, 5]], true),
+        // the same, but a link to a missing scene
+        scene(ADVTYPE, 'Lost', [[9, 8, 5, 8, 5]], true),
+      ],
+    } as unknown as Game;
+    expect(passesThrough(game, [1])).toBe(false);
+    // a missing scene is no way out either: [2] arrives from nowhere but is not entered by [0]
+    game.scenes[0].links.push({ toScene: 2, from: { x: 1, y: 1 }, to: { x: 8, y: 5 } } as never);
+    expect(passesThrough(game, [2])).toBe(false);
+  });
 });
 
 describe('trimming a crop', () => {

@@ -18,6 +18,8 @@ const THUMB = { x: 8, y: 22, w: CARD.w - 16, h: 100 };
 const COLORS = { start: '#ffd400', end: '#ff6b61', adventure: '#6cf28a', unused: '#888' } as const;
 /** A pass-through scene's frame (a talk page or a fade): not a map to play, so not the playable green. */
 const TALK = '#d58cff';
+/** The least width the footer label is squeezed to, so it never vanishes under the song buttons. */
+const FOOT_MIN_WIDTH = 20;
 const FONT = 'ui-monospace, Menlo, Consolas, monospace';
 
 export interface Rect {
@@ -236,7 +238,8 @@ export function drawCard(ctx: CanvasRenderingContext2D, i: number, forExport: bo
   const buttons = cardButtons(v.project, v.game, i, r);
   const footX = r.x + 8;
   const right = Math.min(r.x + r.w - 8, ...buttons.map((b) => b.x - 4));
-  ctx.fillText(foot, footX, r.y + r.h - 8, right - footX);
+  // a narrow card with several buttons can leave no room: canvas draws nothing for a width of 0 or less
+  ctx.fillText(foot, footX, r.y + r.h - 8, Math.max(FOOT_MIN_WIDTH, right - footX));
   for (const b of buttons) {
     const on = v.playing === b.file;
     ctx.fillStyle = on ? '#ffd400' : '#2a3060';
