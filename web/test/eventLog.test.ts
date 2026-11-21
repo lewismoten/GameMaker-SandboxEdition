@@ -13,8 +13,8 @@ describe('key names', () => {
 });
 
 describe('EventLog', () => {
-  const sim = { scene: 2, ci: { score: 0 } } as never as ConstructorParameters<typeof EventLog>[0];
   it('records key edges, score deltas, scene changes and counts presses', () => {
+    const sim = { scene: 2, ci: { score: 0 } } as never as ConstructorParameters<typeof EventLog>[0];
     const log = new EventLog(sim);
     log.key(0x1c, true);
     log.key(0x1c, false);
@@ -50,8 +50,8 @@ describe('recordEvents', () => {
         return undefined;
       }
     }
-    const pressOf = (): unknown => Object.getOwnPropertyDescriptor(Fake.prototype, 'press')?.value;
-    const original = pressOf();
+    const descriptors = () => ['press', 'release', 'tick'].map((method) => Object.getOwnPropertyDescriptor(Fake.prototype, method));
+    const original = descriptors();
     const { logs } = await recordEvents(Fake as never, async () => {
       const f = new Fake();
       f.press(0x39);
@@ -61,8 +61,8 @@ describe('recordEvents', () => {
     });
     expect(logs).toHaveLength(1);
     expect(logs[0].events.map((e) => e.kind)).toEqual(['key', 'score', 'key']);
-    expect(pressOf()).toBe(original);
+    expect(descriptors()).toStrictEqual(original);
     await expect(recordEvents(Fake as never, async () => Promise.reject(new Error('x')))).rejects.toThrow('x');
-    expect(pressOf()).toBe(original);
+    expect(descriptors()).toStrictEqual(original);
   });
 });
