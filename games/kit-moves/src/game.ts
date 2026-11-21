@@ -40,7 +40,7 @@ export function buildGame(levels: Level[]): Game {
       'km.bbl',
       'km.mon',
       'km.mbl',
-      'hero.chr',
+      i === 0 ? 'hero.chr' : 'dash.chr',
       'hero.cbl',
       'km.snd',
       'km.cmf',

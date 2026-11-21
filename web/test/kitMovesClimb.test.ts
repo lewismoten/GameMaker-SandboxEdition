@@ -80,14 +80,14 @@ describe("Kit's Moves ceilings", () => {
   });
   it('stops a lift directly beneath the hanging bricks', async () => {
     const sim = atScene(3);
-    sim.w.chr.x = [27, 0];
+    sim.w.chr.x = [26, 0]; // Under the same ceiling, before the headwind.
     sim.w.chr.y = [21, 0];
     let highest = head(sim);
     for (let t = 0; t < 80; t++) {
       if (t % 4 < 2) sim.press(UP);
       else sim.release(UP);
       expect(await sim.tick()).toBeUndefined();
-      expect(sim.pos.x).toBe(27);
+      expect(sim.pos.x).toBe(26);
       highest = Math.min(highest, head(sim));
     }
     expect(highest).toBe(LOW_UNDERSIDE);

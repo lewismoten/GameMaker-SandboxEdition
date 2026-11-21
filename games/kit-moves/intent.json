@@ -3,12 +3,51 @@
     {
       "scene": 2,
       "teaches": "Space hops once, Up lifts while held",
-      "rules": [{ "rule": "uses", "move": "Space", "min": 1 }, { "rule": "uses", "move": "Up", "min": 1 }, { "rule": "needs", "move": "Up" }]
+      "rules": [
+        {
+          "rule": "uses",
+          "move": "Space",
+          "min": 1
+        },
+        {
+          "rule": "uses",
+          "move": "Up",
+          "min": 1
+        },
+        {
+          "rule": "needs",
+          "move": "Up",
+          "strict": true
+        },
+        {
+          "rule": "before",
+          "a": "key:Up",
+          "b": "leave",
+          "strict": true
+        }
+      ]
     },
     {
       "scene": 3,
       "teaches": "Enter is one dash per press",
-      "rules": [{ "rule": "uses", "move": "Enter", "min": 4 }, { "rule": "needs", "move": "Enter" }]
+      "rules": [
+        {
+          "rule": "uses",
+          "move": "Enter",
+          "min": 4
+        },
+        {
+          "rule": "needs",
+          "move": "Enter",
+          "strict": true
+        },
+        {
+          "rule": "before",
+          "a": "key:Enter",
+          "b": "leave",
+          "strict": true
+        }
+      ]
     }
   ]
 }

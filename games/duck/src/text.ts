@@ -44,6 +44,8 @@ Raised starts and camera framing by OpenAI Codex.
 
 Micro plaques by OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten.
 
+Lesson obstacles by OpenAI Codex.
+
 Made with GAME-MAKER 3.0 from Recreational Software Designs.
 
 One of the Starters: small games that each show one idea.

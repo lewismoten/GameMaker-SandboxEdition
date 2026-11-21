@@ -24,7 +24,7 @@ export const HOWTO = wrap(`
 |ENTER         dash right
 |F2            lives, score
 
-Walk to the door in each level. Take the coins on the way.
+The first level gives you two practice hops. Hold Up to lift any time. In the second level, dash through the headwind.
 
 Nothing can hurt you here. Try each key held down, and then tapped, and see the difference.
 
@@ -41,6 +41,8 @@ Design, pixels, beeps and levels by Claude Sonnet 5.5, an AI model made by Anthr
 Raised starts and camera framing by OpenAI Codex.
 
 Micro plaques by Hermes Agent using OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten.
+
+Lesson obstacles by OpenAI Codex.
 
 Made with GAME-MAKER 3.0 from Recreational Software Designs.
 

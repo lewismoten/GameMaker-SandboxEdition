@@ -171,6 +171,9 @@ export async function headHeight(bot: StarterBot): Promise<void> {
   await pastZones(bot, zones.slice(1), L1.ground);
   if (hp(bot) < hp1) throw new Error(`ducking should have taken no hit points; lost ${hp1 - hp(bot)}`);
   bot.say(`ducked under the other birds: hit points still ${hp(bot)}`);
+  bot.sim.press(SCAN.down);
+  for (let t = 0; t < 60 && bot.px.x < (L1.roof[1] + 1) * 20; t++) await must(bot, bot.tick(), 'under the awning');
+  bot.sim.release(SCAN.down);
   await must(bot, bot.walk(L1.roof[1] + 3, 'the last sign'), 'to the sign');
   await must(bot, bot.wait(LOOK), 'reading the sign');
   score(bot, from, 10 * L1.coins.length, 'level 1');

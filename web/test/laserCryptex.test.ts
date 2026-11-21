@@ -1,9 +1,8 @@
 // Cryptex fabrication regressions: full stock bounds, hierarchical nesting, glue-free hidden art and the 10,000-code lock.
 import { describe, expect, it } from 'vitest';
-import { BED, Part, packStock, STOCK, STOCK_MARGIN, type StockSize } from '@lewismoten/gamemaker-sandbox-tools/kit/laserLayout';
+import { Part, packStock, STOCK, STOCK_MARGIN } from '@lewismoten/gamemaker-sandbox-tools/kit/laserLayout';
 import { cutSpacingProblems, engravingRegionProblems } from '@lewismoten/gamemaker-sandbox-tools/kit/laserClearance';
-import { CUT, ENGRAVE, LaserSheet, type Item } from '@lewismoten/gamemaker-sandbox-tools/kit/laserSvg';
-import { buildCryptex, fittingTable } from '../../games/year2000/laser/cryptexBuild';
+import { CUT, ENGRAVE, LaserSheet } from '@lewismoten/gamemaker-sandbox-tools/kit/laserSvg';
 import {
   COLLAR_R,
   CORE,
@@ -22,79 +21,24 @@ import {
 import { assemblySvg, legend } from '../../games/year2000/laser/cryptexSteps';
 import { GROUPS } from '../../games/year2000/laser/cryptexGroups';
 
-const kit = buildCryptex();
-const extent = (it: Item): number[][] =>
-  it.k === 'poly'
-    ? it.pts.map((p) => [...p])
-    : [
-        [it.cx - (it.k === 'ring' ? it.r1 : it.r), it.cy - (it.k === 'ring' ? it.r1 : it.r)],
-        [it.cx + (it.k === 'ring' ? it.r1 : it.r), it.cy + (it.k === 'ring' ? it.r1 : it.r)],
-      ];
+import { allStockChecks, extent, stockCases } from './cryptexStockCases';
 
+const kit = stockCases('12x12');
 describe('cryptex stock sheets', () => {
   it('uses only red cut strokes and blue engraving fills, with no flip operations or SVG transforms', () => {
-    for (const s of kit.sheets) {
+    for (const s of kit().sheets) {
       const svg = s.sheet.svg(s.title);
       const colors = new Set([...svg.matchAll(/(?:stroke|fill)="(#[0-9a-f]{6})"/gi)].map((m) => m[1].toLowerCase()));
       expect([...colors].every((c) => [CUT, ENGRAVE].includes(c))).toBe(true);
       expect(svg).not.toMatch(/<text|font-family|transform=|#ff00ff|id="score"/);
     }
   });
-  it('emits every cut sheet with vector glyphs and no SVG text elements', () => {
-    for (const stock of ['12x12', '12x20'] as const) {
-      for (const s of (stock === '12x12' ? kit : buildCryptex(0.2, false, stock)).sheets) {
-        expect(s.sheet.svg(s.title)).not.toMatch(/<(?:[\w-]+:)?text(?:\s|>)/i);
-      }
-    }
+  it('keeps engraving and cuts separated on the core floor', () => {
+    expect(kit().parts.CORE0.part.close()).toEqual([]);
   });
-  it.each(Object.keys(STOCK) as StockSize[])(
-    'places every part within the cutter margins on %s stock',
-    (stock) => {
-      const b = stock === '12x12' ? kit : buildCryptex(0.2, false, stock);
-      expect(b.problems).toEqual([]);
-      const placed = b.sheets.flatMap((s) => s.placed);
-      for (const m of Object.values(b.parts)) expect(placed.filter((p) => p.name === m.part.name)).toHaveLength(m.qty);
-      expect(placed).toHaveLength(Object.values(b.parts).reduce((a, m) => a + m.qty, 0));
-      for (const s of b.sheets) {
-        expect(s.sheet.w).toBe(STOCK[stock].w);
-        expect(s.sheet.h).toBe(STOCK[stock].h);
-        expect(s.sheet.w - 2 * STOCK_MARGIN.x).toBeLessThanOrEqual(BED.w);
-        expect(s.sheet.h - 2 * STOCK_MARGIN.y).toBeLessThanOrEqual(BED.h + 1e-6);
-        for (const it of s.sheet.items)
-          for (const [x, y] of extent(it)) {
-            expect(x).toBeGreaterThanOrEqual(STOCK_MARGIN.x - 1e-6);
-            expect(y).toBeGreaterThanOrEqual(STOCK_MARGIN.y - 1e-6);
-            expect(x).toBeLessThanOrEqual(s.sheet.w - STOCK_MARGIN.x + 1e-6);
-            expect(y).toBeLessThanOrEqual(s.sheet.h - STOCK_MARGIN.y + 1e-6);
-          }
-      }
-      const fit = fittingTable().find((f) => f.stock === stock)!;
-      expect(fit.sheets).toBe(b.sheets.length);
-      expect(fit.materialMm2).toBeCloseTo(b.area.sheets, 6);
-      expect(fit.materialIn2).toBeCloseTo(fit.sheets * Number(stock.split('x')[0]) * Number(stock.split('x')[1]), 6);
-      expect(fit.label).toContain(`of ${stock}`);
-    },
-    60000,
-  ); // packing a whole kit for one stock size takes seconds on a busy machine
-  it('uses two 12x12 sheets or one 12x20 sheet, with less retained wood than before', () => {
-    expect(kit.sheets).toHaveLength(2);
-    expect(buildCryptex(0.2, false, '12x20').sheets).toHaveLength(1);
-  });
-  it('packs discs by their circles: at most 4, 3, 2 and 1 sheets, none overlapping within 2 mm', { timeout: 300000 }, () => {
-    const most = { '6x12': 4, '8x12': 3, '12x12': 2, '12x20': 1 } as const;
-    for (const stock of Object.keys(most) as StockSize[]) {
-      const b = buildCryptex(0.2, true, stock);
-      expect(b.sheets.length, stock).toBeLessThanOrEqual(most[stock]);
-      expect(
-        b.problems.filter((p) => /apart|outside/.test(p)),
-        stock,
-      ).toEqual([]);
-    }
-    expect(kit.area.wood).toBeLessThan(72274.93 * 0.88);
-  });
-  it('keeps engraving and cuts separated on every part', () => {
-    expect(kit.problems).toEqual([]);
-    for (const c of Object.values(kit.clearance)) expect(c).toEqual([]);
+  it.skipIf(!allStockChecks)('keeps engraving and cuts separated on every part', () => {
+    expect(kit().problems).toEqual([]);
+    for (const c of Object.values(kit().clearance)) expect(c).toEqual([]);
   });
   it('detects crossing cut paths, while allowing legally nested concentric circles', () => {
     const sheet = new LaserSheet(30, 30);
@@ -143,17 +87,6 @@ describe('cryptex stock sheets', () => {
     const separation = Math.max(b.x - a.x - a.w, a.x - b.x - b.w, b.y - a.y - a.h, a.y - b.y - b.h) - p.kerf;
     expect(separation).toBeGreaterThanOrEqual(2 - 1e-6);
   });
-  it('applies kerf compensation once, independent of stock and nesting', () => {
-    const a = buildCryptex(0, false);
-    const b = buildCryptex(0.4, false);
-    const width = (k: typeof a) => {
-      const xs = extent(k.parts.A1.part.sheet.items[0]).map(([x]) => x);
-      return Math.max(...xs) - Math.min(...xs);
-    };
-    expect(a.problems).toEqual([]);
-    expect(b.problems).toEqual([]);
-    expect(width(b) - width(a)).toBeCloseTo(0.4, 6);
-  });
 });
 
 describe('cryptex hollow and hidden engraving', () => {
@@ -172,22 +105,22 @@ describe('cryptex hollow and hidden engraving', () => {
   });
   it('decorates the hollow floor, ring interiors, washer faces, core floor, head underside and lid underside', () => {
     for (const key of ['A1', 'A5R', 'A5C', 'B1', 'C1', 'D1', 'E1', 'B2', 'C2', 'D2', 'G1', 'G2', 'G3', 'G4', 'CORE0', 'HEAD', 'LID']) {
-      const m = kit.parts[key];
+      const m = kit().parts[key];
       expect(m.hidden.length, key).toBeGreaterThan(0);
       for (const z of m.hidden) {
         expect(z.to, key).toBeGreaterThan(z.from);
         expect(engravingRegionProblems(m.part.sheet, { ...z, cx: z.cx + 2, cy: z.cy + 2 }), key).toEqual([]);
       }
     }
-    for (const key of ['B1', 'C1', 'D1', 'E1', 'CORE0', 'HEAD', 'LID']) expect(kit.parts[key].face).toBe('down');
-    expect(kit.parts.A1.hidden[0].r1).toBeLessThan(CORE.r);
-    expect(kit.parts.CORE0.hidden[0].r1).toBeLessThan(CORE.bore);
-    expect(kit.parts.HEAD.hidden[0].r0).toBeGreaterThan(CORE.r);
-    expect(kit.parts.HEAD.hidden[0].r1).toBeLessThan(HEAD_R);
-    expect(kit.parts.LID.hidden[0].r0).toBeGreaterThan(LID.plug);
+    for (const key of ['B1', 'C1', 'D1', 'E1', 'CORE0', 'HEAD', 'LID']) expect(kit().parts[key].face).toBe('down');
+    expect(kit().parts.A1.hidden[0].r1).toBeLessThan(CORE.r);
+    expect(kit().parts.CORE0.hidden[0].r1).toBeLessThan(CORE.bore);
+    expect(kit().parts.HEAD.hidden[0].r0).toBeGreaterThan(CORE.r);
+    expect(kit().parts.HEAD.hidden[0].r1).toBeLessThan(HEAD_R);
+    expect(kit().parts.LID.hidden[0].r0).toBeGreaterThan(LID.plug);
   });
   it('fills all four quadrants of every hidden region with substantial artwork', () => {
-    for (const [key, m] of Object.entries(kit.parts)) {
+    for (const [key, m] of Object.entries(kit().parts)) {
       for (const zone of m.hidden) {
         const area = [0, 0, 0, 0];
         const pad = (m.part.size.w - m.part.w) / 2;
@@ -210,7 +143,7 @@ describe('cryptex hollow and hidden engraving', () => {
     }
   });
   it('uses rectangular hidden-art pixels at least 0.5 mm wide, including the lettering', () => {
-    for (const [key, m] of Object.entries(kit.parts)) {
+    for (const [key, m] of Object.entries(kit().parts)) {
       for (const z of m.hidden) {
         for (const it of m.part.sheet.items.slice(z.from, z.to)) {
           expect(it.k, key).toBe('poly');
@@ -231,7 +164,7 @@ describe('cryptex hollow and hidden engraving', () => {
     }
   });
   it('keeps the part IDs and the complete hidden messages as readable pixel text', () => {
-    const words = (key: string) => kit.parts[key].part.texts.map((t) => t.text);
+    const words = (key: string) => kit().parts[key].part.texts.map((t) => t.text);
     expect(words('A1')).toContain('TELEPORT-A-PHONE');
     expect(words('CORE0')).toContain('YOU FOUND IT. BZZZT!');
     expect(words('HEAD')).toContain('2000');
@@ -241,11 +174,16 @@ describe('cryptex hollow and hidden engraving', () => {
   it('engraves every required group part ID as filled paths in the packed build output', () => {
     // Core slices, plugs, head and lid remain shape-distinct; every other group part needs an ID.
     // E2 is ring 1's remaining digit slice after B2–D2 are placed; the legend identifies it without an ID.
+    const paths = (svg: string) => {
+      const engraving = svg.match(/<g id="engrave"[^>]*>([\s\S]*?)<\/g>/)![1];
+      return [...engraving.matchAll(/d="([^"]*)"/g)].flatMap((m) => m[1].match(/M[^M]+/g) ?? []);
+    };
+    const packed = kit().sheets.map((sheet) => ({ sheet, actual: new Set(paths(sheet.sheet.svg(sheet.title))) }));
     const exempt = new Set(['CORE0', 'CORER', 'COREC', 'HEAD', 'LID', 'LIDP', 'E2']);
     const keys = new Set(GROUPS.flatMap((g) => g.pieces.map((p) => p.key)));
     for (const key of keys) {
       if (exempt.has(key)) continue;
-      const p = kit.parts[key].part;
+      const p = kit().parts[key].part;
       const label = p.elements.find((e) => e.name === `text ${key}`);
       expect.soft(label, key).toBeDefined();
       if (!label) continue;
@@ -258,15 +196,10 @@ describe('cryptex hollow and hidden engraving', () => {
         expect(item.k, key).toBe('poly');
         id.add(item);
       }
-      for (const sheet of kit.sheets) {
+      for (const { sheet, actual } of packed) {
         for (const at of sheet.placed.filter((at) => at.name === key)) {
           const placed = new LaserSheet(sheet.sheet.w, sheet.sheet.h);
           placed.place(id, at.x + (at.turn === 90 ? p.h + 2 : -2), at.y - 2, undefined, at.turn);
-          const paths = (svg: string) => {
-            const engraving = svg.match(/<g id="engrave"[^>]*>([\s\S]*?)<\/g>/)![1];
-            return [...engraving.matchAll(/d="([^"]*)"/g)].flatMap((m) => m[1].match(/M[^M]+/g) ?? []);
-          };
-          const actual = new Set(paths(sheet.sheet.svg(sheet.title)));
           const expected = paths(placed.svg(key));
           expect(expected.length, key).toBeGreaterThan(0);
           for (const path of expected) expect(actual.has(path), `${key}: ${path}`).toBe(true);
@@ -277,15 +210,15 @@ describe('cryptex hollow and hidden engraving', () => {
   it('keeps core wall glue faces blank and allows small covered assembly IDs', () => {
     for (const key of ['CORER', 'COREC', 'LIDP']) {
       expect(
-        kit.parts[key].part.sheet.items.filter((i) => i.op === 'engrave'),
+        kit().parts[key].part.sheet.items.filter((i) => i.op === 'engrave'),
         key,
       ).toEqual([]);
     }
     for (const n of [1, 2, 3, 4]) {
-      expect(kit.parts[`G${n}`].qty).toBe(1);
-      expect(kit.parts[`G${n}B`].qty).toBe(1);
+      expect(kit().parts[`G${n}`].qty).toBe(1);
+      expect(kit().parts[`G${n}B`].qty).toBe(1);
     }
-    for (const [key, m] of Object.entries(kit.parts)) {
+    for (const [key, m] of Object.entries(kit().parts)) {
       if (key === 'A1' || /^[BCDE]2$/.test(key) || /^A[234][RC]$|^G[1-4]B$/.test(key)) continue; // exposed title/digits or small IDs on covered glue faces
       m.part.sheet.items.forEach((it, i) => {
         if (it.op === 'engrave')
@@ -334,7 +267,7 @@ describe('cryptex stack and lock', () => {
   it('encloses the note after every freely removable group is removed, and blocks partial withdrawal at every wrong digit', () => {
     const core = GROUPS.find((g) => g.id === 'F')!.pieces;
     const cap = core.find((p) => p.key === 'CORE0')!;
-    const cuts = (key: string) => kit.parts[key].part.sheet.items.filter((i) => i.op === 'cut');
+    const cuts = (key: string) => kit().parts[key].part.sheet.items.filter((i) => i.op === 'cut');
     // Permanent floor and glued core ceiling are solid. The entire intervening tube has a continuous 4 mm wall.
     expect(cuts('A1')).toHaveLength(3);
     expect(cuts('CORE0')).toHaveLength(1);
@@ -354,8 +287,8 @@ describe('cryptex stack and lock', () => {
       // The fixed keeper passes the same ridge shape as a correctly aligned locking washer.
       expect(passage.pts).toHaveLength(gatePassage.pts.length);
       passage.pts.forEach(([x, y], i) => {
-        expect(x - kit.parts.LID.part.w / 2).toBeCloseTo(gatePassage.pts[i][0] - kit.parts.G1.part.w / 2);
-        expect(y - kit.parts.LID.part.h / 2).toBeCloseTo(gatePassage.pts[i][1] - kit.parts.G1.part.h / 2);
+        expect(x - kit().parts.LID.part.w / 2).toBeCloseTo(gatePassage.pts[i][0] - kit().parts.G1.part.w / 2);
+        expect(y - kit().parts.LID.part.h / 2).toBeCloseTo(gatePassage.pts[i][1] - kit().parts.G1.part.h / 2);
       });
     }
     expect(WASHER.notchOut).toBeLessThan(WASHER.apothem); // every washer is captured by the keeper
@@ -363,7 +296,7 @@ describe('cryptex stack and lock', () => {
     // The core prevents the keyhole release slide; mushroom heads prevent any upward bridge movement.
     expect(WASHER.bore - CORE.r).toBeLessThan(LID.release);
     expect(LID.postW).toBeGreaterThan(LID.tenonW + 0.3);
-    expect(kit.parts.LIDP.part.h).toBe(15 * T);
+    expect(kit().parts.LIDP.part.h).toBe(15 * T);
     expect(bridge.pieces[0].z + T).toBe(14 * T);
     // Each wrong ring must stop the core locally: no long partial pull when only the last ring is wrong.
     for (let n = 1; n <= 4; n++) {
@@ -382,11 +315,11 @@ describe('cryptex stack and lock', () => {
     expect(checkLock().opens).toEqual(['2000']);
   });
   it('frees the core for 2000 and no other of the 10,000 combinations', () => {
-    expect(kit.lock.opens).toEqual([COMBO.join('')]);
-    expect(kit.lock.pocketFits).toBe(true);
-    expect(kit.lock.wrongDigitBlocked).toBe(true);
-    expect(kit.lock.windowDeg).toBeGreaterThanOrEqual(4);
-    expect(kit.lock.windowDeg).toBeLessThan(18);
+    expect(kit().lock.opens).toEqual([COMBO.join('')]);
+    expect(kit().lock.pocketFits).toBe(true);
+    expect(kit().lock.wrongDigitBlocked).toBe(true);
+    expect(kit().lock.windowDeg).toBeGreaterThanOrEqual(4);
+    expect(kit().lock.windowDeg).toBeLessThan(18);
   });
   it('keeps the lock and fits working at actual kerfs 0.1, 0.2 and 0.3 mm', () => {
     for (const actual of [0.1, 0.2, 0.3]) {

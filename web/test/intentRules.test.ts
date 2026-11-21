@@ -1,5 +1,12 @@
+import { fileURLToPath } from 'node:url';
+import { GameSim, readDisk } from '@lewismoten/gamemaker-sandbox-tools/kit/gameSim';
+import { parseGame, serializeGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import movesIntent from '../../games/kit-moves/intent.json';
+import duckIntent from '../../games/duck/intent.json';
+import { ORIGIN } from '../../games/kit/starter/map';
+import { SCAN } from '../../games/kit/starter/ids';
 import { describe, expect, it } from 'vitest';
-import { EventLog } from '@lewismoten/gamemaker-sandbox-tools/kit/eventLog';
+import { EventLog, scanOf } from '@lewismoten/gamemaker-sandbox-tools/kit/eventLog';
 import { checkLog, parseIntent, winnableWithout, type LevelIntent } from '../../games/kit/intentRules';
 
 const level = (rules: LevelIntent['rules']): LevelIntent => ({ scene: 2, teaches: 'a lesson', rules });
@@ -90,5 +97,50 @@ describe('winnableWithout', () => {
     expect(f.text).toContain('winnable without Enter');
     expect(f.text).toContain('remove the rule');
     expect(f.strict).toBe(false);
+  });
+});
+
+describe('Starter move lessons on disk', () => {
+  const lessons = [
+    { id: 'kit-moves', intent: movesIntent, scene: 2, move: 'Up', x: 28, y: 20 },
+    { id: 'kit-moves', intent: movesIntent, scene: 3, move: 'Enter', x: 16, y: 10 },
+    { id: 'duck', intent: duckIntent, scene: 2, move: 'Down', x: 50, y: 10 },
+  ] as const;
+
+  it.each(lessons)('$id scene $scene requires $move before the exit and blocks repeated hops', async ({ id, intent, scene, move, x, y }) => {
+    const lesson = parseIntent(intent).levels.find((l) => l.scene === scene)!;
+    const requirement = { rule: 'before', a: `key:${move}`, b: 'leave', strict: true };
+    expect(lesson.rules).toContainEqual(requirement);
+    expect(lesson.rules).toContainEqual({ rule: 'needs', move, strict: true });
+    const state = sim(scene);
+    const log = new EventLog(state);
+    state.scene = 1;
+    log.tick(0, scene, 'link');
+    expect(checkLog(lesson, log).map((f) => f.rule)).toContainEqual(requirement);
+
+    // Start both attempts at the obstacle, even if a banned-key explorer stalls in an earlier scene.
+    const files = readDisk(fileURLToPath(new URL(`../../games/${id}/disk/`, import.meta.url)));
+    const name = [...files.keys()].find((n) => n.endsWith('.gam'))!;
+    const game = parseGame(files.get(name)!);
+    game.scenes[0].links[0] = { ...game.scenes[0].links[0], toScene: scene, to: { x: ORIGIN + x, y: ORIGIN + y } };
+    files.set(name, serializeGame(game));
+    const attempt = async (taught: boolean) => {
+      const run = new GameSim(files);
+      run.press(SCAN.right);
+      const key = taught ? scanOf(move)! : SCAN.space;
+      let crossed = false;
+      for (let t = 0; t < 150; t++) {
+        const pulse = !taught || move === 'Enter';
+        if (t === 0 || (pulse && t % 8 === 0)) run.press(key);
+        else if (pulse && t % 8 === 2) run.release(key);
+        const result = await run.tick();
+        // Lift above the cliff, dash out of the tunnel, or crouch past the awning.
+        crossed = move === 'Up' ? run.pos.y < ORIGIN + 5 : run.pos.x >= ORIGIN + (move === 'Down' ? 52 : 19);
+        if (crossed || result) break;
+      }
+      return crossed;
+    };
+    expect(await attempt(false)).toBe(false);
+    expect(await attempt(true)).toBe(true);
   });
 });
