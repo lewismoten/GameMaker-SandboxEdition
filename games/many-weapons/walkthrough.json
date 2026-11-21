@@ -8,7 +8,7 @@
  "segments": [
   {
    "scene": 2,
-   "keys": "AU0KzSscA5w8TSjNA00PzSscA5w8TSPNAxwDnDxNHs0rHAOcPEtBywNLFMsDTVXNAxwDnDxNLc0DTQ=="
+   "keys": "AU0IzS8cA5w8TSjNA00PzSscA5w8TSPNAxwDnDxNHs0rHAOcPEtBywNLFMsDTVXNAxwDnDxNLc0DTQ=="
   },
   {
    "scene": 3,
@@ -27,7 +27,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 11625,
+  "frames": 11632,
   "chapters": [
    {
     "title": "Opening",
@@ -46,18 +46,18 @@
    },
    {
     "title": "Level 2: Star or Flame",
-    "frame": 5203,
-    "time": 86716.66666666901
+    "frame": 5210,
+    "time": 86833.33333333571
    },
    {
     "title": "Ending",
-    "frame": 7858,
-    "time": 130966.6666666819
+    "frame": 7865,
+    "time": 131083.3333333486
    },
    {
     "title": "Credits",
-    "frame": 10070,
-    "time": 167833.3333333272
+    "frame": 10077,
+    "time": 167949.9999999938
    }
   ]
  }

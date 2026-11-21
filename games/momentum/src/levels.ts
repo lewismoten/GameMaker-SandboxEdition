@@ -89,7 +89,8 @@ function glide(book: Book, signs: Record<SignName, Sign>): StarterMap {
   const g = new Grid(L1.width, G + 3);
   g.row(G, 0, L1.width - 1, 'G').fill(0, G + 1, L1.width, 2, 'D');
   g.col(0, 0, G - 1, 'X').col(L1.width - 1, 0, G - 1, 'X');
-  g.put(3, G - 2, 's').put(3, G - 1, 'S');
+  g.row(G - 1, 2, 3, 'G');
+  g.put(3, G - 3, 's').put(3, G - 2, 'S');
   g.put(L1.exit, G - 2, 'e').put(L1.exit, G - 1, 'E');
   for (const x of L1.coins) g.put(x, G - 1, 'c');
   scenery(
@@ -118,7 +119,8 @@ function runUp(book: Book, signs: Record<SignName, Sign>): StarterMap {
   g.row(G, 0, L2.width - 1, 'G').fill(0, G + 1, L2.width, rows - G - 1, 'D');
   g.col(0, 0, G - 1, 'X').col(L2.width - 1, 0, G - 1, 'X');
   for (const [a, b] of L2.pits) g.fill(a, G, b - a + 1, L2.depth, ' ');
-  g.put(3, G - 2, 's').put(3, G - 1, 'S');
+  g.row(G - 1, 2, 3, 'G');
+  g.put(3, G - 3, 's').put(3, G - 2, 'S');
   g.put(L2.exit, G - 2, 'e').put(L2.exit, G - 1, 'E');
   for (const [x, y] of L2.coins) g.put(x, y, 'c');
   scenery(

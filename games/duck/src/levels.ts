@@ -152,7 +152,8 @@ function awning(m: StarterMap, a: number, b: number, row: number, ground: number
 function headHeight(book: Book, signs: Record<SignName, Sign>): StarterMap {
   const G = L1.ground;
   const g = field(L1.width, G, G + 3);
-  g.put(3, G - 2, 's').put(3, G - 1, 'S');
+  g.row(G - 2, 2, 3, 'G').row(G - 1, 2, 3, 'D');
+  g.put(3, G - 4, 's').put(3, G - 3, 'S');
   g.put(L1.exit, G - 2, 'e').put(L1.exit, G - 1, 'E');
   for (const x of L1.coins) g.put(x, G - 1, 'c');
   scenery(
@@ -187,7 +188,8 @@ function headHeight(book: Book, signs: Record<SignName, Sign>): StarterMap {
 function highOrLow(book: Book, signs: Record<SignName, Sign>): StarterMap {
   const G = L2.ground;
   const g = field(L2.width, G, G + 3);
-  g.put(3, G - 2, 's').put(3, G - 1, 'S');
+  g.row(G - 2, 2, 3, 'G').row(G - 1, 2, 3, 'D');
+  g.put(3, G - 4, 's').put(3, G - 3, 'S');
   g.put(L2.exit, G - 2, 'e').put(L2.exit, G - 1, 'E');
   for (const [x, y] of L2.coins) g.put(x, y, 'c');
   scenery(

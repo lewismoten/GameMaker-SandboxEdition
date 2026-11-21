@@ -111,7 +111,8 @@ function twoDoors(book: Book, signs: Record<SignName, Sign>): StarterMap {
   const g = new Grid(L1.width, G + 3);
   g.row(G, 0, L1.width - 1, 'G').fill(0, G + 1, L1.width, 2, 'D');
   g.col(0, 0, G - 1, 'X').col(L1.width - 1, 0, G - 1, 'X');
-  g.put(19, G - 2, 's').put(19, G - 1, 'S');
+  g.row(G - 1, 18, 19, 'G');
+  g.put(19, G - 3, 's').put(19, G - 2, 'S');
   for (const x of L1.doors) g.put(x, G - 2, 'e').put(x, G - 1, 'E');
   for (const [x, y] of L1.coins) g.put(x, y, 'c');
   scenery(
@@ -127,7 +128,7 @@ function twoDoors(book: Book, signs: Record<SignName, Sign>): StarterMap {
   );
   const m = new StarterMap(book, g.rows());
   stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 3, 9, signs.fast, 1, { maxPostHeight: 1 });
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 18, 10, signs.pick, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 18, 9, signs.pick, 1, { maxPostHeight: 1 });
   stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 32, 9, signs.big, 1, { maxPostHeight: 1 });
   return m;
 }

@@ -40,6 +40,8 @@ export const CREDITS = withCreditPage(
 
 Design, pixels, beeps and levels by Claude Sonnet 5.5, an AI model made by Anthropic.
 
+Raised starts and camera framing by OpenAI Codex.
+
 Micro plaques by OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten.
 
 Lesson obstacles by OpenAI Codex.

@@ -8,7 +8,7 @@
  "segments": [
   {
    "scene": 2,
-   "keys": "AUsUyytLFMsrTTzNK00RzQNN"
+   "keys": "AUsUyytLFMsrTSU5ArkbzStNEc0DTQ=="
   },
   {
    "scene": 4,
@@ -35,7 +35,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 10780,
+  "frames": 10797,
   "chapters": [
    {
     "title": "Opening",
@@ -54,23 +54,23 @@
    },
    {
     "title": "Level 2: The Same Climb (Big Hops)",
-    "frame": 3325,
-    "time": 55416.66666666433
+    "frame": 3342,
+    "time": 55699.99999999762
    },
    {
     "title": "Level 3: The Open Road (still Big Hops)",
-    "frame": 5655,
-    "time": 94250.00000000454
+    "frame": 5672,
+    "time": 94533.33333333796
    },
    {
     "title": "Ending",
-    "frame": 7015,
-    "time": 116916.6666666778
+    "frame": 7032,
+    "time": 117200.00000001122
    },
    {
     "title": "Credits",
-    "frame": 9225,
-    "time": 153750.00000000207
+    "frame": 9242,
+    "time": 154033.33333333523
    }
   ]
  }
