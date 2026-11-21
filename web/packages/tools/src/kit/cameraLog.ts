@@ -81,11 +81,12 @@ export class CameraLog {
 
   /**
    * The top map row of the screen with the hero drawn as `hero` (renderRegion's sprites; the lowest one in the first one's column
-   * is his own block). A row with a fraction is real: renderRegion takes it.
+   * is his own block). For a packed level, rowShift is the offset added to its rows in the shared world.
    */
-  top(level: number, hero: { x: number; y: number }[]): number {
+  top(level: number, hero: { x: number; y: number }[], rowShift = 0): number {
     const col = hero[0].x;
-    return this.at(level, col, Math.max(...hero.filter((s) => s.x === col).map((s) => s.y))).top;
+    const feet = Math.max(...hero.filter((s) => s.x === col).map((s) => s.y));
+    return this.at(level, col, feet + rowShift).top - rowShift;
   }
 }
 
