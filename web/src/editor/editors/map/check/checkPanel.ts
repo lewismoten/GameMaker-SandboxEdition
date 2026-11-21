@@ -14,7 +14,7 @@
 // (the author's heat map and a play for the walkthrough, in one session), and watching the
 // bot's route or the author's play.
 import './checkPanel.css';
-import { passesThrough } from '../../integrator/sceneRole';
+import { levelCheckNote } from '../../integrator/sceneRole';
 import { h, clear, checkField, numberField, selectField, toast } from '../../../core/ui';
 import type { Project } from '../../../core/project';
 import type { MapSelection } from '../tools/selection';
@@ -400,9 +400,7 @@ export function checkPanel(host: CheckHost): {
   const passNote = (): string => {
     if (host.scene === undefined) return '';
     try {
-      return passesThrough(project.game(), host.scene)
-        ? ' This scene is a talk page or fade: the hero arrives on one of its own links and leaves at once, so findings about getting through a level don’t apply to it.'
-        : '';
+      return levelCheckNote(project.game(), host.scene);
     } catch {
       return '';
     }
