@@ -19,6 +19,7 @@ type Poster = NonNullable<BoxExtras['poster']>;
 
 let scene: HTMLElement | undefined;
 let games: CatalogEntry[] = [];
+let generation = 0;
 let shown: string | undefined;
 const drawn = new Map<string, Promise<HTMLCanvasElement | undefined>>();
 
@@ -28,7 +29,11 @@ export function setPosterWall(wall: HTMLElement, entries: CatalogEntry[]): void 
   games = entries;
   // leaving the desk lets go of its scene (this module outlives the desk)
   deskLifetime().addEventListener('abort', () => {
-    if (scene === wall) ((scene = undefined), (shown = undefined));
+    if (scene === wall) {
+      generation++;
+      scene = undefined;
+      shown = undefined;
+    }
   });
 }
 
@@ -167,8 +172,8 @@ export async function showWallPoster(gameId: string): Promise<void> {
   const entry = games.find((g) => g.id === gameId);
   const poster = entry && posterOf(entry);
   if (!scene || !entry || !poster) return hideWallPoster();
+  const request = ++generation;
   if (shown === gameId && scene.querySelector('.wall-poster')) return;
-  shown = gameId;
   let drawing = drawn.get(gameId);
   if (!drawing) {
     drawing = drawPoster(entry, poster)
@@ -180,8 +185,9 @@ export async function showWallPoster(gameId: string): Promise<void> {
     drawn.set(gameId, drawing);
   }
   const canvas = await drawing;
-  if (shown !== gameId) return;
+  if (request !== generation || !scene) return;
   scene.querySelector('.wall-poster')?.remove();
+  shown = canvas ? gameId : undefined;
   if (!canvas) return;
   // as big as fits in the black-light poster's frame (200 x 204 on the stage), its shape kept
   const fit = Math.min(200 / canvas.width, 204 / canvas.height);
@@ -207,6 +213,7 @@ export async function showWallPoster(gameId: string): Promise<void> {
 
 /** Takes the poster down. */
 export function hideWallPoster(): void {
+  generation++;
   shown = undefined;
   const p = scene?.querySelector<HTMLElement>('.wall-poster');
   if (!p) return;
