@@ -9,6 +9,7 @@ import { inflateRawSync } from 'node:zlib';
 import { listZip } from '@lewismoten/gamemaker-sandbox-archives/zip';
 import { unpackFiles } from '@lewismoten/gamemaker-sandbox-tools/pack/meshPack';
 import { GUIDE_SECTIONS } from './guideSections';
+import { chapterById, loadChapter } from '../programmersGuide/chapters';
 import { CHAPTERS } from './ultimate/plan';
 import { STARTER_ORDER } from '../project/starter';
 import { pagesA } from './printables/dexReportPagesA';
@@ -16,6 +17,9 @@ import { pagesB } from './printables/dexReportPagesB';
 import { pagesC } from './printables/dexReportPagesC';
 import { kitOf } from '../desk/boxes/laserKits';
 import { phoneAttachments } from './printables/feelieItems';
+import { BRIEF_STORY_ZINE_VOLUMES } from './zine/briefStoryZine';
+import { phoneChapters } from './printables/phoneBook';
+import { blockText } from './printables/markdownBlocks';
 
 const here = import.meta.dirname;
 const src = (f: string) => readFileSync(join(here, f), 'utf8');
@@ -119,6 +123,35 @@ describe('the Guide’s links', () => {
   });
 });
 
+it('opens the Programmer’s Guide chapter named in the Under the Hood manual', async () => {
+  const manual = JSON.parse(src('../../../games/under-the-hood/manual.json')) as { pages: { html: string }[] };
+  const reference = manual.pages
+    .map((p) => p.html)
+    .join('')
+    .match(/chapter (\d+) of the Programmer’s Guide, <a href="#\/programmers-guide\/([^"]+)">([^<]+)<\/a>/);
+  expect(reference).toBeTruthy();
+  const [, no, id, title] = reference!;
+  expect(chapterById(id)).toMatchObject({ no, title });
+  expect((await loadChapter(id)).trim()).not.toBe('');
+});
+
+it('indexes each Tiny Pockets story under the volume that prints it', () => {
+  const entries = BRIEF_STORY_ZINE_VOLUMES.flatMap((v) => v.pages.filter((p) => p.kind === 'story').map((p) => `Vol. ${v.number} · ${p.title}`));
+  const index = BRIEF_STORY_ZINE_VOLUMES.flatMap((v) => v.pages.filter((p) => p.kind === 'index').flatMap((p) => p.text.split('\n')));
+  expect(index).toEqual(entries);
+});
+
+it('sends the phone builder to the front-panel step and the available parts lists', () => {
+  const chapters = phoneChapters(src('../../../games/year2000/phone/README.md'), src('../../../games/year2000/phone/PARTS.md'));
+  const chapter = (head: string) => chapters.find((c) => c.head === head)!.blocks;
+  const steps = chapter('Build order for a beginner').find((b) => b.tag === 'ol');
+  expect(steps?.tag === 'ol' && steps.items[5]?.[0]).toMatch(/^Front:/);
+  expect(chapter('Programming the PIC').map(blockText).join(' ')).toContain('step 6 of Build order for a beginner');
+  expect(chapter('Checked and not checked').map(blockText).join(' ')).toContain('Parts list chapter and the Junior Lab parts list CSV');
+  expect(chapter('Parts list').some((b) => b.tag === 'table')).toBe(true);
+  expect(phoneAttachments().some((a) => a.file === 'phone-parts-list-junior-lab.csv')).toBe(true);
+});
+
 describe('the Owner’s Guide', () => {
   const files = ['dosManualFront.ts', 'dosManualDesign.ts', 'dosManualBack.ts'].map(src);
   // Each page is a cover or page('running head', `body`); the page's number is its place in the booklet.
@@ -174,15 +207,21 @@ describe('Dex’s report', () => {
 describe.skipIf(!existsSync(join(pub, 'laser')))('the files the Feelies offer (built output)', () => {
   it('exist for every laser kit: its pictures, sheets and downloads', () => {
     let kits = 0;
-    for (const id of readdirSync(join(pub, 'laser'))) {
-      for (const sub of ['', 'stage-box/', 'plowed-street/', 'cryptex/', 'patch/']) {
+    for (const game of readdirSync(join(pub, 'laser'), { withFileTypes: true })) {
+      if (!game.isDirectory()) continue;
+      const id = game.name;
+      const gameDir = join(pub, 'laser', id);
+      const subfolders = readdirSync(gameDir, { withFileTypes: true })
+        .filter((d) => d.isDirectory())
+        .map((d) => d.name);
+      for (const sub of ['', ...subfolders]) {
         const dir = join(pub, 'laser', id, sub);
         if (!existsSync(join(dir, 'manifest.json'))) continue;
         const kit = kitOf(JSON.parse(readFileSync(join(dir, 'manifest.json'), 'utf8')), dir);
-        if (!kit) continue;
+        if (!kit) throw new Error(`Unrecognized kit manifest in ${dir}`);
         kits++;
         const files = [...kit.previews.map((p) => p.file), ...kit.downloads.map((d) => d.file), ...(kit.sheets ?? []).map((s) => s.preview)];
-        for (const f of files) expect(existsSync(resolve(dir, f)), `laser/${id}/${sub}${f}`).toBe(true);
+        for (const f of files) expect(existsSync(resolve(dir, f)), resolve(dir, f)).toBe(true);
       }
     }
     expect(kits).toBeGreaterThan(0);
@@ -221,7 +260,8 @@ describe.skipIf(!existsSync(join(pub, 'laser')))('the files the Feelies offer (b
         board.some((n) => n.startsWith(`${b}/gerbers/`)),
         `${b} Gerbers`,
       ).toBe(true);
-      expect(board, `${b} firmware for the book’s programming step`).toContain(`${b}/firmware/phone.asm`);
+      expect(board, `${b} firmware for the book’s programming step`).toContain(`${b}/firmware/phone.hex`);
+      expect(board).toContain(`${b}/firmware/phone.asm`);
     }
   });
 });
