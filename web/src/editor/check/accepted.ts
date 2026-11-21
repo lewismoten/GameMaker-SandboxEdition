@@ -25,33 +25,40 @@ export const findingKey = (f: Pick<Finding, 'check' | 'title' | 'where'>): strin
 export type AcceptedEntry = string | { finding: string; why: string };
 
 /** The finding key of an entry, whichever shape it has. */
-export const acceptedKey = (e: AcceptedEntry): string => (typeof e === 'string' ? e : e.finding);
+const acceptedKey = (e: AcceptedEntry): string => (typeof e === 'string' ? e : e.finding);
 
 /** The reason an entry carries, or '' when it is a bare key or its reason is blank. */
 export const acceptedWhy = (e: AcceptedEntry): string => (typeof e !== 'string' && typeof e?.why === 'string' ? e.why.trim() : '');
 
+function validEntry(entry: unknown): entry is AcceptedEntry {
+  return (
+    typeof entry === 'string' ||
+    (typeof entry === 'object' && entry !== null && 'finding' in entry && typeof entry.finding === 'string' && 'why' in entry && typeof entry.why === 'string')
+  );
+}
+
 /** The keys of a list of entries (a malformed entry is skipped). */
-export const acceptedKeys = (list: Iterable<AcceptedEntry>): string[] =>
-  [...list].filter((e) => typeof e === 'string' || typeof e?.finding === 'string').map(acceptedKey);
+export const acceptedKeys = (list: Iterable<AcceptedEntry>): string[] => [...list].filter(validEntry).map(acceptedKey);
 
 /** The keys of entries that give no reason (advice only: a reason is optional). */
 export const entriesWithoutReason = (list: Iterable<AcceptedEntry>): string[] =>
-  [...list].filter((e) => (typeof e === 'string' || typeof e?.finding === 'string') && acceptedWhy(e) === '').map(acceptedKey);
+  [...list].filter((e) => validEntry(e) && acceptedWhy(e) === '').map(acceptedKey);
 
 /** The reason kept for a finding key, or ''. */
 export const reasonFor = (list: Iterable<AcceptedEntry>, key: string): string => {
-  for (const e of list) if (typeof e !== 'string' && e?.finding === key) return acceptedWhy(e);
+  for (const e of list) if (validEntry(e) && typeof e !== 'string' && e.finding === key) return acceptedWhy(e);
   return '';
 };
 
-export const acceptedFindings = (project: Project): AcceptedEntry[] => project.extras<AcceptedEntry[]>(project.gam, SECTION, []);
+export const acceptedFindings = (project: Project): AcceptedEntry[] => project.extras<unknown[]>(project.gam, SECTION, []).filter(validEntry);
 
 /** Accepts (or, with `on` false, un-accepts) a finding by its key; a typed reason is kept with it (the old shape stays when there is none). */
-export function setAccepted(project: Project, key: string, on = true, why = ''): void {
-  const list = acceptedFindings(project).filter((e) => acceptedKey(e) !== key);
-  const reason = why.trim();
+export function setAccepted(project: Project, key: string, on = true, why?: string): void {
+  const previous = acceptedFindings(project);
+  const list = previous.filter((e) => acceptedKey(e) !== key);
+  const reason = why === undefined ? reasonFor(previous, key) : why.trim();
   if (on) list.push(reason ? { finding: key, why: reason } : key);
-  list.sort((a, b) => acceptedKey(a).localeCompare(acceptedKey(b)));
+  list.sort((a, b) => (acceptedKey(a) < acceptedKey(b) ? -1 : acceptedKey(a) > acceptedKey(b) ? 1 : 0));
   project.setExtras(project.gam, SECTION, list.length ? list : undefined);
 }
 

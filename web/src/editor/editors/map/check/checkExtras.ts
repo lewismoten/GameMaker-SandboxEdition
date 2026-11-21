@@ -19,7 +19,8 @@ interface ExtrasHost {
   /** The findings the panel holds (its last check's). */
   findings: () => Finding[];
   /** The panel's list item for a finding, with its go, fix and accept buttons. */
-  item: (f: Finding, accepted: boolean) => HTMLElement;
+  item: (f: Finding, accepted: boolean, refresh: () => void) => HTMLElement;
+  render(): void;
   /** The kind the panel shows now. */
   filter: () => Kind | 'all';
   /** A Play and record session added `ticks` of play to this map's heat map. */
@@ -38,7 +39,7 @@ export function checkExtras(host: ExtrasHost): HTMLElement {
       title: 'Every finding in a large window, by kind, with a CSV file and a printable checklist to fix from',
       onclick: () =>
         void import('../../../widgets/checkReport').then((m) =>
-          m.openReport({ project, map: host.file, findings: host.findings, item: host.item, filter: host.filter() }),
+          m.openReport({ project, map: host.file, findings: host.findings, item: host.item, filter: host.filter() }).then(() => host.render()),
         ),
     },
     '📋 Open as a report…',

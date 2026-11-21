@@ -133,9 +133,6 @@
 .lc-panel [hidden] {
   display: none;
 }
-.lc-fix + .lc-accept {
-  margin-left: 4px;
-}
 .lc-accepted {
   display: flex;
   flex-direction: column;
