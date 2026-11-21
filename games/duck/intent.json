@@ -3,7 +3,24 @@
     {
       "scene": 2,
       "teaches": "pass each bird by ducking (Down)",
-      "rules": [{ "rule": "uses", "move": "Down", "min": 3 }, { "rule": "needs", "move": "Down" }]
+      "rules": [
+        {
+          "rule": "uses",
+          "move": "Down",
+          "min": 3
+        },
+        {
+          "rule": "needs",
+          "move": "Down",
+          "strict": true
+        },
+        {
+          "rule": "before",
+          "a": "key:Down",
+          "b": "leave",
+          "strict": true
+        }
+      ]
     }
   ]
 }

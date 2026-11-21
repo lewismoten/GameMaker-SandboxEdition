@@ -61,13 +61,14 @@ async function rightTo(bot: StarterBot, to: number, max = 300): Promise<Result> 
 
 /** The highest (smallest) row Kit reaches while `key` is held `ticks` ticks and then let go, until he lands again. */
 async function peak(bot: StarterBot, key: number, ticks: number): Promise<number> {
-  let top = row(bot);
+  const start = row(bot);
+  let top = start;
   bot.sim.press(key);
   for (let t = 0; t < ticks + 120; t++) {
     if (t === ticks) bot.sim.release(key);
     if (await bot.tick()) break;
     top = Math.min(top, row(bot));
-    if (t > ticks + 4 && row(bot) >= L1.ground - 1 - 0.01) break;
+    if (t > ticks + 4 && row(bot) >= start - 0.01) break;
   }
   bot.sim.release(key);
   await bot.land();
@@ -97,7 +98,7 @@ export async function tapAndHold(bot: StarterBot): Promise<void> {
   await must(bot, bot.walk(L1.cliff - 2, 'the cliff'), 'to the cliff');
   const short = await peak(bot, SCAN.up, 8);
   bot.say(`Up held 8 ticks: highest row ${short.toFixed(1)}`);
-  if (short > feet - 1 || short < L1.cliffTop)
+  if (short > L1.wellFloor - 2 || short < L1.cliffTop)
     throw new Error(`a short Up should lift Kit but not as far as the cliff top; he reached row ${short.toFixed(1)}`);
   await must(bot, bot.wait(20), 'a look');
   // Up held: he keeps going until he is above the cliff
@@ -175,6 +176,8 @@ export async function oncePerPress(bot: StarterBot): Promise<void> {
   const [p1, p2, p3] = L2.pits;
   // one dash clears the first gap; walking into it does not
   await crossGap(bot, p1, { right: true, hop: false, presses: 0 }, { right: false, hop: false, presses: 1 }, 'the first gap');
+  await must(bot, bot.walk(16, 'the headwind'), 'to the tunnel');
+  await must(bot, holdFor(bot, ENTER, 8), 'dash through the headwind');
   await must(bot, bot.walk(21, 'the second sign'), 'to the sign');
   await must(bot, bot.wait(LOOK), 'reading the sign');
   // a hop with Right held falls short of the second gap; a hop and a dash clears it
