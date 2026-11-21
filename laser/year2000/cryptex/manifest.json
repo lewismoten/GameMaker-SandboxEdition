@@ -1,0 +1,1151 @@
+{
+  "kind": "kit",
+  "id": "cryptex",
+  "source": "53b37c3f1c9d13c6e14641b6ff5d416f5641e078",
+  "game": "year2000",
+  "title": "In The Year 2000!: Teleport-A-Phone Cryptex",
+  "blurb": "A laser-cut cryptex with four hollow rings of digits. Dial the year the game is named for and the core slides out, with room inside for a note.",
+  "material": {
+    "thickness": 3.18,
+    "description": "Proofgrade 1/8 in plywood or MDF",
+    "kerf": 0.2,
+    "bed": {
+      "w": 495,
+      "h": 279
+    },
+    "stock": "12x12",
+    "size": {
+      "w": 304.8,
+      "h": 304.8
+    },
+    "margin": {
+      "x": 6.5,
+      "y": 12.9
+    },
+    "rim": 4
+  },
+  "fitting": [
+    {
+      "stock": "6x12",
+      "sheets": 4,
+      "materialMm2": 185806.08000000002,
+      "materialIn2": 288.00000000000006,
+      "label": "fits 4 sheets of 6x12"
+    },
+    {
+      "stock": "8x12",
+      "sheets": 3,
+      "materialMm2": 185806.08000000002,
+      "materialIn2": 288.00000000000006,
+      "label": "fits 3 sheets of 8x12"
+    },
+    {
+      "stock": "12x12",
+      "sheets": 2,
+      "materialMm2": 185806.08000000002,
+      "materialIn2": 288.00000000000006,
+      "label": "fits 2 sheets of 12x12"
+    },
+    {
+      "stock": "12x20",
+      "sheets": 1,
+      "materialMm2": 154838.4,
+      "materialIn2": 240,
+      "label": "fits 1 sheet of 12x20"
+    }
+  ],
+  "fit": "fits 2 sheets of 12x12",
+  "cavity": {
+    "coreDiameter": 16,
+    "baseInnerRadius": 19.07647173578752,
+    "baseOuterRadius": 38
+  },
+  "sheets": [
+    {
+      "svg": "sheet-1.svg",
+      "preview": "sheet-1.png",
+      "title": "Sheet 1: 12x12 inch stock",
+      "w": 304.8,
+      "h": 304.8,
+      "parts": [
+        {
+          "name": "A1",
+          "x": 6.65,
+          "y": 13.049999999999999,
+          "w": 114,
+          "h": 114,
+          "turn": 0
+        },
+        {
+          "name": "LID",
+          "x": 6.65,
+          "y": 127.05003427924909,
+          "w": 114,
+          "h": 46,
+          "turn": 0
+        },
+        {
+          "name": "A2R",
+          "x": 6.650000000000001,
+          "y": 176.05,
+          "w": 98,
+          "h": 98,
+          "turn": 0
+        },
+        {
+          "name": "A3R",
+          "x": 105.65,
+          "y": 193.05,
+          "w": 98,
+          "h": 98,
+          "turn": 0
+        },
+        {
+          "name": "A4R",
+          "x": 123.65,
+          "y": 13.05,
+          "w": 98,
+          "h": 98,
+          "turn": 0
+        },
+        {
+          "name": "A5R",
+          "x": 159.65,
+          "y": 107.05000000000001,
+          "w": 98,
+          "h": 98,
+          "turn": 0
+        },
+        {
+          "name": "C1",
+          "x": 206.65,
+          "y": 199.05,
+          "w": 84,
+          "h": 84,
+          "turn": 0
+        },
+        {
+          "name": "A3C",
+          "x": 123.65,
+          "y": 107.05000000000001,
+          "w": 38.15294347157504,
+          "h": 38.15294347157504,
+          "turn": 0
+        },
+        {
+          "name": "A4C",
+          "x": 217.65,
+          "y": 13.05,
+          "w": 38.15294347157504,
+          "h": 38.15294347157504,
+          "turn": 0
+        },
+        {
+          "name": "A5C",
+          "x": 218.65,
+          "y": 70.05000000000001,
+          "w": 38.15294347157504,
+          "h": 38.15294347157504,
+          "turn": 0
+        },
+        {
+          "name": "G1",
+          "x": 247.6551462224238,
+          "y": 41.05514622242383,
+          "w": 37.85264007257762,
+          "h": 37.85264007257762,
+          "turn": 0
+        },
+        {
+          "name": "G1B",
+          "x": 248.6551462224238,
+          "y": 98.05514622242383,
+          "w": 37.85264007257762,
+          "h": 37.85264007257762,
+          "turn": 0
+        },
+        {
+          "name": "G2",
+          "x": 255.65514622242384,
+          "y": 162.05514622242384,
+          "w": 37.85264007257762,
+          "h": 37.85264007257762,
+          "turn": 0
+        },
+        {
+          "name": "CORE0",
+          "x": 4.149999999999998,
+          "y": 262.54999999999995,
+          "w": 29,
+          "h": 29,
+          "turn": 0
+        },
+        {
+          "name": "COREC",
+          "x": 77.65,
+          "y": 267.04999999999995,
+          "w": 24,
+          "h": 24,
+          "turn": 0
+        },
+        {
+          "name": "COREC",
+          "x": 95.65,
+          "y": 176.05,
+          "w": 24,
+          "h": 24,
+          "turn": 0
+        },
+        {
+          "name": "COREC",
+          "x": 121.65,
+          "y": 168.05,
+          "w": 24,
+          "h": 24,
+          "turn": 0
+        },
+        {
+          "name": "COREC",
+          "x": 194.65,
+          "y": 267.04999999999995,
+          "w": 24,
+          "h": 24,
+          "turn": 0
+        },
+        {
+          "name": "COREC",
+          "x": 257.65,
+          "y": 13.05,
+          "w": 24,
+          "h": 24,
+          "turn": 0
+        },
+        {
+          "name": "COREC",
+          "x": 267.65,
+          "y": 136.05,
+          "w": 24,
+          "h": 24,
+          "turn": 0
+        },
+        {
+          "name": "COREC",
+          "x": 272.65,
+          "y": 76.05000000000001,
+          "w": 24,
+          "h": 24,
+          "turn": 0
+        },
+        {
+          "name": "D1",
+          "x": 20.650000000000002,
+          "y": 190.05,
+          "w": 70,
+          "h": 70,
+          "turn": 0
+        },
+        {
+          "name": "A2C",
+          "x": 36.573528264212484,
+          "y": 205.9735282642125,
+          "w": 38.15294347157504,
+          "h": 38.15294347157504,
+          "turn": 0
+        },
+        {
+          "name": "D2",
+          "x": 119.65,
+          "y": 207.05,
+          "w": 70,
+          "h": 70,
+          "turn": 0
+        },
+        {
+          "name": "CORER",
+          "x": 140.15,
+          "y": 227.55,
+          "w": 29,
+          "h": 29,
+          "turn": 0
+        },
+        {
+          "name": "E1",
+          "x": 144.65,
+          "y": 34.05,
+          "w": 56,
+          "h": 56,
+          "turn": 0
+        },
+        {
+          "name": "HEAD",
+          "x": 152.65,
+          "y": 42.05,
+          "w": 40,
+          "h": 40,
+          "turn": 0
+        },
+        {
+          "name": "E2",
+          "x": 180.65,
+          "y": 128.05,
+          "w": 56,
+          "h": 56,
+          "turn": 0
+        },
+        {
+          "name": "CORER",
+          "x": 194.15,
+          "y": 141.55,
+          "w": 29,
+          "h": 29,
+          "turn": 0
+        },
+        {
+          "name": "LIDP",
+          "x": 245.65,
+          "y": 217.20000000000002,
+          "w": 6,
+          "h": 47.7,
+          "turn": 0
+        }
+      ]
+    },
+    {
+      "svg": "sheet-2.svg",
+      "preview": "sheet-2.png",
+      "title": "Sheet 2: 12x12 inch stock",
+      "w": 304.8,
+      "h": 304.8,
+      "parts": [
+        {
+          "name": "B1",
+          "x": 6.650000000000001,
+          "y": 13.05,
+          "w": 98,
+          "h": 98,
+          "turn": 0
+        },
+        {
+          "name": "B2",
+          "x": 6.650000000000001,
+          "y": 114.05000000000001,
+          "w": 98,
+          "h": 98,
+          "turn": 0
+        },
+        {
+          "name": "C2",
+          "x": 50.650000000000006,
+          "y": 207.05,
+          "w": 84,
+          "h": 84,
+          "turn": 0
+        },
+        {
+          "name": "G2B",
+          "x": 6.655146222423825,
+          "y": 208.05514622242384,
+          "w": 37.85264007257762,
+          "h": 37.85264007257762,
+          "turn": 0
+        },
+        {
+          "name": "G3",
+          "x": 6.655146222423825,
+          "y": 249.05514622242382,
+          "w": 37.85264007257762,
+          "h": 37.85264007257762,
+          "turn": 0
+        },
+        {
+          "name": "G3B",
+          "x": 86.65514622242382,
+          "y": 93.05514622242383,
+          "w": 37.85264007257762,
+          "h": 37.85264007257762,
+          "turn": 0
+        },
+        {
+          "name": "G4",
+          "x": 100.65514622242382,
+          "y": 13.05514622242383,
+          "w": 37.85264007257762,
+          "h": 37.85264007257762,
+          "turn": 0
+        },
+        {
+          "name": "G4B",
+          "x": 101.65514622242382,
+          "y": 171.05514622242384,
+          "w": 37.85264007257762,
+          "h": 37.85264007257762,
+          "turn": 0
+        },
+        {
+          "name": "COREC",
+          "x": 104.65,
+          "y": 68.05000000000001,
+          "w": 24,
+          "h": 24,
+          "turn": 0
+        },
+        {
+          "name": "LIDP",
+          "x": 52.65,
+          "y": 38.2,
+          "w": 6,
+          "h": 47.7,
+          "turn": 0
+        },
+        {
+          "name": "CORER",
+          "x": 41.15,
+          "y": 148.55,
+          "w": 29,
+          "h": 29,
+          "turn": 0
+        },
+        {
+          "name": "CORER",
+          "x": 78.15,
+          "y": 234.55,
+          "w": 29,
+          "h": 29,
+          "turn": 0
+        }
+      ]
+    }
+  ],
+  "assembly": "assembly.svg",
+  "legend": [
+    {
+      "id": "A1",
+      "what": "base stack A, layer 1: the floor (the core stands on it)",
+      "where": "center of the floor, under the core",
+      "qty": 1
+    },
+    {
+      "id": "A2R",
+      "what": "base stack A, layer 2, outer ring (glue on the layer below, edges flush)",
+      "where": "upper glued face, covered by the next base layer",
+      "qty": 1
+    },
+    {
+      "id": "A2C",
+      "what": "base stack A, layer 2, collar round the ridge slot (ridge slots lined up, on the marker side)",
+      "where": "upper glued face, covered by the next base layer",
+      "qty": 1
+    },
+    {
+      "id": "A3R",
+      "what": "base stack A, layer 3, outer ring (glue on the layer below, edges flush)",
+      "where": "upper glued face, covered by the next base layer",
+      "qty": 1
+    },
+    {
+      "id": "A3C",
+      "what": "base stack A, layer 3, collar round the ridge slot (ridge slots lined up, on the marker side)",
+      "where": "upper glued face, covered by the next base layer",
+      "qty": 1
+    },
+    {
+      "id": "A4R",
+      "what": "base stack A, layer 4, outer ring (glue on the layer below, edges flush)",
+      "where": "upper glued face, covered by the next base layer",
+      "qty": 1
+    },
+    {
+      "id": "A4C",
+      "what": "base stack A, layer 4, collar round the ridge slot (ridge slots lined up, on the marker side)",
+      "where": "upper glued face, covered by the next base layer",
+      "qty": 1
+    },
+    {
+      "id": "A5R",
+      "what": "base stack A, layer 5, outer ring (glue on the layer below, edges flush)",
+      "where": "top of the rim, under the loose ring",
+      "qty": 1
+    },
+    {
+      "id": "A5C",
+      "what": "base stack A, layer 5, collar round the ridge slot (ridge slots lined up, on the marker side)",
+      "where": "top of the collar, under the loose washers",
+      "qty": 1
+    },
+    {
+      "id": "E1",
+      "what": "ring 1 (stack E), plain slice: a rim under the top slice",
+      "where": "underside of the rim; blank reverse takes glue",
+      "qty": 1
+    },
+    {
+      "id": "(E2)",
+      "what": "E2: the remaining digit slice, no ID",
+      "where": "ring 1: the only digit slice left after B2, C2 and D2 are placed",
+      "qty": 1
+    },
+    {
+      "id": "D1",
+      "what": "ring 2 (stack D), plain slice: a rim under the top slice",
+      "where": "underside of the rim; blank reverse takes glue",
+      "qty": 1
+    },
+    {
+      "id": "D2",
+      "what": "ring 2 (stack D), top slice with the digits",
+      "where": "under the next ring up",
+      "qty": 1
+    },
+    {
+      "id": "C1",
+      "what": "ring 3 (stack C), plain slice: a rim under the top slice",
+      "where": "underside of the rim; blank reverse takes glue",
+      "qty": 1
+    },
+    {
+      "id": "C2",
+      "what": "ring 3 (stack C), top slice with the digits",
+      "where": "under the next ring up",
+      "qty": 1
+    },
+    {
+      "id": "B1",
+      "what": "ring 4 (stack B), plain slice: a rim under the top slice",
+      "where": "underside of the rim; blank reverse takes glue",
+      "qty": 1
+    },
+    {
+      "id": "B2",
+      "what": "ring 4 (stack B), top slice with the digits",
+      "where": "under the next ring up",
+      "qty": 1
+    },
+    {
+      "id": "G1B",
+      "what": "washer pair G1: ID-marked lower washer; glue mating faces together, outer decagon flats aligned",
+      "where": "upper glued face, covered by the upper washer",
+      "qty": 1
+    },
+    {
+      "id": "G1",
+      "what": "washer pair G1: artwork upper washer; glue mating faces together, outer decagon flats aligned",
+      "where": "top of the upper washer; blank reverse takes glue",
+      "qty": 1
+    },
+    {
+      "id": "G2B",
+      "what": "washer pair G2: ID-marked lower washer; glue mating faces together, outer decagon flats aligned",
+      "where": "upper glued face, covered by the upper washer",
+      "qty": 1
+    },
+    {
+      "id": "G2",
+      "what": "washer pair G2: artwork upper washer; glue mating faces together, outer decagon flats aligned",
+      "where": "top of the upper washer; blank reverse takes glue",
+      "qty": 1
+    },
+    {
+      "id": "G3B",
+      "what": "washer pair G3: ID-marked lower washer; glue mating faces together, outer decagon flats aligned",
+      "where": "upper glued face, covered by the upper washer",
+      "qty": 1
+    },
+    {
+      "id": "G3",
+      "what": "washer pair G3: artwork upper washer; glue mating faces together, outer decagon flats aligned",
+      "where": "top of the upper washer; blank reverse takes glue",
+      "qty": 1
+    },
+    {
+      "id": "G4B",
+      "what": "washer pair G4: ID-marked lower washer; glue mating faces together, outer decagon flats aligned",
+      "where": "upper glued face, covered by the upper washer",
+      "qty": 1
+    },
+    {
+      "id": "G4",
+      "what": "washer pair G4: artwork upper washer; glue mating faces together, outer decagon flats aligned",
+      "where": "top of the upper washer; blank reverse takes glue",
+      "qty": 1
+    },
+    {
+      "id": "(CORE0)",
+      "what": "core F, slice 13 (solid round ceiling, artwork down)",
+      "where": "down face: hidden artwork, no ID",
+      "qty": 1
+    },
+    {
+      "id": "(CORER)",
+      "what": "core slices 5, 7, 9 and 11 (hollow, aligned ridge tabs)",
+      "where": "unmarked: glue face or no hidden space for an ID",
+      "qty": 4
+    },
+    {
+      "id": "(COREC)",
+      "what": "core slices 1 to 4, 6, 8, 10 and 12 (hollow, round)",
+      "where": "unmarked: glue face or no hidden space for an ID",
+      "qty": 8
+    },
+    {
+      "id": "(HEAD)",
+      "what": "head (glue on the core last, above the rings)",
+      "where": "down face: hidden artwork, no ID",
+      "qty": 1
+    },
+    {
+      "id": "(LID)",
+      "what": "sliding retaining bridge (artwork down; never glue it)",
+      "where": "down face: hidden artwork, no ID",
+      "qty": 1
+    },
+    {
+      "id": "(LIDP)",
+      "what": "frame side post (glue only its foot into A1; mushroom top captures bridge)",
+      "where": "unmarked: glue face or no hidden space for an ID",
+      "qty": 2
+    }
+  ],
+  "area": {
+    "sheets": 185806.08000000002,
+    "occupied": 136673.08414436565,
+    "wood": 62635.32934662171
+  },
+  "parts": [
+    {
+      "name": "A1",
+      "qty": 1,
+      "note": "base stack A, layer 1: the floor (the core stands on it)",
+      "w": 114,
+      "h": 114,
+      "face": "up",
+      "hidden": [
+        {
+          "label": "floor beneath the removable core",
+          "from": 3,
+          "to": 44,
+          "cx": 57,
+          "cy": 57,
+          "r0": 0,
+          "r1": 11
+        },
+        {
+          "label": "teleporter in the base hollow",
+          "from": 44,
+          "to": 770,
+          "cx": 57,
+          "cy": 57,
+          "r0": 20.07647173578752,
+          "r1": 37
+        }
+      ]
+    },
+    {
+      "name": "A2R",
+      "qty": 1,
+      "note": "base stack A, layer 2, outer ring (glue on the layer below, edges flush)",
+      "w": 98,
+      "h": 98,
+      "face": "up",
+      "hidden": []
+    },
+    {
+      "name": "A2C",
+      "qty": 1,
+      "note": "base stack A, layer 2, collar round the ridge slot (ridge slots lined up, on the marker side)",
+      "w": 38.15294347157504,
+      "h": 38.15294347157504,
+      "face": "up",
+      "hidden": []
+    },
+    {
+      "name": "A3R",
+      "qty": 1,
+      "note": "base stack A, layer 3, outer ring (glue on the layer below, edges flush)",
+      "w": 98,
+      "h": 98,
+      "face": "up",
+      "hidden": []
+    },
+    {
+      "name": "A3C",
+      "qty": 1,
+      "note": "base stack A, layer 3, collar round the ridge slot (ridge slots lined up, on the marker side)",
+      "w": 38.15294347157504,
+      "h": 38.15294347157504,
+      "face": "up",
+      "hidden": []
+    },
+    {
+      "name": "A4R",
+      "qty": 1,
+      "note": "base stack A, layer 4, outer ring (glue on the layer below, edges flush)",
+      "w": 98,
+      "h": 98,
+      "face": "up",
+      "hidden": []
+    },
+    {
+      "name": "A4C",
+      "qty": 1,
+      "note": "base stack A, layer 4, collar round the ridge slot (ridge slots lined up, on the marker side)",
+      "w": 38.15294347157504,
+      "h": 38.15294347157504,
+      "face": "up",
+      "hidden": []
+    },
+    {
+      "name": "A5R",
+      "qty": 1,
+      "note": "base stack A, layer 5, outer ring (glue on the layer below, edges flush)",
+      "w": 98,
+      "h": 98,
+      "face": "up",
+      "hidden": [
+        {
+          "label": "top of the base rim, under ring 4",
+          "from": 2,
+          "to": 702,
+          "cx": 49,
+          "cy": 49,
+          "r0": 38,
+          "r1": 49
+        }
+      ]
+    },
+    {
+      "name": "A5C",
+      "qty": 1,
+      "note": "base stack A, layer 5, collar round the ridge slot (ridge slots lined up, on the marker side)",
+      "w": 38.15294347157504,
+      "h": 38.15294347157504,
+      "face": "up",
+      "hidden": [
+        {
+          "label": "top of the collar, under the loose washers",
+          "from": 2,
+          "to": 112,
+          "cx": 19.07647173578752,
+          "cy": 19.07647173578752,
+          "r0": 12.3,
+          "r1": 19.07647173578752
+        }
+      ]
+    },
+    {
+      "name": "E1",
+      "qty": 1,
+      "note": "ring 1 (stack E), plain slice: a rim under the top slice",
+      "w": 56,
+      "h": 56,
+      "face": "down",
+      "hidden": [
+        {
+          "label": "inside of ring, downward face; glue only the blank reverse",
+          "from": 2,
+          "to": 73,
+          "cx": 28,
+          "cy": 28,
+          "r0": 24,
+          "r1": 28
+        }
+      ]
+    },
+    {
+      "name": "E2",
+      "qty": 1,
+      "note": "ring 1 (stack E), top slice with the digits",
+      "w": 56,
+      "h": 56,
+      "face": "up",
+      "hidden": []
+    },
+    {
+      "name": "D1",
+      "qty": 1,
+      "note": "ring 2 (stack D), plain slice: a rim under the top slice",
+      "w": 70,
+      "h": 70,
+      "face": "down",
+      "hidden": [
+        {
+          "label": "inside of ring, downward face; glue only the blank reverse",
+          "from": 2,
+          "to": 608,
+          "cx": 35,
+          "cy": 35,
+          "r0": 24,
+          "r1": 35
+        }
+      ]
+    },
+    {
+      "name": "D2",
+      "qty": 1,
+      "note": "ring 2 (stack D), top slice with the digits",
+      "w": 70,
+      "h": 70,
+      "face": "up",
+      "hidden": [
+        {
+          "label": "top face under the next loose ring",
+          "from": 2,
+          "to": 258,
+          "cx": 35,
+          "cy": 35,
+          "r0": 20,
+          "r1": 28
+        }
+      ]
+    },
+    {
+      "name": "C1",
+      "qty": 1,
+      "note": "ring 3 (stack C), plain slice: a rim under the top slice",
+      "w": 84,
+      "h": 84,
+      "face": "down",
+      "hidden": [
+        {
+          "label": "inside of ring, downward face; glue only the blank reverse",
+          "from": 2,
+          "to": 245,
+          "cx": 42,
+          "cy": 42,
+          "r0": 31,
+          "r1": 42
+        }
+      ]
+    },
+    {
+      "name": "C2",
+      "qty": 1,
+      "note": "ring 3 (stack C), top slice with the digits",
+      "w": 84,
+      "h": 84,
+      "face": "up",
+      "hidden": [
+        {
+          "label": "top face under the next loose ring",
+          "from": 2,
+          "to": 491,
+          "cx": 42,
+          "cy": 42,
+          "r0": 20,
+          "r1": 35
+        }
+      ]
+    },
+    {
+      "name": "B1",
+      "qty": 1,
+      "note": "ring 4 (stack B), plain slice: a rim under the top slice",
+      "w": 98,
+      "h": 98,
+      "face": "down",
+      "hidden": [
+        {
+          "label": "inside of ring, downward face; glue only the blank reverse",
+          "from": 2,
+          "to": 835,
+          "cx": 49,
+          "cy": 49,
+          "r0": 38,
+          "r1": 49
+        }
+      ]
+    },
+    {
+      "name": "B2",
+      "qty": 1,
+      "note": "ring 4 (stack B), top slice with the digits",
+      "w": 98,
+      "h": 98,
+      "face": "up",
+      "hidden": [
+        {
+          "label": "top face under the next loose ring",
+          "from": 2,
+          "to": 1042,
+          "cx": 49,
+          "cy": 49,
+          "r0": 20,
+          "r1": 42
+        }
+      ]
+    },
+    {
+      "name": "G1B",
+      "qty": 1,
+      "note": "washer pair G1: ID-marked lower washer; glue mating faces together, outer decagon flats aligned",
+      "w": 37.85264007257762,
+      "h": 37.85264007257762,
+      "face": "up",
+      "hidden": []
+    },
+    {
+      "name": "G1",
+      "qty": 1,
+      "note": "washer pair G1: artwork upper washer; glue mating faces together, outer decagon flats aligned",
+      "w": 37.85264007257762,
+      "h": 37.85264007257762,
+      "face": "up",
+      "hidden": [
+        {
+          "label": "upper washer face; glue only the blank reverse",
+          "from": 2,
+          "to": 102,
+          "cx": 18.92632003628881,
+          "cy": 18.92632003628881,
+          "r0": 12.3,
+          "r1": 18
+        }
+      ]
+    },
+    {
+      "name": "G2B",
+      "qty": 1,
+      "note": "washer pair G2: ID-marked lower washer; glue mating faces together, outer decagon flats aligned",
+      "w": 37.85264007257762,
+      "h": 37.85264007257762,
+      "face": "up",
+      "hidden": []
+    },
+    {
+      "name": "G2",
+      "qty": 1,
+      "note": "washer pair G2: artwork upper washer; glue mating faces together, outer decagon flats aligned",
+      "w": 37.85264007257762,
+      "h": 37.85264007257762,
+      "face": "up",
+      "hidden": [
+        {
+          "label": "upper washer face; glue only the blank reverse",
+          "from": 2,
+          "to": 103,
+          "cx": 18.92632003628881,
+          "cy": 18.92632003628881,
+          "r0": 12.3,
+          "r1": 18
+        }
+      ]
+    },
+    {
+      "name": "G3B",
+      "qty": 1,
+      "note": "washer pair G3: ID-marked lower washer; glue mating faces together, outer decagon flats aligned",
+      "w": 37.85264007257762,
+      "h": 37.85264007257762,
+      "face": "up",
+      "hidden": []
+    },
+    {
+      "name": "G3",
+      "qty": 1,
+      "note": "washer pair G3: artwork upper washer; glue mating faces together, outer decagon flats aligned",
+      "w": 37.85264007257762,
+      "h": 37.85264007257762,
+      "face": "up",
+      "hidden": [
+        {
+          "label": "upper washer face; glue only the blank reverse",
+          "from": 2,
+          "to": 103,
+          "cx": 18.92632003628881,
+          "cy": 18.92632003628881,
+          "r0": 12.3,
+          "r1": 18
+        }
+      ]
+    },
+    {
+      "name": "G4B",
+      "qty": 1,
+      "note": "washer pair G4: ID-marked lower washer; glue mating faces together, outer decagon flats aligned",
+      "w": 37.85264007257762,
+      "h": 37.85264007257762,
+      "face": "up",
+      "hidden": []
+    },
+    {
+      "name": "G4",
+      "qty": 1,
+      "note": "washer pair G4: artwork upper washer; glue mating faces together, outer decagon flats aligned",
+      "w": 37.85264007257762,
+      "h": 37.85264007257762,
+      "face": "up",
+      "hidden": [
+        {
+          "label": "upper washer face; glue only the blank reverse",
+          "from": 2,
+          "to": 102,
+          "cx": 18.92632003628881,
+          "cy": 18.92632003628881,
+          "r0": 12.3,
+          "r1": 18
+        }
+      ]
+    },
+    {
+      "name": "CORE0",
+      "qty": 1,
+      "note": "core F, slice 13 (solid round ceiling, artwork down)",
+      "w": 29,
+      "h": 29,
+      "face": "down",
+      "hidden": [
+        {
+          "label": "ceiling inside the hollow core; keep the entire wall glue annulus blank",
+          "from": 1,
+          "to": 61,
+          "cx": 14.5,
+          "cy": 14.5,
+          "r0": 0,
+          "r1": 7.5
+        }
+      ]
+    },
+    {
+      "name": "CORER",
+      "qty": 4,
+      "note": "core slices 5, 7, 9 and 11 (hollow, aligned ridge tabs)",
+      "w": 29,
+      "h": 29,
+      "face": "up",
+      "hidden": []
+    },
+    {
+      "name": "COREC",
+      "qty": 8,
+      "note": "core slices 1 to 4, 6, 8, 10 and 12 (hollow, round)",
+      "w": 24,
+      "h": 24,
+      "face": "up",
+      "hidden": []
+    },
+    {
+      "name": "HEAD",
+      "qty": 1,
+      "note": "head (glue on the core last, above the rings)",
+      "w": 40,
+      "h": 40,
+      "face": "down",
+      "hidden": [
+        {
+          "label": "underside of head, outside the core glue joint",
+          "from": 2,
+          "to": 121,
+          "cx": 20,
+          "cy": 20,
+          "r0": 13,
+          "r1": 19
+        }
+      ]
+    },
+    {
+      "name": "LID",
+      "qty": 1,
+      "note": "sliding retaining bridge (artwork down; never glue it)",
+      "w": 114,
+      "h": 46,
+      "face": "down",
+      "hidden": [
+        {
+          "label": "underside of captured bridge, clear of post keyholes",
+          "from": 4,
+          "to": 108,
+          "cx": 57,
+          "cy": 23,
+          "r0": 13,
+          "r1": 19.3
+        }
+      ]
+    },
+    {
+      "name": "LIDP",
+      "qty": 2,
+      "note": "frame side post (glue only its foot into A1; mushroom top captures bridge)",
+      "w": 6,
+      "h": 47.7,
+      "face": "up",
+      "hidden": []
+    }
+  ],
+  "lock": {
+    "opens": [
+      "2000"
+    ],
+    "pocketFits": true,
+    "windowDeg": 5.5,
+    "fits": {
+      "washerInSocket": 0.15,
+      "coreInBore": 0.29999999999999893
+    },
+    "wrongDigitBlocked": true
+  },
+  "clearance": {
+    "A1": [],
+    "A2R": [],
+    "A2C": [],
+    "A3R": [],
+    "A3C": [],
+    "A4R": [],
+    "A4C": [],
+    "A5R": [],
+    "A5C": [],
+    "E1": [],
+    "E2": [],
+    "D1": [],
+    "D2": [],
+    "C1": [],
+    "C2": [],
+    "B1": [],
+    "B2": [],
+    "G1B": [],
+    "G1": [],
+    "G2B": [],
+    "G2": [],
+    "G3B": [],
+    "G3": [],
+    "G4B": [],
+    "G4": [],
+    "CORE0": [],
+    "CORER": [],
+    "COREC": [],
+    "HEAD": [],
+    "LID": [],
+    "LIDP": []
+  },
+  "readme": "README.md",
+  "kit": {
+    "title": "In The Year 2000!: Teleport-A-Phone Cryptex",
+    "summary": "A laser-cut cryptex for a Glowforge, 1/8 in plywood or MDF. Four stepped rings of digits; dial the year and the hollow core slides out. Fits 2 sheets of 12x12.",
+    "previews": [
+      {
+        "file": "sheet-1.png",
+        "alt": "Sheet 1: 12x12 inch stock"
+      },
+      {
+        "file": "sheet-2.png",
+        "alt": "Sheet 2: 12x12 inch stock"
+      }
+    ],
+    "downloads": [
+      {
+        "file": "sheet-1.svg",
+        "label": "Sheet 1: 12x12 inch stock (SVG)"
+      },
+      {
+        "file": "sheet-2.svg",
+        "label": "Sheet 2: 12x12 inch stock (SVG)"
+      },
+      {
+        "file": "assembly.svg",
+        "label": "Assembly diagram (SVG)"
+      },
+      {
+        "file": "README.md",
+        "label": "Build notes"
+      }
+    ]
+  }
+}

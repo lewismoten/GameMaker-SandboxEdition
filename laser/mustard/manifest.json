@@ -1,0 +1,112 @@
+{
+ "key": "laser-nickel",
+ "game": "mustard",
+ "title": "Mustard Seed Hustle",
+ "concept": "A faith token: the smallest hole in the land, \"SMALLEST THING IN THE LAND\".",
+ "source": "cad2ba082b4bbbcf",
+ "mm": {
+  "coin": 38.1,
+  "sheet": [
+   270,
+   150
+  ],
+  "jigHole": 38,
+  "jigAt": [
+   235,
+   75
+  ],
+  "pitch": 44,
+  "wood": 3
+ },
+ "colors": {
+  "cut": "#ff0000",
+  "score": "#ff00ff",
+  "engrave": "#0000ff"
+ },
+ "series": {
+  "no": 10,
+  "of": 26,
+  "letter": "K",
+  "message": "BEKINDANDKEEPPLAYINGFRIEND"
+ },
+ "holes": [
+  {
+   "x": 0,
+   "y": 0,
+   "r": 1.6
+  }
+ ],
+ "clearance": {
+  "front": [],
+  "back": []
+ },
+ "reach": {
+  "front": 15.05,
+  "back": 15.07
+ },
+ "texts": {
+  "front": [
+   {
+    "text": "MUSTARD SEED",
+    "capMm": 2.5
+   },
+   {
+    "text": "HUSTLE",
+    "capMm": 2.52
+   },
+   {
+    "text": "SMALLEST",
+    "capMm": 2.5
+   },
+   {
+    "text": "THING",
+    "capMm": 2.5
+   }
+  ],
+  "back": [
+   {
+    "text": "GOOD FOR",
+    "capMm": 2.52
+   },
+   {
+    "text": "SANDBOX SOFTWARE",
+    "capMm": 2.5
+   },
+   {
+    "text": "ONE MOVED",
+    "capMm": 2.52
+   },
+   {
+    "text": "MOUNTAIN",
+    "capMm": 2.52
+   },
+   {
+    "text": "NO.10/26",
+    "capMm": 2.5
+   },
+   {
+    "text": "1994 SM",
+    "capMm": 2.5
+   },
+   {
+    "text": "sandscript K",
+    "capMm": 2.52
+   }
+  ]
+ },
+ "paths": {
+  "front": 233,
+  "back": 391,
+  "sheet": 2798
+ },
+ "files": [
+  "front.svg",
+  "back.svg",
+  "sheet.svg",
+  "sheet-back.svg",
+  "front.png",
+  "back.png",
+  "sheet.png",
+  "manifest.json"
+ ]
+}

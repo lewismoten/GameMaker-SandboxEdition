@@ -1,0 +1,98 @@
+{
+ "key": "laser-nickel",
+ "game": "sweats",
+ "title": "Shakespeare in Sweatpants",
+ "concept": "An open-mic token: Will in his ruff and sweatpants, \"ONE OPEN MIC SLOT\".",
+ "source": "b0470e996c4f65b6",
+ "mm": {
+  "coin": 38.1,
+  "sheet": [
+   270,
+   150
+  ],
+  "jigHole": 38,
+  "jigAt": [
+   235,
+   75
+  ],
+  "pitch": 44,
+  "wood": 3
+ },
+ "colors": {
+  "cut": "#ff0000",
+  "score": "#ff00ff",
+  "engrave": "#0000ff"
+ },
+ "series": {
+  "no": 20,
+  "of": 26,
+  "letter": "G",
+  "message": "BEKINDANDKEEPPLAYINGFRIEND"
+ },
+ "holes": [],
+ "clearance": {
+  "front": [],
+  "back": []
+ },
+ "reach": {
+  "front": 15.05,
+  "back": 15.07
+ },
+ "texts": {
+  "front": [
+   {
+    "text": "SHAKESPEARE IN",
+    "capMm": 2.5
+   },
+   {
+    "text": "SWEATPANTS",
+    "capMm": 2.52
+   }
+  ],
+  "back": [
+   {
+    "text": "GOOD FOR",
+    "capMm": 2.52
+   },
+   {
+    "text": "SANDBOX SOFTWARE",
+    "capMm": 2.5
+   },
+   {
+    "text": "ONE OPEN",
+    "capMm": 2.52
+   },
+   {
+    "text": "MIC SLOT",
+    "capMm": 2.52
+   },
+   {
+    "text": "NO.20/26",
+    "capMm": 2.5
+   },
+   {
+    "text": "1994 SM",
+    "capMm": 2.5
+   },
+   {
+    "text": "sandscript G",
+    "capMm": 2.52
+   }
+  ]
+ },
+ "paths": {
+  "front": 296,
+  "back": 384,
+  "sheet": 3554
+ },
+ "files": [
+  "front.svg",
+  "back.svg",
+  "sheet.svg",
+  "sheet-back.svg",
+  "front.png",
+  "back.png",
+  "sheet.png",
+  "manifest.json"
+ ]
+}

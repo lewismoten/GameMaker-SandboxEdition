@@ -1,0 +1,102 @@
+{
+ "key": "laser-nickel",
+ "game": "maximus",
+ "title": "Maximus: The Hundred Worlds",
+ "concept": "A Galactic Courier star credit: a rocket along a dotted star route, \"PAID ON DELIVERY\".",
+ "source": "94305910c009cc70",
+ "mm": {
+  "coin": 38.1,
+  "sheet": [
+   270,
+   150
+  ],
+  "jigHole": 38,
+  "jigAt": [
+   235,
+   75
+  ],
+  "pitch": 44,
+  "wood": 3
+ },
+ "colors": {
+  "cut": "#ff0000",
+  "score": "#ff00ff",
+  "engrave": "#0000ff"
+ },
+ "series": {
+  "no": 9,
+  "of": 26,
+  "letter": "D",
+  "message": "BEKINDANDKEEPPLAYINGFRIEND"
+ },
+ "holes": [],
+ "clearance": {
+  "front": [],
+  "back": []
+ },
+ "reach": {
+  "front": 15.02,
+  "back": 15.07
+ },
+ "texts": {
+  "front": [
+   {
+    "text": "GALACTIC COURIER",
+    "capMm": 2.5
+   },
+   {
+    "text": "PAID ON DELIVERY",
+    "capMm": 2.5
+   },
+   {
+    "text": "1 CREDIT",
+    "capMm": 2.5
+   }
+  ],
+  "back": [
+   {
+    "text": "GOOD FOR",
+    "capMm": 2.52
+   },
+   {
+    "text": "SANDBOX SOFTWARE",
+    "capMm": 2.5
+   },
+   {
+    "text": "ONE STAR",
+    "capMm": 2.52
+   },
+   {
+    "text": "SHARD",
+    "capMm": 2.52
+   },
+   {
+    "text": "NO.09/26",
+    "capMm": 2.5
+   },
+   {
+    "text": "1994 SM",
+    "capMm": 2.5
+   },
+   {
+    "text": "sandscript D",
+    "capMm": 2.52
+   }
+  ]
+ },
+ "paths": {
+  "front": 248,
+  "back": 372,
+  "sheet": 2978
+ },
+ "files": [
+  "front.svg",
+  "back.svg",
+  "sheet.svg",
+  "sheet-back.svg",
+  "front.png",
+  "back.png",
+  "sheet.png",
+  "manifest.json"
+ ]
+}

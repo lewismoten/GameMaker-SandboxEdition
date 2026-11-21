@@ -1,0 +1,28 @@
+{
+  "name": "Game-Maker Pocket Player, 2.8 inch board",
+  "version": "0.4",
+  "new_install_prompt_erase": false,
+  "builds": [
+    {
+      "chipFamily": "ESP32",
+      "parts": [
+        {
+          "path": "fw/cyd-2432s028/bootloader.bin",
+          "offset": 4096
+        },
+        {
+          "path": "fw/cyd-2432s028/partitions.bin",
+          "offset": 32768
+        },
+        {
+          "path": "fw/cyd-2432s028/firmware.bin",
+          "offset": 65536
+        },
+        {
+          "path": "fw/cyd-2432s028/littlefs.bin",
+          "offset": 1114112
+        }
+      ]
+    }
+  ]
+}

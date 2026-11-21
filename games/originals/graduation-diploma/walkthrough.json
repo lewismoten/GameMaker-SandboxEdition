@@ -1,0 +1,64 @@
+{
+ "version": 1,
+ "game": "graduation-diploma",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "AU08zRtNBc0DSCfIA00SzQNQJ9ADTQrNA00UzRtNCs15TQ3NA00KzQ5NFM0bTQg5CLkQOQi5Dc0ETQ/NG00jzQNNFM0bTR7NA00UzRtNI80DTQrNA00="
+  },
+  {
+   "scene": 3,
+   "keys": "AU0czQNNWs0DTVrNA01azQNNMs1dTQ=="
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "The Long Walk"
+  },
+  {
+   "scene": 3,
+   "title": "The Long Aisle"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 9779,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 922,
+    "time": 15366.666666666466
+   },
+   {
+    "title": "The Long Walk",
+    "frame": 1670,
+    "time": 27833.33333333393
+   },
+   {
+    "title": "The Long Aisle",
+    "frame": 4635,
+    "time": 77249.99999999959
+   },
+   {
+    "title": "Ending",
+    "frame": 6496,
+    "time": 108266.66666667529
+   },
+   {
+    "title": "Credits",
+    "frame": 8224,
+    "time": 137066.66666667844
+   }
+  ]
+ }
+}

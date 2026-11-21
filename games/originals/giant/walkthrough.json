@@ -1,0 +1,64 @@
+{
+ "version": 1,
+ "game": "giant",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "AU0jzQNNHs0DTQM5ArkKzQ1NDc0EHAOcPBwDnDwcA5w8Swg5ArkPywhNCs0DHAOcPBwDnFpNVM0DTQ=="
+  },
+  {
+   "scene": 3,
+   "keys": "AU03zQNND80DTQM5ArkKzQ1NDc0EHAOcDBwDnAwcA5wqHAOcFhwDnDpLCDkCuQ/LCE0KzQMcA5wWHAOcQhwDnBYcA5xATWjNA00="
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: The Giant"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: Ouch, Wait"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 10233,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 913,
+    "time": 15216.666666666471
+   },
+   {
+    "title": "Level 1: The Giant",
+    "frame": 2142,
+    "time": 35700.00000000053
+   },
+   {
+    "title": "Level 2: Ouch, Wait",
+    "frame": 4534,
+    "time": 75566.66666666577
+   },
+   {
+    "title": "Ending",
+    "frame": 6949,
+    "time": 115816.66666667748
+   },
+   {
+    "title": "Credits",
+    "frame": 9159,
+    "time": 152650.0000000027
+   }
+  ]
+ }
+}

@@ -1,0 +1,103 @@
+{
+ "key": "pixel",
+ "game": "loofah",
+ "source": "9c7a6dc4bfdb76fb",
+ "items": [
+  {
+   "id": "loofah",
+   "title": "The loofah",
+   "blurb": "Peach or coral, smelling of grapefruit.",
+   "file": "loofah.stl",
+   "preview": "loofah.view.stl",
+   "triangles": 920,
+   "bytes": 46084,
+   "mm": [
+    27,
+    9,
+    33
+   ],
+   "thinSpecks": 0,
+   "colors": {
+    "file": "loofah.3mf",
+    "bytes": 28246,
+    "palette": [
+     [
+      8,
+      12,
+      16
+     ],
+     [
+      146,
+      146,
+      93
+     ],
+     [
+      57,
+      117,
+      97
+     ],
+     [
+      97,
+      85,
+      49
+     ]
+    ],
+    "meanColorError": 0
+   },
+   "overhangMm2": 45,
+   "overhangShare": 0.02
+  },
+  {
+   "id": "imp",
+   "title": "Horned imp",
+   "blurb": "A cheerful little horned imp from the aisle.",
+   "file": "imp.stl",
+   "preview": "imp.view.stl",
+   "triangles": 1368,
+   "bytes": 68484,
+   "mm": [
+    33,
+    9,
+    30
+   ],
+   "thinSpecks": 0,
+   "colors": {
+    "file": "imp.3mf",
+    "bytes": 37154,
+    "palette": [
+     [
+      8,
+      12,
+      16
+     ],
+     [
+      162,
+      186,
+      77
+     ],
+     [
+      121,
+      85,
+      8
+     ],
+     [
+      162,
+      206,
+      174
+     ]
+    ],
+    "meanColorError": 0
+   },
+   "overhangMm2": 81,
+   "overhangShare": 0.03
+  }
+ ],
+ "packed": [
+  "loofah.stl",
+  "loofah.view.stl",
+  "loofah.3mf",
+  "imp.stl",
+  "imp.view.stl",
+  "imp.3mf"
+ ]
+}

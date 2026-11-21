@@ -1,0 +1,103 @@
+{
+ "key": "pixel",
+ "game": "loaf",
+ "source": "8f791d501707af8b",
+ "items": [
+  {
+   "id": "loaf",
+   "title": "Loaf #13",
+   "blurb": "The loaf nobody picked, rolling out of the basket.",
+   "file": "loaf.stl",
+   "preview": "loaf.view.stl",
+   "triangles": 1206,
+   "bytes": 60384,
+   "mm": [
+    33,
+    9,
+    24
+   ],
+   "thinSpecks": 0,
+   "colors": {
+    "file": "loaf.3mf",
+    "bytes": 27102,
+    "palette": [
+     [
+      36,
+      8,
+      16
+     ],
+     [
+      251,
+      215,
+      142
+     ],
+     [
+      170,
+      97,
+      32
+     ],
+     [
+      255,
+      251,
+      223
+     ]
+    ],
+    "meanColorError": 0
+   },
+   "overhangMm2": 117,
+   "overhangShare": 0.05
+  },
+  {
+   "id": "fish",
+   "title": "Fish",
+   "blurb": "The fish that came with the loaves.",
+   "file": "fish.stl",
+   "preview": "fish.view.stl",
+   "triangles": 988,
+   "bytes": 49484,
+   "mm": [
+    30,
+    9,
+    22.5
+   ],
+   "thinSpecks": 0,
+   "colors": {
+    "file": "fish.3mf",
+    "bytes": 19950,
+    "palette": [
+     [
+      36,
+      8,
+      16
+     ],
+     [
+      227,
+      178,
+      194
+     ],
+     [
+      117,
+      93,
+      113
+     ],
+     [
+      61,
+      53,
+      77
+     ]
+    ],
+    "meanColorError": 0
+   },
+   "overhangMm2": 135,
+   "overhangShare": 0.064
+  }
+ ],
+ "packed": [
+  "loaf.stl",
+  "loaf.view.stl",
+  "loaf.3mf",
+  "fish.stl",
+  "fish.view.stl",
+  "fish.3mf"
+ ]
+}

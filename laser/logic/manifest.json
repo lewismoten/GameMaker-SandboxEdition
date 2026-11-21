@@ -1,0 +1,98 @@
+{
+ "key": "laser-nickel",
+ "game": "logic",
+ "title": "Ohm Sweet Ohm",
+ "concept": "Just an Ω, big and bold.",
+ "source": "c770a7d25cfe974d",
+ "mm": {
+  "coin": 38.1,
+  "sheet": [
+   270,
+   150
+  ],
+  "jigHole": 38,
+  "jigAt": [
+   235,
+   75
+  ],
+  "pitch": 44,
+  "wood": 3
+ },
+ "colors": {
+  "cut": "#ff0000",
+  "score": "#ff00ff",
+  "engrave": "#0000ff"
+ },
+ "series": {
+  "no": 7,
+  "of": 26,
+  "letter": "A",
+  "message": "BEKINDANDKEEPPLAYINGFRIEND"
+ },
+ "holes": [],
+ "clearance": {
+  "front": [],
+  "back": []
+ },
+ "reach": {
+  "front": 15.05,
+  "back": 15.07
+ },
+ "texts": {
+  "front": [
+   {
+    "text": "OHM SWEET OHM",
+    "capMm": 2.5
+   },
+   {
+    "text": "SMART HOME",
+    "capMm": 2.52
+   }
+  ],
+  "back": [
+   {
+    "text": "GOOD FOR",
+    "capMm": 2.52
+   },
+   {
+    "text": "SANDBOX SOFTWARE",
+    "capMm": 2.5
+   },
+   {
+    "text": "ONE SPARE",
+    "capMm": 2.52
+   },
+   {
+    "text": "FUSE",
+    "capMm": 2.52
+   },
+   {
+    "text": "NO.07/26",
+    "capMm": 2.5
+   },
+   {
+    "text": "1994 SM",
+    "capMm": 2.5
+   },
+   {
+    "text": "sandscript A",
+    "capMm": 2.52
+   }
+  ]
+ },
+ "paths": {
+  "front": 288,
+  "back": 372,
+  "sheet": 3458
+ },
+ "files": [
+  "front.svg",
+  "back.svg",
+  "sheet.svg",
+  "sheet-back.svg",
+  "front.png",
+  "back.png",
+  "sheet.png",
+  "manifest.json"
+ ]
+}

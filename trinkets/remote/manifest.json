@@ -1,0 +1,54 @@
+{
+ "key": "5ad9e71a9f1da868",
+ "game": "remote",
+ "items": [
+  {
+   "id": "remote",
+   "title": "The remote",
+   "blurb": "Power, a number pad, volume and channel rockers, and a lanyard hole so it never goes missing again. There you are, you sneaky guy.",
+   "file": "remote.stl",
+   "triangles": 6634,
+   "bytes": 331784,
+   "mm": [
+    26,
+    102.6,
+    11
+   ],
+   "thinSpecks": 0,
+   "colors": {
+    "file": "remote.3mf",
+    "bytes": 504850,
+    "palette": [
+     [
+      58,
+      60,
+      72
+     ],
+     [
+      196,
+      200,
+      208
+     ],
+     [
+      226,
+      48,
+      48
+     ],
+     [
+      60,
+      190,
+      90
+     ]
+    ],
+    "meanColorError": 0
+   },
+   "overhangMm2": 11,
+   "overhangShare": 0.002,
+   "supports": null
+  }
+ ],
+ "packed": [
+  "remote.stl",
+  "remote.3mf"
+ ]
+}

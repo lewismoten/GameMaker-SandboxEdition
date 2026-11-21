@@ -1,0 +1,141 @@
+{
+ "key": "9a1631c03b3788ea",
+ "game": "blaster",
+ "items": [
+  {
+   "id": "decoder-coin",
+   "title": "VACCINE decoder coin",
+   "blurb": "Sixteen hex digits ring a 486 chip. Turn it to read an address before GLITCH gets there.",
+   "file": "decoder-coin.stl",
+   "triangles": 9888,
+   "bytes": 494484,
+   "mm": [
+    40,
+    40,
+    3.8
+   ],
+   "thinSpecks": 0,
+   "colors": {
+    "file": "decoder-coin.3mf",
+    "bytes": 798336,
+    "palette": [
+     [
+      18,
+      30,
+      40
+     ],
+     [
+      54,
+      224,
+      122
+     ],
+     [
+      255,
+      122,
+      26
+     ]
+    ],
+    "meanColorError": 0
+   },
+   "overhangMm2": 0,
+   "overhangShare": 0,
+   "supports": null
+  },
+  {
+   "id": "floppy-tag",
+   "title": "VACCINE.EXE key tag",
+   "blurb": "The floppy your uncle gave you, marked \"Only in an emergency\". A ring tab for the keys.",
+   "file": "floppy-tag.stl",
+   "triangles": 4362,
+   "bytes": 218184,
+   "mm": [
+    48.5,
+    48.5,
+    3.8
+   ],
+   "thinSpecks": 0,
+   "colors": {
+    "file": "floppy-tag.3mf",
+    "bytes": 309247,
+    "palette": [
+     [
+      30,
+      80,
+      200
+     ],
+     [
+      206,
+      214,
+      228
+     ],
+     [
+      246,
+      244,
+      232
+     ],
+     [
+      20,
+      24,
+      60
+     ]
+    ],
+    "meanColorError": 0
+   },
+   "overhangMm2": 0,
+   "overhangShare": 0,
+   "supports": null
+  },
+  {
+   "id": "blaster-ship",
+   "title": "The BLASTER",
+   "blurb": "The nano-fighter off the VACCINE floppy: steel delta, twin guns, cyan canopy and a flame out the back.",
+   "file": "blaster-ship.stl",
+   "triangles": 3846,
+   "bytes": 192384,
+   "mm": [
+    49.4,
+    68.4,
+    14
+   ],
+   "thinSpecks": 0,
+   "colors": {
+    "file": "blaster-ship.3mf",
+    "bytes": 82575,
+    "palette": [
+     [
+      170,
+      180,
+      200
+     ],
+     [
+      40,
+      190,
+      240
+     ],
+     [
+      230,
+      30,
+      20
+     ],
+     [
+      255,
+      140,
+      30
+     ]
+    ],
+    "meanColorError": 0
+   },
+   "overhangMm2": 0,
+   "overhangShare": 0,
+   "supports": null
+  }
+ ],
+ "packed": [
+  "decoder-coin.stl",
+  "decoder-coin.3mf",
+  "floppy-tag.stl",
+  "floppy-tag.3mf",
+  "blaster-ship.stl",
+  "blaster-ship.3mf"
+ ]
+}

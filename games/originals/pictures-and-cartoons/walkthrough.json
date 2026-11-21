@@ -1,0 +1,77 @@
+{
+ "version": 1,
+ "game": "pictures-and-cartoons",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "AU1OzQNNVc17TQ=="
+  },
+  {
+   "scene": 3,
+   "keys": "AU1OzQNNVc17TQ=="
+  },
+  {
+   "scene": 4,
+   "keys": "AU1OzQNNVc17TQ=="
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: A Picture First"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: A Cartoon Between"
+  },
+  {
+   "scene": 4,
+   "title": "Level 3: Keep It Short"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 10805,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 913,
+    "time": 15216.666666666471
+   },
+   {
+    "title": "Level 1: A Picture First",
+    "frame": 2142,
+    "time": 35700.00000000053
+   },
+   {
+    "title": "Level 2: A Cartoon Between",
+    "frame": 3826,
+    "time": 63766.66666666311
+   },
+   {
+    "title": "Level 3: Keep It Short",
+    "frame": 5418,
+    "time": 90300.00000000339
+   },
+   {
+    "title": "Ending",
+    "frame": 7040,
+    "time": 117333.33333334459
+   },
+   {
+    "title": "Credits",
+    "frame": 9250,
+    "time": 154166.6666666685
+   }
+  ]
+ }
+}

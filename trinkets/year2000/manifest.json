@@ -1,0 +1,100 @@
+{
+ "key": "44370b0b5c39ee30",
+ "game": "year2000",
+ "items": [
+  {
+   "id": "sparky",
+   "title": "Sparky 3000",
+   "blurb": "Dex's chrome robot dog, antenna wagging, with the cover of the science report still in his mouth.",
+   "file": "sparky.stl",
+   "triangles": 6224,
+   "bytes": 311284,
+   "mm": [
+    20.2,
+    45.9,
+    42.4
+   ],
+   "thinSpecks": 0,
+   "colors": {
+    "file": "sparky.3mf",
+    "bytes": 148181,
+    "palette": [
+     [
+      196,
+      208,
+      232
+     ],
+     [
+      226,
+      40,
+      48
+     ],
+     [
+      250,
+      242,
+      214
+     ],
+     [
+      28,
+      22,
+      44
+     ]
+    ],
+    "meanColorError": 1
+   },
+   "overhangMm2": 342,
+   "overhangShare": 0.097,
+   "supports": {
+    "file": "sparky-supports.stl",
+    "triangles": 2364,
+    "bytes": 118284
+   }
+  },
+  {
+   "id": "wrong-number-die",
+   "title": "The wrong-number die",
+   "blurb": "Roll it to choose which booth to dial. Nothing about it is right: a 7, a blank 0, a 4 whose last pip is out of order, and opposite faces that never add up to 7.",
+   "file": "wrong-number-die.stl",
+   "triangles": 3336,
+   "bytes": 166884,
+   "mm": [
+    20,
+    21.9,
+    19
+   ],
+   "thinSpecks": 0,
+   "colors": {
+    "file": "wrong-number-die.3mf",
+    "bytes": 352104,
+    "palette": [
+     [
+      63,
+      224,
+      208
+     ],
+     [
+      250,
+      248,
+      236
+     ],
+     [
+      226,
+      40,
+      48
+     ]
+    ],
+    "meanColorError": 0
+   },
+   "overhangMm2": 18,
+   "overhangShare": 0.009,
+   "supports": null
+  }
+ ],
+ "packed": [
+  "sparky.stl",
+  "sparky-supports.stl",
+  "sparky.3mf",
+  "wrong-number-die.stl",
+  "wrong-number-die.3mf"
+ ]
+}

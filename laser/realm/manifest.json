@@ -1,0 +1,102 @@
+{
+ "key": "laser-nickel",
+ "game": "realm",
+ "title": "Quest for the Round Tuit",
+ "concept": "The Round Tuit itself: a ringed boss, \"A ROUND TUIT\".",
+ "source": "0c5196a894f8de53",
+ "mm": {
+  "coin": 38.1,
+  "sheet": [
+   270,
+   150
+  ],
+  "jigHole": 38,
+  "jigAt": [
+   235,
+   75
+  ],
+  "pitch": 44,
+  "wood": 3
+ },
+ "colors": {
+  "cut": "#ff0000",
+  "score": "#ff00ff",
+  "engrave": "#0000ff"
+ },
+ "series": {
+  "no": 12,
+  "of": 26,
+  "letter": "E",
+  "message": "BEKINDANDKEEPPLAYINGFRIEND"
+ },
+ "holes": [],
+ "clearance": {
+  "front": [],
+  "back": []
+ },
+ "reach": {
+  "front": 15.02,
+  "back": 15.02
+ },
+ "texts": {
+  "front": [
+   {
+    "text": "A ROUND TUIT",
+    "capMm": 2.5
+   },
+   {
+    "text": "GET AROUND TO IT",
+    "capMm": 2.5
+   }
+  ],
+  "back": [
+   {
+    "text": "GOOD FOR ONE",
+    "capMm": 2.5
+   },
+   {
+    "text": "SANDBOX SOFTWARE",
+    "capMm": 2.5
+   },
+   {
+    "text": "GETTING",
+    "capMm": 2.52
+   },
+   {
+    "text": "AROUND",
+    "capMm": 2.52
+   },
+   {
+    "text": "TO IT",
+    "capMm": 2.52
+   },
+   {
+    "text": "NO.12/26",
+    "capMm": 2.5
+   },
+   {
+    "text": "1994 SM",
+    "capMm": 2.5
+   },
+   {
+    "text": "sandscript E",
+    "capMm": 2.52
+   }
+  ]
+ },
+ "paths": {
+  "front": 191,
+  "back": 376,
+  "sheet": 2294
+ },
+ "files": [
+  "front.svg",
+  "back.svg",
+  "sheet.svg",
+  "sheet-back.svg",
+  "front.png",
+  "back.png",
+  "sheet.png",
+  "manifest.json"
+ ]
+}

@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /GameMaker-SandboxEdition/standalone.html
+
+Sitemap: https://lewismoten.github.io/GameMaker-SandboxEdition/sitemap.xml

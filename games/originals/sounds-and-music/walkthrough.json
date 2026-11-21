@@ -1,0 +1,77 @@
+{
+ "version": 1,
+ "game": "sounds-and-music",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "AU0wzQNNHs0DTSPNA00="
+  },
+  {
+   "scene": 3,
+   "keys": "AU0rzQNNLc0rTR7NA00JOQi5Ds0rTRnNK00PzStN"
+  },
+  {
+   "scene": 4,
+   "keys": "AU0wzQNNFM0DOQi5AE0KzQNNFM0DTQ3NA00ezQNNHs0DTQ=="
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: A Song Per Room"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: Sounds on Pickups"
+  },
+  {
+   "scene": 4,
+   "title": "Level 3: A Quiet Room"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 9529,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 913,
+    "time": 15216.666666666471
+   },
+   {
+    "title": "Level 1: A Song Per Room",
+    "frame": 2142,
+    "time": 35700.00000000053
+   },
+   {
+    "title": "Level 2: Sounds on Pickups",
+    "frame": 3045,
+    "time": 50749.99999999834
+   },
+   {
+    "title": "Level 3: A Quiet Room",
+    "frame": 4706,
+    "time": 78433.33333333327
+   },
+   {
+    "title": "Ending",
+    "frame": 5766,
+    "time": 96100.00000000508
+   },
+   {
+    "title": "Credits",
+    "frame": 7974,
+    "time": 132900.0000000142
+   }
+  ]
+ }
+}

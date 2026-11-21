@@ -1,0 +1,114 @@
+{
+ "key": "laser-nickel",
+ "game": "sleuth",
+ "title": "Final Curtain",
+ "concept": "The Paragon Theatre’s admission token: \"ADMIT ONE\", row and seat, a perforation, and the two masks.",
+ "source": "e5e741075a6900d7",
+ "mm": {
+  "coin": 38.1,
+  "sheet": [
+   270,
+   150
+  ],
+  "jigHole": 38,
+  "jigAt": [
+   235,
+   75
+  ],
+  "pitch": 44,
+  "wood": 3
+ },
+ "colors": {
+  "cut": "#ff0000",
+  "score": "#ff00ff",
+  "engrave": "#0000ff"
+ },
+ "series": {
+  "no": 17,
+  "of": 26,
+  "letter": "Y",
+  "message": "BEKINDANDKEEPPLAYINGFRIEND"
+ },
+ "holes": [],
+ "clearance": {
+  "front": [],
+  "back": []
+ },
+ "reach": {
+  "front": 15.02,
+  "back": 15.07
+ },
+ "texts": {
+  "front": [
+   {
+    "text": "PARAGON THEATRE",
+    "capMm": 2.5
+   },
+   {
+    "text": "OPENING NIGHT",
+    "capMm": 2.5
+   },
+   {
+    "text": "ADMIT",
+    "capMm": 2.94
+   },
+   {
+    "text": "ONE",
+    "capMm": 2.94
+   },
+   {
+    "text": "ROW A",
+    "capMm": 2.5
+   },
+   {
+    "text": "SEAT 9",
+    "capMm": 2.5
+   }
+  ],
+  "back": [
+   {
+    "text": "GOOD FOR",
+    "capMm": 2.52
+   },
+   {
+    "text": "SANDBOX SOFTWARE",
+    "capMm": 2.5
+   },
+   {
+    "text": "ONE SEAT",
+    "capMm": 2.52
+   },
+   {
+    "text": "ROW A 9",
+    "capMm": 2.52
+   },
+   {
+    "text": "NO.17/26",
+    "capMm": 2.5
+   },
+   {
+    "text": "1994 SM",
+    "capMm": 2.5
+   },
+   {
+    "text": "sandscript Y",
+    "capMm": 2.52
+   }
+  ]
+ },
+ "paths": {
+  "front": 331,
+  "back": 374,
+  "sheet": 3974
+ },
+ "files": [
+  "front.svg",
+  "back.svg",
+  "sheet.svg",
+  "sheet-back.svg",
+  "front.png",
+  "back.png",
+  "sheet.png",
+  "manifest.json"
+ ]
+}

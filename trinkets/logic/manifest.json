@@ -1,0 +1,56 @@
+{
+ "key": "pixel",
+ "game": "logic",
+ "source": "f04a694257ee9684",
+ "items": [
+  {
+   "id": "watt",
+   "title": "Watt",
+   "blurb": "The pocket-sized repair robot.",
+   "file": "watt.stl",
+   "preview": "watt.view.stl",
+   "triangles": 776,
+   "bytes": 38884,
+   "mm": [
+    27,
+    9,
+    27
+   ],
+   "thinSpecks": 0,
+   "colors": {
+    "file": "watt.3mf",
+    "bytes": 26968,
+    "palette": [
+     [
+      8,
+      8,
+      16
+     ],
+     [
+      255,
+      255,
+      239
+     ],
+     [
+      219,
+      138,
+      40
+     ],
+     [
+      117,
+      121,
+      130
+     ]
+    ],
+    "meanColorError": 0
+   },
+   "overhangMm2": 9,
+   "overhangShare": 0.005
+  }
+ ],
+ "packed": [
+  "watt.stl",
+  "watt.view.stl",
+  "watt.3mf"
+ ]
+}

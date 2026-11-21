@@ -1,0 +1,1 @@
+const o="6cae92a914de9dd0",m={"attic.map|room.bbl":[2,12,44,10],"bedroom.map|room.bbl":[0,14,43,10],"fork.map|room.bbl":[3,12,45,10],"garden.map|room.bbl":[2,12,44,10],"hall.map|room.bbl":[2,3,55,24],"inside.map|room.bbl":[2,12,49,10],"kitchen.map|room.bbl":[2,12,45,10],"start.map|room.bbl":[2,12,39,10]},a={hash:o,maps:m};export{a as default,o as hash,m as maps};

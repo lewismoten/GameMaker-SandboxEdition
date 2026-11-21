@@ -1,0 +1,77 @@
+{
+ "version": 1,
+ "game": "power-ladder",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "AU0czQNNVc0DTR7NAEs3ywNLBcsDSEXIA00jzQNLHssDSwPLA1A70ANNPM0DTQrNA00PzQNNGc0DTQrNA00PzQNN"
+  },
+  {
+   "scene": 3,
+   "keys": "AU0czQNLBcsDSEXIA00jzQNLHssDSwPLA1A70ANNUM0DTQrNA00PzQNNGc0DTQrNA00ZzQNN"
+  },
+  {
+   "scene": 4,
+   "keys": "AU0czQNNZM0DTR7NAEtLywNLBcsDSEXIA00jzQNLHssDSwPLA1A70ANNUM0DTQrNA00ezQNN"
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: Small Key, Big Door"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: One Gold Key"
+  },
+  {
+   "scene": 4,
+   "title": "Level 3: Keys Add Up"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 12359,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 913,
+    "time": 15216.666666666471
+   },
+   {
+    "title": "Level 1: Small Key, Big Door",
+    "frame": 2142,
+    "time": 35700.00000000053
+   },
+   {
+    "title": "Level 2: One Gold Key",
+    "frame": 4419,
+    "time": 73649.99999999854
+   },
+   {
+    "title": "Level 3: Keys Add Up",
+    "frame": 6214,
+    "time": 103566.66666667392
+   },
+   {
+    "title": "Ending",
+    "frame": 8592,
+    "time": 143200.0000000082
+   },
+   {
+    "title": "Credits",
+    "frame": 10804,
+    "time": 180066.66666665341
+   }
+  ]
+ }
+}

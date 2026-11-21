@@ -1,0 +1,116 @@
+{
+ "version": 1,
+ "game": "carl",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "AVAM0ABLBMsCSBDIAE0EzQJNCc0CTQTNAk0MzQBICMgCTRTNAFAI0AJNGM0CUBDQAE0EzQJNCM0CTQjNAk0EzQJNBM0CSAjIAE0EzQJIEMgATQTNAk0IzQJLCMsAUAjQAk0EzQJNCM0CTQjNAFAE0AJQBNACTQjNAFAE0AJNCM0AUAjQAk0IzQBICMgCSBjIAlAM0AJNCM0MTQTNAlAC0ABNBM0AUAzQAlAI0ABNBM0CSCDIAkgGyABNAc0AOQK5Bk0PzQJQJNAATQTNAkgQyABNCM0CSBDIAk0MzQJQ"
+  },
+  {
+   "scene": 3,
+   "keys": "AUgMyABNBM0CUBDQAE0EzQJICMgATQjNAk0EzQJQCNAATQTNAk0VzQJQBNACSAzIAE0EzQJNDM0ASAjIAk0EzQJQENACTQjNAEgEyAJQFNAATQTNAlAG0ABNAc0AOQK5Bk0PzQJNBM0ASATIAkgIyABNBM0CSAjIAE0EzQJNDM0AUAjQAlAE0AJNCM0ASAjIAkgUyABNBM0CUAjQAEsEywJLGMsCSATIAlAQ0AJNGM0CUBDQAE0IzQJIIMgCTQTNAEgEyAJIBsgATQHNADkCuQZNE80CTRTNAFAE0AJLDMsAUAjQAlAM0ABNBM0CTQDNBE0BzRs5ArkGTQPNAlAI0ABLBMsCSwjLAk0YzQJIEMgCUBDQAk0="
+  },
+  {
+   "scene": 4,
+   "keys": "AU0MzQBQBNACSAzIAE0IzQJNEM0AUBDQAlAE0AJIEMgATQzNBFAB0AAcApwcUAvQAkgUyA5NIM0AUATQAk0MzQBIBMgCTQjNAk0EzQBQBNACTQzNAEgEyAJNFM0CUAzQAEsEywJQENAATQTNAk0EzQRLAcsAHAKcHUsLywJNDM1SSwHLABwCnB1LC8sCTQzNAk0MzQBIBMgCTRDNAkgYyABLCMsCUAjQAk0="
+  },
+  {
+   "scene": 5,
+   "keys": "AU0UzQBICMgCUBTQAEsEywJNJs0CUAjQAkgUyABNBM0CTTTNAk0ozQJQDNACTQjNAFAE0AJNCM0CTQjNAk0IzQBICMgCTRDNAFAI0AJNBM0AUATQAkgUyAJNLM0CTRDNAFAQ0AJN"
+  },
+  {
+   "scene": 6,
+   "keys": "AUgQyABLBMsCTQjNAFAE0AJNEM0AUAjQAk0QzQJQFNACUATQAkgUyABNBM0CSBDIAE0IzQJQFNAATQjNAk0UzQBQCNACSBjIAE0IzQJNDM0AUATQAk0QzQBQDNACTRDNAFAI0AJIDMgATQjNAkgIyABNBM0CTRTNAFAM0AJQDNAASwTLAlAE0AJICMgCTRTNAkgcyCZQFNAATRDNAk0QzQBQCNACTRTNAFAE0AJIGMgASwjLAksIywBICMgCTRDNAFAQ0AJN"
+  },
+  {
+   "scene": 7,
+   "keys": "B0gIyABNCM0CTSzNAFAM0AJIDMgATQjNAk0czQBIBMgCTQjNAlAY0AJLCcsCTQjNAkgYyAJLBMsCTQzNAFAE0AJNGM0ASATIAlAE0AJQAtAATQjNAFAU0AJIHMgCSAbIAE0BzQA5ArkGTQ/NAlAU0ABNBM0CSBTIAEsEywJIBsgATQHNADkCuQZND80CTQTNAFAE0AJNAc0AOQK5Bk0HzQBIBMgCUATQAlA="
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: The Couch"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: The Walls"
+  },
+  {
+   "scene": 4,
+   "title": "Level 3: Joins Me in Bed"
+  },
+  {
+   "scene": 5,
+   "title": "Level 4: The Open Window"
+  },
+  {
+   "scene": 6,
+   "title": "Level 5: Carl Has Seen Things"
+  },
+  {
+   "scene": 7,
+   "title": "Level 6: The Aux Cord"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 23439,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 1275,
+    "time": 21250.000000000116
+   },
+   {
+    "title": "Level 1: The Couch",
+    "frame": 3025,
+    "time": 50416.666666665056
+   },
+   {
+    "title": "Level 2: The Walls",
+    "frame": 5559,
+    "time": 92650.00000000407
+   },
+   {
+    "title": "Level 3: Joins Me in Bed",
+    "frame": 8491,
+    "time": 141516.66666667585
+   },
+   {
+    "title": "Level 4: The Open Window",
+    "frame": 11167,
+    "time": 186116.6666666499
+   },
+   {
+    "title": "Level 5: Carl Has Seen Things",
+    "frame": 13065,
+    "time": 217749.9999999648
+   },
+   {
+    "title": "Level 6: The Aux Cord",
+    "frame": 15952,
+    "time": 265866.66666661
+   },
+   {
+    "title": "Ending",
+    "frame": 18130,
+    "time": 302166.66666665225
+   },
+   {
+    "title": "Credits",
+    "frame": 20871,
+    "time": 347850.00000003877
+   }
+  ]
+ }
+}

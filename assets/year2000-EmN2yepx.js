@@ -1,0 +1,1 @@
+const b="ce06cbe69863ca1c",a={"clouds.map|sky.bbl":[0,0,16,10],"dome.map|suburb.bbl":[0,0,59,100],"exchange.map|city.bbl":[0,0,85,34],"mall.map|city.bbl":[0,0,55,39],"moon.map|moon.bbl":[0,0,46,33],"school.map|moon.bbl":[0,0,41,27],"skyway.map|suburb.bbl":[0,0,42,33]},o={hash:b,maps:a};export{o as default,b as hash,a as maps};

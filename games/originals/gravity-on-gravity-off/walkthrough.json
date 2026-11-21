@@ -1,0 +1,64 @@
+{
+ "version": 1,
+ "game": "gravity-on-gravity-off",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "AU0IzQc5CLlBTR7NA00LzSg5CLkATQ3NB00UzQM5CLkGTRTNC00NzStN"
+  },
+  {
+   "scene": 3,
+   "keys": "AU0KzQNQCtALSArIK00UzQM5ArkoTRTNA00GzShQD9ALTQrNC0gUyANNFM0DTR7NA00PzStQBdADTQ=="
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: Gravity On"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: Gravity Off"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 9285,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 913,
+    "time": 15216.666666666471
+   },
+   {
+    "title": "Level 1: Gravity On",
+    "frame": 2142,
+    "time": 35700.00000000053
+   },
+   {
+    "title": "Level 2: Gravity Off",
+    "frame": 3694,
+    "time": 61566.666666663434
+   },
+   {
+    "title": "Ending",
+    "frame": 5523,
+    "time": 92050.0000000039
+   },
+   {
+    "title": "Credits",
+    "frame": 7730,
+    "time": 128833.33333334794
+   }
+  ]
+ }
+}

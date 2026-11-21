@@ -1,0 +1,233 @@
+{
+ "version": 1,
+ "game": "lucky-cat",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "AU0KzWdNKM0DSwXLA0gnyANNFM0DTRzNC00UzQM5CLkATQ3NBE0ezQNLBcsDSCfIA00UzQNNEs0LTQ/NA00DOQi5Es0HTQXNZ003zQM5CLkATQ3NNk0="
+  },
+  {
+   "scene": 3,
+   "keys": "AU0ozQNND81nTQrNA00DOQi5Es0HTRTNA00PzQM5CLkATQ3NBE0ZzQNLBcsDSCfIA00jzQNNEs0LTQXNA00PzQxNHs0DTQrNA00jzQNND801TQ=="
+  },
+  {
+   "scene": 4,
+   "keys": "AUsPy2dLKMsDSwM5CLkSywdLHssDTQXNA0gxyANLFMsDSxTLA0sSyw1NAM0DOQi5AEsNywRLFMsDSwM5CLkNywxLD8sDTQXNA0gxyANLHssDSxLLREs="
+  },
+  {
+   "scene": 5,
+   "keys": "AU0KzWdNFzkIuQ05CLkNOQi5DTkIuQ05CLkNOQi5DTkIuQ05CLkNOQi5DTkIuQ05CLkNOQi5DTkIuQ/NA00UzQM5CLkATQ3NBE0FzSBND80DTQPNA1CBAdADTTzNA00="
+  },
+  {
+   "scene": 6,
+   "keys": "AU03zQNNBc0vTQrNA00ZzQNNLc0DTUTNE00PzWdNHs0DTQrNA0sAywM5CLkATQ3NNk0="
+  },
+  {
+   "scene": 7,
+   "keys": "AU0KzWdNKM0DTQM5CLkSOQi5H80ETQ/NA0sFywNIJ8gDTR7NA00XzQtNFM0DTQ/NA00FzS9ND80DTRnNA00czQ5NFM0DTQ=="
+  },
+  {
+   "scene": 8,
+   "keys": "AU0PzWdNAM0DTQg5CLkQOQi5EzkIuR/NBE0KzQNNBc0DSDHIA00jzQNNJs0NTRTNA0sFyytNHs0DTQrNA00FzQNIMcgDTRTNA00czQ1ND80DTQ=="
+  },
+  {
+   "scene": 9,
+   "keys": "AU0ozQNND81nTRnNA00KzQNNAzkIuRLNB00PzQNLBcsDSCfIA00UzQNNFM0DTQ3NC00FzQM5CLkATQ3NBE0PzQNNGc0vTR7NA00KzQNNHs0DTQ/NNU0="
+  },
+  {
+   "scene": 10,
+   "keys": "AU0KzWdNFM0DTQXNA00FzQNNAzkIuRLNB00FzQNNBc0vTQrNA00UzQNNI80DTQPNPU0KzQNND80DTR7NA00czRZNBc0DTQrNAzkIuQBNDc0ETQrNHU0ozQNNBc0DTQ=="
+  },
+  {
+   "scene": 11,
+   "keys": "AU0KzWdNGc0DTQrNAzkIuQBNDc0ETQ/NAzkIuQBNCs0DTQXNA0sAywM5CLkATQrNA00FzQNLAMsDOQi5AE0KzQNNBc0DSwDLAzkIuQBNCs0DTQXNA0sAywM5CLkATQrNA00FzQNLAMsDOQi5AE0KzQNNBc0DOQi5AE0KzQNNLc0DTR7NA00NzRBNBc0DTRTNAzkIuQBNDc0ETQ/NA00KzQNN"
+  },
+  {
+   "scene": 12,
+   "keys": "AU0PzWdNGc0DOQi5AE0NzQRNGc0DTQ45CLkTzQNNKzkIuQXNBUsDywNIAMgDTQrNA00NzQlNGc0DOQi5AE0NzQRNI80DTQM5CLkSzQdNGc0DTQ=="
+  },
+  {
+   "scene": 13,
+   "keys": "AU0PzQNLBcsDSDHIA01pzQNLAMsDTQPNOksIywNLI8sDSxnLA0sjywNLA8sDSDHIA00ozSRNHs0DTSPNA0sAywNNA80/SwjLA0s8ywNL"
+  },
+  {
+   "scene": 14,
+   "keys": "AU1GzSpNHs0DTRTNA00PzQNNI80UTSPNA0sAy2dNGc0DSwXLA0gxyANNMs0DTRLNDU0FzRpNHs0DTQ=="
+  },
+  {
+   "scene": 15,
+   "keys": "AU0PzWdNI80DTQ/NA00PzQM5CLkATQ3NBE0jzQNND80OTSPNA0sAywNND80DTQrNAzkIuQBNDc0ETSPNA0sAyyVNITkIuQXNA0sDywxNAzkIuRLNB00FzQNND80DTSjNA00="
+  },
+  {
+   "scene": 16,
+   "keys": "AU0yzQM5CLkATQ3NBE0ZzQNNBc0vTQrNA00yzQNNIc0TTS3NA00FzQNNCs0cTR7NA00FzQNND81nTQrNZ00="
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: Ladder Lane"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: Saucer Alley"
+  },
+  {
+   "scene": 4,
+   "title": "Level 3: Mirror Maze"
+  },
+  {
+   "scene": 5,
+   "title": "Level 4: Thirteen Steps"
+  },
+  {
+   "scene": 6,
+   "title": "Level 5: Town Hall"
+  },
+  {
+   "scene": 7,
+   "title": "Level 6: The Mirror Shop"
+  },
+  {
+   "scene": 8,
+   "title": "Level 7: The Other Side"
+  },
+  {
+   "scene": 9,
+   "title": "Level 8: Earlier That Morning"
+  },
+  {
+   "scene": 10,
+   "title": "Level 9: Earlier Still"
+  },
+  {
+   "scene": 11,
+   "title": "Level 10: Wash Day"
+  },
+  {
+   "scene": 12,
+   "title": "Level 11: Race to the Fair"
+  },
+  {
+   "scene": 13,
+   "title": "Level 12: The Clock Tower"
+  },
+  {
+   "scene": 14,
+   "title": "Level 13: Knock on Wood"
+  },
+  {
+   "scene": 15,
+   "title": "Level 14: The Night Market"
+  },
+  {
+   "scene": 16,
+   "title": "Level 15: Payback"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 61159,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 1581,
+    "time": 26350.000000000487
+   },
+   {
+    "title": "Level 1: Ladder Lane",
+    "frame": 2811,
+    "time": 46849.99999999891
+   },
+   {
+    "title": "Level 2: Saucer Alley",
+    "frame": 6837,
+    "time": 113950.00000001027
+   },
+   {
+    "title": "Level 3: Mirror Maze",
+    "frame": 10391,
+    "time": 173183.3333333241
+   },
+   {
+    "title": "Level 4: Thirteen Steps",
+    "frame": 13486,
+    "time": 224766.6666666274
+   },
+   {
+    "title": "Level 5: Town Hall",
+    "frame": 17421,
+    "time": 290349.9999999718
+   },
+   {
+    "title": "Level 6: The Mirror Shop",
+    "frame": 20661,
+    "time": 344350.0000000347
+   },
+   {
+    "title": "Level 7: The Other Side",
+    "frame": 24046,
+    "time": 400766.66666676704
+   },
+   {
+    "title": "Level 8: Earlier That Morning",
+    "frame": 27701,
+    "time": 461683.3333335046
+   },
+   {
+    "title": "Level 9: Earlier Still",
+    "frame": 31346,
+    "time": 522433.33333357534
+   },
+   {
+    "title": "Level 10: Wash Day",
+    "frame": 34961,
+    "time": 582683.3333334415
+   },
+   {
+    "title": "Level 11: Race to the Fair",
+    "frame": 38455,
+    "time": 640916.6666666393
+   },
+   {
+    "title": "Level 12: The Clock Tower",
+    "frame": 41408,
+    "time": 690133.3333331913
+   },
+   {
+    "title": "Level 13: Knock on Wood",
+    "frame": 44790,
+    "time": 746499.9999997268
+   },
+   {
+    "title": "Level 14: The Night Market",
+    "frame": 47875,
+    "time": 797916.6666662737
+   },
+   {
+    "title": "Level 15: Payback",
+    "frame": 51537,
+    "time": 858949.999999465
+   },
+   {
+    "title": "Ending",
+    "frame": 55304,
+    "time": 921733.3333326521
+   },
+   {
+    "title": "Credits",
+    "frame": 59604,
+    "time": 993399.9999991519
+   }
+  ]
+ }
+}

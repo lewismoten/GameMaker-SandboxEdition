@@ -1,0 +1,103 @@
+{
+ "key": "pixel",
+ "game": "teddy",
+ "source": "e7ac3a2dcb4fed93",
+ "items": [
+  {
+   "id": "teddy",
+   "title": "Teddy",
+   "blurb": "The little corgi with a ton of tricks.",
+   "file": "teddy.stl",
+   "preview": "teddy.view.stl",
+   "triangles": 1036,
+   "bytes": 51884,
+   "mm": [
+    33,
+    9,
+    27
+   ],
+   "thinSpecks": 0,
+   "colors": {
+    "file": "teddy.3mf",
+    "bytes": 21547,
+    "palette": [
+     [
+      32,
+      16,
+      24
+     ],
+     [
+      255,
+      243,
+      239
+     ],
+     [
+      223,
+      138,
+      77
+     ],
+     [
+      125,
+      45,
+      16
+     ]
+    ],
+    "meanColorError": 0
+   },
+   "overhangMm2": 99,
+   "overhangShare": 0.044
+  },
+  {
+   "id": "gwinn",
+   "title": "Gwinn",
+   "blurb": "Teddy’s big sister, all muscle and tongue.",
+   "file": "gwinn.stl",
+   "preview": "gwinn.view.stl",
+   "triangles": 1232,
+   "bytes": 61684,
+   "mm": [
+    30,
+    9,
+    31.5
+   ],
+   "thinSpecks": 0,
+   "colors": {
+    "file": "gwinn.3mf",
+    "bytes": 21221,
+    "palette": [
+     [
+      32,
+      16,
+      24
+     ],
+     [
+      255,
+      243,
+      239
+     ],
+     [
+      154,
+      81,
+      57
+     ],
+     [
+      231,
+      142,
+      182
+     ]
+    ],
+    "meanColorError": 0
+   },
+   "overhangMm2": 144,
+   "overhangShare": 0.061
+  }
+ ],
+ "packed": [
+  "teddy.stl",
+  "teddy.view.stl",
+  "teddy.3mf",
+  "gwinn.stl",
+  "gwinn.view.stl",
+  "gwinn.3mf"
+ ]
+}

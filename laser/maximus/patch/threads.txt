@@ -1,0 +1,13 @@
+Maximus patch: thread list, in the order they are sewn
+(any 40-weight embroidery thread in these colors; names are generic, not a brand)
+
+1. midnight navy  rgb(11, 16, 48)  #0b1030
+2. amber gold  rgb(240, 160, 32)  #f0a020
+3. bright cyan  rgb(40, 200, 240)  #28c8f0
+4. white  rgb(255, 255, 255)  #ffffff
+5. ruby red  rgb(235, 30, 50)  #eb1e32
+
+Finished size: 88 mm (3.46 in) across, round, cut out along the satin border.
+Stitches: 10,571 in 5 colors (4 color changes).
+Hoop: 4 x 4 in (100 x 100 mm). Stabilizer: medium tear-away or cut-away under twill or felt; trim along the border.
+Made by a program and never sewn on a real machine: sew a test on scrap first.

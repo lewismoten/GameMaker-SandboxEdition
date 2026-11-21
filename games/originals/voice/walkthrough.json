@@ -1,0 +1,77 @@
+{
+ "version": 1,
+ "game": "voice",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "AU0czQMcA5wHHAOcCk03zQNNc80DTQ=="
+  },
+  {
+   "scene": 3,
+   "keys": "AU0/zQNNGc0DTQrNGU08zQNNCs0bTR7NA00="
+  },
+  {
+   "scene": 4,
+   "keys": "AU01zQNNQc0DTQrNA008zQNN"
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: Say Hello"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: Two Speakers"
+  },
+  {
+   "scene": 4,
+   "title": "Level 3: Let It Finish"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 9473,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 913,
+    "time": 15216.666666666471
+   },
+   {
+    "title": "Level 1: Say Hello",
+    "frame": 2142,
+    "time": 35700.00000000053
+   },
+   {
+    "title": "Level 2: Two Speakers",
+    "frame": 3319,
+    "time": 55316.66666666434
+   },
+   {
+    "title": "Level 3: Let It Finish",
+    "frame": 4601,
+    "time": 76683.33333333276
+   },
+   {
+    "title": "Ending",
+    "frame": 5711,
+    "time": 95183.33333333815
+   },
+   {
+    "title": "Credits",
+    "frame": 7918,
+    "time": 131966.6666666814
+   }
+  ]
+ }
+}

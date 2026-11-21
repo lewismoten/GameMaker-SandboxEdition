@@ -1,0 +1,1 @@
+function a(t,i=3e3){const n=navigator.connection;if(n?.saveData||/(^|-)2g$/.test(n?.effectiveType??""))return;const c=window.requestIdleCallback??(e=>window.setTimeout(e,200)),o=e=>{e>=t.length||c(()=>{t[e]().catch(()=>{}).then(()=>o(e+1))},{timeout:5e3})};window.setTimeout(()=>o(0),i)}export{a as p};

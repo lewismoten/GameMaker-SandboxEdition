@@ -1,0 +1,82 @@
+{
+ "version": 1,
+ "game": "tickle",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "AU0lzQAsAawMLQGtNk0azQYSCJIATQDNBiwBrAwtAa0QTRbND00WzQAsAawMLQGtCk0dzQYSCJIATQDNBk0PzQ9NCM0ALAGsDC0BrQpNHM0GEgiSAE0DzQNND80ALAGsDC0BrQ1NDM0PTQ=="
+  },
+  {
+   "scene": 3,
+   "keys": "AU0RzQAsAawMLQGtGE0VzQYSBpIATQLNA00IzQAsAawMLQGtCk0hzRJNFs0ALAGsDC0BrQtLFssGEAiQAEsFywNNBc0GEgqSAE0BzS8sAawMLQGtGE0izQZNCM0KTQrNBhIKkgBNAc0FTQPNACwBrAwtAa0MTRPNACwBrAwtAa0WTRnNExIMkgBNH80DEgaSAE0AzQVNH80GEgqSAE0AzQZNAs0ALAGsDC0BrQpNFs0QSwLLA00KzRJLFssALAGsDC0BrRpNEM0ALAGsDC0BrRZN"
+  },
+  {
+   "scene": 4,
+   "keys": "AU0RzQAsAawMLQGtGE0hzQZNBc0SEgSSAE0DzQdNBM0ALAGsDC0BrRZNMs0VTQLNACwBrAwtAa0KTSzNACwBrAwtAa0KTRpICsgFzQYSCJIATQDNBk0JzQAsAawMLQGtF00izQ4sAawMLQGtE00nzQAsAawMLQGtD00XzQAsAawMLQGtE00TzQZICsgJTQ=="
+  },
+  {
+   "scene": 5,
+   "keys": "AU0EzQAsAawMLQGtI00pzQZNDM0ALAGsDC0BrSJNTs0ALAGsDC0BrQtLMssGEgiSAE0AzQZNB80ALAGsDC0BrQxNKM0GEgiSAE0DzQNNC80ALAGsDC0BrQtLDMsGEAiQAEsCyyhLCcsALAGsDC0BrRpLH8sGEAiQAEsCywRLGMsALAGsDC0BrQlLHMsGEAiQAEsCywRLEcsALAGsDC0BrQpLE8sGTSPNBhIIkgBNA80DTQXNACwBrAwtAa0WTSzNBhIIkgBNA80hTQrNACwBrAwtAa0eTSjNBhIIkgBNA80DTQbNACwBrAwtAa0ILAGsDC0BrRguAa4UTQ=="
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: The Course"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: The Lab"
+  },
+  {
+   "scene": 4,
+   "title": "Level 3: The Sewers"
+  },
+  {
+   "scene": 5,
+   "title": "Level 4: The Empire"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 22055,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0
+   },
+   {
+    "title": "Story",
+    "frame": 1275
+   },
+   {
+    "title": "Level 1: The Course",
+    "frame": 3607
+   },
+   {
+    "title": "Level 2: The Lab",
+    "frame": 5805
+   },
+   {
+    "title": "Level 3: The Sewers",
+    "frame": 9383
+   },
+   {
+    "title": "Level 4: The Empire",
+    "frame": 12214
+   },
+   {
+    "title": "Ending",
+    "frame": 16643
+   },
+   {
+    "title": "Credits",
+    "frame": 19967
+   }
+  ]
+ }
+}

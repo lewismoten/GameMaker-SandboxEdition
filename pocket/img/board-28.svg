@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 258 150" role="img" aria-label="Drawing of the 2.8 inch board: a smaller orange board with a squarer screen">
+<rect x="1" y="1" width="256" height="148" rx="8" fill="#e8920c" stroke="#8a5a00" stroke-width="2"/>
+<circle cx="7" cy="7" r="4.5" fill="#fff" stroke="#8a5a00" stroke-width="2"/><circle cx="7" cy="143" r="4.5" fill="#fff" stroke="#8a5a00" stroke-width="2"/><circle cx="251" cy="7" r="4.5" fill="#fff" stroke="#8a5a00" stroke-width="2"/><circle cx="251" cy="143" r="4.5" fill="#fff" stroke="#8a5a00" stroke-width="2"/>
+<rect x="8" y="4" width="183" height="141" rx="3" fill="#111"/>
+<rect x="14" y="10" width="171" height="129" fill="#1c3550"/>
+<path d="M14 139 L185 10 L185 61.6 L90.95 139 Z" fill="#2c5078" opacity=".6"/>
+<rect x="215" y="142" width="34" height="9" rx="2" fill="#c9ccd1" stroke="#555" stroke-width="2"/>
+<rect x="215" y="10" width="30" height="40" rx="2" fill="#222"/>
+</svg>

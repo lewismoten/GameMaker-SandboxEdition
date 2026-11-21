@@ -1,0 +1,310 @@
+{
+ "version": 1,
+ "game": "logic",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "C0gByAZIAcgGSAHIBksBywZLAcsGSAHIflAB0AZQAdAGSwHLBksBywZLAcsGSwHLBk0BzQZNAc0GTQHNBk0BzQZQAdAGTQHNBk0BzQZNAc0GTQHNBk0BzQZNAc0GTQHN"
+  },
+  {
+   "scene": 2,
+   "keys": "C1AB0AZLAcsGSwHLBksBywZLAcsGSwHLBlAB0AZLAcsGTQHNBkgByAZNAc0GTQHNBk0BzQZNAc0GTQHNBkgByAZNAc0GTQHNBk0BzQZIAchCSAHIQksBywZIAcgGSAHIBkgByAZNAc0GSAHI"
+  },
+  {
+   "scene": 2,
+   "keys": "C1AB0AZQAdAGUAHQBksBywZLAcsGSwHLBksBywZLAcsGSwHLBk0BzQZNAc0GTQHNBk0BzQZNAc0GTQHNBkgByAZIAcgGSAHIBk0BzQZNAc0GTQHNBk0BzQZNAc0GSAHIBkgByEJLAcsGSwHLBksBywZIAcgGSAHIBkgByA=="
+  },
+  {
+   "scene": 2,
+   "keys": "C0sBywZLAcsGSwHLBksBywZQAdAGUAHQBlAB0AZLAcsGSwHLBk0BzQZNAc0GSAHIBkgByAZIAcgGSAHIBkgByAZIAcgGSAHIYE0BzQZNAc0GTQHNBk0BzQZNAc0GTQHNBk0BzQZNAc0GTQHNBlAB0AZQAdAGTQHNBkgByGBLAcsGUAHQBlAB0AZQAdAGUAHQ"
+  },
+  {
+   "scene": 2,
+   "keys": "C0sBywZQAdAGUAHQBlAB0AZLAcsGSwHLBksBywZLAcsGSwHLBk0BzQZNAc0GTQHNBk0BzQZNAc0GSAHIBkgByAZIAcgGSAHIBkgByAZIAcgGSAHIBksBy2BLActgUAHQBlAB0AZQAdAGUAHQBk0BzQZNAc0GTQHNBk0BzQZNAc0GTQHNBkgByAZIAcgGSAHIBksBywZLAcs="
+  },
+  {
+   "scene": 2,
+   "keys": "C1AB0AZQAdAGSwHLBksBywZQAdAGSwHLBksBywZLAcsGTQHNBk0BzQZNAc0GSAHIBkgByAZNAc0GTQHNBkgByAZIAcgGSwHLBksBywZIAcgGSAHIBkgByAZIAcgGSwHLBksBywZLAcsGSwHLBksBy35LAct+TQHNBk0BzQZNAc0GTQHNBlAB0AZQAdAGUAHQBlAB0AZNAc0GTQHNBk0BzQZNAc0GSAHIBkgByAZIAcgGTQHN"
+  },
+  {
+   "scene": 3,
+   "keys": "C1AB0AZQAdAGSwHLBlAB0AZLAcsGSwHLBksBywZLAcsGSwHLBk0BzQZNAc0GTQHNBk0BzQZNAc0GSAHIBk0BzQZNAc0GTQHNBk0BzQZNAc0GSAHIugFLAcsGSAHIBkgByAZLAcsGSAHIBkgByAZIAcgGSAHI"
+  },
+  {
+   "scene": 3,
+   "keys": "C1AB0AZLAcsGSwHLBksBywZLAcsGSwHLBksBywZNAc0GTQHNBk0BzQZNAc0GTQHNBk0BzQZQAdAGUAHQBk0BzQZNAc0GUAHQugFNAc0GTQHNBkgByAZIAcgGSAHIBkgByAZIAcgGSAHI"
+  },
+  {
+   "scene": 3,
+   "keys": "C1AB0AZQAdAGUAHQBksBywZLAcsGSwHLBksBywZLAcsGSwHLBk0BzQZNAc0GTQHNBk0BzQZNAc0GTQHNBkgByAZIAcgGSAHIBk0BzSdNAc0GTQHNFk0BzQZNAc0GUAHQBlAB0AZNAc0="
+  },
+  {
+   "scene": 3,
+   "keys": "C0sBywZLAcsGSwHLBlAB0AZQAdAGUAHQBksBywZLAcsGSwHLBk0BzQZNAc0GTQHNBk0BzRhIAcgGTQHNBk0BzQZNAc1gTQHNYEgByAZNAc0GTQHNBkgByAZIAcgGTQHNBk0BzQZIAcgGSAHIBkgByAZLAcs="
+  },
+  {
+   "scene": 3,
+   "keys": "C0gByAZIAcgGSAHIBkgByAZLAcsGSwHLQlAB0AZQAdAGUAHQBksBywZLAcsGSwHLBlAB0AZQAdAGUAHQBlAB0AZLAcsGTQHNBkgByAZIAcgGSAHIBkgByAZIAcgGSAHIBksBywZIAcgGSwHL"
+  },
+  {
+   "scene": 3,
+   "keys": "C0sBywZLAcsGSwHLBkgByAZIAcgGSAHIBksBywZLAcsGSwHLBk0BzQZNAc0GTQHNBlAB0AZQAdAGUAHQBksBywZQAdAGUAHQBk0BzQZNAc0GTQHNBlAB0ElIAcgGTQHNBk0BzQZNAc0GUAHQBkgByAZNAc0GTQHNBk0BzQZNAc0="
+  },
+  {
+   "scene": 4,
+   "keys": "C0sBywZLAcsGSwHLBksBywZQAdAGSwHLBksBywZIAcgGSAHIBkgByAZIAcgGSAHIBlAB0AZQAdAGUAHQBlAB0AZQAdAGTQHNBk0BzQZIAcgGSwHLYE0BzQZIAchgTQHNBk0BzQZNAc0GTQHNBk0BzQZNAc0GSAHIBkgByAZIAcgGSAHIBksByw=="
+  },
+  {
+   "scene": 4,
+   "keys": "C0sBywZLAcsGSwHLBksBywZLAcsGSwHLBlAB0AZQAdAGUAHQBkgByAZIAcgGSAHIBk0BzQZNAc0GUAHQBksByyRNAc0GTQHNBk0BzQZIAcgGTQHNBk0BzQZNAc0GUAHQBlAB0GBNAc0GTQHNBkgByAZIAcgGSAHIBkgByAZIAcgGSwHL"
+  },
+  {
+   "scene": 4,
+   "keys": "C0sBywZLAcsGSwHLBksBywZLAcsGUAHQBlAB0AZQAdAGSAHIBkgByAZIAcgGSAHIBksBywZQAdB+TQHNBkgByAZIAcgGSAHIBksByw=="
+  },
+  {
+   "scene": 4,
+   "keys": "C0gByAZLAcsGSwHLBkgByAZIAcgGSAHIBksBywZLAcsGSwHLBksBywZNAc0GTQHNBk0BzQZNAc0GUAHQBlAB0AZQAdAGTQHNBk0BzQZQAdAGUAHQBlAB0AZQAdAGTQHNBk0BzQZQAdAGTQHNBkgByAZNAc0GSAHIBkgByAZLActgUAHQYEgByAZIAcgGSAHIBkgByAZLAcs="
+  },
+  {
+   "scene": 4,
+   "keys": "C0sBywZLAcsGSAHIBksBywZLAcsGSwHLBlAB0AZQAdAGUAHQBkgByAZIAcgGSAHIBk0BzQZNAc0GSAHIBkgByAZIAcgGUAHQBlAB0AZNAc0GSAHIBk0BzQZNAc0GTQHNBk0BzQZQAdD2AVAB0GBNAc0GTQHNBk0BzQZQAdAGTQHNBlAB0AZQAdA="
+  },
+  {
+   "scene": 4,
+   "keys": "C0sBywZLAcsGSwHLBksBywZLAcsGSwHLBkgByAZIAcgGSAHIBkgByAZQAdAGUAHQBlAB0AZQAdAGSwHLBlAB0AZQAdAGUAHQlAJNAc0GTQHNBk0BzQZQAdAGTQHNBk0BzQZNAc0GTQHNBk0BzQZNAc0GTQHNBk0BzQZIAchCSwHLBkgByAZIAcgGSAHIBkgByAZNAc0GTQHNBkgByAZIAcgGSAHI"
+  },
+  {
+   "scene": 5,
+   "keys": "C1AB0AZLAcsGSwHLBksBywZQAdAGUAHQBksBywZLAcsGSwHLBk0BzQZNAc0GTQHNBkgByAZIAcgGTQHNBk0BzQZNAc0GUAHQBk0BzWBNAc1CSAHIBk0BzQZNAc0GTQHNBk0BzQZNAc0GSAHIBkgByAZIAcgGSAHI"
+  },
+  {
+   "scene": 5,
+   "keys": "C1AB0AZLAcsGSwHLBksBywZLAcsGSwHLBksBywZNAc0GTQHNBk0BzQZNAc0GTQHNBk0BzQZQAdAGUAHQBk0BzQZNAc0GUAHQugFNAc0GTQHNBkgByAZIAcgGSAHIBkgByAZIAcgGSAHIBkgByA=="
+  },
+  {
+   "scene": 5,
+   "keys": "C1AB0AZQAdAGUAHQBkgByAZIAcgGSAHIBk0BzQZNAc0GTQHNBk0BzQZIAcgGSAHIBk0BzQZIAcgGSwHLfksBy2BQAdAGUAHQBlAB0AZLAcsGSwHLBksBywZLAcsGSwHLBksBywZLAcsGUAHQBksBywZLAcsGUAHQBksBywZLAcsGSwHLBkgByCRNAc0GSAHIYE0BzQZIAcgGSAHIBkgByAZLAcsGSAHIBkgByAZIAcg="
+  },
+  {
+   "scene": 5,
+   "keys": "C0sBywZLAcsGSwHLBksBywZLAcsGSwHLBlAB0AZQAdAGUAHQQkgByAZIAcgGSAHIBkgByAZNAc0GTQHNBk0BzQZIAchgUAHQBlAB0AZQAdAGUAHQBlAB0AZNAc0GTQHNBk0BzQZIAcgGUAHQBk0BzQZNAc0GSAHIBkgByAZIAcgGSAHIBkgByAZIAcgGSAHI"
+  },
+  {
+   "scene": 5,
+   "keys": "C1AB0AZQAdAGUAHQBksBywZLAcsGSwHLBksBywZIAcgGSAHIBksBywZLAcsGTQHNBk0BzQZQAdAGUAHQBksBywZQAdAGTQHNC00BzQZNAc0GTQHNBk0BzQZNAc0GTQHNBlAB0LoBTQHNBk0BzQZIAcgeSAHIBkgByAZIAcgGSAHIBkgByAZIAcg="
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 6,
+   "title": "Room 1: The Kitchen, board 1: The Toaster"
+  },
+  {
+   "scene": 7,
+   "title": "Room 1: The Kitchen, board 2: The Blender"
+  },
+  {
+   "scene": 8,
+   "title": "Room 1: The Kitchen, board 3: The Microwave"
+  },
+  {
+   "scene": 9,
+   "title": "Room 1: The Kitchen, board 4: The Dishwasher"
+  },
+  {
+   "scene": 10,
+   "title": "Room 1: The Kitchen, board 5: The Fridge"
+  },
+  {
+   "scene": 11,
+   "title": "Room 1: The Kitchen, board 6: The Coffee Maker"
+  },
+  {
+   "scene": 12,
+   "title": "Room 2: The Living Room, board 1: The Doorbell"
+  },
+  {
+   "scene": 13,
+   "title": "Room 2: The Living Room, board 2: The TV Set"
+  },
+  {
+   "scene": 14,
+   "title": "Room 2: The Living Room, board 3: The VCR"
+  },
+  {
+   "scene": 15,
+   "title": "Room 2: The Living Room, board 4: The Floor Lamp"
+  },
+  {
+   "scene": 16,
+   "title": "Room 2: The Living Room, board 5: The Stereo"
+  },
+  {
+   "scene": 17,
+   "title": "Room 2: The Living Room, board 6: The Night-Light"
+  },
+  {
+   "scene": 18,
+   "title": "Room 3: The Garage, board 1: The Garage Door Opener"
+  },
+  {
+   "scene": 19,
+   "title": "Room 3: The Garage, board 2: The Wet-Dry Vac"
+  },
+  {
+   "scene": 20,
+   "title": "Room 3: The Garage, board 3: The Power Drill"
+  },
+  {
+   "scene": 21,
+   "title": "Room 3: The Garage, board 4: The Lawn Mower"
+  },
+  {
+   "scene": 22,
+   "title": "Room 3: The Garage, board 5: The Christmas Lights"
+  },
+  {
+   "scene": 23,
+   "title": "Room 3: The Garage, board 6: The CitiCar"
+  },
+  {
+   "scene": 24,
+   "title": "Room 4: The Attic, board 1: The Home Computer"
+  },
+  {
+   "scene": 25,
+   "title": "Room 4: The Attic, board 2: The Clock Radio"
+  },
+  {
+   "scene": 26,
+   "title": "Room 4: The Attic, board 3: The Electric Train"
+  },
+  {
+   "scene": 27,
+   "title": "Room 4: The Attic, board 4: The Breadboard Computer"
+  },
+  {
+   "scene": 28,
+   "title": "Room 4: The Attic, board 5: Home Sweet Ohm"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 50468,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0
+   },
+   {
+    "title": "Story",
+    "frame": 1459
+   },
+   {
+    "title": "Room 1: The Kitchen, board 1: The Toaster",
+    "frame": 4084
+   },
+   {
+    "title": "Room 1: The Kitchen, board 2: The Blender",
+    "frame": 5571
+   },
+   {
+    "title": "Room 1: The Kitchen, board 3: The Microwave",
+    "frame": 7127
+   },
+   {
+    "title": "Room 1: The Kitchen, board 4: The Dishwasher",
+    "frame": 8577
+   },
+   {
+    "title": "Room 1: The Kitchen, board 5: The Fridge",
+    "frame": 10539
+   },
+   {
+    "title": "Room 1: The Kitchen, board 6: The Coffee Maker",
+    "frame": 12547
+   },
+   {
+    "title": "Room 2: The Living Room, board 1: The Doorbell",
+    "frame": 14914
+   },
+   {
+    "title": "Room 2: The Living Room, board 2: The TV Set",
+    "frame": 16844
+   },
+   {
+    "title": "Room 2: The Living Room, board 3: The VCR",
+    "frame": 18575
+   },
+   {
+    "title": "Room 2: The Living Room, board 4: The Floor Lamp",
+    "frame": 19874
+   },
+   {
+    "title": "Room 2: The Living Room, board 5: The Stereo",
+    "frame": 21733
+   },
+   {
+    "title": "Room 2: The Living Room, board 6: The Night-Light",
+    "frame": 23091
+   },
+   {
+    "title": "Room 3: The Garage, board 1: The Garage Door Opener",
+    "frame": 24588
+   },
+   {
+    "title": "Room 3: The Garage, board 2: The Wet-Dry Vac",
+    "frame": 26632
+   },
+   {
+    "title": "Room 3: The Garage, board 3: The Power Drill",
+    "frame": 28326
+   },
+   {
+    "title": "Room 3: The Garage, board 4: The Lawn Mower",
+    "frame": 29697
+   },
+   {
+    "title": "Room 3: The Garage, board 5: The Christmas Lights",
+    "frame": 31704
+   },
+   {
+    "title": "Room 3: The Garage, board 6: The CitiCar",
+    "frame": 34114
+   },
+   {
+    "title": "Room 4: The Attic, board 1: The Home Computer",
+    "frame": 36686
+   },
+   {
+    "title": "Room 4: The Attic, board 2: The Clock Radio",
+    "frame": 38540
+   },
+   {
+    "title": "Room 4: The Attic, board 3: The Electric Train",
+    "frame": 40295
+   },
+   {
+    "title": "Room 4: The Attic, board 4: The Breadboard Computer",
+    "frame": 42936
+   },
+   {
+    "title": "Room 4: The Attic, board 5: Home Sweet Ohm",
+    "frame": 44799
+   },
+   {
+    "title": "Ending",
+    "frame": 46811
+   },
+   {
+    "title": "Credits",
+    "frame": 48913
+   }
+  ]
+ }
+}

@@ -1,0 +1,1 @@
+const r="gm-player-patches",c=new Set;let a;function o(){try{a||(a=new BroadcastChannel(r),a.onmessage=n=>c.forEach(e=>e(n.data)))}catch{}return a}function h(n,e){const t={projectId:n,patches:e};c.forEach(s=>s(t)),o()?.postMessage(t)}function d(n){const e=t=>n(t.projectId,t.patches);return c.add(e),o(),()=>c.delete(e)}export{h as a,d as o};

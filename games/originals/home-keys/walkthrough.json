@@ -1,0 +1,77 @@
+{
+ "version": 1,
+ "game": "home-keys",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "AU0KzStNHs0rTRnNAzkCuQBNEs0DTQXNDk0ezStNI80DTR7NFEsAywMcApwyTSPNAxwCnDJNN80DTQ=="
+  },
+  {
+   "scene": 3,
+   "keys": "AU0KzStNK80MOQK5AE0VzQNNKM0DTRLNK00czQw5ArkATRTNA00ezQNN"
+  },
+  {
+   "scene": 4,
+   "keys": "AU0KzStNHs0DTSjNAxICki0QApAZSxTLA00zzRNND80rTRTNA01BzQMQApAZSxbLE01GzQNN"
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: Arrows, Space, Enter"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: No Diagonal Needed"
+  },
+  {
+   "scene": 4,
+   "title": "Level 3: Leap Shelves"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 11664,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 913,
+    "time": 15216.666666666471
+   },
+   {
+    "title": "Level 1: Arrows, Space, Enter",
+    "frame": 2142,
+    "time": 35700.00000000053
+   },
+   {
+    "title": "Level 2: No Diagonal Needed",
+    "frame": 4389,
+    "time": 73149.9999999984
+   },
+   {
+    "title": "Level 3: Leap Shelves",
+    "frame": 5980,
+    "time": 99666.66666667278
+   },
+   {
+    "title": "Ending",
+    "frame": 8378,
+    "time": 139633.33333334362
+   },
+   {
+    "title": "Credits",
+    "frame": 10590,
+    "time": 176499.99999998882
+   }
+  ]
+ }
+}

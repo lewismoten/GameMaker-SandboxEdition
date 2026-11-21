@@ -1,0 +1,100 @@
+{
+ "key": "e0ebbfb1c50fb875",
+ "game": "sandcast",
+ "items": [
+  {
+   "id": "tower-pail",
+   "title": "Tower mold pail",
+   "blurb": "A real sand mold: pack damp sand in, flip it over and lift for a little crenellated tower. Print it open side up.",
+   "file": "tower-pail.stl",
+   "triangles": 5174,
+   "bytes": 258784,
+   "mm": [
+    38.2,
+    38.2,
+    28
+   ],
+   "thinSpecks": 0,
+   "colors": {
+    "file": "tower-pail.3mf",
+    "bytes": 384953,
+    "palette": [
+     [
+      214,
+      40,
+      32
+     ],
+     [
+      244,
+      200,
+      24
+     ],
+     [
+      222,
+      182,
+      112
+     ],
+     [
+      150,
+      104,
+      52
+     ]
+    ],
+    "meanColorError": 0
+   },
+   "overhangMm2": 0,
+   "overhangShare": 0,
+   "supports": null
+  },
+  {
+   "id": "wall-pail",
+   "title": "Battlement mold pail",
+   "blurb": "Damp sand in, flip, lift: a wall section with four battlements to join Teddy’s towers. Print it open side up.",
+   "file": "wall-pail.stl",
+   "triangles": 3244,
+   "bytes": 162284,
+   "mm": [
+    45.9,
+    24.7,
+    26
+   ],
+   "thinSpecks": 0,
+   "colors": {
+    "file": "wall-pail.3mf",
+    "bytes": 106767,
+    "palette": [
+     [
+      44,
+      120,
+      200
+     ],
+     [
+      244,
+      200,
+      24
+     ],
+     [
+      222,
+      182,
+      112
+     ],
+     [
+      150,
+      104,
+      52
+     ]
+    ],
+    "meanColorError": 0
+   },
+   "overhangMm2": 0,
+   "overhangShare": 0,
+   "supports": null
+  }
+ ],
+ "packed": [
+  "tower-pail.stl",
+  "tower-pail.3mf",
+  "wall-pail.stl",
+  "wall-pail.3mf"
+ ]
+}

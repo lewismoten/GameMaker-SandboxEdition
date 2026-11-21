@@ -1,0 +1,51 @@
+{
+ "version": 1,
+ "game": "kits-shop",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "AU1EzQNNPM0DSwDLA00PzQNNBc0DTQ/NA00FzQNNHs0AS1rLA0sFywNIJ8gDTRTNA0sPywNLA8sDUB3QA00DOQi5GjkIuVDNA00PzQNNI80DTQrNA00KzQNN"
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: Kit's Shop"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 8433,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 913,
+    "time": 15216.666666666471
+   },
+   {
+    "title": "Level 1: Kit's Shop",
+    "frame": 2142,
+    "time": 35700.00000000053
+   },
+   {
+    "title": "Ending",
+    "frame": 4673,
+    "time": 77883.33333333311
+   },
+   {
+    "title": "Credits",
+    "frame": 6880,
+    "time": 114666.66666667715
+   }
+  ]
+ }
+}

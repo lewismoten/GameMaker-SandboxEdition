@@ -1,0 +1,90 @@
+{
+ "key": "15700e1e5fa80091",
+ "game": "smirked",
+ "items": [
+  {
+   "id": "foam-sword",
+   "title": "The $12 foam sword",
+   "blurb": "Gray blade, yellow guard, red grip, and the price still on it. Only a foam sword knocks a cardboard knight’s helmet off. A ring hole in the pommel.",
+   "file": "foam-sword.stl",
+   "triangles": 2394,
+   "bytes": 119784,
+   "mm": [
+    26,
+    103.2,
+    5.6
+   ],
+   "thinSpecks": 0,
+   "colors": {
+    "file": "foam-sword.3mf",
+    "bytes": 130222,
+    "palette": [
+     [
+      190,
+      196,
+      208
+     ],
+     [
+      244,
+      200,
+      24
+     ],
+     [
+      226,
+      40,
+      48
+     ]
+    ],
+    "meanColorError": 0
+   },
+   "overhangMm2": 0,
+   "overhangShare": 0,
+   "supports": null
+  },
+  {
+   "id": "bravery-badge",
+   "title": "The Bravery Badge",
+   "blurb": "Lily gets the Bravery Badge. A pink rosette with a gold star, and room on the back for a pin.",
+   "file": "bravery-badge.stl",
+   "triangles": 8822,
+   "bytes": 441184,
+   "mm": [
+    41.2,
+    40.3,
+    5.3
+   ],
+   "thinSpecks": 0,
+   "colors": {
+    "file": "bravery-badge.3mf",
+    "bytes": 549257,
+    "palette": [
+     [
+      236,
+      96,
+      164
+     ],
+     [
+      244,
+      200,
+      24
+     ],
+     [
+      252,
+      248,
+      240
+     ]
+    ],
+    "meanColorError": 0
+   },
+   "overhangMm2": 13,
+   "overhangShare": 0.004,
+   "supports": null
+  }
+ ],
+ "packed": [
+  "foam-sword.stl",
+  "foam-sword.3mf",
+  "bravery-badge.stl",
+  "bravery-badge.3mf"
+ ]
+}

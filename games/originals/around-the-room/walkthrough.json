@@ -1,0 +1,90 @@
+{
+ "version": 1,
+ "game": "around-the-room",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "BUsZywQ5AblJSwrLBEsVyyg5AbkASxHLEksAywRLC8sEOQG5AEsTyw9LEssEOQG5AEsaywxL"
+  },
+  {
+   "scene": 3,
+   "keys": "BUgZyAQ5AblJSBTIBEgVyCg5AbkASBDIEkgAyARIC8gEOQG5AEgYyAxIDcgEOQG5AEgayAxICcgEOQG5AEgVyA1I"
+  },
+  {
+   "scene": 4,
+   "keys": "BU0ZzQQ5AblJTQDNBE0VzSg5AbkATRHNEk0SzQQ5AbkATRXNDU0JzQQ5AbkATRrNDE0AzQRNB80EOQG5AE0TzQ9NAM0ETQvNBDkBuQBNE80PTQ=="
+  },
+  {
+   "scene": 5,
+   "keys": "BVAZ0AQ5AblJUADQBFAV0Cg5AbkAUBDQElAA0ARQAdAEOQG5AFAY0AxQCNAEOQG5AFAa0AxQBNAEOQG5AFAV0A1QANAEUADQBDkBuQBQENASUA=="
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: The Floor"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: The Left Wall"
+  },
+  {
+   "scene": 4,
+   "title": "Level 3: The Ceiling"
+  },
+  {
+   "scene": 5,
+   "title": "Level 4: The Right Wall"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 12204,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 913,
+    "time": 15216.666666666471
+   },
+   {
+    "title": "Level 1: The Floor",
+    "frame": 2142,
+    "time": 35700.00000000053
+   },
+   {
+    "title": "Level 2: The Left Wall",
+    "frame": 3757,
+    "time": 62616.66666666328
+   },
+   {
+    "title": "Level 3: The Ceiling",
+    "frame": 5417,
+    "time": 90283.33333333672
+   },
+   {
+    "title": "Level 4: The Right Wall",
+    "frame": 7169,
+    "time": 119483.33333334522
+   },
+   {
+    "title": "Ending",
+    "frame": 8918,
+    "time": 148633.33333333838
+   },
+   {
+    "title": "Credits",
+    "frame": 11130,
+    "time": 185499.99999998359
+   }
+  ]
+ }
+}

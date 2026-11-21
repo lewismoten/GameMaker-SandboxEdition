@@ -1,0 +1,106 @@
+{
+ "key": "laser-nickel",
+ "game": "reckoning",
+ "title": "The Great Dairy Reckoning of 3:17 A.M.",
+ "concept": "A fridge-door token: the clock reads \"3:17 A.M.\" with Doc Leo, in his pajamas, in the kitchen.",
+ "source": "37ccb243e05abd4e",
+ "mm": {
+  "coin": 38.1,
+  "sheet": [
+   270,
+   150
+  ],
+  "jigHole": 38,
+  "jigAt": [
+   235,
+   75
+  ],
+  "pitch": 44,
+  "wood": 3
+ },
+ "colors": {
+  "cut": "#ff0000",
+  "score": "#ff00ff",
+  "engrave": "#0000ff"
+ },
+ "series": {
+  "no": 13,
+  "of": 26,
+  "letter": "P",
+  "message": "BEKINDANDKEEPPLAYINGFRIEND"
+ },
+ "holes": [],
+ "clearance": {
+  "front": [],
+  "back": []
+ },
+ "reach": {
+  "front": 15.05,
+  "back": 15.07
+ },
+ "texts": {
+  "front": [
+   {
+    "text": "DAIRY RECKONING",
+    "capMm": 2.5
+   },
+   {
+    "text": "NO LACTOSE",
+    "capMm": 2.52
+   },
+   {
+    "text": "3:17",
+    "capMm": 3.15
+   },
+   {
+    "text": "A.M.",
+    "capMm": 2.52
+   }
+  ],
+  "back": [
+   {
+    "text": "GOOD FOR",
+    "capMm": 2.52
+   },
+   {
+    "text": "SANDBOX SOFTWARE",
+    "capMm": 2.5
+   },
+   {
+    "text": "ONE SLICE",
+    "capMm": 2.52
+   },
+   {
+    "text": "AT 3:17 AM",
+    "capMm": 2.52
+   },
+   {
+    "text": "NO.13/26",
+    "capMm": 2.5
+   },
+   {
+    "text": "1994 SM",
+    "capMm": 2.5
+   },
+   {
+    "text": "sandscript P",
+    "capMm": 2.52
+   }
+  ]
+ },
+ "paths": {
+  "front": 314,
+  "back": 385,
+  "sheet": 3770
+ },
+ "files": [
+  "front.svg",
+  "back.svg",
+  "sheet.svg",
+  "sheet-back.svg",
+  "front.png",
+  "back.png",
+  "sheet.png",
+  "manifest.json"
+ ]
+}

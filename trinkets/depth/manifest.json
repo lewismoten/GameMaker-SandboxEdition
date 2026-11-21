@@ -1,0 +1,350 @@
+{
+ "key": "38364d467acb2996",
+ "game": "depth",
+ "items": [
+  {
+   "id": "ray",
+   "title": "Roll Ray",
+   "blurb": "The chrome sphere with every polygon intact.",
+   "file": "ray.stl",
+   "triangles": 9894,
+   "bytes": 494784,
+   "mm": [
+    55.8,
+    60.2,
+    52.7
+   ],
+   "thinSpecks": 0,
+   "colors": {
+    "file": "ray.3mf",
+    "bytes": 247702,
+    "palette": [
+     [
+      225,
+      230,
+      240
+     ],
+     [
+      52,
+      40,
+      120
+     ],
+     [
+      255,
+      215,
+      39
+     ]
+    ],
+    "meanColorError": 0
+   },
+   "overhangMm2": 906,
+   "overhangShare": 0.062,
+   "supports": {
+    "file": "ray-supports.stl",
+    "triangles": 4772,
+    "bytes": 238684
+   }
+  },
+  {
+   "id": "count",
+   "title": "Count Polygon",
+   "blurb": "Twenty faces of vampire, on a post so he stays put.",
+   "file": "count.stl",
+   "triangles": 6054,
+   "bytes": 302784,
+   "mm": [
+    52.6,
+    47.3,
+    59.2
+   ],
+   "thinSpecks": 1,
+   "colors": {
+    "file": "count.3mf",
+    "bytes": 82328,
+    "palette": [
+     [
+      52,
+      40,
+      120
+     ],
+     [
+      250,
+      250,
+      240
+     ],
+     [
+      174,
+      102,
+      246
+     ],
+     [
+      233,
+      48,
+      83
+     ]
+    ],
+    "meanColorError": 8
+   },
+   "overhangMm2": 990,
+   "overhangShare": 0.082,
+   "supports": {
+    "file": "count-supports.stl",
+    "triangles": 4878,
+    "bytes": 243984
+   }
+  },
+  {
+   "id": "chez",
+   "title": "THE CHEZ",
+   "blurb": "A 1976½ CitiCar, tomato red with a black roof.",
+   "file": "chez.stl",
+   "triangles": 9952,
+   "bytes": 497684,
+   "mm": [
+    90,
+    45.8,
+    48.4
+   ],
+   "thinSpecks": 0,
+   "colors": {
+    "file": "chez.3mf",
+    "bytes": 203757,
+    "palette": [
+     [
+      226,
+      52,
+      36
+     ],
+     [
+      234,
+      234,
+      227
+     ],
+     [
+      50,
+      42,
+      112
+     ],
+     [
+      21,
+      19,
+      21
+     ]
+    ],
+    "meanColorError": 10
+   },
+   "overhangMm2": 2990,
+   "overhangShare": 0.132,
+   "supports": {
+    "file": "chez-supports.stl",
+    "triangles": 1054,
+    "bytes": 52784
+   }
+  },
+  {
+   "id": "teapot",
+   "title": "The Teapot",
+   "blurb": "The most rendered object there is.",
+   "file": "teapot.stl",
+   "triangles": 7550,
+   "bytes": 377584,
+   "mm": [
+    86.9,
+    57.1,
+    47.2
+   ],
+   "thinSpecks": 0,
+   "colors": {
+    "file": "teapot.3mf",
+    "bytes": 122665,
+    "palette": [
+     [
+      52,
+      40,
+      120
+     ],
+     [
+      246,
+      244,
+      240
+     ]
+    ],
+    "meanColorError": 0
+   },
+   "overhangMm2": 828,
+   "overhangShare": 0.05,
+   "supports": {
+    "file": "teapot-supports.stl",
+    "triangles": 4130,
+    "bytes": 206584
+   }
+  },
+  {
+   "id": "docleo",
+   "title": "Doc Leo and the chicken",
+   "blurb": "Doc Leo, his hat, and the rubber chicken on its red leash.",
+   "file": "docleo.stl",
+   "triangles": 6110,
+   "bytes": 305584,
+   "mm": [
+    42.5,
+    33.7,
+    58.1
+   ],
+   "thinSpecks": 0,
+   "colors": {
+    "file": "docleo.3mf",
+    "bytes": 82450,
+    "palette": [
+     [
+      36,
+      48,
+      100
+     ],
+     [
+      72,
+      70,
+      78
+     ],
+     [
+      240,
+      196,
+      170
+     ],
+     [
+      230,
+      30,
+      40
+     ]
+    ],
+    "meanColorError": 23
+   },
+   "overhangMm2": 299,
+   "overhangShare": 0.048,
+   "supports": {
+    "file": "docleo-supports.stl",
+    "triangles": 1956,
+    "bytes": 97884
+   }
+  },
+  {
+   "id": "teddy",
+   "title": "Teddy",
+   "blurb": "The corgi, ears up and tongue out.",
+   "file": "teddy.stl",
+   "triangles": 8186,
+   "bytes": 409384,
+   "mm": [
+    33.1,
+    61.2,
+    46.2
+   ],
+   "thinSpecks": 0,
+   "colors": {
+    "file": "teddy.3mf",
+    "bytes": 121245,
+    "palette": [
+     [
+      220,
+      128,
+      54
+     ],
+     [
+      52,
+      40,
+      120
+     ],
+     [
+      252,
+      248,
+      238
+     ],
+     [
+      15,
+      12,
+      12
+     ]
+    ],
+    "meanColorError": 3
+   },
+   "overhangMm2": 682,
+   "overhangShare": 0.074,
+   "supports": {
+    "file": "teddy-supports.stl",
+    "triangles": 3114,
+    "bytes": 155784
+   }
+  },
+  {
+   "id": "gwinn",
+   "title": "Gwinn",
+   "blurb": "The troublemaker, sitting pretty in her pink collar.",
+   "file": "gwinn.stl",
+   "triangles": 6776,
+   "bytes": 338884,
+   "mm": [
+    36,
+    68.9,
+    43.8
+   ],
+   "thinSpecks": 0,
+   "colors": {
+    "file": "gwinn.3mf",
+    "bytes": 137341,
+    "palette": [
+     [
+      118,
+      64,
+      40
+     ],
+     [
+      251,
+      145,
+      192
+     ],
+     [
+      255,
+      189,
+      40
+     ],
+     [
+      52,
+      40,
+      120
+     ]
+    ],
+    "meanColorError": 4
+   },
+   "overhangMm2": 447,
+   "overhangShare": 0.047,
+   "supports": {
+    "file": "gwinn-supports.stl",
+    "triangles": 2098,
+    "bytes": 104984
+   }
+  }
+ ],
+ "packed": [
+  "ray.stl",
+  "ray-supports.stl",
+  "ray.3mf",
+  "count.stl",
+  "count-supports.stl",
+  "count.3mf",
+  "chez.stl",
+  "chez-supports.stl",
+  "chez.3mf",
+  "teapot.stl",
+  "teapot-supports.stl",
+  "teapot.3mf",
+  "docleo.stl",
+  "docleo-supports.stl",
+  "docleo.3mf",
+  "teddy.stl",
+  "teddy-supports.stl",
+  "teddy.3mf",
+  "gwinn.stl",
+  "gwinn-supports.stl",
+  "gwinn.3mf"
+ ]
+}

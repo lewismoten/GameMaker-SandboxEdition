@@ -1,0 +1,102 @@
+{
+ "key": "laser-nickel",
+ "game": "needle",
+ "title": "Thread the Needle, Brother Camel",
+ "concept": "A road token: Brother Camel alone, and the eye he has to get through.",
+ "source": "6ea6c06fde64dd64",
+ "mm": {
+  "coin": 38.1,
+  "sheet": [
+   270,
+   150
+  ],
+  "jigHole": 38,
+  "jigAt": [
+   235,
+   75
+  ],
+  "pitch": 44,
+  "wood": 3
+ },
+ "colors": {
+  "cut": "#ff0000",
+  "score": "#ff00ff",
+  "engrave": "#0000ff"
+ },
+ "series": {
+  "no": 11,
+  "of": 26,
+  "letter": "E",
+  "message": "BEKINDANDKEEPPLAYINGFRIEND"
+ },
+ "holes": [],
+ "clearance": {
+  "front": [],
+  "back": []
+ },
+ "reach": {
+  "front": 15.05,
+  "back": 15.07
+ },
+ "texts": {
+  "front": [
+   {
+    "text": "BROTHER CAMEL",
+    "capMm": 2.5
+   },
+   {
+    "text": "THE EYE",
+    "capMm": 2.52
+   }
+  ],
+  "back": [
+   {
+    "text": "GOOD FOR",
+    "capMm": 2.52
+   },
+   {
+    "text": "SANDBOX SOFTWARE",
+    "capMm": 2.5
+   },
+   {
+    "text": "ONE CAMEL",
+    "capMm": 2.52
+   },
+   {
+    "text": "THROUGH",
+    "capMm": 2.52
+   },
+   {
+    "text": "THE EYE",
+    "capMm": 2.52
+   },
+   {
+    "text": "NO.11/26",
+    "capMm": 2.5
+   },
+   {
+    "text": "1994 SM",
+    "capMm": 2.5
+   },
+   {
+    "text": "sandscript E",
+    "capMm": 2.52
+   }
+  ]
+ },
+ "paths": {
+  "front": 265,
+  "back": 425,
+  "sheet": 3182
+ },
+ "files": [
+  "front.svg",
+  "back.svg",
+  "sheet.svg",
+  "sheet-back.svg",
+  "front.png",
+  "back.png",
+  "sheet.png",
+  "manifest.json"
+ ]
+}

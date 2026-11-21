@@ -1,0 +1,108 @@
+{
+ "key": "laser-nickel",
+ "game": "teddy2",
+ "title": "Teddy's Little Bigger Adventure",
+ "concept": "A Tri-County Fair ride ticket: a Ferris wheel with a hole for its hub.",
+ "source": "b6259fc59baa8b69",
+ "mm": {
+  "coin": 38.1,
+  "sheet": [
+   270,
+   150
+  ],
+  "jigHole": 38,
+  "jigAt": [
+   235,
+   75
+  ],
+  "pitch": 44,
+  "wood": 3
+ },
+ "colors": {
+  "cut": "#ff0000",
+  "score": "#ff00ff",
+  "engrave": "#0000ff"
+ },
+ "series": {
+  "no": 22,
+  "of": 26,
+  "letter": "R",
+  "message": "BEKINDANDKEEPPLAYINGFRIEND"
+ },
+ "holes": [
+  {
+   "x": 0,
+   "y": 0,
+   "r": 1.5
+  }
+ ],
+ "clearance": {
+  "front": [],
+  "back": []
+ },
+ "reach": {
+  "front": 15.02,
+  "back": 15.07
+ },
+ "texts": {
+  "front": [
+   {
+    "text": "TRI-COUNTY FAIR",
+    "capMm": 2.5
+   },
+   {
+    "text": "LITTLE BIGGER",
+    "capMm": 2.5
+   }
+  ],
+  "back": [
+   {
+    "text": "GOOD FOR",
+    "capMm": 2.52
+   },
+   {
+    "text": "SANDBOX SOFTWARE",
+    "capMm": 2.5
+   },
+   {
+    "text": "SNIFF OUT",
+    "capMm": 2.52
+   },
+   {
+    "text": "GWINN'S",
+    "capMm": 2.52
+   },
+   {
+    "text": "TRAIL",
+    "capMm": 2.52
+   },
+   {
+    "text": "NO.22/26",
+    "capMm": 2.5
+   },
+   {
+    "text": "1994 SM",
+    "capMm": 2.5
+   },
+   {
+    "text": "sandscript R",
+    "capMm": 2.52
+   }
+  ]
+ },
+ "paths": {
+  "front": 194,
+  "back": 412,
+  "sheet": 2330
+ },
+ "files": [
+  "front.svg",
+  "back.svg",
+  "sheet.svg",
+  "sheet-back.svg",
+  "front.png",
+  "back.png",
+  "sheet.png",
+  "manifest.json"
+ ]
+}

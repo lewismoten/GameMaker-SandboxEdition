@@ -1,0 +1,95 @@
+{
+ "key": "e4cb24eb4cc6b93d",
+ "game": "sleuth",
+ "items": [
+  {
+   "id": "magnifying-glass",
+   "title": "Inspector Penn’s magnifying glass",
+   "blurb": "The prop magnifying glass Inspector Ada Penn searches the empty Paragon with: a brass rim, a black handle and a ring hole for the keys.",
+   "file": "magnifying-glass.stl",
+   "triangles": 4528,
+   "bytes": 226484,
+   "mm": [
+    34,
+    76.2,
+    5.6
+   ],
+   "thinSpecks": 0,
+   "colors": {
+    "file": "magnifying-glass.3mf",
+    "bytes": 163926,
+    "palette": [
+     [
+      226,
+      170,
+      40
+     ],
+     [
+      176,
+      224,
+      240
+     ],
+     [
+      34,
+      30,
+      44
+     ]
+    ],
+    "meanColorError": 0
+   },
+   "overhangMm2": 1,
+   "overhangShare": 0,
+   "supports": null
+  },
+  {
+   "id": "trick-dagger",
+   "title": "The trick dagger",
+   "blurb": "The stage dagger that wasn’t: a bright, blunt blade with a gold guard and exhibit tag 1. Perfectly safe, which is the whole problem.",
+   "file": "trick-dagger.stl",
+   "triangles": 2586,
+   "bytes": 129384,
+   "mm": [
+    22,
+    77.5,
+    6.4
+   ],
+   "thinSpecks": 0,
+   "colors": {
+    "file": "trick-dagger.3mf",
+    "bytes": 148515,
+    "palette": [
+     [
+      214,
+      220,
+      234
+     ],
+     [
+      226,
+      170,
+      40
+     ],
+     [
+      34,
+      30,
+      44
+     ],
+     [
+      250,
+      244,
+      224
+     ]
+    ],
+    "meanColorError": 0
+   },
+   "overhangMm2": 1,
+   "overhangShare": 0,
+   "supports": null
+  }
+ ],
+ "packed": [
+  "magnifying-glass.stl",
+  "magnifying-glass.3mf",
+  "trick-dagger.stl",
+  "trick-dagger.3mf"
+ ]
+}

@@ -1,0 +1,1 @@
+const t="gm-player-field";let n;function i(e){n=e,window.dispatchEvent(new CustomEvent(t,{detail:e}))}function d(){const e=n;return n=void 0,e}export{t as PLAYER_FIELD_EVENT,i as requestPlayerField,d as takePlayerField};

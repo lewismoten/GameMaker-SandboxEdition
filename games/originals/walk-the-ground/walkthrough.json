@@ -1,0 +1,64 @@
+{
+ "version": 1,
+ "game": "walk-the-ground",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "AU0PzStNFM0rTRTNK00PzRJNCTkCuSbNA01/zQNNFM0DTQ=="
+  },
+  {
+   "scene": 3,
+   "keys": "AU0UzStNFM0rTQrNA00IOQK5A807TZIBzQNNBc0DSDHIA008zQNN"
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: The Tunnel"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: Under the Spikes"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 9110,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 913,
+    "time": 15216.666666666471
+   },
+   {
+    "title": "Level 1: The Tunnel",
+    "frame": 2142,
+    "time": 35700.00000000053
+   },
+   {
+    "title": "Level 2: Under the Spikes",
+    "frame": 3885,
+    "time": 64749.999999996304
+   },
+   {
+    "title": "Ending",
+    "frame": 5828,
+    "time": 97133.33333333871
+   },
+   {
+    "title": "Credits",
+    "frame": 8036,
+    "time": 133933.33333334693
+   }
+  ]
+ }
+}

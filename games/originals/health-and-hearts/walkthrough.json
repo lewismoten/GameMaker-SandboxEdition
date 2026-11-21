@@ -1,0 +1,77 @@
+{
+ "version": 1,
+ "game": "health-and-hearts",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "AU0wzQNNDjkIuQ7NK003zQNN"
+  },
+  {
+   "scene": 3,
+   "keys": "AU0hzQNNCTkIuQ7NK00PzStND80rTTLNA00="
+  },
+  {
+   "scene": 4,
+   "keys": "AU0mzQNNLDkIuRI5CLkSOQi5EzksTTXNAzkIuQZNFM0rTQjNBk0KzQNNBDkIuQ7NA00EOQi5Ds0DTQQ5CLkOzStNHs0DOQi5Bk0KzStNDc0HTQ=="
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: Hit Points"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: Hearts Heal"
+  },
+  {
+   "scene": 4,
+   "title": "Level 3: Lives"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 11061,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 913,
+    "time": 15216.666666666471
+   },
+   {
+    "title": "Level 1: Hit Points",
+    "frame": 2142,
+    "time": 35700.00000000053
+   },
+   {
+    "title": "Level 2: Hearts Heal",
+    "frame": 3197,
+    "time": 53283.333333331306
+   },
+   {
+    "title": "Level 3: Lives",
+    "frame": 4535,
+    "time": 75583.33333333244
+   },
+   {
+    "title": "Ending",
+    "frame": 7295,
+    "time": 121583.33333334583
+   },
+   {
+    "title": "Credits",
+    "frame": 9506,
+    "time": 158433.33333333267
+   }
+  ]
+ }
+}

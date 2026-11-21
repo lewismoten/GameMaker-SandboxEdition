@@ -1,0 +1,64 @@
+{
+ "version": 1,
+ "game": "word-lock",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "AU0czQNNFM0DTSPNA00KzQNNN80DTQ/NA00ezQNN"
+  },
+  {
+   "scene": 3,
+   "keys": "AU0yzQNNHs0DTR7NA01azQNNHs0AS1XLA00FzQNIRcgDTS3NA0soywNLA8sDUDvQA01QzQNLAMsDTQ=="
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: Pay to Pass"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: No Tray"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 9490,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 913,
+    "time": 15216.666666666471
+   },
+   {
+    "title": "Level 1: Pay to Pass",
+    "frame": 2142,
+    "time": 35700.00000000053
+   },
+   {
+    "title": "Level 2: No Tray",
+    "frame": 3216,
+    "time": 53599.999999997926
+   },
+   {
+    "title": "Ending",
+    "frame": 5727,
+    "time": 95450.00000000489
+   },
+   {
+    "title": "Credits",
+    "frame": 7935,
+    "time": 132250.00000001458
+   }
+  ]
+ }
+}

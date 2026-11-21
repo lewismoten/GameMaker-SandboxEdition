@@ -1,0 +1,1 @@
+const a="d8a48111bedb4745",t={"caravan.map|goat.bbl":[0,0,53,28],"field.map|goat.bbl":[0,0,64,24],"stable.map|goat.bbl":[0,0,42,23],"town.map|goat.bbl":[0,0,53,30]},b={hash:a,maps:t};export{b as default,a as hash,t as maps};

@@ -1,0 +1,64 @@
+{
+ "version": 1,
+ "game": "fireworks",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "FU0hzStNCs2jAU0jzStNI82vAk0UzStNHs0DHAOcZE0="
+  },
+  {
+   "scene": 3,
+   "keys": "FU0hzStNGc2bAk1LzStND82bAk1LzStND82bAk0="
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: Launch!"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: The Big Show"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 13332,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 913,
+    "time": 15216.666666666471
+   },
+   {
+    "title": "Level 1: Launch!",
+    "frame": 2142,
+    "time": 35700.00000000053
+   },
+   {
+    "title": "Level 2: The Big Show",
+    "frame": 5457,
+    "time": 90950.00000000358
+   },
+   {
+    "title": "Ending",
+    "frame": 10046,
+    "time": 167433.33333332743
+   },
+   {
+    "title": "Credits",
+    "frame": 12258,
+    "time": 204299.99999997264
+   }
+  ]
+ }
+}

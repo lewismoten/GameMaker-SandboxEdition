@@ -1,0 +1,106 @@
+{
+ "key": "laser-nickel",
+ "game": "snowbound",
+ "title": "Snowbound: The $89 Shovel",
+ "concept": "Shoveling scrip: \"$1\" a driveway, with a snowflake.",
+ "source": "c0fe1ded4359f99c",
+ "mm": {
+  "coin": 38.1,
+  "sheet": [
+   270,
+   150
+  ],
+  "jigHole": 38,
+  "jigAt": [
+   235,
+   75
+  ],
+  "pitch": 44,
+  "wood": 3
+ },
+ "colors": {
+  "cut": "#ff0000",
+  "score": "#ff00ff",
+  "engrave": "#0000ff"
+ },
+ "series": {
+  "no": 19,
+  "of": 26,
+  "letter": "N",
+  "message": "BEKINDANDKEEPPLAYINGFRIEND"
+ },
+ "holes": [],
+ "clearance": {
+  "front": [],
+  "back": []
+ },
+ "reach": {
+  "front": 15.07,
+  "back": 15.07
+ },
+ "texts": {
+  "front": [
+   {
+    "text": "SNOWBOUND",
+    "capMm": 2.52
+   },
+   {
+    "text": "ONE DRIVEWAY",
+    "capMm": 2.5
+   },
+   {
+    "text": "$1",
+    "capMm": 6.3
+   }
+  ],
+  "back": [
+   {
+    "text": "GOOD FOR",
+    "capMm": 2.52
+   },
+   {
+    "text": "SANDBOX SOFTWARE",
+    "capMm": 2.5
+   },
+   {
+    "text": "ONE SCOOP",
+    "capMm": 2.52
+   },
+   {
+    "text": "OF SNOW",
+    "capMm": 2.52
+   },
+   {
+    "text": "FOR $1",
+    "capMm": 2.52
+   },
+   {
+    "text": "NO.19/26",
+    "capMm": 2.5
+   },
+   {
+    "text": "1993 SM",
+    "capMm": 2.5
+   },
+   {
+    "text": "sandscript N",
+    "capMm": 2.52
+   }
+  ]
+ },
+ "paths": {
+  "front": 218,
+  "back": 435,
+  "sheet": 2618
+ },
+ "files": [
+  "front.svg",
+  "back.svg",
+  "sheet.svg",
+  "sheet-back.svg",
+  "front.png",
+  "back.png",
+  "sheet.png",
+  "manifest.json"
+ ]
+}

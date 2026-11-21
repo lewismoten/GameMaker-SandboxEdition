@@ -1,0 +1,1 @@
+const e=new Set;function s(o,c){if(o==="preview"&&n())return;const r={kind:o,lose:c};for(const t of[...e])e.delete(t),t.lose();return e.add(r),()=>{e.delete(r)}}function n(){for(const o of e)if(o.kind==="player")return!0;return!1}export{s as c};

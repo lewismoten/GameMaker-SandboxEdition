@@ -1,0 +1,64 @@
+{
+ "version": 1,
+ "game": "boss-hits",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "AU0hzQNNQc0DTRTNAEskywNND80DHAOcPBwDnDwcA5w8HAOcPBwDnDxNS80DTQ=="
+  },
+  {
+   "scene": 3,
+   "keys": "AU0/zQNNQc0DHAOcPBwDnDwcA5w8HAOcPBwDnDxNPM0DTQ=="
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: Five Hits"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: Count the Lights"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 10288,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 913,
+    "time": 15216.666666666471
+   },
+   {
+    "title": "Level 1: Five Hits",
+    "frame": 2142,
+    "time": 35700.00000000053
+   },
+   {
+    "title": "Level 2: Count the Lights",
+    "frame": 4469,
+    "time": 74483.33333333212
+   },
+   {
+    "title": "Ending",
+    "frame": 6524,
+    "time": 108733.33333334209
+   },
+   {
+    "title": "Credits",
+    "frame": 8733,
+    "time": 145550.00000000684
+   }
+  ]
+ }
+}

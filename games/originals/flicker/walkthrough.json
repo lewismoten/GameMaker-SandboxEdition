@@ -1,0 +1,77 @@
+{
+ "version": 1,
+ "game": "flicker",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "FU0SzStNI82FAU0ezStNKM3fAU0ozStNKM0rTQrNZ00="
+  },
+  {
+   "scene": 3,
+   "keys": "FU0XzStNN82jAU1fzStNLc0rTQ=="
+  },
+  {
+   "scene": 4,
+   "keys": "FU0XzStNKM2HAk1QzStN"
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: The Torch Hall"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: The Falls"
+  },
+  {
+   "scene": 4,
+   "title": "Level 3: The Fire on the Hill"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 13641,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 913,
+    "time": 15216.666666666471
+   },
+   {
+    "title": "Level 1: The Torch Hall",
+    "frame": 2142,
+    "time": 35700.00000000053
+   },
+   {
+    "title": "Level 2: The Falls",
+    "frame": 5457,
+    "time": 90950.00000000358
+   },
+   {
+    "title": "Level 3: The Fire on the Hill",
+    "frame": 7687,
+    "time": 128116.66666668106
+   },
+   {
+    "title": "Ending",
+    "frame": 9874,
+    "time": 164566.66666666244
+   },
+   {
+    "title": "Credits",
+    "frame": 12086,
+    "time": 201433.33333330764
+   }
+  ]
+ }
+}

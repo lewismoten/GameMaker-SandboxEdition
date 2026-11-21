@@ -1,0 +1,103 @@
+{
+ "key": "pixel",
+ "game": "mustard",
+ "source": "7fdefd59cc8ba730",
+ "items": [
+  {
+   "id": "seed",
+   "title": "The mustard seed",
+   "blurb": "The smallest thing in all the land, with the greatest feet.",
+   "file": "seed.stl",
+   "preview": "seed.view.stl",
+   "triangles": 812,
+   "bytes": 40684,
+   "mm": [
+    24,
+    9,
+    30
+   ],
+   "thinSpecks": 0,
+   "colors": {
+    "file": "seed.3mf",
+    "bytes": 22939,
+    "palette": [
+     [
+      20,
+      8,
+      8
+     ],
+     [
+      255,
+      247,
+      150
+     ],
+     [
+      162,
+      49,
+      36
+     ],
+     [
+      198,
+      138,
+      16
+     ]
+    ],
+    "meanColorError": 0
+   },
+   "overhangMm2": 18,
+   "overhangShare": 0.009
+  },
+  {
+   "id": "bee",
+   "title": "Bee",
+   "blurb": "A bee buzzing the garden.",
+   "file": "bee.stl",
+   "preview": "bee.view.stl",
+   "triangles": 774,
+   "bytes": 38784,
+   "mm": [
+    22.5,
+    9,
+    21
+   ],
+   "thinSpecks": 0,
+   "colors": {
+    "file": "bee.3mf",
+    "bytes": 13227,
+    "palette": [
+     [
+      20,
+      8,
+      8
+     ],
+     [
+      235,
+      178,
+      81
+     ],
+     [
+      215,
+      198,
+      182
+     ],
+     [
+      243,
+      215,
+      146
+     ]
+    ],
+    "meanColorError": 0
+   },
+   "overhangMm2": 90,
+   "overhangShare": 0.059
+  }
+ ],
+ "packed": [
+  "seed.stl",
+  "seed.view.stl",
+  "seed.3mf",
+  "bee.stl",
+  "bee.view.stl",
+  "bee.3mf"
+ ]
+}

@@ -1,0 +1,64 @@
+{
+ "version": 1,
+ "game": "searchlight",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "AU0jzQNNHs2xAk0OzQBLBDkIuQg5CLkSyydNH80JTQLN8wE5CLkATQrNA00LzQlNAs0DOQi5AE0KzQNNBc0DTTzNA00="
+  },
+  {
+   "scene": 3,
+   "keys": "AU0jzQNNKM0DTRrNCU0CzZ0BOQi5AE0KzQNNBs0JTQLNAzkIuQBNCs0DTQXNK00fzQlNAs1hOQi5AE0KzQNNBs0JTQLNAzkIuQBNCs0DTQrNA00PzQNN"
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: Wait and Go"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: Two Lights"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 11711,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 913,
+    "time": 15216.666666666471
+   },
+   {
+    "title": "Level 1: Wait and Go",
+    "frame": 2142,
+    "time": 35700.00000000053
+   },
+   {
+    "title": "Level 2: Two Lights",
+    "frame": 5493,
+    "time": 91550.00000000375
+   },
+   {
+    "title": "Ending",
+    "frame": 7944,
+    "time": 132400.0000000145
+   },
+   {
+    "title": "Credits",
+    "frame": 10156,
+    "time": 169266.6666666597
+   }
+  ]
+ }
+}

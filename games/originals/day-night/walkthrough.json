@@ -1,0 +1,103 @@
+{
+ "version": 1,
+ "game": "day-night",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "AU0NzTZNGc01TRnNNU0UzQNNFM0DTQ=="
+  },
+  {
+   "scene": 3,
+   "keys": "PU1TzQNNFM0DTQ=="
+  },
+  {
+   "scene": 4,
+   "keys": "AU0NzTZN"
+  },
+  {
+   "scene": 5,
+   "keys": "AUsUywNNI801TR7NA00="
+  },
+  {
+   "scene": 6,
+   "keys": "AU0PzTVN"
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: One Map, Two Looks (day)"
+  },
+  {
+   "scene": 3,
+   "title": "Level 1: the same map at night"
+  },
+  {
+   "scene": 4,
+   "title": "Level 2: Sundown Street (day)"
+  },
+  {
+   "scene": 5,
+   "title": "Level 2: dusk"
+  },
+  {
+   "scene": 6,
+   "title": "Level 2: night"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 9484,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 913,
+    "time": 15216.666666666471
+   },
+   {
+    "title": "Level 1: One Map, Two Looks (day)",
+    "frame": 2142,
+    "time": 35700.00000000053
+   },
+   {
+    "title": "Level 1: the same map at night",
+    "frame": 3381,
+    "time": 56349.999999997526
+   },
+   {
+    "title": "Level 2: Sundown Street (day)",
+    "frame": 4054,
+    "time": 67566.66666666344
+   },
+   {
+    "title": "Level 2: dusk",
+    "frame": 4709,
+    "time": 78483.33333333328
+   },
+   {
+    "title": "Level 2: night",
+    "frame": 5299,
+    "time": 88316.66666666948
+   },
+   {
+    "title": "Ending",
+    "frame": 5721,
+    "time": 95350.00000000486
+   },
+   {
+    "title": "Credits",
+    "frame": 7929,
+    "time": 132150.00000001464
+   }
+  ]
+ }
+}

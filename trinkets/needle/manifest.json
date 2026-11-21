@@ -1,0 +1,103 @@
+{
+ "key": "pixel",
+ "game": "needle",
+ "source": "813c0e4433518e23",
+ "items": [
+  {
+   "id": "camel",
+   "title": "Brother Camel",
+   "blurb": "The camel with the saddlebags full of gold.",
+   "file": "camel.stl",
+   "preview": "camel.view.stl",
+   "triangles": 1684,
+   "bytes": 84284,
+   "mm": [
+    33,
+    9,
+    51
+   ],
+   "thinSpecks": 0,
+   "colors": {
+    "file": "camel.3mf",
+    "bytes": 44107,
+    "palette": [
+     [
+      32,
+      16,
+      8
+     ],
+     [
+      247,
+      215,
+      109
+     ],
+     [
+      206,
+      73,
+      49
+     ],
+     [
+      158,
+      93,
+      158
+     ]
+    ],
+    "meanColorError": 0
+   },
+   "overhangMm2": 126,
+   "overhangShare": 0.034
+  },
+  {
+   "id": "needle",
+   "title": "The needle",
+   "blurb": "The eye of the needle itself.",
+   "file": "needle.stl",
+   "preview": "needle.view.stl",
+   "triangles": 420,
+   "bytes": 21084,
+   "mm": [
+    12,
+    9,
+    33
+   ],
+   "thinSpecks": 0,
+   "colors": {
+    "file": "needle.3mf",
+    "bytes": 11258,
+    "palette": [
+     [
+      32,
+      16,
+      8
+     ],
+     [
+      190,
+      186,
+      182
+     ],
+     [
+      247,
+      239,
+      231
+     ],
+     [
+      134,
+      134,
+      134
+     ]
+    ],
+    "meanColorError": 0
+   },
+   "overhangMm2": 18,
+   "overhangShare": 0.014
+  }
+ ],
+ "packed": [
+  "camel.stl",
+  "camel.view.stl",
+  "camel.3mf",
+  "needle.stl",
+  "needle.view.stl",
+  "needle.3mf"
+ ]
+}

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" shape-rendering="crispEdges">
+  <rect width="64" height="64" rx="10" fill="#000080"/>
+  <!-- 20x20 block grid, as in Game-Maker's block editor -->
+  <g fill="#1d3fbf">
+    <rect x="6" y="6" width="16" height="16"/><rect x="24" y="6" width="16" height="16"/><rect x="42" y="6" width="16" height="16"/>
+    <rect x="6" y="42" width="16" height="16"/><rect x="24" y="42" width="16" height="16"/><rect x="42" y="42" width="16" height="16"/>
+  </g>
+  <!-- a little two-block-high character -->
+  <rect x="28" y="10" width="8" height="8" fill="#f2c89b"/>
+  <rect x="26" y="18" width="12" height="12" fill="#c0392b"/>
+  <rect x="27" y="30" width="4" height="10" fill="#1e8449"/>
+  <rect x="33" y="30" width="4" height="10" fill="#1e8449"/>
+  <!-- ground -->
+  <rect x="6" y="40" width="52" height="2" fill="#ffd400"/>
+  <text x="32" y="56" text-anchor="middle" font-family="monospace" font-weight="bold" font-size="12" fill="#ffd400">GM</text>
+</svg>
