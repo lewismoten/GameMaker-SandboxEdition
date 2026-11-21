@@ -28,19 +28,25 @@ export async function checkJumps(): Promise<void> {
         disk.set('lucky.gam', serializeGame(trial));
         return new StarterBot(new GameSim(disk, 1));
       };
-      for (const hold of [6, 8, 10, 12]) {
-        const bot = spawn();
-        bot.jumpHold = hold;
-        const jump = async () => {
-          await bot.land();
-          const hp = bot.sim.ci.hitpts;
-          const out = await bot.jump('right', col + 2);
-          if (out || bot.sim.ci.hitpts !== hp || bot.px.x < (col + 1) * 20)
-            throw new Error(`${l.title} crack ${col},${row}: hold ${hold} failed (${out}, luck ${hp} -> ${bot.sim.ci.hitpts})`);
-        };
-        if (l.chr === 'mirror') await mirrored(bot, jump);
-        else await jump();
-      }
+      for (const backSteps of [0, 1, 2])
+        for (const hold of backSteps ? [10, 12] : [6, 8, 10, 12]) {
+          const bot = spawn();
+          bot.jumpHold = hold;
+          const jump = async () => {
+            await bot.land();
+            const hp = bot.sim.ci.hitpts;
+            if (backSteps) {
+              bot.sim.press(SCAN.left);
+              await bot.wait(backSteps);
+              bot.sim.releaseAll();
+            }
+            const out = await bot.jump('right', col + 2);
+            if (out || bot.sim.ci.hitpts !== hp || bot.px.x < (col + 1) * 20)
+              throw new Error(`${l.title} crack ${col},${row}: backSteps ${backSteps}, hold ${hold} failed (${out}, luck ${hp} -> ${bot.sim.ci.hitpts})`);
+          };
+          if (l.chr === 'mirror') await mirrored(bot, jump);
+          else await jump();
+        }
       // A plain walk must still touch the crack: the reshaping keeps a jump lesson.
       const bot = spawn();
       const walk = async () => {
@@ -80,5 +86,7 @@ export async function checkJumps(): Promise<void> {
     });
   }
   console.log('jumpCheck: all five mirror pillars clear in one flight with hold 8');
-  console.log(`jumpCheck: ${gaps} cracked gaps clear in one jump with holds 6, 8, 10 and 12; walking still costs luck`);
+  console.log(
+    `jumpCheck: ${gaps} cracked gaps clear from three consecutive takeoff ticks with holds 10 and 12, and from the edge with holds 6 and 8; walking still costs luck`,
+  );
 }

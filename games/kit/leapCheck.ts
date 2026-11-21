@@ -72,7 +72,7 @@ function reachable(sim: GameSim): Set<number> {
 }
 
 /** Leaps from the current spot toward `dir`; true when the hero ends up past `lock.x` higher than the lock. */
-async function leapsOver(sim: GameSim, lock: Lock, dir: 'left' | 'right'): Promise<boolean> {
+async function leapsOver(sim: GameSim, lock: Lock, dir: 'left' | 'right', ladderTop: boolean): Promise<boolean> {
   const tick = async () => (await sim.tick()) !== undefined;
   const keys = () => sim.ci.meter.slice(20, 30).join();
   const before = keys();
@@ -80,10 +80,16 @@ async function leapsOver(sim: GameSim, lock: Lock, dir: 'left' | 'right'): Promi
   // a spot with a key on it is not keyless
   if (keys() !== before) return false;
   for (let k = 0; k < 4; k++) {
-    sim.press(SCAN[dir]);
-    for (let t = 0; t < 5; t++) if (await tick()) return false;
+    if (!ladderTop) {
+      sim.press(SCAN[dir]);
+      for (let t = 0; t < 5; t++) if (await tick()) return false;
+    }
     sim.press(SCAN.space);
     for (let t = 0; t < 34; t++) {
+      if (ladderTop && t === 8) {
+        sim.release(SCAN.space);
+        sim.press(SCAN[dir]);
+      }
       if ((await tick()) || keys() !== before) return false;
       const p = sim.pos;
       const x = p.x * 20 + p.sx;
@@ -118,11 +124,14 @@ async function leapProblems(dir: string): Promise<{ locks: number; problems: str
     locks += found.length;
     const base = sim.snapshot();
     const reach = reachable(sim);
+    const directRise = sim.w.chr.sequences.some((s) => s.key >> 8 === SCAN.space && !s.momentum && s.frames[0].y < 0);
+    const ladderTop = (x: number, y: number) => directRise && sim.shown(x, y).grav === 0 && !!(sim.shown(x, y - 1).grav & 4);
     for (const lock of found) {
       const spots: [number, number][] = [];
       for (let x = Math.max(1, lock.x - REACH); x <= lock.x + REACH; x++)
         for (let y = Math.max(2, lock.y - 14); y <= lock.y + 1; y++)
-          if (x !== lock.x && reach.has(y * MLEN + x) && !sim.solidAt(x, y) && !sim.solidAt(x, y - 1) && sim.solidAt(x, y + 1)) spots.push([x, y]);
+          if (x !== lock.x && reach.has(y * MLEN + x) && !sim.solidAt(x, y) && !sim.solidAt(x, y - 1) && (sim.solidAt(x, y + 1) || ladderTop(x, y)))
+            spots.push([x, y]);
       let hit: string | undefined;
       for (const [x, y] of spots) {
         if (hit) break;
@@ -131,7 +140,7 @@ async function leapProblems(dir: string): Promise<{ locks: number; problems: str
         // placed as a link into the scene would place him: the view is set round him, too
         startSceneInits(sim.w, { x, y });
         initScroll(sim.w, scenes[scene].scroll);
-        if (await leapsOver(sim, lock, dir)) hit ??= `from (${x - 10}, ${y - 10})`;
+        if (await leapsOver(sim, lock, dir, ladderTop(x, y))) hit ??= `from (${x - 10}, ${y - 10})`;
       }
       if (hit) problems.push(`scene ${scene}: the lock at (${lock.x - 10}, ${lock.y - 10}) can be jumped over ${hit}`);
     }

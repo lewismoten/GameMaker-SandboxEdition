@@ -2,7 +2,7 @@
 // so every sequence is one key's, and each walking or climbing key has a twin on W, A, S and D.
 //
 //   Left / Right   walk (facing the way you go)
-//   Space          jump: a push upward that gravity then takes back
+//   Space          jump with momentum, or hold to rise
 //   Up / Down      climb a ladder (blocks with no pull hold you up)
 //
 // In the editor this is the Character tab: the sequence list, each one's key, and its frames.
@@ -37,8 +37,8 @@ interface F {
 export interface HeroOptions {
   /**
    * A held-rise jump (like Loaf's and Mustard's rise): while Space is held the hero moves straight up
-   * `push` pixels a tick, not as momentum, so gravity keeps growing meanwhile and soon outweighs it. Once
-   * he is falling, a new press cannot lift him: one jump per flight. Letting go hands the keys back, so
+   * `push` pixels a tick, not as momentum, so gravity keeps growing meanwhile and soon outweighs it. An early
+   * second press can lift him again within the height of one full hold. No-gravity ladders reset the rise. Letting go hands the keys back, so
    * the arrows steer in the air. The default (off) is the momentum push, which stacks when tapped in the air.
    */
   heldRise?: { push: number };

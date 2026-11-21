@@ -26,6 +26,23 @@ describe('house lighting cue', () => {
     expect([...snd.freqs[1]].some((hz) => hz > 0)).toBe(true);
   });
 
+  it('keeps the three lanterns on the Big Repo and clear of its window glow', () => {
+    const { pal } = buildLevels();
+    const pictures = monsterPictures(pal);
+    const set = monsterSet(pictures);
+    const blocks = pictures.finish();
+    for (const f of [0, 1]) {
+      const pixels = (mon: number) => blocks[set[mon].pic[f][0]].pixels;
+      for (const x of [2, 8, 15]) {
+        expect(pixels(LIT_SHED)[12 * 20 + x]).not.toBe(pal.c('gold', 4));
+        expect(pixels(LIT_BIG)[12 * 20 + x]).toBe(pal.c('gold', 4));
+      }
+      expect(pixels(CONF_BIG)[12 * 20 + 15]).toBe(pal.c('gold', 4));
+      for (const x of [3, 16]) expect(pixels(LIT_BIG)[14 * 20 + x]).toBe(pal.c('gold', 3));
+      expect(pixels(LIT_SHED)[14 * 20 + 3]).toBe(pal.c('white', 3));
+    }
+  });
+
   it('already shows the lit house under confetti when the impact cue starts', () => {
     const { pal } = buildLevels();
     const mb = monsterPictures(pal);

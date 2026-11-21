@@ -1,7 +1,7 @@
 // Level 1, LADDER LANE: the town's first superstitions on the sidewalk.
 //   - a painter's stepladder across the lane: walk under it and a drip of paint is bad luck (a fifth of her luck);
 //     go around by the scaffold over the top and a four-leaf clover waits on the awning;
-//   - two cracks in the pavement (bad luck, once each): hop them;
+//   - two cracked crossings in the pavement: jump from each plank;
 //   - a ladder up to a high awning with a horseshoe, and a crate wall to hop.
 // Two charms: the clover and the horseshoe.
 import { StarterMap } from '../../../kit/starter/map';
