@@ -24,7 +24,7 @@ export interface Level {
   /** What the level card says under the title. */
   hint: string;
   book: Book;
-  map: StarterMap;
+  map: DuskMap;
   /** The fireflies laid on the map, for the checks. */
   bugs: Bug[];
 }
@@ -52,6 +52,7 @@ const behind = (x: number, y: number): string => treeAt(((x % 8) + 8) % 8, y) ??
 
 /** A StarterMap whose sky is the dusk's bands and trees and whose earth is dark turf, inside the level and past its edges. */
 class DuskMap extends StarterMap {
+  private readonly signTiles = new Set<number>();
   constructor(
     private readonly blocks: Book,
     private readonly pal: Pal,
@@ -75,11 +76,15 @@ class DuskMap extends StarterMap {
     const sky = {
       set: (col: number, row: number, name: string) => {
         if (this.at(col, row) !== this.blocks.n(behind(col, row))) throw new Error(`Sign at ${col},${row} would overwrite scenery`);
+        this.signTiles.add(row * MLEN + col);
         return this.front(col, row, name);
       },
     };
     stampTiledSign(sky, x, top, s, GROUND - top - s.board.length, { maxPostHeight: 1 });
     return this;
+  }
+  hasSignTile(x: number, y: number): boolean {
+    return this.signTiles.has(y * MLEN + x);
   }
   override done(): GameMap {
     const map = super.done();
@@ -133,7 +138,8 @@ function meadow(pal: Pal, book: Book, signBook: Book, width: number, exit: numbe
 export const STEP_ROOM = {
   width: 62,
   exit: 58,
-  signs: [5, 32, 53] as const,
+  sameTimeBoardX: 4,
+  ownTimeBoardX: 31,
   copies: [
     [11, 6],
     [14, 5],
@@ -151,8 +157,8 @@ export const STEP_ROOM = {
     [44, 7, 5],
   ] as const,
 };
-/** Level 2's landmarks: its signs and its door. */
-export const DUSK_ROOM = { width: 66, exit: 62, signs: [6, 29, 47] as const };
+/** Level 2's width and exit column. */
+export const DUSK_ROOM = { width: 66, exit: 62 };
 
 /** Lays a firefly of monster `monnum` (of kind `kind`) at (x, y), checking its loop stays between the top of the screen and the grass. */
 function lay(m: DuskMap, bugs: Bug[], x: number, y: number, monnum: number, kind: Kind): void {
@@ -168,9 +174,9 @@ function lay(m: DuskMap, bugs: Bug[], x: number, y: number, monnum: number, kind
 function inStep(pal: Pal): Level {
   const { book, signBook, signs } = blocks(pal, ['step', 'own']);
   const m = meadow(pal, book, signBook, STEP_ROOM.width, STEP_ROOM.exit, [10, 19, 30, 36, 52, 57]);
-  m.stand(4, signs.step);
+  m.stand(STEP_ROOM.sameTimeBoardX, signs.step);
   // One cell right of the old board: the centered one-block post clears tuft 30.
-  m.stand(31, signs.own);
+  m.stand(STEP_ROOM.ownTimeBoardX, signs.own);
   const bugs: Bug[] = [];
   // the copies: every one the same monster, on two rows, three blocks apart
   for (const [x, y] of STEP_ROOM.copies) lay(m, bugs, x, y, BUG.step, STEP);
@@ -184,12 +190,10 @@ function duskMeadow(pal: Pal): Level {
   const { book, signBook } = blocks(pal, []);
   const { width, exit } = DUSK_ROOM;
   const m = meadow(pal, book, signBook, width, exit, [10, 13, 24, 35, 41, 53, 57]);
-  // All three old boards are dropped. Retain DUSK_ROOM.signs below as the
-  // original monster sampling exclusions and bot waypoints.
   const bugs: Bug[] = [];
   const rand = rng(6);
-  /** Whether level block (x, y) is on a sign's board (rows 5 to 7, four wide): a firefly may fly past a sign but not start on one. */
-  const onSign = (x: number, y: number) => y >= GROUND - 4 && y < GROUND - 1 && DUSK_ROOM.signs.some((s) => x >= s && x < s + 4);
+  // Keep the original four-column clearings so the seeded meadow matches its recording.
+  const inClearing = (x: number, y: number) => y >= GROUND - 4 && y < GROUND - 1 && [6, 29, 47].some((left) => x >= left && x < left + 4);
   for (let x = 5, i = 0; x < width - 6; x += 1 + (i++ % 2)) {
     const near = new Set(bugs.filter((b) => x - b.x <= 8).map((b) => b.monnum));
     const free = KINDS.map((_k, i) => i).filter((i) => !near.has(BUG.kind(i)));
@@ -198,7 +202,7 @@ function duskMeadow(pal: Pal): Level {
     const [left, right, up, down] = reachOf(KINDS[k]);
     if (at + left < 1 || at + right > width - 2) continue;
     const rows = Array.from({ length: LOW - TOP + 1 }, (_r, i) => TOP + i).filter(
-      (y) => y + up >= TOP && y + down <= LOW && !onSign(at, y) && !bugs.some((b) => b.x === at && b.y === y),
+      (y) => y + up >= TOP && y + down <= LOW && !inClearing(at, y) && !bugs.some((b) => b.x === at && b.y === y),
     );
     if (!rows.length) continue;
     lay(m, bugs, at, rows[Math.floor(rand() * rows.length)], BUG.kind(k), KINDS[k]);

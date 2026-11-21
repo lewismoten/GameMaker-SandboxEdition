@@ -55,6 +55,9 @@ disk.put('bugs.cmf', song());
 
 // each level's map and blocks, and its card
 levels.forEach((l, i) => {
+  for (const { x, y } of l.bugs) {
+    if (l.map.hasSignTile(x, y)) throw new Error(`${l.title}: firefly starts on sign art at ${x},${y}`);
+  }
   disk.put(`${l.file}.bbl`, serializeBlocks(l.book.finish()));
   disk.put(`${l.file}.map`, serializeMap(l.map.done()));
   disk.put(`${l.file}.gif`, gif(cardPicture(pal, scenery, hero, i + 1, levels.length, l.title, l.hint), pal));

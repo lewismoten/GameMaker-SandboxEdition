@@ -85,15 +85,15 @@ const pct = (n: number) => `${Math.round(n * 100)}%`;
 
 /** 1. In Step: the copies blink and fly as one; the six kinds do not. */
 export async function inStep(bot: StarterBot): Promise<void> {
-  await must(bot, bot.wait(LOOK), 'reading the first sign');
+  await must(bot, bot.wait(LOOK), 'reading SAME TIME');
   await must(bot, bot.walk(STEP_ROOM.copies[2][0] + 1, 'under the copies'), 'to the copies');
   const copies = await watch(bot, 'step', 150);
   if (copies.count !== STEP_ROOM.copies.length) throw new Error(`level 1: the six copies should be near, not ${copies.count}`);
   if (copies.inStep !== 150) throw new Error(`level 1: the copies should be at the same frame and place at every tick, not ${copies.inStep} of 150`);
   if (copies.mostLit !== 1 || !copies.litTicks) throw new Error('level 1: the copies should light up, all together');
   bot.say(`the copies: ${copies.count}, in step all ${copies.inStep} ticks, lit together for ${copies.litTicks}`);
-  await must(bot, bot.walk(STEP_ROOM.signs[1] + 1, 'the middle sign'), 'to the middle sign');
-  await must(bot, bot.wait(LOOK), 'reading');
+  await must(bot, bot.walk(STEP_ROOM.ownTimeBoardX + 2, 'OWN TIME'), 'to OWN TIME');
+  await must(bot, bot.wait(LOOK), 'reading OWN TIME');
   await must(bot, bot.walk(STEP_ROOM.own[0][0] + 5, 'under the six kinds'), 'to the six kinds');
   const own = await watch(bot, 'kinds', 220);
   if (own.count !== STEP_ROOM.own.length) throw new Error(`level 1: the six kinds should be near, not ${own.count}`);
@@ -102,17 +102,20 @@ export async function inStep(bot: StarterBot): Promise<void> {
   if (own.overHalf > 220 * 0.1) throw new Error(`level 1: more than half the six kinds should be lit at only a few ticks, not ${own.overHalf} of 220`);
   if (own.flashed.size < 5) throw new Error(`level 1: most of the six kinds should flash while Rima watches, not ${own.flashed.size}`);
   bot.say(`the six kinds: never in step, at most ${pct(own.mostLit)} lit at once, over half lit at ${own.overHalf} of 220 ticks, ${own.flashed.size} flashed`);
-  await must(bot, bot.walk(STEP_ROOM.signs[2] + 1, 'the last sign'), 'to the last sign');
-  await must(bot, bot.wait(LOOK), 'reading');
+  await must(bot, bot.walk(54, 'past the six kinds'), 'past the six kinds');
+  await must(bot, bot.wait(LOOK), 'looking back at the fireflies');
   await leave(bot, bot.walk(STEP_ROOM.exit, 'the door'), 'the door');
 }
 
-/** 2. Dusk Meadow: a look at each sign and at the fireflies between them. */
+/** 2. Dusk Meadow: watch the fireflies at two stops across the meadow. */
 export async function duskMeadow(bot: StarterBot): Promise<void> {
-  await must(bot, bot.wait(LOOK), 'reading the first sign');
+  await must(bot, bot.wait(LOOK), 'looking across the meadow');
   let flashed = 0;
-  for (const [i, x] of [DUSK_ROOM.signs[1] + 1, DUSK_ROOM.signs[2] + 1].entries()) {
-    await must(bot, bot.walk(x - 9, 'between the signs'), 'into the meadow');
+  for (const [i, [watchX, pauseX]] of [
+    [21, 30],
+    [39, 48],
+  ].entries()) {
+    await must(bot, bot.walk(watchX, 'watch the meadow fireflies'), 'into the meadow');
     const meadow = await watch(bot, 'kinds', 140);
     if (meadow.count < 6) throw new Error(`level 2: the meadow should have fireflies in view, not ${meadow.count}`);
     if (meadow.inStep) throw new Error(`level 2: the fireflies should never be in step; they were at ${meadow.inStep} ticks`);
@@ -124,8 +127,8 @@ export async function duskMeadow(bot: StarterBot): Promise<void> {
     bot.say(
       `the meadow, stop ${i + 1}: ${meadow.count} fireflies, at most ${pct(meadow.mostLit)} lit at once, over half at ${meadow.overHalf} and one or more at ${meadow.litTicks} of 140 ticks`,
     );
-    await must(bot, bot.walk(x, 'a sign'), 'to a sign');
-    await must(bot, bot.wait(LOOK), 'reading');
+    await must(bot, bot.walk(pauseX, 'farther across the meadow'), 'across the meadow');
+    await must(bot, bot.wait(LOOK), 'looking across the meadow');
   }
   if (flashed < 8) throw new Error(`level 2: the meadow's fireflies should flash while Rima watches; only ${flashed} did`);
   await leave(bot, bot.walk(DUSK_ROOM.exit, 'the door'), 'the door');
