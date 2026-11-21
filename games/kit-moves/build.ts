@@ -16,6 +16,7 @@ import { Disk } from '../kit/disk';
 import { licenseText } from '../kit/license';
 import { STARTER_STING, starterStingFli } from '../kit/starter/sting';
 import { buildHeroBlocks, heroPicture } from '../kit/starter/hero';
+import { SEQ } from '../kit/starter/ids';
 import { KEYS } from '../kit/starter/blocks';
 import { buildMonsterBlocks, buildMonsters } from '../kit/starter/monsters';
 import { cardPicture, endPicture, gif, menuPicture, paper, scoresPicture, slotsPicture, titlePicture } from '../kit/starter/screens';
@@ -49,7 +50,13 @@ const heroChar = buildKit(heroBlocks);
 heroChar.meter[KEYS] = INF_REPEAT; // no keys in this game
 heroChar.meter[0] = HERO_HIT_POINTS;
 heroChar.meter[1] = HERO_LIVES;
+// The first course offers two practice hops. The dash course has its own
+// unlimited hop slot, since DOS carries existing sequence counters between scenes.
+heroChar.meter[SEQ.jump] = 2;
 disk.put('hero.chr', serializeCharacter(heroChar));
+heroChar.sequences[18] = heroChar.sequences[SEQ.jump];
+heroChar.sequences[SEQ.jump] = { ...heroChar.sequences[SEQ.jump], key: 0, jstkMov: 0 };
+disk.put('dash.chr', serializeCharacter(heroChar));
 disk.put('km.snd', serializeSoundSet(buildSounds()));
 disk.put('km.cmf', song());
 

@@ -10,7 +10,7 @@
 import { MICRO_GLYPHS } from '@lewismoten/gamemaker-sandbox-tools/microFont';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { bevel } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';
-import { Book, SOLID } from '../../kit/starter/book';
+import { Book, PULL, SOLID } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
@@ -62,6 +62,10 @@ function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
   const pole = new Pixels(20, 20, skyOf(pal));
   pole.rect(8, 0, 4, 20, wood[2]).rect(8, 0, 1, 20, wood[4]).rect(11, 0, 1, 20, wood[0]);
   book.add('pole', pole, { grav: 4 });
+  // The striped awning ends at a short moving walkway.
+  const belt = new Pixels(20, 20, skyOf(pal));
+  for (const x of [3, 12]) belt.line(x, 16, x + 3, 18, wood[1]).line(x + 3, 18, x, 19, wood[1]);
+  book.add('belt', belt, { grav: PULL.right | PULL.down });
   const signs = addMicroPlaques(book, pal, WORDS, { ...MICRO_GLYPHS, '→': '0010000010111110001000100' }) as Record<SignName, Sign>;
   return { book, signs };
 }
@@ -164,6 +168,12 @@ function headHeight(book: Book, signs: Record<SignName, Sign>): StarterMap {
   );
   const m = new StarterMap(book, g.rows());
   awning(m, L1.roof[0], L1.roof[1], L1.roofRow, G);
+  // A one-block opening at the end of the awning fits Kit's crouch. The belt
+  // carries Kit through while Down is held, as the crouch itself stays still.
+  const end = L1.roof[1];
+  m.wallToSky(end);
+  for (let y = 0; y < G - 1; y++) m.set(end, y, y === G - 2 ? 'awning' : 'brick');
+  for (let x = end - 1; x <= end + 1; x++) m.set(x, G - 1, 'belt');
   // birds fly in the row of Kit's head: his top block is row G-2
   for (const [x, kind] of L1.birds) m.mon(kind, x, G - 2);
   // Short plaques introduce ducking before the awning.

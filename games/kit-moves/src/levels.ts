@@ -1,17 +1,17 @@
 // KIT'S MOVES' two levels. Each is painted on a Grid (a block a character, see games/kit/starter/map.ts
-// for what the letters mean), then given its signs and coins. No new blocks: what is new is in the hero's
-// character file (hero.ts): which keys repeat while held and which happen once per press.
+// for what the letters mean), then given its signs, coins and lesson obstacles.
 //
 //   1. Tap and Hold: SPACE is one hop per press (a low wall, then a taller one that one hop cannot clear);
 //                    UP lifts for as long as it is held (a cliff to rise beside, then the door on top).
 //   2. Once Per Press: ENTER is a dash to the right, once per press. Holding it gives one dash; to go
 //                    farther, let go and press again. Three gaps, each wider than the last.
 // Every edge is a hedge or a wall you can see, so Kit is never stopped by something he can't.
-import { Book } from '../../kit/starter/book';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
+import { Book, PULL } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
-import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
+import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
 import { addMicroPlaques } from '../../kit/starter/microPlaque';
 import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
@@ -22,6 +22,9 @@ export type SignName = 'hop' | 'hold' | 'lift' | 'top' | 'exit' | 'dash' | 'righ
 function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
+  const wind = new Pixels(20, 20, skyOf(pal));
+  for (const x of [3, 12]) wind.line(x + 3, 12, x, 14, pal.c('sky', 4)).line(x, 14, x + 3, 16, pal.c('sky', 4));
+  book.add('headwind', wind, { grav: PULL.left | PULL.down });
   const signs = addMicroPlaques(book, pal, {
     hop: { lines: ['SPACE', 'HOPS'] },
     hold: { lines: ['TOO', 'TALL'] },
@@ -54,6 +57,7 @@ const place = (m: StarterMap, x: number, y: number, sign: Sign, postHeight = 1) 
 /** Level 1: the ground row, the width, the low wall's columns and top row, the cliff's first column and top row, the exit column and the coins. */
 export const L1 = {
   ground: 14,
+  wellFloor: 21,
   width: 50,
   wall: [12, 14],
   wallTop: 11,
@@ -99,13 +103,17 @@ function scenery(g: Grid, ground: number, clouds: [number, number][], bushes: nu
 /** Level 1: a low wall for a hop, then a cliff for the lift. */
 function tapAndHold(book: Book, signs: Record<SignName, Sign>): StarterMap {
   const G = L1.ground;
-  const g = new Grid(L1.width, G + 3);
-  g.row(G, 0, L1.width - 1, 'G').fill(0, G + 1, L1.width, 2, 'D');
+  const g = new Grid(L1.width, L1.wellFloor + 3);
+  g.row(G, 0, L1.width - 1, 'G').fill(0, G + 1, L1.width, L1.wellFloor + 2 - G, 'D');
   g.col(0, 0, G - 1, 'X').col(L1.width - 1, 0, G - 1, 'X');
   // the low wall: three blocks high, grass on top
   g.fill(L1.wall[0], L1.wallTop + 1, L1.wall[1] - L1.wall[0] + 1, G - L1.wallTop - 1, 'D').row(L1.wallTop, L1.wall[0], L1.wall[1], 'G');
   // the cliff: nine blocks high, a brick face and grass on top
   g.fill(L1.cliff, L1.cliffTop + 1, L1.width - 1 - L1.cliff, G - L1.cliffTop - 1, 'B').row(L1.cliffTop, L1.cliff, L1.width - 2, 'G');
+  // Drop into the lift well after the practice wall. The low arch settles any
+  // momentum carried in from the wall before the climb.
+  g.fill(18, G, L1.cliff - 18, L1.wellFloor - G, ' ').row(L1.wellFloor, 18, L1.cliff - 1, 'G');
+  g.col(19, 0, L1.wellFloor - 3, 'B');
   g.col(L1.width - 1, 0, L1.cliffTop - 1, 'X');
   g.put(3, G - 2, 's').put(3, G - 1, 'S');
   g.put(L1.exit, L1.cliffTop - 2, 'e').put(L1.exit, L1.cliffTop - 1, 'E');
@@ -118,8 +126,8 @@ function tapAndHold(book: Book, signs: Record<SignName, Sign>): StarterMap {
       [20, 1],
       [34, 1],
     ],
-    [8, 20, 25],
-    [10, 17, 23],
+    [8],
+    [10, 17],
   );
   scenery(g, L1.cliffTop, [], [34, 47], [37, 42]);
   const m = new StarterMap(book, g.rows());
@@ -127,8 +135,7 @@ function tapAndHold(book: Book, signs: Record<SignName, Sign>): StarterMap {
   for (let x = 0; x < L1.width; x++) m.set(x, -1, 'brick');
   place(m, 4, onGround(G, signs.hop), signs.hop);
   place(m, 15, onGround(G, signs.hold), signs.hold);
-  // One cell right of the old board: its centered post clears the flower at 23.
-  place(m, 24, onGround(G, signs.lift), signs.lift);
+  place(m, 24, onGround(L1.wellFloor, signs.lift), signs.lift);
   place(m, 32, onGround(L1.cliffTop, signs.top), signs.top);
   place(m, 44, 2, signs.exit);
   return m;
@@ -163,6 +170,9 @@ function oncePerPress(book: Book, signs: Record<SignName, Sign>): StarterMap {
   g.row(5, 0, L2.width - 1, 'B');
   g.fill(16, 6, 4, 3, 'B');
   const m = new StarterMap(book, g.rows());
+  // Two floor arrows mark the headwind inside the low tunnel. A dash can
+  // cross it from the near end; a walk stalls before the second arrow.
+  for (const x of [17, 18]) m.set(x, G - 1, 'headwind');
   place(m, 4, onGround(G, signs.dash), signs.dash);
   // Unequal-width phrases sit side by side rather than making an off-center stack.
   place(m, 21, onGround(G, signs.right), signs.right);
@@ -178,7 +188,7 @@ export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
   const pal = buildStarterPalette(undefined, 'kit-moves');
   const { book, signs } = buildBlocks(pal);
   const levels: Level[] = [
-    { file: 'one', title: 'Tap and Hold', hint: 'One hop, or a long lift.', map: tapAndHold(book, signs) },
+    { file: 'one', title: 'Tap and Hold', hint: 'Two hops. Hold Up to lift.', map: tapAndHold(book, signs) },
     { file: 'two', title: 'Once Per Press', hint: 'Dash, let go, dash again.', map: oncePerPress(book, signs) },
   ];
   return { book, pal, levels };
