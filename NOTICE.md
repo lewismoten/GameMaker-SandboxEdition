@@ -64,6 +64,7 @@ game folder opens in the browser unchanged.
 
 ## Credits
 
+- OpenAI Codex improved contrast for the draggable red film label (November 21, 2026).
 - OpenAI Codex fixed the landscape touch player start poster and added phone layout regression coverage (November 21, 2026).
 - OpenAI Codex fixed offline transfer size reporting and added release budget regression tests (November 21, 2026).
 - OpenAI Codex fixed interrupted archive retries and wall poster reinsertion and added regression tests (November 21, 2026).

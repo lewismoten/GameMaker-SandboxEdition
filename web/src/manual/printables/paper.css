@@ -716,13 +716,21 @@
   display: none;
 }
 
-.rf-film {
+.rf-film,
+.rf-film-caption {
   position: fixed;
   left: 0;
   top: 0;
   z-index: 10;
   width: min(360px, 80vw);
   height: 200px;
+}
+
+.rf-film-caption {
+  pointer-events: none;
+}
+
+.rf-film {
   border-radius: 6px;
   background: #ff0000;
   mix-blend-mode: multiply;
@@ -732,7 +740,8 @@
   box-shadow: 0 0 0 2px rgba(120, 0, 0, 0.6);
 }
 
-.rf-film[hidden] {
+.rf-film[hidden],
+.rf-film[hidden] + .rf-film-caption {
   display: none;
 }
 
@@ -744,13 +753,14 @@
   position: absolute;
   left: 8px;
   bottom: 6px;
+  padding: 2px 4px;
+  background: #fff;
   color: #000;
   font:
     900 11px 'Arial Black',
     Arial,
     sans-serif;
   letter-spacing: 0.1em;
-  opacity: 0.55;
   user-select: none;
 }
 
