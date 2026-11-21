@@ -1,28 +1,7 @@
-// Locks, keys, treasure and monsters in generated layouts: the key-before-lock proof over 200 seeds.
+// Check dungeon locks, keys and treasure over deterministic seeds.
 import { describe, expect, it } from 'vitest';
-import type { RoleMap } from '@lewismoten/gamemaker-sandbox-tools/kit/blockRoles';
-import { generate, proveResult, type GenKind } from '@lewismoten/gamemaker-sandbox-tools/kit/levelGen';
-
-const set = (...pairs: [number, string[], number?][]): RoleMap =>
-  Object.fromEntries(pairs.map(([n, roles, pair]) => [n, { roles, ...(pair ? { pair } : {}) }])) as RoleMap;
-const full = set(
-  [1, ['wall']],
-  [2, ['floor']],
-  [10, ['locked-door'], 1],
-  [11, ['key'], 1],
-  [12, ['locked-door'], 2],
-  [13, ['key'], 2],
-  [20, ['treasure']],
-  [21, ['life']],
-  [5, ['tree']],
-);
-const whole = { x: 0, y: 0, w: 100, h: 100 };
-const run = (kind: GenKind, roles: RoleMap, seed: number, monsters?: number[]) => {
-  const o = generate(roles, { kind, seed, rect: whole, monsters });
-  if (!o.ok) throw new Error(o.message);
-  return o.result;
-};
-
+import { proveResult } from '@lewismoten/gamemaker-sandbox-tools/kit/levelGen';
+import { full, run, set } from './levelGenPropsFixture';
 describe('locks and keys', () => {
   it('reaches each key before its lock, and everything is collectable (200 seeds)', () => {
     let locked = 0;
@@ -60,34 +39,5 @@ describe('locks and keys', () => {
     expect(r.treasure).toEqual([]);
     expect(r.monsters).toEqual([]);
     expect(new Set(r.blocks)).toEqual(new Set([1, 2]));
-  });
-});
-
-describe('monsters and forests', () => {
-  it('places monsters away from the entry, on open cells, only when asked', () => {
-    for (let s = 1; s <= 60; s++) {
-      const r = run('dungeon', full, s, [3, 4, 9]);
-      expect(r.monsters.length).toBeGreaterThan(1);
-      const seen = new Set<number>();
-      for (const m of r.monsters) {
-        expect([3, 4, 9]).toContain(m.monnum);
-        expect(m.cell).not.toBe(r.entry);
-        expect(r.kinds[m.cell]).toBe(1);
-        expect(Math.abs((m.cell % 100) - (r.entry % 100)) + Math.abs(((m.cell / 100) | 0) - ((r.entry / 100) | 0))).toBeGreaterThanOrEqual(5);
-        expect(seen.has(m.cell)).toBe(false);
-        seen.add(m.cell);
-      }
-      expect(run('dungeon', full, s).monsters).toEqual([]);
-    }
-  });
-
-  it('gives forests treasure and monsters, reachable, with no locks', () => {
-    for (let s = 1; s <= 60; s++) {
-      const r = run('forest', full, s, [3]);
-      expect(r.locks).toEqual([]);
-      expect(proveResult(r).collectable).toBe(true);
-      expect(r.treasure.length).toBeGreaterThan(0);
-      expect(r.monsters.length).toBeGreaterThan(0);
-    }
   });
 });
