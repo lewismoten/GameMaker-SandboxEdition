@@ -1,5 +1,6 @@
 // The Pi log's filter, grouping and status line, and the key guard (fake events).
 import { describe, expect, it } from 'vitest';
+import { classify } from './protocol';
 import { LogModel, isNoisy, stateLine } from './logModel';
 import { scrollKeyCode, targetKeepsKey } from './keyGuard';
 
@@ -19,6 +20,20 @@ describe('LogModel', () => {
     m.add('log', 'SND beep a/B.SND 3');
     expect(m.visible(false, false)).toHaveLength(1);
     expect(m.visible(false, true)).toHaveLength(0);
+  });
+
+  it.each(['end', 'stopall'])('tracks wire-format SND lines through %s', (stop) => {
+    const m = new LogModel();
+    const add = (wire: string) => {
+      const { kind, text } = classify(wire);
+      return m.add(kind, text);
+    };
+    expect(add('LOG OS: SND game DICE DICE.GAM')).toBe(true);
+    expect(stateLine(m.state)).toBe('game DICE/DICE.GAM');
+    expect(m.visible(false, true)).toHaveLength(0);
+    expect(m.visible(false, false)[0].text).toBe('OS: SND game DICE DICE.GAM');
+    expect(add(`LOG OS: SND ${stop}`)).toBe(true);
+    expect(m.state.game).toBeUndefined();
   });
 
   it('groups repeats with a count; noisy lines ignore changing numbers', () => {

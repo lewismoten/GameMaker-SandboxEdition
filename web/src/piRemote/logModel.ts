@@ -51,7 +51,8 @@ export class LogModel {
   /** Adds a line (merging it into the last entry when they repeat); true when the state changed. */
   add(kind: LogEntry['kind'], text: string): boolean {
     const noisy = isNoisy(text);
-    const snd = /^snd\b/i.test(text);
+    const body = text.startsWith('OS: ') ? text.slice(4) : text;
+    const snd = /^snd\b/i.test(body);
     // noisy lines repeat with changing numbers (offsets, sizes); the rest must match exactly
     const key = noisy ? digits(text) : text;
     const last = this.entries[this.entries.length - 1];
@@ -62,7 +63,7 @@ export class LogModel {
       this.entries.push({ kind, text, level: levelOf(kind, text), noisy, snd, count: 1, key });
       while (this.entries.length > this.limit) this.entries.shift();
     }
-    return this.learn(text);
+    return this.learn(body);
   }
 
   clear(): void {
