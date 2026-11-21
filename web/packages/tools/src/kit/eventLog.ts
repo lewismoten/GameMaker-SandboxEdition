@@ -68,6 +68,8 @@ export class EventLog {
   }
 }
 
+const METHODS = ['press', 'release', 'tick'] as const;
+
 type SimClass = { prototype: Pick<GameSim, 'press' | 'release' | 'tick'> };
 
 /**
@@ -78,6 +80,8 @@ type SimClass = { prototype: Pick<GameSim, 'press' | 'release' | 'tick'> };
 export async function recordEvents<T>(Sim: SimClass, run: () => Promise<T>): Promise<{ result: T; logs: EventLog[] }> {
   const proto = Sim.prototype;
   const { press, release, tick } = proto;
+  // A subclass inherits these; assigning would leave own properties behind, so those are deleted afterwards.
+  const saved = METHODS.map((m) => [m, Object.getOwnPropertyDescriptor(proto, m)] as const);
   const logs = new Map<object, EventLog>();
   const logOf = (sim: GameSim) => {
     let l = logs.get(sim);
@@ -103,6 +107,9 @@ export async function recordEvents<T>(Sim: SimClass, run: () => Promise<T>): Pro
     const result = await run();
     return { result, logs: [...logs.values()] };
   } finally {
-    Object.assign(proto, { press, release, tick });
+    for (const [m, d] of saved) {
+      if (d) Object.defineProperty(proto, m, d);
+      else Reflect.deleteProperty(proto, m);
+    }
   }
 }
