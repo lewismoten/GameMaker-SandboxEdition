@@ -158,7 +158,7 @@ describe('separate rooms', () => {
     } as unknown as Game;
     expect(passesThrough(game, [1])).toBe(false);
     // a missing scene is no way out either: [2] arrives from nowhere but is not entered by [0]
-    game.scenes[0].links.push({ toScene: 2, from: { x: 1, y: 1 }, to: { x: 8, y: 5 } } as never);
+    game.scenes[0].links.push({ toScene: 2, from: { x: 1, y: 1 }, to: { x: 8, y: 5 } });
     expect(passesThrough(game, [2])).toBe(false);
   });
 });
