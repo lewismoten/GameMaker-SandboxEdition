@@ -517,7 +517,7 @@ export class RedFilm {
   constructor(el?: HTMLElement) {
     this.el = el ?? h('div', { class: 'rf-film', hidden: true, role: 'img', 'aria-label': 'Red film (drag it over the answers)' });
     // Keep the caption above the sheet so the multiply blend affects only the film.
-    if (!el) this.caption = h('div', { class: 'rf-film-caption' }, h('span', { class: 'rf-film-label' }, 'RED FILM · drag me'));
+    if (!el) this.caption = h('div', { class: 'rf-film-caption', 'aria-hidden': 'true' }, h('span', { class: 'rf-film-label' }, 'RED FILM · drag me'));
     let start: { px: number; py: number; x: number; y: number } | undefined;
     this.el.addEventListener('pointerdown', (e) => {
       start = { px: e.clientX, py: e.clientY, x: this.x, y: this.y };
