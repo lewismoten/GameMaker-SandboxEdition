@@ -1,5 +1,4 @@
 // Play the title recording with the character and wall from the built disk.
-import { readFileSync } from 'node:fs';
 import { expect, it } from 'vitest';
 import { parseRecording } from '@lewismoten/gamemaker-sandbox-engine/formats/recording';
 import { parseGame, serializeGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
@@ -9,7 +8,9 @@ import { ORIGIN } from '../../kit/starter/map';
 
 it('shows Kit crossing the two-block wall before the title demo ends', async () => {
   const sim = new GameSim(undefined, 1);
-  const keys = parseRecording(readFileSync(new URL('../disk/demo.rec', import.meta.url)));
+  const recording = sim.game.scenes[0].files[11];
+  expect(recording).toBe('demo.rec');
+  const keys = parseRecording(sim.files.get(recording)!);
   let crossed = false;
   for (const { delta, key } of keys) {
     for (let t = 0; t < delta; t++) {
