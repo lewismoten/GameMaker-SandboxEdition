@@ -94,10 +94,10 @@ jobs:
           for pkg in ${{ steps.pick.outputs.todo }}; do
             version=$(node -p "require('./web/packages/$pkg/package.json').version")
             tag="$pkg-v$version"
-            (cd "web/packages/$pkg" && npm publish --ignore-scripts)
-            node scripts/release/section.mjs "web/packages/$pkg/CHANGELOG.md" "$version" > "$RUNNER_TEMP/$pkg-notes.md"
             sbom="$RUNNER_TEMP/$pkg-$version.sbom.cdx.json"
             npm run release:sbom -- "$pkg" "$version" --out "$sbom"
+            (cd "web/packages/$pkg" && npm publish --ignore-scripts)
+            node scripts/release/section.mjs "web/packages/$pkg/CHANGELOG.md" "$version" > "$RUNNER_TEMP/$pkg-notes.md"
             gh release create "$tag" --title "$pkg $version" --notes-file "$RUNNER_TEMP/$pkg-notes.md" "$sbom"
           done
         env:
