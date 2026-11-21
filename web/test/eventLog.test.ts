@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { EventLog, nameOf, recordEvents, scanOf } from '@lewismoten/gamemaker-sandbox-tools/kit/eventLog';
 
 describe('key names', () => {
@@ -64,5 +64,39 @@ describe('recordEvents', () => {
     expect(descriptors()).toStrictEqual(original);
     await expect(recordEvents(Fake as never, async () => Promise.reject(new Error('x')))).rejects.toThrow('x');
     expect(descriptors()).toStrictEqual(original);
+  });
+
+  it('leaves a subclass inheriting from its base after recording, also when the run throws', async () => {
+    class Base {
+      scene = 1;
+      ci = { score: 0 };
+      held = new Set<number>();
+      isHeld(k: number) {
+        return this.held.has(k);
+      }
+      press(k: number) {
+        this.held.add(k);
+      }
+      release(k: number) {
+        this.held.delete(k);
+      }
+      async tick() {
+        return undefined;
+      }
+    }
+    class Child extends Base {}
+    const own = () => Object.getOwnPropertyNames(Child.prototype);
+    const before = own();
+    const { logs } = await recordEvents(Child as never, async () => {
+      new Child().press(0x39);
+    });
+    expect(logs).toHaveLength(1);
+    expect(own()).toEqual(before);
+    await expect(recordEvents(Child as never, async () => Promise.reject(new Error('x')))).rejects.toThrow('x');
+    expect(own()).toEqual(before);
+    const changed = vi.fn();
+    Base.prototype.press = changed;
+    new Child().press(1);
+    expect(changed).toHaveBeenCalledOnce();
   });
 });
