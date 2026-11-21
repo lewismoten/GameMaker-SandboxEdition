@@ -4,6 +4,7 @@
 //   cd web && npx vite-node ../games/duck/tools/manual.ts && npx prettier --write ../games/duck/manual.json
 import { writeFileSync } from 'node:fs';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
+import { ORIGIN } from '../../kit/starter/map';
 import { framesFigure } from '../../kit/starter/framesSvg';
 import { heroPicture } from '../../kit/starter/hero';
 import { buildHeroBlocks2 } from '../src/hero';
@@ -115,12 +116,12 @@ const pages = [
 ];
 
 const howDoI = [
-  { id: 'duck', q: 'How do I make the hero duck?', scene: 2, x: 5, y: 6, level: 1 },
-  { id: 'miss', q: 'How do I make a flying monster miss the hero?', scene: 2, x: 9, y: 6, level: 1 },
+  { id: 'duck', q: 'How do I make the hero duck?', scene: 2, x: 5, y: 9, level: 1 },
+  { id: 'miss', q: 'How do I make a flying monster miss the hero?', scene: 2, x: 9, y: 9, level: 1 },
   { id: 'head', q: 'How do I put a monster at the height of the hero’s head?', scene: 2, x: 16, y: 9, level: 1 },
   { id: 'feet', q: 'How do I make a monster the hero can only hop over?', scene: 3, x: 34, y: 10, level: 2 },
-  { id: 'both', q: 'How do I ask for a duck and then a hop?', scene: 3, x: 44, y: 6, level: 2 },
-];
+  { id: 'both', q: 'How do I ask for a duck and then a hop?', scene: 3, x: 44, y: 9, level: 2 },
+].map((spot) => ({ ...spot, x: ORIGIN + spot.x, y: ORIGIN + spot.y }));
 
 writeFileSync(new URL('../manual.json', import.meta.url), JSON.stringify({ title: 'Kit Ducks', howDoI, pages }, null, 2) + '\n');
 console.log('manual.json written');

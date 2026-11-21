@@ -2,6 +2,7 @@
 // Keep compact counters open and micro words intact across the board.
 import { MICRO_GLYPHS } from '../microFont';
 const LETTERS: Readonly<Record<string, string>> = {
+  '→': '0000/0000/0100/0010/1111/0010/0100/0000',
   A: '0110/1001/1001/1001/1111/1001/1001/1001',
   B: '1110/1001/1001/1110/1001/1001/1001/1110',
   C: '0111/1000/1000/1000/1000/1000/1000/0111',

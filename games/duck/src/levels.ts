@@ -7,6 +7,7 @@
 //   2. High or Low: a bird at head height again (duck), a ball rolling on the ground (hop with Space: a duck is still on
 //                   the ground, so it does not help), and one of each, one after the other.
 // Every edge is a hedge or a wall you can see, and every roof is a drawn awning on drawn poles, so nothing is invisible.
+import { MICRO_GLYPHS } from '@lewismoten/gamemaker-sandbox-tools/microFont';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { bevel } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';
 import { Book, SOLID } from '../../kit/starter/book';
@@ -61,7 +62,7 @@ function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
   const pole = new Pixels(20, 20, skyOf(pal));
   pole.rect(8, 0, 4, 20, wood[2]).rect(8, 0, 1, 20, wood[4]).rect(11, 0, 1, 20, wood[0]);
   book.add('pole', pole, { grav: 4 });
-  const signs = addMicroPlaques(book, pal, WORDS) as Record<SignName, Sign>;
+  const signs = addMicroPlaques(book, pal, WORDS, { ...MICRO_GLYPHS, '→': '0010000010111110001000100' }) as Record<SignName, Sign>;
   return { book, signs };
 }
 

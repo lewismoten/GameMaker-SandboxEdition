@@ -221,6 +221,16 @@ describe('game-wide tiled signs', () => {
     expect(() => buildTiledSigns(texts, { ...limited, include: ['missing' as 'roomA'] })).toThrow('Unknown sign');
   });
 
+  it('leaves two pixels of paper between compact text and each three-pixel rail', () => {
+    for (let count = 1; count <= 16; count++) {
+      const rows = Array.from({ length: count }, () => ['E']);
+      const { blocks, signs } = buildTiledSigns({ sign: { rows } }, { ...options, compact: true });
+      const board = signs.sign.board;
+      for (const id of board[0]) expect(blocks.get(id)!.px.slice(0, 100)).not.toContain(options.colors.ink);
+      for (const id of board.at(-1)!) expect(blocks.get(id)!.px.slice(-100)).not.toContain(options.colors.ink);
+    }
+  });
+
   it('fits compact text to the total width, including both frame tiles', () => {
     for (const post of [true, false])
       for (const maxWidth of [5, 6, 7, 8, 9]) {

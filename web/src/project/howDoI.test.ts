@@ -4,7 +4,8 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { ADVTYPE, parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
-import { MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { buildLevels as duckLevels } from '../../../games/duck/src/levels';
+import { LASTMM, MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { filterQuestions, lessonPage, levelTitle, LESSON_HEAD, questionsOf, type HowDoIEntry } from './howDoI';
 
 const GAMES = resolve(__dirname, '../../../games');
@@ -18,6 +19,16 @@ const manualOf = (id: string): ManualFile => JSON.parse(readFileSync(join(GAMES,
 const withList = starters.filter((id) => manualOf(id).howDoI);
 
 describe('howDoI lists', () => {
+  it('centers each Kit Ducks lesson on its plaque or monster', () => {
+    const { book, levels } = duckLevels();
+    for (const spot of manualOf('duck').howDoI!) {
+      const map = levels[spot.scene - 2].map.done();
+      const cell = spot.y * MLEN + spot.x;
+      if (spot.id === 'head' || spot.id === 'feet') expect(map.mons[cell], spot.id).toBeLessThan(LASTMM);
+      else expect([...book.index].find(([, index]) => index === map.blocks[cell])?.[0], spot.id).toMatch(/^microPlaque\./);
+    }
+  });
+
   it('answers the Slow Computers Escape question in its linked lesson', () => {
     const manual = manualOf('slow-computers');
     const question = manual.howDoI?.find((q) => q.id === 'escape');
