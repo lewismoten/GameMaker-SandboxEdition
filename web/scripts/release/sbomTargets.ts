@@ -1,22 +1,19 @@
-// Target selection for release:sbom: the `npm sbom` arguments and the version for the file name.
+// Select the release manifest and lockfile scope for npm sbom.
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { TARGETS } from './git';
 
-/** The `npm sbom` arguments for a target: a package by workspace name, the site as the whole lockfile. */
-export function sbomArgs(name: string, root: string): string[] | undefined {
-  if (!Object.prototype.hasOwnProperty.call(TARGETS, name)) return undefined;
-  const t = TARGETS[name];
-  const base = ['sbom', '--sbom-format', 'cyclonedx', '--package-lock-only', '--omit=dev'];
-  if (!t.manifest) return base;
-  const pkgName = (JSON.parse(readFileSync(join(root, t.manifest), 'utf8')) as { name: string }).name;
-  return [...base, '-w', pkgName];
-}
-
-/** The version for the file name: the argument, else the package's manifest version, else "next" (the site). */
-export function sbomVersion(name: string, root: string, given?: string): string {
-  if (given) return given;
-  const t = TARGETS[name];
-  if (t?.manifest) return (JSON.parse(readFileSync(join(root, t.manifest), 'utf8')) as { version: string }).version;
-  return 'next';
+export function sbomTarget(id: string, root: string) {
+  if (!Object.hasOwn(TARGETS, id)) return undefined;
+  const { manifest } = TARGETS[id];
+  const pkg = JSON.parse(readFileSync(join(root, manifest ?? 'web/package.json'), 'utf8')) as { name: string; version: string };
+  const name = manifest ? pkg.name : 'gamemaker-sandbox-edition';
+  const version = pkg.version;
+  const args = ['sbom', '--sbom-format', 'cyclonedx', '--package-lock-only', '--omit=dev'];
+  if (manifest) args.push('-w', name);
+  return {
+    args,
+    fileVersion: manifest ? version : 'next',
+    component: { type: manifest ? 'library' : 'application', name, version, purl: `pkg:npm/${name.replace(/^@/, '%40')}@${encodeURIComponent(version)}` },
+  };
 }
