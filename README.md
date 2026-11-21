@@ -17,7 +17,7 @@ This fork is kept by Lewis Moten, who shoveled Fort Ashby's driveways in the win
 to buy Game-Maker. The desk, the BBSes and _Snowbound_ come from those years: see
 [Lewis and Game-Maker](docs/history.md).
 
-![The 1994 desk by day: the PC playing Snowbound's first street with a snowplow going by, Snowbound's keys card propped beside it, the Moten and Doc Leo posters on the wall, shelves of Sandbox boxes, the disk box, the game pad on the keyboard tray, a snowy window, a wristwatch clock and a door](web/public/og-image.png)
+![The 1994 desk by day: the PC playing Snowbound's first street with a snowplow going by, Snowbound's keys card propped beside it and its poster on the wall beside the Moten poster, Scoot the desk buddy by the PC, shelves of Sandbox boxes, the disk box, the game pad on the keyboard tray, a snowy window, a wristwatch clock and a door](web/public/og-image.png)
 
 ## What's in it
 
