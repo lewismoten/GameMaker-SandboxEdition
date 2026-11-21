@@ -2,6 +2,7 @@
 // palettes as color grids, block sets as mosaics, maps as mini maps, monsters and
 // characters as their first frame, pictures and animations as themselves, sounds as
 // waveforms, music as a little score.
+import { mapBlockSets } from '../../project/scenePalette';
 import { kindOf, type FileKind } from '../core/project';
 import { paintIndexed } from '../core/draw';
 import { drawSpeakerPitch, drawWave } from './waveform';
@@ -30,6 +31,7 @@ import type { GameFiles } from '../../project/files';
 /** Everything a thumbnail may need: the file and its neighbors (for palettes and blocks). */
 export interface ThumbSource {
   files: GameFiles;
+  gam?: string;
   /** The palette the file is shown with. */
   palette?: Palette;
   /** The DOS player's patches (companion), for the text color and the high-score screen. */
@@ -154,10 +156,9 @@ export function fileThumb(name: string, bytes: Uint8Array | undefined, src: Thum
         const m = parseMap(bytes);
         // the block set of the scene that uses this map, else the first one
         let bbl = src.files.byExtension('bbl')[0];
-        const gam = src.files.byExtension('gam')[0];
+        const gam = src.gam ?? src.files.byExtension('gam')[0];
         if (gam) {
-          const scene = parseGame(src.files.get(gam)!).scenes.find((sc) => sc.files[1]?.toLowerCase() === name.toLowerCase());
-          if (scene?.files[2] && src.files.has(scene.files[2])) bbl = scene.files[2].toLowerCase();
+          bbl = mapBlockSets(parseGame(src.files.get(gam)!), name).find((set) => src.files.has(set)) ?? bbl;
         }
         const blocks = bbl ? parseBlocks(src.files.get(bbl)!, BACKBL) : undefined;
         // one pixel per block: the block's most common color
@@ -290,7 +291,7 @@ export function fileThumb(name: string, bytes: Uint8Array | undefined, src: Thum
         const [c] = canvas(320, 200);
         c.setAttribute('role', 'img');
         c.setAttribute('aria-label', `High scores: ${list.filter((e) => e.score).length} of ${list.length} places filled`);
-        const gam = src.files.byExtension('gam')[0];
+        const gam = src.gam ?? src.files.byExtension('gam')[0];
         void Promise.all([import('../editors/integrator/dosPlayer/playerPreview'), import('@lewismoten/gamemaker-sandbox-engine/engine/playerLook')])
           .then(([{ drawPreview }, { playerLook }]) => {
             const game = parseGame(src.files.get(gam)!);

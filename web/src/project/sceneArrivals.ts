@@ -11,8 +11,9 @@ export function sceneArrivals(game: Game, scenes: ReadonlySet<number>): { scene:
 
 /**
  * Does the hero never walk around in these scenes: each one starts him right on a way out of
- * it (a talk's page, a verdict, a card before a board), so the map flashes past unseen? Only
- * the arrivals `here` takes in count (all of them when it is left out).
+ * it (a talk's page, a verdict, a card before a board), so the map flashes past unseen?
+ * Only the arrival cell is certain from the scene data. Other touch cells depend on the hero’s pose and pixel offsets.
+ * Only arrivals accepted by `here` count (all of them when it is left out).
  */
 export function passesThrough(game: Game, scenes: number[], here: (at: Point) => boolean = () => true): boolean {
   const ins = sceneArrivals(game, new Set(scenes)).filter((a) => here(a.at));
@@ -21,9 +22,7 @@ export function passesThrough(game: Game, scenes: number[], here: (at: Point) =>
     ins.every(
       ({ scene, at }) =>
         sceneKind(game.scenes[scene]) === 'adventure' &&
-        game.scenes[scene].links.some(
-          (l) => l.toScene !== scene && l.toScene !== NOSCENE && !!game.scenes[l.toScene] && l.from.x === at.x && l.from.y === at.y,
-        ),
+        game.scenes[scene].links.some((l) => l.toScene !== scene && l.toScene !== NOSCENE && l.from.x === at.x && l.from.y === at.y),
     )
   );
 }

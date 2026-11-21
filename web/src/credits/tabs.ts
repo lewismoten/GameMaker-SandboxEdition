@@ -32,8 +32,15 @@ export function creditsTabs(tabs: CreditsTab[], panels: HTMLElement[], main: HTM
     p.setAttribute('aria-labelledby', tabs[i].id);
     p.classList.add('credits-panel');
   });
+  const bar = main.querySelector<HTMLElement>('.credits-tabs-wrap')!;
+  const stickyHeight = () => (getComputedStyle(bar).position === 'sticky' ? bar.getBoundingClientRect().height : 0);
+  const reveal = (target: HTMLElement, behavior: ScrollBehavior) => {
+    target.style.scrollMarginTop = `${stickyHeight()}px`;
+    target.scrollIntoView({ block: 'start', behavior });
+  };
   let current = -1;
   const show = (i: number, focus = false) => {
+    const pinned = current >= 0 && i !== current && stickyHeight() > 0 && panels[current].getBoundingClientRect().top < bar.getBoundingClientRect().bottom;
     current = i;
     buttons.forEach((b, j) => {
       b.setAttribute('aria-selected', String(i === j));
@@ -41,7 +48,8 @@ export function creditsTabs(tabs: CreditsTab[], panels: HTMLElement[], main: HTM
       panels[j].classList.toggle('on', i === j);
     });
     view.set({ tab: i === 0 ? undefined : tabs[i].key });
-    if (focus) buttons[i].focus();
+    if (focus) buttons[i].focus({ preventScroll: true });
+    if (pinned) reveal(panels[i], 'instant');
   };
   buttons.forEach((b, i) => {
     b.addEventListener('click', () => show(i));
@@ -68,7 +76,7 @@ export function creditsTabs(tabs: CreditsTab[], panels: HTMLElement[], main: HTM
     const at = i >= 0 ? i : panels.findIndex((p) => target && p.contains(target));
     if (at < 0 || !target) return;
     if (at !== current) show(at);
-    target.scrollIntoView({ block: 'start', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+    reveal(target, matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth');
     target.setAttribute('tabindex', '-1');
     target.focus({ preventScroll: true });
   };

@@ -33,6 +33,11 @@ describe('sceneRole', () => {
     expect(levelCheckNote(room(entrances), 2)).toBe('');
     expect(levelCheckNote(room(entrances.slice(0, 1)), 2)).toContain('leaves at once');
   });
+  it('recognizes an arrival on a link that ends play at a missing destination', () => {
+    const g = room(entrances.slice(0, 1));
+    g.scenes[2].links[0].toScene = 90;
+    expect(passesThrough(g, [2])).toBe(true);
+  });
   it('counts only destinations outside the scene as ways out', () => {
     const g = room([link(0, 0, 2, 8, 8)]);
     g.scenes[2].links.push(link(8, 8, 2, 5, 5));

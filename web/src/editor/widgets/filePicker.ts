@@ -174,7 +174,12 @@ export function pickFile(project: Project, kind: FileKind, opts: PickOptions = {
         const bytes = project.files.get(n);
         const el = card(
           n.toUpperCase(),
-          fileThumb(n, bytes, { files: project.files, palette: project.shownPalette(n), patches: companionPatches(project.companion, project.gam) }),
+          fileThumb(n, bytes, {
+            files: project.files,
+            gam: project.gam,
+            palette: project.shownPalette(n),
+            patches: companionPatches(project.companion, project.gam),
+          }),
           `${(bytes?.length ?? 0).toLocaleString()} bytes · used ${project.usesOf(n).length}×`,
           () => close(n),
           normalize(opts.current ?? '') === n,
@@ -184,7 +189,12 @@ export function pickFile(project: Project, kind: FileKind, opts: PickOptions = {
             n,
             async () => project.files.get(n),
             thumbCanvas(el),
-            async () => ({ files: project.files, palette: project.shownPalette(n), patches: companionPatches(project.companion, project.gam) }),
+            async () => ({
+              files: project.files,
+              gam: project.gam,
+              palette: project.shownPalette(n),
+              patches: companionPatches(project.companion, project.gam),
+            }),
             () => el.querySelector<HTMLElement>('.pick-card small'),
           ) ?? '',
         );
@@ -469,6 +479,7 @@ export function fileField(
         exists
           ? fileThumb(name, project.files.get(name), {
               files: project.files,
+              gam: project.gam,
               palette: project.shownPalette(name),
               patches: companionPatches(project.companion, project.gam),
             })

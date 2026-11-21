@@ -256,6 +256,9 @@
   overflow: visible;
 }
 @media (min-width: 901px) {
+  .mt-side-col > .panel-tabs {
+    flex-shrink: 0;
+  }
   .mt-side-col .panel-tabs-list {
     position: sticky;
     top: 0;

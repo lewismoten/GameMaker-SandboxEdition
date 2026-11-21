@@ -86,7 +86,10 @@ export function assetBrowser(host: BrowserHost): { el: HTMLElement; dispose(): v
         try {
           const patches = companionPatches(project.companion, project.gam);
           const show = (boardAt?: Map<number, { x: number; y: number }>) =>
-            clear(entry.target, fileThumb(file, project.files.get(file), { files: project.files, palette: shownPalette(project, file), patches, boardAt }));
+            clear(
+              entry.target,
+              fileThumb(file, project.files.get(file), { files: project.files, gam: project.gam, palette: shownPalette(project, file), patches, boardAt }),
+            );
           show();
           // the game's own tile draws the Integrator board the author last had open (loaded when first needed)
           if (file === project.gam)

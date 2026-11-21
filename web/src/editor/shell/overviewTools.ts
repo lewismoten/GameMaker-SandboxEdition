@@ -76,6 +76,7 @@ export function overviewTools(project: Project, host: ToolsHost): { el: HTMLElem
         'Level check',
         fileThumb(maps[0], files.get(maps[0]), {
           files,
+          gam: project.gam,
           palette: project.shownPalette(maps[0]),
           patches: companionPatches(project.companion, project.gam),
         }),

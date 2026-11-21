@@ -1,6 +1,7 @@
 // The readable-palette choice and the saved palette pick round trip.
 import { describe, expect, it } from 'vitest';
 import { GameFiles } from '../../project/files';
+import { gameProject } from '../shell/gameProject';
 import { Project } from './project';
 import { darkShare, isTooDark, mostReadable } from './readablePalette';
 import { parseCompanion, serializeCompanion } from '../../project/companion';
@@ -87,6 +88,20 @@ describe('which palette a preview of a file uses', () => {
     ]);
     return Project.fromFiles(files);
   };
+  it('uses the selected game for a map with an inherited block set', () => {
+    const p = build();
+    const selected = structuredClone(p.game());
+    selected.scenes[2].files[2] = 'second.bbl';
+    selected.scenes[2].files[1] = 'm.map';
+    selected.scenes[3].files = ['', 'next.map', ''];
+    p.files.set('second.gam', serializeGame(selected));
+    p.setExtras('b.bbl', 'showPalette', 'x.pal');
+    p.setExtras('second.bbl', 'showPalette', 'z.pal');
+    const q = gameProject(p, 'second.gam');
+    expect(q.shownPalette('m.map')).toEqual(q.palette('z.pal'));
+    expect(p.shownPalette('m.map')).toEqual(p.palette('x.pal'));
+    expect(q.shownPalette('next.map')).toEqual(q.palette('z.pal'));
+  });
   it('takes the palette most of the scenes using the file use', () => {
     expect(build().paletteFor('b.bbl').source).toBe('y.pal');
   });
@@ -138,7 +153,8 @@ describe('a scene with blank slots', () => {
     const b = newGame('T').scenes[0];
     b.gametype = 10;
     b.files = ['', 'n.map', ''];
-    game.scenes.push(a, b);
+    const unrelated = { ...a, files: ['z.pal', 'other.map', 'other.bbl'] };
+    game.scenes.push(a, b, unrelated, unrelated);
     const p = Project.fromFiles(
       new GameFiles([
         ['t.gam', serializeGame(game)],
@@ -147,6 +163,8 @@ describe('a scene with blank slots', () => {
       ]),
     );
     expect(p.paletteFor('n.map').source).toBe('a.pal');
-    expect(p.paletteFor('lonely.bbl').source).not.toBe('');
+    expect(p.paletteFor('lonely.bbl').source).toBe('z.pal');
+    p.setExtras('b.bbl', 'showPalette', 'z.pal');
+    expect(p.shownPalette('n.map')).toEqual(p.palette('z.pal'));
   });
 });
