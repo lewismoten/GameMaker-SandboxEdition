@@ -1,5 +1,5 @@
 .claude/
-.for-lewis/
+.for-lewis
 
 # Built npm engine package (npm pack rebuilds it).
 /web/packages/engine/dist/
