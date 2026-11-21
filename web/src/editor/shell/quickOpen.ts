@@ -92,6 +92,7 @@ export function quickOpen(project: Project): Promise<string | undefined> {
           try {
             thumb = fileThumb(file, project.files.get(file), {
               files: project.files,
+              gam: project.gam,
               palette: project.shownPalette(file),
               patches: companionPatches(project.companion, project.gam),
             });

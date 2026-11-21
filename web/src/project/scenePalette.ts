@@ -6,6 +6,21 @@ import { defaultPalette, parsePalette, type Palette } from '@lewismoten/gamemake
 import { decodeGif, isGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
 import { isSolidPalette, mostReadable } from '../editor/core/readablePalette';
 
+/** Block sets used with this map in scene order, including blank slots carried between levels. */
+export function mapBlockSets(game: Game, file: string): string[] {
+  const want = normalize(file);
+  const sets = new Set<string>();
+  let map = '';
+  let blocks = '';
+  for (const scene of game.scenes) {
+    if (scene.gametype !== 10) continue;
+    map = scene.files[1] || map;
+    blocks = scene.files[2] || blocks;
+    if (blocks && normalize(map) === want) sets.add(blocks);
+  }
+  return [...sets];
+}
+
 /** The palette most scenes using `file` use (a blank slot inherits the level before), else the most-used non-solid .pal, else a GIF's, else the default. */
 export function scenePalette(files: GameFiles, game: Game, file: string, used?: ArrayLike<number>): { palette: Palette; source: string } {
   // several scenes may use one file with different palettes: the palette most of them use wins, the first on a tie

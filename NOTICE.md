@@ -67,6 +67,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex fixed camera framing for progress shots on packed level maps and added a regression test (November 21, 2026).
 - OpenAI Codex updated DOSBox rebuild staging, backup handling, and regression tests (November 21, 2026).
 - OpenAI Codex fixed Level check reason editing and storage and added regression tests (November 21, 2026).
+- OpenAI Codex fixed Credits navigation, map panel scrolling, map preview selection, and scene arrival checks and added regression tests (November 21, 2026).
 - OpenAI Codex updated scene exit counts, shared arrival checks, card footer layout, and regression tests (November 21, 2026).
 - OpenAI Codex fixed the mixed-entrance Level check, private address sweep and release SBOM target selection, and updated their tests and documentation (November 20, 2026).
 - OpenAI Codex updated save import and delete error handling, safety backup retries, regression tests, and the saves guide (November 20, 2026).
