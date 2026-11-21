@@ -1,5 +1,5 @@
 // Exercise the production rebuild against disposable mount and backup directories.
-import { mkdirSync, mkdtempSync, readFileSync, existsSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, readFileSync, symlinkSync, existsSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, describe, expect, it, vi } from 'vitest';
@@ -97,4 +97,39 @@ it('leaves the old drive in place when an edit backup cannot be written', async 
   await expect(rebuildMount(mount, (stage) => put(stage, 'NEW.GAM', 'stock'))).rejects.toMatchObject({ code: 'EEXIST' });
   expect(read(mount, 'MINE.MAP')).toBe('personal');
   expect(existsSync(join(mount, 'NEW.GAM'))).toBe(false);
+});
+
+it('keeps a save written while a stock file is being compared', async () => {
+  const mount = join(scratch(), 'dosbox');
+  const stock = 'x'.repeat(1024 * 1024);
+  put(mount, 'GAME/STOCK.GAM', stock);
+  let wrote = false;
+  const rebuild = rebuildMount(mount, (stage) => {
+    put(stage, 'GAME/STOCK.GAM', stock);
+    setImmediate(() => {
+      put(mount, 'GAME/GAME0.SAV', 'late save');
+      wrote = true;
+    });
+  });
+  const outcome = await rebuild.then(
+    () => 'completed',
+    (error: Error) => error.message,
+  );
+  expect(wrote).toBe(true);
+  expect(existsSync(join(mount, 'GAME/GAME0.SAV'))).toBe(true);
+  expect(read(mount, 'GAME/GAME0.SAV')).toBe('late save');
+  expect(outcome).toMatch(/changed during rebuild/);
+  const retry = await rebuildMount(mount, (stage) => put(stage, 'GAME/STOCK.GAM', stock));
+  expect(read(retry.saves!, 'GAME/GAME0.SAV')).toBe('late save');
+  expect(read(mount, 'GAME/GAME0.SAV')).toBe('late save');
+});
+
+it('backs up the bytes of a personal file linked from outside the drive', async () => {
+  const root = scratch();
+  const mount = join(root, 'drive');
+  mkdirSync(mount);
+  put(root, 'original.map', 'linked map bytes');
+  symlinkSync('../original.map', join(mount, 'MINE.MAP'));
+  const { edits } = await rebuildMount(mount, () => {});
+  expect(read(edits!, 'MINE.MAP')).toBe('linked map bytes');
 });
