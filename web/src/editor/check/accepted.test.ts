@@ -50,17 +50,19 @@ describe('accepted entries with a reason', () => {
     const f = hold(2, 33);
     const k = findingKey(f);
     expect(splitAccepted([f], [{ finding: k, why: 'boss' }]).accepted).toEqual([f]);
+    const withoutReason = [{ finding: k }];
+    expect(splitAccepted([f], acceptedKeys(withoutReason)).accepted).toEqual([f]);
+    expect(entriesWithoutReason(withoutReason)).toEqual([k]);
     expect(splitAccepted([f], [k]).accepted).toEqual([f]);
   });
 });
 
-// Companion JSON can contain values outside AcceptedEntry's TypeScript shape.
-it('skips entries with non-string reasons', () => {
-  const malformed = { finding: 'k', why: 5 } as unknown as AcceptedEntry;
+it('keeps entries with non-string reasons', () => {
+  const malformed = { finding: 'k', why: 5 };
   expect(acceptedWhy(malformed)).toBe('');
   expect(reasonFor([malformed], 'k')).toBe('');
-  expect(entriesWithoutReason([malformed])).toEqual([]);
-  expect(acceptedKeys([malformed])).toEqual([]);
+  expect(entriesWithoutReason([malformed])).toEqual(['k']);
+  expect(acceptedKeys([malformed])).toEqual(['k']);
   expect(reasonFor([malformed, { finding: 'k', why: 'valid' }], 'k')).toBe('valid');
   expect(acceptedWhy({ finding: 'k', why: '  deliberate  ' })).toBe('deliberate');
 });
@@ -69,8 +71,8 @@ it('skips null and malformed entries before reading their reason', () => {
   expect(entriesWithoutReason([null, undefined, {}, { finding: 5 }, 'k'] as unknown as AcceptedEntry[])).toEqual(['k']);
 });
 
-it('drops malformed entries on save and orders legacy and reasoned keys by code unit', () => {
-  let list: unknown = [null, { finding: 'bad', why: 5 }, 'apple', { finding: 'Zed', why: 'boss' }];
+it('preserves entries with string keys on save and orders them by code unit', () => {
+  let list: unknown = [null, { finding: 5 }, { finding: 'x' }, { finding: 'bad', why: 5 }, 'apple', { finding: 'Zed', why: 'boss' }];
   const project = {
     extras: () => list,
     setExtras: (_file: string, _section: string, value: unknown) => {
@@ -79,8 +81,8 @@ it('drops malformed entries on save and orders legacy and reasoned keys by code 
   } as unknown as Project;
   setAccepted(project, 'Apple', true, '  maze  ');
   setAccepted(project, 'Zed');
-  expect(list).toEqual([{ finding: 'Apple', why: 'maze' }, { finding: 'Zed', why: 'boss' }, 'apple']);
+  expect(list).toEqual([{ finding: 'Apple', why: 'maze' }, { finding: 'Zed', why: 'boss' }, 'apple', { finding: 'bad', why: 5 }, { finding: 'x' }]);
   setAccepted(project, 'Apple', true, ' ');
   setAccepted(project, 'Zed', false);
-  expect(list).toEqual(['Apple', 'apple']);
+  expect(list).toEqual(['Apple', 'apple', { finding: 'bad', why: 5 }, { finding: 'x' }]);
 });
