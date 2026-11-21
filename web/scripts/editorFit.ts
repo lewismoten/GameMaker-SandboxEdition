@@ -9,6 +9,8 @@ import { resolve } from 'node:path';
 import { arg, launch, target } from './perfLib';
 import { assertTheme, forceTheme } from './forceTheme';
 
+import { playerStartProblems } from './playerStartFit';
+
 /** Editor name -> the file the route opens in the fixture project (the overview is the project's own page). */
 const FILES: Record<string, string> = {
   overview: '',
@@ -36,6 +38,7 @@ if (out) mkdirSync(out, { recursive: true });
 
 let sideways = 0;
 let rows = 0;
+let playerFailures = 0;
 const srv = await target(6140);
 const browser = await launch();
 try {
@@ -71,9 +74,31 @@ try {
         await ctx.close();
       }
   }
+  if (!only || only.includes('player-start')) {
+    for (const [width, height] of [
+      [390, 844],
+      [844, 390],
+    ]) {
+      for (const scheme of themes) {
+        const ctx = await browser.newContext({ viewport: { width, height }, colorScheme: scheme, isMobile: true, hasTouch: true });
+        try {
+          await forceTheme(ctx, scheme);
+          const page = await ctx.newPage();
+          await page.goto(srv.base + '/play.html?game=ajquest');
+          const problems = await playerStartProblems(page, width < height);
+          rows++;
+          if (problems.length) playerFailures++;
+          console.log(`player-start ${width}x${height} ${scheme}: ${problems.join(', ') || 'fits'}`);
+          if (out) await page.screenshot({ path: `${out}/player-start-${width}x${height}-${scheme}.png` });
+        } finally {
+          await ctx.close();
+        }
+      }
+    }
+  }
 } finally {
   await browser.close();
   srv.stop();
 }
 console.log(`${rows} cases, ${sideways} with sideways overflow. Vertical scrolling and inner panes are advice: some editors are meant to scroll.`);
-process.exit(sideways ? 1 : 0);
+process.exit(sideways || playerFailures ? 1 : 0);

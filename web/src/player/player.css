@@ -543,3 +543,9 @@
     white-space: nowrap;
   }
 }
+
+/* Keep the landscape start poster over the 4:3 game area, clear of the side controls. */
+.gm-player.has-touch.touch-landscape .gm-start {
+  width: min(100%, calc(100cqh * 4 / 3));
+  margin-inline: auto;
+}
