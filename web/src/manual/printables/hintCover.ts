@@ -15,7 +15,7 @@ import type { HintBookItem } from './types';
 /** What a hint book costs on its cover (the magazine's order cards say the same). */
 const PRICE = '$5.95';
 
-export async function hintBookCover(ctx: PrintContext, it: HintBookItem): Promise<Sheet> {
+export async function hintBookCover(ctx: PrintContext, it: HintBookItem, edition: 'print' | 'epub' = 'print'): Promise<Sheet> {
   const art = await coverArt(ctx.entry, it.cover);
   const picture = h(
     'div',
@@ -36,8 +36,12 @@ export async function hintBookCover(ctx: PrintContext, it: HintBookItem): Promis
       'div',
       { class: 'hb-howto' },
       h('b', null, 'HOW TO USE THIS BOOK'),
-      h('p', null, it.intro ?? 'Find your question, then lay the red film over the answer below it. Only read what you need!'),
-      redCode('Like this: you found it!'),
+      it.intro || edition === 'print'
+        ? h('p', null, it.intro ?? 'Find your question, then lay the red film over the answer below it. Only read what you need!')
+        : null,
+      edition === 'print'
+        ? redCode('Like this: you found it!')
+        : h('p', null, 'Choose “Answer” under a question to read its hint, then “Back to the question” to return.'),
     ),
     ctx.printables.skip?.includes('worldmap')
       ? null
@@ -47,7 +51,7 @@ export async function hintBookCover(ctx: PrintContext, it: HintBookItem): Promis
           h('b', null, 'LOST? '),
           'Unfold the World Map that came in your box: it shows every scene, numbered, and every way from one to the next.',
         ),
-    h('div', { class: 'hb-foot' }, sandboxLogo('hb-logo'), h('span', null, 'RED FILM INCLUDED')),
+    h('div', { class: 'hb-foot' }, sandboxLogo('hb-logo'), edition === 'print' ? h('span', null, 'RED FILM INCLUDED') : null),
   );
   const sec = s.el.firstElementChild as HTMLElement;
   sec.style.setProperty('--hb-bg', art.background);
