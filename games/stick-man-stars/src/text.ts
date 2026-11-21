@@ -53,6 +53,8 @@ Star range lesson, paper tints and fork ledge by OpenAI Codex. Held-rise control
 
 Shed lighting artwork revised by OpenAI Codex.
 
+Revised path and lantern signs by OpenAI Codex.
+
 Made with GAME-MAKER 3.0 from Recreational Software Designs.
 
 A Special from Sandbox Software. Every repo house on the street is made up.

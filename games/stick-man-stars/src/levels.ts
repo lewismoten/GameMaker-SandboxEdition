@@ -44,13 +44,13 @@ function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign>; nam
   const sign = (chunks: string): Sign => smallSign(book, pal, chunks);
   const signs = {
     gaze: sign('SPACE|: JUM|P UP!'),
-    gate: sign('FIVE |STARS| OPEN| THE |GATE.'),
+    gate: sign('5 STA|RS LI|GHT T|HE PA|TH.  '),
     how: sign('ENTER|: THR|OW A |STAR!'),
     far: sign('STARS| ONLY| GO S|O FAR'),
     shed: sign('SHEDS| NAP |HERE.'),
     shy: sign('SHY O|NES W|ANDER'),
     bots: sign('SPAM |BOTS |BUMP.| POP |THEM!'),
-    three: sign('3 LAM|PS: O|NE TH|ANKS |EACH!'),
+    three: sign('3 LAN|TERNS|: ONE| STAR| EACH'),
     thanks: sign('LIKED| IT? |STAR!'),
     // over the old original the Big Repo was forked from: a name board, resting on its roof
     forked: smallSign(book, pal, ' THE |ORIGI|NAL  ', false),
@@ -235,7 +235,7 @@ function starCount(w: World): StarterMap {
   const m = new StarterMap(w.book, g.rows());
   signAt(m, w, 5, 'bots');
   signAt(m, w, 29, 'fake');
-  signAt(m, w, 48, 'three');
+  signAt(m, w, 45, 'three');
   signAt(m, w, 60, 'thanks');
   named(m, w, COTTAGE, L4.cottages[0], 'KEYS');
   m.mon(TOWER, L4.tower, STAND);
