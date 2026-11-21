@@ -7,9 +7,9 @@
 /** The screen in blocks. */
 export const COLS = 16;
 export const ROWS = 10;
-/** The solid road and the hero's feet on a two-row entrance step. This start keeps the signs, hills and road inside the fixed view. */
+/** The road fills the bottom row. Kit drops onto it with the view starting at row zero. */
 export const GROUND_ROW = 9;
-export const START: [number, number] = [8, 6];
+export const START: [number, number] = [8, 5];
 /** The exit door's column in the one-screen levels (its bottom block is on row 8). */
 export const DOOR_COL = 14;
 /** Level 2's road: its width in blocks, the rock wall that ends it, the door before the wall, and the

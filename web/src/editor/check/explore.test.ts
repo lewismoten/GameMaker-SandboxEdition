@@ -1,5 +1,5 @@
 // The level check's explorer and stuck finder on a tiny game built in memory (testGame.ts).
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { MLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { explore } from './explore';
 import { playtestGame } from './playtest';
@@ -10,10 +10,6 @@ import { RIGHT, testGame } from './testGame';
 import { parseMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { parseCharacter, serializeCharacter } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 import { BACKBL, parseBlocks, serializeBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
-
-// The explorer searches whole scenes; under full-suite load the default 5 s timed out
-// ('keeps climbing actual footings', Kaylee's Linux full run, Nov 13). Same work, more time.
-vi.setConfig({ testTimeout: 60_000 });
 
 // prettier-ignore
 const ROWS = [
@@ -220,7 +216,7 @@ it('keeps climbing actual footings rather than chasing nearby platforms in the a
   });
   expect(ex.exits).not.toHaveLength(0);
   expect((await replayPath(t.game, t, 2, entry, ex.moves, pathTo(ex, ex.exits[0].via)))?.link).toBe(0);
-});
+}, 60_000);
 
 it('can turn in a one-cell top-down corridor before a long walk animation finishes', async () => {
   const t = testGame(['##########', '#S.......#', '#####.####', '#####.####', '#####E####', '##########']);

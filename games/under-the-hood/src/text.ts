@@ -42,8 +42,7 @@ Held-rise controls, bot timing and raised-start camera design by OpenAI Codex (G
 
 Made with GAME-MAKER 3.0 from Recreational Software Designs.
 
-One of the Starters: small games that each show one idea.
-
+Each Starter teaches one idea.
 Music re-scored with OpenAI Codex from the original tune and B section by Claude.
 `),
 );
