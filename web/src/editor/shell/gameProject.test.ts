@@ -84,3 +84,14 @@ describe('Integrator GAM context', () => {
     expect(scoped.game().scenes[0].desc).toBe('Second title');
   });
 });
+
+it('reads the saved block palette for a map in the selected GAM', () => {
+  const p = owner(),
+    scoped = gameProject(p, 'second.gam');
+  const game = scoped.game();
+  game.scenes[1].files[1] = 'm.map';
+  scoped.saveGame(game);
+  p.files.set('pick.pal', new Uint8Array(768).fill(20));
+  p.setExtras('shared.bbl', 'showPalette', 'pick.pal');
+  expect(scoped.shownPalette('m.map')).toEqual(p.palette('pick.pal'));
+});

@@ -39,3 +39,14 @@ describe('assistant paletteFor', () => {
     expect([...paletteFor(ctxOf(files), 'x.cbl').subarray(0, 3)]).toEqual([40, 30, 20]);
   });
 });
+
+it('counts inherited palettes when choosing an unrelated file’s colors', () => {
+  const game = newGame('T');
+  game.scenes = ['a.pal', 'a.pal', 'b.pal', '', ''].map((name) => ({ ...game.scenes[0], gametype: 10, files: [name] }));
+  const files = new GameFiles([
+    ['t.gam', serializeGame(game)],
+    ['a.pal', pal(10)],
+    ['b.pal', pal(40)],
+  ]);
+  expect(paletteFor(ctxOf(files), 'orphan.cbl')[0]).toBe(40);
+});

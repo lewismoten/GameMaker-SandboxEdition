@@ -1,5 +1,7 @@
 // The shared tools, called in-process: on the level check's tiny generated game and on a copy of
 // a CD game (Nebula), reading, writing (with dry runs and read-only refusals), checking and drawing.
+import { inflateSync } from 'node:zlib';
+import { parseGame, serializeGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { describe, expect, it } from 'vitest';
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
@@ -145,4 +147,29 @@ describe('assistant tools', () => {
     expect((await call(ctx, 'render_png', { what: 'map', scene: level.scene })).content[0].type).toBe('image');
     expect(ctx.dirty.size).toBe(0);
   }, 60_000);
+});
+
+it('colors an opaque character pixel with its own level palette when other levels share its blocks', async () => {
+  const ctx = tiny(),
+    game = parseGame(ctx.files.get(ctx.gam)!);
+  const level = game.scenes[2];
+  level.files[0] = 'first.pal';
+  const other = structuredClone(level);
+  other.files[0] = 'other.pal';
+  other.files[5] = 'other.chr';
+  game.scenes.push(other, other);
+  ctx.files.set(ctx.gam, serializeGame(game));
+  const first = new Uint8Array(768);
+  first[3 * 3] = 63;
+  ctx.files.set('first.pal', first);
+  ctx.files.set('other.pal', new Uint8Array(768));
+  const result = await call(ctx, 'render_png', { what: 'character', file: 'test.chr', index: 5, scale: 1 });
+  const image = result.content[0];
+  if (image.type !== 'image') throw new Error(words(result));
+  const png = Buffer.from(image.data, 'base64');
+  const idat = png.indexOf('IDAT');
+  const index = inflateSync(png.subarray(idat + 4, idat + 4 + png.readUInt32BE(idat - 4)))[1];
+  expect(index).toBe(3);
+  const offset = png.indexOf('PLTE') + 4 + index * 3;
+  expect([...png.subarray(offset, offset + 3)]).toEqual([255, 0, 0]);
 });

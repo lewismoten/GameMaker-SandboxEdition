@@ -63,7 +63,7 @@ function main(): void {
   );
   for (const d of deps) {
     const file = join(root, paths.get(`${d.name}@${d.version}`)!, 'package.json');
-    if (!existsSync(file)) continue;
+    if (!existsSync(file)) throw new Error(`Missing manifest for ${d.name}@${d.version}. Run npm ci first.`);
     const m = JSON.parse(readFileSync(file, 'utf8')) as Manifest;
     const author = person(m.author) ?? person(m.contributors?.[0]);
     if (author) d.author = author;

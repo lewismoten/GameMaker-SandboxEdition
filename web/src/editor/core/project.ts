@@ -5,7 +5,7 @@ import { libraryDefaultPalette } from '@lewismoten/gamemaker-sandbox-tools/palet
 import { parseGame, serializeGame, newGame, type Game, gameTitle } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { parsePalette, type Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 import { debounce } from './ui';
-import { mapBlockSets, scenePalette } from '../../project/scenePalette';
+import { levelFiles, scenePalette } from '../../project/scenePalette';
 import { emptyCompanion, getSection, renameInCompanion, setExportPreviews, setMenuVersion, setSection, type Companion } from '../../project/companion';
 import { setAbout, type AboutGame } from '../../project/aboutGame';
 import { editedFile, unlockAchievement } from '../../achievements';
@@ -215,12 +215,22 @@ export class Project {
    * kept in the companion, restored while that .pal exists), else the scene's (paletteFor).
    */
   shownPalette(file: string, used?: ArrayLike<number>): Palette {
-    const keys = normalize(file).endsWith('.map') ? [file, ...mapBlockSets(this.game(), file)] : [file];
+    const saved = this.savedPalette(file);
+    return saved ? parsePalette(this.files.get(saved)!) : this.paletteFor(file, used).palette;
+  }
+
+  /** The .pal picked for a file that still exists. A map has no picker of its own: it follows its block set's. */
+  private savedPalette(file: string): string {
+    const keys = [file];
+    if (normalize(file).endsWith('.map'))
+      for (const { files } of levelFiles(this.game())) {
+        if (files[1] && normalize(files[1]) === normalize(file) && files[2]) keys.push(files[2]);
+      }
     for (const k of keys) {
       const saved = this.extras<string>(k, 'showPalette', '');
-      if (saved && this.files.has(saved)) return parsePalette(this.files.get(saved)!);
+      if (saved && this.files.has(saved)) return saved;
     }
-    return this.paletteFor(file, used).palette;
+    return '';
   }
 
   palette(name: string): Palette | undefined {

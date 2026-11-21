@@ -153,8 +153,8 @@ describe('a scene with blank slots', () => {
     const b = newGame('T').scenes[0];
     b.gametype = 10;
     b.files = ['', 'n.map', ''];
-    const unrelated = { ...a, files: ['z.pal', 'other.map', 'other.bbl'] };
-    game.scenes.push(a, b, unrelated, unrelated);
+    const other = { ...a, files: ['z.pal', 'other.map', 'other.bbl'] };
+    game.scenes.push(a, b, other, other, other);
     const p = Project.fromFiles(
       new GameFiles([
         ['t.gam', serializeGame(game)],

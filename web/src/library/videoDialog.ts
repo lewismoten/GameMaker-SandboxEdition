@@ -29,6 +29,8 @@ export function openVideo(id: string, title: string, picture: string | undefined
     const name = video?.title ?? title;
     const dlg = h('dialog', { class: 'modal lib-video', 'aria-labelledby': 'lib-video-h' });
     const close = () => {
+      window.removeEventListener('online', updateNote);
+      window.removeEventListener('offline', updateNote);
       dlg.close();
       dlg.remove(); // the player goes with it: the video stops
       resolve();
@@ -41,7 +43,7 @@ export function openVideo(id: string, title: string, picture: string | undefined
     const play = (at = 0, focus = true) => {
       // no connection: say so in place, instead of an empty player with the browser's error page
       if (typeof navigator !== 'undefined' && navigator.onLine === false) {
-        note.textContent = 'This video needs the internet: it plays from YouTube, and this page has no connection now.';
+        note.textContent = playing ? 'Reconnect to play from the selected time.' : 'Reconnect to the internet, then press Play again.';
         return;
       }
       const start = at > 0 ? `&start=${Math.floor(at)}` : '';
@@ -54,7 +56,8 @@ export function openVideo(id: string, title: string, picture: string | undefined
         referrerpolicy: 'strict-origin-when-cross-origin',
       });
       screen.replaceChildren(player);
-      note.textContent = 'Playing from YouTube (youtube-nocookie.com); needs the internet.';
+      playing = true;
+      updateNote();
       if (focus) player.focus();
     };
     /** A button that plays from `at`: a chapter's (with its title) or a transcript paragraph's. */
@@ -70,7 +73,7 @@ export function openVideo(id: string, title: string, picture: string | undefined
         h('span', { class: 'lib-video-at' }, hms(at)),
         label ? h('span', null, label) : null,
       );
-    const offline = typeof navigator !== 'undefined' && navigator.onLine === false;
+    let playing = false;
     const screen = h(
       'div',
       { class: 'lib-video-screen' },
@@ -82,13 +85,17 @@ export function openVideo(id: string, title: string, picture: string | undefined
         'Play',
       ),
     );
-    const note = h(
-      'p',
-      { class: 'lib-video-note' },
-      offline
-        ? 'This video needs the internet: it plays from YouTube, and this page has no connection now.'
-        : 'This video needs the internet. It plays from YouTube (youtube-nocookie.com). Nothing loads from YouTube until you press Play, a chapter or a time.',
-    );
+    const note = h('p', { class: 'lib-video-note', role: 'status' });
+    function updateNote() {
+      if (navigator.onLine === false) note.textContent = playing ? 'Reconnect to choose a chapter or time.' : 'This video needs the internet. You are offline.';
+      else
+        note.textContent = playing
+          ? 'Playing from YouTube (youtube-nocookie.com).'
+          : 'This video plays from YouTube. Nothing loads from YouTube until you press Play, a chapter or a time.';
+    }
+    window.addEventListener('online', updateNote);
+    window.addEventListener('offline', updateNote);
+    updateNote();
 
     // the transcript: fetched the first time it is opened
     const words = h('div', { class: 'lib-video-transcript' });

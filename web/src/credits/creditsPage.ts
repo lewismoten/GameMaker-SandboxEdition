@@ -62,7 +62,9 @@ export function renderCredits(el: HTMLElement): void {
     h('div', { class: 'credits-tabs-wrap' }),
     ...panels,
   );
-  main.querySelector('.credits-tabs-wrap')!.append(creditsTabs(SECTIONS, panels, main));
+  const tabBar = main.querySelector<HTMLElement>('.credits-tabs-wrap')!;
+  tabBar.append(creditsTabs(SECTIONS, panels, main));
+  new ResizeObserver(() => main.style.setProperty('--credits-tab-height', `${tabBar.getBoundingClientRect().height}px`)).observe(tabBar);
   clear(el, main);
   const open = new URLSearchParams(location.hash.split('?')[1] ?? '').get('go');
   if (open) gotoCredit(open);
