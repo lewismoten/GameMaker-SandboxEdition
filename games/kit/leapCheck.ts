@@ -104,8 +104,7 @@ async function leapsOver(sim: GameSim, lock: Lock, dir: 'left' | 'right', ladder
 }
 
 /** Problems found in one game's disk, one string each. */
-async function leapProblems(dir: string): Promise<{ locks: number; problems: string[] }> {
-  const files = readDisk(dir);
+export async function leapProblems(files: Map<string, Uint8Array>): Promise<{ locks: number; problems: string[] }> {
   const problems: string[] = [];
   let locks = 0;
   const { scenes } = new GameSim(files).game;
@@ -117,21 +116,28 @@ async function leapProblems(dir: string): Promise<{ locks: number; problems: str
     } catch {
       continue;
     }
-    // no pull at the hero's start (a view from above): there is nothing to jump over
-    if (!(sim.shown(sim.pos.x, sim.pos.y).grav & 4)) continue;
+    // Ground run-ups use the entrance gravity. A ladder top has its own transition to falling air.
+    const groundJumps = !!(sim.shown(sim.pos.x, sim.pos.y).grav & 4);
     const found = locksIn(sim);
     if (!found.length) continue;
-    locks += found.length;
     const base = sim.snapshot();
     const reach = reachable(sim);
     const directRise = sim.w.chr.sequences.some((s) => s.key >> 8 === SCAN.space && !s.momentum && s.frames[0].y < 0);
     const ladderTop = (x: number, y: number) => directRise && sim.shown(x, y).grav === 0 && !!(sim.shown(x, y - 1).grav & 4);
     for (const lock of found) {
+      sim.restore(base);
       const spots: [number, number][] = [];
       for (let x = Math.max(1, lock.x - REACH); x <= lock.x + REACH; x++)
         for (let y = Math.max(2, lock.y - 14); y <= lock.y + 1; y++)
-          if (x !== lock.x && reach.has(y * MLEN + x) && !sim.solidAt(x, y) && !sim.solidAt(x, y - 1) && (sim.solidAt(x, y + 1) || ladderTop(x, y)))
+          if (
+            x !== lock.x &&
+            reach.has(y * MLEN + x) &&
+            !sim.solidAt(x, y) &&
+            !sim.solidAt(x, y - 1) &&
+            ((groundJumps && sim.solidAt(x, y + 1)) || ladderTop(x, y))
+          )
             spots.push([x, y]);
+      if (groundJumps || spots.length) locks++;
       let hit: string | undefined;
       for (const [x, y] of spots) {
         if (hit) break;
@@ -148,7 +154,7 @@ async function leapProblems(dir: string): Promise<{ locks: number; problems: str
   return { locks, problems };
 }
 
-{
+if (!process.env.VITEST) {
   const args = process.argv.slice(2);
   const starter = (id: string) => {
     const about = join(gamesDir, id, 'about.json');
@@ -159,7 +165,7 @@ async function leapProblems(dir: string): Promise<{ locks: number; problems: str
   for (const id of ids) {
     const dir = join(gamesDir, id, 'disk');
     if (!existsSync(dir)) continue;
-    const { locks, problems } = await leapProblems(dir);
+    const { locks, problems } = await leapProblems(readDisk(dir));
     for (const p of problems) console.log(`${id}: ${p}`);
     bad += problems.length;
     if (locks && !problems.length) console.log(`${id}: ${locks} lock${locks === 1 ? '' : 's'}, none can be jumped over`);
