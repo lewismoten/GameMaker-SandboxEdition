@@ -1380,3 +1380,5 @@ maker "ZORP" is invented. The shell is untested: nothing has been printed.
 - **Game review fixes (November 21, 2026)**: OpenAI Codex corrected the Beat the Clock and First Steps lessons, refreshed the First Steps demo, updated Lucky Cat route diagnostics, corrected the Stick Man Stars shed artwork and checks, restored the Heat Waves road, and adjusted the Under the Hood credits.
 
 - **Digital hint-book covers (November 21, 2026)**: Hermes Agent/OpenAI Codex adapted the cover instructions for ePub readers and added a browser regression test for both editions.
+
+- **Technical writing review (November 21, 2026)**: OpenAI Codex clarified the embedding limits and the scope of the editor navigation study.
