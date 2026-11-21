@@ -10,18 +10,16 @@ vi.mock('../../editor/core/ui', () => ({ h: (tag: string, attrs: object) => ({ t
 vi.mock('./posterUv', () => ({ uvPoster: (canvas: HTMLCanvasElement) => canvas }));
 
 afterEach(() => {
+  vi.clearAllMocks();
   endDesk();
   vi.unstubAllGlobals();
 });
 
-it('pins the poster after the archive becomes readable on reinsertion', async () => {
+function setupWall(id: string) {
   const append = vi.fn();
   const wall = { append, querySelector: () => null } as unknown as HTMLElement;
-  const game = { id: 'sample', title: 'Sample', kind: 'gameware' as const, path: 'sample/', gam: 'sample.gam', files: ['title.gif'] };
+  const game = { id, title: 'Sample', kind: 'gameware' as const, path: 'sample/', gam: 'sample.gam', files: ['title.gif'] };
   setPosterWall(wall, [game]);
-  vi.mocked(peekGameFile)
-    .mockRejectedValueOnce(new Error('Archive unavailable'))
-    .mockResolvedValue(new Uint8Array([1]));
   const ctx = {
     measureText: () => ({ width: 1 }),
     fillText: vi.fn(),
@@ -45,6 +43,14 @@ it('pins the poster after the archive becomes readable on reinsertion', async ()
     },
   );
 
+  return { append, game };
+}
+
+it('pins the poster after the archive becomes readable on reinsertion', async () => {
+  const { append, game } = setupWall('retry');
+  vi.mocked(peekGameFile)
+    .mockRejectedValueOnce(new Error('Archive unavailable'))
+    .mockResolvedValue(new Uint8Array([1]));
   await Promise.all([showWallPoster(game.id), showWallPoster(game.id)]);
   expect(peekGameFile).toHaveBeenCalledTimes(1);
   expect(append).not.toHaveBeenCalled();
@@ -56,4 +62,21 @@ it('pins the poster after the archive becomes readable on reinsertion', async ()
   await showWallPoster(game.id);
   expect(peekGameFile).toHaveBeenCalledTimes(2);
   expect(append).toHaveBeenCalledTimes(2);
+});
+
+it('pins a shared drawing only once when the same disk is reinserted before it finishes', async () => {
+  const { append, game } = setupWall('reinsert');
+  let finishRead!: (gif: Uint8Array) => void;
+  vi.mocked(peekGameFile).mockReturnValueOnce(
+    new Promise((resolve) => {
+      finishRead = resolve;
+    }),
+  );
+  const first = showWallPoster(game.id);
+  hideWallPoster();
+  const second = showWallPoster(game.id);
+  finishRead(new Uint8Array([1]));
+  await Promise.all([first, second]);
+  expect(peekGameFile).toHaveBeenCalledTimes(1);
+  expect(append).toHaveBeenCalledTimes(1);
 });

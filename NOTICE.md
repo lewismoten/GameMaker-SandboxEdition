@@ -64,6 +64,7 @@ game folder opens in the browser unchanged.
 
 ## Credits
 
+- OpenAI Codex fixed interrupted archive retries and wall poster reinsertion and added regression tests (November 21, 2026).
 - OpenAI Codex fixed Pi remote sound log filtering and game status and added regression coverage (November 21, 2026).
 - OpenAI Codex fixed ground run-up checks at ladder entrances and added a regression test (November 21, 2026).
 - OpenAI Codex fixed ladder-top lock checks and tested the First Steps title demo assignment (November 21, 2026).

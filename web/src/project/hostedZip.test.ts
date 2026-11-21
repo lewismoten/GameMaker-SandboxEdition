@@ -37,6 +37,26 @@ describe('peekGameFile', () => {
     expect(fetchMock).toHaveBeenCalledTimes(1);
   });
 
+  it('retries a whole ZIP after its response body is interrupted', async () => {
+    const game = { ...entry, files: ['title.gif'] };
+    const fetchMock = await serve(game.files);
+    const body = new ReadableStream<Uint8Array>({
+      start(controller) {
+        controller.enqueue(new Uint8Array([0x50, 0x4b]));
+      },
+      pull(controller) {
+        controller.error(new Error('Body interrupted'));
+      },
+    });
+    fetchMock.mockResolvedValueOnce(new Response(body));
+    const peek = () => peekGameFile(game, 'title.gif', './interrupted/');
+    await expect(peek()).rejects.toThrow('Body interrupted');
+    await expect(peek()).resolves.toEqual(new Uint8Array([1, 2, 3]));
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    // Give Vitest a turn to report any unhandled bookkeeping rejection.
+    await new Promise<void>((resolve) => setTimeout(resolve, 0));
+  });
+
   it('falls back to the reading path when the zip has no such file (extensions renamed)', async () => {
     const fetchMock = await serve(['x.abc']);
     expect(await peekGameFile(entry, 'x.gam', './b/')).toBeUndefined();

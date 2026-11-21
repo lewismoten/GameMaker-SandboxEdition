@@ -327,11 +327,16 @@ export async function peekGameFile(entry: FiledEntry, name: string, base = './')
       () => undefined,
     ));
     peekedZips.set(url, got);
-    void got.then((b) => {
-      if (!b || peekedZips.get(url) !== got) return;
-      peekedSize.set(url, b.length);
-      trimPeekedZips();
-    });
+    void got.then(
+      (b) => {
+        if (!b || peekedZips.get(url) !== got) return;
+        peekedSize.set(url, b.length);
+        trimPeekedZips();
+      },
+      () => {
+        if (peekedZips.get(url) === got) peekedZips.delete(url);
+      },
+    );
   }
   const bytes = await zip;
   if (bytes) {
