@@ -9,6 +9,7 @@ import './wallPoster.css';
 import { h } from '../../editor/core/ui';
 import type { CatalogEntry } from '../../project/files';
 import { mapShot } from '../../gfx/gameShots';
+import { peekGameFile } from '../../project/files';
 import type { BoxExtras } from '../boxes/boxFacts';
 import { seeded } from '../boxes/boxFacts';
 import { uvPoster } from './posterUv';
@@ -76,8 +77,14 @@ async function drawPoster(entry: CatalogEntry, poster: Poster): Promise<HTMLCanv
     const c = await mapShot(entry, map[0], map[1], map[2], map[3], map[4]).catch(() => undefined);
     if (c) [pic, pw, ph] = [c, c.width, c.height];
   } else if (poster.gif) {
-    const img = await loadImage(`./${entry.path}${poster.gif.toLowerCase()}`);
-    if (img) [pic, pw, ph] = [img, img.naturalWidth, img.naturalHeight];
+    // the published site ships each game as a zip, not loose files: read the picture out of it
+    const bytes = await peekGameFile(entry, poster.gif).catch(() => undefined);
+    if (bytes) {
+      const url = URL.createObjectURL(new Blob([bytes as BlobPart], { type: 'image/gif' }));
+      const img = await loadImage(url);
+      URL.revokeObjectURL(url);
+      if (img) [pic, pw, ph] = [img, img.naturalWidth, img.naturalHeight];
+    }
   }
   if (!pic) return undefined;
   const fold = !!map;
