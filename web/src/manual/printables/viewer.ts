@@ -14,7 +14,8 @@ import { readView, viewToggle, type Reader, type ReaderOptions, type ReadView } 
 import { percentOf, pinchZoom, readSize, sizeControl, widthAt, zoomKey, type ReadSize, type Room } from '../readSize';
 import { scrollPages, type ScrollPages } from '../scrollPages';
 import { epubControl, type EpubSource } from '../epub/save';
-import { titleAfterPrint, titleForPrint } from '../printTitle';
+import { titleAfterPrint } from '../printTitle';
+import { printBox, type PrintMode } from './printBox';
 import { gamePicker, type PickerGame } from './gamePicker';
 
 /** A thing in the box. */
@@ -54,8 +55,6 @@ export interface BoxItem {
   /** It can be saved as an ePub (the bar's ⤓ ePub button). */
   epub?: EpubSource;
 }
-
-type PrintMode = 'item' | 'booklet' | 'all';
 
 /** A page address that keeps the piece open and its chapter (the Library's ?gm=ultimate&ch=12). */
 export interface BoxAddress {
@@ -463,6 +462,7 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[], opti
       );
     const print = async (mode: PrintMode) => {
       menu.hidden = true;
+      const item = items.find((i) => i.id === current);
       const out: HTMLElement[] = [];
       // the booklet on the stage (the manual unless a booklet in the box is open)
       const shownBook = isBook() ? book : pages;
@@ -479,8 +479,7 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[], opti
       flushRedCode(); // the hidden answers are drawn one per task otherwise
       document.documentElement.classList.add('gmb-printing');
       await Promise.all([...printRoot.querySelectorAll('img')].map((i) => i.decode().catch(() => undefined)));
-      titleForPrint(title);
-      window.print();
+      printBox(mode, title, item);
     };
     // the browser's own Print command prints the manual, page by page
     const afterPrint = () => {
