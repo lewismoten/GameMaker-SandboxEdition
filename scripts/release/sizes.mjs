@@ -2,7 +2,7 @@
 // Size budgets for what a release distributes (size-budgets.json): the Pages artifact (a vite build), its offline copy
 // (offline.json), each npm tarball, and the native downloads. Prints a table with the biggest items; exits 1 over a budget.
 import { execFileSync } from 'node:child_process';
-import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
+import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -16,6 +16,7 @@ const kb = (n) => `${Math.round(n / 1024)} kB`;
 const rows = [];
 let failed = false;
 function row(what, size, limit, show = mb) {
+  if (!Number.isFinite(size) || !Number.isFinite(limit)) throw new Error(`Invalid size or budget for ${what}`);
   const over = size > limit;
   failed ||= over;
   rows.push(`${over ? 'FAIL' : 'ok  '} ${what.padEnd(44)} ${show(size).padStart(10)}  (budget ${show(limit)})`);
@@ -51,14 +52,15 @@ if (dist) {
   const zip = zips.reduce((a, f) => (f[1] > a[1] ? f : a), ['', 0]);
   row(`  biggest game ZIP ${zip[0]}`, zip[1], b.gameZipMB * MB);
   const offline = join(resolve(dist), 'offline.json');
-  if (existsSync(offline)) {
-    const list = JSON.parse(readFileSync(offline, 'utf8')).files;
-    row(
-      `Offline copy (${list.length} files, transfer)`,
-      list.reduce((n, f) => n + f[1], 0),
-      budgets.offline.transferMB * MB,
-    );
-  }
+  const entries = JSON.parse(readFileSync(offline, 'utf8'))?.files;
+  if (!Array.isArray(entries)) throw new Error(`${offline}: expected a files array`);
+  const transfer = entries.reduce((sum, file, index) => {
+    if (!Number.isSafeInteger(file?.wire) || file.wire < 0) {
+      throw new Error(`${offline}: files[${index}].wire must be a nonnegative integer byte count`);
+    }
+    return sum + file.wire;
+  }, 0);
+  row(`Offline copy (${entries.length} files, transfer)`, transfer, budgets.offline.transferMB * MB);
   console.log('Largest folders:');
   for (const [k, s] of [...groups].sort((x, y) => y[1] - x[1]).slice(0, 8)) console.log(`  ${mb(s).padStart(9)}  ${k}`);
 }
