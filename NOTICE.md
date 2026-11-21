@@ -64,6 +64,7 @@ game folder opens in the browser unchanged.
 
 ## Credits
 
+- OpenAI Codex fixed the mixed-entrance Level check, private address sweep and release SBOM target selection, and updated their tests and documentation (November 20, 2026).
 - OpenAI Codex updated save import and delete error handling, safety backup retries, regression tests, and the saves guide (November 20, 2026).
 - OpenAI Codex fixed release checks and community URL validation, added regression tests and clarified the package release guide (November 20, 2026).
 - OpenAI Codex updated the pre-merge release fragment check, its tests and its documentation (November 19, 2026).

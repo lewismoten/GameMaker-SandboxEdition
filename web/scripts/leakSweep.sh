@@ -74,7 +74,8 @@ if [ -n "$dist" ] && [ -d "$dist" ]; then
     [ "$c" -gt 0 ] && bad=1
   done
   # private network addresses and the developer's machine names, then emails (the fake ones are listed for a person to judge)
-  for p in '(^|[^0-9.])(192\.168|10\.[0-9]+|172\.(1[6-9]|2[0-9]|3[01]))\.[0-9]+\.[0-9]+' '[a-z0-9-]+\.ts\.net'; do
+  octet='(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])'
+  for p in "(^|[^0-9.])(192\.168|10\.$octet|172\.(1[6-9]|2[0-9]|3[01]))\.$octet\.$octet($|[^0-9.]|\.($|[^0-9]))" '[a-z0-9-]+\.ts\.net'; do
     grep -rIlE "${skip[@]}" "$p" "$dist" >"$tmp" 2>/dev/null
     c=$(wc -l <"$tmp" | tr -d ' ')
     pattern=$((pattern + 1))

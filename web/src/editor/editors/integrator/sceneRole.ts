@@ -6,7 +6,6 @@ import { parseBlocks, BACKBL, SOLTOP } from '@lewismoten/gamemaker-sandbox-engin
 import { parseMap, MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { parseSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
 import { fromCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
-import { arrival } from './layoutCells';
 
 export type SceneRole = 'title' | 'ending' | 'pass' | 'branch' | 'cutscene' | 'level' | 'unused';
 
@@ -17,11 +16,18 @@ function exits(game: Game, i: number): number[] {
   return [...out];
 }
 
+function arrivals(game: Game, i: number) {
+  return game.scenes.flatMap((scene) => (scene.gametype === NOSCENE ? [] : scene.links.filter((l) => l.toScene === i).map((l) => l.to)));
+}
+
 /** True when the hero arrives standing on one of the scene's own links out, so it ends at once. */
 export function passesThrough(game: Game, i: number): boolean {
   if (sceneKind(game.scenes[i]) !== 'adventure') return false;
-  const at = arrival(game, i);
-  return game.scenes[i].links.some((l) => l.toScene !== NOSCENE && !!game.scenes[l.toScene] && l.from.x === at.x && l.from.y === at.y);
+  const entries = arrivals(game, i);
+  return (
+    entries.length > 0 &&
+    entries.every((at) => game.scenes[i].links.some((l) => l.toScene !== NOSCENE && !!game.scenes[l.toScene] && l.from.x === at.x && l.from.y === at.y))
+  );
 }
 
 export interface SceneFiles {
@@ -61,7 +67,7 @@ function advancesByTime(game: Game, i: number, files: SceneFiles): boolean {
   try {
     const map = parseMap(mapBytes);
     const blocks = parseBlocks(blockBytes, BACKBL);
-    const entries = game.scenes.flatMap((scene) => (scene.gametype === NOSCENE ? [] : scene.links.filter((l) => l.toScene === i).map((l) => l.to)));
+    const entries = arrivals(game, i);
     return (
       entries.length > 0 &&
       entries.every((at) => {
@@ -100,8 +106,12 @@ export function sceneRole(game: Game, i: number, files?: SceneFiles): SceneRole 
   return exits(game, i).length >= 2 ? 'branch' : 'level';
 }
 
-/** A level-only finding ("no way through", "nothing to collect") means nothing on these. */
-export const playedAsLevel = (role: SceneRole): boolean => role === 'level' || role === 'branch';
+/** Explain the Level check results when every entrance immediately exits. */
+export function levelCheckNote(game: Game, i: number): string {
+  return passesThrough(game, i)
+    ? ' This scene is a talk page or fade: the hero arrives on one of its own links and leaves at once, so findings about getting through a level don’t apply to it.'
+    : '';
+}
 
 /** Words for a scene's footer or note; undefined for an ordinary level, which needs no label. */
 export function roleNote(game: Game, i: number, files?: SceneFiles): string | undefined {

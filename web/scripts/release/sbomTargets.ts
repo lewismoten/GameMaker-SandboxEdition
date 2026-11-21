@@ -5,8 +5,8 @@ import { TARGETS } from './git';
 
 /** The `npm sbom` arguments for a target: a package by workspace name, the site as the whole lockfile. */
 export function sbomArgs(name: string, root: string): string[] | undefined {
+  if (!Object.prototype.hasOwnProperty.call(TARGETS, name)) return undefined;
   const t = TARGETS[name];
-  if (!t) return undefined;
   const base = ['sbom', '--sbom-format', 'cyclonedx', '--package-lock-only', '--omit=dev'];
   if (!t.manifest) return base;
   const pkgName = (JSON.parse(readFileSync(join(root, t.manifest), 'utf8')) as { name: string }).name;

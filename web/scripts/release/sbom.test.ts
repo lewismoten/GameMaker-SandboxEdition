@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 // Target selection for release:sbom: packages by workspace name, the site as the whole lockfile.
 import { expect, it } from 'vitest';
 import { repoRoot } from './git';
@@ -22,4 +23,13 @@ it('takes the version from the argument or the manifest', () => {
   expect(sbomVersion('engine', root, '9.9.9')).toBe('9.9.9');
   expect(sbomVersion('engine', root)).toMatch(/^\d+\.\d+\.\d+/);
   expect(sbomVersion('pages', root)).toBe('next');
+});
+
+it('rejects inherited target names', () => {
+  expect(sbomArgs('constructor', root)).toBeUndefined();
+});
+
+it('indexes the SBOM command and its release guide', () => {
+  const index = readFileSync(new URL('../README.md', import.meta.url), 'utf8');
+  expect(index).toMatch(/npm run release:sbom .*\(\.\.\/\.\.\/docs\/package-releases\.md\)/);
 });
