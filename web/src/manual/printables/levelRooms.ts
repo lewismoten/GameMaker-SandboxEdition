@@ -7,8 +7,9 @@
 // in, because every scene there starts him right on its way out, is left out.
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { fromCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
-import { NOSCENE, type Game, type Point } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { type Game, type Point } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { passesThrough, sceneArrivals } from '../../project/sceneArrivals';
 import type { Rect } from './worldMapLayout';
 
 /** Can the hero get into this cell: not solid on every side, or a block that changes (a door). */
@@ -94,23 +95,6 @@ export function separateRooms(map: ArrayLike<number>, blocks: Block[], starts: P
 
 const inside = (r: Rect, x: number, y: number) => x >= r.x && y >= r.y && x < r.x + r.w && y < r.y + r.h;
 
-/** The links that bring the hero into `scenes` (from any scene), with the scene each arrives in. */
-function arrivals(game: Game, scenes: ReadonlySet<number>): { scene: number; at: Point }[] {
-  const out: { scene: number; at: Point }[] = [];
-  for (const s of game.scenes) for (const l of s.links) if (l.toScene !== NOSCENE && scenes.has(l.toScene)) out.push({ scene: l.toScene, at: l.to });
-  return out;
-}
-
-/**
- * Does the hero never walk around in these scenes: each one starts him right on a way out of
- * it (a talk's page, a verdict, a card before a board), so the map flashes past unseen? Only
- * the arrivals `here` takes in count (all of them when it is left out).
- */
-export function passesThrough(game: Game, scenes: number[], here: (at: Point) => boolean = () => true): boolean {
-  const ins = arrivals(game, new Set(scenes)).filter((a) => here(a.at));
-  return ins.length > 0 && ins.every(({ scene, at }) => game.scenes[scene].links.some((l) => l.toScene !== NOSCENE && l.from.x === at.x && l.from.y === at.y));
-}
-
 /** What a Level Map's maker says about a map of rooms (levelRoomHints.ts). */
 export interface RoomsHint {
   /** Rooms named by a cell in them; a room not named takes the name of the scene that brings you only there. */
@@ -187,7 +171,7 @@ const overlap = (a: Rect, b: Rect) => a.x + 1 < b.x + b.w - 1 && b.x + 1 < a.x +
  */
 export function cutRooms(game: Game, scenes: number[], rooms: Rooms, hint?: RoomsHint): RoomCut[] | undefined {
   const { rects, region, origin } = rooms;
-  const ins = arrivals(game, new Set(scenes)).map((a) => ({ scene: a.scene, at: rooms.at(a.at) }));
+  const ins = sceneArrivals(game, new Set(scenes)).map((a) => ({ scene: a.scene, at: rooms.at(a.at) }));
   const roomOf = (mx: number, my: number) => {
     const { x, y } = rooms.at({ x: mx, y: my });
     const r = region[(y - origin.y) * MLEN + (x - origin.x)];

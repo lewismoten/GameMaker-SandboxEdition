@@ -5,7 +5,8 @@
 import type { Project } from '../../core/project';
 import { fromCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 import { NOSCENE, sceneKind, type Game, type Point, gameTitle } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
-import { passesThrough, roleNote } from './sceneRole';
+import { passesThrough } from '../../../project/sceneArrivals';
+import { roleNote } from './sceneRole';
 import { WORLD, CARD_UNITS, arrival } from './layoutCells';
 import { START_SONGS } from './sceneSlots';
 import { isSolidPalette } from '../../core/readablePalette';
@@ -150,7 +151,7 @@ export function drawCard(ctx: CanvasRenderingContext2D, i: number, forExport: bo
   // a pass-through scene: the hero arrives on one of its own links out, so it leaves at once (a talk page
   // between scenes, or just a fade)
   const at = kind === 'adventure' ? arrival(v.game, i) : undefined;
-  const pass = passesThrough(v.game, i);
+  const pass = passesThrough(v.game, [i]);
   const note = roleNote(v.game, i, v.project.files);
   const pal = s.files[0] ? v.project.files.get(s.files[0]) : undefined;
   const page = pass ? (v.screenOf(s.files[9]) ?? v.screenOf(s.files[10])) : undefined;
@@ -232,8 +233,11 @@ export function drawCard(ctx: CanvasRenderingContext2D, i: number, forExport: bo
       : kind === 'start'
         ? 'start'
         : 'end';
-  ctx.fillText(foot, r.x + 8, r.y + r.h - 8);
-  for (const b of cardButtons(v.project, v.game, i, r)) {
+  const buttons = cardButtons(v.project, v.game, i, r);
+  const footX = r.x + 8;
+  const right = Math.min(r.x + r.w - 8, ...buttons.map((b) => b.x - 4));
+  ctx.fillText(foot, footX, r.y + r.h - 8, right - footX);
+  for (const b of buttons) {
     const on = v.playing === b.file;
     ctx.fillStyle = on ? '#ffd400' : '#2a3060';
     roundRect(ctx, b, 4);

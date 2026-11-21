@@ -1,6 +1,7 @@
 // What a scene is, read from its data: a title or menu, an ending, a talk page or fade the hero leaves
 // at once, a room with several ways out (a menu room, a choice of doors, a hub), or an ordinary level.
 // Optional native files establish a timed cutscene; missing or ambiguous data keeps the ordinary role.
+import { passesThrough, sceneArrivals } from '../../../project/sceneArrivals';
 import { NOSCENE, sceneKind, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { parseBlocks, BACKBL, SOLTOP } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { parseMap, MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
@@ -12,22 +13,8 @@ export type SceneRole = 'title' | 'ending' | 'pass' | 'branch' | 'cutscene' | 'l
 /** Where the scene's links lead: the distinct scenes that exist. */
 function exits(game: Game, i: number): number[] {
   const out = new Set<number>();
-  for (const l of game.scenes[i].links) if (l.toScene !== NOSCENE && game.scenes[l.toScene]) out.add(l.toScene);
+  for (const l of game.scenes[i].links) if (l.toScene !== i && l.toScene !== NOSCENE && game.scenes[l.toScene]) out.add(l.toScene);
   return [...out];
-}
-
-function arrivals(game: Game, i: number) {
-  return game.scenes.flatMap((scene) => (scene.gametype === NOSCENE ? [] : scene.links.filter((l) => l.toScene === i).map((l) => l.to)));
-}
-
-/** True when the hero arrives standing on one of the scene's own links out, so it ends at once. */
-export function passesThrough(game: Game, i: number): boolean {
-  if (sceneKind(game.scenes[i]) !== 'adventure') return false;
-  const entries = arrivals(game, i);
-  return (
-    entries.length > 0 &&
-    entries.every((at) => game.scenes[i].links.some((l) => l.toScene !== NOSCENE && !!game.scenes[l.toScene] && l.from.x === at.x && l.from.y === at.y))
-  );
 }
 
 export interface SceneFiles {
@@ -67,10 +54,10 @@ function advancesByTime(game: Game, i: number, files: SceneFiles): boolean {
   try {
     const map = parseMap(mapBytes);
     const blocks = parseBlocks(blockBytes, BACKBL);
-    const entries = arrivals(game, i);
+    const entries = sceneArrivals(game, new Set([i]));
     return (
       entries.length > 0 &&
-      entries.every((at) => {
+      entries.every(({ at }) => {
         if (at.x < 0 || at.x >= MLEN || at.y < 0 || at.y >= MWID) return false;
         let timed = false;
         for (let y = at.y; y < MWID; y++) {
@@ -101,15 +88,15 @@ export function sceneRole(game: Game, i: number, files?: SceneFiles): SceneRole 
   if (kind === 'start') return 'title';
   if (kind === 'end') return 'ending';
   if (kind === 'unused') return 'unused';
-  if (passesThrough(game, i)) return 'pass';
+  if (passesThrough(game, [i])) return 'pass';
   if (files && advancesByTime(game, i, files)) return 'cutscene';
   return exits(game, i).length >= 2 ? 'branch' : 'level';
 }
 
 /** Explain the Level check results when every entrance immediately exits. */
 export function levelCheckNote(game: Game, i: number): string {
-  return passesThrough(game, i)
-    ? ' This scene is a talk page or fade: the hero arrives on one of its own links and leaves at once, so findings about getting through a level don’t apply to it.'
+  return passesThrough(game, [i])
+    ? ' This scene is a talk page or fade: the hero arrives on one of its own links and leaves at once, so findings about getting through a level may not apply to it.'
     : '';
 }
 

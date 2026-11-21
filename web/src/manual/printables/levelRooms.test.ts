@@ -9,7 +9,8 @@ import { emptyBlock } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks'
 import { ADVTYPE, ENDTYPE, STARTTYPE, type Game, type Scene } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { readDisk } from '../../../scripts/levelViewsScan';
-import { cutRooms, passesThrough, separateRooms } from './levelRooms';
+import { passesThrough } from '../../project/sceneArrivals';
+import { cutRooms, separateRooms } from './levelRooms';
 import { levelsOf, trimPadding } from './levelMapLayout';
 import { loadSecrets } from './levelSecrets';
 import { loadViews } from './levelViews';

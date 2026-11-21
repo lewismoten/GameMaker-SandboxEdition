@@ -20,6 +20,8 @@ never exported).
 `importScan.ts` and `importPlayer.ts` use the portable `gameFiles.ts` container directly;
 archive consumers can reuse them without loading the site's catalog or UI.
 
+`sceneArrivals.ts` checks scene entrances for the board, Level check, and printable Level Maps.
+
 DOS scene descriptions remain byte strings. Use the engine's `gameTitle` for an externally
 displayed game name (CP437 decoding and menu-frame trimming), and `fromCp437` for other DOS
 labels without stripping their box drawing. Do not decode Unicode companion fields or sender
