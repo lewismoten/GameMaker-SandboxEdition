@@ -8,16 +8,16 @@
 //   GAMES\BIZARRE\      the Bard of Bizarre's: each as the site's DOS export makes it (its .gam
 //                       with the CD's XFERPLAY.EXE named after it, SNDBLAST.DRV, CONFIG.BAT)
 // The folder (dosbox/ at the repository's root, or the path given) is in .gitignore and is
-// emptied first (only when this script made it: it leaves a .gm-dosbox file there). Secret games are left out unless --secret is given.
+// replaced (only when this script made it: it leaves a .gm-dosbox file there). Secret games are left out unless --secret is given.
 // It also writes DOSBOX.command, which opens the DOSBox app with the folder as C:, in C:\GM:
 // double-click it in Finder, or `npm run dosbox:open` (or --launch, to start it right after).
 //   npx vite-node scripts/dosbox.ts [target folder] [--secret] [--launch]
-import { chmodSync, cpSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
+import { chmodSync, cpSync, existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
-import { basename, join, resolve } from 'node:path';
+import { join, resolve } from 'node:path';
 import { GameFiles } from '../src/project/files';
 import { exportDos } from '../src/export/exportDos';
-import { PLAYED, copyOut, editedFiles, readTree, stamp } from './playedFiles';
+import { rebuildMount } from './playedFiles';
 import { readZip } from '@lewismoten/gamemaker-sandbox-archives/zip';
 
 const ROOT = resolve(__dirname, '../..');
@@ -62,118 +62,83 @@ function copyUpper(from: string, to: string): void {
   }
 }
 
-// what playing in DOS wrote survives a rebuild: each game's sound and video setup (CONFIG.DAT),
-// saved games (GAME0-9.SAV, SAVNAMES.DAT, NAME.SAV) and high scores (.HIS). They are copied first to
-// dosbox-saves/<date and time>/ beside the folder (git-ignored), then put back into the new one.
-// Any other file a person changed or added there goes to dosbox-edits/<date and time>/ (see playedFiles.ts).
-const kept = readTree(target, (name) => PLAYED.test(name));
-// everything else in the old folder, to compare with the new build: what a person edited or added there
-// (a game made in Game-Maker, say) is copied to dosbox-edits/<date and time>/ and never deleted
-const old = readTree(target, (name) => !PLAYED.test(name));
-let backup: string | undefined;
-if (kept.size) {
-  backup = join(target, '..', `${basename(target)}-saves`, stamp());
-  copyOut(kept, backup);
-}
-rmSync(target, { recursive: true, force: true });
-mkdirSync(target, { recursive: true });
-
-/** Removes empty folders under (and including) `dir`, after the backup is pruned. */
-function pruneEmpty(dir: string): void {
-  if (!existsSync(dir)) return;
-  for (const name of readdirSync(dir)) if (statSync(join(dir, name)).isDirectory()) pruneEmpty(join(dir, name));
-  if (!readdirSync(dir).length) rmSync(dir, { recursive: true });
-}
-writeFileSync(join(target, MARK), 'Made by web/scripts/dosbox.ts; emptied and rebuilt each time it runs.\n');
-const gm = join(target, 'GM');
-copyUpper(join(ROOT, 'runtime/run/GM'), gm);
-console.log(`GM\\  Game-Maker 3.0 (runtime/run/GM)`);
-
-for (const [kind, from] of [
-  ['GAMEWARE', 'cd/gameware'],
-  ['SHARWARE', 'cd/sharware'],
-] as const) {
-  const dir = join(ROOT, from);
-  const games = readdirSync(dir).filter((n) => statSync(join(dir, n)).isDirectory() && n !== 'library' && n !== 'tools');
-  for (const g of games) copyUpper(join(dir, g), join(target, 'GAMES', kind, g.toUpperCase().slice(0, 8)));
-  console.log(`GAMES\\${kind}\\  ${games.length} games`);
-}
-
-/** Games left out of the DOSBox folder, as Lewis asked. */
-const LEFT_OUT = new Set(['logic']);
-
-interface About {
-  title?: string;
-  series?: string;
-  company?: string;
-  secret?: boolean;
-}
 const made: Record<string, string[]> = { SANDBOX: [], BIZARRE: [] };
-for (const id of readdirSync(join(ROOT, 'games'))) {
-  const disk = join(ROOT, 'games', id, 'disk');
-  const aboutPath = join(ROOT, 'games', id, 'about.json');
-  if (!existsSync(disk) || !existsSync(aboutPath)) continue;
-  const about = JSON.parse(readFileSync(aboutPath, 'utf8')) as About;
-  if (about.secret && !withSecret) continue;
-  if (LEFT_OUT.has(id)) continue;
-  const files = readDir(disk);
-  const gam = files.mainGame();
-  if (!gam) continue;
-  const kind = about.series === 'bizarre' || about.company === 'The Bard of Bizarre' ? 'BIZARRE' : 'SANDBOX';
-  // named after its .gam, as its .EXE is (TUIT\TUIT.EXE for realm), the way GM's Transfer named
-  // a game's folder; already a DOS name (the export checks), so no NAME~1 short names
-  const dir = gam.replace(/\.gam$/i, '').toUpperCase();
-  // for GM's menus: the disk's files, in a folder beside GM's samples
-  writeFiles(
-    join(gm, dir),
-    files.entries().map(([name, data]) => ({ name, data })),
-  );
-  // to play straight from DOS: the site's DOS export of it
-  const { zip } = await exportDos(files, { title: about.title ?? id, gam, appBase: 'http://local/' });
-  writeFiles(join(target, 'GAMES', kind, dir), await readZip(zip));
-  made[kind].push(dir);
-}
-let restored = 0;
-for (const [rel, data] of kept) {
-  const path = join(target, rel);
-  // the same as the fresh build (a sample game's own high scores, say): nothing to keep
-  if (existsSync(path) && readFileSync(path).equals(data)) {
-    if (backup) rmSync(join(backup, rel));
-    continue;
-  }
-  if (existsSync(join(path, '..'))) (writeFileSync(path, data), restored++);
-}
-if (backup) pruneEmpty(backup);
-const edited = editedFiles(old, target);
-if (edited.size) {
-  const dir = join(target, '..', `${basename(target)}-edits`, stamp());
-  copyOut(edited, dir);
-  console.log(`copied ${edited.size} file${edited.size === 1 ? '' : 's'} you changed or added in the old folder (not part of the fresh build) to ${dir}`);
-}
-if (backup && existsSync(backup)) console.log(`backed up what DOS wrote (setups, saved games, high scores) to ${backup}`);
-if (restored) console.log(`put back ${restored} played file${restored === 1 ? '' : 's'} (a game left out this time keeps its copy in the backup only)`);
-for (const [kind, dirs] of Object.entries(made)) console.log(`GAMES\\${kind}\\  and GM\\  ${dirs.length} games: ${dirs.join(' ')}`);
-
-// DOSBox starts already in C:\GM, with this folder as drive C: given as -c commands, so the app
-// keeps its own settings (a -conf file would replace them)
-const startUp = ['-c', `mount c "${target}"`, '-c', 'c:', '-c', 'cd \\GM'];
 const command = join(target, 'DOSBOX.command');
-const quoted = startUp.map((a) => `'${a.replace(/'/g, `'\\''`)}'`).join(' ');
-// the app's own program, run directly: `open -a DOSBox --args …` loses the arguments
-writeFileSync(
-  command,
-  [
-    '#!/bin/sh',
-    '# Starts DOSBox with this folder as drive C:, in C:\\GM (double-click in Finder)',
-    'for app in /Applications/DOSBox.app "$HOME/Applications/DOSBox.app"; do',
-    `  if [ -x "$app/Contents/MacOS/DOSBox" ]; then "$app/Contents/MacOS/DOSBox" ${quoted} >/dev/null 2>&1 & exit 0; fi`,
-    'done',
-    'echo "DOSBox.app is not in /Applications or ~/Applications." >&2',
-    'exit 1',
-    '',
-  ].join('\n'),
-);
-chmodSync(command, 0o755);
+const { saves, edits, restored } = await rebuildMount(target, async (stage) => {
+  writeFileSync(join(stage, MARK), 'Made by web/scripts/dosbox.ts; emptied and rebuilt each time it runs.\n');
+  const gm = join(stage, 'GM');
+  copyUpper(join(ROOT, 'runtime/run/GM'), gm);
+  console.log(`GM\\  Game-Maker 3.0 (runtime/run/GM)`);
+
+  for (const [kind, from] of [
+    ['GAMEWARE', 'cd/gameware'],
+    ['SHARWARE', 'cd/sharware'],
+  ] as const) {
+    const dir = join(ROOT, from);
+    const games = readdirSync(dir).filter((n) => statSync(join(dir, n)).isDirectory() && n !== 'library' && n !== 'tools');
+    for (const g of games) copyUpper(join(dir, g), join(stage, 'GAMES', kind, g.toUpperCase().slice(0, 8)));
+    console.log(`GAMES\\${kind}\\  ${games.length} games`);
+  }
+
+  /** Games left out of the DOSBox folder, as Lewis asked. */
+  const LEFT_OUT = new Set(['logic']);
+
+  interface About {
+    title?: string;
+    series?: string;
+    company?: string;
+    secret?: boolean;
+  }
+
+  for (const id of readdirSync(join(ROOT, 'games'))) {
+    const disk = join(ROOT, 'games', id, 'disk');
+    const aboutPath = join(ROOT, 'games', id, 'about.json');
+    if (!existsSync(disk) || !existsSync(aboutPath)) continue;
+    const about = JSON.parse(readFileSync(aboutPath, 'utf8')) as About;
+    if (about.secret && !withSecret) continue;
+    if (LEFT_OUT.has(id)) continue;
+    const files = readDir(disk);
+    const gam = files.mainGame();
+    if (!gam) continue;
+    const kind = about.series === 'bizarre' || about.company === 'The Bard of Bizarre' ? 'BIZARRE' : 'SANDBOX';
+    // named after its .gam, as its .EXE is (TUIT\TUIT.EXE for realm), the way GM's Transfer named
+    // a game's folder; already a DOS name (the export checks), so no NAME~1 short names
+    const dir = gam.replace(/\.gam$/i, '').toUpperCase();
+    // for GM's menus: the disk's files, in a folder beside GM's samples
+    writeFiles(
+      join(gm, dir),
+      files.entries().map(([name, data]) => ({ name, data })),
+    );
+    // to play straight from DOS: the site's DOS export of it
+    const { zip } = await exportDos(files, { title: about.title ?? id, gam, appBase: 'http://local/' });
+    writeFiles(join(stage, 'GAMES', kind, dir), await readZip(zip));
+    made[kind].push(dir);
+  }
+  // DOSBox starts already in C:\GM, with this folder as drive C: given as -c commands, so the app
+  // keeps its own settings (a -conf file would replace them)
+  const startUp = ['-c', `mount c "${target}"`, '-c', 'c:', '-c', 'cd \\GM'];
+  const stagedCommand = join(stage, 'DOSBOX.command');
+  const quoted = startUp.map((a) => `'${a.replace(/'/g, `'\\''`)}'`).join(' ');
+  // the app's own program, run directly: `open -a DOSBox --args …` loses the arguments
+  writeFileSync(
+    stagedCommand,
+    [
+      '#!/bin/sh',
+      '# Starts DOSBox with this folder as drive C:, in C:\\GM (double-click in Finder)',
+      'for app in /Applications/DOSBox.app "$HOME/Applications/DOSBox.app"; do',
+      `  if [ -x "$app/Contents/MacOS/DOSBox" ]; then "$app/Contents/MacOS/DOSBox" ${quoted} >/dev/null 2>&1 & exit 0; fi`,
+      'done',
+      'echo "DOSBox.app is not in /Applications or ~/Applications." >&2',
+      'exit 1',
+      '',
+    ].join('\n'),
+  );
+  chmodSync(stagedCommand, 0o755);
+});
+if (edits) console.log(`Copied files you changed or added to ${edits}`);
+if (saves) console.log(`Backed up setups, saved games and high scores to ${saves}`);
+if (restored) console.log(`Put back ${restored} played files`);
+for (const [kind, dirs] of Object.entries(made)) console.log(`GAMES\\${kind}\\  and GM\\  ${dirs.length} games: ${dirs.join(' ')}`);
 
 console.log(`
 Start DOSBox with C: mounted and in \\GM:

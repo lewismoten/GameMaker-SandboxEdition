@@ -1,8 +1,9 @@
-import { mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
+// Exercise the production rebuild against disposable mount and backup directories.
+import { mkdirSync, mkdtempSync, readFileSync, existsSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { afterEach, describe, expect, it } from 'vitest';
-import { PLAYED, copyOut, editedFiles, readTree, stamp } from './playedFiles';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import { PLAYED, rebuildMount } from './playedFiles';
 
 const dirs: string[] = [];
 const scratch = (): string => {
@@ -23,43 +24,77 @@ describe('PLAYED', () => {
   });
 });
 
-describe('save backups', () => {
-  it('stamp is a folder name', () => expect(stamp(new Date('2026-11-14T03:05:09Z'))).toBe('2026-11-14-03-05-09'));
+const read = (root: string, rel: string) => readFileSync(join(root, rel), 'utf8');
 
-  it('copyOut keeps every file and never overwrites one already there', () => {
-    const to = scratch();
-    put(to, 'A/GAME0.SAV', 'earlier');
-    const n = copyOut(
-      new Map([
-        ['A/GAME0.SAV', Buffer.from('later')],
-        ['B/X.HIS', Buffer.from('hi')],
-      ]),
-      to,
-    );
-    expect(n).toBe(2);
-    expect(readFileSync(join(to, 'A/GAME0.SAV'), 'utf8')).toBe('earlier');
-    expect(readFileSync(join(to, 'A/GAME0.SAV.1'), 'utf8')).toBe('later');
-    expect(readdirSync(join(to, 'B'))).toEqual(['X.HIS']);
-  });
+it('keeps the mounted drive intact when staging fails with EISDIR', async () => {
+  const mount = join(scratch(), 'dosbox');
+  put(mount, 'GM', 'old file');
+  put(mount, 'MINE.MAP', 'my map');
+  await expect(
+    rebuildMount(mount, (stage) => {
+      put(stage, 'GM/STOCK.GAM', 'fresh');
+      expect(read(mount, 'MINE.MAP')).toBe('my map');
+      writeFileSync(join(stage, 'GM'), 'collision');
+    }),
+  ).rejects.toMatchObject({ code: 'EISDIR' });
+  expect(read(mount, 'GM')).toBe('old file');
+  expect(read(mount, 'MINE.MAP')).toBe('my map');
+});
 
-  it('readTree finds played files in nested folders', () => {
-    const d = scratch();
-    put(d, 'GAMES/SANDBOX/REALM/REALM.SAV', 's');
-    put(d, 'GAMES/SANDBOX/REALM/REALM.GAM', 'g');
-    expect([...readTree(d, (n) => PLAYED.test(n)).keys()]).toEqual([join('GAMES/SANDBOX/REALM/REALM.SAV')]);
-  });
+it('backs up both directions of type changes, unrelated edits and customized launchers', async () => {
+  const mount = join(scratch(), 'dosbox');
+  for (const rel of ['GM', 'GAME0.SAV', 'DIR/NAME.SAV', 'DIR/MINE.GAM', 'MINE.MAP', 'DOSBOX.command']) put(mount, rel, rel);
+  const build = (stage: string) => {
+    put(stage, 'GM/STOCK.GAM', 'game');
+    put(stage, 'GAME0.SAV/FILE', 'stock');
+    put(stage, 'DIR', 'file');
+    put(stage, 'DOSBOX.command', 'stock');
+  };
+  const { edits, saves, restored } = await rebuildMount(mount, build);
+  for (const rel of ['GM', 'DIR/MINE.GAM', 'MINE.MAP', 'DOSBOX.command']) expect(read(edits!, rel)).toBe(rel);
+  for (const rel of ['GAME0.SAV', 'DIR/NAME.SAV']) expect(read(saves!, rel)).toBe(rel);
+  expect(restored).toBe(0);
+  expect(read(mount, 'DOSBOX.command')).toBe('stock');
+  expect((await rebuildMount(mount, build)).edits).toBeUndefined();
+});
 
-  it('editedFiles lists a changed or added file, not an identical one or a played one', () => {
-    const oldDir = scratch();
-    const fresh = scratch();
-    put(oldDir, 'GM/SAME.GAM', 'same');
-    put(fresh, 'GM/SAME.GAM', 'same');
-    put(oldDir, 'GM/MINE.GAM', 'my own game');
-    put(oldDir, 'GM/EDIT.MAP', 'edited');
-    put(fresh, 'GM/EDIT.MAP', 'original');
-    put(oldDir, 'GM/GAME0.SAV', 'save');
-    put(oldDir, 'DOSBOX.command', 'old path');
-    const out = editedFiles(readTree(oldDir), fresh);
-    expect([...out.keys()].sort()).toEqual([join('GM/EDIT.MAP'), join('GM/MINE.GAM')]);
-  });
+it('keeps earlier save and edit backups when a later same-second rebuild finds a stock save', async () => {
+  vi.useFakeTimers({ toFake: ['Date'] });
+  try {
+    const mount = join(scratch(), 'dosbox');
+    const build = (stage: string) => put(stage, 'CONFIG.DAT', 'stock');
+    put(mount, 'CONFIG.DAT', 'first');
+    put(mount, 'MINE.MAP', 'first');
+    const first = await rebuildMount(mount, build);
+    expect(read(mount, 'CONFIG.DAT')).toBe('first');
+    put(mount, 'CONFIG.DAT', 'stock');
+    put(mount, 'OTHER.SAV', 'second');
+    put(mount, 'MINE.MAP', 'second');
+    const second = await rebuildMount(mount, build);
+    expect(read(first.saves!, 'CONFIG.DAT')).toBe('first');
+    expect(existsSync(join(second.saves!, 'CONFIG.DAT'))).toBe(false);
+    expect(read(second.saves!, 'OTHER.SAV')).toBe('second');
+    expect(read(first.edits!, 'MINE.MAP')).toBe('first');
+    expect(read(second.edits!, 'MINE.MAP')).toBe('second');
+  } finally {
+    vi.useRealTimers();
+  }
+});
+
+it('compares through the last chunk of a multi-chunk file', async () => {
+  const mount = join(scratch(), 'dosbox');
+  const prefix = 'x'.repeat(1024 * 1024);
+  put(mount, 'BIG.MAP', prefix + 'a');
+  const { edits } = await rebuildMount(mount, (stage) => put(stage, 'BIG.MAP', prefix + 'b'));
+  expect(read(edits!, 'BIG.MAP')).toBe(prefix + 'a');
+});
+
+it('leaves the old drive in place when an edit backup cannot be written', async () => {
+  const root = scratch();
+  const mount = join(root, 'drive');
+  put(mount, 'MINE.MAP', 'personal');
+  put(root, 'drive-edits', 'already a file');
+  await expect(rebuildMount(mount, (stage) => put(stage, 'NEW.GAM', 'stock'))).rejects.toMatchObject({ code: 'EEXIST' });
+  expect(read(mount, 'MINE.MAP')).toBe('personal');
+  expect(existsSync(join(mount, 'NEW.GAM'))).toBe(false);
 });
