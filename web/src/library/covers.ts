@@ -16,9 +16,9 @@ export async function manualCoverSheet(entry: CatalogEntry): Promise<Sheet | und
 }
 
 /** A hint book's cover alone (hintCover.ts), without flowing its questions onto pages. */
-export async function hintCoverSheet(ctx: PrintContext, it: HintBookItem): Promise<Sheet> {
+export async function hintCoverSheet(ctx: PrintContext, it: HintBookItem, edition: 'print' | 'epub' = 'print'): Promise<Sheet> {
   const { hintBookCover } = await import('../manual/printables/hintCover');
-  return hintBookCover(ctx, it);
+  return hintBookCover(ctx, it, edition);
 }
 
 /** The Owner's Guide's cover (gmCover.ts), peeled back on Teddy's game as the guide shows it. */

@@ -26,6 +26,7 @@ export function epubHintIntro(text: string): string {
 
 export async function hintBookEpub(ctx: PrintContext, it: HintBookItem): Promise<EpubBook> {
   const [{ hintCoverSheet }, { plainSketch }] = await Promise.all([import('../../library/covers'), import('../printables/redFilm')]);
+  const digitalItem = { ...it, intro: it.intro ? epubHintIntro(it.intro) : undefined };
   const media = new EpubMedia();
   const qId = (s: number, i: number) => `q${s + 1}-${i + 1}`;
   const aId = (s: number, i: number) => `a${s + 1}-${i + 1}`;
@@ -35,7 +36,7 @@ export async function hintBookEpub(ctx: PrintContext, it: HintBookItem): Promise
     title: 'How to use this book',
     body: [
       `<h1>How to use this book</h1>`,
-      it.intro ? `<p>${xmlText(epubHintIntro(it.intro))}</p>` : '',
+      digitalItem.intro ? `<p>${xmlText(digitalItem.intro)}</p>` : '',
       `<p>${xmlText(HOW)}</p>`,
       ctx.printables.skip?.includes('worldmap')
         ? ''
@@ -81,7 +82,7 @@ export async function hintBookEpub(ctx: PrintContext, it: HintBookItem): Promise
     publisher: company,
     date: ctx.entry.year ? String(ctx.entry.year) : undefined,
     description: `The official hint book for ${ctx.entry.title}, from its box in Game-Maker: Sandbox Edition. The answers are kept apart, at the back.`,
-    cover: await coverPicture(await hintCoverSheet(ctx, it), `${it.title}: the hint book’s front cover`),
+    cover: await coverPicture(await hintCoverSheet(ctx, digitalItem, 'epub'), `${it.title}: the hint book’s front cover`),
     chapters: [
       intro,
       ...sections,
