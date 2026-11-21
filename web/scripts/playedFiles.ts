@@ -48,15 +48,19 @@ export async function rebuildMount(target: string, build: (stage: string) => Pro
   const previous = join(work, 'old');
   const backups: { saves?: string; edits?: string } = {};
   const stamp = new Date().toLocaleString('sv-SE', { timeZone: 'America/New_York' }).replace(/[ :]/g, '-');
+  const listings = new Map<string, Set<string>>();
   let restored = 0;
   async function preserve(rel: string): Promise<void> {
     const old = join(target, rel);
     const fresh = join(stage, rel);
-    const source = lstatSync(old);
-    if (source.isDirectory()) {
-      for (const name of readdirSync(old)) await preserve(join(rel, name));
+    const entry = lstatSync(old);
+    if (entry.isDirectory()) {
+      const names = new Set(readdirSync(old));
+      listings.set(rel, names);
+      for (const name of names) await preserve(join(rel, name));
       return;
     }
+    const source = entry.isSymbolicLink() ? statSync(old) : entry;
     if (!source.isFile()) throw new Error(`Cannot back up special file ${old}`);
     const generated = existsSync(fresh) ? statSync(fresh) : undefined;
     if (generated?.isFile() && generated.size === source.size && (await digest(old)) === (await digest(fresh))) return;
@@ -77,7 +81,8 @@ export async function rebuildMount(target: string, build: (stage: string) => Pro
   try {
     mkdirSync(stage);
     await build(stage);
-    if (existsSync(target)) await preserve('');
+    const hadMount = existsSync(target);
+    if (hadMount) await preserve('');
     for (const backup of Object.values(backups)) {
       syncTree(backup);
       syncPath(dirname(backup));
@@ -85,8 +90,16 @@ export async function rebuildMount(target: string, build: (stage: string) => Pro
     syncTree(stage);
     syncPath(work);
     syncPath(parent);
-    if (existsSync(target)) renameSync(target, previous);
+    if (hadMount) renameSync(target, previous);
+    else if (existsSync(target)) throw new Error(`Drive changed during rebuild: ${target}. Close DOSBox and try again.`);
     try {
+      // Check the detached tree so a save created through the mount path during hashing is accounted for.
+      for (const [rel, names] of listings) {
+        const current = readdirSync(join(previous, rel));
+        if (current.length !== names.size || current.some((name) => !names.has(name))) {
+          throw new Error(`Drive changed during rebuild: ${join(target, rel)}. Close DOSBox and try again.`);
+        }
+      }
       renameSync(stage, target);
     } catch (error) {
       if (existsSync(previous)) renameSync(previous, target);
