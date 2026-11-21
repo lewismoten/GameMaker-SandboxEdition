@@ -22,7 +22,7 @@ const stableTitle = (title: string): string =>
 export const findingKey = (f: Pick<Finding, 'check' | 'title' | 'where'>): string => `${f.check} s${f.where.scene ?? '-'} ${stableTitle(f.title)}`;
 
 /** An accepted entry: a bare key (the old shape) or a key with the reason the author gave. */
-export type AcceptedEntry = string | { finding: string; why: string };
+export type AcceptedEntry = string | { finding: string; why?: unknown };
 
 /** The finding key of an entry, whichever shape it has. */
 const acceptedKey = (e: AcceptedEntry): string => (typeof e === 'string' ? e : e.finding);
@@ -31,10 +31,7 @@ const acceptedKey = (e: AcceptedEntry): string => (typeof e === 'string' ? e : e
 export const acceptedWhy = (e: AcceptedEntry): string => (typeof e !== 'string' && typeof e?.why === 'string' ? e.why.trim() : '');
 
 function validEntry(entry: unknown): entry is AcceptedEntry {
-  return (
-    typeof entry === 'string' ||
-    (typeof entry === 'object' && entry !== null && 'finding' in entry && typeof entry.finding === 'string' && 'why' in entry && typeof entry.why === 'string')
-  );
+  return typeof entry === 'string' || (typeof entry === 'object' && entry !== null && 'finding' in entry && typeof entry.finding === 'string');
 }
 
 /** The keys of a list of entries (a malformed entry is skipped). */
@@ -46,7 +43,11 @@ export const entriesWithoutReason = (list: Iterable<AcceptedEntry>): string[] =>
 
 /** The reason kept for a finding key, or ''. */
 export const reasonFor = (list: Iterable<AcceptedEntry>, key: string): string => {
-  for (const e of list) if (validEntry(e) && typeof e !== 'string' && e.finding === key) return acceptedWhy(e);
+  for (const e of list) {
+    if (!validEntry(e) || acceptedKey(e) !== key) continue;
+    const why = acceptedWhy(e);
+    if (why) return why;
+  }
   return '';
 };
 
