@@ -169,8 +169,17 @@ export async function showWallPoster(gameId: string): Promise<void> {
   if (!scene || !entry || !poster) return hideWallPoster();
   if (shown === gameId && scene.querySelector('.wall-poster')) return;
   shown = gameId;
-  if (!drawn.has(gameId)) drawn.set(gameId, drawPoster(entry, poster));
-  const canvas = await drawn.get(gameId)!;
+  let drawing = drawn.get(gameId);
+  if (!drawing) {
+    drawing = drawPoster(entry, poster)
+      .catch(() => undefined)
+      .then((canvas) => {
+        if (!canvas) drawn.delete(gameId);
+        return canvas;
+      });
+    drawn.set(gameId, drawing);
+  }
+  const canvas = await drawing;
   if (shown !== gameId) return;
   scene.querySelector('.wall-poster')?.remove();
   if (!canvas) return;
