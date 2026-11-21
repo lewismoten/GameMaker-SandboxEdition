@@ -508,17 +508,16 @@ export class RedLens {
 
 /** The draggable red cellophane. */
 export class RedFilm {
-  private el: HTMLElement = h(
-    'div',
-    { class: 'rf-film', hidden: true, role: 'img', 'aria-label': 'Red film (drag it over the answers)' },
-    h('span', { class: 'rf-film-label' }, 'RED FILM · drag me'),
-  );
+  private readonly el: HTMLElement;
+  private readonly caption?: HTMLElement;
   private x = 0;
   private y = 0;
 
   /** `el`: a different thing to drag as the film (Final Curtain's spyglass, spyglass.ts); it brings its own red lens. */
   constructor(el?: HTMLElement) {
-    if (el) this.el = el;
+    this.el = el ?? h('div', { class: 'rf-film', hidden: true, role: 'img', 'aria-label': 'Red film (drag it over the answers)' });
+    // Keep the caption above the sheet so the multiply blend affects only the film.
+    if (!el) this.caption = h('div', { class: 'rf-film-caption' }, h('span', { class: 'rf-film-label' }, 'RED FILM · drag me'));
     let start: { px: number; py: number; x: number; y: number } | undefined;
     this.el.addEventListener('pointerdown', (e) => {
       start = { px: e.clientX, py: e.clientY, x: this.x, y: this.y };
@@ -537,6 +536,7 @@ export class RedFilm {
   mount(parent: HTMLElement): void {
     ensureRedView();
     parent.append(this.el);
+    if (this.caption) parent.append(this.caption);
   }
 
   private place(x: number, y: number): void {
@@ -545,6 +545,7 @@ export class RedFilm {
     this.x = Math.max(-w / 2, Math.min(window.innerWidth - w / 2, x));
     this.y = Math.max(0, Math.min(window.innerHeight - 40, y));
     this.el.style.transform = `translate(${this.x}px, ${this.y}px) rotate(-2deg)`;
+    if (this.caption) this.caption.style.transform = this.el.style.transform;
     void hh;
   }
 
