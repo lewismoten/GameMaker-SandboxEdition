@@ -51,6 +51,8 @@ Longer fork, paper openings and pencil gate surrounds by OpenAI Codex (GPT-6.1 S
 
 Held-rise controls and bot timing by OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten.
 
+Shed lighting artwork revised by OpenAI Codex.
+
 Made with GAME-MAKER 3.0 from Recreational Software Designs.
 
 A Special from Sandbox Software. Every repo house on the street is made up.

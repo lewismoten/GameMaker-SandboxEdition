@@ -25,7 +25,7 @@ import { pulley, cleat, step, padlock, binKey, bin } from './propsChores';
 
 /** Hit points a bad-luck hazard takes, once: a fifth of the cat's 50, which do not come back between levels. */
 export const BAD_LUCK = -10;
-/** Hit points a crow takes for every tick it touches the cat (a bump under a crow costs about half her luck). */
+/** Hit points a crow takes for every tick it touches the cat. */
 export const PECK = -3;
 /** Points a charm is worth: lucky 13. */
 export const CHARM_POINTS = 13;

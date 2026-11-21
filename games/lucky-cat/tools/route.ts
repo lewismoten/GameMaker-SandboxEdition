@@ -14,7 +14,7 @@ import { OPEN_TICKS } from '../src/meter';
 import { TWO } from '../src/levels/two';
 import { READ, climbUp, hop, leave, mirrored, lifting, must, readAt, score, watchFor } from './routeKit';
 
-/** 1. Ladder Lane: around the ladder by the scaffold (the clover), the cracks, the horseshoe, the crates. */
+/** Ladder Lane: around the ladder by the scaffold (the clover), the cracks, the horseshoe, the crates. */
 export async function ladderLane(bot: StarterBot): Promise<void> {
   const from = bot.sim.ci.score;
   const hp = bot.sim.ci.hitpts;
@@ -30,13 +30,13 @@ export async function ladderLane(bot: StarterBot): Promise<void> {
   await must(bot, bot.walk(ONE.crates + 3, 'over the crates'), 'over the crates');
   await readAt(bot, 50, 'the blame sign');
   await hop(bot, ONE.cracks2, 1, 'the last cracks');
-  score(bot, from, 2, 0, 'level 1');
-  if (bot.sim.ci.hitpts !== hp) throw new Error(`level 1 cost hit points: ${hp} -> ${bot.sim.ci.hitpts}`);
+  score(bot, from, 2, 0, 'Ladder Lane');
+  if (bot.sim.ci.hitpts !== hp) throw new Error(`Ladder Lane cost hit points: ${hp} -> ${bot.sim.ci.hitpts}`);
   await must(bot, bot.wait(READ / 2), 'a breath');
   await leave(bot, bot.walk(ONE.exit + 1, 'the exit'), 'the exit');
 }
 
-/** 2. Mirror Maze: every walk is on the other key. Pillars, a ladder, the ladybug and the hand mirror, the gate, the wishbone. */
+/** Mirror Maze: every walk is on the other key. Pillars, a ladder, the ladybug and the hand mirror, the gate, the wishbone. */
 export async function mirrorMaze(bot: StarterBot): Promise<void> {
   await mirrored(bot, async () => {
     const from = bot.sim.ci.score;
@@ -54,14 +54,14 @@ export async function mirrorMaze(bot: StarterBot): Promise<void> {
     await climbUp(bot, TWO.ladder2, 4, 'the second ladder');
     await must(bot, bot.walk(TWO.wishbone, 'the wishbone'), 'to the wishbone');
     await must(bot, bot.walk(TWO.wishbone + 4, 'the end of the mezzanine'), 'off the mezzanine');
-    score(bot, from, 2, 25, 'level 2');
-    if (bot.sim.ci.hitpts !== hp) throw new Error(`level 2 cost hit points: ${hp} -> ${bot.sim.ci.hitpts}`);
+    score(bot, from, 2, 25, 'Mirror Maze');
+    if (bot.sim.ci.hitpts !== hp) throw new Error(`Mirror Maze cost hit points: ${hp} -> ${bot.sim.ci.hitpts}`);
     await must(bot, bot.wait(READ / 2), 'a breath');
     await leave(bot, bot.walk(TWO.exit + 1, 'the exit'), 'the exit');
   });
 }
 
-/** 3. Town Hall: float up on the umbrellas, take the acorn and the shaker, toss the salt, take the sock. */
+/** Town Hall: float up on the umbrellas, take the acorn and the shaker, toss the salt, take the sock. */
 export async function townHall(bot: StarterBot): Promise<void> {
   const from = bot.sim.ci.score;
   const hp = bot.sim.ci.hitpts;
@@ -79,13 +79,13 @@ export async function townHall(bot: StarterBot): Promise<void> {
   await must(bot, bot.walk(THREE.wall + 2, 'through the salt'), 'through the salt');
   await must(bot, bot.walk(THREE.sock, 'the sock'), 'to the sock');
   await hop(bot, THREE.cracks, 1, 'the cracks by the door');
-  score(bot, from, 2, 25, 'level 3');
-  if (bot.sim.ci.hitpts !== hp) throw new Error(`level 3 cost hit points: ${hp} -> ${bot.sim.ci.hitpts}`);
+  score(bot, from, 2, 25, 'Town Hall');
+  if (bot.sim.ci.hitpts !== hp) throw new Error(`Town Hall cost hit points: ${hp} -> ${bot.sim.ci.hitpts}`);
   await must(bot, bot.wait(READ / 2), 'a breath');
   await leave(bot, bot.walk(THREE.exit + 1, 'the exit'), 'the exit');
 }
 
-/** 4. Race to the Fair: the bells go dark one by one; the gate shuts when the last one does. A person runs it in about half the time. */
+/** Race to the Fair: the bells go dark one by one; the gate shuts when the last one does. A person runs it in about half the time. */
 export async function raceToTheFair(bot: StarterBot): Promise<void> {
   const from = bot.sim.ci.score;
   const hp = bot.sim.ci.hitpts;
@@ -104,12 +104,12 @@ export async function raceToTheFair(bot: StarterBot): Promise<void> {
   await must(bot, bot.walk(FOUR.dice, 'the dice'), 'to the dice');
   bot.say(`at the gate after ${bot.sim.ticks} ticks of ${OPEN_TICKS}`);
   if (bot.sim.ticks > OPEN_TICKS * 0.85) throw new Error(`the run is too slow for the fair: ${bot.sim.ticks} ticks of ${OPEN_TICKS}`);
-  score(bot, from, 2, 0, 'level 5');
-  if (bot.sim.ci.hitpts !== hp + BAD_LUCK) throw new Error(`level 5 cost more than the drip: ${hp} -> ${bot.sim.ci.hitpts}`);
+  score(bot, from, 2, 0, 'Race to the Fair');
+  if (bot.sim.ci.hitpts !== hp + BAD_LUCK) throw new Error(`Race to the Fair cost more than the drip: ${hp} -> ${bot.sim.ci.hitpts}`);
   await leave(bot, bot.walk(FOUR.exit + 1, 'the exit'), 'the exit');
 }
 
-/** 6. Knock on Wood: watch each crow fly up and slip by, knock on the boxes, climb to the rainbow. */
+/** Knock on Wood: watch each crow fly up and slip by, knock on the boxes, climb to the rainbow. */
 export async function knockOnWood(bot: StarterBot): Promise<void> {
   const from = bot.sim.ci.score;
   const hp = bot.sim.ci.hitpts;
@@ -128,12 +128,12 @@ export async function knockOnWood(bot: StarterBot): Promise<void> {
   await must(bot, bot.walk(FIVE.crowC - 3, 'before the last crow'), 'to the last crow');
   await watchFor(bot, lifting(bot, FIVE.crowC, FIVE.crowRow), 'the last crow flying up');
   await must(bot, bot.walk(FIVE.crowC + 3, 'past the last crow'), 'past the last crow');
-  score(bot, from, 2, 10, 'level 7');
-  if (bot.sim.ci.hitpts !== hp) throw new Error(`level 7 cost hit points: ${hp} -> ${bot.sim.ci.hitpts}`);
+  score(bot, from, 2, 10, 'Knock on Wood');
+  if (bot.sim.ci.hitpts !== hp) throw new Error(`Knock on Wood cost hit points: ${hp} -> ${bot.sim.ci.hitpts}`);
   await leave(bot, bot.walk(FIVE.exit + 1, 'the exit'), 'the exit');
 }
 
-/** 7. Rascal's Roof: the cracks, the umbrella lift, the bell and the shaker, the salt, the ribbon, the crow, the marble, and Rascal. */
+/** Payback: the cracks, the umbrella lift, the bell and the shaker, the salt, the ribbon, the crow, the marble, and Rascal. */
 export async function rascalsRoof(bot: StarterBot): Promise<void> {
   const from = bot.sim.ci.score;
   const hp = bot.sim.ci.hitpts;
@@ -153,12 +153,12 @@ export async function rascalsRoof(bot: StarterBot): Promise<void> {
   await readAt(bot, 63, 'the last sign');
   await must(bot, bot.walk(SIX.rascal - 2, 'Rascal'), 'up to Rascal');
   await must(bot, bot.wait(READ), 'a hello');
-  score(bot, from, 2, 25, 'level 8');
-  if (bot.sim.ci.hitpts !== hp) throw new Error(`level 8 cost hit points: ${hp} -> ${bot.sim.ci.hitpts}`);
+  score(bot, from, 2, 25, 'Payback');
+  if (bot.sim.ci.hitpts !== hp) throw new Error(`Payback cost hit points: ${hp} -> ${bot.sim.ci.hitpts}`);
   await leave(bot, bot.walk(SIX.exit + 1, 'the exit'), 'the exit');
 }
 
-/** 5. The Clock Tower: ladder, long plank and the first umbrella lift; knock through the boxes and climb; wait for the crow; the last lift; the bell. */
+/** The Clock Tower: ladder, long plank and the first umbrella lift; knock through the boxes and climb; wait for the crow; the last lift; the bell. */
 export async function clockTower(bot: StarterBot): Promise<void> {
   const from = bot.sim.ci.score;
   const hp = bot.sim.ci.hitpts;
@@ -183,12 +183,12 @@ export async function clockTower(bot: StarterBot): Promise<void> {
   await must(bot, bot.walk(TOWER.liftRight - 1, 'the end of the third floor'), 'along the third floor');
   await lift(f4, 'second');
   await must(bot, bot.walk(TOWER.bell, 'the bell'), 'to the bell');
-  score(bot, from, 1, 10, 'level 6');
-  if (bot.sim.ci.hitpts !== hp) throw new Error(`level 6 cost hit points: ${hp} -> ${bot.sim.ci.hitpts}`);
+  score(bot, from, 1, 10, 'The Clock Tower');
+  if (bot.sim.ci.hitpts !== hp) throw new Error(`The Clock Tower cost hit points: ${hp} -> ${bot.sim.ci.hitpts}`);
   await leave(bot, bot.walk(TOWER.exit - 1, 'the exit'), 'the exit');
 }
 
-/** 4. Earlier That Morning, as Rascal: the chores (three ropes, three saucers), the crates, the awning and the key, the cracks, the crow, the padlock. */
+/** Earlier That Morning, as Rascal: the chores (three ropes, three saucers), the crates, the awning and the key, the cracks, the crow, the padlock. */
 export async function earlierThatMorning(bot: StarterBot): Promise<void> {
   const from = bot.sim.ci.score;
   const hp = bot.sim.ci.hitpts;
@@ -209,8 +209,8 @@ export async function earlierThatMorning(bot: StarterBot): Promise<void> {
   await must(bot, bot.walk(MORNING.cleat3, 'the last rope'), 'tying off the last rope');
   await must(bot, bot.walk(MORNING.wall + 2, 'through the padlock'), 'through the padlock');
   await must(bot, bot.walk(MORNING.step3, 'the last doorstep'), 'setting out the last saucer');
-  score(bot, from, 0, 6 * CHORE_POINTS + 25, 'level 4');
-  if (bot.sim.ci.hitpts !== hp) throw new Error(`level 4 cost hit points: ${hp} -> ${bot.sim.ci.hitpts}`);
+  score(bot, from, 0, 6 * CHORE_POINTS + 25, 'Earlier That Morning');
+  if (bot.sim.ci.hitpts !== hp) throw new Error(`Earlier That Morning cost hit points: ${hp} -> ${bot.sim.ci.hitpts}`);
   await must(bot, bot.wait(READ / 2), 'a look back at the work');
   await leave(bot, bot.walk(MORNING.exit + 1, 'the exit'), 'the exit');
 }

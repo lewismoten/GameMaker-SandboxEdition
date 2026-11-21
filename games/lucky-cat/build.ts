@@ -34,7 +34,7 @@ import { CARDS, CREDITS, HOWTO, LOST, REVEAL, STORY, WON } from './src/text';
 import { demoRecording } from './src/demo';
 import { SANDLOGO, sandLogoFli } from '../kit/sandlogo';
 
-/** Hit points and lives at the start (bad luck takes five). */
+/** Hit points and lives at the start (bad luck takes ten hit points). */
 const HERO_HIT_POINTS = 50;
 const HERO_LIVES = 3;
 

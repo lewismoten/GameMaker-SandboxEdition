@@ -1365,3 +1365,4 @@ maker "ZORP" is invented. The shell is untested: nothing has been printed.
 - **Starter entrance fixes (November 20, 2026)**: OpenAI Codex adjusted entrance floors and added left-first play checks.
 
 - **Preview colors, offline video and tooling (November 21, 2026)**: OpenAI Codex updated palette and text previews, Library video feedback, dependency credits checks, the privacy sweep and regression tests.
+- **Game review fixes (November 21, 2026)**: OpenAI Codex corrected the Beat the Clock and First Steps lessons, refreshed the First Steps demo, updated Lucky Cat route diagnostics, and corrected the Stick Man Stars shed artwork and checks.

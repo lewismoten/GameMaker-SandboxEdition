@@ -77,6 +77,26 @@ if (process.argv.includes('--sweep')) {
   }
   process.exit(bad ? 1 : 0);
 }
+// Compare an early re-press with an uninterrupted hold, measuring every tick through landing.
+async function peakFor(repress: boolean): Promise<number> {
+  const Sim = diskSim(disk('first-steps'));
+  const bot = new StarterBot(new Sim(undefined, 1));
+  await bot.land();
+  const floor = bot.px.y;
+  let peak = 0;
+  bot.sim.press(SCAN.space);
+  for (let t = 0; t < 40; t++) {
+    if (repress && t === 2) bot.sim.release(SCAN.space);
+    if (repress && t === 5) bot.sim.press(SCAN.space);
+    await bot.tick();
+    peak = Math.max(peak, floor - bot.px.y);
+    if (bot.px.y >= floor) break;
+  }
+  return peak;
+}
+const interrupted = await peakFor(true);
+const full = await peakFor(false);
+if (interrupted <= 21 || interrupted > full) throw new Error(`early re-press peak ${interrupted}, full hold ${full}`);
 const [hp, ha] = await reJump('first-steps', 6, 4);
 const [mp, ma] = await reJump('jump-boots', 2, 2);
 console.log(`held-rise hero: peak ${hp}px, after a tap while falling ${ha}px`);

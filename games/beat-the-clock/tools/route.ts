@@ -65,6 +65,8 @@ export async function beatTheClock(bot: StarterBot): Promise<void> {
   await pushOn(bot, RACE_GATE - 1, 'pushing on into the shut gate');
   await must(bot, bot.wait(40), 'looking at the shut gate');
   // the clock door: step in and the level starts again, with a full bar and an open gate
+  const firstAttempt = bot.sim.ci.score;
+  if (firstAttempt !== 60) throw new Error(`expected six coins before the restart, got ${bot.sim.ci.score} points`);
   const before = bot.sim.trail.length;
   await leave(bot, bot.walk(RESTART_X, 'the clock door'), 'the clock door');
   if (bot.sim.trail.length !== before + 1 || bot.sim.ticks > 10) throw new Error('the clock door should begin the level again');

@@ -205,7 +205,6 @@ function shed(p: Pixels, pal: Pal, lit: boolean, frame: 0 | 1, lanterns: number,
     px(p, x, 11, 3, 1, c('ink', 0));
     px(p, x, 12, 3, 2, on ? c('gold', 4) : c('stone', 1));
     p.set(x + 1, 12, on ? (frame ? c('gold', 5) : c('white', 3)) : c('stone', 2));
-    p.set(x + 1, 14, c('ink', 0));
   }
 }
 
@@ -239,7 +238,7 @@ function house(pal: Pal, kind: Kind, lit: boolean, frame: 0 | 1, lanterns = 0, l
   const p = new Pixels(20, 20, T);
   if (kind === 'cottage') cottage(p, pal, lit, frame);
   else if (kind === 'tower') tower(p, pal, lit, frame);
-  else shed(p, pal, lit, frame, lit ? 3 : lanterns, litLanterns);
+  else shed(p, pal, lit, frame, lanterns, litLanterns);
   flag(p, pal, 18, lit, frame);
   // the Big Repo is a fork: a fork weathervane on its roof (the roof is 6 rows down there)
   if (vane) forkVane(p, pal, 6, 0, 5, frame);
@@ -271,7 +270,7 @@ function forkHouse(pal: Pal, kind: 'cottage' | 'tower', frame: 0 | 1): Pixels {
 /** The old original: the Big Repo's shed, lit long ago, its planks gone gray, its roof faded and patched, and no weathervane. */
 function oldRepo(pal: Pal, frame: 0 | 1): Pixels {
   const { c, r } = pal;
-  const p = house(pal, 'shed', true, frame);
+  const p = house(pal, 'shed', true, frame, 3);
   const wood = r('wood');
   const stone = r('stone');
   const green = r('green');
@@ -288,9 +287,9 @@ function oldRepo(pal: Pal, frame: 0 | 1): Pixels {
 }
 
 /** A burst of confetti, two frames. */
-function confetti(pal: Pal, kind: Kind, frame: 0 | 1): Pixels {
+function confetti(pal: Pal, kind: Kind, frame: 0 | 1, big = false): Pixels {
   const { c } = pal;
-  const p = house(pal, kind, true, frame);
+  const p = house(pal, kind, true, frame, big ? 3 : 0, 0, big);
   const colors = [c('red', 2), c('gold', 3), c('teal', 2), c('pink', 2), c('blue', 2), c('white', 3)];
   const dots: [number, number][] = [
     [3, 3],
@@ -374,7 +373,7 @@ export function monsterPictures(pal: Pal): Book {
   for (const n of [3, 2, 1]) for (const f of [0, 1] as const) mb.add(`big${n}${f}`, house(pal, 'shed', false, f, 3, 3 - n, true), {});
   for (const k of kinds) for (const f of [0, 1] as const) mb.add(`lit${k}${f}`, house(pal, k, true, f), {});
   for (const k of kinds) for (const f of [0, 1] as const) mb.add(`confetti${k}${f}`, confetti(pal, k, f), {});
-  for (const f of [0, 1] as const) mb.add(`litbig${f}`, house(pal, 'shed', true, f, 0, 0, true), {});
+  for (const f of [0, 1] as const) mb.add(`litbig${f}`, house(pal, 'shed', true, f, 3, 0, true), {});
   for (const f of [0, 1] as const) mb.add(`forkcot${f}`, forkHouse(pal, 'cottage', f), {});
   for (const f of [0, 1] as const) mb.add(`forktow${f}`, forkHouse(pal, 'tower', f), {});
   for (const f of [0, 1] as const) mb.add(`oldbig${f}`, oldRepo(pal, f), {});
@@ -382,6 +381,7 @@ export function monsterPictures(pal: Pal): Book {
   for (const f of [0, 1] as const) mb.add(`fake${f}`, fakeStar(pal, f), {});
   for (const f of [0, 1] as const) mb.add(`twk${f}`, twink(pal, f), {});
   for (const f of [0, 1] as const) mb.add(`shoot${f}`, shooter(pal, f), {});
+  for (const f of [0, 1] as const) mb.add(`confettibig${f}`, confetti(pal, 'shed', f, true), {});
   return mb;
 }
 
@@ -413,9 +413,8 @@ export function monsterSet(mb: Book): Monster[] {
   set[BIG3] = mon(anim('big3', 9), { ...dark, newmon: BIG2 });
   set[BIG2] = mon(anim('big2', 9), { ...dark, newmon: BIG1 });
   set[BIG1] = mon(anim('big1', 9), { ...dark, newmon: CONF_BIG });
-  const party = (kind: Kind, newmon: number) => mon(anim(`confetti${kind}`, 4), { power: 250, thru: 1, end: PARTY, newmon });
-  // the Big Repo's party is the shed's (the .MBL holds 50 pictures); its fork weathervane is back up when the confetti clears
-  set[CONF_BIG] = party('shed', LIT_BIG);
+  const party = (kind: Kind | 'big', newmon: number) => mon(anim(`confetti${kind}`, 4), { power: 250, thru: 1, end: PARTY, newmon });
+  set[CONF_BIG] = party('big', LIT_BIG);
   set[CONF_COT] = party('cottage', LIT_COT);
   set[CONF_TOW] = party('tower', LIT_TOW);
   set[CONF_SHED] = party('shed', LIT_SHED);
