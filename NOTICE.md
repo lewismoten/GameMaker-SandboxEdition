@@ -64,6 +64,7 @@ game folder opens in the browser unchanged.
 
 ## Credits
 
+- OpenAI Codex fixed ground run-up checks at ladder entrances and added a regression test (November 21, 2026).
 - OpenAI Codex fixed ladder-top lock checks and tested the First Steps title demo assignment (November 21, 2026).
 - OpenAI Codex fixed camera framing for progress shots on packed level maps and added a regression test (November 21, 2026).
 - OpenAI Codex updated DOSBox rebuild staging, backup handling, and regression tests (November 21, 2026).

@@ -116,8 +116,6 @@ export async function leapProblems(files: Map<string, Uint8Array>): Promise<{ lo
     } catch {
       continue;
     }
-    // Ground run-ups use the entrance gravity. A ladder top has its own transition to falling air.
-    const groundJumps = !!(sim.shown(sim.pos.x, sim.pos.y).grav & 4);
     const found = locksIn(sim);
     if (!found.length) continue;
     const base = sim.snapshot();
@@ -134,10 +132,10 @@ export async function leapProblems(files: Map<string, Uint8Array>): Promise<{ lo
             reach.has(y * MLEN + x) &&
             !sim.solidAt(x, y) &&
             !sim.solidAt(x, y - 1) &&
-            ((groundJumps && sim.solidAt(x, y + 1)) || ladderTop(x, y))
+            ((sim.shown(x, y).grav & 4 && sim.solidAt(x, y + 1)) || ladderTop(x, y))
           )
             spots.push([x, y]);
-      if (groundJumps || spots.length) locks++;
+      if (spots.length) locks++;
       let hit: string | undefined;
       for (const [x, y] of spots) {
         if (hit) break;
