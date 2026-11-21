@@ -6,8 +6,8 @@ import { guideLink } from '../../../widgets/guideLink';
 import { fixFor } from '../../../check/generators/fixes';
 import { unlockAchievement } from '../../../../achievements';
 import { markSame, sameKeyOf } from '../../../check/sameEverySide';
-import { reasonField, reasonNote } from '../../../widgets/acceptReason';
-import { acceptedFindings, findingKey, reasonFor, setAccepted, splitAccepted, wasAcceptedButHard } from '../../../check/accepted';
+import { reasonField } from '../../../widgets/acceptReason';
+import { acceptedFindings, findingKey, splitAccepted, wasAcceptedButHard } from '../../../check/accepted';
 import type { Saved } from './checkRun';
 
 const LABEL: Record<Kind, string> = { error: 'Problem', warning: 'Warning', suggestion: 'Suggestion', info: 'Note' };
@@ -26,6 +26,7 @@ export function checkFindings(
   },
 ) {
   const { project } = host;
+  const drafts = new Map<string, string>();
   let filter: Kind | 'all' = 'all';
   let showAccepted = false;
   const undo: { files: [string, Uint8Array | undefined][]; what: string }[] = [];
@@ -76,8 +77,7 @@ export function checkFindings(
     );
   }
   /** Accepts a finding as meant to be, or (with `on` false) brings it back to the list. */
-  function accept(f: Finding, on: boolean, why = ''): void {
-    setAccepted(project, findingKey(f), on, why);
+  function announceAcceptance(f: Finding, on: boolean): void {
     ui.render();
     toast(
       on
@@ -86,9 +86,7 @@ export function checkFindings(
     );
   }
 
-  function item(f: Finding, accepted = false): HTMLElement {
-    const reason = !accepted ? reasonField(() => accept(f, true, reason?.value() ?? '')) : null;
-    const why = accepted ? reasonFor(acceptedFindings(project), findingKey(f)) : '';
+  function item(f: Finding, accepted = false, refreshReport?: () => void): HTMLElement {
     const info = CHECKS[f.check];
     const cell = f.where.cell ?? f.where.cells?.[0];
     const fix = fixFor(f, project);
@@ -186,24 +184,33 @@ export function checkFindings(
               '➜ Go to it',
             ),
           )
-        : [
-            reason?.el ?? null,
-            h(
-              'button',
-              {
-                type: 'button',
-                class: 'lc-fix lc-accept',
-                title: accepted
-                  ? 'Puts this finding back in the list and the counts.'
-                  : taste
-                    ? 'A design suggestion, not a rule: if you chose this on purpose, the list, the counts, the badges and Before You Upload leave it out.'
-                    : 'You have looked at this and it is how you want it: the list, the counts, the badges and Before You Upload leave it out.',
-                onclick: () => accept(f, !accepted, reason?.value() ?? ''),
+        : h(
+            'div',
+            { class: 'toolbar' },
+            reasonField(
+              project,
+              drafts,
+              findingKey(f),
+              accepted,
+              () => {
+                announceAcceptance(f, !accepted);
+                refreshReport?.();
               },
-              accepted ? '↺ Not meant to be: list it again' : taste ? '✓ That’s on purpose' : '✓ Mark as checked: it’s meant to be',
+              h(
+                'button',
+                {
+                  type: 'button',
+                  class: 'lc-fix lc-accept',
+                  title: accepted
+                    ? 'Puts this finding back in the list and the counts.'
+                    : taste
+                      ? 'A design suggestion, not a rule: if you chose this on purpose, the list, the counts, the badges and Before You Upload leave it out.'
+                      : 'You have looked at this and it is how you want it: the list, the counts, the badges and Before You Upload leave it out.',
+                },
+                accepted ? '↺ Not meant to be: list it again' : taste ? '✓ That’s on purpose' : '✓ Mark as checked: it’s meant to be',
+              ),
             ),
-          ],
-      reasonNote(why),
+          ),
     );
   }
 

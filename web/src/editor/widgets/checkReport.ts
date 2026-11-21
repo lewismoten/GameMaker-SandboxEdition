@@ -9,8 +9,8 @@ import './checkReport.css';
 import { download, h, clear, modal, toast } from '../core/ui';
 import type { Project } from '../core/project';
 import { at, CHECKS, isHard, kindOf, type Finding, type Kind } from '../check/findings';
-import { reasonField, reasonNote } from './acceptReason';
-import { acceptedFindings, findingKey, reasonFor, setAccepted } from '../check/accepted';
+import { reasonField } from './acceptReason';
+import { acceptedFindings, findingKey } from '../check/accepted';
 import { guideLink } from './guideLink';
 import { cellOf, csvName, findingRows, groupRows, guideSection, KIND_LABEL, KIND_PLURAL, KINDS, toCsv, type FindingRow } from './checkRows';
 
@@ -21,7 +21,7 @@ interface ReportSource {
   /** The findings now (read again after a fix or an accept). */
   findings(): Finding[];
   /** The panel's own list item, with its go, fix and accept buttons; a click on its go button closes the report. */
-  item?: (f: Finding, accepted: boolean) => HTMLElement;
+  item?: (f: Finding, accepted: boolean, refresh: () => void) => HTMLElement;
   /** The filter the panel shows, to start with. */
   filter?: Kind | 'all';
 }
@@ -41,6 +41,7 @@ function placeOf(f: Finding, map?: string): string {
 
 export async function openReport(src: ReportSource): Promise<void> {
   const { project } = src;
+  const drafts = new Map<string, string>();
   let filter: Kind | 'all' = src.filter ?? 'all';
   let showAccepted = false;
   const rows = () => findingRows(src.findings(), acceptedFindings(project));
@@ -54,12 +55,10 @@ export async function openReport(src: ReportSource): Promise<void> {
   const plainItem = (f: Finding, accepted: boolean): HTMLElement => {
     const info = CHECKS[f.check];
     const taste = 'taste' in info;
-    const toggle = (why: string): void => {
-      setAccepted(project, findingKey(f), !accepted, why);
+    const toggle = (): void => {
       said.textContent = accepted ? 'The finding is back in the list.' : 'The finding is kept under accepted.';
       render();
     };
-    const reason = accepted ? null : reasonField(() => toggle(reason?.value() ?? ''));
     return h(
       'li',
       { class: `lc-item lc-${kindOf(f)}${accepted ? ' lc-is-accepted' : ''}` },
@@ -78,22 +77,25 @@ export async function openReport(src: ReportSource): Promise<void> {
           : null,
         isHard(f)
           ? h('p', { class: 'lc-why lc-hard' }, 'This will fail for players, so it can be fixed but not set aside.')
-          : [
-              reason?.el ?? null,
+          : reasonField(
+              project,
+              drafts,
+              findingKey(f),
+              accepted,
+              toggle,
               h(
                 'button',
-                { type: 'button', class: 'lc-fix lc-accept', onclick: () => toggle(reason?.value() ?? '') },
+                { type: 'button', class: 'lc-fix lc-accept' },
                 accepted ? '↺ Not meant to be: list it again' : taste ? '✓ That’s on purpose' : '✓ Mark as checked: it’s meant to be',
               ),
-            ],
+            ),
       ),
-      reasonNote(accepted ? reasonFor(acceptedFindings(project), findingKey(f)) : ''),
     );
   };
 
   const entry = (r: FindingRow): HTMLElement => {
     const accepted = r.status !== 'open';
-    const li = (src.item ?? plainItem)(r.finding, accepted);
+    const li = src.item ? src.item(r.finding, accepted, render) : plainItem(r.finding, accepted);
     li.prepend(h('p', { class: 'lcr-place' }, placeOf(r.finding, src.map) || 'The whole game'));
     if (accepted)
       li.append(h('p', { class: 'lcr-status meta' }, r.status === 'accepted' ? 'Accepted: it’s meant to be.' : 'Kept as you chose it: that’s on purpose.'));
@@ -143,7 +145,7 @@ export async function openReport(src: ReportSource): Promise<void> {
     const b = (e.target as Element).closest('button');
     if (!b || !src.item) return;
     if (b.classList.contains('lc-go')) close(undefined);
-    else setTimeout(render, 0);
+    else if (!b.classList.contains('lc-accept')) setTimeout(render, 0);
   });
 
   render();
