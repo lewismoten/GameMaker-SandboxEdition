@@ -8,7 +8,6 @@ import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { bevel } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';
 import { Book, SOLID } from '../../kit/starter/book';
 import { skyOf, type Pal } from '../../kit/starter/palette';
-import { addSign, type Sign } from '../../kit/starter/sign';
 
 /** One lawn block: grass with a few lighter and darker blades, the same in every cell. */
 function lawnTile(pal: Pal): Pixels {
@@ -26,14 +25,6 @@ function lawnTile(pal: Pal): Pixels {
 /** `pic` with its sky colored pixels showing the lawn instead. */
 const onLawn = (pic: Pixels, pal: Pal, lawn: Pixels): Pixels =>
   pic.crop(0, 0, pic.w, pic.h).map((x, y, c) => (c === skyOf(pal) ? lawn.get(x % 20, y % 20) : c));
-
-/** A sign for the top-down book: the side view's wooden board and posts, standing on the lawn. */
-export function addTopSign(book: Book, pal: Pal, lawn: Pixels, name: string, text: string, w: number, h: number): Sign {
-  const scratch = new Book('bbl');
-  const sign = addSign(scratch, pal, name, text, w, h);
-  for (const [n, pic] of scratch.pics) if (!book.has(n)) book.add(n, onLawn(pic, pal, lawn));
-  return sign;
-}
 
 /** The block set, with `side`'s hedge and coin pictures borrowed. */
 export function addTopBlocks(book: Book, pal: Pal, side: Book): Pixels {

@@ -1,5 +1,6 @@
 // Reusable one-frame micro plaques: palette-independent boards and sky-matched posts.
 import { buildTiledSigns, type TiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import type { MicroGlyphs } from '@lewismoten/gamemaker-sandbox-tools/microFont';
 import { PULL, type Book } from './book';
 import { skyOf, type Pal } from './palette';
 
@@ -11,7 +12,7 @@ export interface MicroPlaqueText {
 }
 
 /** Add a shared vocabulary once per book. Boards contain no scene-background pixels. */
-export function addMicroPlaques<K extends string>(book: Book, pal: Pal, texts: Record<K, MicroPlaqueText>): Record<K, TiledSign> {
+export function addMicroPlaques<K extends string>(book: Book, pal: Pal, texts: Record<K, MicroPlaqueText>, glyphs?: MicroGlyphs): Record<K, TiledSign> {
   for (const [name, plaque] of Object.entries<MicroPlaqueText>(texts))
     if (plaque.lines.length < 1 || plaque.lines.length > 2 || plaque.lines.some((line) => line.trim().length > 8))
       throw new Error(`Plaque ${name} needs one or two lines of at most eight characters`);
@@ -21,6 +22,7 @@ export function addMicroPlaques<K extends string>(book: Book, pal: Pal, texts: R
     ) as Record<K, { rows: string[][]; post?: boolean }>,
     {
       font: 'micro',
+      glyphs,
       maxWidth: 2,
       prefix: 'microPlaque',
       maxBlocks: Math.min(100, book.size - book.index.size),
