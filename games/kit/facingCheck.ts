@@ -8,6 +8,8 @@
 //   cd web && npx vite-node ../games/kit/facingCheck.ts [id ...] [--strict]   (--strict exits 1 on a finding)
 // What it can't see: a shot that is a chase or home-in monster (it ignores the hero's direction), or a hero that is
 // only ever meant to walk one way in its scenes.
+import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { sceneHeroPairs } from './sceneHeroPairs';
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -63,6 +65,7 @@ interface Finding {
 }
 const findings: Finding[] = [];
 let heroes = 0;
+let unchecked = 0;
 
 for (const id of ids) {
   const dir = join(gamesDir, id, 'disk');
@@ -71,52 +74,61 @@ for (const id of ids) {
     continue;
   }
   const names = readdirSync(dir);
+  const gamName = names.find((n) => /\.gam$/i.test(n));
+  const pairs = gamName ? sceneHeroPairs(parseGame(readFileSync(join(dir, gamName)))) : new Map<string, Set<string>>();
   for (const chrName of names.filter((n) => /\.chr$/i.test(n))) {
     const base = chrName.replace(/\.chr$/i, '');
-    const cblName = names.find((n) => n.toLowerCase() === `${base.toLowerCase()}.cbl`);
-    if (!cblName) continue;
-    const ch = parseCharacter(new Uint8Array(readFileSync(join(dir, chrName))));
-    const cbl = parseBlocks(new Uint8Array(readFileSync(join(dir, cblName))), CHARBL);
-    heroes++;
-    const keyed = ch.sequences.map((s, i) => ({ s, i })).filter(({ s, i }) => i > 4 && (s.key !== 0 || s.jstkMov !== 0));
-    const movesX = keyed.flatMap(({ s }) =>
-      frames(s)
-        .filter((f) => f.pic2 !== MONBL)
-        .map((f) => Math.sign(f.x)),
-    );
-    if (!(movesX.includes(-1) && movesX.includes(1))) continue; // never walks both ways
-    const side = (f: Frame) => mirrorScore(picture(f, cbl)) < FACE_ON;
-    let blind = false;
-    for (const { s, i } of keyed) {
-      const fr = frames(s);
-      const birth = fr.findIndex((f) => f.pic2 === MONBL);
-      if (birth < 0) continue;
-      // a step (x or y) before the birth sets the direction itself; otherwise the shot goes the way the hero last moved
-      if (fr.slice(0, birth).some((f) => f.x !== 0 || f.y !== 0)) continue;
-      blind = true;
-      const sides = shown(s).filter(side).length;
-      if (sides)
-        findings.push({
-          game: id,
-          hero: base,
-          what: `sequence ${i} fires the way the hero last moved, but ${sides} of its ${shown(s).length} pictures face one side`,
-        });
+    const sets = pairs.get(chrName.toLowerCase());
+    const blocks = names.filter((n) => sets?.has(n.toLowerCase()));
+    if (!blocks.length || blocks.length !== sets?.size) {
+      unchecked++;
+      console.log(`${id}: ${chrName} not fully checked (missing scene block set)`);
     }
-    if (blind) {
-      const sides = shown(ch.sequences[IDLESEQ]).filter(side).length;
-      if (sides)
-        findings.push({
-          game: id,
-          hero: base,
-          what: `idle faces one side (${sides} of ${shown(ch.sequences[IDLESEQ]).length} pictures): after walking the other way and letting go, the next shot flies behind it`,
-        });
+    if (!blocks.length) continue;
+    const ch = parseCharacter(readFileSync(join(dir, chrName)));
+    heroes++;
+    for (const cblName of blocks) {
+      const cbl = parseBlocks(readFileSync(join(dir, cblName)), CHARBL);
+      const keyed = ch.sequences.map((s, i) => ({ s, i })).filter(({ s, i }) => i > 4 && (s.key !== 0 || s.jstkMov !== 0));
+      const movesX = keyed.flatMap(({ s }) =>
+        frames(s)
+          .filter((f) => f.pic2 !== MONBL)
+          .map((f) => Math.sign(f.x)),
+      );
+      if (!(movesX.includes(-1) && movesX.includes(1))) continue; // never walks both ways
+      const side = (f: Frame) => mirrorScore(picture(f, cbl)) < FACE_ON;
+      let blind = false;
+      for (const { s, i } of keyed) {
+        const fr = frames(s);
+        const birth = fr.findIndex((f) => f.pic2 === MONBL);
+        if (birth < 0) continue;
+        // a step (x or y) before the birth sets the direction itself; otherwise the shot goes the way the hero last moved
+        if (fr.slice(0, birth).some((f) => f.x !== 0 || f.y !== 0)) continue;
+        blind = true;
+        const sides = shown(s).filter(side).length;
+        if (sides)
+          findings.push({
+            game: id,
+            hero: base,
+            what: `sequence ${i} fires the way the hero last moved, but ${sides} of its ${shown(s).length} pictures face one side`,
+          });
+      }
+      if (blind) {
+        const sides = shown(ch.sequences[IDLESEQ]).filter(side).length;
+        if (sides)
+          findings.push({
+            game: id,
+            hero: base,
+            what: `idle faces one side (${sides} of ${shown(ch.sequences[IDLESEQ]).length} pictures): after walking the other way and letting go, the next shot flies behind it`,
+          });
+      }
     }
   }
 }
-
+console.log(`Heroes not fully checked: ${unchecked}`);
 for (const f of findings) console.log(`${f.game.padEnd(24)} ${f.hero.padEnd(10)} ${f.what}`);
 const games = new Set(findings.map((f) => f.game));
 console.log(
   `${heroes} heroes in ${ids.length} games; ${findings.length} findings in ${games.size} games (advice: pictures facing the player, or a step before the birth, fix it)`,
 );
-if (strict && findings.length) process.exit(1);
+if (strict && (findings.length || unchecked)) process.exit(1);

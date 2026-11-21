@@ -43,13 +43,13 @@ export const CREDITS = withCreditPage(
 |STICK MAN STARS  v${about.version}
 |(c) 1994 Sandbox Software
 
-Design, pixels, beeps, music and levels by Claude Sonnet 5.5, an AI model made by Anthropic. The paper look, night title colors and the pencil hurt, erase and jump poses by Claude Opus 5.5.
+Design, pixels, beeps, music and levels by Claude Sonnet 5.5, an AI model made by Anthropic. The paper fork redraw by Claude Sonnet 5.5. The paper look, night title colors and the pencil hurt, erase and jump poses by Claude Opus 5.5.
 
 Lighting chime, confetti, ending cartoon and quiet garden by Hermes / OpenAI Codex GPT-6.1 Sol, directed by Lewis Moten.
 
 Longer fork, paper openings and pencil gate surrounds by OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten.
 
-Held-rise controls and bot timing by OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten.
+Star range lesson, paper tints and fork ledge by OpenAI Codex. Held-rise controls and bot timing by OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten.
 
 Shed lighting artwork revised by OpenAI Codex.
 

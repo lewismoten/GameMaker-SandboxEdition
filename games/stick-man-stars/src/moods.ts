@@ -55,19 +55,20 @@ export function paletteFor(pal: Pal, mood: Mood, paper: PaperKind | false = fals
   const out = new Uint8Array(pal.pal);
   const set = (i: number, [r, g, b]: RGB) => out.set([r >> 2, g >> 2, b >> 2], i * 3);
   const sky = pal.r('sky');
-  sky.forEach((idx, k) => {
-    const t = k / (sky.length - 1);
-    const [a, b, u] = t < 0.5 ? [dark, mid, t * 2] : [mid, light, (t - 0.5) * 2];
-    set(idx, a.map((v, j) => Math.round(v + (b[j] - v) * u)) as RGB);
-  });
   if (paper) {
     // a level on paper (the night is white notebook paper): the sky is the sheet, the brick a pencil drawing, and the
     // bushes keep their crayon green (nothing on the sheet is dimmed for the night)
     const kind = PAPERS[paper];
-    for (const idx of sky) set(idx, kind.sheet);
-    pal.r('paper').forEach((idx, k) => set(idx, kind.ramp[k] ?? kind.sheet));
+    const tint = (rgb: RGB): RGB => (mood === 'dawn' || mood === 'dusk' ? (rgb.map((v, i) => Math.round((3 * v + light[i]) / 4)) as RGB) : rgb);
+    for (const idx of sky) set(idx, tint(kind.sheet));
+    pal.r('paper').forEach((idx, k) => set(idx, tint(kind.ramp[k] ?? kind.sheet)));
     pal.r('brick').forEach((idx, k) => set(idx, PENCIL_BRICK[k]));
   } else {
+    sky.forEach((idx, k) => {
+      const t = k / (sky.length - 1);
+      const [a, b, u] = t < 0.5 ? [dark, mid, t * 2] : [mid, light, (t - 0.5) * 2];
+      set(idx, a.map((v, j) => Math.round(v + (b[j] - v) * u)) as RGB);
+    });
     dimGround(pal, out, grass, ground);
     hidePaper(out, pal.c('sky', 3), pal.r('paper'));
   }

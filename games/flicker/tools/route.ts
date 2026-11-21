@@ -5,6 +5,7 @@
 //            flicker loops are rarely at the same frame; both blocks of a flag change on the same tick
 //   level 2: the fall's four columns step together at even gaps; the lip and the splash step at the body's gap, so the streaks run on across the seams
 //   level 3: the big fire's gaps are uneven; each spark loop is dark for most of its round, and the three differ
+import { ORIGIN } from '../../kit/starter/map';
 import type { Result, StarterBot } from '../../kit/starter/bot';
 import { buildLevels } from '../src/levels';
 
@@ -30,12 +31,12 @@ interface Seen {
 }
 
 /** Records the frame (0 to 3) of the rings `rings` of `level` for `ticks` ticks as the bot waits. */
-async function watch(bot: StarterBot, level: number, rings: string[], ticks: number): Promise<Record<string, Seen>> {
+async function watch(bot: StarterBot, level: number, rings: string[], ticks: number, placed?: Record<string, number>): Promise<Record<string, Seen>> {
   const { book } = levels[level];
   const names = [...book.index.keys()];
   const out: Record<string, Seen> = Object.fromEntries(rings.map((r) => [r, { frames: [], runs: [] }]));
   for (let t = 0; t < ticks; t++) {
-    for (const r of rings) out[r].frames.push(Number(names[bot.sim.w.blkmap[book.n(`${r}.0`)]].split('.').pop()));
+    for (const r of rings) out[r].frames.push(Number(names[bot.sim.w.blkmap[placed?.[r] ?? book.n(`${r}.0`)]].split('.').pop()));
     await must(bot, bot.tick(), 'watching');
   }
   for (const s of Object.values(out)) {
@@ -90,13 +91,16 @@ export async function theFalls(bot: StarterBot): Promise<void> {
   await must(bot, bot.walk(8, 'the first sign'), 'to the first sign');
   await must(bot, bot.wait(LOOK), 'reading');
   await must(bot, bot.walk(19, 'the fall'), 'to the fall');
-  const w = await watch(bot, 1, ['fallL', 'fallM', 'fallN', 'fallR', 'lipM', 'splashM'], 160);
+  const placed: Record<string, number> = {};
+  for (const { ring, x, y } of levels[1].things) {
+    const tile = bot.sim.blockAt(x + ORIGIN, y + ORIGIN);
+    if (tile !== levels[1].book.n(`${ring}.0`)) throw new Error(`${ring} starts on the wrong map frame`);
+    placed[ring] = tile;
+  }
+  const w = await watch(bot, 1, Object.keys(placed), 160, placed);
   const body = w.fallL;
   if (body.runs.length < 6 || distinct(body.runs) !== 1) throw new Error(`the fall should step at even gaps, not ${body.runs.join(' ')}`);
-  for (const r of ['fallM', 'fallN', 'fallR']) if (w[r].frames.some((f, i) => f !== body.frames[i])) throw new Error(`${r} should step with the left column`);
-  for (const r of ['lipM', 'splashM'])
-    if (distinct(w[r].runs) !== 1 || w[r].runs[0] !== body.runs[0])
-      throw new Error(`${r} should step at the body's gap (${body.runs[0]}), not ${w[r].runs.join(' ')}`);
+  for (const r of Object.keys(placed)) if (w[r].frames.some((f, i) => f !== body.frames[i])) throw new Error(`${r} should step with the left column`);
   bot.say(`the fall: every column steps every ${body.runs[0]} ticks; the lip every ${w.lipM.runs[0]}; the splash every ${w.splashM.runs[0]}`);
   await must(bot, bot.walk(38, 'the second sign'), 'to the second sign');
   await must(bot, bot.wait(LOOK), 'reading');

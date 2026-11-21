@@ -129,3 +129,18 @@ describe('paper level openings', () => {
     });
   });
 });
+
+it('tints the same sheet differently at dawn, day and dusk', () => {
+  const { pal } = buildLevels();
+  const offset = pal.c('sky', 3) * 3;
+  const colors = ['dawn', 'day', 'dusk'].map((m) =>
+    paletteFor(pal, m as 'dawn' | 'day' | 'dusk', 'graph')
+      .pal.slice(offset, offset + 3)
+      .join(','),
+  );
+  expect(new Set(colors).size).toBe(3);
+});
+it('marks the walkable edge across the fork handle and neck', () => {
+  const { book, pal } = buildLevels();
+  for (const name of ['forkEnd', 'forkShaft']) expect([...book.pics.get(name)!.px.slice(0, 20)]).toEqual(Array(20).fill(pal.c('stone', 2)));
+});

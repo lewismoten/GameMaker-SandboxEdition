@@ -11,4 +11,4 @@
 - `layoutCheck.ts`: no sign over another sign, a house, a door, a brick tunnel or a wall.
 - `view.ts`: the screen the engine really shows (16 by 10 blocks, his feet 120 px down: four rows of sky over his head), standing and mid-jump, at the start, the moon and the gate. `shots.ts` crops from row 2, which a player never sees. Keep sky art in rows 4 to 7 of a level, and the brick ceiling at row 0 (the existing pencil border stays in place with the held-rise jump).
 
-The giant silver fork has a decorative rounded handle tip one tile to the left of its original four solid tiles. That clear paper cell stays passable; pickups, signs and collision positions stay fixed. Gate tunnels and boundary walls reuse the solid brick slot with crossed-out pencil hatching.
+The giant silver fork has a decorative rounded handle tip one tile to the left of its original four solid tiles. The tip stays passable. The fork stands beyond SOUP so it leaves the range lesson clear. Gate tunnels and boundary walls reuse the solid brick slot with crossed-out pencil hatching.
