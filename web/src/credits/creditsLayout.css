@@ -328,6 +328,9 @@ main.credits-page .credits-cards-small p {
 /* stuck under the top of the page while a long panel scrolls (not in a short window, where the
    wrapped tabs would take a fifth of the screen) */
 @media (min-height: 560px) {
+  main.credits-page .bard-table thead th {
+    top: var(--credits-tab-height, 0px);
+  }
   main.credits-page .credits-tabs-wrap {
     position: sticky;
     top: 0;

@@ -54,7 +54,7 @@ export function textPicture(bytes: Uint8Array, ink: number): Uint8Array {
   return pixels;
 }
 
-/** Tile size of the cropped text thumbnail: the first 16 characters of the first 12 lines. */
+/** Tile size of the cropped text thumbnail: a full-size excerpt of the first page. */
 export const TEXT_TILE = { width: 128, height: 96 } as const;
 
 /**
@@ -64,6 +64,13 @@ export const TEXT_TILE = { width: 128, height: 96 } as const;
 export function textTilePicture(bytes: Uint8Array, ink: number): Uint8Array {
   const page = textPicture(bytes, ink);
   const tile = new Uint8Array(TEXT_TILE.width * TEXT_TILE.height);
-  for (let y = 0; y < TEXT_TILE.height; y++) tile.set(page.subarray((36 + y) * 320 + 36, (36 + y) * 320 + 36 + TEXT_TILE.width), y * TEXT_TILE.width);
+  const first = page.findIndex(Boolean);
+  if (first < 0) return tile;
+  const left = Math.min(320 - TEXT_TILE.width, Math.max(36, (first % 320) - 4));
+  const top = Math.min(200 - TEXT_TILE.height, Math.max(36, Math.floor(first / 320) - 4));
+  for (let y = 0; y < TEXT_TILE.height; y++) {
+    const start = (top + y) * 320 + left;
+    tile.set(page.subarray(start, start + TEXT_TILE.width), y * TEXT_TILE.width);
+  }
   return tile;
 }

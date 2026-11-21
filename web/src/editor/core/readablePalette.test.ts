@@ -138,7 +138,8 @@ describe('a scene with blank slots', () => {
     const b = newGame('T').scenes[0];
     b.gametype = 10;
     b.files = ['', 'n.map', ''];
-    game.scenes.push(a, b);
+    const other = { ...a, files: ['z.pal', 'other.map', 'other.bbl'] };
+    game.scenes.push(a, b, other, other, other);
     const p = Project.fromFiles(
       new GameFiles([
         ['t.gam', serializeGame(game)],
@@ -147,6 +148,8 @@ describe('a scene with blank slots', () => {
       ]),
     );
     expect(p.paletteFor('n.map').source).toBe('a.pal');
-    expect(p.paletteFor('lonely.bbl').source).not.toBe('');
+    expect(p.paletteFor('lonely.bbl').source).toBe('z.pal');
+    p.setExtras('b.bbl', 'showPalette', 'z.pal');
+    expect(p.shownPalette('n.map')).toEqual(p.palette('z.pal'));
   });
 });

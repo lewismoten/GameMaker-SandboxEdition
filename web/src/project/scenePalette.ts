@@ -6,19 +6,33 @@ import { defaultPalette, parsePalette, type Palette } from '@lewismoten/gamemake
 import { decodeGif, isGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
 import { isSolidPalette, mostReadable } from '../editor/core/readablePalette';
 
+/** Level file slots carry forward across level scenes, as in PLAYGAME. */
+export function* levelFiles(game: Game) {
+  const held: string[] = [];
+  for (const scene of game.scenes) {
+    if (scene.gametype !== 10) continue;
+    scene.files.forEach((file, slot) => {
+      if (file) held[slot] = file;
+    });
+    yield { scene, files: held.slice() };
+  }
+}
+
 /** The palette most scenes using `file` use (a blank slot inherits the level before), else the most-used non-solid .pal, else a GIF's, else the default. */
 export function scenePalette(files: GameFiles, game: Game, file: string, used?: ArrayLike<number>): { palette: Palette; source: string } {
   // several scenes may use one file with different palettes: the palette most of them use wins, the first on a tie
   const tally = new Map<string, { n: number; name: string }>();
   // a slot left blank keeps the file of the level scene before it (loadscene's globals), so a scene counts as using what it inherits
   const want = normalize(file);
-  const held: string[] = [];
+  const counts = new Map<string, number>();
   for (const scene of game.scenes) {
-    if (scene.gametype !== 10) continue;
-    scene.files.forEach((f, slot) => {
-      if (f) held[slot] = f;
-    });
+    if (scene.gametype === 10 || !scene.files[0]) continue;
+    const pal = normalize(scene.files[0]);
+    counts.set(pal, (counts.get(pal) ?? 0) + 1);
+  }
+  for (const { files: held } of levelFiles(game)) {
     const pal = held[0];
+    if (pal) counts.set(normalize(pal), (counts.get(normalize(pal)) ?? 0) + 1);
     if (!want || !pal || !files.has(pal) || !held.some((f) => f && normalize(f) === want)) continue;
     const hit = tally.get(normalize(pal));
     if (hit) hit.n++;
@@ -41,7 +55,7 @@ export function scenePalette(files: GameFiles, game: Game, file: string, used?: 
     // a palette that is one solid color stands for nothing: use the others, the one the scenes use most first
     const usable = pals.filter((p) => !isSolidPalette(files.get(p)!));
     if (usable.length) {
-      const uses = (p: string) => game.scenes.filter((sc) => normalize(sc.files[0] ?? '') === normalize(p)).length;
+      const uses = (p: string) => counts.get(normalize(p)) ?? 0;
       pals = usable
         .map((p, i) => ({ p, i }))
         .sort((a, b) => uses(b.p) - uses(a.p) || a.i - b.i)

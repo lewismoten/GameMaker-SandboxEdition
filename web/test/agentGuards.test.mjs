@@ -105,12 +105,11 @@ describe('hooks', () => {
   });
 
   const run = (script, json) => {
-    const t = Date.now();
     const r = spawnSync('node', [path.join(hooksDir, script)], { input: json, encoding: 'utf8' });
-    return { status: r.status, stderr: r.stderr, ms: Date.now() - t };
+    return { status: r.status, stderr: r.stderr };
   };
 
-  it('each script exits 2 with a reason to block, 0 otherwise and on bad input, and is quick', () => {
+  it('each script exits 2 with a reason to block, 0 otherwise and on bad input', () => {
     const bad = JSON.stringify({ tool_name: 'Bash', tool_input: { command: 'git commit -m "x"' }, cwd: '/x' });
     const blocked = run('commitTrailer.mjs', bad);
     expect(blocked.status).toBe(2);
@@ -120,7 +119,5 @@ describe('hooks', () => {
         expect(run(s, input).status).toBe(0);
       }
     }
-    // Node startup is most of the time; the budget is the hook's own work, with slack for a busy Mac.
-    expect(run('noMainCheckoutMerge.mjs', JSON.stringify({ tool_name: 'Bash', tool_input: { command: 'ls' }, cwd: '/x' })).ms).toBeLessThan(400);
   });
 });

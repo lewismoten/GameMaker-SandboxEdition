@@ -5,7 +5,7 @@ import { libraryDefaultPalette } from '@lewismoten/gamemaker-sandbox-tools/palet
 import { parseGame, serializeGame, newGame, type Game, gameTitle } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { parsePalette, type Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 import { debounce } from './ui';
-import { scenePalette } from '../../project/scenePalette';
+import { levelFiles, scenePalette } from '../../project/scenePalette';
 import { emptyCompanion, getSection, renameInCompanion, setExportPreviews, setMenuVersion, setSection, type Companion } from '../../project/companion';
 import { setAbout, type AboutGame } from '../../project/aboutGame';
 import { editedFile, unlockAchievement } from '../../achievements';
@@ -223,9 +223,8 @@ export class Project {
   private savedPalette(file: string): string {
     const keys = [file];
     if (normalize(file).endsWith('.map'))
-      for (const u of this.usesOf(file)) {
-        const bbl = this.game().scenes[u.scene].files[2];
-        if (bbl) keys.push(bbl);
+      for (const { files } of levelFiles(this.game())) {
+        if (files[1] && normalize(files[1]) === normalize(file) && files[2]) keys.push(files[2]);
       }
     for (const k of keys) {
       const saved = this.extras<string>(k, 'showPalette', '');

@@ -5,10 +5,12 @@
 # per line) in a git-ignored file: GM_LEAK_PATTERNS, else .leak-patterns.local at the repository root, else
 # .for-lewis/leak-patterns.local in the main checkout. Use it for names that must not appear, such as 1990s buyers' names. Secret names are never printed:
 # only counts and file paths (names are shown as <secret>, personal patterns as <private>).
+# Builds also check private addresses, tailnet hosts and unrecognized email addresses.
 # Usage: npm run check:leaks -- [dist-folder] [since-rev]   (default: no build, last 300 commits)
 # downloads.html lists the secret games on purpose (Lewis's choice) and is skipped in the build.
 # Exits 1 if a build holds any hit. Hits in tracked files are for a person to judge (code, tests
 # and docs may name a secret game; players must not see it).
+sweepdir=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 cd "$(git rev-parse --show-toplevel)" || exit 2
 dist=${1:-}
 since=${2:-HEAD~300}
@@ -23,7 +25,7 @@ done
 pat=$(printf '%s\n' "${ids[@]}" "${words[@]}" | paste -sd'|' -)
 mask() {
   local args=(-e "s#($pat)#<secret>#Ig") p
-  for p in "${extra[@]}" "$homepat"; do
+  for p in "${extra[@]}" "$homepat" "$homeShape"; do
     [ -n "$p" ] && args+=(-e "s#${p//#/\\#}#<private>#Ig")
   done
   sed -E "${args[@]}"
@@ -31,6 +33,7 @@ mask() {
 excl=()
 for i in "${ids[@]}"; do excl+=(":(exclude)games/$i"); done
 tmp=$(mktemp)
+trap 'rm -f "$tmp"' EXIT
 bad=0
 # Personal patterns stay out of the repository: this home folder, and the local file's lines.
 homepat=$(printf '%s' "$HOME" | sed 's/[][\.*^$(){}?+|/]/\\&/g')
@@ -38,7 +41,18 @@ extra=()
 main=$(dirname "$(git rev-parse --path-format=absolute --git-common-dir)")
 lp=${GM_LEAK_PATTERNS:-}
 [ -z "$lp" ] && for c in .leak-patterns.local "$main/.for-lewis/leak-patterns.local"; do [ -f "$c" ] && lp=$c && break; done
-[ -n "$lp" ] && [ -f "$lp" ] && while IFS= read -r l; do [ -n "$l" ] && extra+=("$l"); done <"$lp"
+if [ -n "$lp" ]; then
+  [ -r "$lp" ] || { echo "Cannot read extra pattern file" >&2; exit 2; }
+  while IFS= read -r l || [ -n "$l" ]; do
+    l=$(printf '%s' "$l" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+    case "$l" in ''|'#'*) continue;; esac
+    grep -E -e "$l" /dev/null 2>/dev/null
+    [ $? -lt 2 ] || { echo "Invalid extra pattern" >&2; exit 2; }
+    extra+=("$l")
+  done <"$lp"
+fi
+echo "== extra patterns: ${#extra[@]}"
+homeShape='/(Users|home)/[[:alnum:]_.-]+/'
 
 echo "== secret ids/titles in tracked files outside their own folders"
 git grep -ilE "\b($pat)\b" -- . "${excl[@]}" ':(exclude)cd' ':(exclude)code' ':(exclude)package-lock.json' >"$tmp"
@@ -50,8 +64,8 @@ git log "$since"..HEAD --format=%B | grep -icE "\b($pat)\b"
 
 echo "== other patterns in tracked files (not cd/, code/, tests, AGENTS.md, CLAUDE.md)"
 pattern=0
-for p in "${extra[@]}" "$homepat" '\.for-lewis' 'sk-[A-Za-z0-9]{20,}' 'ghp_[A-Za-z0-9]{20,}' 'AKIA[0-9A-Z]{16}' 'BEGIN (RSA |EC )?PRIVATE KEY'; do
-  git grep -lIE "$p" -- . ':(exclude)cd' ':(exclude)code' ':(exclude)package-lock.json' ':(exclude)*.test.ts' ':(exclude)AGENTS.md' ':(exclude)CLAUDE.md' ':(exclude).gitignore' ':(exclude).prettierignore' >"$tmp"
+for p in "${extra[@]}" "$homepat" "$homeShape" '\.for-lewis' 'sk-[A-Za-z0-9]{20,}' 'ghp_[A-Za-z0-9]{20,}' 'AKIA[0-9A-Z]{16}' 'BEGIN (RSA |EC )?PRIVATE KEY'; do
+  git grep -lIE -e "$p" -- . ':(exclude)cd' ':(exclude)code' ':(exclude)package-lock.json' ':(exclude)*.test.ts' ':(exclude)AGENTS.md' ':(exclude)CLAUDE.md' ':(exclude).gitignore' ':(exclude).prettierignore' >"$tmp"
   pattern=$((pattern + 1))
   echo "-- pattern $pattern: $(wc -l <"$tmp" | tr -d ' ') file(s)"
   head -6 "$tmp" | mask | sed 's/^/     /'
@@ -62,29 +76,18 @@ if [ -n "$dist" ] && [ -d "$dist" ]; then
   # assets/bonus-*.js is the egg system's own code (src/eggs/bonus.ts): it names the secret games' ids by design, is on no page and loads only once an egg is found
   skip=(--exclude=downloads.html --exclude='extra-*.json' --exclude='walk-*.json' --exclude='bonus-*.js')
   for i in "${ids[@]}"; do skip+=("--exclude-dir=$i"); done
-  # assets/phoneBook-*.js holds the regex text of a printable's path filter (src/manual/printables/phoneBook.ts); it is skipped for the .for-lewis pattern only
   pattern=0
-  for p in "$pat" "$homepat" '\.for-lewis' "${extra[@]}" 'sk-[A-Za-z0-9]{20,}' 'ghp_[A-Za-z0-9]{20,}'; do
-    pskip=("${skip[@]}"); [ "$p" = '\.for-lewis' ] && pskip+=(--exclude='phoneBook-*.js')
-    grep -rIlE "${pskip[@]}" "$p" "$dist" >"$tmp" 2>/dev/null
+  for p in "$pat" "$homepat" "$homeShape" '\.for-lewis' "${extra[@]}" 'sk-[A-Za-z0-9]{20,}' 'ghp_[A-Za-z0-9]{20,}'; do
+    grep -rIlE "${skip[@]}" -e "$p" "$dist" >"$tmp" 2>/dev/null
     c=$(wc -l <"$tmp" | tr -d ' ')
     pattern=$((pattern + 1))
     echo "-- pattern $pattern: $c file(s)"
     head -6 "$tmp" | mask | sed 's/^/     /'
     [ "$c" -gt 0 ] && bad=1
   done
-  # private network addresses and the developer's machine names, then emails (the fake ones are listed for a person to judge)
-  octet='(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])'
-  for p in "(^|[^0-9.])(192\.168|10\.$octet|172\.(1[6-9]|2[0-9]|3[01]))\.$octet\.$octet($|[^0-9.]|\.($|[^0-9]))" '[a-z0-9-]+\.ts\.net'; do
-    grep -rIlE "${skip[@]}" "$p" "$dist" >"$tmp" 2>/dev/null
-    c=$(wc -l <"$tmp" | tr -d ' ')
-    pattern=$((pattern + 1))
-    echo "-- network address pattern $pattern: $c file(s)"
-    head -6 "$tmp" | mask | sed 's/^/     /'
-    [ "$c" -gt 0 ] && bad=1
-  done
-  echo "-- emails in the build (all should be made-up domains or noreply):"
-  grep -rIhoE '[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)*\.[a-z]{2,}' "${skip[@]}" "$dist" 2>/dev/null | grep -vE '@[0-9]+x?\.|noreply|example\.' | sort -u | head -20 | mask | sed 's/^/     /'
+  # A NUL-delimited list keeps any whitespace in file names intact.
+  grep -rIlZ -E "${skip[@]}" '[@:.]' "$dist" >"$tmp"
+  output=$(node "$sweepdir/leakContacts.mjs" <"$tmp") || bad=1
+  printf '%s\n' "$output" | mask
 fi
-rm -f "$tmp"
 exit $bad

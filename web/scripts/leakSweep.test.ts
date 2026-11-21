@@ -59,3 +59,40 @@ it('accepts version strings with invalid octets and fails on a private IPv4 addr
     expect(run().status).toBe(1);
   });
 });
+
+it.each([
+  '100.127.0.1',
+  '169.254.1.2',
+  'http://127.0.0.1:8787',
+  'fe80::1',
+  'PC.TAIL.TS.NET',
+  '/Users/synthetic/project',
+  'user@example.com.evil.org',
+  'UPPER@FOREIGN.INVALID',
+])('rejects a build containing %s', (value) => {
+  fixture('FixturePrivateSurname', (dist, run) => {
+    writeFileSync(join(dist, 'test.txt'), value);
+    expect(run().status).toBe(1);
+  });
+});
+it('scans the phone book chunk and accepts SVG coordinates and known domains', () => {
+  fixture('FixturePrivateSurname', (dist, run) => {
+    const file = join(dist, 'phoneBook-test.js');
+    writeFileSync(file, 'M10.5.3.2l1 Windows NT 10.0.19041.1 chrome 110.0.0.0 / 10.15.7.1 sandbox@sandbox.pgh.pa.us git@github.com');
+    expect(run().status).toBe(0);
+    writeFileSync(file, 'fetch("/.for-lewis/file")');
+    expect(run().status).toBe(1);
+  });
+});
+it('handles comments, CRLF, invalid patterns and missing explicit files', () => {
+  fixture('FixturePrivateSurname', (dist, run) => {
+    const patterns = join(dist, '../patterns.local');
+    writeFileSync(patterns, ' # ignored\r\n  \r\n  HiddenValue \r\n');
+    writeFileSync(join(dist, 'test.txt'), 'HiddenValue');
+    expect(run().status).toBe(1);
+    writeFileSync(patterns, '(');
+    expect(run().status).toBe(2);
+    rmSync(patterns);
+    expect(run().status).toBe(2);
+  });
+});

@@ -33,3 +33,7 @@ describe('textTilePicture', () => {
     expect(tile.some((v) => v === 3)).toBe(true);
   });
 });
+
+it('includes text after blank lines and indentation', () => {
+  expect(textTilePicture(new TextEncoder().encode('\r\n'.repeat(13) + ' '.repeat(17) + 'TITLE'), 3)).toContain(3);
+});

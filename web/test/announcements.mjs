@@ -562,3 +562,20 @@ test('Saves & scores completes loading without making its interactive content li
   assert.equal(await page.locator('.sv-main').getAttribute('aria-live'), 'off');
   assert.doesNotMatch(await page.locator('.sv-main').textContent(), /Loading/);
 });
+
+test('the Bard table headings remain visible below wrapped Credits tabs', async () => {
+  await reset();
+  await page.setViewportSize({ width: 1024, height: 768 });
+  await page.evaluate(async () => {
+    const { renderCredits } = await import('/src/credits/creditsPage.ts');
+    renderCredits(document.body);
+  });
+  await page.getByRole('tab', { name: 'The Bard', exact: true }).click();
+  const heading = page.locator('.bard-table thead th').first();
+  await heading.evaluate((th) => th.closest('table').rows[5].scrollIntoView({ block: 'start' }));
+  await page.waitForFunction(() => {
+    const th = document.querySelector('.bard-table thead th'),
+      r = th.getBoundingClientRect();
+    return th.contains(document.elementFromPoint(r.x + 5, r.y + 5));
+  });
+});

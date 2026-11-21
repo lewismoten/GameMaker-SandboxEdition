@@ -97,14 +97,15 @@ function vocPreview(bytes: Uint8Array): Uint8Array | undefined {
 
 /** A link only for http: and https: addresses; anything else (javascript:, data:) is plain text. */
 export function websiteLink(w: string): string {
+  const href = /^www\.[a-z\d-]+(?:\.[a-z\d-]+)*(?::\d+)?(?:[/?#]|$)/i.test(w) ? `https://${w}` : w;
   let ok: boolean;
   try {
-    const p = new URL(w).protocol;
+    const p = new URL(href).protocol;
     ok = p === 'http:' || p === 'https:';
   } catch {
     ok = false;
   }
-  return ok ? `<a style="color:#9cf" href="${esc(w)}" rel="noopener">${esc(w)}</a>` : esc(w);
+  return ok ? `<a style="color:#9cf" href="${esc(href)}" rel="noopener">${esc(w)}</a>` : esc(w);
 }
 
 /** Credits the author wrote, as visible text: facts first, then role and name pairs. */

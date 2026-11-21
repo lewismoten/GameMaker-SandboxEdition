@@ -6,9 +6,10 @@ import { ADVTYPE, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats
 import { BLEN, BLOCK_COUNTS, CHARBL, TRANSPARENT, orientIndex, parseBlocks, type BlockKind } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { parseMonsters, LASTMON } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { parseCharacter, MAXSEQ, MAXFRAME } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import { levelFiles } from '../../project/scenePalette';
 import { normalize } from '../../project/files';
 import { scenePixels } from '../../gfx/levelPicture';
-import { defaultPalette, serializePalette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
+import { defaultPalette, parsePalette, serializePalette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 import { graphicPixels, titlePixels } from '../../gfx/titlePicture';
 import { Screen } from '@lewismoten/gamemaker-sandbox-engine/gfx/screen';
 import { drawMenu } from '@lewismoten/gamemaker-sandbox-engine/engine/menus';
@@ -64,23 +65,27 @@ function sprite(parts: { px: Uint8Array | undefined; orient: number }[], palette
   return { width: BLEN, height: BLEN * parts.length, pixels, palette };
 }
 
+function spriteFiles(game: Game, slot: number, file: string) {
+  for (const level of levelFiles(game)) if (level.files[slot] && normalize(level.files[slot]) === normalize(file)) return level.files;
+}
+
 function monsterFrame(ctx: GameContext, game: Game, file: string, index: number, frame: number): IndexedPicture {
   const m = parseMonsters(need(ctx, file, 'mon'))[index];
-  const scene = sceneUsing(game, 3, file);
-  if (!scene?.files[4]) throw new ToolError(`No level uses ${file} with a monster block set, so its pictures are unknown.`);
-  const blocks = parseBlocks(need(ctx, scene.files[4]), BLOCK_COUNTS.mbl);
+  const files = spriteFiles(game, 3, file);
+  if (!files?.[4]) throw new ToolError(`No level uses ${file} with a monster block set, so its pictures are unknown.`);
+  const blocks = parseBlocks(need(ctx, files[4]), BLOCK_COUNTS.mbl);
   const frames = m.pic.filter(([b]) => b < 100);
   const pic = frames[Math.min(frame, frames.length - 1)];
   if (!pic) throw new ToolError(`Monster ${index} has no animation frames.`);
   const orient = m.march[0][0]?.orient ?? 0;
-  return sprite([{ px: blocks[pic[0]]?.pixels, orient }], paletteFor(ctx, scene.files[4]));
+  return sprite([{ px: blocks[pic[0]]?.pixels, orient }], files[0] && ctx.files.has(files[0]) ? parsePalette(ctx.files.get(files[0])!) : defaultPalette());
 }
 
 function heroFrame(ctx: GameContext, game: Game, file: string, seq: number, frame: number): IndexedPicture {
   const c = parseCharacter(need(ctx, file, 'chr'));
-  const scene = sceneUsing(game, 5, file);
-  if (!scene?.files[6]) throw new ToolError(`No level uses ${file} with a character block set, so its pictures are unknown.`);
-  const blocks = parseBlocks(need(ctx, scene.files[6]), BLOCK_COUNTS.cbl);
+  const files = spriteFiles(game, 5, file);
+  if (!files?.[6]) throw new ToolError(`No level uses ${file} with a character block set, so its pictures are unknown.`);
+  const blocks = parseBlocks(need(ctx, files[6]), BLOCK_COUNTS.cbl);
   const f = c.sequences[seq].frames[frame];
   const px = (n: number) => (n < CHARBL ? blocks[n]?.pixels : undefined);
   return sprite(
@@ -88,7 +93,7 @@ function heroFrame(ctx: GameContext, game: Game, file: string, seq: number, fram
       { px: px(f.pic1), orient: f.orient & 15 },
       { px: px(f.pic2), orient: f.orient >> 4 },
     ],
-    paletteFor(ctx, scene.files[6]),
+    files[0] && ctx.files.has(files[0]) ? parsePalette(ctx.files.get(files[0])!) : defaultPalette(),
   );
 }
 
