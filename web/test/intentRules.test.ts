@@ -51,7 +51,7 @@ describe('checkLog', () => {
     other.key(0x1c, true);
     expect(checkLog(level([{ rule: 'uses', move: 'Enter', min: 1 }]), other)).toHaveLength(1);
   });
-  it('before: passes in order, flags a missing A or a wrong order', () => {
+  it('before: passes in order, flags a score missing from the scene', () => {
     const s = sim();
     const ok = new EventLog(s);
     s.ci.score = 25;
@@ -64,10 +64,18 @@ describe('checkLog', () => {
     const late = new EventLog(s2);
     s2.scene = 3;
     late.tick(0, 2, 'link');
-    s2.scene = 3;
     s2.ci.score = 25;
     late.tick(0, 3, undefined);
     expect(checkLog(level(rule), late)[0].text).toContain('never did first');
+  });
+  it('before: flags reversed events in scene 2', () => {
+    const s = sim();
+    const log = new EventLog(s);
+    log.key(0x1c, true);
+    s.ci.score = 25;
+    log.tick(0, 2, undefined);
+    const findings = checkLog(level([{ rule: 'before', a: 'score:25', b: 'key:Enter' }]), log);
+    expect(findings.map((finding) => finding.text)).toEqual([expect.stringContaining("key:Enter came before score:25 on the bot's route")]);
   });
   it('carries strict into the finding', () => {
     const log = new EventLog(sim());
