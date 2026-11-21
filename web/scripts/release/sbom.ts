@@ -8,14 +8,24 @@ import { parseArgs } from 'node:util';
 import { repoRoot } from './git';
 import { sbomTarget } from './sbomTargets';
 
+function usage(): number {
+  console.error('Usage: npm run release:sbom -- <pages|engine|archives|tools> [version] [--out file]');
+  return 1;
+}
+
 function main(argv: string[]): number {
-  const { positionals, values } = parseArgs({ args: argv, options: { out: { type: 'string' } }, allowPositionals: true });
+  let parsed;
+  try {
+    parsed = parseArgs({ args: argv, options: { out: { type: 'string' } }, allowPositionals: true });
+  } catch {
+    return usage();
+  }
+  const { positionals, values } = parsed;
   const [name, version] = positionals;
   const root = repoRoot();
   const target = sbomTarget(name ?? '', root);
   if (!target || positionals.length > 2 || values.out === '') {
-    console.error('Usage: npm run release:sbom -- <pages|engine|archives|tools> [version] [--out file]');
-    return 1;
+    return usage();
   }
   if (version !== undefined && version !== target.component.version) {
     console.warn(

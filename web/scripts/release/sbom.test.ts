@@ -31,6 +31,15 @@ it('uses the web manifest version and site identity for pages', () => {
   });
 });
 
+it.each(['--unknown', '--out'])('prints usage and exits 1 for %s', (flag) => {
+  const result = spawnSync(join(root, 'node_modules/.bin/vite-node'), ['scripts/release/sbom.ts', 'archives', flag], {
+    cwd: join(root, 'web'),
+    encoding: 'utf8',
+  });
+  expect(result.status).toBe(1);
+  expect(result.stderr.trim()).toBe('Usage: npm run release:sbom -- <pages|engine|archives|tools> [version] [--out file]');
+});
+
 it('writes real offline npm components and warns when the requested version differs', () => {
   const dir = mkdtempSync(join(tmpdir(), 'sbom-'));
   try {
