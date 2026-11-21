@@ -31,7 +31,11 @@ const readable = (b: Block) => b.tag !== 'p' || !DEV.test(blockText(b));
 
 /** The book's chapters from the README's and the parts list's Markdown: the intro, the build chapters, the parts. */
 export function phoneChapters(readme: string, parts: string): Chapter[] {
-  const sections = readMarkdown(readme);
+  const sections = readMarkdown(
+    readme
+      .replace('see `PARTS.md` and the cost sheet', 'see the Parts list chapter and the Junior Lab parts list CSV')
+      .replace('continue with step 6 above', 'continue with step 6 of Build order for a beginner'),
+  );
   const chapters: Chapter[] = [];
   const intro = sections.find((s) => s.level === 1);
   if (intro) chapters.push({ head: 'About this kit', blocks: intro.blocks.filter(readable) });

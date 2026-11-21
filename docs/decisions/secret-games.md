@@ -3,13 +3,14 @@
 **What:** A game whose `about.json` has `"secret": true` is never named, counted, linked or
 hinted at in anything a player sees: the site, the desk, other games, manuals, download lists,
 tours and screenshots. Code, commit messages and history may name it, so a developer reading the
-repository can find it. The one exception is `downloads.html`, which lists secret games. The
-catalog reveals one only after the player finds the eggs, and hides it again if they are lost.
+repository can find it. The public `downloads.html` page also leaves them out. The
+catalog reveals a game when its unlock condition is met and hides it again if that progress is lost.
 
 **How the build keeps it out:**
 
 - The build leaves secret games out of `games/index.json`, the catalog, pages, the sitemap and
-  pictures, and writes them to `games/extra.json`, fetched only once every egg is found
+  pictures, and writes them to `games/extra-1.json` (felt eggs) and `games/extra-2.json`
+  (tin hearts). The catalog fetches the corresponding list at 13 felt eggs or all tin hearts
   (`0d25eb488`, `e7c69703b`).
 - The desk's cover for one is found by a hash of its id, so code and chunk names do not name it
   (`c6ed6d9f7`).
