@@ -11,7 +11,8 @@ import { Grid } from '../../kit/starter/grid';
 import { ORIGIN, StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
 import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { addTokenBlocks } from './tokenBlocks';
 
 export type SignName = 'count' | 'takes3' | 'exit' | 'all5' | 'isExit';
@@ -76,9 +77,9 @@ function threeForTheGate(book: Book, signs: Record<SignName, Sign>): StarterMap 
     .set(15, GROUND - 1, 'token')
     .set(26, 2, 'token');
   m.set(28, GROUND - 2, 'tokenTop').set(28, GROUND - 1, 'gateThree');
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 5, onGround(GROUND, signs.count), signs.count);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 22, onGround(GROUND, signs.takes3), signs.takes3);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 38, onGround(GROUND, signs.exit), signs.exit);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 5, onGround(GROUND, signs.count), signs.count, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 22, onGround(GROUND, signs.takes3), signs.takes3, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 38, onGround(GROUND, signs.exit), signs.exit, 1, { maxPostHeight: 1 });
   return m;
 }
 
@@ -115,8 +116,8 @@ function gateIsTheExit(book: Book, signs: Record<SignName, Sign>): StarterMap {
   // the gate is the door out: its block is the level's only link
   m.set(40, GROUND - 2, 'tokenTop').set(40, GROUND - 1, 'gateFive');
   m.exits.push({ from: [40 + ORIGIN, GROUND - 1 + ORIGIN] });
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 5, onGround(GROUND, signs.all5), signs.all5);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 34, onGround(GROUND, signs.isExit), signs.isExit);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 5, onGround(GROUND, signs.all5), signs.all5, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 34, onGround(GROUND, signs.isExit), signs.isExit, 1, { maxPostHeight: 1 });
   return m;
 }
 

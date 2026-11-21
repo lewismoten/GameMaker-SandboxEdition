@@ -14,7 +14,8 @@ import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
 import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { addSpeakerBlocks } from './speakerBlocks';
 
 export type SignName = 'enter' | 'walkin' | 'exit';
@@ -47,7 +48,7 @@ const onGround = (ground: number, s: Sign, postHeight = 1) => ground - postHeigh
 
 /** Boards and their single posts replace only sky, never scenery, coins or speakers. */
 const place = (m: StarterMap, x: number, sign: Sign, postHeight = 1) =>
-  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, x, onGround(GROUND, sign, postHeight), sign, postHeight);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, x, onGround(GROUND, sign, postHeight), sign, postHeight, { maxPostHeight: 1 });
 
 export const GROUND = 10;
 /** Where the speakers stand (columns): level 2's two and level 3's one. */

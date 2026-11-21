@@ -28,7 +28,7 @@ export type AcceptedEntry = string | { finding: string; why: string };
 export const acceptedKey = (e: AcceptedEntry): string => (typeof e === 'string' ? e : e.finding);
 
 /** The reason an entry carries, or '' when it is a bare key or its reason is blank. */
-export const acceptedWhy = (e: AcceptedEntry): string => (typeof e === 'string' ? '' : (e.why ?? '').trim());
+export const acceptedWhy = (e: AcceptedEntry): string => (typeof e !== 'string' && typeof e?.why === 'string' ? e.why.trim() : '');
 
 /** The keys of a list of entries (a malformed entry is skipped). */
 export const acceptedKeys = (list: Iterable<AcceptedEntry>): string[] =>
@@ -36,7 +36,7 @@ export const acceptedKeys = (list: Iterable<AcceptedEntry>): string[] =>
 
 /** The keys of entries that give no reason (advice only: a reason is optional). */
 export const entriesWithoutReason = (list: Iterable<AcceptedEntry>): string[] =>
-  [...list].filter((e) => acceptedWhy(e) === '' && (typeof e === 'string' || typeof e?.finding === 'string')).map(acceptedKey);
+  [...list].filter((e) => (typeof e === 'string' || typeof e?.finding === 'string') && acceptedWhy(e) === '').map(acceptedKey);
 
 /** The reason kept for a finding key, or ''. */
 export const reasonFor = (list: Iterable<AcceptedEntry>, key: string): string => {

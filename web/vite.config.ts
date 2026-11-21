@@ -132,6 +132,7 @@ function offlineFiles(bundle: Bundle, forArchive = false): [string, number, numb
         : /^(og\/|og-image\.|robots\.txt$|sitemap\.xml$|llms\.txt$|sw\.js$|index\.html$|archive\.html$|web-player\.html$|player\/|trinkets\/|laser\/|pocket\/)/
     ).test(f) &&
     !DEV_ONLY.test(f) &&
+    !/^videos\/walk-[0-9a-f]+\.json$/.test(f) && // a secret game's walkthrough: fetched only once it is revealed
     !/^(offline\.[a-f0-9]+\.zip$|offline\.json$|archive\.json$|games\/extra-\d+\.json$)/.test(f) &&
     (!/^games\/(gameware|shareware|originals)\//.test(f) || /\.(zip|zpart|gmpak)$|\/walkthrough\.json\.gz$/.test(f));
   return [...sources]

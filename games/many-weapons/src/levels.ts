@@ -12,7 +12,8 @@ import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
-import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { FLAME_POUCH, FROSTY, STAR_POUCH, TARGET } from './monsters';
 
@@ -52,7 +53,7 @@ export const STAND = GROUND - 1;
 
 /** Every board and post must leave the level's existing art and pickups intact. */
 function stamp(map: StarterMap, x: number, y: number, sign: Sign, postHeight = 1): void {
-  stampTiledSign({ set: (cx, cy, name) => map.setOnSky(cx, cy, name) }, x, y, sign, postHeight);
+  stampTiledSign({ set: (cx, cy, name) => map.setOnSky(cx, cy, name) }, x, y, sign, postHeight, { maxPostHeight: 1 });
 }
 
 /** The ground, brick walls at both ends (rows 0 to 9, so the room is closed in), the entrance on the left (x 3) and the exit door at `exitX`. */

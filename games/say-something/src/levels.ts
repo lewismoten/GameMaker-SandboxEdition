@@ -12,7 +12,8 @@ import { Grid } from '../../kit/starter/grid';
 import { ORIGIN, StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
 import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { addMicroPlaques, stampTiledSign, stampMicroPlaques } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign, stampMicroPlaques } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { BUBBLE, addTalkers, talkerBlocks, type TalkerName } from './talkers';
 
 export type SignName = 'what' | 'edit' | 'big' | 'more' | 'walkin' | 'exit';
@@ -104,10 +105,10 @@ function sayHello(book: Book, signs: Record<SignName, Sign>): Level {
     [13, 18, 24, 41],
   );
   const m = new StarterMap(book, g.rows());
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 4, onGround(GROUND, signs.what), signs.what);
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 11, onGround(GROUND, signs.edit), signs.edit);
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 21, onGround(GROUND, signs.walkin), signs.walkin);
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 37, onGround(GROUND, signs.exit), signs.exit);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 4, onGround(GROUND, signs.what), signs.what, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 11, onGround(GROUND, signs.edit), signs.edit, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 21, onGround(GROUND, signs.walkin), signs.walkin, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 37, onGround(GROUND, signs.exit), signs.exit, 1, { maxPostHeight: 1 });
   const talks: Talk[] = [];
   stand(m, talks, 'pip', PIP_X);
   return { file: 'hello', title: 'Say Hello', hint: 'Walk into Pip.', map: m, talks };
@@ -133,8 +134,8 @@ function twoFriends(book: Book, signs: Record<SignName, Sign>): Level {
     [13, 20, 28, 41],
   );
   const m = new StarterMap(book, g.rows());
-  stampMicroPlaques({ set: (x, y, name) => m.setOnSky(x, y, name) }, 9, 7, [signs.big, signs.more]);
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 41, 7, signs.exit, 2);
+  stampMicroPlaques({ set: (x, y, name) => m.setOnSky(x, y, name) }, 9, 7, [signs.big, signs.more], 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 41, 7, signs.exit, 2, { maxPostHeight: 1 });
   const talks: Talk[] = [];
   stand(m, talks, 'moss', MOSS_X);
   stand(m, talks, 'dot', DOT_X);

@@ -1,13 +1,17 @@
 // Fragments coexist with legacy notes and remain target-scoped through a release cut.
-import { afterEach, describe, expect, it } from 'vitest';
+import { execFileSync, spawnSync } from 'node:child_process';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { cutRelease, extractSection, hasNoChanges } from '../../../scripts/release/changelog.mjs';
 import { consumeFragments, pendingNotes, readFragments, withPendingNotes } from './fragments';
 
+import { commitsSince, lastTag, TARGETS } from './git';
+
 const roots: string[] = [];
 afterEach(() => {
+  vi.unstubAllEnvs();
   for (const root of roots.splice(0)) rmSync(root, { recursive: true, force: true });
 });
 const setup = () => {
@@ -50,6 +54,10 @@ describe('release fragments', () => {
     const root = setup();
     add(root, 'engine', 'bad', 'A summary with no category.');
     expect(() => readFragments(root, 'engine')).toThrow(/expected/);
+    add(root, 'engine', 'bad', '### Fixed\n- Missing blank line.');
+    expect(() => readFragments(root, 'engine')).toThrow(/expected/);
+    add(root, 'engine', 'bad', '### Fixed\n\n- First.\n- Second.');
+    expect(() => readFragments(root, 'engine')).toThrow(/expected/);
     add(root, 'engine', 'bad', '### Fixed\n\n- Valid.\n');
     const fragments = readFragments(root, 'engine');
     expect(() => cutRelease(withPendingNotes(legacy, fragments), { version: 'bad', date: 'd', prefix: 'engine' })).toThrow();
@@ -68,4 +76,119 @@ describe('release fragments', () => {
     expect(readFragments(root, 'pages')).toHaveLength(1);
     expect(readFragments(root, 'engine')).toEqual([]);
   });
+});
+
+function releaseRepo() {
+  // Isolate every Git probe, including those in the release checker subprocess.
+  for (const key of Object.keys(process.env)) {
+    if (key.startsWith('GIT_')) vi.stubEnv(key, undefined);
+  }
+  const root = setup();
+  const git = (...args: string[]) => execFileSync('git', args, { cwd: root });
+  git('init', '--quiet');
+  writeFileSync(join(root, 'CHANGELOG.md'), legacy);
+  for (const target of ['engine', 'archives', 'tools']) {
+    const dir = join(root, 'web/packages', target);
+    mkdirSync(dir, { recursive: true });
+    writeFileSync(join(dir, 'CHANGELOG.md'), legacy);
+    writeFileSync(join(dir, 'package.json'), '{"version":"1.1.0"}');
+  }
+  git('add', '.');
+  git('-c', 'user.email=test@example.com', '-c', 'user.name=Test', '-c', 'commit.gpgsign=false', 'commit', '-qm', 'Release fixture');
+  git('tag', 'engine-v1.1.0');
+  return root;
+}
+
+it('uses the fixture repository when the caller sets GIT_DIR', () => {
+  const bogus = join(setup(), 'bogus.git');
+  vi.stubEnv('GIT_DIR', bogus);
+  const root = releaseRepo();
+  expect(existsSync(join(root, '.git', 'HEAD'))).toBe(true);
+  expect(lastTag(root, TARGETS.engine)).toBe('engine-v1.1.0');
+  expect(existsSync(bogus)).toBe(false);
+});
+
+function check(root: string) {
+  return spawnSync(process.execPath, [require.resolve('vite-node/vite-node.mjs'), join(__dirname, 'check.ts')], { cwd: root, encoding: 'utf8' });
+}
+
+it('reports a malformed pages fragment and checks the remaining targets', () => {
+  const root = releaseRepo();
+  add(root, 'pages', 'bad', '### Fixd\n\n- Typo.');
+  add(root, 'pages', 'second', 'Missing heading.');
+  writeFileSync(join(root, 'changes/unreleased/pages/note.markdown'), '### Fixed\n\n- Valid content.');
+  for (const name of ['.keep', '.gitkeep']) writeFileSync(join(root, 'changes/unreleased/engine', name), '');
+  writeFileSync(join(root, 'web/packages/engine/CHANGELOG.md'), legacy.replace('1.0.0', '1.1.0'));
+  const malformed = check(root);
+  expect(malformed.status, malformed.stderr).toBe(1);
+  expect(malformed.stdout).toContain(`FAIL pages: ${join(root, 'changes/unreleased/pages/bad.md')}: expected one ### category, a blank line and one bullet.`);
+  expect(malformed.stdout).toContain(`FAIL pages: ${join(root, 'changes/unreleased/pages/second.md')}: expected one`);
+  expect(malformed.stdout).toContain(`FAIL pages: ${join(root, 'changes/unreleased/pages/note.markdown')}: expected a .md fragment file.`);
+  expect(malformed.stdout).toContain('ok   engine');
+
+  expect(malformed.stdout).toContain('ok   archives');
+  expect(malformed.stdout).toContain('ok   tools');
+});
+
+it('fails when the latest tag is ahead of the changelog even after the manifest advances', () => {
+  const root = releaseRepo();
+  writeFileSync(join(root, 'web/packages/engine/package.json'), '{"version":"1.2.0"}');
+  const missingRelease = check(root);
+  expect(missingRelease.status, missingRelease.stderr).toBe(1);
+  expect(missingRelease.stdout).toContain('FAIL engine: 1.1.0 is tagged but the changelog stops at 1.0.0');
+});
+
+it('requires a note for a source change when the newest release tag is on a side branch', () => {
+  const root = releaseRepo();
+  const git = (...args: string[]) =>
+    execFileSync('git', ['-c', 'user.email=test@example.com', '-c', 'user.name=Test', '-c', 'commit.gpgsign=false', ...args], { cwd: root });
+  git('switch', '-qc', 'release');
+  git('commit', '--allow-empty', '-qm', 'Tag release');
+  git('tag', 'engine-v1.2.0');
+  git('switch', '-q', '-');
+  const dir = join(root, 'web/packages/engine');
+  writeFileSync(join(dir, 'CHANGELOG.md'), '# Changelog\n\n## [Unreleased]\n\n## [1.2.0] - 2026-01-02\n\nReleased.\n');
+  writeFileSync(join(dir, 'package.json'), '{"version":"1.2.0"}');
+  mkdirSync(join(dir, 'src'));
+  writeFileSync(join(dir, 'src/index.ts'), 'export const version = 2;\n');
+  git('add', '.');
+  git('commit', '-qm', 'Change engine source');
+  const result = check(root);
+  expect(result.status, result.stderr).toBe(1);
+  expect(result.stdout).toContain('FAIL engine: 1 commits since engine-v1.2.0, but Unreleased and fragments list nothing');
+});
+
+it('ignores hidden files before checking extension or content', () => {
+  const root = setup();
+  for (const name of ['.DS_Store', '.note.md.swp', '.draft.md']) writeFileSync(join(root, 'changes/unreleased/pages', name), 'metadata');
+  expect(readFragments(root, 'pages')).toEqual([]);
+});
+
+it('rejects a note in a misspelled target folder', () => {
+  const root = releaseRepo();
+  mkdirSync(join(root, 'changes/unreleased/page'));
+  add(root, 'page', 'fix', '### Fixed\n\n- Site.');
+  const result = check(root);
+  expect(result.status).toBe(1);
+  expect(result.stdout).toContain(`FAIL fragments: unknown target folder ${join(root, 'changes/unreleased/page')}`);
+});
+
+it.each(['note.MD', 'note.markdown'])('rejects the visible filename %s', (name) => {
+  const root = setup();
+  writeFileSync(join(root, 'changes/unreleased/pages', name), '### Fixed\n\n- Site.');
+  expect(() => readFragments(root, 'pages')).toThrow(`${name}: expected a .md fragment file.`);
+});
+
+it('selects the final release ahead of its release candidate', () => {
+  const root = releaseRepo();
+  execFileSync('git', ['tag', 'engine-v1.1.0-rc.1'], { cwd: root });
+  expect(lastTag(root, TARGETS.engine)).toBe('engine-v1.1.0');
+});
+
+it('reads HEAD history when the tag belongs to an unrelated history', () => {
+  const root = releaseRepo();
+  const git = (...args: string[]) => execFileSync('git', args, { cwd: root });
+  git('switch', '--orphan', 'unrelated');
+  git('-c', 'user.email=test@example.com', '-c', 'user.name=Test', '-c', 'commit.gpgsign=false', 'commit', '--allow-empty', '-qm', 'Independent history');
+  expect(commitsSince(root, TARGETS.pages, 'engine-v1.1.0').map((c) => c.subject)).toEqual(['Independent history']);
 });

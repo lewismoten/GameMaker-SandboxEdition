@@ -13,7 +13,8 @@ import { Grid } from '../../kit/starter/grid';
 import { ORIGIN, StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
 import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { addScenery, type Scenery } from './scenery';
 
 const SIGNS = {
@@ -90,7 +91,8 @@ const cloud = (g: Grid, x: number, y: number) => g.put(x, y, '(').put(x + 1, y, 
 function stamp(m: StarterMap, x: number, y: number, names: string[][]): void {
   names.forEach((row, dy) => row.forEach((n, dx) => m.set(x + dx, y + dy, n)));
 }
-const sign = (m: StarterMap, x: number, s: Sign) => stampTiledSign({ set: (sx, sy, block) => m.setOnSky(sx, sy, block) }, x, onGround(s), s);
+const sign = (m: StarterMap, x: number, s: Sign) =>
+  stampTiledSign({ set: (sx, sy, block) => m.setOnSky(sx, sy, block) }, x, onGround(s), s, 1, { maxPostHeight: 1 });
 
 /** A map from a grid, starting where Mara first lands; the far plane's ground and hedges are swapped for its own. */
 function built(book: Book, g: Grid, start: Spot, far: boolean): StarterMap {

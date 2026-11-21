@@ -7,6 +7,7 @@ import { assertNoInvisibleWalls } from '../../kit/starter/invisibleWalls';
 import { ORIGIN } from '../../kit/starter/map';
 import { buildLevels } from '../src/levels';
 import { MIN_KIT_SHARE, MIN_PATH, contrastTable } from './contrast';
+import { checkEntranceWalk } from '../../kit/starter/entranceWalk';
 import { play } from './play';
 
 const built = buildLevels();
@@ -38,5 +39,6 @@ for (const row of contrastTable()) {
   if (row.path < MIN_PATH) throw new Error(`shade ${row.shade}: the floor's edge has contrast ${row.path.toFixed(2)}, under ${MIN_PATH}`);
   if (row.kit < MIN_KIT_SHARE) throw new Error(`shade ${row.shade}: only ${(row.kit * 100).toFixed(0)}% of Kit's colors stand out from the air`);
 }
+for (let completed = 0; completed < 3; completed++) await checkEntranceWalk((await play(undefined, completed)).bot, 1, 3);
 const { sim } = await play();
 console.log(`lights-out: the bot walked all three levels; score ${sim.ci.score}, ${sim.trail.length} scenes entered`);

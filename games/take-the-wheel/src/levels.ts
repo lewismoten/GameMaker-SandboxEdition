@@ -12,7 +12,8 @@ import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
 import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { parkedKart } from './kart';
 import { BIRD } from './monsters';
 
@@ -86,8 +87,8 @@ function hopIn(book: Book, signs: Record<SignName, Sign>): StarterMap {
   const m = new StarterMap(book, g.rows());
   m.set(42, 8, 'kartTop').set(42, 9, 'kartBottom');
 
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 15, onGround(GROUND, signs.bird), signs.bird);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 36, onGround(GROUND, signs.hop), signs.hop);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 15, onGround(GROUND, signs.bird), signs.bird, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 36, onGround(GROUND, signs.hop), signs.hop, 1, { maxPostHeight: 1 });
   m.mon(BIRD, L1_BIRD, STAND);
   return m;
 }
@@ -108,10 +109,10 @@ function drive(book: Book, signs: Record<SignName, Sign>): StarterMap {
   );
   const m = new StarterMap(book, g.rows());
 
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 11, onGround(GROUND, signs.nojump), signs.nojump);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 16, onGround(GROUND, signs.honk), signs.honk);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 11, onGround(GROUND, signs.nojump), signs.nojump, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 16, onGround(GROUND, signs.honk), signs.honk, 1, { maxPostHeight: 1 });
 
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 38, onGround(GROUND, signs.exit), signs.exit);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 38, onGround(GROUND, signs.exit), signs.exit, 1, { maxPostHeight: 1 });
   for (const x of L2_BIRDS) m.mon(BIRD, x, STAND);
   return m;
 }

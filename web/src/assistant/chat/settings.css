@@ -233,3 +233,34 @@ dialog.modal .ai-provider {
     max-width: 100%;
   }
 }
+
+@media (max-width: 780px) and (max-height: 480px) and (orientation: landscape) {
+  .ai-setup > .ai-field:not([hidden]) {
+    grid-template-columns: fit-content(6.25rem) minmax(0, 1fr);
+  }
+}
+
+/* Put the provider legend beside the choices and the privacy note beside the controls. */
+@media (min-width: 540px) and (max-height: 360px) and (orientation: landscape) {
+  dialog.modal .ai-setup {
+    row-gap: 1px;
+  }
+  .ai-setup .ai-providers {
+    grid-template-columns: auto repeat(2, minmax(0, 1fr));
+  }
+  .ai-setup .ai-providers legend {
+    float: left;
+    align-self: center;
+  }
+  .ai-setup > .ai-field > label {
+    line-height: 1.2;
+  }
+  .ai-setup > .ai-privacy {
+    grid-column: 2;
+    grid-row: span 3;
+    padding-block: 2px;
+  }
+  .ai-setup > .ai-help-slot {
+    grid-column: 1;
+  }
+}

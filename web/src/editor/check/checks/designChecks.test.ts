@@ -11,7 +11,7 @@ import { parseCharacter, serializeCharacter } from '@lewismoten/gamemaker-sandbo
 import { GameFiles } from '../../../project/files';
 import { scenesOf, type SceneData } from '../sceneData';
 import { testGame, type TestGame } from '../testGame';
-import { flashing } from './flashing';
+import { flashing, flashesPerSecond } from './flashing';
 import { changingKeys, keyHabits } from './keyHabits';
 import { fakeExits, music, noWayOut, untitledGame } from './levelExits';
 import { screenText } from './screenText';
@@ -161,6 +161,18 @@ describe('exits, music and flashing', () => {
     expect(flashing(d)).toEqual([]);
   });
 
+  it.each([0, 1])('does not repeat a chain ending in a terminal block (ticks %i)', (ticks) => {
+    const d = sceneOf(testGame(['S E']));
+    d.map.blocks.fill(10);
+    d.palette.fill(0);
+    d.palette.set([63, 63, 63], 3);
+    d.bbl[10].pixels.fill(0);
+    d.bbl[11].pixels.fill(1);
+    Object.assign(d.bbl[10], { ntime: 1, nextBl: 11 });
+    Object.assign(d.bbl[11], { ntime: ticks, nextBl: 11 });
+    expect(flashing(d)).toEqual([]);
+  });
+
   it('does not call one quick change among slow pictures flashing', () => {
     const t = testGame(ROWS);
     const d = sceneOf(t);
@@ -188,4 +200,12 @@ describe('the stakes', () => {
       ['start-threat', 'The hero starts with nothing to fire, and 2 enemies are on the first screen'],
     ]);
   });
+});
+
+// The busiest second can straddle the end of a long animation cycle.
+it('counts flashing across a cycle boundary', () => {
+  const d = sceneOf(testGame(ROWS));
+  const cycle = [1, 1, 1, 1, 41, 1, 1, 1].map((ticks, n) => ({ n, ticks }));
+  cycle.forEach(({ n }) => d.bbl[n].pixels.fill(n % 2 ? 15 : 0));
+  expect(flashesPerSecond(d, cycle)).toBeGreaterThanOrEqual(3);
 });

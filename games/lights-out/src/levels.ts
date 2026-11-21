@@ -15,7 +15,8 @@ import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { ORIGIN, StarterMap } from '../../kit/starter/map';
 import { skyOf, type Pal } from '../../kit/starter/palette';
-import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { AIR, air, drip, floor, lantern, post, rock } from './cave';
 import { type Timed } from './loops';
@@ -172,6 +173,7 @@ function lay(
   const timed: Timed[] = [];
   // A two-row rock ledge under the doorway, below the cave's existing ceiling.
   h[o.start] -= 2;
+  h.fill(h[o.start], 1, o.start);
   const g = new Grid(W, HEIGHT);
   g.put(o.start, h[o.start] - 2, 's').put(o.start, h[o.start] - 1, 'S');
   g.put(o.exit, h[o.exit] - 2, 'e').put(o.exit, h[o.exit] - 1, 'E');
@@ -267,7 +269,7 @@ function lay(
       }
       m.set(cx, cy, id);
     };
-    stampTiledSign({ set: (cx, cy, pic) => stamp(pic, cx, cy) }, x, y, sign, GROUND - y - sign.board.length);
+    stampTiledSign({ set: (cx, cy, pic) => stamp(pic, cx, cy) }, x, y, sign, GROUND - y - sign.board.length, { maxPostHeight: 1 });
     return [x, y];
   };
   return { map: m, timed, cells, signAt };

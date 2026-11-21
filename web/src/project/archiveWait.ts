@@ -30,11 +30,7 @@ function say(label: string | undefined): void {
 export const archiveLabel = (url: string): string => url.split('/').filter(Boolean).slice(-2, -1)[0] ?? 'game';
 
 /** Like fetch, but a 202 is waited out (with backoff) instead of returned. `wait` is injectable for tests. */
-export async function fetchArchive(
-  url: string,
-  init?: RequestInit,
-  wait: (ms: number) => Promise<void> = (ms) => new Promise((r) => setTimeout(r, ms)),
-): Promise<Response> {
+export async function fetchArchive(url: string, init?: RequestInit, wait?: (ms: number) => Promise<void>): Promise<Response> {
   let shown = false;
   const id = Symbol();
   try {
@@ -46,8 +42,7 @@ export async function fetchArchive(
         waiting.set(id, archiveLabel(url));
         say(archiveLabel(url));
       }
-      await wait(retryDelayMs(n, Number(res.headers.get('retry-after')) || 0));
-      if (init?.signal?.aborted) return res;
+      await pause(retryDelayMs(n, Number(res.headers.get('retry-after')) || 0), init?.signal, wait);
     }
   } finally {
     if (shown) {
@@ -55,4 +50,37 @@ export async function fetchArchive(
       say([...waiting.values()].at(-1));
     }
   }
+}
+
+/** Settle immediately on cancellation and release the timer and listener. */
+function pause(ms: number, signal?: AbortSignal | null, wait?: (ms: number) => Promise<void>): Promise<void> {
+  return new Promise((resolve, reject) => {
+    signal?.throwIfAborted();
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const clean = () => {
+      clearTimeout(timer);
+      signal?.removeEventListener('abort', abort);
+    };
+    const abort = () => {
+      clean();
+      reject(signal?.reason);
+    };
+    signal?.addEventListener('abort', abort, { once: true });
+    if (wait)
+      void wait(ms).then(
+        () => {
+          clean();
+          resolve();
+        },
+        (error: unknown) => {
+          clean();
+          reject(error);
+        },
+      );
+    else
+      timer = setTimeout(() => {
+        clean();
+        resolve();
+      }, ms);
+  });
 }

@@ -64,6 +64,34 @@ game folder opens in the browser unchanged.
 
 ## Credits
 
+- OpenAI Codex updated save import and delete error handling, safety backup retries, regression tests, and the saves guide (November 20, 2026).
+- OpenAI Codex fixed release checks and community URL validation, added regression tests and clarified the package release guide (November 20, 2026).
+- OpenAI Codex updated the pre-merge release fragment check, its tests and its documentation (November 19, 2026).
+- OpenAI Codex updated the tour checker and repaired tour targets on the cast page, in the Library and in the editor (November 19, 2026).
+- OpenAI Codex updated the DOS player headings, wall clock label, and modem speed landmark (November 19, 2026).
+- OpenAI Codex updated the library tile tooltips and wrote the library width sweep (November 19, 2026).
+- OpenAI Codex updated the editor tour to show the Assistant on phones (November 19, 2026).
+- OpenAI Codex updated the Achievements tour to show each category and the reset control (November 19, 2026).
+
+- **Tour selector source coverage (November 19, 2026):** OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, updated the tour data test to scan nested page modules after controls are split into smaller files. No tour content or third-party material was added.
+
+- **Shared block timer finalization (November 18, 2026):** OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, extracted the shared timer helper and added regression tests. Existing game art and content credits remain; no third-party material was added.
+
+- **Achievement catalog organization (November 18, 2026):** OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, split the existing achievement catalog into typed modules by group. No new third-party code or assets were added.
+
+- **Sample CD build organization (November 18, 2026)**: OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, split the existing catalog build script into modules by responsibility. No new third-party code or assets were added.
+- **SEO build organization (November 18, 2026)**: OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, split the existing crawlable-page generator into modules by responsibility. No new third-party code or assets were added.
+- **Project files organization (November 18, 2026)**: OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, split the existing catalog loading and hosted-file transport into modules. No new third-party code or assets were added.
+- **Tour engine organization (November 18, 2026)**: OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, split the existing guided-tour player into modules by responsibility. No new third-party code or assets were added.
+
+- **Home shell organization (November 18, 2026)**: OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, split the existing home game models, adapters, filters and address helpers into modules. No new third-party code or assets were added.
+
+- **Integrator organization (November 18, 2026)**: OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, split the existing integrator editor's song playback, panel resizing and selected-scene form into local modules. No new third-party code or assets were added.
+
+- **Workspace shell organization (November 18, 2026)**: OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, split the existing editor workspace sidebar and play-session ownership into modules. No new third-party code or assets were added.
+
+- **Map editor organization (November 18, 2026)**: OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, split the existing map editor into modules by responsibility. No new third-party code or assets were added.
+
 - **OpenAI Codex** helped audit imported archive walkthroughs and wrote the walkthrough
   bot's missing background lookups, sustained flight steering, complete-recording
   verification, and regression tests,
@@ -170,6 +198,7 @@ game folder opens in the browser unchanged.
 - **First-load boundaries and regression checks**: **Hermes Agent running OpenAI Codex GPT-6.1 Sol**, directed by Lewis Moten, separated editor routes from the home page. No game content, patch values or export formats changed.
 - **All Mine high-score achievement**: **Hermes Agent running OpenAI Codex GPT-6.1 Sol**, directed by Lewis Moten, implemented stored-table detection, player/desk integration, reset persistence and tests, and selected an existing checklist block through the badge generator. The source artwork retains its original credits; no new game artwork was drawn.
 - **DOS installation support**: **Hermes Agent running OpenAI Codex GPT-6.1 Sol**, directed by Lewis Moten, wrote the DOS batch installer, installation instructions, optional whole-file floppy layout script, export-only loading boundary, printable disk-label installation text and regression tests. Original game and DOS runtime files retain their existing credits.
+- **Picture review helper packaging**: **OpenAI Codex (GPT-6.1 Sol)**, directed by Lewis Moten, moved the existing DAST image helpers and regression tests into the tools package and documented their public imports. The original algorithms and artwork retain their credits.
 - **Technical Reference review**: **OpenAI Codex (GPT-6)**, directed by Lewis Moten,
   revised the booklet and cited Programmer's Guide chapters, drew static inline SVG byte,
   bit, wrapping and fade figures, and checked worked examples against non-secret Sandbox
@@ -805,7 +834,8 @@ formats from their published descriptions and from Game-Maker's own source.
   dedication), chosen because it reads with every kind of color vision; its monster and
   text-screen contrast is the **relative luminance and contrast ratio** of the W3C's Web Content
   Accessibility Guidelines (WCAG) 2, and its flashing check follows WCAG 2's **three flashes a
-  second** threshold (success criterion 2.3.1). All are used as published; no code of theirs is
+  second** threshold (success criterion 2.3.1). The tools package’s `kit/flashMeter` also follows the relative
+  luminance and flashing thresholds. All are used as published; no code of theirs is
   included.
 - **Color-vision simulation matrices** (`web/packages/engine/src/gfx/colorVision.ts`, the one copy; used by
   the palette editor's Color vision check in `web/src/editor/editors/palette/colorVision.ts`, by the badge
@@ -1310,3 +1340,20 @@ maker "ZORP" is invented. The shell is untested: nothing has been printed.
 - **Pass the Pie card heading contrast (November 16, 2026):** OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, changed the Main Street and Big Gobble small headings to the existing dark ink. Existing art, words, music and engine credits remain; no third-party material was added.
 
 - **Editor DOS limit feedback (November 16, 2026):** OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, added instrument-bank, scene-link and VGA channel limit messages and node-only regression tests. No third-party material was added.
+- **Offline copy no longer lists hidden walkthrough data (November 18, 2026):** The finding was made by OpenAI Codex (GPT-6.2 Astra); the fix and its regression tests are by Claude Sonnet 5.5, directed by Lewis Moten. No third-party material was added.
+
+- **Adversarial review fixes (November 18, 2026):** OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, fixed animation-loop checking, offline copy controls, ZIP comment handling, archive cancellation and the Pages publishing lease, and added regression tests. The findings were reviewed by OpenAI Codex (GPT-6.2 Astra) and verified by Claude Sonnet 5.5. No third-party material was added.
+
+- **Small review fixes (November 18, 2026):** OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, fixed malformed Level check reasons, terminal block chains, privacy sweep output, firmware paths and plaque capacity checks, with regression tests. The findings were made by OpenAI Codex (GPT-6.2 Astra). No third-party material was added.
+
+- **Tour check prerequisites (November 18, 2026):** OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, added fresh-worktree prerequisite diagnostics, preparation documentation and Node-only regression tests, and corrected the checker’s step budget and held-action wait. No tour content or third-party material was added.
+
+- **Starter scene sequence extraction (November 18, 2026):** OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, extracted the shared Starter level links and title entry into `games/kit/starter/sceneSequence.ts` and updated its callers. No third-party material was added.
+
+- **Level check panel organization (November 18, 2026)**: OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, split the existing level check panel into modules by responsibility. No new third-party code or assets were added.
+
+- **Offline dialog reopening (November 18, 2026)**: OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, added early saved-tier rendering, batched cache verification and regression tests. No third-party material was added.
+
+- **Game hosting and color reduction documentation (November 19, 2026)**: OpenAI Codex, directed by Lewis Moten, clarified CORS headers on missing files, save IDs within a game list and optional color reduction checkpoints.
+
+- **Starter entrance fixes (November 20, 2026)**: OpenAI Codex adjusted entrance floors and added left-first play checks.

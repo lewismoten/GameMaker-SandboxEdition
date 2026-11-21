@@ -19,7 +19,10 @@ Nothing starts a bulk download until the visitor chooses Download (Y on the desk
   last requested selection (an old Games choice expands to all five game groups; an old Sandbox choice expands to Sandbox and Specials), so a closed tab can resume an unfinished choice. Removing an optional tier prepares a smaller replacement while
   retaining Core. Saved selections and committed pointers carry a tier-schema version so
   migrated Sandbox selections can later drop Specials independently. Browser storage estimates are advisory, with 10% headroom required.
-- `archiveStore.ts`: per-file downloads with four workers, checking both stored length and
+- `archiveStore.ts`: status checks snapshot each eligible cache with one keys/matchAll pair,
+  then verify selected files with 32 workers, sharing results across reuse, committed and
+  staged checks within that call. Default committed matching still honors Vary and query
+  strings; reuse still ignores both. Downloads use four workers, checking both stored length and
   SHA-256 before accepting a file. A version/selection-specific staging cache retains
   verified responses after interruption, quota failure or cancellation. Retries check its
   bodies again. Unchanged files are reused from committed copies, previous staging or
@@ -33,6 +36,8 @@ Nothing starts a bulk download until the visitor chooses Download (Y on the desk
   the written tour remains available without its spoken tier.
 - `offlineDialog.ts`, `offline.css`: today's web tier picker with bytes still needed,
   space required for safe replacement, verified-file progress, cancellation and removal.
+  Saved tier choices appear before cached bodies are checked; controls stay disabled and
+  readiness and byte estimates wait for full verification.
   Wide, short screens show the tier list in two columns without removing names or sizes.
 - `offlineExe.ts`: the same operation in the desk's text UI. Keys 1–8 toggle optional
   tiers, Y saves the selection, R removes the prepared copy and Esc stops/quits.

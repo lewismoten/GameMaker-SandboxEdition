@@ -50,7 +50,7 @@ export class Book {
   /** `size` (at most what the file holds: 150, 100 or 50) is how many blocks the set has room for. */
   constructor(
     kind: keyof typeof COUNT,
-    private readonly size: number = COUNT[kind],
+    readonly size: number = COUNT[kind],
   ) {
     if (size > BLOCK_COUNTS[kind]) throw new Error(`A .${kind} holds ${BLOCK_COUNTS[kind]} blocks, not ${size}`);
     this.blocks = Array.from({ length: size }, (_, i) => emptyBlock(i, kind !== 'bbl'));

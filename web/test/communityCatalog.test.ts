@@ -18,6 +18,11 @@ describe('community catalog', () => {
     expect(parseCommunityGames([source])[0]).toEqual({ ...source, title: 'My Game', sourceUrl: 'https://example.com/source' });
     expect(source.title).toBe('  My Game  ');
   });
+  it('limits the stored URL after percent encoding', () => {
+    const url = 'https://example.com/' + 'é'.repeat(338);
+    expect(parseCommunityGames([{ ...entry, url }])[0].url).toHaveLength(2048);
+    expect(() => parseCommunityGames([{ ...entry, url: url + 'x' }])).toThrow(/2048/);
+  });
   it('rejects duplicate IDs, misspelled fields, malformed text and unsafe URL schemes', () => {
     expect(() => parseCommunityGames([entry, entry])).toThrow(/unique/);
     expect(() => parseCommunityGames([{ ...entry, source: 'typo' }])).toThrow(/unknown field/);

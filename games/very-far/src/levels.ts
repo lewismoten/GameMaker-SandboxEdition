@@ -16,7 +16,8 @@ import { Grid } from '../../kit/starter/grid';
 import { ORIGIN, StarterMap } from '../../kit/starter/map';
 import type { Pal } from '../../kit/starter/palette';
 import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { buildPalette } from './haze';
 import { addScenery, type Scenery } from './art';
 
@@ -84,7 +85,7 @@ export function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sig
 }
 
 /** Shared plaques keep their own colors against the hills, on one short grounded post. */
-const sign = (m: StarterMap, x: number, s: Sign) => stampTiledSign(m, x, FLOOR - 1 - s.board.length, s);
+const sign = (m: StarterMap, x: number, s: Sign) => stampTiledSign(m, x, FLOOR - 1 - s.board.length, s, 1, { maxPostHeight: 1 });
 
 /** A map that, when finished, paints its scenery on past both ends: StarterMap.done() leaves only sky there, and the view reaches 8 blocks past Lian, who can stand at an end. */
 class Scenic extends StarterMap {

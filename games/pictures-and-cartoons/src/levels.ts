@@ -13,7 +13,8 @@ import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
 import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 
 export interface Level {
   file: string;
@@ -61,7 +62,7 @@ function base(exitX: number): Grid {
   g.row(GROUND, 0, WIDTH - 1, 'G').fill(0, GROUND + 1, WIDTH, 4, 'D');
   g.col(0, 0, 9, 'X').col(WIDTH - 1, 0, 9, 'X');
   // A two-row turf ledge opens on more sky, clear of every lesson board.
-  g.put(3, 8, 'G').put(3, 9, 'D');
+  g.row(8, 1, 3, 'G').row(9, 1, 3, 'D');
   g.put(3, 6, 's').put(3, 7, 'S');
   g.put(exitX, 8, 'e').put(exitX, 9, 'E');
   return g;
@@ -79,9 +80,9 @@ function room(book: Book, signs: Map<string, Sign>, file: string, exitX: number,
   const safe = { set: (x: number, y: number, block: string) => m.setOnSky(x, y, block) };
   SIGNS[file].forEach(([x], i) => {
     const sign = signs.get(`${file}${i}`)!;
-    stampTiledSign(safe, x, onGround(sign), sign);
+    stampTiledSign(safe, x, onGround(sign), sign, 1, { maxPostHeight: 1 });
   });
-  stampTiledSign(safe, EXIT_AT, onGround(signs.get('exit')!), signs.get('exit')!);
+  stampTiledSign(safe, EXIT_AT, onGround(signs.get('exit')!), signs.get('exit')!, 1, { maxPostHeight: 1 });
   return m;
 }
 

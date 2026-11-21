@@ -1,8 +1,8 @@
-// games/kit/dastSymmetry and dastImage: the swastika-like shape search finds a drawn swastika (either way
+// Picture review helpers: the swastika-like shape search finds a drawn swastika (either way
 // round, at three sizes) and passes by plus signs, X marks and squares; the turns and silhouettes of a picture.
-import { describe, expect, it } from 'vitest';
-import { findSwastikaLike } from '../../games/kit/dastSymmetry';
-import { rotate, silhouette, type Pix } from '../../games/kit/dastImage';
+import { describe, expect, it, vi } from 'vitest';
+import { findSwastikaLike } from './dastSymmetry';
+import { rotate, silhouette, type Pix } from './dastImage';
 
 const pic = (rows: string[]): Pix => {
   const pad = '.'.repeat(rows[0].length + 4);
@@ -30,6 +30,14 @@ describe('findSwastikaLike', () => {
     expect(findSwastikaLike(pic(swastika))).not.toHaveLength(0);
     expect(findSwastikaLike(pic(swastika.map((r) => [...r].reverse().join(''))))).not.toHaveLength(0);
     expect(findSwastikaLike(pic(up(swastika, 3)))).not.toHaveLength(0);
+  });
+  it('finds a shape without a Node process global', () => {
+    vi.stubGlobal('process', undefined);
+    try {
+      expect(findSwastikaLike(pic(swastika))).not.toHaveLength(0);
+    } finally {
+      vi.unstubAllGlobals();
+    }
   });
   it('passes by mirror-symmetric shapes', () => {
     for (const rows of [plus, cross, square]) expect(findSwastikaLike(pic(rows))).toEqual([]);

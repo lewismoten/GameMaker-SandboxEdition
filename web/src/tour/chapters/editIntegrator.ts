@@ -1,7 +1,7 @@
 // The tour's "The Integrator" chapter: Inspector Penn goes through the editor that links a game's
 // scenes together (the .GAM file) on Ohm Sweet Ohm: the board of scene cards, its tools, the key
 // to the arrows, zoom, the selected scene's details, its files and links, the Screens and Music
-// tabs and the DOS player button. Read-only and in memory; it presses only the side panel's two
+// tabs and Overview’s DOS player tab. Read-only and in memory; it presses only the side panel's two
 // tabs (a remembered choice, put back through `keep`). Checked against editors/integrator/
 // (integrator.ts, sceneLinks.ts, sideLists.ts, sceneSlots.ts).
 import type { Chapter, Target } from '../steps';
@@ -89,7 +89,8 @@ export const editIntegratorChapter: Chapter = {
     {
       id: 'edit-integrator-player',
       action: 'point',
-      target: { label: 'the DOS player button', css: '[aria-label="DOS player"]' },
+      go: { hash: '#/p/look:logic', ready: '.overview [role="tab"]' },
+      target: { label: 'the DOS player tab', css: '.overview [role="tab"]', text: 'DOS player' },
       say: 'And this button opens the DOS player, the program that runs the game on a real computer. That is the last stop.',
       sound: 'chime',
     },

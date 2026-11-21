@@ -2,7 +2,10 @@
 
 Part of the [source map](../README.md).
 
-What the visitor has done: the catalog (`catalog.ts`), the
+What the visitor has done: the catalog (`catalog.ts`, preserving its public exports and assembly order;
+`catalogTypes.ts` holds the types, `catalogItems.ts` the progress item lists,
+`catalogMaking.ts`, `catalogPlaying.ts`, `catalogWatching.ts`, `catalogDesk.ts`,
+`catalogFun.ts` and `catalogFound.ts` the existing groups, and `catalogHonors.ts` the appended honors), the
 record (`store.ts`, in the save store), the calls the rest of the site makes (`index.ts`, with
 `editKinds.ts`, and its `GAME_SPOTS`: scenes of a game that count by name), what each page
 starts (`start.ts`, whose `gm-achievement` event unlocks an id or tallies an item), where a game was

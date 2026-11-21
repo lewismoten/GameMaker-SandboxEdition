@@ -4,6 +4,7 @@
 // in the same tick and the whole sky flashes at once. The bolt is five more blocks that look like sky until the flash,
 // when they show the bolt. One flash every 120 ticks (about 6.6 seconds), lit for 3 (a sixth of a second), and lit to a
 // gray-blue, not white: a flash this gentle and this rare is well under three flashes a second (flashCheck measures it).
+import { applyBlockTimers } from '@lewismoten/gamemaker-sandbox-tools/kit/blockTimers';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { Book, PULL, SOLID, type Timed } from '../../kit/starter/book';
 import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
@@ -163,11 +164,5 @@ export function addLitTwins(book: Book, timed: Timed[], pal: Pal, names: Iterabl
 
 /** A level's finished blocks: the book's, with each timed block given its next block and its ticks. */
 export function finishBlocks(l: { book: Book; timed: Timed[] }) {
-  const blocks = l.book.finish();
-  for (const t of l.timed) {
-    const b = blocks[l.book.n(t.name)];
-    b.nextBl = l.book.n(t.next);
-    b.ntime = t.ticks;
-  }
-  return blocks;
+  return applyBlockTimers(l.book.finish(), (name) => l.book.n(name), l.timed);
 }

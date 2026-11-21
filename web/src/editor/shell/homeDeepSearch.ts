@@ -5,7 +5,7 @@ import { createDeepIndex, hintOf, type DeepIndex, type DeepStore } from './deepI
 import { deepSourceOf } from './deepSources';
 import { hydrateFiles } from '../../project/files';
 import { queryWords } from './searchMatch';
-import type { HomeGame } from './homeCards';
+import type { HomeGame } from './homeGames';
 import type { DeepJob, DeepPart } from './deepExtract';
 
 interface Wiring {

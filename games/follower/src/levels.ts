@@ -14,7 +14,8 @@ import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
 import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { PUFF } from './monsters';
 
 export type SignName = 'behind' | 'exit';
@@ -91,8 +92,8 @@ function puffFollows(book: Book, signs: Record<SignName, Sign>): StarterMap {
   );
   const m = new StarterMap(book, g.rows());
   const sky = { set: (x: number, y: number, name: string) => m.setOnSky(x, y, name) };
-  stampTiledSign(sky, 6, onGround(GROUND, signs.behind), signs.behind);
-  stampTiledSign(sky, 41, 7, signs.exit);
+  stampTiledSign(sky, 6, onGround(GROUND, signs.behind), signs.behind, 1, { maxPostHeight: 1 });
+  stampTiledSign(sky, 41, 7, signs.exit, 1, { maxPostHeight: 1 });
   m.mon(PUFF, PUFF_START_1, STAND);
   return m;
 }
@@ -121,7 +122,7 @@ function outOfReach(book: Book, signs: Record<SignName, Sign>): StarterMap {
   );
   const m = new StarterMap(book, g.rows());
   const sky = { set: (x: number, y: number, name: string) => m.setOnSky(x, y, name) };
-  stampTiledSign(sky, 41, 7, signs.exit);
+  stampTiledSign(sky, 41, 7, signs.exit, 1, { maxPostHeight: 1 });
   m.mon(PUFF, PUFF_START_2, STAND);
   return m;
 }

@@ -11,7 +11,8 @@ import { Grid } from '../../kit/starter/grid';
 import { ORIGIN, StarterMap } from '../../kit/starter/map';
 import { type Pal } from '../../kit/starter/palette';
 import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { MLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { addMoon, addHill } from './scenery';
@@ -117,9 +118,9 @@ function allAtOnce(pal: Pal): Level {
   for (const x of [13, 21, 38]) g.put(x, GROUND - 1, 'b');
   for (const x of [11, 17, 33, 47]) g.put(x, GROUND - 1, 'f');
   const m = new StarterMap(book, g.rows());
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 6, onGround(signs.same), signs.same);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 25, onGround(signs.own), signs.own);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 28, onGround(signs.six), signs.six);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 6, onGround(signs.same), signs.same, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 25, onGround(signs.own), signs.own, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 28, onGround(signs.six), signs.six, 1, { maxPostHeight: 1 });
   const stars = [...scatter(m, book, 'sync', 1, 24, 8, 11), ...scatter(m, book, 'star', 30, 54, 8, 12)];
   return { file: 'one', title: 'All at Once', hint: 'The same stars, then each its own.', book, timed, map: m, stars };
 }

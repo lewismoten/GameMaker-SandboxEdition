@@ -1,18 +1,7 @@
 // Explicit offline tier selection, storage estimates and resumable installation for both interfaces.
 import { loadCatalogList } from '../project/files';
 import { unlockAchievement } from '../achievements';
-import {
-  installFiles,
-  offlineLock,
-  offlineNames,
-  readOfflineCopy,
-  findVerified,
-  reusableStores,
-  fourWorkers,
-  verified,
-  stageName,
-  contentHash,
-} from './archiveStore';
+import { installFiles, offlineLock, offlineNames, readOfflineCopy, verificationStores, fourWorkers, stageName, contentHash } from './archiveStore';
 import { gameTier, migrateTiers, selectedFiles, type OfflineFile, type OfflineManifest, type OfflineTier } from './tiers';
 
 /** localStorage: the copy was asked for: "started", or the version (offline.json) it was finished for. */
@@ -53,6 +42,8 @@ export interface OfflineStatus {
   ready: boolean;
   /** A copy was asked for here: 'unfinished' (stopped partway), or 'outdated' (finished for an older version of the site), else 'none'. */
   copy: 'none' | 'unfinished' | 'outdated';
+  /** A staged or committed copy exists and can be removed. */
+  removable?: boolean;
   /** navigator.storage.estimate(), when the browser tells. */
   usage?: number;
   quota?: number;
@@ -141,8 +132,8 @@ const empty = (reason: string): OfflineStatus => ({
   tierFiles: [],
 });
 
-/** What a copy would cost, and how much of it is here already. */
-export async function offlineStatus(selection?: OfflineTier[]): Promise<OfflineStatus> {
+/** What a copy would cost, and how much is verified. onSelection renders unverified metadata before body reads. */
+export async function offlineStatus(selection?: OfflineTier[], onSelection?: (status: OfflineStatus) => void): Promise<OfflineStatus> {
   if (typeof caches === 'undefined' || !('serviceWorker' in navigator) || !navigator.locks) return empty('This browser cannot keep the site for offline use.');
   const m = await loadManifest();
   if (!m || !m.files.every((f) => typeof f.path === 'string' && typeof f.sha256 === 'string'))
@@ -150,21 +141,41 @@ export async function offlineStatus(selection?: OfflineTier[]): Promise<OfflineS
   const base = siteBase().href;
   const copy = await readOfflineCopy(base);
   const tiers = selection ? migrateTiers(selection, 2) : (savedTiers() ?? migrateTiers(copy?.tiers ?? ['core'], copy?.tierVersion));
-  const [files, stores, est] = await Promise.all([wantedFiles(m, tiers), reusableStores(base), storageEstimate()]);
+  const selectionFiles = selectedFiles(m.files, tiers);
+  const sum = (list: OfflineFile[], k: 'wire' | 'stored') => list.reduce((n, f) => n + f[k], 0);
+  // Selection metadata is enough to render choices, but never establishes readiness.
+  onSelection?.({
+    supported: true,
+    files: selectionFiles,
+    manifest: m,
+    tiers,
+    tierFiles: m.files,
+    shell: m.shell,
+    missing: selectionFiles,
+    wireTotal: sum(selectionFiles, 'wire'),
+    wireMissing: sum(selectionFiles, 'wire'),
+    storedMissing: sum(selectionFiles, 'stored'),
+    ready: false,
+    version: m.version,
+    copy: copyBefore(m.version),
+    removable: !!copy,
+  });
+  const [files, stores, est] = await Promise.all([wantedFiles(m, tiers), verificationStores(base), storageEstimate()]);
   const have = new Set<string>();
   const committed = new Set<string>();
   const pending = new Set<string>();
-  const current = copy ? await caches.open(copy.cache) : undefined;
   const target = await stageName(base, m.version, files);
-  const staged = (await caches.keys()).filter((k) => k === target);
-  const stages = await Promise.all(staged.map((k) => caches.open(k)));
-  await fourWorkers(files, async (file) => {
-    if (await findVerified(base, file, stores)) have.add(file.path);
-    if (current && (await verified(await current.match(urlOf(file.path)), file))) committed.add(file.path);
-    if (await findVerified(base, file, stages)) pending.add(file.path);
-  });
+  await fourWorkers(
+    files,
+    async (file) => {
+      const result = await stores.check(file, copy?.cache, target);
+      if (result.have) have.add(file.path);
+      if (result.committed) committed.add(file.path);
+      if (result.pending) pending.add(file.path);
+    },
+    32,
+  );
   const missing = files.filter((f) => !have.has(f.path));
-  const sum = (list: OfflineFile[], k: 'wire' | 'stored') => list.reduce((n, f) => n + f[k], 0);
   const sameSelection = copy?.tiers && tiers.length === copy.tiers.length && tiers.every((t) => copy.tiers!.includes(t));
   const ready = copy?.version === m.version && committed.size === files.length && !!sameSelection;
   return {
@@ -187,6 +198,7 @@ export async function offlineStatus(selection?: OfflineTier[]): Promise<OfflineS
     ready,
     version: m.version,
     copy: copyBefore(m.version),
+    removable: !!copy || stores.removable,
     ...est,
   };
 }

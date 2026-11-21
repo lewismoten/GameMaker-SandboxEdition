@@ -78,6 +78,40 @@ const iso = createIso([
 
 ## Checks and build helpers
 
+- `kit/dastImage`: true-color `Pix` pictures, six-bit VGA `fromIndexed`, `toPng`,
+  `silhouette`, `rotate`, `shrink`, `grid`, `rotationSheet` and `shelfSheet` for picture
+  review. PNG output uses `CompressionStream`; no canvas is required.
+- `kit/dastSymmetry`: `findSwastikaLike(picture, allowEdge?)` returns candidate `Hit`
+  bounds, color mask, quarter-turn match and mirror match. It tests connected shapes,
+  contrast and arm tips. Pinwheels and some frets also match; findings are suggestions
+  for human review, and the heuristic cannot judge a picture's meaning or context.
+  Game selection, file reading and review policy belong to callers.
+- `kit/flashMeter`: `FlashMeter(fps = 60)` measures general and red flashes in
+  320×200 indexed frames with 6-bit VGA palettes. Call `push(pixels, palette)` for
+  each frame and `reset()` at scene boundaries; `general.worst` and `red.worst`
+  report `{ flashes, at, area }` for the busiest second. `AREA` is the minimum
+  changed screen share and `MAX_FLASHES` is three. `LocalFlashMeter` also reports
+  the busiest 20×20 spot as `{ flashes, at, x, y }`, without the area rule.
+  These are suggestions to inspect, not verdicts: screen size and viewing distance
+  are unknown, and scrolling patterns or a walking hero can register as flashing.
+
+- `kit/blockTimers`: `applyBlockTimers(blocks, resolve, timed)` applies named
+  `{ name, next, ticks }` records after the caller finishes its block set. It resolves
+  both names, assigns `nextBl` and `ntime` in record order, and returns the same
+  array. Tick values are preserved, including zero and fractions; later records for
+  the same block win. The caller supplies name lookup and its errors propagate.
+  For a Book, use `applyBlockTimers(book.finish(), (name) => book.n(name), timed)`.
+- `kit/ticks`: `ticks(seconds, { rate?, round? })` converts seconds using the engine's
+  PIT interrupt rate divided by eight (`TICKS_PER_SECOND`, about 18.209 Hz). Rounding
+  defaults to `round`; `floor`, `ceil` and `none` are also available. Pass `rate: 18`
+  or `rate: 18.2` to preserve an existing game's chosen clock.
+  `segmentedBar({ segments, ticksPerSegment })` returns timing entries in drain order:
+  `{ index, remaining, start, end, duration }`. Alternatively supply `totalTicks` and
+  optional `round` to distribute ticks by cumulative boundaries, preserving the final
+  deadline. Segment boundaries default to no rounding. Names, block insertion order,
+  artwork, warning phases, terminal frames and loop resets stay with the caller.
+  For example, `segmentedBar({ segments: 5, totalTicks: 103, round: 'floor' })`
+  yields durations of 20, 21, 20, 21 and 21 ticks.
 - `fli-check`: `fliCheck(files)` accepts engine `GameFiles`' `get` and `byExtension`
   methods and returns warning findings for PLAYGAME animation decoder limits. It works
   in Node and browsers, reads no project metadata, and leaves accepting suggestions to callers.
@@ -156,7 +190,7 @@ Source is MIT licensed; no game assets or decoder binaries are bundled.
 
 ## Tiled signs
 
-`kit/tiledSigns` exports `buildTiledSigns(texts, options)` and `stampTiledSign(map, x, y, sign, postHeight = 1)`.
+`kit/tiledSigns` exports `buildTiledSigns(texts, options)` and `stampTiledSign(map, x, y, sign, postHeight = 1, options = {})`.
 Supply every sign from every level together as a record of `{ rows: string[][], post?: boolean }`.
 Each row is a line: chunks are joined without tile padding, whitespace becomes single spaces,
 and lowercase becomes uppercase. Letters pack continuously across tile boundaries, with each
@@ -189,6 +223,12 @@ retain their native 3×5 pixels inside the 4×8 cell, while uppercase letters an
 Centered fragments can cost more unique tiles.
 Add the returned pictures to your block set with the game's passable-background rules, once for the whole game or separately for each map selected by `include`.
 The stamp helper accepts any map with `set(x, y, blockName)`; taller posts reuse the same centered tile or pair.
+Both `stampTiledSign` and `stampMicroPlaques` accept a final `{ maxPostHeight }` option,
+measured in 20-pixel blocks. When `postHeight` exceeds this limit, the whole post is
+omitted so the board floats; it is never shortened. For stacks, the distance is measured
+from the bottom plaque. Omit the option for unlimited post heights (the existing behavior),
+or use `{ maxPostHeight: 1 }` for a one-block limit. A zero limit always floats the mount.
+Post heights and explicit limits must be nonnegative integers.
 
 `font: 'micro'` opts into Lewis Moten’s two-line 3×5 boards. Text flows continuously
 across the whole board: N blocks hold 4N characters per line, with a one-pixel gap.
@@ -206,7 +246,6 @@ use three-pixel capital forms, spending spare pixels from left to right. Custom 
 remain intact. The shared `microFont` includes all eight arrows, with the existing
 right/left arrow pixels preserved. Do not combine this option with `compact` or
 `lettersPerBlock`. Existing font selection stays the default.
-
 
 `stampMicroPlaques(map, x, y, plaques, postHeight = 1)` places a vertical stack of
 one-row micro plaques of the same width (one or two blocks). Plaques touch vertically,

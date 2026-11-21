@@ -72,6 +72,10 @@ their contents rows buttons that turn to the page; `gen.ts` makes what every San
   and a map nobody walks around in is left out; levels that show one place in several states
   (near and far planes) print as one map (`levelStates.ts`). `levelPoster.ts`
   draws one level the same way as a PNG, for the map editor's "As players see it" picture.
+  `levelMaps.ts` loads and caches the pictures; `levelMapDrawing.ts` draws annotations and
+  captions, `levelMapPages.ts` assembles printed sheets, and `levelMapViewer.ts` handles the
+  on-screen reader. `levelMapLayout.ts` assembles levels and rooms, using `levelMapGeometry.ts`
+  for cropping and unrolling and `levelMapMarks.ts` for scene labels and arrival/exit marks.
 - Stickers: the sheet (`stickers.ts`, `gmStickers.ts` for the Game-Maker box), laid out on Print
   Then Cut sheets (`stickerArt.ts`, `stickerGeom.ts`, `stickerPaint.ts`) by the sticker rules in
   `manual/printables/README.md` (least size, bleed, spacing, die-cut border), with files for

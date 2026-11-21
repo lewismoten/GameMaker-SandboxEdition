@@ -5,6 +5,24 @@ Changes to `@lewismoten/gamemaker-sandbox-tools`, released as `tools-v*` tags. T
 
 ## [Unreleased]
 
+## [3.9.0] - 2026-11-20
+
+New kit helpers for timed blocks, DOS tick countdowns, flash measurement and picture review, and plaque posts that float boards above a height limit.
+
+### Added
+
+- `kit/blockTimers` applies named block transitions and tick durations to a finished block set.
+- `kit/ticks` shares DOS tick conversion and segmented countdown timing, with explicit clock rates and rounding for existing games.
+- Flash meters for indexed frames and VGA palettes, with whole-screen and small-area measurements; the W3C guidelines they follow are credited.
+- Picture review helpers for silhouettes, turns and contact sheets, plus a DAST check.
+- Tiled sign and micro plaque stamp helpers accept a maximum post height that floats boards beyond the limit.
+
+### Fixed
+
+- The picture symmetry check runs in browsers without a Node.js process global.
+
+Full list: [changes/release/tools/3.9.0.md](https://github.com/lewismoten/GameMaker-SandboxEdition/blob/tools-v3.9.0/changes/release/tools/3.9.0.md)
+
 ## [3.8.0] - 2026-11-17
 
 Tiled signs pack tighter and can wrap two lines of small letters, and a new VOC measurement lets builds lower sample rates only where nobody can hear the difference.
@@ -91,7 +109,8 @@ The first release of the development tools as an npm package: drawing, palettes,
 - CP437 and micro text drawn as indexed game pixels, with documented font, text-effect and lighting APIs.
 - Reusable color ramps and time-of-day VGA lighting.
 
-[Unreleased]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/tools-v3.8.0...HEAD
+[Unreleased]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/tools-v3.9.0...HEAD
+[3.9.0]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/tools-v3.8.0...tools-v3.9.0
 [3.8.0]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/tools-v3.7.0...tools-v3.8.0
 [3.7.0]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/tools-v3.6.0...tools-v3.7.0
 [3.6.0]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/tools-v3.5.0...tools-v3.6.0

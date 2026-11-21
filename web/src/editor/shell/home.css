@@ -824,16 +824,20 @@ a.button.with-ico {
   transition: opacity 0.12s;
 }
 
+/* The row positions each tip, including while its button is hovered. */
+.shot-tools .shot-icon {
+  position: static;
+  transform: none;
+}
+
 .shot-tools .shot-icon[data-tip]::after {
   top: calc(100% + 6px);
   right: auto;
   bottom: auto;
   left: 0;
-  /* kept inside its tile: a hidden tip still counts toward the page's width, and one past the
-     last tile's edge made the page scroll sideways (844 x 390) */
-  box-sizing: border-box; /* the cap includes the padding: a wider font once ran 6px past the last tile (850 in 844) */
+  box-sizing: border-box;
   width: max-content;
-  max-width: 108px;
+  max-width: 119px; /* 131px minimum tile width minus the 6px inset on each side */
   white-space: normal;
 }
 

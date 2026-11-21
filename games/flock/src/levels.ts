@@ -13,7 +13,8 @@ import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
 import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { BIRD, QUICK } from './monsters';
 
 export type SignName = 'same' | 'quick' | 'exit';
@@ -98,8 +99,8 @@ function oneShape(book: Book, signs: Record<SignName, Sign>): StarterMap {
   const m = new StarterMap(book, g.rows());
   const sky = { set: (x: number, y: number, name: string) => m.setOnSky(x, y, name) };
   // Introduce the formation before its first birds, on a short grounded post.
-  stampTiledSign(sky, 6, onGround(GROUND, signs.same), signs.same);
-  stampTiledSign(sky, 41, 7, signs.exit);
+  stampTiledSign(sky, 6, onGround(GROUND, signs.same), signs.same, 1, { maxPostHeight: 1 });
+  stampTiledSign(sky, 41, 7, signs.exit, 1, { maxPostHeight: 1 });
   flock(m, [BIRD, BIRD, BIRD, BIRD, BIRD]);
   return m;
 }
@@ -119,8 +120,8 @@ function outOfStep(book: Book, signs: Record<SignName, Sign>): StarterMap {
   );
   const m = new StarterMap(book, g.rows());
   const sky = { set: (x: number, y: number, name: string) => m.setOnSky(x, y, name) };
-  stampTiledSign(sky, 6, onGround(GROUND, signs.quick), signs.quick);
-  stampTiledSign(sky, 41, 7, signs.exit);
+  stampTiledSign(sky, 6, onGround(GROUND, signs.quick), signs.quick, 1, { maxPostHeight: 1 });
+  stampTiledSign(sky, 41, 7, signs.exit, 1, { maxPostHeight: 1 });
   flock(m, [BIRD, QUICK, BIRD, QUICK, BIRD]);
   return m;
 }

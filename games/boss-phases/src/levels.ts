@@ -9,7 +9,8 @@
 // Both rooms are closed in by brick walls you can see, so Nova is never stopped by something she can't.
 import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
-import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
@@ -92,9 +93,9 @@ function halfWay(book: Book, signs: Record<SignName, Sign>): StarterMap {
   );
   const m = new StarterMap(book, g.rows());
   const sky = { set: (x: number, y: number, block: string) => m.setOnSky(x, y, block) };
-  stampTiledSign(sky, 5, onGround(GROUND, signs.half), signs.half);
-  stampTiledSign(sky, 12, onGround(GROUND, signs.sting), signs.sting);
-  stampTiledSign(sky, 41, 7, signs.exit);
+  stampTiledSign(sky, 5, onGround(GROUND, signs.half), signs.half, 1, { maxPostHeight: 1 });
+  stampTiledSign(sky, 12, onGround(GROUND, signs.sting), signs.sting, 1, { maxPostHeight: 1 });
+  stampTiledSign(sky, 41, 7, signs.exit, 1, { maxPostHeight: 1 });
   m.mon(CHAINS[0].first, BUG_X[0], STAND);
   return m;
 }
@@ -117,9 +118,9 @@ function aThirdFace(book: Book, signs: Record<SignName, Sign>): StarterMap {
   );
   const m = new StarterMap(book, g.rows());
   const sky = { set: (x: number, y: number, block: string) => m.setOnSky(x, y, block) };
-  stampTiledSign(sky, 6, onGround(GROUND, signs.third), signs.third);
-  stampTiledSign(sky, 15, onGround(GROUND, signs.wait), signs.wait);
-  stampTiledSign(sky, 42, 7, signs.exit);
+  stampTiledSign(sky, 6, onGround(GROUND, signs.third), signs.third, 1, { maxPostHeight: 1 });
+  stampTiledSign(sky, 15, onGround(GROUND, signs.wait), signs.wait, 1, { maxPostHeight: 1 });
+  stampTiledSign(sky, 42, 7, signs.exit, 1, { maxPostHeight: 1 });
   m.mon(CHAINS[1].first, BUG_X[1], STAND);
   return m;
 }

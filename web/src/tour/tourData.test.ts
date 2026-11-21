@@ -1,6 +1,7 @@
 // The tour's data: every step well formed, short enough for a phone's bubble, pointing at
 // controls the page's code really makes, and only Sandbox games' sprites, sounds and music
 // (never a secret game's, never the Bard of Bizarre's recordings).
+import { CAST } from '../cast/castData';
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { beforeAll, describe, expect, it } from 'vitest';
@@ -22,32 +23,7 @@ const SOURCES: Record<string, string[]> = {
   cast: ['cast'],
   guide: ['manual/webManual.ts', 'manual/guideSections.ts', 'manual/printables/viewer.ts'],
   credits: ['main.ts', 'settingsMenu.ts', 'theme.ts', 'tour/tourButton.ts', 'credits', 'pageToc.ts'],
-  editor: [
-    'main.ts',
-    'editor/shell',
-    'editor/core/ui.ts',
-    'editor/editors/map/map.ts',
-    'editor/editors/map/check/checkPanel.ts',
-    'editor/editors/map/check/checkExtras.ts',
-    'editor/editors/map/links/linkMarkers.ts',
-    'editor/editors/blocks',
-    'editor/editors/monsters',
-    'editor/editors/character',
-    'editor/editors/palette',
-    'editor/editors/sounds',
-    'editor/editors/music',
-    'editor/editors/animation',
-    'editor/editors/animation/scene',
-    'editor/editors/picture',
-    'editor/editors/slideShow',
-    'editor/editors/integrator',
-    'editor/editors/integrator/dosPlayer',
-    'editor/widgets/colorChoice.ts',
-    'editor/widgets/walkDialog.ts',
-    'assistant/chat/panel.ts',
-    'editor/widgets/filePicker.ts',
-    'editor/widgets/panelTabs.ts',
-  ],
+  editor: ['main.ts', 'editor', 'assistant/chat/panel.ts'],
   desk: [
     'desk',
     'desk/pc',
@@ -64,23 +40,25 @@ const SOURCES: Record<string, string[]> = {
   ],
   dos: ['dosPage', 'retro/gmReg', 'viewSwitch.ts', 'tour/tourButton.ts'],
 };
+/** Include nested modules after controls are split out; never use test assertions as evidence. */
+const sourceFiles = (full: string): string[] =>
+  statSync(full).isDirectory()
+    ? readdirSync(full).flatMap((name) => sourceFiles(join(full, name)))
+    : full.endsWith('.ts') && !full.endsWith('.test.ts')
+      ? [full]
+      : [];
 const sourceText = (paths: string[]) =>
-  paths
-    .flatMap((p) => {
-      const full = join(__dirname, '..', p);
-      return p.endsWith('.ts')
-        ? [full]
-        : readdirSync(full)
-            .filter((f) => f.endsWith('.ts') && !f.endsWith('.test.ts'))
-            .map((f) => join(full, f));
-    })
-    .map((f) => readFileSync(f, 'utf8'))
-    .join('\n');
+  [...new Set(paths.flatMap((p) => sourceFiles(join(__dirname, '..', p))))].map((f) => readFileSync(f, 'utf8')).join('\n');
 
 const sourceTexts = new Map<string, string>();
 /** A page's source text, read once however many chapters are on that page. */
 const pageText = (page: string) => {
-  if (!sourceTexts.has(page)) sourceTexts.set(page, sourceText(SOURCES[page] ?? []));
+  if (!sourceTexts.has(page)) {
+    let text = sourceText(SOURCES[page] ?? []);
+    // castPage renders each article's id from the member's id.
+    if (page === 'cast' && text.includes('id: `cast-${m.id}`')) text += '\n' + CAST.map((m) => `cast-${m.id}`).join('\n');
+    sourceTexts.set(page, text);
+  }
   return sourceTexts.get(page)!;
 };
 

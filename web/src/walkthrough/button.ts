@@ -9,7 +9,7 @@
 // in this browser apart from its files (editor/check/walk/keptWalk.ts).
 import { h, toast } from '../editor/core/ui';
 import { icon } from '../editor/shell/homeIcons';
-import type { HomeGame } from '../editor/shell/homeCards';
+import type { HomeGame } from '../editor/shell/homeGames';
 
 export function walkthroughButton(game: HomeGame): HTMLElement | null {
   if (!game.gam || (!game.project && !game.entry?.gam)) return null;

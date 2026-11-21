@@ -10,7 +10,8 @@
 // Every room is closed in by hedges you can see, so Rima is never stopped by something she can't.
 import { Book } from '../../kit/starter/book';
 import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { addLockBlocks } from '../../kit/starter/locks';
@@ -115,17 +116,17 @@ function board(book: Book, signs: Record<SignName, Sign>): StarterMap {
   );
   const m = new StarterMap(book, g.rows());
   const sky = { set: m.setOnSky.bind(m) };
-  stampTiledSign(sky, BOARD.again + 2, 8, signs.again);
-  stampTiledSign(sky, 9, onGround(GROUND, signs.hello), signs.hello);
+  stampTiledSign(sky, BOARD.again + 2, 8, signs.again, 1, { maxPostHeight: 1 });
+  stampTiledSign(sky, 9, onGround(GROUND, signs.hello), signs.hello, 1, { maxPostHeight: 1 });
   for (const [pad, x0, sign, slot] of BOARD.units) {
-    stampTiledSign(sky, x0, onGround(GROUND, signs[sign]), signs[sign]);
+    stampTiledSign(sky, x0, onGround(GROUND, signs[sign]), signs[sign], 1, { maxPostHeight: 1 });
     m.set(x0 + 1, GROUND - 1, `pad.${pad}`);
     m.set(x0 + 0, GROUND - 4, `wave.${slot}`);
   }
-  stampTiledSign(sky, BOARD.chuteSign, onGround(GROUND, signs.chute), signs.chute);
+  stampTiledSign(sky, BOARD.chuteSign, onGround(GROUND, signs.chute), signs.chute, 1, { maxPostHeight: 1 });
   m.set(BOARD.chuteSign, GROUND - 4, `wave.${SLOT.fanfare}`).set(BOARD.chuteSign + 2, GROUND - 4, `wave.${SLOT.ping}`);
   for (let i = 0; i < jump.width; i++) m.set(jump.x + i, jump.long, `pad.${PADS.long.name}`).set(jump.x + i, jump.short, `pad.${PADS.short.name}`);
-  stampTiledSign(sky, 44, 7, signs.exit, 2);
+  stampTiledSign(sky, 44, 7, signs.exit, 2, { maxPostHeight: 1 });
   return m;
 }
 
@@ -168,7 +169,7 @@ function feedback(book: Book, signs: Record<SignName, Sign>): StarterMap {
   );
   const m = new StarterMap(book, g.rows());
   const at = (x: number, s: Sign, wave?: number) => {
-    stampTiledSign({ set: m.setOnSky.bind(m) }, x, onGround(GROUND, s), s);
+    stampTiledSign({ set: m.setOnSky.bind(m) }, x, onGround(GROUND, s), s, 1, { maxPostHeight: 1 });
     if (wave !== undefined) m.set(x + 1, GROUND - 4, `wave.${wave}`);
   };
   at(12, signs.coin2);
@@ -183,7 +184,7 @@ function feedback(book: Book, signs: Record<SignName, Sign>): StarterMap {
   m.set(40, GROUND - 4, `wave.${SLOT.hurt}`);
   at(47, signs.wrong);
   m.set(47, GROUND - 4, `wave.${SLOT.nope}`);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 54, 7, signs.exit, 2);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 54, 7, signs.exit, 2, { maxPostHeight: 1 });
   m.set(f.spike, GROUND - 1, 'spike');
   m.set(f.wrong, GROUND - 1, 'wrong');
   return m;

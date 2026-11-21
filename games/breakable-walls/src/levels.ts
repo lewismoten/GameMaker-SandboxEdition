@@ -10,7 +10,8 @@
 // Every room is closed in by hedges you can see, so Yana is never stopped by something she can't.
 import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
-import { addMicroPlaques, stampTiledSign, stampMicroPlaques } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign, stampMicroPlaques } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
@@ -92,10 +93,10 @@ function bumpACrate(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [8, 14, 39],
   );
   const m = new StarterMap(book, g.rows());
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 5, 8, signs.bump);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 5, 8, signs.bump, 1, { maxPostHeight: 1 });
   // The post stands beside the second crate wall, clear of the coins.
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 25, 8, signs.rubble);
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 43, 7, signs.exit);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 25, 8, signs.rubble, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 43, 7, signs.exit, 1, { maxPostHeight: 1 });
   crates(m, L1.wallA, 1, L1.rows);
   crates(m, L1.wallB, L1.wallBWidth, L1.rows);
   return m;
@@ -117,10 +118,10 @@ function coinsPayOnce(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [8, 13, 36],
   );
   const m = new StarterMap(book, g.rows());
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 5, 8, signs.again);
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 19, 8, signs.once);
-  stampMicroPlaques({ set: (x, y, name) => m.setOnSky(x, y, name) }, 34, 7, [signs.wall, { ...signs.exit, post: signs.wall.post }]);
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 47, 7, signs.exit);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 5, 8, signs.again, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 19, 8, signs.once, 1, { maxPostHeight: 1 });
+  stampMicroPlaques({ set: (x, y, name) => m.setOnSky(x, y, name) }, 34, 7, [signs.wall, { ...signs.exit, post: signs.wall.post }], 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 47, 7, signs.exit, 1, { maxPostHeight: 1 });
   for (const x of L2.stuck) m.setOnSky(x, GROUND - 1, 'stuckCoin');
   crates(m, L2.wall, 1, 4);
   return m;
@@ -141,8 +142,8 @@ function spinningGems(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [9, 25, 41],
   );
   const m = new StarterMap(book, g.rows());
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 30, 8, signs.hidden);
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 47, 7, signs.exit);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 30, 8, signs.hidden, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 47, 7, signs.exit, 1, { maxPostHeight: 1 });
   for (const x of L3.gems) m.setOnSky(x, GROUND - 1, 'gem0');
   crates(m, L3.wall, 1, 4);
   for (const x of L3.stack) m.setOnSky(x, GROUND - 1, 'gem2').setOnSky(x, GROUND - 2, 'gem1');

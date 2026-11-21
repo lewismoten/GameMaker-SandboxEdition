@@ -3,7 +3,7 @@
 // that only goes one way, or a lock whose key the hero can no longer get. A place is only
 // called stuck when every place it leads to was tried, so a run cut short by its time budget
 // doesn't report false alarms, a place the hero only dies from is a death, not a softlock, and
-// one the explorer found a way out of with held keys (explore.ts confirmStuck) is no trap.
+// one the explorer found a way out of with held keys (exploreFindings.ts confirmStuck) is no trap.
 import { BACKBL, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { MLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import type { Exploration } from './explore';

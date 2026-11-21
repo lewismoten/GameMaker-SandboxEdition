@@ -13,7 +13,8 @@ import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
 import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 
 export type SignName = 'follows' | 'wide' | 'exit';
 
@@ -95,9 +96,9 @@ function theViewFollows(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [9, 27, 40, 54],
   );
   const m = new StarterMap(book, g.rows());
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 6, onGround(G, signs.follows), signs.follows);
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 24, onGround(G, signs.wide), signs.wide);
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 51, onGround(G, signs.exit), signs.exit);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 6, onGround(G, signs.follows), signs.follows, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 24, onGround(G, signs.wide), signs.wide, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, 51, onGround(G, signs.exit), signs.exit, 1, { maxPostHeight: 1 });
   return m;
 }
 

@@ -14,10 +14,12 @@
 // 4 down), and level 1's big one is placed three times and level 2's pair twice, so one is always in
 // view on the way (games/kit/inViewCheck.ts checks both on the walkthrough).
 // Both rooms are closed in by brick you can see, so Nova is never stopped by something she can't.
+import { applyBlockTimers } from '@lewismoten/gamemaker-sandbox-tools/kit/blockTimers';
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { Book, PULL, SOLID, type Timed } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
-import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { Grid } from '../../kit/starter/grid';
 import { ORIGIN, StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
@@ -40,13 +42,7 @@ export interface Level {
 
 /** The finished block set: the book's, with each timed block given its next block and its ticks. */
 export function finishBlocks(l: Pick<Level, 'book' | 'timed'>): Block[] {
-  const blocks = l.book.finish();
-  for (const t of l.timed) {
-    const b = blocks[l.book.n(t.name)];
-    b.nextBl = l.book.n(t.next);
-    b.ntime = t.ticks;
-  }
-  return blocks;
+  return applyBlockTimers(l.book.finish(), (name) => l.book.n(name), l.timed);
 }
 
 const AIR = { grav: PULL.down };
@@ -136,8 +132,8 @@ function nineToZero(pal: Pal): Level {
   g.fill(19, 2, 6, 6, 'B').fill(23, 8, 2, 2, 'B');
   g.row(9, 15, 18, 'c');
   const m = new StarterMap(book, g.rows());
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 4, 7, signs.count);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 17, 8, signs.door);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 4, 7, signs.count, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 17, 8, signs.door, 1, { maxPostHeight: 1 });
   for (const [q, x, y] of QUARTERS) {
     m.set(DOOR_X + x / 20, BOARD_Y + y / 20, `big9.${q}`);
     for (const cx of BIG_COPIES) m.set(cx + x / 20, BOARD_Y + y / 20, `big9.${q}`);
@@ -175,8 +171,8 @@ function ninetyNine(pal: Pal): Level {
   g.put(1, 8, 's').put(1, 9, 'S');
   g.put(7, 9, 'c').put(8, 9, 'c').put(13, 9, 'c').put(14, 9, 'c');
   const m = new StarterMap(book, g.rows());
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 2, 8, signs.two);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 10, 8, signs.floor);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 2, 8, signs.two, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 10, 8, signs.floor, 1, { maxPostHeight: 1 });
   for (const x of DIGIT_PAIRS) m.set(x, DIGIT_ROW, 'ten9').set(x + 1, DIGIT_ROW, 'one99');
   const links: [number, number][] = [];
   for (let x = 1; x < WIDTH_TWO - 1; x++) {

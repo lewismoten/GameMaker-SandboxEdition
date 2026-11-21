@@ -13,11 +13,13 @@
 // Every ring starts when the scene loads and nothing Mara does can change one (the manual says
 // so). A block changes with its own timer and cannot see where Mara is. Both rooms end in a
 // visible hedge, so Mara is never stopped by something she can't see.
+import { applyBlockTimers } from '@lewismoten/gamemaker-sandbox-tools/kit/blockTimers';
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { Book, PULL, SOLID, type Timed } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
-import { addMicroPlaques, stampTiledSign, stampMicroPlaques } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign, stampMicroPlaques } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
@@ -37,13 +39,7 @@ export interface Level {
 
 /** The finished block set: the book's, with each timed block given its next block and its ticks. */
 export function finishBlocks(l: Pick<Level, 'book' | 'timed'>): Block[] {
-  const blocks = l.book.finish();
-  for (const t of l.timed) {
-    const b = blocks[l.book.n(t.name)];
-    b.nextBl = l.book.n(t.next);
-    b.ntime = t.ticks;
-  }
-  return blocks;
+  return applyBlockTimers(l.book.finish(), (name) => l.book.n(name), l.timed);
 }
 
 const AIR = { grav: PULL.down };
@@ -93,7 +89,7 @@ function startBook(pal: Pal, names: SignName[]): { book: Book; signs: Record<str
 
 /** Stamp only over sky; the one centered post ends immediately above the ground. */
 function sign(m: StarterMap, x: number, s: Sign): void {
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, x, onGround(GROUND, s), s);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, x, onGround(GROUND, s), s, 1, { maxPostHeight: 1 });
 }
 
 /** The top row of a sign standing on ground row `ground`. */
@@ -192,7 +188,7 @@ function outOfStep(pal: Pal): Level {
     stampGate(m, x, sun ? 'cap.sun' : 'cap.moon', sun ? startOf('sun.gate', 2, 0) : startOf('moon.gate', 2, 1));
   });
   sign(m, 4, signs.sun);
-  stampMicroPlaques({ set: m.setOnSky.bind(m) }, 12, 7, [signs.moon, signs.moonOpen]);
+  stampMicroPlaques({ set: m.setOnSky.bind(m) }, 12, 7, [signs.moon, signs.moonOpen], 1, { maxPostHeight: 1 });
   sign(m, 25, signs.step);
   return { file: 'two', title: 'Out of Step', hint: 'Two rings, one step apart.', map: m, book, timed };
 }

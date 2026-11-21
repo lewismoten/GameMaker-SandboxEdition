@@ -17,7 +17,8 @@ import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
 import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { BUBBLE, SLEEPER } from './monsters';
 
 export type SignName = 'shrink' | 'eyes' | 'exit';
@@ -99,8 +100,8 @@ function aBubble(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [23],
   );
   const m = new StarterMap(book, g.rows());
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 7, onGround(GROUND, signs.shrink), signs.shrink);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 20, onGround(GROUND, signs.exit), signs.exit);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 7, onGround(GROUND, signs.shrink), signs.shrink, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 20, onGround(GROUND, signs.exit), signs.exit, 1, { maxPostHeight: 1 });
   m.mon(BUBBLE, BUBBLE_X, STAND);
   return m;
 }
@@ -123,8 +124,8 @@ function wakeUp(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [25],
   );
   const m = new StarterMap(book, g.rows());
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 7, onGround(GROUND, signs.eyes), signs.eyes);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 22, onGround(GROUND, signs.exit), signs.exit);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 7, onGround(GROUND, signs.eyes), signs.eyes, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 22, onGround(GROUND, signs.exit), signs.exit, 1, { maxPostHeight: 1 });
   m.mon(SLEEPER, SLEEPER_X, STAND);
   return m;
 }

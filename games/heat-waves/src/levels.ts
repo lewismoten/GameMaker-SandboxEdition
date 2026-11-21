@@ -11,6 +11,7 @@
 //      comes within 8 blocks, which is just after the view running on ahead of him shows them.
 //   3. Cool Evening: the same hills as still blocks, and the scene loads the evening palette.
 // Both sides of the screen are rock walls you can see, so Kit is never stopped by something he can't.
+import { applyBlockTimers } from '@lewismoten/gamemaker-sandbox-tools/kit/blockTimers';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { Book, PULL, SOLID, type Timed } from '../../kit/starter/book';
@@ -19,7 +20,8 @@ import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { skyOf, type Pal } from '../../kit/starter/palette';
 import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { MIRAGE } from './monsters';
 import { buildPalettes } from './palettes';
 import { BAND_W, CLEAR, bandCell, bandPicture, rockCell, stillCell } from './scene';
@@ -108,7 +110,7 @@ export class Stage {
 
   /** Stamp an opaque shared plaque above the scenery, without a post. */
   sign(m: StarterMap, n: SignName, at: readonly [number, number]): void {
-    stampTiledSign(m, at[0], at[1], this.signs[n], 0);
+    stampTiledSign(m, at[0], at[1], this.signs[n], 0, { maxPostHeight: 1 });
   }
 
   /** The exit door standing on the road at column `x`, its bottom on row 8. */
@@ -209,13 +211,7 @@ function startStep(l: Level): void {
 
 /** The finished block set: the book's, with each timed block given its next block and its ticks. */
 export function finishBlocks(st: Pick<Stage, 'book' | 'timed'>): Block[] {
-  const blocks = st.book.finish();
-  for (const t of st.timed) {
-    const b = blocks[st.book.n(t.name)];
-    b.nextBl = st.book.n(t.next);
-    b.ntime = t.ticks;
-  }
-  return blocks;
+  return applyBlockTimers(st.book.finish(), (name) => st.book.n(name), st.timed);
 }
 
 /** The levels in order, and the two palettes. */

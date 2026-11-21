@@ -3,7 +3,8 @@
 // character blocks, sounds, song) and then the two graphic slots this game is about: slot 9, the
 // picture shown BEFORE the level (PLAYGAME's PREGRAPHICFILEIDX), and slot 10, the one shown AFTER it,
 // when the hero leaves through a link (POSTGRAPHICFILEIDX). Each is a GIF, an FLI or a .LST of both.
-import { ADVTYPE, MAXSCENELINKS, NOSCENE, emptyScene, newGame, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { ADVTYPE, emptyScene, newGame, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { addSceneSequence } from '../../kit/starter/sceneSequence';
 import type { Level } from './levels';
 
 /** The title of the game, as the .GAM names it (19 characters at most). */
@@ -30,7 +31,7 @@ export function buildGame(levels: Level[]): Game {
   end.desc = 'The End';
   end.files = ['won.lst', 'pics.cmf', 'lost.lst', 'pics.cmf', ...new Array(16).fill('')];
 
-  levels.forEach((l, i) => {
+  addSceneSequence(game, levels, (l, i) => {
     const scene = emptyScene(ADVTYPE);
     scene.desc = l.title.slice(0, 19);
     // These short routes fit in the raised entrance's view; hops keep the same sky.
@@ -50,14 +51,8 @@ export function buildGame(levels: Level[]): Game {
       l.after,
       ...new Array(9).fill(''),
     ];
-    scene.links = Array.from({ length: MAXSCENELINKS }, () => ({ toScene: NOSCENE, from: { x: 0, y: 0 }, to: { x: 0, y: 0 } }));
-    const next = levels[i + 1];
-    const [fx, fy] = l.map.exits[0].from;
-    scene.links[0] = { toScene: next ? i + 3 : 1, from: { x: fx, y: fy }, to: next ? { x: next.map.start[0], y: next.map.start[1] } : { x: 0, y: 0 } };
-    game.scenes.push(scene);
+    return scene;
   });
 
-  const first = levels[0].map.start;
-  title.links[0] = { toScene: 2, from: { x: 0, y: 0 }, to: { x: first[0], y: first[1] } };
   return game;
 }

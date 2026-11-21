@@ -1,4 +1,4 @@
-// True-color pictures for the DAST tool (dast.ts): indexed pixels to 0xRRGGBB, a PNG writer (no canvas),
+// True-color picture review helpers: indexed pixels to 0xRRGGBB, a PNG writer (no canvas),
 // silhouettes (everything that is not the background filled solid), 90 and 180 degree turns, and the one
 // sheet per picture that shows them all together.
 import { crc32 } from '@lewismoten/gamemaker-sandbox-archives/zip';

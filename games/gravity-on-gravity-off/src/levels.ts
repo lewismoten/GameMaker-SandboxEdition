@@ -5,7 +5,8 @@
 //   1. Gravity On:  side.bbl, every air block has Gravity "down".
 //   2. Gravity Off: top.bbl, every block has Gravity "none", and top.chr walks in four directions.
 import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { Book, PULL } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
@@ -76,10 +77,10 @@ function sideLevel(book: Book, signs: Record<SignName, Sign>): StarterMap {
   const m = new StarterMap(book, g.rows());
   m.start[0] += 1; // Stand beside the door, on the right half of the step.
   // The introduction stands beside the raised entrance, before the wall lesson.
-  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 5, 8, signs.jump);
-  stampTiledSign(m, 11, 8, signs.wall);
-  stampTiledSign(m, 18, 8, signs.ledge);
-  stampTiledSign(m, 34, 7, signs.exit);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 5, 8, signs.jump, 1, { maxPostHeight: 1 });
+  stampTiledSign(m, 11, 8, signs.wall, 1, { maxPostHeight: 1 });
+  stampTiledSign(m, 18, 8, signs.ledge, 1, { maxPostHeight: 1 });
+  stampTiledSign(m, 34, 7, signs.exit, 1, { maxPostHeight: 1 });
   return m;
 }
 
@@ -102,10 +103,10 @@ function topLevel(book: Book, signs: Record<SignName, Sign>): TopMap {
   for (const x of [21, 28, 34]) g.put(x, ROUND_Y, 'b');
   for (const x of [10, 17, 30]) g.put(x, ROUND_Y + 1, 'f');
   const m = new TopMap(book, g.rows());
-  stampTiledSign(m, 1, 1, signs.jump);
-  stampTiledSign(m, 8, 1, signs.wall);
-  stampTiledSign(m, 18, 1, signs.ledge);
-  stampTiledSign(m, 34, 2, signs.exit);
+  stampTiledSign(m, 1, 1, signs.jump, 1, { maxPostHeight: 1 });
+  stampTiledSign(m, 8, 1, signs.wall, 1, { maxPostHeight: 1 });
+  stampTiledSign(m, 18, 1, signs.ledge, 1, { maxPostHeight: 1 });
+  stampTiledSign(m, 34, 2, signs.exit, 1, { maxPostHeight: 1 });
   return m;
 }
 

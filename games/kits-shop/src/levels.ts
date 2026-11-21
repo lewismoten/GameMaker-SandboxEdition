@@ -11,7 +11,8 @@ import { addLockBlocks } from '../../kit/starter/locks';
 import { ORIGIN, StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
 import { addAwning, addCash, addSold, addStall, stallName } from '../../kit/starter/shop';
-import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 
@@ -63,8 +64,8 @@ function frame(width: number, exitX: number): { g: Grid; GROUND: number } {
   const GROUND = 10;
   g.row(GROUND, 0, width - 1, 'G').fill(0, GROUND + 1, width, 4, 'D');
   g.col(0, 0, 9, 'X').col(width - 1, 0, 9, 'X');
-  // A narrow three-row turf ledge keeps the shop's roof board in the fixed view.
-  g.put(3, 7, 'G').put(3, 8, 'D').put(3, 9, 'D');
+  // A three-row turf ledge keeps the shop's roof board in the fixed view.
+  g.row(7, 1, 3, 'G').fill(1, 8, 3, 2, 'D');
   g.put(3, 5, 's').put(3, 6, 'S');
   g.put(exitX, 8, 'e').put(exitX, 9, 'E');
   return { g, GROUND };
@@ -93,7 +94,8 @@ function shop(book: Book, pal: Pal, signs: Record<SignName, Sign>): StarterMap {
     [14, 0],
     [52, 1],
   ]);
-  for (const x of [1, 12, 23, 52]) g.put(x, GROUND - 1, 'b');
+  g.put(1, 6, 'b');
+  for (const x of [12, 23, 52]) g.put(x, GROUND - 1, 'b');
   for (const x of [8, 17, 46]) g.put(x, GROUND - 1, 'f');
   const rows = g.rows();
   const m = cash(new StarterMap(book, rows), rows);
@@ -134,6 +136,8 @@ function shop(book: Book, pal: Pal, signs: Record<SignName, Sign>): StarterMap {
       x,
       y,
       sign,
+      1,
+      { maxPostHeight: 1 },
     );
   place(5, onGround(GROUND, signs.street), signs.street);
   place(26, onGround(GROUND, signs.both), signs.both);

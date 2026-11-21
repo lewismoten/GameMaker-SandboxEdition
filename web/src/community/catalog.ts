@@ -30,14 +30,18 @@ export function parseCommunityGames(value: unknown): CommunityGame[] {
       return value.trim();
     };
     const url = (key: string): string => {
-      const value = text(key, 2048);
+      const value = entry[key];
+      const invalid = `${key} must be an HTTPS URL without credentials.`;
+      if (typeof value !== 'string') return fail(invalid);
+      let parsed: URL;
       try {
-        const parsed = new URL(value);
-        if (parsed.protocol === 'https:' && !parsed.username && !parsed.password) return parsed.href;
+        parsed = new URL(value.trim());
       } catch {
-        /* The field message below also covers malformed URLs. */
+        return fail(invalid);
       }
-      return fail(`${key} must be a public HTTPS URL without credentials.`);
+      if (parsed.protocol !== 'https:' || parsed.username || parsed.password) return fail(invalid);
+      if (parsed.href.length > 2048) return fail(`${key} must contain at most 2048 characters after URL encoding.`);
+      return parsed.href;
     };
     const id = text('id', 48);
     if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(id) || seen.has(id)) return fail('id must be unique lowercase words joined by hyphens.');

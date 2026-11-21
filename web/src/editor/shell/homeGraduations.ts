@@ -7,7 +7,7 @@ import { h, modal } from '../core/ui';
 import { CEREMONIES, DIPLOMA, ceremonyState, ceremonyTitle, courseNumber, unlockRule, type Ceremony, type CeremonyState } from '../../project/ceremonies';
 import type { Grades } from '../../project/grades';
 import { withFinished } from '../../project/grades';
-import type { HomeGame } from './homeCards';
+import type { HomeGame } from './homeGames';
 import type { DoneFilter } from './homeDone';
 
 const SVG = 'http://www.w3.org/2000/svg';

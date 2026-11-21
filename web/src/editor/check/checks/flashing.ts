@@ -51,9 +51,11 @@ function mostOnScreen(d: SceneData, set: Set<number>): { count: number; cell: nu
  * pictures is one change a long while apart, so it is a low rate, not flashing.
  */
 export function flashesPerSecond(d: SceneData, cycle: { n: number; ticks: number }[]): number {
-  const times: number[] = []; // tick of each counted change over turns of the cycle, enough to span two seconds
+  if (!cycle.length) return 0;
+  const period = cycle.reduce((sum, c) => sum + Math.max(1, c.ticks), 0);
+  const times: number[] = []; // Include wrapped windows after every phase of one period.
   let t = 0;
-  while (t < 40)
+  while (t < period + 40)
     cycle.forEach((c, i) => {
       t += Math.max(1, c.ticks);
       const a = meanLight(d, c.n);
@@ -77,6 +79,9 @@ export function flashing(d: SceneData): Finding[] {
     if (done.has(n)) continue;
     const cycle = blockCycle(d.bbl, n);
     if (cycle.length < 2) continue;
+    // a chain that ends on a block that stays put changes once, it doesn't flash
+    const last = d.bbl[cycle[cycle.length - 1].n];
+    if (last.ntime <= 0 || last.nextBl === cycle[cycle.length - 1].n) continue;
     cycle.forEach((c) => done.add(c.n));
     // flashes in the busiest second: the changes of light that fall inside one second, two to a flash
     const rate = flashesPerSecond(d, cycle);

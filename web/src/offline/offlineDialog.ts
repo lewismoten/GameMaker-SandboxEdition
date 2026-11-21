@@ -15,7 +15,7 @@ export async function openOfflineDialog(): Promise<void> {
     const content = h('div');
     body.append(status, content);
     const closeButton = () => h('button', { type: 'button', onclick: () => close(undefined) }, 'Close');
-    const show = (s: OfflineStatus, note = '') => {
+    const show = (s: OfflineStatus, note = '', checking = false) => {
       if (!s.supported) {
         status.textContent = s.reason ?? 'An offline copy cannot be made here.';
         clear(content, closeButton());
@@ -31,7 +31,7 @@ export async function openOfflineDialog(): Promise<void> {
       const choices = h('fieldset', { class: 'offline-tiers' });
       choices.append(h('legend', null, 'Keep in this browser'));
       for (const [tier, label] of Object.entries(offlineTiers) as [OfflineTier, string][]) {
-        const input = h('input', { type: 'checkbox', checked: s.tiers.includes(tier), disabled: tier === 'core' });
+        const input = h('input', { type: 'checkbox', checked: s.tiers.includes(tier), disabled: checking || tier === 'core' });
         input.addEventListener('change', () => {
           const tiers = input.checked ? [...s.tiers, tier] : s.tiers.filter((t) => t !== tier);
           for (const control of choices.querySelectorAll('input')) control.disabled = true;
@@ -51,11 +51,16 @@ export async function openOfflineDialog(): Promise<void> {
         choices.append(h('label', null, input, ` ${label} (${sizeText(bytes)})`));
       }
       const room = hasRoom(s, s.storedMissing);
-      const go = h('button', { type: 'button', class: 'primary', disabled: !room, onclick: () => void download(s) }, `Download ${sizeText(s.wireMissing)}`);
+      const go = h(
+        'button',
+        { type: 'button', class: 'primary', disabled: checking || !room, onclick: () => void download(s) },
+        checking ? 'Checking…' : `Download ${sizeText(s.wireMissing)}`,
+      );
       const remove = h(
         'button',
         {
           type: 'button',
+          disabled: checking,
           onclick: async () => {
             remove.disabled = true;
             try {
@@ -74,10 +79,12 @@ export async function openOfflineDialog(): Promise<void> {
         h(
           'p',
           { class: 'meta' },
-          `${sizeText(s.wireMissing)} still needed; about ${sizeText(s.storedMissing)} free space needed for a safe replacement.${room ? '' : ' There is not enough room.'}`,
+          checking
+            ? 'Download and storage estimates follow the check.'
+            : `${sizeText(s.wireMissing)} still needed; about ${sizeText(s.storedMissing)} free space needed for a safe replacement.${room ? '' : ' There is not enough room.'}`,
         ),
         h('p', { class: 'meta' }, 'Video playback needs the internet. You can change tiers later.'),
-        h('div', { class: 'buttons' }, closeButton(), s.ready ? remove : go),
+        h('div', { class: 'buttons' }, closeButton(), !s.ready && go, s.removable && remove),
       );
     };
     const download = async (s: OfflineStatus) => {
@@ -101,7 +108,7 @@ export async function openOfflineDialog(): Promise<void> {
         show(s, `The offline copy could not finish: ${(e as Error).message}`);
       }
     };
-    void offlineStatus()
+    void offlineStatus(undefined, (s) => show(s, 'Checking saved files…', true))
       .then((s) => show(s))
       .catch((e: unknown) => {
         status.textContent = String(e);

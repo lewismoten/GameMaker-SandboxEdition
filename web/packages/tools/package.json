@@ -1,6 +1,6 @@
 {
   "name": "@lewismoten/gamemaker-sandbox-tools",
-  "version": "3.8.0",
+  "version": "3.9.0",
   "description": "Development tools for building and checking games in RSD Game-Maker formats",
   "type": "module",
   "license": "MIT",
@@ -53,6 +53,16 @@
       "gamemaker-source": "./src/formats/*.ts",
       "import": "./dist/formats/*.js"
     },
+    "./kit/dastImage": {
+      "types": "./dist/types/kit/dastImage.d.ts",
+      "gamemaker-source": "./src/kit/dastImage.ts",
+      "import": "./dist/kit/dastImage.js"
+    },
+    "./kit/dastSymmetry": {
+      "types": "./dist/types/kit/dastSymmetry.d.ts",
+      "gamemaker-source": "./src/kit/dastSymmetry.ts",
+      "import": "./dist/kit/dastSymmetry.js"
+    },
     "./kit/tar": {
       "types": "./dist/types/kit/tar.d.ts",
       "gamemaker-source": "./src/kit/tar.ts",
@@ -102,6 +112,21 @@
       "types": "./dist/types/kit/laserClearance.d.ts",
       "gamemaker-source": "./src/kit/laserClearance.ts",
       "import": "./dist/kit/laserClearance.js"
+    },
+    "./kit/flashMeter": {
+      "types": "./dist/types/kit/flashMeter.d.ts",
+      "gamemaker-source": "./src/kit/flashMeter.ts",
+      "import": "./dist/kit/flashMeter.js"
+    },
+    "./kit/blockTimers": {
+      "types": "./dist/types/kit/blockTimers.d.ts",
+      "gamemaker-source": "./src/kit/blockTimers.ts",
+      "import": "./dist/kit/blockTimers.js"
+    },
+    "./kit/ticks": {
+      "types": "./dist/types/kit/ticks.d.ts",
+      "gamemaker-source": "./src/kit/ticks.ts",
+      "import": "./dist/kit/ticks.js"
     },
     "./kit/*": {
       "types": "./dist/types/kit/*.d.ts",

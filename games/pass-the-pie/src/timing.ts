@@ -3,6 +3,7 @@
 // changes together, from the moment the level starts, so a row of five kinds of block is a bar that runs out a
 // segment at a time, and a door can shut when the last one goes. Grandma's oven door at the start of a timed street
 // is a link back to the same street: touch it and every clock starts again.
+import { segmentedBar, ticks } from '@lewismoten/gamemaker-sandbox-tools/kit/ticks';
 import type { Pal } from '@lewismoten/gamemaker-sandbox-tools/kit/palRamps';
 import type { Book } from '../../kit/starter/book';
 import { SOLID } from '../../kit/starter/book';
@@ -12,7 +13,7 @@ import { AIR, type Timed } from './levels/common';
 import type { StarterMap } from '../../kit/starter/map';
 
 /** Ticks a second. */
-export const SECOND = 18.2;
+export const SECOND = ticks(1, { rate: 18.2, round: 'none' });
 /** How long a segment shows pale (cooling) before it goes out. */
 export const SEG_WARN = 18;
 /** Segments in a bar. */
@@ -26,14 +27,15 @@ export interface Clock {
 }
 
 export const clock = (seconds: number): Clock => {
-  const seg = Math.round((seconds * SECOND) / SEGMENTS);
+  const seg = Math.round(ticks(seconds, { rate: SECOND, round: 'none' }) / SEGMENTS);
   return { seg, open: seg * SEGMENTS };
 };
 
 /** The bar's blocks (seg0..4, each on, cooling and out), the door that shuts with it, and the oven door. */
 export function addClock(book: Book, pal: Pal, timed: Timed[], c: Clock): void {
+  const bar = segmentedBar({ segments: SEGMENTS, ticksPerSegment: c.seg });
   for (let i = 0; i < SEGMENTS; i++) {
-    const out = (SEGMENTS - i) * c.seg;
+    const out = bar[SEGMENTS - i - 1].end;
     for (const f of ['on', 'warn', 'off'] as const) book.add(`seg${i}.${f}`, art.segment(pal, f), AIR);
     timed.push({ name: `seg${i}.on`, next: `seg${i}.warn`, ticks: out - SEG_WARN }, { name: `seg${i}.warn`, next: `seg${i}.off`, ticks: SEG_WARN });
   }
@@ -46,7 +48,7 @@ export function addClock(book: Book, pal: Pal, timed: Timed[], c: Clock): void {
       p.rect(1, 2 + i * 3, 18, 2, ink[0]).rect(2, 2 + i * 3, 16, 1, i < SEGMENTS - step ? acc[2] : ink[1]);
     }
     book.add(`mini${step}`, p, AIR);
-    if (step < SEGMENTS) timed.push({ name: `mini${step}`, next: `mini${step + 1}`, ticks: c.seg });
+    if (step < SEGMENTS) timed.push({ name: `mini${step}`, next: `mini${step + 1}`, ticks: bar[step].duration });
   }
   const [oTop, oBot] = art.hallDoor(pal, false);
   const [sTop, sBot] = art.hallDoor(pal, true);

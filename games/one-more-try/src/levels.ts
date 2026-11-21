@@ -12,7 +12,8 @@ import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
 import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { addMicroPlaques, stampTiledSign, stampMicroPlaques } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign, stampMicroPlaques } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { addPostBlocks } from './postBlocks';
 
 export type SignName = 'deep' | 'post' | 'again' | 'exit' | 'ladder' | 'steps';
@@ -45,7 +46,7 @@ export interface Level {
 
 /** Refuse to cover scenery, pickups or another sign. */
 function placeSign(m: StarterMap, x: number, y: number, sign: Sign, postHeight = 1): void {
-  stampTiledSign({ set: (sx, sy, block) => m.setOnSky(sx, sy, block) }, x, y, sign, postHeight);
+  stampTiledSign({ set: (sx, sy, block) => m.setOnSky(sx, sy, block) }, x, y, sign, postHeight, { maxPostHeight: 1 });
 }
 
 /** The top row of a sign standing on ground row `ground`. */
@@ -101,7 +102,7 @@ function aPostToStartOver(book: Book, signs: Record<SignName, Sign>): StarterMap
   const m = new StarterMap(book, g.rows());
   placeSign(m, 18, onGround(GROUND, signs.deep), signs.deep);
   // Explain the reset post on the clear bank before the pit.
-  stampMicroPlaques({ set: (x, y, block) => m.setOnSky(x, y, block) }, 20, GROUND - 3, [signs.post, signs.again]);
+  stampMicroPlaques({ set: (x, y, block) => m.setOnSky(x, y, block) }, 20, GROUND - 3, [signs.post, signs.again], 1, { maxPostHeight: 1 });
   placeSign(m, 42, onGround(GROUND, signs.exit), signs.exit);
   m.set(L1.post, GROUND + DEPTH - 1, 'post');
   return m;

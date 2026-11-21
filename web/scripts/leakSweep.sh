@@ -4,7 +4,7 @@
 # local paths (your home folder), .for-lewis, token/key shapes, and any extra patterns (one extended regex
 # per line) in a git-ignored file: GM_LEAK_PATTERNS, else .leak-patterns.local at the repository root, else
 # .for-lewis/leak-patterns.local in the main checkout. Use it for names that must not appear, such as 1990s buyers' names. Secret names are never printed:
-# only counts and file paths (a path that holds a name is shown as <secret>).
+# only counts and file paths (names are shown as <secret>, personal patterns as <private>).
 # Usage: npm run check:leaks -- [dist-folder] [since-rev]   (default: no build, last 300 commits)
 # downloads.html lists the secret games on purpose (Lewis's choice) and is skipped in the build.
 # Exits 1 if a build holds any hit. Hits in tracked files are for a person to judge (code, tests
@@ -21,7 +21,13 @@ for f in $(grep -l '"secret": *true' games/*/about.json); do
   [ -n "$t" ] && words+=("$t")
 done
 pat=$(printf '%s\n' "${ids[@]}" "${words[@]}" | paste -sd'|' -)
-mask() { sed -E "s#($pat)#<secret>#Ig"; }
+mask() {
+  local args=(-e "s#($pat)#<secret>#Ig") p
+  for p in "${extra[@]}" "$homepat"; do
+    [ -n "$p" ] && args+=(-e "s#${p//#/\\#}#<private>#Ig")
+  done
+  sed -E "${args[@]}"
+}
 excl=()
 for i in "${ids[@]}"; do excl+=(":(exclude)games/$i"); done
 tmp=$(mktemp)
@@ -39,27 +45,31 @@ git grep -ilE "\b($pat)\b" -- . "${excl[@]}" ':(exclude)cd' ':(exclude)code' ':(
 mask <"$tmp" | head -20
 echo "   $(wc -l <"$tmp" | tr -d ' ') file(s)"
 
-echo "== secret ids/titles in commit messages since $since (history may name them)"
+echo "== secret ids/titles in commit messages since $since (history may name them)" | mask
 git log "$since"..HEAD --format=%B | grep -icE "\b($pat)\b"
 
 echo "== other patterns in tracked files (not cd/, code/, tests, AGENTS.md, CLAUDE.md)"
+pattern=0
 for p in "${extra[@]}" "$homepat" '\.for-lewis' 'sk-[A-Za-z0-9]{20,}' 'ghp_[A-Za-z0-9]{20,}' 'AKIA[0-9A-Z]{16}' 'BEGIN (RSA |EC )?PRIVATE KEY'; do
   git grep -lIE "$p" -- . ':(exclude)cd' ':(exclude)code' ':(exclude)package-lock.json' ':(exclude)*.test.ts' ':(exclude)AGENTS.md' ':(exclude)CLAUDE.md' ':(exclude).gitignore' ':(exclude).prettierignore' >"$tmp"
-  echo "-- $p: $(wc -l <"$tmp" | tr -d ' ') file(s)"
+  pattern=$((pattern + 1))
+  echo "-- pattern $pattern: $(wc -l <"$tmp" | tr -d ' ') file(s)"
   head -6 "$tmp" | mask | sed 's/^/     /'
 done
 
 if [ -n "$dist" ] && [ -d "$dist" ]; then
-  echo "== build in $dist (skipped: downloads.html, games/extra-N.json and videos/walk-HASH.json, which are loaded only once a secret game is listed, and the secret games' own folders)"
+  echo "== build in $dist (skipped: downloads.html, games/extra-N.json and videos/walk-HASH.json, which are loaded only once a secret game is listed, and the secret games' own folders)" | mask
   # assets/bonus-*.js is the egg system's own code (src/eggs/bonus.ts): it names the secret games' ids by design, is on no page and loads only once an egg is found
   skip=(--exclude=downloads.html --exclude='extra-*.json' --exclude='walk-*.json' --exclude='bonus-*.js')
   for i in "${ids[@]}"; do skip+=("--exclude-dir=$i"); done
   # assets/phoneBook-*.js holds the regex text of a printable's path filter (src/manual/printables/phoneBook.ts); it is skipped for the .for-lewis pattern only
+  pattern=0
   for p in "$pat" "$homepat" '\.for-lewis' "${extra[@]}" 'sk-[A-Za-z0-9]{20,}' 'ghp_[A-Za-z0-9]{20,}'; do
     pskip=("${skip[@]}"); [ "$p" = '\.for-lewis' ] && pskip+=(--exclude='phoneBook-*.js')
     grep -rIlE "${pskip[@]}" "$p" "$dist" >"$tmp" 2>/dev/null
     c=$(wc -l <"$tmp" | tr -d ' ')
-    echo "-- $(echo "$p" | mask | cut -c1-30): $c file(s)"
+    pattern=$((pattern + 1))
+    echo "-- pattern $pattern: $c file(s)"
     head -6 "$tmp" | mask | sed 's/^/     /'
     [ "$c" -gt 0 ] && bad=1
   done
@@ -67,12 +77,13 @@ if [ -n "$dist" ] && [ -d "$dist" ]; then
   for p in '(^|[^0-9.])(192\.168|10\.[0-9]+|172\.(1[6-9]|2[0-9]|3[01]))\.[0-9]+\.[0-9]+' '[a-z0-9-]+\.ts\.net'; do
     grep -rIlE "${skip[@]}" "$p" "$dist" >"$tmp" 2>/dev/null
     c=$(wc -l <"$tmp" | tr -d ' ')
-    echo "-- network address $(echo "$p" | cut -c1-24): $c file(s)"
+    pattern=$((pattern + 1))
+    echo "-- network address pattern $pattern: $c file(s)"
     head -6 "$tmp" | mask | sed 's/^/     /'
     [ "$c" -gt 0 ] && bad=1
   done
   echo "-- emails in the build (all should be made-up domains or noreply):"
-  grep -rIhoE '[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)*\.[a-z]{2,}' "${skip[@]}" "$dist" 2>/dev/null | grep -vE '@[0-9]+x?\.|noreply|example\.' | sort -u | head -20 | sed 's/^/     /'
+  grep -rIhoE '[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)*\.[a-z]{2,}' "${skip[@]}" "$dist" 2>/dev/null | grep -vE '@[0-9]+x?\.|noreply|example\.' | sort -u | head -20 | mask | sed 's/^/     /'
 fi
 rm -f "$tmp"
 exit $bad

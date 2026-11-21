@@ -1,5 +1,6 @@
 // The public inventory must never disclose gated game names or their private dependencies.
 import { expect, it } from 'vitest';
+import { readFileSync, readdirSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { cdSecretCatalog } from './cdGames';
 import { offlineInventory } from './offlineManifest';
@@ -115,4 +116,18 @@ it.each(['starter', 'special', 'bizarre', undefined])('classifies gated %s inven
 
 it('offers only the public tiers, with no separate gated tier or count', () => {
   expect(Object.keys(offlineTiers)).toEqual(['core', 'starters', 'sandbox', 'specials', 'bizarre', 'cd', 'feelies', 'speech', 'hardware']);
+});
+
+it('never lists a secret game walkthrough descriptor (videos/walk-HASH.json), which holds its title', () => {
+  const dir = resolve(import.meta.dirname, '../public/videos');
+  const walks = readdirSync(dir).filter((f) => /^walk-[0-9a-f]+\.json$/.test(f));
+  expect(walks.length).toBeGreaterThan(0);
+  const paths = ['index.html', ...walks.map((f) => `videos/${f}`)];
+  const { files, extras } = offlineInventory(paths, (p) => new TextEncoder().encode(p), []);
+  expect(files.map((f) => f.path)).toEqual(['index.html']);
+  expect([...extras.values()].flat()).toEqual([]);
+});
+
+it('no walkthrough descriptor leaks into the offline file list of the build config', () => {
+  expect(readFileSync(resolve(import.meta.dirname, '../vite.config.ts'), 'utf8')).toContain('videos\\/walk-[0-9a-f]+');
 });

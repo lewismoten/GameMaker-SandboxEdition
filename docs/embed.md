@@ -3,16 +3,16 @@
 Game-Maker: Sandbox Edition can open a game that lives on another site. A visitor clicks a
 link or a button on your page, and the game opens to play or to edit in one of three places:
 
-| `in=` | Where it opens |
-| --- | --- |
-| `desk` | The 1994 desk: the game's disk goes in the PC's drive A:. |
-| `dos` | DOS Game-Maker (`dos.html`): the PC on its own page. |
-| `web` | Today's web interface: the full-window player, or the editors. |
+| `in=`  | Where it opens                                                 |
+| ------ | -------------------------------------------------------------- |
+| `desk` | The 1994 desk: the game's disk goes in the PC's drive A:.      |
+| `dos`  | DOS Game-Maker (`dos.html`): the PC on its own page.           |
+| `web`  | Today's web interface: the full-window player, or the editors. |
 
-| `mode=` | What happens |
-| --- | --- |
-| `play` (the default) | The game plays: on the desk and the DOS page with PLAYGAME, on the web in the player. |
-| `edit` | A copy opens to change: in Game-Maker's designers on the desk and the DOS page, in today's editors on the web. |
+| `mode=`              | What happens                                                                                                   |
+| -------------------- | -------------------------------------------------------------------------------------------------------------- |
+| `play` (the default) | The game plays: on the desk and the DOS page with PLAYGAME, on the web in the player.                          |
+| `edit`               | A copy opens to change: in Game-Maker's designers on the desk and the DOS page, in today's editors on the web. |
 
 Leave out `in` and the game opens wherever the visitor last worked (the desk or today's web).
 
@@ -78,6 +78,11 @@ You can also name the Game-Maker site instead of `*`:
 `Access-Control-Allow-Origin: *`, so a game in a GitHub Pages site links in as it is. The
 request carries no cookies.
 
+Send the CORS header on error responses too (nginx: `add_header ... always`; Apache:
+`Header always set ...`). Game-Maker skips a missing file, such as the high-score file every
+game requests, only if the browser can read the 404 for both spellings. Without the header
+on a 404, the browser reports a CORS error and the whole link-in stops.
+
 If the header is missing, the browser won't let Game-Maker read the file. The visitor then sees
 "The game could not be fetched", with a pointer to this page. Use postMessage instead.
 
@@ -124,6 +129,7 @@ window.open(…?receive…)  ─────────────────
 
    `files` may also hold a single .zip, .gmpak or exported .html, which is opened like a link.
    Folders in file names (`SNOWDAY/SNOWDAY.MAP`) are dropped, as DOS names have none.
+
 4. **Read the answer.** Once a `gm-files` message has arrived, you get `gm-received`
    (`{type, name, files}`) when the visitor has said yes and the game is kept: `name` is the
    game's display title and `files` is the number of files, not the `files` object you sent.
@@ -181,13 +187,13 @@ Game-Maker. The heart of it:
 
 ## Limits
 
-| What | Limit |
-| --- | --- |
-| Files in one game | 1,024 |
-| One file | 16 MB |
-| The whole game, unpacked | 48 MB |
-| Waiting for `gm-files` | 60 seconds |
-| A game's name | 60 characters |
+| What                     | Limit         |
+| ------------------------ | ------------- |
+| Files in one game        | 1,024         |
+| One file                 | 16 MB         |
+| The whole game, unpacked | 48 MB         |
+| Waiting for `gm-files`   | 60 seconds    |
+| A game's name            | 60 characters |
 
 A .zip or pack is checked against these limits as it is unpacked. A zip that unpacks to more
 than its directory says is refused.

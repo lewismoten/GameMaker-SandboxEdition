@@ -8,6 +8,7 @@
 //
 // What the signs ask is for a player that has a speed setting; the game itself never names a button (a DOS
 // player has none). Every room ends in a visible hedge, so Kit is never stopped by something he can't see.
+import { applyBlockTimers } from '@lewismoten/gamemaker-sandbox-tools/kit/blockTimers';
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { Book, PULL, type Timed } from '../../kit/starter/book';
@@ -17,7 +18,8 @@ import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
 import { MON } from '../../kit/starter/ids';
 import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { breeze, cave, pad } from './props';
 import { BREEZE_FRAMES, CROWD } from './timing';
 
@@ -33,13 +35,7 @@ export interface Level {
 
 /** The finished block set: the book's, with each timed block given its next block and its ticks. */
 export function finishBlocks(l: Pick<Level, 'book' | 'timed'>): Block[] {
-  const blocks = l.book.finish();
-  for (const t of l.timed) {
-    const b = blocks[l.book.n(t.name)];
-    b.nextBl = l.book.n(t.next);
-    b.ntime = t.ticks;
-  }
-  return blocks;
+  return applyBlockTimers(l.book.finish(), (name) => l.book.n(name), l.timed);
 }
 
 const AIR = { grav: PULL.down };
@@ -131,7 +127,7 @@ function shortAndLong(pal: Pal): Level {
     [26, 31, 42],
   );
   const m = new StarterMap(book, g.rows());
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 5, onGround(GROUND, signs.speed), signs.speed);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 5, onGround(GROUND, signs.speed), signs.speed, 1, { maxPostHeight: 1 });
   for (const x of PAD_X.short) m.set(x, GROUND - 1, 'pad.short');
   for (const x of PAD_X.long) m.set(x, GROUND - 1, 'pad.long');
   return { file: 'one', title: 'Short and Long', hint: 'Step on each pad. Hear the music.', map: m, book, timed: [] };
@@ -153,7 +149,7 @@ function aCrowd(pal: Pal): Level {
     [7, 30],
   );
   const m = new StarterMap(book, g.rows());
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 5, onGround(GROUND, signs.fewer), signs.fewer);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 5, onGround(GROUND, signs.fewer), signs.fewer, 1, { maxPostHeight: 1 });
   let n = 0;
   // The visible grass roof stays solid. Beneath it, two lit rows are cut out of the dirt;
   // the untouched dirt at row 13 supports every snail over its whole three-cell pace.

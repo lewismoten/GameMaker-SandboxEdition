@@ -6,6 +6,7 @@
 import { assertNoInvisibleWalls } from '../../kit/starter/invisibleWalls';
 import { buildLevels } from '../src/levels';
 import { DARK, LIT } from '../src/storm';
+import { checkEntranceWalk } from '../../kit/starter/entranceWalk';
 import { play } from './play';
 
 const built = buildLevels();
@@ -17,5 +18,6 @@ for (const l of built.levels) {
     if (t.next !== (t.name.endsWith('.lit') ? t.name.slice(0, -4) : `${t.name}.lit`)) throw new Error(`${l.file}: ${t.name} turns into ${t.next}`);
   }
 }
+await checkEntranceWalk((await play(undefined, 0)).bot, 1, 4);
 const { sim } = await play();
 console.log(`lightning: the bot walked both levels; score ${sim.ci.score}, ${sim.trail.length} scenes entered`);

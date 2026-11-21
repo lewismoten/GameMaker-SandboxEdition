@@ -8,6 +8,7 @@
 //      drift at 0.25 and 0.5 pixels a tick over the slow hills. Three suns in the sky fill in
 //      one by one, and when the last one fills the bars across the door lift.
 // Both rooms are closed in by hedges you can see, so Rima is never stopped by something she can't.
+import { applyBlockTimers } from '@lewismoten/gamemaker-sandbox-tools/kit/blockTimers';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { Book, PULL, SOLID, type Timed } from '../../kit/starter/book';
@@ -16,7 +17,8 @@ import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
 import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { CLEAR, backOf, layerOf, stillCell, type BandName } from './scene';
 import { CLOUDS, COLS, DOOR_COL, FENCE, GROUND_ROW, HILLS, ROWS, START, TOWN, WIDTH, WISPS, ringSize, type Band } from './view';
 
@@ -65,7 +67,8 @@ export class Stage {
   constructor(readonly pal: Pal) {
     addStarterBlocks(this.book, pal);
     Object.assign(this.signs, addMicroPlaques(this.book, pal, SIGN_WORDS));
-    // Only posts carry scene pixels; retain the lawn stripes around the shaft.
+    // Keep the lawn stripes behind the raised plank and the signposts.
+    this.book.redraw('plank', this.over(this.book.pics.get('plank')!, this.still(START[1] + 1)));
     for (const [name, pic] of this.book.pics) if (name.startsWith('microPlaque.post')) this.book.redraw(name, this.over(pic, this.still(GROUND_ROW - 1)));
   }
 
@@ -135,7 +138,7 @@ export class Stage {
 
   /** Keep the shared board and its short textured post entirely below the moving bands. */
   sign(m: StarterMap, n: SignName, at: readonly [number, number]): void {
-    stampTiledSign(m, at[0], at[1], this.signs[n], GROUND_ROW - at[1] - this.signs[n].board.length);
+    stampTiledSign(m, at[0], at[1], this.signs[n], GROUND_ROW - at[1] - this.signs[n].board.length, { maxPostHeight: 1 });
   }
 
   /** The raised doorway over the bands, with its clear corners kept in step with them. */
@@ -231,9 +234,8 @@ function paint(st: Stage, resting: Partial<Record<number, BandName>>): StarterMa
   g.put(DOOR_COL, GROUND_ROW - 2, 'e').put(DOOR_COL, GROUND_ROW - 1, 'E');
   const m = new StarterMap(st.book, g.rows());
   for (let y = 0; y < ROWS; y++) for (let x = 0; x < COLS; x++) m.set(x, y, st.plain(st.under(y, resting), y === GROUND_ROW));
-  // A three-row path ledge supports the existing landing cell, keeping every band aligned.
-  m.set(START[0], START[1] + 1, st.plain(st.still(GROUND_ROW), true));
-  for (let y = START[1] + 2; y < GROUND_ROW; y++) m.set(START[0], y, 'dirt');
+  // The doorway rests on a plank so Rima can cross underneath from either side.
+  m.set(START[0], START[1] + 1, 'plank');
   // hedges close the room in at both sides, from row 4 down to the path (the path's own row runs under them)
   for (const x of [0, COLS - 1]) for (let y = 4; y < GROUND_ROW; y++) m.set(x, y, 'edge');
   return m;
@@ -286,13 +288,7 @@ function driftingClouds(st: Stage): StarterMap {
 
 /** The finished block set: the book's, with each timed block given its next block and its ticks. */
 export function finishBlocks(st: Pick<Stage, 'book' | 'timed'>): Block[] {
-  const blocks = st.book.finish();
-  for (const t of st.timed) {
-    const b = blocks[st.book.n(t.name)];
-    b.nextBl = st.book.n(t.next);
-    b.ntime = t.ticks;
-  }
-  return blocks;
+  return applyBlockTimers(st.book.finish(), (name) => st.book.n(name), st.timed);
 }
 
 /** The levels in order. */

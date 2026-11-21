@@ -1,7 +1,7 @@
 // A project's thumbnail actions stay beside the button that opened them, above scrolling tiles.
 import { h } from '../core/ui';
 import { projectMenuItems } from './homeProjectActions';
-import type { HomeGame } from './homeCards';
+import type { HomeGame } from './homeGames';
 import './homeTileMenu.css';
 
 export function homeTileMenu(anchor: HTMLElement, game: HomeGame, refresh: () => Promise<void>): void {

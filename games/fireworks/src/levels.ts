@@ -14,7 +14,8 @@ import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { type Pal } from '../../kit/starter/palette';
 import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { BIGS, CELLS, CLIMB, ROCKET, ROCKET_TEAL, bigMonsters } from './monsters';
 import { nightPalette } from './night';
 import { addScenery, houseRows } from './town';
@@ -80,7 +81,7 @@ function stars(m: StarterMap, at: [number, number][]): void {
 
 /** Keep the town, launchers and doors intact beneath and beside the signs. */
 function board(m: StarterMap, x: number, y: number, s: Sign, postHeight = 1): void {
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, x, y, s, postHeight);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, x, y, s, postHeight, { maxPostHeight: 1 });
 }
 
 /** Level 1: 44 blocks wide; two launchers with their own times. */

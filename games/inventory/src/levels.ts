@@ -14,7 +14,8 @@ import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
 import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { drawCrate, drawItem } from './itemArt';
 import { FROSTY, TARGET } from './monsters';
 
@@ -137,11 +138,11 @@ function stepUp(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [12, 24, 36],
   );
   const m = new StarterMap(book, g.rows());
-  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 4, onGround(GROUND, signs.pick), signs.pick);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 4, onGround(GROUND, signs.pick), signs.pick, 1, { maxPostHeight: 1 });
   for (const x of L1.crates) m.set(x, STAND, 'crate');
-  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 15, onGround(GROUND, signs.pack), signs.pack);
-  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 20, onGround(GROUND, signs.wall), signs.wall);
-  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 41, onGround(GROUND, signs.exit), signs.exit);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 15, onGround(GROUND, signs.pack), signs.pack, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 20, onGround(GROUND, signs.wall), signs.wall, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 41, onGround(GROUND, signs.exit), signs.exit, 1, { maxPostHeight: 1 });
   return m;
 }
 
@@ -163,15 +164,15 @@ function yourPick(book: Book, signs: Record<SignName, Sign>): StarterMap {
     [12, 32, 41],
   );
   const m = new StarterMap(book, g.rows());
-  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 5, onGround(GROUND, signs.items), signs.items);
-  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 6, onGround(GROUND, signs.throw), signs.throw);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 5, onGround(GROUND, signs.items), signs.items, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 6, onGround(GROUND, signs.throw), signs.throw, 1, { maxPostHeight: 1 });
   m.set(L2.flame, STAND, 'flameItem').set(L2.star, STAND, 'starItem');
-  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 16, onGround(GROUND, signs.order), signs.order);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 16, onGround(GROUND, signs.order), signs.order, 1, { maxPostHeight: 1 });
   m.mon(FROSTY, L2.frosty, STAND);
   for (let x = L2.spikes[0]; x <= L2.spikes[1]; x++) m.set(x, STAND, 'spikeUp');
-  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 34, onGround(GROUND, signs.range), signs.range);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 34, onGround(GROUND, signs.range), signs.range, 1, { maxPostHeight: 1 });
   m.mon(TARGET, L2.target, STAND);
-  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 46, onGround(GROUND, signs.exit), signs.exit);
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 46, onGround(GROUND, signs.exit), signs.exit, 1, { maxPostHeight: 1 });
   return m;
 }
 

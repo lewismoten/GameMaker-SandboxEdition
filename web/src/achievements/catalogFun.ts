@@ -1,0 +1,61 @@
+// Achievement badges: around the site.
+import type { Achievement } from './catalogTypes';
+import { HELP_PAGES, WORLD_MAP_STYLES, LIBRARY_KINDS, MAG_FEATURES } from './catalogItems';
+
+export const FUN_ACHIEVEMENTS: readonly Achievement[] = [
+  { id: 'cast-visit', title: 'Meet the cast', desc: 'Visited the cast page.', icon: '🎭', category: 'fun' },
+  { id: 'cast-parade', title: 'Curtain call', desc: 'Watched the whole stage parade on the cast page.', icon: '👏', category: 'fun' },
+  {
+    id: 'help-all',
+    title: 'Read the fine print',
+    desc: 'Read the Mac, Windows and Linux help pages.',
+    icon: '🧾',
+    category: 'fun',
+    of: HELP_PAGES.length,
+    items: HELP_PAGES,
+    unit: 'pages',
+  },
+  { id: 'print-level-maps', title: 'Map reader', desc: 'Opened a game’s Level Maps.', icon: '🧭', category: 'fun' },
+  { id: 'print-world-map', title: 'Fold-out', desc: 'Unfolded a game’s World Map.', icon: '🗺️', category: 'fun' },
+  {
+    id: 'print-world-styles',
+    title: 'Cartographer',
+    desc: 'Unfolded a World Map in each of its seven styles, from star chart to floor plan.',
+    icon: '📐',
+    category: 'fun',
+    of: WORLD_MAP_STYLES.length,
+    items: WORLD_MAP_STYLES,
+    unit: 'styles',
+  },
+  { id: 'library-visit', title: 'Quiet, please', desc: 'Visited the Library.', icon: '🏛️', category: 'fun' },
+  {
+    id: 'library-kinds',
+    title: 'Well read',
+    desc: 'Opened something of every kind on the Library’s shelves.',
+    icon: '📚',
+    category: 'fun',
+    of: LIBRARY_KINDS.length,
+    items: LIBRARY_KINDS,
+    unit: 'kinds',
+  },
+  { id: 'mag-back', title: 'Cover to cover', desc: 'Turned TURBO BUTTON all the way to its back cover.', icon: '🗞️', category: 'fun' },
+  {
+    id: 'mag-features',
+    title: 'Dog-eared',
+    desc: 'Read Readers’ Picks, What Players Hate, Bugs Only DOS Could Find and the Shareware Shelf in TURBO BUTTON.',
+    icon: '📑',
+    category: 'fun',
+    of: MAG_FEATURES.length,
+    items: MAG_FEATURES,
+    unit: 'features',
+  },
+  {
+    id: 'mag-disc',
+    title: 'Free CD-ROM inside!',
+    desc: 'Opened the CD-ROM on TURBO BUTTON’s cover and found the original Game-Maker source.',
+    icon: '💿',
+    category: 'fun',
+  },
+  { id: 'offline-copy', title: 'Off the grid', desc: 'Kept a copy of the site for playing offline.', icon: '📴', category: 'fun' },
+  { id: 'link-in', title: 'Special delivery', desc: 'Opened a game sent from another site.', icon: '📬', category: 'fun' },
+];

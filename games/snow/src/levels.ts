@@ -6,7 +6,8 @@ import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { ORIGIN, StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
-import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { openLevel } from './open';
 
 /** A level's map and where it starts and leaves (a StarterMap, or the top-down level's OverMap with the same two). */
@@ -132,7 +133,7 @@ function level(pal: Pal, grow: boolean): Level {
   const map = new StarterMap(book, g.rows());
   for (let x = 4; x < WIDTH - 3; x++) map.set(x, GROUND - 1, 'powder');
   for (let col = 0; col < 3; col++) map.set(8 + col, GROUND - 1, `drift${col}.${grow ? 0 : 2}`);
-  stampTiledSign({ set: map.setOnSky.bind(map) }, 3, GROUND - 2, signs.lesson);
+  stampTiledSign({ set: map.setOnSky.bind(map) }, 3, GROUND - 2, signs.lesson, 1, { maxPostHeight: 1 });
   // Scatter only on remaining sky. Phase offsets and alternating loops break up rows of identical flakes.
   for (let y = 0; y < GROUND; y++)
     for (let x = 1; x < WIDTH - 1; x++) {

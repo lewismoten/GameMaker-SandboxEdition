@@ -12,7 +12,8 @@ import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
-import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 
 export type SignName = 'hop' | 'hold' | 'lift' | 'top' | 'exit' | 'dash' | 'right' | 'press' | 'twice';
@@ -48,7 +49,7 @@ const onGround = (ground: number, s: Sign) => ground - 1 - s.board.length;
 
 /** Guard every board and post against overwriting the course or scenery. */
 const place = (m: StarterMap, x: number, y: number, sign: Sign, postHeight = 1) =>
-  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, x, y, sign, postHeight);
+  stampTiledSign({ set: (x, y, name) => m.setOnSky(x, y, name) }, x, y, sign, postHeight, { maxPostHeight: 1 });
 
 /** Level 1: the ground row, the width, the low wall's columns and top row, the cliff's first column and top row, the exit column and the coins. */
 export const L1 = {

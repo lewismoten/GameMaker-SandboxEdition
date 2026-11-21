@@ -10,6 +10,7 @@
 // Nothing here is random. The clock starts when the room loads and counts ticks, so the face
 // at a touch is whatever the tick makes it (the manual says so). The room ends in visible
 // hedges, so Mara is never stopped by something she can't see.
+import { applyBlockTimers } from '@lewismoten/gamemaker-sandbox-tools/kit/blockTimers';
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { Book, PULL, type Timed } from '../../kit/starter/book';
 import { addStarterBlocks, KEYS } from '../../kit/starter/blocks';
@@ -33,13 +34,7 @@ export interface Level {
 
 /** The finished block set: the book's, with each timed block given its next block and its ticks. */
 export function finishBlocks(l: Pick<Level, 'book' | 'timed'>): Block[] {
-  const blocks = l.book.finish();
-  for (const t of l.timed) {
-    const b = blocks[l.book.n(t.name)];
-    b.nextBl = l.book.n(t.next);
-    b.ntime = t.ticks;
-  }
-  return blocks;
+  return applyBlockTimers(l.book.finish(), (name) => l.book.n(name), l.timed);
 }
 
 const AIR = { grav: PULL.down };

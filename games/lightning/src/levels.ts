@@ -11,7 +11,8 @@ import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { type Pal } from '../../kit/starter/palette';
-import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { BOLT, addBolt, addCloud, addHill, addLitTwins, addStone, stormPalette, type Timed } from './storm';
 
@@ -84,13 +85,13 @@ function flashAndRumble(pal: Pal): Level {
   g.row(GROUND, 0, 43, 'G').fill(0, GROUND + 1, 44, 3, 'D');
   g.col(0, 0, GROUND - 1, 'X').col(43, 0, GROUND - 1, 'X');
   // A two-row turf ledge lifts the opening sky before the walk across the field.
-  g.put(3, GROUND - 2, 'G').put(3, GROUND - 1, 'D');
+  g.row(GROUND - 2, 1, 3, 'G').row(GROUND - 1, 1, 3, 'D');
   g.put(3, GROUND - 4, 's').put(3, GROUND - 3, 'S');
   g.put(40, GROUND - 2, 'e').put(40, GROUND - 1, 'E');
   for (const x of [10, 31]) g.put(x, GROUND - 1, 'b');
   for (const x of [17, 28, 36]) g.put(x, GROUND - 1, 'f');
   const m = new StarterMap(b.book, g.rows());
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 14, onGround(b.signs.thunder), b.signs.thunder);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 14, onGround(b.signs.thunder), b.signs.thunder, 1, { maxPostHeight: 1 });
   const bolt = storm(m, b, 19, [
     [6, 5, 2],
     [27, 5, 3],
@@ -123,7 +124,7 @@ function lightTheWay(pal: Pal): Level {
   for (const s of stones) for (const x of s) m.set(x, GROUND, 'stone');
   // The mapping retains BOOM/LATER in both rooms. The right bank is clear of
   // the ditch, stones and flower at 30; its one-block post meets the grass.
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 28, onGround(b.signs.thunder), b.signs.thunder);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 28, onGround(b.signs.thunder), b.signs.thunder, 1, { maxPostHeight: 1 });
   const bolt = storm(m, b, 34, [
     [7, 5, 2],
     [19, 5, 3],

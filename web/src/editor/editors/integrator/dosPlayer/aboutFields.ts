@@ -81,7 +81,7 @@ export function aboutFields(o: AboutOpts): HTMLElement {
   return h(
     'section',
     { class: 'dp-section dp-about', 'aria-labelledby': `${o.id}-about-h` },
-    h('h3', { id: `${o.id}-about-h` }, 'Its words'),
+    h('h2', { id: `${o.id}-about-h` }, 'Its words'),
     radios(
       `${o.id}-about-view`,
       'Show the page',

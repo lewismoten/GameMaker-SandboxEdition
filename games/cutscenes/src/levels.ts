@@ -10,10 +10,12 @@
 //
 // The tales are scenes too, but they are not levels: they load a stage map without signs.
 // Both rooms are closed in by brick you can see, so Mara is never stopped by something she can't.
+import { applyBlockTimers } from '@lewismoten/gamemaker-sandbox-tools/kit/blockTimers';
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { Book, PULL, SOLID, type Timed } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
-import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { Grid } from '../../kit/starter/grid';
 import { ORIGIN, StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
@@ -61,13 +63,7 @@ const SIGNS = {
 
 /** The finished block set: the book's, with each timed block given its next block and its ticks. */
 export function finishBlocks(book: Book, timed: Timed[]): Block[] {
-  const blocks = book.finish();
-  for (const t of timed) {
-    const b = blocks[book.n(t.name)];
-    b.nextBl = book.n(t.next);
-    b.ntime = t.ticks;
-  }
-  return blocks;
+  return applyBlockTimers(book.finish(), (name) => book.n(name), timed);
 }
 
 const AIR = { grav: PULL.down };
@@ -119,9 +115,9 @@ function menu(book: Book, signs: Record<string, Sign>): StarterMap {
   for (const x of [4, 17, 26, 35]) g.put(x, GROUND - 1, 'b');
   for (const x of [3, 16, 18, 25, 34, 38]) g.put(x, GROUND - 1, 'f');
   const m = new StarterMap(book, g.rows());
-  stampTiledSign({ set: m.setOnSky.bind(m) }, MENU_INFO_X, onGround(GROUND, signs.menu), signs.menu);
+  stampTiledSign({ set: m.setOnSky.bind(m) }, MENU_INFO_X, onGround(GROUND, signs.menu), signs.menu, 1, { maxPostHeight: 1 });
   // Put each wall label beside its doorway, within the ground-level camera rows.
-  [signs.one, signs.two, signs.end].forEach((s, i) => stampTiledSign({ set: m.setOnSky.bind(m) }, MENU_LABELS[i] + 2, 4, s));
+  [signs.one, signs.two, signs.end].forEach((s, i) => stampTiledSign({ set: m.setOnSky.bind(m) }, MENU_LABELS[i] + 2, 4, s, 1, { maxPostHeight: 1 }));
   return m;
 }
 

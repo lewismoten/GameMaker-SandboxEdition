@@ -92,9 +92,9 @@ if (dataNames.length) {
 const games = [...new Set(changed.map((f) => /^games\/([^/]+)\//.exec(f)?.[1]).filter((g) => g && g !== 'kit'))];
 const kitChanged = changed.some((f) => f.startsWith('games/kit/'));
 
-const pkgSrc = changed.some((f) => /^web\/packages\/[^/]+\/src\//.test(f));
-if (pkgSrc) step('release:check', root, 'npm', ['run', 'release:check'], 'package src changed');
-else skip('release:check', 'no package src changed');
+const releaseChanged = changed.some((f) => /^web\/packages\/[^/]+\/src\//.test(f) || f.startsWith('changes/unreleased/'));
+if (releaseChanged) step('release:check', root, 'npm', ['run', 'release:check'], 'package src or release fragment changed');
+else skip('release:check', 'no package src or release fragment changed');
 
 const w = rows.reduce((m, r) => Math.max(m, r[0].length), 4);
 console.log('\nverify:changed summary');

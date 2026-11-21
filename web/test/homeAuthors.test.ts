@@ -1,7 +1,7 @@
 // The Gameware and Shareware tabs' groups by maker (src/editor/shell/homeAuthors.ts).
 import { describe, expect, it } from 'vitest';
 import { byMaker } from '../src/editor/shell/homeAuthors';
-import type { HomeGame } from '../src/editor/shell/homeCards';
+import type { HomeGame } from '../src/editor/shell/homeGames';
 
 const game = (id: string, company?: string, author?: string, gam: string | null = `${id}.gam`) =>
   ({ key: `cd:${id}`, entry: { id, company, author, gam } }) as unknown as HomeGame;

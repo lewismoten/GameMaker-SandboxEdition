@@ -1,10 +1,5 @@
 // Reusable one-frame micro plaques: palette-independent boards and sky-matched posts.
-import {
-  buildTiledSigns,
-  stampTiledSign as stampSign,
-  stampMicroPlaques as stampStack,
-  type TiledSign,
-} from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { buildTiledSigns, type TiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { PULL, type Book } from './book';
 import { skyOf, type Pal } from './palette';
 
@@ -28,7 +23,7 @@ export function addMicroPlaques<K extends string>(book: Book, pal: Pal, texts: R
       font: 'micro',
       maxWidth: 2,
       prefix: 'microPlaque',
-      maxBlocks: Math.min(100, 150 - book.index.size),
+      maxBlocks: Math.min(100, book.size - book.index.size),
       colors: {
         background: skyOf(pal),
         paper: pal.c('parch', 3),
@@ -41,40 +36,4 @@ export function addMicroPlaques<K extends string>(book: Book, pal: Pal, texts: R
   );
   for (const [name, pic] of blocks) book.add(name, pic, { grav: PULL.down });
   return signs;
-}
-
-/** Mount distances are in 20-pixel blocks, measured from the board to its surface. */
-interface PlaqueMountOptions {
-  maxPostHeight?: number;
-}
-
-/** A distant plaque floats; never leave a shortened post hanging in midair. */
-export function microPlaquePostHeight(postHeight: number, { maxPostHeight = 1 }: PlaqueMountOptions = {}): number {
-  if (!Number.isInteger(postHeight) || postHeight < 0 || !Number.isInteger(maxPostHeight) || maxPostHeight < 0)
-    throw new Error('Plaque post heights must be nonnegative integers');
-  return postHeight <= maxPostHeight ? postHeight : 0;
-}
-
-/** Place a plaque with a short grounded post, or float it when the surface is farther away. */
-export function stampTiledSign(
-  map: { set(x: number, y: number, block: string): unknown },
-  x: number,
-  y: number,
-  sign: TiledSign,
-  postHeight = 1,
-  options: PlaqueMountOptions = {},
-): void {
-  stampSign(map, x, y, sign, microPlaquePostHeight(postHeight, options));
-}
-
-/** Stack plaques with the same short-post rule, measuring from the bottom plaque. */
-export function stampMicroPlaques(
-  map: { set(x: number, y: number, block: string): unknown },
-  x: number,
-  y: number,
-  plaques: readonly TiledSign[],
-  postHeight = 1,
-  options: PlaqueMountOptions = {},
-): void {
-  stampStack(map, x, y, plaques, microPlaquePostHeight(postHeight, options));
 }

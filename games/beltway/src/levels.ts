@@ -10,6 +10,7 @@
 //      lap, and when the third is lit the bars across the door lift. The lamps run on the clock: a block
 //      cannot see a car.
 // Both rooms are closed in by things you can see (a tail board, a cab, hedges), so Mia is never stopped by something she can't.
+import { applyBlockTimers } from '@lewismoten/gamemaker-sandbox-tools/kit/blockTimers';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { Book, PULL, SOLID, type Timed } from '../../kit/starter/book';
@@ -17,7 +18,8 @@ import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
-import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { CAR } from './monsters';
 import { drawLoop, drawRoad, lamp, stripAt } from './scene';
@@ -94,7 +96,7 @@ class Stage {
       if (!this.book.has(name)) this.book.add(name, pic, AIR);
       m.set(x, y, name);
     };
-    stampTiledSign({ set: put }, at[0], at[1], this.signs[n], GROUND_ROW - at[1] - 1);
+    stampTiledSign({ set: put }, at[0], at[1], this.signs[n], GROUND_ROW - at[1] - 1, { maxPostHeight: 1 });
   }
 
   /** The exit door standing at column `x`, its bottom on row 8, over whatever is behind it; `barred` for a version with two red and white bars. */
@@ -234,13 +236,7 @@ function roundTheLoop(st: Stage): StarterMap {
 
 /** The finished block set: the book's, with each timed block given its next block and its ticks. */
 export function finishBlocks(st: Pick<Stage, 'book' | 'timed'>): Block[] {
-  const blocks = st.book.finish();
-  for (const t of st.timed) {
-    const b = blocks[st.book.n(t.name)];
-    b.nextBl = st.book.n(t.next);
-    b.ntime = t.ticks;
-  }
-  return blocks;
+  return applyBlockTimers(st.book.finish(), (name) => st.book.n(name), st.timed);
 }
 
 /** The levels in order. */

@@ -6,6 +6,25 @@ changelog: [engine](web/packages/engine/CHANGELOG.md), [archives](web/packages/a
 
 ## [Unreleased]
 
+## [3.9.0] - 2026-11-20
+
+A fixes release: narrow screens no longer scroll sideways, Saves & scores handles storage trouble safely, Play offline reopens faster, seven Starters no longer trap you after walking left from a raised entrance, and the guided tour and screen readers reach more of the site.
+
+### Fixed
+
+- Players can walk left from raised entrances in seven Starters and still reach the exit without a precisely timed jump.
+- The top bar stays on one row, and library and game picture tooltips stay inside their tiles, so narrow windows and touch screens no longer scroll sideways.
+- Saves & scores retries a failed backup before changing a save, shows an error if storage fails while importing or deleting, and tells you when one succeeded even if the list could not refresh.
+- Play offline shows your saved choices at once and checks saved files much faster when reopened; a partial offline copy can be removed.
+- The guided tour opens each Achievements category as Dex introduces it, shows Assistant and manual cards on phones, opens Teddy's game pictures, and points to Find, Assets and the DOS player in the editor.
+- Screen reader users can move through the DOS player settings by heading, hear the wall clock's text, and find the modem speed controls by landmark.
+- Level check catches flashing across animation loops and no longer reports a one-time block change as repeating flashes.
+- Loaf #13 and Ohm Sweet Ohm explain their Enter controls.
+- Community game links fit the 2,048-character limit after URL encoding.
+- The exported Stick Man Stars license names the correct game.
+
+Full list: [changes/release/pages/3.9.0.md](https://github.com/lewismoten/GameMaker-SandboxEdition/blob/pages-v3.9.0/changes/release/pages/3.9.0.md)
+
 ## [3.8.0] - 2026-11-17
 
 Most Starters get the held-Space jump from First Steps, small plaques in place of long signs and a steadier view in flat rooms; Play offline lets you pick what to keep; the timed levels in Lucky Cat, Pass the Pie and The Thank-You Parade keep their whole countdown in view; and the Owner's Guide explains smaller BBS uploads.
@@ -211,7 +230,8 @@ for every Game-Maker file type; the web player; and the set of new games built i
 - Exports to a web page, a DOS ZIP and native players, and opening a game another site links to.
 - Achievements, a guided tour with voice clips, and offline use as an installable app.
 
-[Unreleased]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/pages-v3.8.0...HEAD
+[Unreleased]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/pages-v3.9.0...HEAD
+[3.9.0]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/pages-v3.8.0...pages-v3.9.0
 [3.8.0]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/pages-v3.7.0...pages-v3.8.0
 [3.7.0]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/pages-v3.6.0...pages-v3.7.0
 [3.6.0]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/pages-v3.5.0...pages-v3.6.0

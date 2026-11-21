@@ -128,6 +128,11 @@ to import one codec without the player:
 - `input/*`: `keyboard`, `scancodes`, `chords`, `deskMouse`.
 - `core/gameFiles` (`GameFiles`) and `player/*` (`fileExtensions`, `patchRules`, `patchTable`).
 
+The player patch metadata lives in `src/player/patchTable.*.data.ts`, grouped by words, colors,
+frames, positions, times and keys. `patchTable.ts` keeps the public types, constants, ordered
+`PATCHES` table and gameplay entry builders; `patchRules.ts` looks entries up and validates
+and reads or writes their values.
+
 ## Developing
 
 Source is in [web/packages/engine](https://github.com/lewismoten/GameMaker-SandboxEdition/tree/master/web/packages/engine/src).

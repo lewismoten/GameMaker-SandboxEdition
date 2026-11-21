@@ -5,6 +5,7 @@
 import { ADVTYPE, MAXSCENELINKS, NOSCENE, emptyScene, newGame, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import type { StarterMap } from '../../kit/starter/map';
 import { addReturnScenes } from '../../kit/starter/returnScenes';
+import { addSceneSequence } from '../../kit/starter/sceneSequence';
 import type { Level } from './levels';
 
 /** The title of the game, as the .GAM names it (19 characters at most). */
@@ -41,7 +42,7 @@ export function buildGame(levels: Level[], pass: StarterMap): Game {
   end.desc = 'The End';
   end.files = ['won.lst', 'say.cmf', 'lost.lst', 'say.cmf', ...new Array(16).fill('')];
 
-  levels.forEach((l, i) => {
+  addSceneSequence(game, levels, (l, i) => {
     const scene = emptyScene(ADVTYPE);
     // The horizontal lesson and its prizes fit below this raised entrance.
     scene.scroll.up = scene.scroll.down = 0;
@@ -61,11 +62,7 @@ export function buildGame(levels: Level[], pass: StarterMap): Game {
       '',
       ...new Array(9).fill(''),
     ];
-    scene.links = Array.from({ length: MAXSCENELINKS }, () => ({ toScene: NOSCENE, from: { x: 0, y: 0 }, to: { x: 0, y: 0 } }));
-    const next = levels[i + 1];
-    const [fx, fy] = l.map.exits[0].from;
-    scene.links[0] = { toScene: next ? i + 3 : 1, from: { x: fx, y: fy }, to: next ? { x: next.map.start[0], y: next.map.start[1] } : { x: 0, y: 0 } };
-    game.scenes.push(scene);
+    return scene;
   });
 
   // the talks: a link on the friend's bottom block takes the hero to the talk's scene, and its own link brings him back
@@ -105,8 +102,6 @@ export function buildGame(levels: Level[], pass: StarterMap): Game {
     levels.map((_, i) => i + 2),
   );
 
-  const first = levels[0].map.start;
-  title.links[0] = { toScene: 2, from: { x: 0, y: 0 }, to: { x: first[0], y: first[1] } };
   return game;
 }
 

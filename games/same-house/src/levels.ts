@@ -16,7 +16,8 @@ import { ORIGIN, StarterMap } from '../../kit/starter/map';
 import { skyOf, type Pal } from '../../kit/starter/palette';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { addMicroPlaques, stampTiledSign, stampMicroPlaques } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign, stampMicroPlaques } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { PAL_NAMES, buildPalettes, type PalName, type Palettes } from './palettes';
 import { banner, cap, carpet, frontWindow, lamp, merlon, painting, plate, roofTile, siding, slab, slit, sofa, towerWall, wallpaper, windowIn } from './props';
 
@@ -107,6 +108,7 @@ function wallSign(map: StarterMap, book: Book, wall: string, x: number, y: numbe
     y,
     signs,
     postHeight,
+    { maxPostHeight: 1 },
   );
 }
 
@@ -161,8 +163,8 @@ function street(pal: Pal): Level['hub'] {
   });
   // Stamp after the fronts so the guard checks the finished scenery too.
   const sky = { set: (x: number, y: number, name: string) => m.setOnSky(x, y, name) };
-  stampTiledSign(sky, 2, onGround(GROUND, signs.one), signs.one);
-  stampTiledSign(sky, 36, onGround(GROUND, signs.last), signs.last);
+  stampTiledSign(sky, 2, onGround(GROUND, signs.one), signs.one, 1, { maxPostHeight: 1 });
+  stampTiledSign(sky, 36, onGround(GROUND, signs.last), signs.last, 1, { maxPostHeight: 1 });
   // the doors' bottom blocks and the end door are what the hero touches to go in
   return {
     file: 'street',
@@ -254,9 +256,9 @@ function plaza(pal: Pal): Level['hub'] {
   PLAZA_DOORS.forEach((d, i) => {
     const sign = signs[names[i]];
     // Floating labels precede their doors along the rightward route.
-    stampTiledSign(sky, d - 2, 8, sign, 0);
+    stampTiledSign(sky, d - 2, 8, sign, 0, { maxPostHeight: 1 });
   });
-  stampTiledSign(sky, 3, onGround(GROUND, signs.three), signs.three);
+  stampTiledSign(sky, 3, onGround(GROUND, signs.three), signs.three, 1, { maxPostHeight: 1 });
   return {
     file: 'plaza',
     map: m,

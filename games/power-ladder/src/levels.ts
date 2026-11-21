@@ -18,7 +18,8 @@ import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
 import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { addMicroPlaques, stampTiledSign } from '../../kit/starter/microPlaque';
+import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { addLadderBlocks, type Grade } from './ladderBlocks';
 
 export type SignName = 'bronzeKey' | 'silverKey' | 'silverDoor' | 'goldKey' | 'goldDoor' | 'adds' | 'exit';
@@ -71,7 +72,7 @@ function base(width: number, exitX: number): Grid {
   g.row(GROUND, 0, width - 1, 'G').fill(0, GROUND + 1, width, 4, 'D');
   g.col(0, 0, 9, 'X').col(width - 1, 0, 9, 'X');
   // Three rows of turf and dirt frame both the ground and the upper keys in one view.
-  g.put(3, 7, 'G').put(3, 8, 'D').put(3, 9, 'D');
+  g.row(7, 1, 3, 'G').fill(1, 8, 3, 2, 'D');
   g.put(3, 5, 's').put(3, 6, 'S');
   g.put(exitX, 8, 'e').put(exitX, 9, 'E');
   return g;
@@ -113,10 +114,10 @@ function smallKeyBigDoor(book: Book, signs: Record<SignName, Sign>): StarterMap 
   m.set(9, 9, 'key_bronze').set(21, 2, 'key_silver');
   door(m, 27, 'silver');
   door(m, 37, 'bronze');
-  stampTiledSign(signMap, 4, onGround(GROUND, signs.bronzeKey), signs.bronzeKey);
-  stampTiledSign(signMap, 9, onGround(GROUND, signs.silverKey), signs.silverKey);
-  stampTiledSign(signMap, 22, onGround(GROUND, signs.silverDoor), signs.silverDoor);
-  stampTiledSign(signMap, 38, onGround(GROUND, signs.exit), signs.exit);
+  stampTiledSign(signMap, 4, onGround(GROUND, signs.bronzeKey), signs.bronzeKey, 1, { maxPostHeight: 1 });
+  stampTiledSign(signMap, 9, onGround(GROUND, signs.silverKey), signs.silverKey, 1, { maxPostHeight: 1 });
+  stampTiledSign(signMap, 22, onGround(GROUND, signs.silverDoor), signs.silverDoor, 1, { maxPostHeight: 1 });
+  stampTiledSign(signMap, 38, onGround(GROUND, signs.exit), signs.exit, 1, { maxPostHeight: 1 });
   return m;
 }
 
@@ -144,9 +145,9 @@ function oneGoldKey(book: Book, signs: Record<SignName, Sign>): StarterMap {
   door(m, 25, 'bronze');
   door(m, 35, 'silver');
   // Keep the board above the raised entrance, with its post left of the ladder.
-  stampTiledSign(signMap, 3, 2, signs.goldKey, GROUND - 2 - signs.goldKey.board.length);
+  stampTiledSign(signMap, 3, 2, signs.goldKey, GROUND - 2 - signs.goldKey.board.length, { maxPostHeight: 1 });
   // The taller post clears the flower and keeps the board above the exit door.
-  stampTiledSign(signMap, 40, 7, signs.exit, 2);
+  stampTiledSign(signMap, 40, 7, signs.exit, 2, { maxPostHeight: 1 });
   return m;
 }
 
@@ -171,9 +172,9 @@ function keysAddUp(book: Book, signs: Record<SignName, Sign>): StarterMap {
   const signMap = { set: (x: number, y: number, block: string) => m.setOnSky(x, y, block) };
   m.set(9, 9, 'key_bronze').set(20, 2, 'key_silver');
   door(m, 30, 'gold');
-  stampTiledSign(signMap, 18, onGround(GROUND, signs.goldDoor), signs.goldDoor);
-  stampTiledSign(signMap, 10, onGround(GROUND, signs.adds), signs.adds);
-  stampTiledSign(signMap, 38, onGround(GROUND, signs.exit), signs.exit);
+  stampTiledSign(signMap, 18, onGround(GROUND, signs.goldDoor), signs.goldDoor, 1, { maxPostHeight: 1 });
+  stampTiledSign(signMap, 10, onGround(GROUND, signs.adds), signs.adds, 1, { maxPostHeight: 1 });
+  stampTiledSign(signMap, 38, onGround(GROUND, signs.exit), signs.exit, 1, { maxPostHeight: 1 });
   return m;
 }
 

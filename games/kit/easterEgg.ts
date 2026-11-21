@@ -96,6 +96,3 @@ export function drawEasterEgg(p: Pixels, c: EggColors, pattern: EggPattern = 'zi
 export function easterEggSprite(c: EggColors, clear: number, pattern: EggPattern = 'zigzag', frame = 0): Pixels {
   return drawEasterEgg(new Pixels(20, 20, clear), c, pattern, frame);
 }
-
-/** A line an NPC can say about it. */
-export const EASTER_EGG_LINE = 'Somebody painted this one by hand. Zigzags!';

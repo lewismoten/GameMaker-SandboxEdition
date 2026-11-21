@@ -5,6 +5,20 @@ import { deleteSlot, newGameSave, NEW_SAVE_NAME, parseSave, writeSlot, writeSlot
 import type { Panel } from './panelState';
 import { confirmDialog } from './panelText';
 
+const errorMessage = (e: unknown) => (e instanceof Error ? e.message : String(e));
+
+async function refreshSlot(p: Panel, slot: number, completed: string): Promise<boolean> {
+  p.work.delete(slot);
+  try {
+    await p.reload();
+    p.render();
+    return true;
+  } catch (e) {
+    p.toast(`${completed}, but the list could not refresh: ${errorMessage(e)}`, 'error');
+    return false;
+  }
+}
+
 export async function commitSlot(p: Panel, slot: number): Promise<void> {
   const w = p.work.get(slot);
   if (!w) return;
@@ -17,7 +31,7 @@ export async function commitSlot(p: Panel, slot: number): Promise<void> {
     p.toast(`Slot ${slot + 1} saved. In the game, F6 loads it.`);
     p.render();
   } catch (e) {
-    p.toast(`Could not save: ${(e as Error).message}`, 'error');
+    p.toast(`Could not save: ${errorMessage(e)}`, 'error');
   }
 }
 
@@ -36,7 +50,7 @@ export async function importSav(p: Panel, slot: number): Promise<void> {
   try {
     parseSave(bytes);
   } catch (e) {
-    p.toast(`${file.name}: ${(e as Error).message}`, 'error');
+    p.toast(`${file.name}: ${errorMessage(e)}`, 'error');
     return;
   }
   if (
@@ -48,13 +62,15 @@ export async function importSav(p: Panel, slot: number): Promise<void> {
     ))
   )
     return;
-  p.backedUp = false; // a fresh backup for each replace
-  await p.safety();
-  await writeSlotBytes(p.target.saveId, slot, bytes);
-  p.work.delete(slot);
-  await p.reload();
-  p.toast(`${file.name} is in slot ${slot + 1}.`);
-  p.render();
+  try {
+    p.backedUp = false; // a fresh backup for each replace
+    await p.safety();
+    await writeSlotBytes(p.target.saveId, slot, bytes);
+  } catch (e) {
+    p.toast(`Could not import the save: ${errorMessage(e)}`, 'error');
+    return;
+  }
+  if (await refreshSlot(p, slot, 'Save imported')) p.toast(`${file.name} is in slot ${slot + 1}.`);
 }
 
 /** An empty slot gets the game as it starts (saveData newGameSave), named; then it can be edited. */
@@ -70,7 +86,7 @@ export async function newSave(p: Panel, slot: number): Promise<void> {
     p.render();
     p.main.querySelector<HTMLInputElement>(`#sv-name-${slot}`)?.select();
   } catch (e) {
-    p.toast(`Could not make a new save: ${(e as Error).message}`, 'error');
+    p.toast(`Could not make a new save: ${errorMessage(e)}`, 'error');
   }
 }
 
@@ -79,10 +95,13 @@ export async function removeSlot(p: Panel, slot: number): Promise<void> {
     !(await confirmDialog('Delete this save?', `Slot ${slot + 1} will be empty. A backup is taken first, so it can be restored from Backups.`, 'Delete', true))
   )
     return;
-  p.backedUp = false;
-  await p.safety();
-  await deleteSlot(p.target.saveId, slot);
-  p.work.delete(slot);
-  await p.reload();
-  p.render();
+  try {
+    p.backedUp = false;
+    await p.safety();
+    await deleteSlot(p.target.saveId, slot);
+  } catch (e) {
+    p.toast(`Could not delete the save: ${errorMessage(e)}`, 'error');
+    return;
+  }
+  await refreshSlot(p, slot, 'Save deleted');
 }

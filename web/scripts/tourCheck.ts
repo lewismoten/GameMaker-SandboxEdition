@@ -1,7 +1,7 @@
 // Plays tour chapters in headless Chrome and reports whether every step's control was found.
 //   npm run tour:check -- edit-sounds[,edit-animation]     (chapter ids; 'all' for the whole tour)
 // It starts its own vite on a free port (never 5173, Lewis's dev server) with a scratch cache, plays
-// each chapter at 1440 and 390 wide, light and dark, steps through it paused, runs axe on every
+// each chapter at 1440, 390 and 375 wide, light and dark, steps through it paused, runs axe on every
 // step (so on what the chapter opens too), prints a table, stops the server, and exits non-zero when
 // a step that is not optional found no control. Needs Chrome; playwright-core and axe-core are
 // dev dependencies.
@@ -10,11 +10,15 @@ import { createServer as netServer } from 'node:net';
 import { createRequire } from 'node:module';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { Page } from 'playwright-core';
 import { launch } from './perfLib';
 import { assertTheme, forceTheme } from './forceTheme';
 import { createServer } from 'vite';
 import { CHAPTERS } from '../src/tour/chapters/index';
+import { captionOf } from '../src/tour/steps';
+import { HOLD_MS } from '../src/tour/pageAct';
+import { checkedSteps, missingTourInputs } from './tourCheckInputs';
 
 const SIZES = [1440, 390, 375];
 const SCHEMES = ['light', 'dark'] as const;
@@ -41,7 +45,7 @@ interface Run {
 }
 
 async function play(page: Page, url: string, ids: string[], axeSrc: string, run: Run): Promise<void> {
-  const bySay = new Map(CHAPTERS.flatMap((c) => c.steps.map((s) => [s.say, { id: s.id, optional: !!s.optional }] as const)));
+  const byCaption = new Map(CHAPTERS.flatMap((c) => c.steps.map((s) => [captionOf(c, s), s] as const)));
   const missing = new Set<string>();
   page.on('console', (m) => {
     const hit = /^Tour: nothing on the page for (\S+)/.exec(m.text());
@@ -55,27 +59,37 @@ async function play(page: Page, url: string, ids: string[], axeSrc: string, run:
   await page.waitForSelector('.tour-bar', { timeout: 15000 });
   await page.evaluate(() => document.querySelector<HTMLElement>('.tour-pause')?.click());
   let last = '';
-  for (let guard = 0; guard < 120; guard++) {
-    const say = await page
+  const budget = checkedSteps(CHAPTERS.filter((c) => ids.includes(c.id))).length;
+  for (let guard = 0; guard <= budget; guard++) {
+    const caption = await page
       .waitForFunction(
         (prev) => {
           if (!document.querySelector('.tour-bar')) return 'END';
           const b = document.querySelector<HTMLElement>('.tour-bubble');
-          return b && !b.hidden && b.textContent && b.textContent !== prev ? b.textContent : false;
+          const caption = document.querySelector('.tour-caption')?.textContent;
+          return b && !b.hidden && caption && caption !== prev ? caption : false;
         },
         last,
-        { timeout: 20000 },
+        { timeout: HOLD_MS + 15_000 },
       )
       .then((h) => h.jsonValue() as Promise<string>)
       .catch(() => 'TIMEOUT');
-    if (say === 'END') break;
-    if (say === 'TIMEOUT') {
+    if (caption === 'END') {
+      // a chapter on another page (DOS) loads it with location.assign: the bar is gone until the new page boots
+      const back = await page.waitForSelector('.tour-bar', { timeout: 10_000 }).then(
+        () => true,
+        () => false,
+      );
+      if (back) continue;
+      break;
+    }
+    if (caption === 'TIMEOUT') {
       run.problems.push(`stuck after "${last.slice(0, 40)}"`);
       break;
     }
-    last = say;
+    last = caption;
     await page.waitForTimeout(400);
-    const step = bySay.get(say);
+    const step = byCaption.get(caption);
     if (step) run.steps.set(step.id, 'ok');
     if (await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1))
       run.problems.push(`horizontal scroll at ${step?.id ?? '?'}`);
@@ -115,6 +129,12 @@ async function main(): Promise<number> {
     console.error(`No such chapter: ${unknown.join(', ')}. Chapters: ${CHAPTERS.map((c) => c.id).join(', ')}`);
     return 2;
   }
+  const chapters = CHAPTERS.filter((c) => ids.includes(c.id));
+  const missing = missingTourInputs(fileURLToPath(new URL('../../', import.meta.url)), chapters);
+  if (missing.length) {
+    for (const message of missing) console.error(message);
+    return 2;
+  }
   const axeSrc = readFileSync(join(dirname(createRequire(import.meta.url).resolve('axe-core')), 'axe.min.js'), 'utf8');
   const port = await freePort();
   const server = await createServer({
@@ -151,9 +171,10 @@ async function main(): Promise<number> {
   }
   let bad = 0;
   console.log(['step', ...runs.map((r) => `${r.size}${r.scheme[0]}`)].join('\t'));
-  for (const c of CHAPTERS.filter((c) => ids.includes(c.id)))
+  const effective = new Set(checkedSteps(chapters).map((s) => s.id));
+  for (const c of chapters)
     for (const s of c.steps) {
-      const row = runs.map((r) => r.steps.get(s.id) ?? (s.optional ? 'skipped' : 'MISSING'));
+      const row = runs.map((r) => (effective.has(s.id) ? (r.steps.get(s.id) ?? (s.optional ? 'skipped' : 'MISSING')) : 'skipped'));
       if (row.includes('MISSING')) bad++;
       console.log([s.id, ...row].join('\t'));
     }

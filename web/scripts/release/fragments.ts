@@ -3,21 +3,37 @@ import { existsSync, readFileSync, readdirSync, unlinkSync } from 'node:fs';
 import { join } from 'node:path';
 import { extractSection } from '../../../scripts/release/changelog.mjs';
 
+import { TARGETS } from './git';
+
 const sections = ['Added', 'Changed', 'Fixed', 'Removed', 'Security'];
+
+export function unknownTargetFolders(root: string): string[] {
+  const dir = join(root, 'changes/unreleased');
+  if (!existsSync(dir)) return [];
+  return readdirSync(dir, { withFileTypes: true })
+    .filter((entry) => entry.isDirectory() && !Object.keys(TARGETS).includes(entry.name))
+    .map((entry) => join(dir, entry.name));
+}
 
 export function readFragments(root: string, target: string): { path: string; text: string }[] {
   const dir = join(root, 'changes/unreleased', target);
   if (!existsSync(dir)) return [];
-  return readdirSync(dir)
-    .filter((n) => n.endsWith('.md'))
-    .sort()
-    .map((n) => {
-      const path = join(dir, n);
-      const text = readFileSync(path, 'utf8').replace(/\r\n/g, '\n').trim();
-      if (!/^### (Added|Changed|Fixed|Removed|Security)\n\n- [^\n]+$/.test(text))
-        throw new Error(`${path}: expected one ### category, a blank line and one bullet.`);
-      return { path, text };
-    });
+  const fragments = [];
+  const problems = [];
+  for (const name of readdirSync(dir).sort()) {
+    if (name.startsWith('.')) continue;
+    const path = join(dir, name);
+    if (!name.endsWith('.md')) {
+      problems.push(`${path}: expected a .md fragment file.`);
+      continue;
+    }
+    const text = readFileSync(path, 'utf8').replace(/\r\n/g, '\n').trim();
+    if (!/^### (Added|Changed|Fixed|Removed|Security)\n\n- [^\n]+$/.test(text))
+      problems.push(`${path}: expected one ### category, a blank line and one bullet.`);
+    else fragments.push({ path, text });
+  }
+  if (problems.length) throw new Error(problems.join('\n'));
+  return fragments;
 }
 
 /** Preserve legacy summaries and bullets; append fragments in category and filename order. */

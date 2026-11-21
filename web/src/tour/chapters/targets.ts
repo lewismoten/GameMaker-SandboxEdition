@@ -1,5 +1,4 @@
-// Targets more than one chapter points at: the header's links and the ⚙ Settings menu's items,
-// each with the narrow window's ⋯ menu standing in for it.
+// Shared tour targets for controls that move into a menu on narrow screens.
 import type { Target } from '../steps';
 
 /** A header link, or the ⋯ menu that holds it on a narrow window. */
@@ -12,3 +11,12 @@ export const setting = (text: string): Target => ({
   text,
   reveal: ['.topbar-settings .topbar-gear', '.topbar-more > summary'],
 });
+
+export const assistantMenuItem = '.file-more-menu button[title="Assistant"]';
+
+/** The toolbar star on a wide screen, or the Assistant item in the file actions menu on a phone. */
+export const assistantButton: Target = {
+  label: 'the Assistant button',
+  css: ['.assistant-btn', assistantMenuItem],
+  reveal: '.file-more > summary',
+};
