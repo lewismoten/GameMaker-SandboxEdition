@@ -19,7 +19,7 @@ Can someone moving between a game's files (scenes, maps, blocks, characters, sou
 
 **Findings.**
 
-1. No dead ends. Every file reaches the Overview, and Back always returned to the previous entry with its selection (a monster, a color, a tab) intact.
+1. In the example game, the script reached the Overview from each file it tested. Each time it used Back, the previous entry reopened with its selection (a monster, a color, or a tab) intact.
 2. Wrong target: a "Used by ... scene" link opened scene 0 whatever scene it named. Fixed: the link carries the scene number (commit `f227d8149`).
 3. No breadcrumb or "where did I come from". Fixed: Overview > Category > file, plus "Back to <file>" when opened from another file (commit `bfeeb7e2e`, merged in `998ec1371`).
 4. Back to an Overview page reset the scroll to the top. Fixed where the page scrolls (phones). At 1440 x 900 the Overview fits one screen, so nothing was lost there.

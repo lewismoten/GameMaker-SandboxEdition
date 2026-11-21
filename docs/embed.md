@@ -116,7 +116,7 @@ window.open(…?receive…)  ─────────────────
    gm.postMessage(
      {
        type: 'gm-files',
-       name: 'Snow Day', // optional: the name shown and kept (60 characters at most)
+       name: 'Snow Day', // optional: display name (long names are shortened; see Limits)
        files: { 'SNOWDAY.GAM': buf1, 'SNOWDAY.MAP': buf2 /* … */ }, // name → ArrayBuffer or typed array
        in: 'desk', // optional: overrides the address's in=
        mode: 'play', // optional: overrides the address's mode=
@@ -187,13 +187,15 @@ Game-Maker. The heart of it:
 
 ## Limits
 
-| What                     | Limit         |
-| ------------------------ | ------------- |
-| Files in one game        | 1,024         |
-| One file                 | 16 MB         |
-| The whole game, unpacked | 48 MB         |
-| Waiting for `gm-files`   | 60 seconds    |
-| A game's name            | 60 characters |
+| What                     | Limit                |
+| ------------------------ | -------------------- |
+| Files in one game        | 1,024                |
+| One file                 | 16 MiB               |
+| The whole game, unpacked | 48 MiB               |
+| Waiting for `gm-files`   | 60 seconds           |
+| A game's name            | 60 UTF-16 code units |
+
+Game-Maker shortens a longer name to the first 60 UTF-16 code units. For example, 😀 uses two units.
 
 A .zip or pack is checked against these limits as it is unpacked. A zip that unpacks to more
 than its directory says is refused.
