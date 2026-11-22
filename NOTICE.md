@@ -64,6 +64,7 @@ game folder opens in the browser unchanged.
 
 ## Credits
 
+- OpenAI Codex added ZIP entry CRC-32 validation and regression tests (November 22, 2026).
 - OpenAI Codex fixed the pause after the first manual in the Library tour on narrow screens (November 21, 2026).
 - OpenAI Codex corrected references in the phone kit booklet and contributor documentation and extended the book link tests (November 21, 2026).
 - OpenAI Codex fixed the repeated red film caption for screen readers and added a regression test (November 21, 2026).
