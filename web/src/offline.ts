@@ -70,7 +70,8 @@ export function offerUpdate(worker: ServiceWorker | undefined): void {
   waiting = worker;
   const doReload = () => {
     asked = true;
-    reloadForNewest(worker, () => location.reload());
+    if (worker && navigator.serviceWorker.controller === worker) location.reload();
+    else reloadForNewest(worker, () => location.reload());
   };
   // Settings keeps "New version ready" whatever happens to the notice
   setPendingUpdate(doReload);
