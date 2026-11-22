@@ -8,14 +8,14 @@ export const GUIDE_SECTIONS: [id: string, title: string, html: string][] = [
   [
     'start',
     'Getting started',
-    `<p>Game-Maker: Sandbox Edition designs and plays games made with Recreational Software Designs’
-    Game-Maker 3.0 (1991–1994). It reads and writes the original file formats, so a game
+    `<p>You can make your own game here or play one built with Recreational Software Designs’
+    Game-Maker 3.0 (1991–1994). Sandbox Edition reads and writes the original file formats, so a game
     made here also plays in DOS, and an old game folder opens here unchanged.</p>
     <p>Everything is kept in this browser. Nothing is uploaded, unless you set up your own AI to
     work on a game. To keep a copy elsewhere, choose <b>Download</b> and then <b>Game files</b> for
     one game, or <b>Back up / restore…</b> in the <b>⚙ Settings</b> menu for everything at once.</p>
-    <div class="tip">New to Game-Maker? Play a sample game, then choose <b>Look inside</b>, then
-    <b>Edit a copy</b> on the bar above the editor, and change something small, such as a block or a monster’s speed, and play it again.</div>
+    <div class="tip">New to Game-Maker? Play a sample game and choose <b>Look inside</b>. Above the editor, choose
+    <b>Edit a copy</b>. Change one thing, like a monster’s speed. Play again to see what changed.</div>
     <p>To be shown around, press <b>?</b> at the top of any page and choose <b>Show me around this
     page</b>: characters from the games point out each control and say what it does.</p>
     <h3>The two printed guides</h3>
