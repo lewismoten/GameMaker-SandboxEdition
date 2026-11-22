@@ -139,7 +139,7 @@
   width: calc(var(--gut) - 10px);
   text-align: right;
   font-size: 11px;
-  color: #6f6f99;
+  color: #8585b3;
 }
 .ts-g.blank .ts-num {
   color: #ffd400;
