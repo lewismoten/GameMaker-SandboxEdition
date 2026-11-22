@@ -199,7 +199,9 @@ Game-Maker. The heart of it:
 
 Game-Maker removes control and bidirectional formatting characters and trims surrounding whitespace
 from the display name. It trims again after shortening. Neither limit splits a character that uses
-two UTF-16 code units, such as 😀.
+two UTF-16 code units, such as 😀. The Imported list shortens the title first to make room for
+the host. An unusually long host appears as an eight-digit hexadecimal hash, an ellipsis, and
+the end of the host name.
 
 A .zip or pack is checked against these limits as it is unpacked. A zip that unpacks to more
 than its directory says is refused.
