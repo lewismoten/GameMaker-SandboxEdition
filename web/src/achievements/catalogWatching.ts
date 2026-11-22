@@ -17,7 +17,7 @@ export const WATCHING_ACHIEVEMENTS: readonly Achievement[] = [
   ...COUNT_LEVELS['walks-watched'].goals.map((count, i, all): Achievement => ({
     id: `walks-watched-${count}`,
     title: ['Couch time', 'Matinee regular', 'Marathon viewer'][i],
-    desc: `Watched ${count} different walkthroughs to the end.`,
+    desc: `Watched walkthroughs for ${count} different listed games to the end.`,
     icon: '🛋️',
     category: 'watching',
     from: 'watchedCount',
