@@ -61,6 +61,12 @@ let asked = false;
 let waiting: ServiceWorker | undefined;
 let notice: HTMLElement | undefined;
 
+function requestReload(worker: ServiceWorker | undefined): void {
+  asked = true;
+  if (worker && navigator.serviceWorker.controller === worker) location.reload();
+  else reloadForNewest(worker, () => location.reload());
+}
+
 /**
  * "A new version is ready": Reload now, or Later (it is used the next time the site opens).
  * Without a worker, another tab has already switched to it: Reload just reloads. Exported so a headless
@@ -68,11 +74,7 @@ let notice: HTMLElement | undefined;
  */
 export function offerUpdate(worker: ServiceWorker | undefined): void {
   waiting = worker;
-  const doReload = () => {
-    asked = true;
-    if (worker && navigator.serviceWorker.controller === worker) location.reload();
-    else reloadForNewest(worker, () => location.reload());
-  };
+  const doReload = () => requestReload(worker);
   // Settings keeps "New version ready" whatever happens to the notice
   setPendingUpdate(doReload);
   // a game playing here is never covered: the next page that is not a play page shows the notice
@@ -126,9 +128,8 @@ function showNotice(message: string, calm = false): void {
   reload.textContent = 'Reload';
   reload.style.cssText = 'font:inherit;padding:4px 12px;border-radius:4px;cursor:pointer;border:1px solid #fff;background:#fff;color:#000080;font-weight:bold';
   reload.addEventListener('click', () => {
-    asked = true;
     text.textContent = 'Reloading…';
-    reloadForNewest(waiting, () => location.reload());
+    requestReload(waiting);
   });
   notice = document.createElement('div');
   notice.className = 'gm-update';
