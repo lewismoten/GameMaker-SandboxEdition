@@ -8,6 +8,8 @@
 //   index.html?receive&in=…&mode=…[&from=<origin>]            wait for the opener (or the
 //   index.html#/receive?in=…&mode=…[&from=<origin>]           iframe parent) to post the files
 
+import { fnv1a } from '../seededRandom';
+
 /** Where the game opens: the 1994 desk, DOS Game-Maker (dos.html), or today's web interface. */
 export type Target = 'desk' | 'dos' | 'web';
 /** To play it, or to change a copy of it. */
@@ -23,6 +25,7 @@ export const MAX_TOTAL_BYTES = 48 * 1024 * 1024;
 export const MAX_FILE_BYTES = 16 * 1024 * 1024;
 /** A game's name is cut to at most this many UTF-16 code units. */
 const MAX_NAME = 60;
+const MAX_KEPT_NAME = 100;
 /** How long the page waits for the opener's files after saying it is ready. */
 export const WAIT_MS = 60_000;
 
@@ -180,5 +183,14 @@ export function originLabel(origin: string): string {
 /** The name a received game is kept under, so it is clear where it came from. */
 export function keptName(name: string, origin: string): string {
   const host = origin && origin !== 'null' ? originLabel(origin) : 'another page';
-  return shortenName(`${name} (from ${host})`, MAX_NAME + 40);
+  // Leave room for the attribution and at least one title code point.
+  const hostLimit = MAX_KEPT_NAME - ' (from )'.length - 2;
+  let label = host;
+  if (host.length > hostLimit) {
+    const marker = fnv1a(host).toString(16).padStart(8, '0') + '…';
+    const tail = host.slice(marker.length - hostLimit).replace(/^[\uDC00-\uDFFF]/, '');
+    label = marker + tail;
+  }
+  const attribution = ` (from ${label})`;
+  return shortenName(name, MAX_KEPT_NAME - attribution.length).trimEnd() + attribution;
 }

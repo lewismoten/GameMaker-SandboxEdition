@@ -131,10 +131,22 @@ describe('names', () => {
     const display = cleanName(prefix + '😀');
     expect(display).toBe(prefix);
     expect(() => encodeURIComponent(display ?? '')).not.toThrow();
-    const savedPrefix = prefix + ' (from ' + 'b'.repeat(33);
-    const saved = keptName(prefix, 'b'.repeat(33) + '😀');
-    expect(saved).toBe(savedPrefix);
-    expect(() => encodeURIComponent(saved)).not.toThrow();
+    const host = 'b'.repeat(34);
+    expect(keptName('a'.repeat(57) + '😀', 'https://' + host)).toBe('a'.repeat(57) + ' (from ' + host + ')');
+  });
+  it('keeps distinct hostnames with a shared prefix when the title uses all 60 units', () => {
+    const title = 'a'.repeat(60);
+    for (const ending of ['one', 'two']) {
+      const host = 'b'.repeat(35) + '.' + ending + '.example';
+      expect(keptName(title, 'https://' + host)).toBe(title.slice(0, 100 - host.length - 8) + ' (from ' + host + ')');
+    }
+  });
+  it('marks an oversized host and retains its domain ending', () => {
+    const host = 'a'.repeat(60) + '.' + 'b'.repeat(60) + '.example';
+    const saved = keptName('😀 Game', 'https://' + host);
+    expect(saved).toHaveLength(100);
+    expect(keptName('😀 Game', 'https://z' + host.slice(1))).not.toBe(saved);
+    expect(saved).toMatch(/^😀 \(from [0-9a-f]{8}….*\.example\)$/u);
   });
   it('cuts long names and drops empty ones', () => {
     expect(cleanName('x'.repeat(500))).toHaveLength(60);
