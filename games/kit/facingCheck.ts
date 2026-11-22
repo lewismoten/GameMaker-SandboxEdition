@@ -64,29 +64,33 @@ interface Finding {
   what: string;
 }
 const findings: Finding[] = [];
-let heroes = 0;
+let totalHeroes = 0;
+let missingDisks = 0;
 let unchecked = 0;
 
 for (const id of ids) {
   const dir = join(gamesDir, id, 'disk');
   if (!existsSync(dir)) {
+    missingDisks++;
     console.log(`${id}: no disk/ (build it first)`);
     continue;
   }
   const names = readdirSync(dir);
-  const gamName = names.find((n) => /\.gam$/i.test(n));
-  const pairs = gamName ? sceneHeroPairs(parseGame(readFileSync(join(dir, gamName)))) : new Map<string, Set<string>>();
+  const games = names.filter((n) => /\.gam$/i.test(n)).map((name) => sceneHeroPairs(parseGame(readFileSync(join(dir, name)))));
   for (const chrName of names.filter((n) => /\.chr$/i.test(n))) {
     const base = chrName.replace(/\.chr$/i, '');
-    const sets = pairs.get(chrName.toLowerCase());
-    const blocks = names.filter((n) => sets?.has(n.toLowerCase()));
-    if (!blocks.length || blocks.length !== sets?.size) {
+    totalHeroes++;
+    const sets = new Set(games.flatMap((pairs) => [...(pairs.get(chrName.toLowerCase()) ?? [])]));
+    const blocks = names.filter((n) => sets.has(n.toLowerCase()));
+    if (!sets.size || blocks.length !== sets.size) {
       unchecked++;
-      console.log(`${id}: ${chrName} not fully checked (missing scene block set)`);
+      const found = new Set(blocks.map((name) => name.toLowerCase()));
+      const missing = [...sets].filter((name) => !found.has(name)).map((name) => name || 'empty block slot');
+      const reason = !games.length ? 'no .gam file' : !sets.size ? 'no reachable scene uses this character' : missing.join(', ');
+      console.log(`${id}: ${chrName} not fully checked (${reason})`);
     }
     if (!blocks.length) continue;
     const ch = parseCharacter(readFileSync(join(dir, chrName)));
-    heroes++;
     for (const cblName of blocks) {
       const cbl = parseBlocks(readFileSync(join(dir, cblName)), CHARBL);
       const keyed = ch.sequences.map((s, i) => ({ s, i })).filter(({ s, i }) => i > 4 && (s.key !== 0 || s.jstkMov !== 0));
@@ -125,10 +129,9 @@ for (const id of ids) {
     }
   }
 }
-console.log(`Heroes not fully checked: ${unchecked}`);
 for (const f of findings) console.log(`${f.game.padEnd(24)} ${f.hero.padEnd(10)} ${f.what}`);
 const games = new Set(findings.map((f) => f.game));
 console.log(
-  `${heroes} heroes in ${ids.length} games; ${findings.length} findings in ${games.size} games (advice: pictures facing the player, or a step before the birth, fix it)`,
+  `${totalHeroes - unchecked}/${totalHeroes} heroes fully checked (${unchecked} incomplete) across ${ids.length - missingDisks}/${ids.length} game disks (${missingDisks} missing); ${findings.length} findings in ${games.size} games (advice: pictures facing the player, or a step before the birth, fix it)`,
 );
-if (strict && (findings.length || unchecked)) process.exit(1);
+if (strict && (findings.length || unchecked || missingDisks)) process.exit(1);

@@ -22,19 +22,47 @@ it('follows both incoming links when a hero inherits differently named block set
   expect(sceneHeroPairs(game).get('hero.chr')).toEqual(new Set(['art0.cbl', 'art1.cbl']));
 });
 
+it('keeps an unresolved block slot alongside art found on another path', () => {
+  const game = newGame();
+  game.scenes.push(emptyScene(ADVTYPE), emptyScene(ADVTYPE));
+  game.scenes[0].links[0].toScene = 2;
+  game.scenes[2].files[5] = 'Hero.CHR';
+  game.scenes[2].links[0].toScene = 3;
+  game.scenes[3].files[6] = 'Later.CBL';
+  expect(sceneHeroPairs(game).get('hero.chr')).toEqual(new Set(['', 'later.cbl']));
+});
+
 it.each([
-  ['Plume', buildPlumeBlocks, buildPlume],
-  ['Rory', buildRoryBlocks, buildRory],
-] as const)('%s faces forward at rest and throughout the Enter move', (_, blocks, hero) => {
+  ['Plume', buildPlumeBlocks, buildPlume, ['windup', 'kick', 'windup', 'stand', 'kick', 'kick']],
+  ['Rory', buildRoryBlocks, buildRory, ['stand', 'toss', 'toss', 'stand']],
+] as const)('%s uses the face-on frames at rest and on Enter', (_, blocks, hero, enter) => {
   const book = blocks(basePal(buildPalette()));
   const ch = hero(book);
-  for (const seq of [SEQ.idle, SEQ.throw]) {
+  const pose = (top: string, bottom: string) => [book.n(top), book.n(bottom)];
+  const poses = {
+    stand: pose('front.top', 'fstand'),
+    blink: pose('fblink.top', 'fstand'),
+  };
+  const pictures = (seq: number) => {
     const s = ch.sequences[seq];
-    const poses = s.frames.slice(0, frameCount(s)).filter((f) => f.pic2 !== MONBL);
-    expect(poses.length).toBeGreaterThan(0);
-    for (const f of poses) {
-      expect([...book.index.keys()][f.pic1]).toMatch(/^f(?:ront|blink|kick[01]|cheer)\.top$/);
-      expect([...book.index.keys()][f.pic2]).toMatch(/^f(?:stand|throw[01])$/);
+    return s.frames
+      .slice(0, frameCount(s))
+      .filter((f) => f.pic2 !== MONBL)
+      .map((f) => [f.pic1, f.pic2]);
+  };
+  const { stand, blink } = poses;
+  expect(pictures(SEQ.idle)).toEqual([stand, blink, stand, stand, stand, blink, stand]);
+  const enterPose = (name: (typeof enter)[number]) => {
+    switch (name) {
+      case 'windup':
+        return pose('fkick0.top', 'fthrow0');
+      case 'kick':
+        return pose('fkick1.top', 'fthrow1');
+      case 'toss':
+        return pose('fcheer.top', 'fthrow1');
+      case 'stand':
+        return stand;
     }
-  }
+  };
+  expect(pictures(SEQ.throw)).toEqual(enter.map(enterPose));
 });
