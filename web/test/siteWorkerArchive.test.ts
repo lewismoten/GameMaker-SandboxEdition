@@ -6,7 +6,7 @@ async function seed(h: ReturnType<typeof harness>, version: string) {
   const names = offlineNames(base);
   const cacheName = names.prefix + version;
   const cache = await h.caches.open(cacheName);
-  await cache.put(base, new Response('old home'));
+  await cache.put(base, new Response('snapshot home'));
   await cache.put(base + 'assets/old.js', new Response('old code'));
   await (await h.caches.open(names.control)).put(names.pointer, new Response(JSON.stringify({ version, cache: cacheName })));
   return cacheName;
@@ -51,7 +51,7 @@ it('falls back to the old complete snapshot after a deployment when offline', as
   const h = harness('two');
   await seed(h, 'one');
   await (await h.caches.open(offlineNames(base).browsing)).put(base, new Response('new shell'));
-  expect(await (await h.request('', 'navigate')).text()).toBe('old home');
+  expect(await (await h.request('', 'navigate')).text()).toBe('snapshot home');
   expect(await (await h.request('assets/old.js')).text()).toBe('old code');
 });
 
@@ -65,14 +65,16 @@ it('bypasses both the committed copy and browsing cache for verified update acqu
   expect(await (await h.request('assets/old.js')).text()).toBe('old code');
 });
 
-it.each(['browsing cache', 'older saved copy'])('opens the offline home from nested pages with the %s', async (source) => {
+it.each(['browsing cache', 'older saved copy', 'current saved copy'])('opens the offline home from nested pages with the %s', async (source) => {
   const h = harness('two');
-  if (source === 'older saved copy') await seed(h, 'one');
-  else await (await h.caches.open(offlineNames(base).browsing)).put(base, new Response('home'));
+  const browsing = await h.caches.open(offlineNames(base).browsing);
+  if (source === 'browsing cache') await browsing.put(base, new Response('home'));
+  else await seed(h, source === 'older saved copy' ? 'one' : 'two');
+  const expectedHome = source === 'browsing cache' ? 'home' : 'snapshot home';
 
   const nested = await h.request('player/index.html', 'navigate');
   expect(nested.status).toBe(302);
   expect(nested.headers.get('location')).toBe(base);
-  expect(await (await h.request('', 'navigate')).text()).toContain('home');
-  expect(await (await h.request('missing.html', 'navigate')).text()).toContain('home');
+  expect(await (await h.request('', 'navigate')).text()).toBe(expectedHome);
+  expect(await (await h.request('missing.html', 'navigate')).text()).toBe(expectedHome);
 });

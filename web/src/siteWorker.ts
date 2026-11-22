@@ -228,7 +228,8 @@ self.addEventListener('fetch', (event) => {
     } catch (err) {
       if (req.mode === 'navigate') {
         // offline, and a page never opened: the home page
-        const page = (await cache.match(SCOPE)) || (await cache.match(SCOPE + 'index.html'));
+        const savedHome = copy && copy.version === VERSION && await copy.store.match(SCOPE);
+        const page = savedHome || (await cache.match(SCOPE)) || (await cache.match(SCOPE + 'index.html'));
         if (page) return fallbackHome(req, page);
       }
       // A failed network request AND no cached body establish actual unavailability.
