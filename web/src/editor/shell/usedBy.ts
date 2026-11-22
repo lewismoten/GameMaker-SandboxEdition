@@ -2,7 +2,7 @@
 import { normalize } from '../../project/files';
 import { h } from '../core/ui';
 import type { Project } from '../core/project';
-import { openInEditor, sceneUses, fileUses, embeddedFiles } from '../core/uses';
+import { openInEditor, sceneUses, fileUses, embeddedFiles, partners } from '../core/uses';
 
 /** The line under the file's name: where it is used, each a link, or a tip when nothing uses it. */
 export function usedByLine(project: Project, file: string): HTMLElement {
@@ -62,9 +62,20 @@ function usesLine(project: Project, files: readonly string[]): HTMLElement | nul
   return line;
 }
 
-/** Embedded files, or the block sets and monster definitions paired with a map by its scenes. */
+/** Embedded files and scene-paired map or animation resources; preview guesses are not dependencies. */
 export function fileDependenciesLine(project: Project, file: string): HTMLElement | null {
-  if (!normalize(file).endsWith('.map')) return usesLine(project, embeddedFiles(project, file));
+  const name = normalize(file);
+  if (name.endsWith('.chr'))
+    return usesLine(
+      project,
+      partners(project, file, 5, 6).map((p) => p.file),
+    );
+  if (name.endsWith('.mon'))
+    return usesLine(
+      project,
+      partners(project, file, 3, 4).map((p) => p.file),
+    );
+  if (!name.endsWith('.map')) return usesLine(project, embeddedFiles(project, file));
   const scenes = project.game().scenes;
   const files = sceneUses(project, file).flatMap((u) => (scenes[u.scene!]?.files ?? []).filter((f) => /\.(bbl|mon)$/i.test(f)));
   return usesLine(project, files);

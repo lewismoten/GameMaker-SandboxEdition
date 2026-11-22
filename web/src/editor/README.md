@@ -42,6 +42,7 @@ Part of the [source map](../README.md).
     `firstStepsPanel.ts`), new-file templates (`templates.ts`; + New music's empty song is
     `audio/compose.ts` `blankSong`), Look inside (`released.ts`,
     `lookId.ts`), and the shared stylesheet `editor.css`.
+  - File header references (`shell/usedBy.ts`) link character definitions to every scene-paired character block set and monster definitions to every scene-paired monster block set. Preview fallback files are not treated as dependencies.
 - [`widgets/`](widgets/README.md): shared pieces: file picker (`filePicker.ts`), block chooser (`blockChooser.ts`), the
   Show with palette choice (`paletteChooser.ts`), thumbnails (`thumbs.ts`), previews (`preview.ts`),
   waveform (`waveform.ts`), roving grid (`rovingGrid.ts`), roving focus for lists that open or add (`rovingFocus.ts`), plain-words notes for a DOS limit (`limitNote.ts`), big-target color choice
