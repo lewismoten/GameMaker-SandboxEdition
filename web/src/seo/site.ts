@@ -15,7 +15,7 @@ const SITE_DESCRIPTION =
   'Make DOS-style games in your browser, no programming: a free, open-source fork of RSD Game-Maker 3.0. Play 90s shareware, export your games, play offline.';
 /** The longer version, for text on the page. */
 export const SITE_ABOUT =
-  'Make DOS-style games in your web browser with no programming: a free, open-source remake of Recreational Software Designs’ Game-Maker 3.0 (1994). Draw blocks and monsters, build maps, add music and sound, play the original sample and shareware games, and export your game as a web page, a web app or for DOS. The whole site can be saved for offline play.';
+  'Make DOS-style games in your web browser with no programming: a free, open-source fork of Recreational Software Designs’ Game-Maker 3.0 (1994). Draw blocks and monsters, build maps, add music and sound, play the original sample and shareware games, and export your game as a web page, a web app or for DOS. The whole site can be saved for offline play.';
 
 /** What each page of the site is about, for <title> and <meta name="description">. */
 export const ROUTES = {

@@ -56,12 +56,12 @@ export function magazineJsonLd(): Record<string, unknown>[] {
   return [periodical, ...issues];
 }
 
-/** The pages at #/… (and dos.html) that the static text links to, in reading order. */
+/** The public pages and app routes that the static text links to, in reading order. */
 const PAGES: [href: string, name: string, route: keyof typeof ROUTES][] = [
   ['./#/help', 'The Guide: how to use the web editor', 'guide'],
-  ['./#/magazine', `${MAG.name}, the shareware gamer’s magazine`, 'magazine'],
-  ['./#/library', 'The Library: everything to read and print', 'library'],
-  ['./#/cast', 'The cast of the new games', 'cast'],
+  ['./magazine.html', `${MAG.name}, the shareware gamer’s magazine`, 'magazine'],
+  ['./library.html', 'The Library: everything to read and print', 'library'],
+  ['./cast.html', 'The cast of the new games', 'cast'],
   ['./#/credits', 'Credits: who and what made it', 'credits'],
   ['./#/achievements', 'Your achievements', 'achievements'],
   ['./#/desk', 'The 1994 desk', 'desk'],

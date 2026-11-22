@@ -64,6 +64,7 @@ game folder opens in the browser unchanged.
 
 ## Credits
 
+- OpenAI Codex revised Starter page labels, game preview descriptions, offline instructions and page links during the November 22, 2026 SEO review.
 - OpenAI Codex corrected the mobile editor's asset reference count.
 - OpenAI Codex adjusted touch target sizes on the Achievements page (November 22, 2026).
 - OpenAI Codex clarified the contributor instructions for pre-merge checks and walkthrough timing.
