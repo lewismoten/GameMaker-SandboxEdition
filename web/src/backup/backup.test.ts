@@ -70,6 +70,24 @@ async function backupOf(w: World, only: readonly SectionId[] = SECTION_IDS, with
 const all = (mode: Mode): ImportChoices => ({ sections: Object.fromEntries(SECTION_IDS.map((id) => [id, mode])), projects: {} });
 
 describe('backup file', () => {
+  it('restores empty projects and unusual file names alongside a large asset', async () => {
+    const w = emptyWorld();
+    const asset = new Uint8Array(8 * 1024 * 1024).fill(0xa5);
+    asset[asset.length - 1] = 42;
+    const files = { ['__proto__']: bytes(7), $obj: bytes(), 'LARGE.DAT': asset };
+    w.stores.projects.empty = { id: 'empty', name: '', gam: '', files: {} };
+    w.stores.projects.odd = { id: 'odd', name: '  Café / #1  ', gam: '', files };
+    const backup = await backupOf(w, ['projects']);
+    const { next } = await planImport(emptyWorld(), backup, { sections: { projects: 'merge' }, projects: {} });
+    expect(next.stores.projects.empty).toEqual(w.stores.projects.empty);
+    const restored = next.stores.projects.odd as { name: string; files: Record<string, Uint8Array> };
+    expect(restored.name).toBe('  Café / #1  ');
+    expect(Object.keys(restored.files).sort()).toEqual(Object.keys(files).sort());
+    expect(restored.files['__proto__']).toEqual(bytes(7));
+    expect(restored.files.$obj).toEqual(bytes());
+    expect(Buffer.from(restored.files['LARGE.DAT']).equals(asset)).toBe(true);
+  });
+
   it('round-trips everything but imported games into an empty browser, bytes exact', async () => {
     const w = seeded();
     const b = await backupOf(w, SECTION_IDS, true);
