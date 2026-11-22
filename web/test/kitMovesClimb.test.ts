@@ -68,7 +68,7 @@ describe("Kit's Moves ceilings", () => {
     expect(top, 'highest head y').toBeGreaterThanOrEqual(ROOF_1);
   });
 
-  // Level 2: the same in the dash lesson, and nowhere over the low section does his head rise past the hanging brick.
+  // Level 2: the continuous roof also covers the dash lesson.
   it.each(RHYTHMS)('level 2: Kit stays under the roof (Up %i on, %i off)', async (on, off) => {
     const sim = atScene(3);
     let top = head(sim);
@@ -78,16 +78,18 @@ describe("Kit's Moves ceilings", () => {
     });
     expect(top, 'highest head y').toBeGreaterThanOrEqual(ROOF_2);
   });
+
   it('stops a lift directly beneath the hanging bricks', async () => {
     const sim = atScene(3);
     sim.w.chr.x = [26, 0]; // Under the same ceiling, before the headwind.
     sim.w.chr.y = [21, 0];
+    expect(head(sim)).toBeGreaterThan(LOW_UNDERSIDE);
     let highest = head(sim);
+    sim.press(UP);
     for (let t = 0; t < 80; t++) {
-      if (t % 4 < 2) sim.press(UP);
-      else sim.release(UP);
+      if (t === 40) sim.release(UP);
       expect(await sim.tick()).toBeUndefined();
-      expect(sim.pos.x).toBe(26);
+      expect(sim.pos.x * 20 + sim.pos.sx).toBe(520);
       highest = Math.min(highest, head(sim));
     }
     expect(highest).toBe(LOW_UNDERSIDE);
