@@ -26,7 +26,7 @@ import { fileActions } from './fileActions';
 import { foldHint } from './hintFold';
 import { SHORT } from '../../edition';
 import { noteOpened, quickOpen } from './quickOpen';
-import { usedByLine, mapUsesLine, deleteMessage } from './usedBy';
+import { usedByLine, fileDependenciesLine, deleteMessage } from './usedBy';
 import { viewChanged } from './viewSync';
 import { firstStepsState, notePlayed } from './firstSteps';
 import type { FirstStepsPanel } from './firstStepsPanel';
@@ -348,9 +348,7 @@ export class Workspace implements AssistantHost {
     const isGam = file === this.project.gam;
     const changes = !this.looking;
     // beside the title row's other parts, so a phone puts it next to the Read-only chip (editorHead.css)
-    const refs = isGam
-      ? null
-      : foldRefs(h('div', { class: 'file-refs' }, usedByLine(this.project, file), kindOf(file) === 'map' ? mapUsesLine(this.project, file) : null));
+    const refs = isGam ? null : foldRefs(h('div', { class: 'file-refs' }, usedByLine(this.project, file), fileDependenciesLine(this.project, file)));
     this.bar?.classList.add('released-inline'); // beside the file's title
     clear(
       this.main,

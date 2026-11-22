@@ -8,6 +8,7 @@ import { parseMonsters } from '@lewismoten/gamemaker-sandbox-engine/formats/mons
 import { parseCharacter, frameCount } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 import { ADVTYPE, ADV_FILES, START_FILES, END_FILES } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { parseBackdrop, parseSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
+import { parseSoundSet } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
 import type { Project } from './project';
 import { formatHash } from '../../urlState';
 
@@ -49,16 +50,43 @@ export function sceneUses(project: Project, file: string): Use[] {
   }));
 }
 
-/** Slide shows (.lst) and backdrops (.bkd) that show the file. */
-export function scriptUses(project: Project, file: string): Use[] {
+/** File names stored inside a slide show, backdrop or sound set, in playback order. */
+export function embeddedFiles(project: Project, file: string): string[] {
+  const bytes = project.files.get(file);
+  if (!bytes) return [];
+  const name = normalize(file);
+  if (name.endsWith('.lst')) return tryParse(() => parseSlideList(bytes).map((entry) => entry.name)) ?? [];
+  if (name.endsWith('.bkd')) return tryParse(() => [parseBackdrop(bytes).gif]) ?? [];
+  if (name.endsWith('.snd'))
+    return (
+      tryParse(() =>
+        parseSoundSet(bytes)
+          .digital.filter((name) => name && name[0] !== ' ')
+          .map((name) => `${name}.voc`),
+      ) ?? []
+    );
+  return [];
+}
+
+/** Direct scene slots, embedded file references and explicit editor preview palettes. */
+export function fileUses(project: Project, file: string): Use[] {
   const n = normalize(file);
-  const out: Use[] = [];
-  for (const f of project.files.byExtension('lst')) {
-    const k = tryParse(() => parseSlideList(project.files.get(f)!))?.filter((e) => normalize(e.name) === n).length ?? 0;
-    if (k) out.push({ file: f, text: `slide show ${f}`, count: k });
+  const out = sceneUses(project, file);
+  for (const [ext, label] of [
+    ['lst', 'slide show'],
+    ['bkd', 'backdrop'],
+    ['snd', 'sound set'],
+  ]) {
+    if (ext === 'snd' && !n.endsWith('.voc')) continue;
+    for (const owner of project.files.byExtension(ext)) {
+      const count = embeddedFiles(project, owner).filter((name) => normalize(name) === n).length;
+      if (count) out.push({ file: owner, text: `${label} ${owner}`, count });
+    }
   }
-  for (const f of project.files.byExtension('bkd'))
-    if (normalize(tryParse(() => parseBackdrop(project.files.get(f)!))?.gif ?? '') === n) out.push({ file: f, text: `backdrop ${f}`, count: 1 });
+  if (n.endsWith('.pal'))
+    for (const [owner, extras] of Object.entries(project.companion?.files ?? {}))
+      if (project.files.has(owner) && typeof extras.showPalette === 'string' && normalize(extras.showPalette) === n)
+        out.push({ file: owner, text: `${owner} editor preview`, count: 1 });
   return out;
 }
 

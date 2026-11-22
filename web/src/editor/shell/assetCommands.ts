@@ -4,7 +4,7 @@ import { KIND_LABELS, kindOf } from '../core/project';
 import { confirmDialog, download, h, modal, promptText, toast } from '../core/ui';
 import { normalize } from '../../project/files';
 import { validDosName } from '../../project/health';
-import { deleteMessage } from './usedBy';
+import { deleteMessage, replaceMessage } from './usedBy';
 import { assetNames, primaryAsset, readAsset, sameAssetType, writeAsset, type AssetFile } from './assetFiles';
 import { copiedAsset, copyAsset } from './assetClipboard';
 import type { AssetAction } from './assetMenu';
@@ -72,14 +72,7 @@ export function assetCommands(project: Project, open: (file: string) => void) {
   async function replace(file: string): Promise<void> {
     const asset = copiedAsset(kindOf(file));
     if (locked() || !asset || !sameAssetType(asset.name, file) || !project.files.has(file)) return;
-    if (
-      !(await confirmDialog(
-        'Replace file',
-        `Replace ${file.toUpperCase()} with the copied ${asset.name.toUpperCase()}? Its current contents and editor extras will be replaced.`,
-        'Replace',
-      ))
-    )
-      return;
+    if (!(await confirmDialog('Replace file', replaceMessage(project, file, asset.name), 'Replace'))) return;
     if (locked() || !project.files.has(file)) return;
     writeAsset(project, file, asset);
     toast(`Replaced ${file.toUpperCase()}.`);

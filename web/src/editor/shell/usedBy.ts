@@ -1,22 +1,15 @@
-// "Used by" under a file's name (the scenes, slide shows and backdrops that use it), and the
-// delete question that names them, so nothing in use is deleted by surprise.
+// File references in the editor header and the replace and delete confirmations.
+import { normalize } from '../../project/files';
 import { h } from '../core/ui';
 import type { Project } from '../core/project';
-import { openInEditor, sceneUses, scriptUses } from '../core/uses';
-// (Uses, below, is the other direction: the files a scene or map is made of.)
+import { openInEditor, sceneUses, fileUses, embeddedFiles } from '../core/uses';
 
 /** The line under the file's name: where it is used, each a link, or a tip when nothing uses it. */
 export function usedByLine(project: Project, file: string): HTMLElement {
-  const scenes = sceneUses(project, file);
-  const scripts = scriptUses(project, file);
-  const uses = [...scenes, ...scripts];
+  const uses = fileUses(project, file);
   const line = h('p', { class: 'meta used-by', dataset: { count: String(uses.length) } });
   if (!uses.length) {
-    line.append(
-      'Not used by any scene yet: choose it for a scene in ',
-      h('button', { class: 'used-by-link', onclick: () => openInEditor(project, project.gam) }, project.gam),
-      '.',
-    );
+    line.append('No known references. Open ', h('button', { class: 'used-by-link', onclick: () => openInEditor(project, project.gam) }, project.gam), '.');
     return line;
   }
   // a palette or sound set can be used by twenty scenes: the first few, and the rest on request,
@@ -41,7 +34,7 @@ export function usedByLine(project: Project, file: string): HTMLElement {
           'button',
           {
             class: 'used-by-link used-by-more',
-            title: 'Show every scene and script that uses it',
+            title: 'Show every reference',
             onclick: () => {
               show(true);
               line.querySelectorAll<HTMLElement>('.used-by-link')[SHOWN]?.focus();
@@ -58,8 +51,7 @@ export function usedByLine(project: Project, file: string): HTMLElement {
 
 /** "Uses" for a list of files: each a link that opens it (so the breadcrumb and Back work), or nothing when none exist. */
 function usesLine(project: Project, files: readonly string[]): HTMLElement | null {
-  const seen = new Set<string>();
-  const found = files.filter((f) => f && project.files.has(f) && !seen.has(f.toLowerCase()) && !!seen.add(f.toLowerCase()));
+  const found = [...new Set(files.map(normalize))].filter((name) => name && project.files.has(name));
   if (!found.length) return null;
   const line = h('p', { class: 'meta used-by uses', dataset: { count: String(found.length) } }, 'Uses ');
   found.forEach((f, i) => {
@@ -70,8 +62,9 @@ function usesLine(project: Project, files: readonly string[]): HTMLElement | nul
   return line;
 }
 
-/** What a map is played with: the block sets and monsters of the scenes that use it. */
-export function mapUsesLine(project: Project, file: string): HTMLElement | null {
+/** Embedded files, or the block sets and monster definitions paired with a map by its scenes. */
+export function fileDependenciesLine(project: Project, file: string): HTMLElement | null {
+  if (!normalize(file).endsWith('.map')) return usesLine(project, embeddedFiles(project, file));
   const scenes = project.game().scenes;
   const files = sceneUses(project, file).flatMap((u) => (scenes[u.scene!]?.files ?? []).filter((f) => /\.(bbl|mon)$/i.test(f)));
   return usesLine(project, files);
@@ -80,10 +73,18 @@ export function mapUsesLine(project: Project, file: string): HTMLElement | null 
 /** How many uses the line names before "and N more". */
 const SHOWN = 3;
 
-/** "Delete forest.bbl? Meadow · background block set and slide show title.lst use it…" */
+/** The same owners shown in the editor, limited to keep confirmations readable. */
+function ownerList(project: Project, file: string): string {
+  const uses = fileUses(project, file).map((u) => u.text);
+  return uses.length > 6 ? `${uses.slice(0, 6).join('; ')} and ${uses.length - 6} more` : uses.join('; ');
+}
+
+export function replaceMessage(project: Project, file: string, source: string): string {
+  const list = ownerList(project, file);
+  return `Replace ${file.toUpperCase()} with the copied ${source.toUpperCase()}? Its current contents and editor extras will be replaced.${list ? ` Used by: ${list}.` : ''}`;
+}
+
 export function deleteMessage(project: Project, file: string): string {
-  const uses = [...sceneUses(project, file), ...scriptUses(project, file)].map((u) => u.text);
-  if (!uses.length) return `Delete ${file}? No scene, slide show or backdrop uses it.`;
-  const list = uses.length > 6 ? `${uses.slice(0, 6).join('; ')} and ${uses.length - 6} more` : uses.join('; ');
-  return `Delete ${file}? It is still used by: ${list}. They will be missing it until you choose another file.`;
+  const list = ownerList(project, file);
+  return list ? `Delete ${file}? It is still used by: ${list}.` : `Delete ${file}? No known references.`;
 }

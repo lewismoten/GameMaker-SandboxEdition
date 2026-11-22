@@ -4,7 +4,10 @@ import { GameFiles } from '../../project/files';
 import { Project } from '../core/project';
 import { newGame, emptyScene, serializeGame, ADVTYPE } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { quickHits, noteOpened, recentFiles } from './quickOpen';
-import { deleteMessage } from './usedBy';
+import { serializeBackdrop, serializeSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
+import { newSoundSet, serializeSoundSet } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
+import { embeddedFiles, fileUses } from '../core/uses';
+import { deleteMessage, replaceMessage } from './usedBy';
 
 function project(): Project {
   const game = newGame('Test');
@@ -47,9 +50,37 @@ describe('quick switcher', () => {
     expect(p.files.entries()).toEqual(before);
   });
 
+  it('warns before replacing or deleting a sample used only by a sound set', () => {
+    const p = project();
+    const set = newSoundSet();
+    set.digital.splice(0, 3, 'PING', 'PING', ' SKIP');
+    p.files.set('game.snd', serializeSoundSet(set));
+    p.files.set('bad.snd', new Uint8Array());
+    expect(embeddedFiles(p, 'GAME.SND')).toEqual(['PING.voc', 'PING.voc']);
+    expect(fileUses(p, 'ping.voc')).toEqual([{ file: 'game.snd', text: 'sound set game.snd', count: 2 }]);
+    expect(deleteMessage(p, 'ping.voc')).toContain('sound set game.snd');
+    expect(replaceMessage(p, 'ping.voc', 'pong.voc')).toContain('sound set game.snd');
+  });
+
+  it('keeps slide shows and backdrops visible in both directions', () => {
+    const p = project();
+    p.files.set('intro.lst', serializeSlideList([{ name: 'intro.bkd' }, { name: 'photo.gif' }]));
+    p.files.set('intro.bkd', serializeBackdrop({ x: 0, y: 0, gif: 'PHOTO.GIF' }));
+    expect(embeddedFiles(p, 'INTRO.LST')).toEqual(['intro.bkd', 'photo.gif']);
+    expect(embeddedFiles(p, 'INTRO.BKD')).toEqual(['PHOTO.GIF']);
+    expect(fileUses(p, 'photo.gif').map((u) => u.file)).toEqual(['intro.lst', 'intro.bkd']);
+  });
+
+  it('names an editor-only preview palette and ignores stale owners', () => {
+    const p = project();
+    p.setExtras('forest.bbl', 'showPalette', 'FOR.PAL');
+    p.setExtras('missing.bbl', 'showPalette', 'for.pal');
+    expect(fileUses(p, 'for.pal').map((u) => u.text)).toEqual(['forest.bbl editor preview']);
+  });
+
   it('names what uses a file before deleting it', () => {
     const p = project();
     expect(deleteMessage(p, 'one.map')).toMatch(/still used by: Meadow · map/);
-    expect(deleteMessage(p, 'forest.bbl')).toMatch(/No scene/);
+    expect(deleteMessage(p, 'forest.bbl')).toMatch(/No known references/);
   });
 });
