@@ -66,6 +66,7 @@ game folder opens in the browser unchanged.
 
 - OpenAI Codex reviewed wrapping map views and corrected keyboard movement of link markers and Level check seam and link findings with regression tests.
 - OpenAI Codex fixed phone booklet filtering and Markdown table boundaries and added regression tests.
+- OpenAI Codex revised Starter page labels, game preview descriptions, offline instructions and page links during the November 22, 2026 SEO review.
 - OpenAI Codex corrected the mobile editor's asset reference count.
 - OpenAI Codex adjusted touch target sizes on the Achievements page (November 22, 2026).
 - OpenAI Codex clarified the contributor instructions for pre-merge checks and walkthrough timing.

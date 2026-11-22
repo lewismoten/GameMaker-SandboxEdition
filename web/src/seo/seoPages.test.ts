@@ -233,7 +233,7 @@ describe('seoBuild', () => {
   it('describes the site, the app and the magazine in the home page’s structured data, and links the pages at #/…', () => {
     const types = jsonLd(home).map((n) => [n['@type']].flat().join('/'));
     expect(types).toEqual(expect.arrayContaining(['WebSite', 'WebApplication/SoftwareApplication', 'Periodical', 'PublicationIssue', 'ItemList']));
-    for (const href of ['./#/help', './#/magazine', './#/cast', './#/credits', './dos.html']) expect(home).toContain(`<a href="${href}">`);
+    for (const href of ['./#/help', './magazine.html', './cast.html', './#/credits', './dos.html']) expect(home).toContain(`<a href="${href}">`);
   });
 
   it('gives every game page its own title, canonical address, picture with alt text, VideoGame data and one h1', () => {
@@ -249,6 +249,9 @@ describe('seoBuild', () => {
       expect(html).toMatch(/<meta property="og:image:alt" content="[^"]+" \/>/);
       expect(html.match(/<h1\b/g), g.id).toHaveLength(1);
       for (const img of html.match(/<img\b[^>]*>/g) ?? []) expect(img).toMatch(/\balt="[^"]+"/);
+      expect(html).toContain('Play in your browser · Game-Maker');
+      expect(html).not.toContain('its title screen');
+      if (g.series === 'starter') expect(html).toContain('<p>A Starter game that shows one Game-Maker idea');
       const game = jsonLd(html).find((n) => n['@type'] === 'VideoGame');
       expect(game?.name).toBe(g.title);
       expect(game?.url).toBe(url);

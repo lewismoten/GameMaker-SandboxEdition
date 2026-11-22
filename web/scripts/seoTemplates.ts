@@ -36,6 +36,7 @@ const BODY_START = '<!--seo:body-->';
 const BODY_END = '<!--/seo:body-->';
 
 const imageUrl = (g: CdCatalogEntry) => `${SITE_URL}${gameImagePath(g.id)}`;
+const previewCaption = `Play in your browser · ${PRODUCT}`;
 const pageTitle = (g: CdCatalogEntry) => `${g.title} · play in your browser · ${PRODUCT}`;
 
 export const STYLE = `<style>
@@ -86,7 +87,7 @@ export function indexBody(catalog: CdCatalogEntry[]): string {
         <li>Draw blocks, monsters and your character; build maps and scenes; add Sound Blaster music, digitized sounds and PC-speaker effects.</li>
         <li>Play the original sample games, classic 90s shareware and new games — with a keyboard, a game controller or touch controls.</li>
         <li>Share your game as one web page, an installable offline web app, or a folder that runs in DOS (PLAYGAME).</li>
-        <li>Everything stays in your browser and works offline. Files stay compatible with the original DOS Game-Maker 3.0.</li>
+        <li>Choose Play offline in Settings to save a copy for offline play. Files stay compatible with the original DOS Game-Maker 3.0.</li>
       </ul>
       ${gameList(catalog, pageHref)}
       ${siteLinksHtml()}
@@ -111,7 +112,7 @@ export function dosBody(): string {
         <li><a href="./dos.html?game=teddy">dos.html?game=&lt;id&gt;</a>: puts that game’s disk in drive A: and opens it in Game-Maker.</li>
         <li><a href="./dos.html?run=dos">dos.html?run=dos</a>: stays at the DOS prompt; <a href="./dos.html?run=bbs">dos.html?run=bbs</a> calls the BBS.</li>
       </ul>
-      <p>Back to <a href="./">${escapeHtml(PRODUCT)}</a>, or sit down at the whole 1994 desk.</p>
+      <p>Back to <a href="./">${escapeHtml(PRODUCT)}</a>, or <a href="./#/desk">sit down at the 1994 desk</a>.</p>
     </main>`;
 }
 
@@ -140,7 +141,7 @@ export function playHead(catalog: CdCatalogEntry[]): string {
           ['meta[name="description"]', 'meta[property="og:description"]', 'meta[name="twitter:description"]'].forEach(function (s) { set(s, 'content', g.description); });
           ['meta[property="og:title"]', 'meta[name="twitter:title"]'].forEach(function (s) { set(s, 'content', title); });
           ['meta[property="og:image"]', 'meta[name="twitter:image"]'].forEach(function (s) { set(s, 'content', g.image); });
-          ['meta[property="og:image:alt"]', 'meta[name="twitter:image:alt"]'].forEach(function (s) { set(s, 'content', g.title + ': its title screen'); });
+          ['meta[property="og:image:alt"]', 'meta[name="twitter:image:alt"]'].forEach(function (s) { set(s, 'content', g.title + ' — ' + ${scriptJson(previewCaption)}); });
           set('link[rel="canonical"]', 'href', url);
           set('meta[property="og:url"]', 'content', url);
         }
@@ -168,7 +169,7 @@ function gameHead(g: CdCatalogEntry): string {
     url: playUrl(g.id),
     image: imageUrl(g),
     imageSize: GAME_IMAGE_SIZE,
-    imageAlt: `${g.title}: its title screen, with “Play in your browser · ${PRODUCT}”`,
+    imageAlt: `${g.title} — ${previewCaption}`,
   });
   const ld = [
     gameJsonLd(g, playUrl(g.id), imageUrl(g)),
@@ -199,11 +200,17 @@ function gameHead(g: CdCatalogEntry): string {
  * starts) and out of this text: the CD's notices give their authors' 1994 home addresses.
  */
 function gameBody(g: CdCatalogEntry): string {
-  const what = g.original ? 'A new shareware game' : g.kind === 'shareware' ? 'Shareware from the 90s' : 'A sample game that came with Game-Maker 3.0';
+  const what = isStarterGame(g)
+    ? 'A Starter game that shows one Game-Maker idea'
+    : g.original
+      ? 'A new shareware game'
+      : g.kind === 'shareware'
+        ? 'Shareware from the 90s'
+        : 'A sample game that came with Game-Maker 3.0';
   return `${BODY_START}<main class="seo-static">
       <h1>${escapeHtml(g.title)}</h1>
       <p>${escapeHtml(what)}${credit(g) ? ` · ${escapeHtml(credit(g))}` : ''}${g.price ? ` · registration ${escapeHtml(g.price)}` : ''}</p>
-      <p><img src="./${gameImagePath(g.id)}" width="600" height="315" loading="lazy" alt="${escapeHtml(g.title)}: its title screen" style="max-width:100%;height:auto;image-rendering:pixelated" /></p>
+      <p><img src="./${gameImagePath(g.id)}" width="600" height="315" loading="lazy" alt="${escapeHtml(g.title)} — ${escapeHtml(previewCaption)}" style="max-width:100%;height:auto;image-rendering:pixelated" /></p>
       ${readable(g.blurb) ? `<p>${escapeHtml(g.blurb!)}</p>` : ''}
       <p>Play ${escapeHtml(g.title)} right here in your browser — nothing to download or install — with a keyboard, a game controller or touch controls.</p>
       <noscript><p><strong>The game runs in your browser: please turn on JavaScript to play.</strong></p></noscript>
@@ -273,7 +280,7 @@ function guideBody([id, title, html]: GuideSection, catalog?: CdCatalogEntry[]):
       <p><a href="./#/help">${escapeHtml(PRODUCT)} Guide</a></p>
       <h1>${escapeHtml(title)}</h1>
       ${html}
-      <p class="seo-note"><a href="./#/help/${escapeHtml(id)}">Open this in the Guide</a> · <a href="./">${escapeHtml(PRODUCT)}</a></p>
+      <p class="seo-note"><a href="./#/help/${escapeHtml(id)}">Open ${escapeHtml(title)} in the Guide</a> · <a href="./">${escapeHtml(PRODUCT)}</a></p>
     </main>${BODY_END}`;
 }
 
@@ -296,7 +303,7 @@ export function staticPageHtml(indexHtml: string, page: StaticPage): string {
   const body = `${BODY_START}<main class="seo-static">
       <h1>${escapeHtml(page.h1)}</h1>
       ${page.html}
-      <p class="seo-note"><a href="./${escapeHtml(page.hash)}">Open this in the app</a> · <a href="./">${escapeHtml(PRODUCT)}</a></p>
+      <p class="seo-note"><a href="./${escapeHtml(page.hash)}">Open ${escapeHtml(page.h1)} in the app</a> · <a href="./">${escapeHtml(PRODUCT)}</a></p>
     </main>${BODY_END}`;
   const html = indexHtml.replace(/<title>[^<]*<\/title>/, `<title>${escapeHtml(page.title)}</title>`);
   return swapPart(swapPart(html, HEAD_START, HEAD_END, `${HEAD_START}${meta}\n    ${open}\n    ${STYLE}${HEAD_END}`), BODY_START, BODY_END, body);

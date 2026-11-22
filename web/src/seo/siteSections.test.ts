@@ -33,7 +33,7 @@ describe('siteSections', () => {
     expect(links.length).toBeGreaterThanOrEqual(9);
     expect(new Set(links.map(([href]) => href)).size).toBe(links.length);
     for (const [, name] of links) expect(name).not.toMatch(/^(click )?here$|^more$|^link$/i);
-    expect(html).toContain('href="./#/magazine"');
+    expect(html).toContain('href="./magazine.html"');
     expect(html).toContain(ROUTES.cast.description.slice(0, 40));
     expect(html.match(/<h2>/g)).toHaveLength(1);
   });
