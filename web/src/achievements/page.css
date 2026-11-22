@@ -340,7 +340,7 @@ button.danger-solid:not(:disabled) {
   border-radius: 8px;
 }
 
-@media (pointer: coarse) {
+@media (any-pointer: coarse) {
   .ach-tool,
   .ach-tab {
     min-width: 44px;
