@@ -2,22 +2,13 @@
 // editor below starts higher up (editorHead.css). A wide screen shows the lines as they are.
 import { h } from '../core/ui';
 
-/** How many files a line names: its links, plus "and N more" when it keeps some back. */
-function count(line: Element): number {
-  let n = 0;
-  line.querySelectorAll('.used-by-link').forEach((b) => {
-    n += b.classList.contains('used-by-more') ? parseInt(b.textContent ?? '', 10) || 1 : 1;
-  });
-  return n;
-}
-
 /** Adds the phone's disclosure button to the .file-refs row and returns it. */
 export function foldRefs(refs: HTMLElement): HTMLElement {
-  const by = refs.querySelector('.used-by:not(.uses)');
-  const uses = refs.querySelector('.uses');
+  const by = refs.querySelector<HTMLElement>('.used-by:not(.uses)');
+  const uses = refs.querySelector<HTMLElement>('.uses');
   const parts: string[] = [];
-  if (by) parts.push(`Used by ${count(by)}`);
-  if (uses) parts.push(`Uses ${count(uses)}`);
+  if (by) parts.push(`Used by ${by.dataset.count}`);
+  if (uses) parts.push(`Uses ${uses.dataset.count}`);
   const btn = h('button', { type: 'button', class: 'refs-toggle', 'aria-expanded': 'false' });
   const label = parts.join(' · ');
   const show = (open: boolean) => {
