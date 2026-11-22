@@ -187,15 +187,19 @@ Game-Maker. The heart of it:
 
 ## Limits
 
-| What                     | Limit                |
-| ------------------------ | -------------------- |
-| Files in one game        | 1,024                |
-| One file                 | 16 MiB               |
-| The whole game, unpacked | 48 MiB               |
-| Waiting for `gm-files`   | 60 seconds           |
-| A game's name            | 60 UTF-16 code units |
+| What                                              | Limit                 |
+| ------------------------------------------------- | --------------------- |
+| Files in one game                                 | 1,024                 |
+| A file sent alone                                 | 48 MiB                |
+| Each file when two or more are sent               | 16 MiB                |
+| The whole game, unpacked                          | 48 MiB                |
+| Waiting for `gm-files`                            | 60 seconds            |
+| Sender’s display name                             | 60 UTF-16 code units  |
+| Name kept under Imported, including `(from host)` | 100 UTF-16 code units |
 
-Game-Maker shortens a longer name to the first 60 UTF-16 code units. For example, 😀 uses two units.
+Game-Maker removes control and bidirectional formatting characters and trims surrounding whitespace
+from the display name. It trims again after shortening. Neither limit splits a character that uses
+two UTF-16 code units, such as 😀.
 
 A .zip or pack is checked against these limits as it is unpacked. A zip that unpacks to more
 than its directory says is refused.

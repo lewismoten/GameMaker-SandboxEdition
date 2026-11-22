@@ -112,6 +112,8 @@ describe('readFilesMessage', () => {
     expect(reason(() => checkLimits([['game.zip', new Uint8Array(MAX_FILE_BYTES + 1)]]))).toBe('none'); // a lone file may be a whole game
     const four = Array.from({ length: 4 }, (_, i) => [`f${i}`, new Uint8Array(MAX_FILE_BYTES)] as const);
     expect(reason(() => checkLimits(four))).toBe('too-big');
+    expect(() => checkLimits(four)).toThrow('48.0 MiB');
+    expect(() => checkLimits([['big.fli', new Uint8Array(MAX_FILE_BYTES + 1)], four[0]])).toThrow('16.0 MiB');
     expect(reason(() => checkLimits(four.slice(0, 2)))).toBe('none');
   });
 });
@@ -122,6 +124,17 @@ describe('names', () => {
     expect(originLabel('null')).toMatch(/local file/);
     expect(keptName('Snow Day', 'https://games.example')).toBe('Snow Day (from games.example)');
     expect(keptName('Snow Day', 'null')).toBe('Snow Day (from another page)');
+  });
+  it('keeps whole emoji at the display and saved name limits', () => {
+    const prefix = 'a'.repeat(59);
+    expect(cleanName(prefix.slice(1) + '😀!')).toBe(prefix.slice(1) + '😀');
+    const display = cleanName(prefix + '😀');
+    expect(display).toBe(prefix);
+    expect(() => encodeURIComponent(display ?? '')).not.toThrow();
+    const savedPrefix = prefix + ' (from ' + 'b'.repeat(33);
+    const saved = keptName(prefix, 'b'.repeat(33) + '😀');
+    expect(saved).toBe(savedPrefix);
+    expect(() => encodeURIComponent(saved)).not.toThrow();
   });
   it('cuts long names and drops empty ones', () => {
     expect(cleanName('x'.repeat(500))).toHaveLength(60);
