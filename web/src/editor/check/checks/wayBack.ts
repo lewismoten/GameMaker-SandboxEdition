@@ -6,7 +6,7 @@
 // ordinary run got through, and where it stops).
 import { BACKBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { scanName } from '@lewismoten/gamemaker-sandbox-engine/input/scancodes';
-import { MLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import type { CharInfo } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
 import { characterActions } from '../../keymap/keyMap';
 import { at, type Finding } from '../findings';
@@ -57,7 +57,7 @@ function startCells(ex: Exploration): Set<number> {
   const around = (c: number) => {
     const x = c % MLEN;
     const y = Math.floor(c / MLEN);
-    for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) out.add((y + dy) * MLEN + ((x + dx + MLEN) % MLEN));
+    for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) out.add(((y + dy + MWID) % MWID) * MLEN + ((x + dx + MLEN) % MLEN));
   };
   const first = ex.places[0];
   if (!first) return out;

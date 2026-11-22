@@ -22,6 +22,7 @@ interface MarkersHost {
   /** A block's size on screen now. */
   block(): number;
   /** Optional viewport projection and inverse, including maps repeated across an edge. */
+  readonly wrapped: boolean;
   point?(at: Point): Point;
   cell?(event: PointerEvent): Point;
   /** Called just before a link changes: the map editor keeps an Undo step (map and .gam). */
@@ -179,7 +180,7 @@ export function linkMarkers(host: MarkersHost) {
         return;
       }
       if (e.ctrlKey || e.metaKey || e.altKey) return;
-      const at = nudge(m.at, e.key, e.shiftKey);
+      const at = nudge(m.at, e.key, e.shiftKey, host.wrapped);
       if (!at && !e.key.startsWith('Arrow')) return;
       // arrows move the marker, never scroll the map under it
       e.preventDefault();

@@ -64,6 +64,7 @@ game folder opens in the browser unchanged.
 
 ## Credits
 
+- OpenAI Codex reviewed wrapping map views and corrected keyboard movement of link markers and Level check seam and link findings with regression tests.
 - OpenAI Codex corrected the mobile editor's asset reference count.
 - OpenAI Codex adjusted touch target sizes on the Achievements page (November 22, 2026).
 - OpenAI Codex clarified the contributor instructions for pre-merge checks and walkthrough timing.

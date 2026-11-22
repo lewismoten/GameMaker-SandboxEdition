@@ -32,6 +32,23 @@ describe('one-way spots', () => {
     expect(f[0].detail).toMatch(/^A 3-block drop/);
   });
 
+  it.each([
+    [99, 0],
+    [99, 1],
+  ])('checks a return from row %i to row %i across the seam', (start, end) => {
+    const run = {
+      from: { scene: 0 },
+      ex: {
+        links: [{ toScene: 1 }],
+        places: [
+          { cell: cell(5, start), out: [1], exits: [], done: true },
+          { cell: cell(5, end), out: [1], exits: [0], done: true },
+        ],
+      },
+    } as unknown as SceneRun;
+    expect(oneWay(run, undefined)).toHaveLength(end === 0 ? 0 : 1);
+  });
+
   it('finds none on a flat floor', async () => {
     const t = testGame(['##########', '#........#', '#........#', '#E.S.....#', '##########']);
     expect(oneWay((await playtestScene(t.game, t, 2))!, undefined)).toEqual([]);

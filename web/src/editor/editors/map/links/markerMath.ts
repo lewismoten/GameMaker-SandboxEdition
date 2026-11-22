@@ -1,6 +1,7 @@
 // The map editor's link markers in numbers, with no DOM: which ways in and exits of the
 // integrator's links (integrator/linkSpots.ts) are on this map, where a marker sits at a zoom,
 // which block a pointer is over while one is dragged, and where an arrow key nudges it.
+import { nativeCell } from '../mapWrap';
 import type { Game, Point } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { exitsOf, sceneName, sourceName, waysInto, type Exit, type WayIn } from '../../integrator/linkSpots';
@@ -61,12 +62,13 @@ export function cellAtPoint(clientX: number, clientY: number, rect: { left: numb
   };
 }
 
-/** Where an arrow key moves a marker (Shift: 10 blocks), or undefined for any other key or at the edge. */
-export function nudge(at: Point, key: string, shift = false): Point | undefined {
+/** Where an arrow key moves a marker (Shift: 10 blocks), or undefined for any other key or at a bounded edge. */
+export function nudge(at: Point, key: string, shift = false, wrapped = false): Point | undefined {
   const d = shift ? 10 : 1;
   const step: Record<string, [number, number]> = { ArrowLeft: [-d, 0], ArrowRight: [d, 0], ArrowUp: [0, -d], ArrowDown: [0, d] };
   const s = step[key];
   if (!s) return undefined;
+  if (wrapped) return nativeCell({ x: at.x + s[0], y: at.y + s[1] });
   const next = { x: Math.max(0, Math.min(MLEN - 1, at.x + s[0])), y: Math.max(0, Math.min(MWID - 1, at.y + s[1])) };
   return next.x === at.x && next.y === at.y ? undefined : next;
 }
