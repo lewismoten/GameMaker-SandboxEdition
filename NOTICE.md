@@ -64,6 +64,7 @@ game folder opens in the browser unchanged.
 
 ## Credits
 
+- OpenAI Codex revised the recovery instructions in Quicksand and Lightning.
 - OpenAI Codex corrected the Participation trophy badge description.
 - OpenAI Codex tested focus restoration in the four game link dialogs and fixed Escape reaching the screen underneath.
 - OpenAI Codex documented the tools package’s level grid and synthesized speech helpers, build cache inputs, and contributor troubleshooting for Node memory and Git worktree permissions.
