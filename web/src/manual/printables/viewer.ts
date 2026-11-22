@@ -548,7 +548,9 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[], opti
       if (document.querySelector('dialog[open]')) return;
       // a control that turns with these keys (a code wheel's disc, any slider) has them while it has the focus
       if (/^(Arrow|Home$|End$)/.test(e.key) && (e.target as Element | null)?.closest?.('[role="slider"]')) return;
+      if (film.ownsArrow(e)) return;
       e.stopImmediatePropagation(); // not for the PC underneath
+      if (!filmBtn.hidden && !isBook() && !reader && ['ArrowRight', 'ArrowLeft', 'PageDown', 'PageUp'].includes(e.key)) return;
       if (!sizes.el.hidden && zoomKey(e, sizes, view === 'pages' ? 'page' : 'width')) return;
       const turn = (dir: 1 | -1) => (reader?.step ? reader.step(dir) : go(dir));
       if (e.key === 'ArrowRight') turn(1);
