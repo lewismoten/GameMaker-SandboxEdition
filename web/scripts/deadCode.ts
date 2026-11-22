@@ -2,7 +2,7 @@
  * Dead-code finder (`npm run dead:code`). Lists, for web/src and web/packages/<pkg>/src:
  *   1. exports no other file imports ("local" when the file still uses the name itself, so only
  *      the `export` keyword is extra; "dead" when nothing uses it at all),
- *   2. files nothing imports, and
+ *   2. source modules unreachable from known entry points, and
  *   3. CSS classes no TS or HTML file names.
  * Uses counted: static, dynamic and `export ... from` imports, `import.meta.glob`,
  * `new URL('./x', import.meta.url)`, HTML script tags, package `exports` entries (whole file is
@@ -36,8 +36,8 @@ function walk(dir: string, out: string[] = []): string[] {
 
 const all = [...walk(join(root, 'web')), ...walk(join(root, 'games')), ...walk(join(root, 'scripts'))];
 const sources = all.filter((f) => SRC_EXT.test(f) && !f.endsWith('.d.ts'));
-const htmls = all.filter((f) => f.endsWith('.html'));
-const csses = all.filter((f) => f.endsWith('.css') && f.includes('/src/'));
+const htmls = [...all.filter((f) => f.endsWith('.html')), ...walk(join(root, 'web/public')).filter((f) => f.endsWith('.html'))];
+const csses = all.filter((f) => f.endsWith('.css') && /\/web\/(?:src|packages\/[^/]+\/src)\//.test(f));
 const isTest = (f: string): boolean => /\.test\.tsx?$/.test(f) || f.includes('/web/test/');
 const isCandidate = (f: string): boolean => /\.tsx?$/.test(f) && !isTest(f) && (/\/web\/src\//.test(f) || /\/web\/packages\/[^/]+\/src\//.test(f));
 
@@ -47,9 +47,12 @@ const isPublic = (f: string): boolean =>
 const ALL = '*';
 /** file -> exported names used by others (ALL when everything is). */
 const used = new Map<string, Set<string>>();
-const referenced = new Set<string>();
+const edges = new Map<string, Set<string>>();
+const entries = new Set(sources.filter((f) => !isCandidate(f)));
+// These player bundles have programmatic build entries rather than HTML script tags.
+entries.add(join(root, 'web/src/export/standalonePlayer.ts'));
+entries.add(join(root, 'web/src/hostedPlayer/main.ts'));
 const useName = (file: string, name: string): void => {
-  referenced.add(file);
   let s = used.get(file);
   if (!s) used.set(file, (s = new Set()));
   s.add(name);
@@ -96,6 +99,7 @@ function resolveSpec(from: string, spec: string): string | undefined {
 
 // Strings from every consumer, for CSS class matching.
 const words = new Set<string>();
+const literalCss = args.includes('--literal-css');
 const prefixes = new Set<string>();
 const addWords = (text: string): void => {
   for (const w of text.split(/[^\w-]+/)) {
@@ -134,7 +138,6 @@ function bindingNames(b: ts.BindingName): string[] | typeof ALL {
 function addUses(target: string, what: Set<string> | string[] | typeof ALL): void {
   if (what === ALL) return useName(target, ALL);
   for (const n of what) useName(target, n);
-  if (!(what as Set<string>).size && !(what as string[]).length) referenced.add(target);
 }
 
 function dynamicUse(target: string, call: ts.CallExpression): void {
@@ -163,6 +166,8 @@ function dynamicUse(target: string, call: ts.CallExpression): void {
 }
 
 for (const f of sources) {
+  const dependencies = new Set<string>();
+  edges.set(f, dependencies);
   const text = readFileSync(f, 'utf8');
   const sf = ts.createSourceFile(f, text, ts.ScriptTarget.Latest, true);
   const visit = (n: ts.Node): void => {
@@ -170,16 +175,15 @@ for (const f of sources) {
       const spec = (n.moduleSpecifier as ts.StringLiteral).text;
       const t = resolveSpec(f, spec);
       if (t) {
+        dependencies.add(t);
         if (ts.isImportDeclaration(n)) {
           const c = n.importClause;
-          if (!c) referenced.add(t);
-          else {
+          if (c) {
             if (c.name) useName(t, 'default');
             if (c.namedBindings && ts.isNamespaceImport(c.namedBindings)) {
               const scope = ts.findAncestor(n, ts.isSourceFile) ?? n;
               addUses(t, memberUses(c.namedBindings.name.text, scope));
             } else if (c.namedBindings) for (const e of c.namedBindings.elements) useName(t, (e.propertyName ?? e.name).text);
-            else if (!c.name) referenced.add(t);
           }
         } else if (n.exportClause && ts.isNamedExports(n.exportClause)) {
           for (const e of n.exportClause.elements) useName(t, (e.propertyName ?? e.name).text);
@@ -187,10 +191,16 @@ for (const f of sources) {
       }
     } else if (ts.isCallExpression(n) && n.expression.kind === ts.SyntaxKind.ImportKeyword && ts.isStringLiteralLike(n.arguments[0])) {
       const t = resolveSpec(f, n.arguments[0].text);
-      if (t) dynamicUse(t, n);
+      if (t) {
+        dependencies.add(t);
+        dynamicUse(t, n);
+      }
     } else if (ts.isImportTypeNode(n) && ts.isLiteralTypeNode(n.argument) && ts.isStringLiteral(n.argument.literal)) {
       const t = resolveSpec(f, n.argument.literal.text);
-      if (t) useName(t, n.qualifier ? n.qualifier.getText().split('.')[0] : ALL);
+      if (t) {
+        dependencies.add(t);
+        useName(t, n.qualifier ? n.qualifier.getText().split('.')[0] : ALL);
+      }
     } else if (
       ts.isCallExpression(n) &&
       ts.isPropertyAccessExpression(n.expression) &&
@@ -206,13 +216,20 @@ for (const f of sources) {
             .replace(/\*/g, '[^/]*') +
           '$',
       );
-      for (const g of all) if (rx.test(g)) useName(g, ALL);
+      for (const g of all)
+        if (rx.test(g)) {
+          dependencies.add(g);
+          useName(g, ALL);
+        }
     } else if (ts.isNewExpression(n) && ts.isIdentifier(n.expression) && n.expression.text === 'URL' && n.arguments && ts.isStringLiteralLike(n.arguments[0])) {
       const t = resolveSpec(f, n.arguments[0].text);
-      if (t) useName(t, ALL);
+      if (t) {
+        dependencies.add(t);
+        useName(t, ALL);
+      }
     }
-    if (ts.isStringLiteralLike(n) || ts.isTemplateHead(n) || ts.isTemplateMiddle(n) || ts.isTemplateTail(n)) addWords(n.text);
-    else if (ts.isJsxText(n)) addWords(n.text);
+    if (/\.tsx?$/.test(f) && (ts.isStringLiteralLike(n) || ts.isTemplateHead(n) || ts.isTemplateMiddle(n) || ts.isTemplateTail(n) || ts.isJsxText(n)))
+      addWords(n.text);
     ts.forEachChild(n, visit);
   };
   visit(sf);
@@ -220,26 +237,28 @@ for (const f of sources) {
 for (const h of htmls) {
   const text = readFileSync(h, 'utf8');
   addWords(text);
-  for (const m of text.matchAll(/<script[^>]*\ssrc="([^"]+)"/g)) {
-    const t = resolve(dirname(h), m[1].replace(/^\//, 'src/').replace(/^src\/src\//, 'src/'));
-    if (sourceSet.has(t)) useName(t, ALL);
-    else {
-      const alt = resolve(dirname(h), m[1].replace(/^\//, ''));
-      if (sourceSet.has(alt)) useName(alt, ALL);
+  for (const m of text.matchAll(/<script\b[^>]*?\bsrc=["']([^"']+)["']/gi)) {
+    const t = m[1].startsWith('/') ? resolve(root, 'web', m[1].slice(1)) : resolve(dirname(h), m[1]);
+    if (sourceSet.has(t)) {
+      entries.add(t);
+      useName(t, ALL);
     }
   }
 }
-for (const c of csses) addWords(readFileSync(c, 'utf8').replace(/\.[A-Za-z_][\w-]*/g, ' ')); // ids, urls, content strings only
+
+const reachable = new Set([...entries, ...sources.filter(isPublic)]);
+for (const file of reachable) for (const dependency of edges.get(file) ?? []) reachable.add(dependency);
 
 // Exports per candidate file.
 type Item = { file: string; name: string; kind: 'dead' | 'local' };
 const unusedExports: Item[] = [];
+const publicExports: Item[] = [];
 const unreferencedFiles: string[] = [];
 for (const f of sources.filter(isCandidate)) {
   const sf = ts.createSourceFile(f, readFileSync(f, 'utf8'), ts.ScriptTarget.Latest, true);
   const u = used.get(f);
-  if (!referenced.has(f) && !isPublic(f)) unreferencedFiles.push(f);
-  if (isPublic(f) || u?.has(ALL)) continue;
+  if (!reachable.has(f)) unreferencedFiles.push(f);
+  if (u?.has(ALL)) continue;
   const idCount = new Map<string, number>();
   const count = (n: ts.Node): void => {
     if (ts.isIdentifier(n)) idCount.set(n.text, (idCount.get(n.text) ?? 0) + 1);
@@ -269,14 +288,14 @@ for (const f of sources.filter(isCandidate)) {
       st.name
     )
       declared.push(st.name.text);
-    else if (ts.isExportDeclaration(st) && !st.moduleSpecifier && st.exportClause && ts.isNamedExports(st.exportClause))
+    else if (ts.isExportDeclaration(st) && st.exportClause && ts.isNamedExports(st.exportClause))
       for (const e of st.exportClause.elements) declared.push(e.name.text);
     else if (ts.isExportAssignment(st)) declared.push('default');
   }
   for (const name of declared) {
     if (u?.has(name)) continue;
     const local = name !== 'default' && (idCount.get(name) ?? 0) > 1;
-    unusedExports.push({ file: f, name, kind: local ? 'local' : 'dead' });
+    (isPublic(f) ? publicExports : unusedExports).push({ file: f, name, kind: local ? 'local' : 'dead' });
   }
 }
 
@@ -293,7 +312,7 @@ for (const c of csses) {
     const cls = m[1];
     if (seen.has(cls) || /^\d/.test(cls)) continue;
     seen.add(cls);
-    if (words.has(cls) || [...prefixes].some((p) => cls.startsWith(p))) continue;
+    if (words.has(cls) || (!literalCss && [...prefixes].some((p) => cls.startsWith(p)))) continue;
     unusedClasses.push({ file: c, cls });
   }
 }
@@ -303,6 +322,7 @@ if (asJson) {
   console.log(
     JSON.stringify(
       {
+        publicExports: publicExports.map((e) => ({ ...e, file: rel(e.file) })),
         unusedExports: unusedExports.map((e) => ({ ...e, file: rel(e.file) })),
         unreferencedFiles: unreferencedFiles.map(rel),
         unusedClasses: unusedClasses.map((c) => ({ ...c, file: rel(c.file) })),
@@ -318,13 +338,14 @@ if (asJson) {
     return m;
   };
   if (!only || only === 'exports') {
+    console.log(`Public package exports without an observed importer: ${publicExports.length} (listed in --json)`);
     const dead = unusedExports.filter((e) => e.kind === 'dead');
     console.log(`Unused exports: ${unusedExports.length} (${dead.length} dead, ${unusedExports.length - dead.length} used only in their own file)`);
     for (const [f, xs] of byFile(unusedExports)) console.log(`  ${f}: ${xs.map((x) => (x.kind === 'dead' ? x.name : `${x.name}~`)).join(', ')}`);
     console.log('  (~ = still used inside its file; only the `export` is extra)\n');
   }
   if (!only || only === 'files') {
-    console.log(`Unreferenced files: ${unreferencedFiles.length}`);
+    console.log(`Unreachable source modules: ${unreferencedFiles.length}`);
     for (const f of unreferencedFiles) console.log(`  ${rel(f)}`);
     console.log('');
   }

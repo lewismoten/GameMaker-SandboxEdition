@@ -246,12 +246,6 @@ dialog.modal .sv-inf {
   font-size: 13px;
   white-space: nowrap;
 }
-.sv-range,
-.sv-note {
-  margin: 0;
-  font-size: 12px;
-  color: var(--muted);
-}
 .sv-warn {
   margin: 2px 0 0;
   padding: 3px 6px;

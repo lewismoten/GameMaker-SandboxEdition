@@ -4,7 +4,7 @@
 import { SynthMotor } from './chezSynth';
 import type { ChezMotor, ChezOptions } from './chezTypes';
 
-export type { ChezMotor, ChezOptions } from './chezTypes';
+export type { ChezMotor } from './chezTypes';
 
 /** The voice THE CHEZ uses everywhere: synthesized in Web Audio, no files. */
 export const CHEZ_SOUND = 'synth' as const;

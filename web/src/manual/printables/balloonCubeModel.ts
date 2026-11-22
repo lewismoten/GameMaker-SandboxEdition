@@ -13,7 +13,7 @@
 // balloonCubeModel.test.ts folds the sheet and checks every region is the outer layer of its face, printing outward.
 import { ID, ap, centroid, crease, fold, type Aff, type Fold, type Piece, type V2, type V3 } from './balloonCubeSim';
 
-export type { V2, V3 } from './balloonCubeSim';
+export type { V2 } from './balloonCubeSim';
 export type FaceId = 'top' | 'bottom' | 'ne' | 'nw' | 'sw' | 'se';
 
 /** The cube's edge, in sheet units (the sheet's side is 1). */

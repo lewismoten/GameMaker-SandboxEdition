@@ -78,15 +78,6 @@ main.library,
   font-size: 16px;
 }
 
-.lib-kicker {
-  margin: 0 0 4px;
-  color: var(--muted);
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-
 .lib-bar {
   display: flex;
   flex-wrap: wrap;
@@ -364,27 +355,6 @@ main.library,
   color: var(--muted);
   font-size: 0.75em;
   font-weight: 400;
-}
-
-/* "Showing: <game> · All games": what is picked, and the way back to everything */
-.lib-showing {
-  margin: -6px 0 16px;
-  font-size: 15px;
-}
-
-.lib-showing[hidden] {
-  display: none;
-}
-
-.lib-show-all {
-  min-height: 24px;
-  border: 0;
-  padding: 2px 4px;
-  background: none;
-  color: var(--accent);
-  font: inherit;
-  text-decoration: underline;
-  cursor: pointer;
 }
 
 /* the card catalog: a cabinet of small drawers, one a group (cabinet.ts) */
@@ -681,15 +651,6 @@ dialog.modal:has(.lib-stacks) {
   letter-spacing: 0.02em;
 }
 
-/* the office: the cabinet and, beside it (below on small windows), the photocopier */
-.lib-office {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 250px;
-  gap: 16px;
-  align-items: start;
-  margin: 0 0 18px;
-}
-
 .lib-case .lib-cabinet {
   margin-bottom: 0;
   border-top-width: 0;
@@ -908,10 +869,6 @@ dialog.modal:has(.lib-stacks) {
 
 /* small windows: the drawers stay two rows high and slide sideways inside the cabinet */
 @media (max-width: 700px) {
-  .lib-office {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
   .lib-cp-lid,
   .lib-cp-tray {
     display: none;
