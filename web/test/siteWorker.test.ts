@@ -135,3 +135,62 @@ it('keeps unchanged legacy browsing entries offline and refreshes a changed grou
   h.fetcher.mockResolvedValueOnce(new Response('updated catalog'));
   expect(await (await h.request(catalog)).text()).toBe('updated catalog');
 });
+
+const migrationGroups = { [groupKey('desk/')]: 'same', [groupKey('index.html')]: 'home' };
+async function seedLegacy(h: ReturnType<typeof harness>, paths: string[]) {
+  const legacy = await h.caches.open('gm-site-v2');
+  await legacy.put('__gm-version.json', Response.json({ groups: migrationGroups }));
+  for (const path of paths) await legacy.put(path, new Response(path));
+}
+
+it('repairs an intermediate scoped cache while preserving newer scoped responses', async () => {
+  const h = harness('two', { groups: migrationGroups, precache: [] });
+  const cache = await h.caches.open(offlineNames(base).browsing);
+  await cache.put('__gm-version.json', Response.json({ groups: migrationGroups }));
+  await cache.put('desk/new.png', new Response('scoped'));
+  await seedLegacy(h, ['desk/new.png', 'desk/missing.png']);
+  await h.lifecycle('install');
+  await h.lifecycle('activate');
+  expect(await (await h.request('desk/missing.png')).text()).toBe('desk/missing.png');
+  expect(await (await h.request('desk/new.png')).text()).toBe('scoped');
+});
+
+it('stages the unchanged legacy shell while offline', async () => {
+  const h = harness('two', { groups: migrationGroups, precache: ['index.html'] });
+  await seedLegacy(h, ['index.html']);
+  await h.lifecycle('install');
+  const cache = await h.caches.open(offlineNames(base).browsing);
+  expect(await cache.match('index.html')).toBeUndefined();
+  await h.lifecycle('activate');
+  expect(await (await h.request('index.html')).text()).toBe('index.html');
+  expect(h.fetcher).not.toHaveBeenCalled();
+});
+
+it('skips a browsing entry that exceeds quota and finishes activation', async () => {
+  const h = harness('two', { groups: migrationGroups, precache: ['index.html'] });
+  await seedLegacy(h, ['desk/full.png', 'desk/next.png']);
+  h.fetcher.mockResolvedValueOnce(new Response('new shell'));
+  await h.lifecycle('install');
+  const browsing = offlineNames(base).browsing;
+  h.beforePut.mockImplementation((name, url) => {
+    if (name === browsing && url === base + 'desk/full.png') throw new DOMException('full', 'QuotaExceededError');
+  });
+  await h.lifecycle('activate');
+  expect(h.claim).toHaveBeenCalledOnce();
+  expect(await (await h.caches.open(browsing)).match('desk/full.png')).toBeUndefined();
+  expect(await (await h.request('desk/next.png')).text()).toBe('desk/next.png');
+  expect(await (await h.request('index.html')).text()).toBe('new shell');
+});
+
+it('downloads and activates the shell on a fresh install', async () => {
+  const h = harness('one', { precache: ['index.html'] });
+  h.registration.active = false;
+  h.fetcher.mockResolvedValueOnce(new Response('first shell'));
+  await h.lifecycle('install');
+  await h.lifecycle('activate');
+  expect(await (await h.request('index.html')).text()).toBe('first shell');
+  expect(h.fetcher).toHaveBeenCalledTimes(1);
+  expect(h.claim).toHaveBeenCalledOnce();
+  expect(h.skipWaiting).toHaveBeenCalledOnce();
+  expect(await h.caches.has('gm-site-v2')).toBe(false);
+});
