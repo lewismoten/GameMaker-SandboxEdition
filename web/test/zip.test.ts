@@ -21,6 +21,16 @@ describe('zip', () => {
     expect(await readZip(bytes)).toEqual(entries);
   });
 
+  it('reads a game ZIP after a complete empty ZIP', async () => {
+    const entries = [{ name: 'LEVEL.GAM', data: Uint8Array.of(42) }];
+    const prefix = await createZip([]);
+    const game = await createZip(entries);
+    const bytes = new Uint8Array(prefix.length + game.length);
+    bytes.set(prefix);
+    bytes.set(game, prefix.length);
+    expect(await readZip(bytes)).toEqual(entries);
+  });
+
   it('reports a truncated archive comment', async () => {
     const zip = await createZip([]);
     new DataView(zip.buffer, zip.byteOffset).setUint16(zip.length - 2, 10, true);

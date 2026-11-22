@@ -203,7 +203,7 @@ export function listZip(bytes: Uint8Array, limits: ZipLimits = DEFAULT_ZIP_LIMIT
   candidates.sort((a, b) => Math.min(bytes.length, b.end) - Math.min(bytes.length, a.end) || a.offset - b.offset);
   for (const { offset, end } of candidates) {
     try {
-      const entries = readDirectory(bytes, v, offset, limits);
+      const entries = readDirectory(bytes, v, offset, limits, end === bytes.length || !isZip(bytes));
       if (end > bytes.length) throw new Error('Truncated ZIP archive comment');
       return entries;
     } catch (error) {
@@ -216,15 +216,14 @@ export function listZip(bytes: Uint8Array, limits: ZipLimits = DEFAULT_ZIP_LIMIT
 
 class DirectoryError extends Error {}
 
-function readDirectory(bytes: Uint8Array, v: DataView, eocd: number, limits: ZipLimits): ZipListing[] {
+function readDirectory(bytes: Uint8Array, v: DataView, eocd: number, limits: ZipLimits, allowPrefix: boolean): ZipListing[] {
   const count = v.getUint16(eocd + 10, true);
   let declared = 0;
-  // A self-extracting .EXE is a program with the zip after it: its packer may have counted the
-  // offsets from the zip's start, not the file's, so they are moved by however far the
-  // directory (which ends where the end record starts) really is from where they say.
+  // Offsets can be relative to the archive after a prefix (even another ZIP).
+  // Apply the same shift to the directory and every local header it references.
   const dirSize = v.getUint32(eocd + 12, true);
   const dirAt = v.getUint32(eocd + 16, true);
-  const shift = isZip(bytes) ? 0 : Math.max(0, eocd - dirSize - dirAt);
+  const shift = allowPrefix ? Math.max(0, eocd - dirSize - dirAt) : 0;
   const dirStart = dirAt + shift;
   if (dirStart + dirSize !== eocd) throw new DirectoryError('Damaged ZIP directory extent');
   if (v.getUint16(eocd + 8, true) !== count || count * 46 > dirSize) throw new DirectoryError('Damaged ZIP directory count');
