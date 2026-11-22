@@ -7,17 +7,17 @@ import { resolve } from 'node:path';
 
 it('exports SOUNDTST runtime and every unmodified native resource', async () => {
   const files = await dosFiles();
-  for (const [name, bytes] of makeDisk('unused').files) expect(files.get(name.toUpperCase())).toEqual(bytes);
-  expect(files.get('SOUNDTST.EXE')).toEqual(new Uint8Array(readFileSync(resolve(import.meta.dirname, '../../cd/gm/xferplay.exe'))));
+  for (const [name, bytes] of makeDisk('unused').files) expect(Buffer.compare(files.get(name.toUpperCase())!, bytes), name).toBe(0);
+  expect(Buffer.compare(files.get('SOUNDTST.EXE')!, readFileSync(resolve(import.meta.dirname, '../../cd/gm/xferplay.exe')))).toBe(0);
   for (const name of ['SNDBLAST.DRV', 'CONFIG.HLP', 'CONFIG.BAT']) expect(files.has(name)).toBe(true);
   const img = makeFloppy(files);
-  expect(img).toEqual(makeFloppy(files));
+  expect(Buffer.compare(img, makeFloppy(files))).toBe(0);
   expect(img.length).toBe(1474560);
   const view = new DataView(img.buffer);
   expect([view.getUint16(11, true), img[13], view.getUint16(19, true), img[21], view.getUint16(24, true), view.getUint16(26, true)]).toEqual([
     512, 1, 2880, 0xf0, 18, 2,
   ]);
-  expect(img.subarray(512, 512 + 4608)).toEqual(img.subarray(512 + 4608, 512 + 9216));
+  expect(Buffer.compare(img.subarray(512, 512 + 4608), img.subarray(512 + 4608, 512 + 9216))).toBe(0);
   // Independent root-directory and FAT-chain reader: no writer constants or helpers reused.
   const root = 19 * 512;
   const fat = img.subarray(512, 10 * 512);
@@ -42,7 +42,8 @@ it('exports SOUNDTST runtime and every unmodified native resource', async () => 
     }
     found.set(name, Uint8Array.from(data.slice(0, size)));
   }
-  expect(found).toEqual(files);
+  expect(new Set(found.keys())).toEqual(new Set(files.keys()));
+  for (const [name, bytes] of files) expect(Buffer.compare(found.get(name)!, bytes), name).toBe(0);
 }, 15000);
 
 it('rejects oversized payloads and non-DOS names rather than making a broken disk', () => {
