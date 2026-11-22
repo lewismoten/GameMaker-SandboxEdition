@@ -5,6 +5,8 @@ import { offlineNames } from '../src/offline/archiveStore';
 import { describe, expect, it } from 'vitest';
 import { groupKey, groupOf, siteWorkerSource, WORKER_GROUP_OF } from '../src/siteWorker';
 
+import { base, harness } from './siteWorkerHarness';
+
 const PATHS = [
   'assets/desk-CtzsCBvT.js',
   'index.html',
@@ -107,4 +109,29 @@ it('cleans up only its own cache versions when workers share Cache Storage', asy
   await site('activate');
   expect(names.has(stage)).toBe(false);
   for (const name of [siteCache, current.name, sibling.name, 'gm-export123']) expect(names.has(name)).toBe(true);
+});
+
+it('keeps unchanged legacy browsing entries offline and refreshes a changed group on demand', async () => {
+  const lazy = 'assets/editor-abc.js';
+  const catalog = 'games/catalog.json';
+  const picture = 'desk/picture.png';
+  const sibling = new URL('../sibling/' + lazy, base).href;
+  const groups = { [groupKey(catalog)]: 'old', [groupKey('desk/')]: 'same' };
+  const h = harness('two', { assets: [lazy], groups: { ...groups, [groupKey(catalog)]: 'new' }, precache: [] });
+  const legacy = await h.caches.open('gm-site-v2');
+  await legacy.put('__gm-version.json', new Response(JSON.stringify({ groups, assets: [lazy, 'assets/removed.js'] })));
+  for (const path of [lazy, catalog, picture, sibling, 'assets/removed.js']) await legacy.put(path, new Response(path));
+
+  await h.lifecycle('install');
+  await h.lifecycle('activate');
+  const browsing = await h.caches.open(offlineNames(base).browsing);
+  expect(await (await h.request(lazy)).text()).toBe(lazy);
+  expect(await (await h.request(picture)).text()).toBe(picture);
+  expect(h.fetcher).not.toHaveBeenCalled();
+  expect(await browsing.match(catalog)).toBeUndefined();
+  expect(await browsing.match('assets/removed.js')).toBeUndefined();
+  expect(await browsing.match(sibling)).toBeUndefined();
+  expect(await (await legacy.match(sibling))?.text()).toBe(sibling);
+  h.fetcher.mockResolvedValueOnce(new Response('updated catalog'));
+  expect(await (await h.request(catalog)).text()).toBe('updated catalog');
 });
