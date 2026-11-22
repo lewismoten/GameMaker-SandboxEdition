@@ -23,7 +23,7 @@ function pack(v: unknown): unknown {
   if (v instanceof ArrayBuffer) return { [BYTES]: toBase64(new Uint8Array(v)) };
   if (Array.isArray(v)) return v.map(pack);
   if (v && typeof v === 'object') {
-    const o: Record<string, unknown> = {};
+    const o: Record<string, unknown> = Object.create(null);
     for (const [k, x] of Object.entries(v)) if (x !== undefined) o[k] = pack(x);
     return BYTES in o || OBJ in o ? { [OBJ]: o } : o;
   }
@@ -37,13 +37,9 @@ function unpack(v: unknown): unknown {
     const keys = Object.keys(o);
     if (keys.length === 1 && keys[0] === BYTES && typeof o[BYTES] === 'string') return fromBase64(o[BYTES]);
     if (keys.length === 1 && keys[0] === OBJ && o[OBJ] && typeof o[OBJ] === 'object') {
-      const inner: Record<string, unknown> = {};
-      for (const [k, x] of Object.entries(o[OBJ])) inner[k] = unpack(x);
-      return inner;
+      return Object.fromEntries(Object.entries(o[OBJ]).map(([k, x]) => [k, unpack(x)]));
     }
-    const out: Record<string, unknown> = {};
-    for (const [k, x] of Object.entries(o)) out[k] = unpack(x);
-    return out;
+    return Object.fromEntries(Object.entries(o).map(([k, x]) => [k, unpack(x)]));
   }
   return v;
 }
