@@ -340,6 +340,14 @@ button.danger-solid:not(:disabled) {
   border-radius: 8px;
 }
 
+@media (pointer: coarse) {
+  .ach-tool,
+  .ach-tab {
+    min-width: 44px;
+    min-height: 44px;
+  }
+}
+
 .ach-tab[aria-selected='true'] {
   background: var(--accent);
   border-color: var(--accent);
