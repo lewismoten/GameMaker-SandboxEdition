@@ -22,3 +22,7 @@ none. The live recorder tries MP4 first, then WebM, and cannot record if neither
 The desk's capture card (`desk/pc/capture.ts`) takes screenshots and
 recordings of the PC's screen with `screenCapture.ts` and the live recorder; every download is
 saved with `editor/core/ui.ts` `download`.
+
+`wav.test.ts` checks malformed RIFF chunk lengths with the reusable mutations in
+`web/test/malformedCases.ts`. Its minimized real-source regression is documented
+in `test-fixtures/README.md`; valid PCM samples still round-trip unchanged.

@@ -46,6 +46,8 @@ export function parseWav(bytes: Uint8Array): { sampleRate: number; bits: number;
   while (p + 8 <= bytes.length) {
     const id = str(p);
     const len = v.getUint32(p + 4, true);
+    if (len > bytes.length - p - 8) throw new Error(`WAV chunk ${id} is cut short`);
+    if (id === 'fmt ' && len < 16) throw new Error('WAV fmt chunk is shorter than 16 bytes');
     if (id === 'fmt ') fmt = { channels: v.getUint16(p + 10, true), sampleRate: v.getUint32(p + 12, true), bits: v.getUint16(p + 22, true) };
     if (id === 'data' && fmt) return { ...fmt, data: bytes.subarray(p + 8, p + 8 + len) };
     p += 8 + len + (len & 1);

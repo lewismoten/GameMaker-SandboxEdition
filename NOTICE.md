@@ -65,6 +65,7 @@ game folder opens in the browser unchanged.
 ## Credits
 
 - OpenAI Codex clarified the contributor instructions for pre-merge checks and walkthrough timing.
+- OpenAI Codex tested malformed game files and added WAV chunk, split-ZIP and walkthrough key bounds checks, minimized fixtures and regression tests (November 22, 2026).
 - OpenAI Codex fixed map zoom at large wheel deltas and added its regression test.
 - OpenAI Codex clarified the origins of the desk manuals in the web Guide and updated the contributor instructions for release notes.
 - OpenAI Codex clarified the pin and tickle controls in the game help and TURBO BUTTON.

@@ -33,3 +33,6 @@ unseen to the next.
 The bot itself and the dialog are the editor's (`editor/check/walk/`, `editor/widgets/walkDialog.ts`).
 All `editor/` paths above are relative to `web/src/`, not this folder. Playback uses a private
 clock and seeded random numbers; this is web-engine replay, not execution of the DOS player.
+
+`malformedKeys.test.ts` covers truncated and oversized key deltas; the minimized
+unterminated stream is documented in `test-fixtures/README.md`.

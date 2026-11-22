@@ -89,11 +89,14 @@ export function decodeKeys(text: string): RecordedKey[] {
     let d = 0;
     let shift = 0;
     for (;;) {
+      if (i >= bin.length) throw new Error('Walkthrough keys: delta is cut short');
       const b = bin.charCodeAt(i++);
       d += (b & 0x7f) * 2 ** shift;
+      if (!Number.isSafeInteger(d)) throw new Error('Walkthrough keys: delta is too large');
       shift += 7;
       if (b < 0x80) break;
     }
+    if (i >= bin.length) throw new Error('Walkthrough keys: scan code is missing');
     out.push({ delta: d, key: bin.charCodeAt(i++) });
   }
   return out;
