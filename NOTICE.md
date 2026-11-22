@@ -64,6 +64,7 @@ game folder opens in the browser unchanged.
 
 ## Credits
 
+- OpenAI Codex adjusted touch target sizes on the Achievements page (November 22, 2026).
 - OpenAI Codex clarified the contributor instructions for pre-merge checks and walkthrough timing.
 - OpenAI Codex tested malformed game files and added WAV chunk, split-ZIP and walkthrough key bounds checks, minimized fixtures and regression tests (November 22, 2026).
 - OpenAI Codex fixed map zoom at large wheel deltas and added its regression test.
