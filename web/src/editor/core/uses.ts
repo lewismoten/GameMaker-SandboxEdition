@@ -9,6 +9,7 @@ import { parseCharacter, frameCount } from '@lewismoten/gamemaker-sandbox-engine
 import { ADVTYPE, ADV_FILES, START_FILES, END_FILES } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { parseBackdrop, parseSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
 import { parseSoundSet } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
+import { SCENE_SECTION, normalizeScene, sceneFiles } from '../editors/animation/scene/sceneModel';
 import type { Project } from './project';
 import { formatHash } from '../../urlState';
 
@@ -50,11 +51,15 @@ export function sceneUses(project: Project, file: string): Use[] {
   }));
 }
 
-/** File names stored inside a slide show, backdrop or sound set, in playback order. */
+/** File names stored inside a slide show, backdrop or sound set, in playback order, or kept in an animation's Scene Maker scene. */
 export function embeddedFiles(project: Project, file: string): string[] {
   const bytes = project.files.get(file);
   if (!bytes) return [];
   const name = normalize(file);
+  if (name.endsWith('.fli')) {
+    const scene = normalizeScene(project.extras(file, SCENE_SECTION, undefined));
+    return scene ? sceneFiles(scene) : [];
+  }
   if (name.endsWith('.lst')) return tryParse(() => parseSlideList(bytes).map((entry) => entry.name)) ?? [];
   if (name.endsWith('.bkd')) return tryParse(() => [parseBackdrop(bytes).gif]) ?? [];
   if (name.endsWith('.snd'))
@@ -68,7 +73,7 @@ export function embeddedFiles(project: Project, file: string): string[] {
   return [];
 }
 
-/** Direct scene slots, embedded file references and explicit editor preview palettes. */
+/** Direct scene slots, embedded file references, Scene Maker sources and explicit editor preview palettes. */
 export function fileUses(project: Project, file: string): Use[] {
   const n = normalize(file);
   const out = sceneUses(project, file);
@@ -82,6 +87,12 @@ export function fileUses(project: Project, file: string): Use[] {
       const count = embeddedFiles(project, owner).filter((name) => normalize(name) === n).length;
       if (count) out.push({ file: owner, text: `${label} ${owner}`, count });
     }
+  }
+  // an animation's editable scene is editor-only (the companion), but rebuilding the .fli needs its files
+  for (const [owner, extras] of Object.entries(project.companion?.files ?? {})) {
+    if (!normalize(owner).endsWith('.fli') || extras[SCENE_SECTION] === undefined || !project.files.has(owner)) continue;
+    const count = embeddedFiles(project, owner).filter((name) => normalize(name) === n).length;
+    if (count) out.push({ file: owner, text: `${owner} Scene Maker source`, count });
   }
   if (n.endsWith('.pal'))
     for (const [owner, extras] of Object.entries(project.companion?.files ?? {}))

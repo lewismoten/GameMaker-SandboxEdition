@@ -259,3 +259,13 @@ export function itemLabel(it: Item): string {
   if (it.kind === 'block') return `Block ${it.block} of ${it.bbl.toUpperCase() || '?'}`;
   return it.source.type === 'chr' ? `${it.source.chr.toUpperCase() || 'Character'}` : `Monster ${it.source.index} of ${it.source.mon.toUpperCase() || '?'}`;
 }
+
+/** The game files a scene draws with, as named (one entry per use), for "what uses this?". */
+export function sceneFiles(s: Scene): string[] {
+  const out: string[] = [];
+  for (const b of s.backgrounds) out.push(b.kind === 'picture' ? b.file : b.kind === 'map' ? b.map : b.palette);
+  for (const { item } of allItems(s))
+    if (item.kind === 'block') out.push(item.bbl);
+    else if (item.kind === 'actor') out.push(...(item.source.type === 'chr' ? [item.source.chr, item.source.cbl] : [item.source.mon, item.source.mbl]));
+  return out.filter(Boolean);
+}
