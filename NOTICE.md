@@ -699,6 +699,10 @@ formats from their published descriptions and from Game-Maker's own source.
   patents expired in 2003–2004.
 - **FLI** animations: the Autodesk Animator format of Autodesk, Inc., implemented from its
   public documentation.
+- **ZIP**: the ZIP reader and writer in `web/packages/archives/src/project/zip.ts` follow
+  PKWARE's _.ZIP File Format Specification_ (`code/GM/APPNOTE.TXT`). PKWARE disclaims
+  any warranty that the information is current or accurate. Anyone using it assumes the
+  risk of damage from inaccuracies, and the information may change without notice.
 - **Sound Blaster**, **CMF** (Creative Music File), **VOC** and **SBI**: trademarks and
   formats of Creative Technology Ltd. The CMF player is a port of Game-Maker's own
   `SBMUSIC.C` and of the behavior of Creative's SBFMDRV driver; no Creative code is used.
