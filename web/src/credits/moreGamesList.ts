@@ -21,7 +21,7 @@ export const MORE_GAMES: [name: string, href: string, what: string][] = [
   ],
   [
     'The Game-Maker Archive wiki (archived copy)',
-    'https://web.archive.org/web/2026/https://aderack.com/game-maker/index.php?title=List_of_Game-Maker_games',
+    'https://web.archive.org/web/20260807224837/https://aderack.com/game-maker/index.php?title=List_of_Game-Maker_games',
     'A sortable list of about 270 games by year, author and genre.',
   ],
   ['MobyGames', 'https://www.mobygames.com/group/10554/game-engine-rsd-game-maker/', 'Catalog entries for the best-known releases.'],

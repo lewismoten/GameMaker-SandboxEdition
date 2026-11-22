@@ -59,8 +59,8 @@ plain about its limits: it was not meant for long professional games, but it wor
 shareware and for prototypes. He gave the price as about $89 from KD Software. Two days
 later Kirk Baum answered that he would like to see examples before paying. Both posts survive
 in a 1992 Usenet collection on Discmaster
-([Stone](https://discmaster.textfiles.com/view/28245/NN_1992_27.iso/spool/rec/games/programm/4743),
-[Baum](https://discmaster.textfiles.com/view/28245/NN_1992_27.iso/spool/rec/games/programm/4778)).
+([Stone](https://discmaster.textfiles.com/view/28245/NN_1992_27.iso/spool/rec/games/programm/4743) ([Wayback, November 8, 2026](https://web.archive.org/web/20261108011304/https://discmaster.textfiles.com/view/28245/NN_1992_27.iso/spool/rec/games/programm/4743)),
+[Baum](https://discmaster.textfiles.com/view/28245/NN_1992_27.iso/spool/rec/games/programm/4778) ([Wayback, November 22, 2026](https://web.archive.org/web/20261122130901/https://discmaster.textfiles.com/view/28245/NN_1992_27.iso/spool/rec/games/programm/4778))).
 
 ## Other published accounts
 
@@ -104,13 +104,13 @@ Wayback snapshot; the snapshot dates below are in UTC.
 
 That sound editor kept coming back in my own projects:
 
-- [Creating a UFO game](https://lewismoten.com/2024/04/15/creating-a-ufo-game/): a game I
+- [Creating a UFO game](https://lewismoten.com/2024/04/15/creating-a-ufo-game/) ([Wayback, November 22, 2026](https://web.archive.org/web/20261122130202/https://lewismoten.com/2024/04/15/creating-a-ufo-game/)): a game I
   began in Second Life in 2009, where you hunt for aliens with a flashlight, and brought to
   the web with drawn sound effects in the spirit of Game-Maker's.
-- [Data over audio](https://lewismoten.com/2024/05/01/data-over-audio/): sending data
+- [Data over audio](https://lewismoten.com/2024/05/01/data-over-audio/) ([Wayback, November 22, 2026](https://web.archive.org/web/20261122130223/https://lewismoten.com/2024/05/01/data-over-audio/)): sending data
   between two devices as sound, from memories of cassette drives and a 2400 baud modem
   that tied up the phone line.
-- [Game design](https://lewismoten.com/2024/05/20/game-design/): plans for a GPS scavenger
+- [Game design](https://lewismoten.com/2024/05/20/game-design/) ([Wayback, November 22, 2026](https://web.archive.org/web/20261122125038/https://lewismoten.com/2024/05/20/game-design/)): plans for a GPS scavenger
   hunt, with sound effects made from 36 bytes of data, much as Game-Maker's editor did.
 
 I also built a web page that lets you draw a sound effect with the mouse, the way
