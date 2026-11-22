@@ -471,6 +471,7 @@
        "q": "Dig where, exactly?",
        "a": "Behind the hedge, past the sign that says MINE and the bone sticking out of the lawn, there's soft dirt with paw prints. Dig (Down), step into the hole and you drop into Gwinn's den. Fetch the egg (F) from her loot pile, then climb out on the right.",
        "sketch": {
+        "description": "Stand just right of the tall hedge and dig straight down. The egg at X is just left of the climb out.",
         "rows": [
          "######  ",
          "######  ",

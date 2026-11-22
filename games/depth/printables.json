@@ -287,6 +287,7 @@
        "q": "Just draw me a map.",
        "a": "In the far plane, go up through the amber door into the top middle room, then right into the top right room past the red lens. Its right wall has two two-way mirrors; with the far plane in focus, roll through the lower one, then press Enter on the felt egg.",
        "sketch": {
+        "description": "From the amber door, go up past the red lens. Roll right through the lower mirror to the egg at X.",
         "rows": [
          "##########",
          "#....::..#",

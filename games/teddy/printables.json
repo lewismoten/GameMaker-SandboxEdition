@@ -213,6 +213,7 @@
               "q": "Paws and all, step by step?",
               "a": "After fetching the bow tie, hop up onto the right end of the Dog House's rock cubby and give a high five (1) to the knot in the hedge just right of the red door. Inside, hop up to the shelf and fetch the felt egg (F). Leave by the red door.",
               "sketch": {
+                "description": "Stand on the right end of the rock cubby. Reach up and right to the hedge knot at X.",
                 "rows": [
                   "  ==X",
                   "  ==",

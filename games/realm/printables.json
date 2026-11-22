@@ -363,6 +363,7 @@
               "q": "Just draw me a map.",
               "a": "Up the main street to the foot of the falls, through the left edge of the falling water, and into the garden. The nest is right of the hermit; the stone beside it opens for whoever carries the egg.",
               "sketch": {
+                "description": "From the street, go up through the left edge of the falls. Look right of the hermit for the nest and the stone beside it.",
                 "rows": ["TTTTTTTTTT", "T @  o  X T", "T       T", "TTT~~~TTTT", "   ^~~", "   ^~~", "   ...."],
                 "labels": [
                   { "x": 6, "y": 0, "text": "NEST" },

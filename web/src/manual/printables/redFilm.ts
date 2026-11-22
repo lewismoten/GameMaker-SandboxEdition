@@ -442,16 +442,18 @@ export function redSketch(sketch: HintSketch): HTMLElement {
   };
   const labels = (sketch.labels ?? []).map((label) => label.text);
   const symbols = new Set(sketch.rows.join('').replaceAll(' ', ''));
-  const description = [...labels, ...Array.from(symbols, (ch) => SKETCH_GLYPHS[ch])];
+  const description = sketch.description ? labels : [...labels, ...Array.from(symbols, (ch) => SKETCH_GLYPHS[ch])];
   for (const [row, cells] of sketch.rows.entries()) {
     for (const [column, ch] of [...cells].entries()) {
-      if (ch === 'X') description.push(`X marks row ${row + 1}, column ${column + 1}`);
+      const cell = `row ${row + 1}, column ${column + 1}`;
+      if (ch === 'X') description.push(`X marks ${cell}`);
+      else if (sketch.landmarks?.[ch]) description.push(`${sketch.landmarks[ch]} at ${cell}`);
     }
   }
   return h(
     'span',
     { class: 'rf-code rf-sketch-box' },
-    ...hintNames('Hidden drawing: lay the red film over it', 'Drawing: ' + description.join(', ')),
+    ...hintNames('Hidden drawing: lay the red film over it', 'Drawing: ' + [sketch.description, description.join(', ')].filter(Boolean).join(' ')),
     picture(CYAN_INK, 'rf-screen'),
     picture(PRINT_CYAN_INK, 'rf-print'),
   );

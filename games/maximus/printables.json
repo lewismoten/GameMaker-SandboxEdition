@@ -805,6 +805,7 @@
               "q": "Plot me a course.",
               "a": "Fly to the corner of the galaxy chart and come at the knot from below. The two rocks in the middle of its south face are only a picture: fly straight up through them. Inside, press G to pick up the felt egg, then touch the beacon.",
               "sketch": {
+                "description": "Fly up from below the knot, through the two false rocks. The egg at X is just below the beacon.",
                 "rows": [
                   "o oooo",
                   "ooo=ooo",

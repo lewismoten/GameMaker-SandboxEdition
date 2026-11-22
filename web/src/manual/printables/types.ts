@@ -90,6 +90,10 @@ export interface HintCover {
  * nothing), and `labels` written in at a cell (x across, y down).
  */
 export interface HintSketch {
+  /** Spoken route when the film reveals the drawing. */
+  description?: string;
+  /** Named glyphs whose cells should be read alongside the route. */
+  landmarks?: Record<string, string>;
   rows: string[];
   labels?: { x: number; y: number; text: string }[];
 }

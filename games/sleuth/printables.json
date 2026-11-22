@@ -481,6 +481,7 @@
               "q": "I give up. Spell it out.",
               "a": "At 2 AM, carry the magnifying glass from the props room into the green room. Stand just left of the sofa in the bottom right corner and push right into it (it costs one lens charge). The egg shows between the cushions: push again to take it, then step into the empty seat.",
               "sketch": {
+                "description": "Stand just left of the sofa in the bottom right corner. Push right into the cushions at X.",
                 "rows": ["------------", "|o        o|", "|          |", "|o        o|", "|      o @X|", "-==---------"],
                 "labels": [
                   {
