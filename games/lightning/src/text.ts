@@ -24,9 +24,9 @@ export const HOWTO = wrap(`
 |LEFT, RIGHT   walk
 |SPACE         jump
 
-Walk to the door at the end of each level. Watch the sky: about every 7 seconds it flashes once.
+Walk to each level's exit door. The sky flashes about every 7 seconds.
 
-Level 1 is a field in a storm. Level 2 has stones over a ditch; jump from stone to stone. If you fall in, nothing hurts: walk back up the step.
+Jump across the ditch on the stones. A fall is safe. Hold LEFT, then press SPACE to jump up each step. You can pause between the two jumps.
 
 |ESC for the menu.
 `);

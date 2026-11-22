@@ -6,7 +6,7 @@
   "hero": "LENA",
   "year": 1994,
   "price": "Free",
-  "version": "1.2",
+  "version": "1.3",
   "blurb": "Two short levels about sand that sinks. Each block of sand is a chain of blocks that turn into the next one when touched, and standing on a block touches it on every tick. Stand still and the sand under Lena dimples, swirls and gives way, and she drops into a hole a block deep and jumps out. Keep walking and it holds. The second level has stepping stones that never sink and dark wet sand that sinks faster. Signs say how. Play it, then open it in Game-Maker and change how fast the sand sinks.",
   "exe": "QUIKSAND.EXE",
   "dosName": "QUIKSAND",
