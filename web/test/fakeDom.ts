@@ -54,8 +54,9 @@ export class FakeEl {
       c.isConnected = this.isConnected;
     }
   }
-  replaceChildren() {
+  replaceChildren(...cs: FakeEl[]) {
     this.children = [];
+    this.append(...cs);
   }
   querySelector() {
     return new FakeEl('span', this.doc);
