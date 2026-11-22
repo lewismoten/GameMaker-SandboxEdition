@@ -115,6 +115,8 @@ const iso = createIso([
 - `fli-check`: `fliCheck(files)` accepts engine `GameFiles`' `get` and `byExtension`
   methods and returns warning findings for PLAYGAME animation decoder limits. It works
   in Node and browsers, reads no project metadata, and leaves accepting suggestions to callers.
+- `kit/levelGrid`: `new Grid(width, height)` starts a blank map in block coordinates. Paint it with `put`, `fill`, `row` and `col`, then pass `rows()` to the map builder.
+- `kit/mumble`: `syllablesFromText` turns text into a repeatable pattern of nonsense syllables. Render them with `mumble` for samples or `mumbleVoc` for an 8-bit mono VOC.
 - `kit/eventLog`: `recordEvents(SimClass, run)` logs a headless `GameSim`'s key edges, score changes, scene changes and deaths as an `EventLog` (`presses(scan, scene?)`), patching the class only while `run` runs; `scanOf`/`nameOf` map key names ("Enter") and scan codes. Rules over the log live in `games/kit/intentRules.ts`.
 - `kit/blockRoles` and `kit/levelGen`: role-based seeded map generation. The latter
   exports `generate`, `generatePlatform`, `heroPhysics`, `capability`, `proveResult` and

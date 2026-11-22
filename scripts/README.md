@@ -52,6 +52,8 @@ are unavailable). There is no symlink fallback, and any source/output symlink or
 preexisting destination output blocks setup. `npm ci` builds SDKs in dependency order
 and refreshes generated disks; copied timestamps alone are not proof of freshness.
 Failure leaves the partial worktree for inspection, never deletes it automatically.
+In a sandbox, a linked worktree can allow source edits while its Git metadata is read-only.
+If staging reports a read-only filesystem, `git rev-parse --git-path index.lock` shows where Git needs write access.
 
 `npm run worker:bootstrap -- --doctor` prints capabilities without creating a
 worktree or installing dependencies. Both modes report the actual shared heavy-lock
@@ -112,7 +114,7 @@ caches these outputs between runs; `prune-render-cache.mjs` keeps only the curre
 only that game (repeatable), `GM_BUILD_JOBS=n` sets the workers (two by default, every core when `CI` is
 set). `game-import-keys.mjs` makes the keys: the files a game's `build.ts` really imports (an esbuild
 metafile), its own folder, the data files in `games/kit` and the packages, the stock player and the
-lockfile, so editing a page under `web/src` that no game imports rebuilds nothing.
+lockfile. Each key also includes the SDK package manifests, so even a version-only SDK bump invalidates every game. Editing a page under `web/src` that no game imports rebuilds nothing.
 `build-games.mjs` also runs `games/kit/pixelTrinkets.ts` (after the games, about 0.6 s, 60 ms when nothing changed; `GM_SKIP_PIXEL_TRINKETS=1` skips it) for the 3D-printable pixel figures in `web/public/trinkets/<game>/`, each game keyed by its figures and the mesh code.
 `GM_SKIP_FIELD_TRINKETS=1` likewise skips the plastic trinkets that Depth, Realm and the other field-trinket games mesh beside their builds, and `GM_SKIP_LASER_NICKELS=1` the laser nickels. The Mac, Windows and Linux download jobs set all three, since they need only the game disks.
 `logo-build-entry.mjs` renders the shared Sandbox logo sting (about 7 s of ray tracing) once per run into the render cache; `build-games.mjs` hands the file to each game as `SANDLOGO_FLI`, keyed by the files `sandlogo.ts` imports.
