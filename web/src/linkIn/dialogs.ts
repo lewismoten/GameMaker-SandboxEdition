@@ -27,6 +27,9 @@ function dialog<T>(title: string, onEsc: T, build: (close: (v: T) => void) => (N
       dlg.remove();
       resolve(v);
     };
+    dlg.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') e.stopPropagation();
+    });
     dlg.addEventListener('cancel', (e) => {
       e.preventDefault();
       close(onEsc);
