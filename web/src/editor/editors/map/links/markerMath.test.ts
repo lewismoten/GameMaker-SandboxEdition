@@ -72,6 +72,8 @@ describe('link markers on a map', () => {
     expect(nudge({ x: 5, y: 5 }, 'ArrowUp', true)).toEqual({ x: 5, y: 0 });
     expect(nudge({ x: 0, y: 5 }, 'ArrowLeft')).toBeUndefined();
     expect(nudge({ x: 99, y: 95 }, 'ArrowDown', true)).toEqual({ x: 99, y: 99 });
+    expect(nudge({ x: 0, y: 5 }, 'ArrowLeft', false, true)).toEqual({ x: 99, y: 5 });
+    expect(nudge({ x: 99, y: 95 }, 'ArrowDown', true, true)).toEqual({ x: 99, y: 5 });
     expect(nudge({ x: 5, y: 5 }, 'a')).toBeUndefined();
   });
 });

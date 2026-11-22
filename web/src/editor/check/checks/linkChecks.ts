@@ -188,11 +188,12 @@ export function offMap(game: Game, d: SceneData): Finding[] {
   const out: Finding[] = [];
   game.scenes[d.scene].links.forEach((l, i) => {
     if (!used(l) || onMap(l.from)) return;
+    const unusedTouch = l.from.x === MLEN && l.from.y === MWID;
     out.push({
       check: 'off-map',
       severity: 'error',
-      title: `Link ${i + 1} is at (${l.from.x}, ${l.from.y}), off the map: it can never fire`,
-      detail: `The map’s cells run from (0, 0) to (99, 99), and the hero is always on one of them. Put the link to ${sceneName(game, l.toScene)} on the map.`,
+      title: `Link ${i + 1} is at (${l.from.x}, ${l.from.y}), off the map: ${unusedTouch ? 'it can fire anywhere' : 'it can never fire'}`,
+      detail: `The map’s cells run from (0, 0) to (99, 99), and the hero is always on one of them.${unusedTouch ? ' PLAYGAME uses (100, 100) for unused contact points, so the link can fire wherever the hero stands.' : ''} Put the link to ${sceneName(game, l.toScene)} on the map.`,
       where: { scene: d.scene, map: d.names.map, link: i },
     });
   });

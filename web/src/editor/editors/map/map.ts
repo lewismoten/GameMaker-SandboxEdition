@@ -516,6 +516,9 @@ registerEditor(['map'], (host, project, file) => {
     scenes: set.scenes,
     canvas,
     block: () => BLEN * zoom,
+    get wrapped() {
+      return viewport.wrapped;
+    },
     point: (p) => viewport.point(p),
     cell: (e) => viewport.cell(e),
     remember: rememberLinks,

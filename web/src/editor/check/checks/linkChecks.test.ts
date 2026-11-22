@@ -27,6 +27,17 @@ const ROWS = [
 const sceneOf = (t: TestGame) => scenesOf(t.game, t)[0];
 
 describe('the link checks', () => {
+  it('distinguishes a seam cell from the unused DOS contact coordinates', () => {
+    const t = testGame(ROWS);
+    const link = t.game.scenes[2].links[0];
+    link.from = { x: 0, y: 99 };
+    expect(offMap(t.game, sceneOf(t))).toEqual([]);
+    link.from = { x: 100, y: 99 };
+    expect(offMap(t.game, sceneOf(t))[0].title).toContain('never fire');
+    link.from = { x: 100, y: 100 };
+    expect(offMap(t.game, sceneOf(t))[0].title).toContain('can fire anywhere');
+  });
+
   it('finds a second link on a cell, which never fires', () => {
     const t = testGame(ROWS);
     t.game.scenes[2].links[1] = { toScene: 2, from: { x: 1, y: 2 }, to: { x: 5, y: 2 } };
