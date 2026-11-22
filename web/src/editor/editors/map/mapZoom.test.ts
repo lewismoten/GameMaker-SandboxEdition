@@ -20,6 +20,10 @@ describe('map zoom', () => {
     // a pinch of the same size zooms faster than a wheel
     expect(wheelZoom(1, -5, true)).toBeGreaterThan(wheelZoom(1, -5));
   });
+  it('keeps large finite pinch deltas at the corresponding zoom limit', () => {
+    expect(wheelZoom(1, -100_000, true)).toBe(MAX_ZOOM);
+    expect(wheelZoom(1, 100_000, true)).toBe(MIN_ZOOM);
+  });
   it('opposite deltas undo each other', () => {
     expect(wheelZoom(wheelZoom(1.7, -60), 60)).toBeCloseTo(1.7);
   });
