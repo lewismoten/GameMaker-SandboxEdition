@@ -70,6 +70,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex documented the tools package’s level grid and synthesized speech helpers, build cache inputs, and contributor troubleshooting for Node memory and Git worktree permissions.
 - OpenAI Codex reviewed wrapping map views and corrected keyboard movement of link markers and Level check seam and link findings with regression tests.
 - OpenAI Codex fixed phone booklet filtering and Markdown table boundaries and added regression tests.
+- OpenAI Codex generated and tested the static Art courses and Programmer’s Guide pages.
 - OpenAI Codex revised Starter page labels, game preview descriptions, offline instructions and page links during the November 22, 2026 SEO review.
 - OpenAI Codex fixed and tested offline home navigation from nested pages.
 - OpenAI Codex corrected the mobile editor's asset reference count.

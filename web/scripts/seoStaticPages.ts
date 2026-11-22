@@ -44,6 +44,8 @@ function libraryHtml(games: CdCatalogEntry[]): string {
   return `<p>The Library gathers everything to read and print in one place. Browse it by game or by type; each piece opens to read page by page or to print.</p>
       <h2>What is on the shelves</h2>
       <ul>
+        <li><a href="./art-courses.html">Art courses</a></li>
+        <li><a href="./programmers-guide.html">The Programmer’s Guide to Game-Maker 3.0</a></li>
         <li>A manual for each game, and a hint book where a game has one</li>
         <li>Maps of the levels</li>
         <li>The Sandbox Scoop, the newsletter, and sticker sheets and cards</li>

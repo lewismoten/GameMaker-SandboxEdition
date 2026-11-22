@@ -7,6 +7,7 @@ import { describe, expect, it } from 'vitest';
 import type { IndexHtmlTransformContext } from 'vite';
 import { cdCatalog, cdSecretCatalog } from '../../scripts/cdGames';
 import { gamePageHtml, guidePageHtml, seoPages, staticPageHtml } from '../../scripts/seoBuild';
+import { readingPages } from '../../scripts/seoReadings';
 import { staticPages } from '../../scripts/seoStaticPages';
 import { GUIDE_SECTIONS } from '../manual/guideSections';
 import { gamePage, ROUTES, SITE_URL } from './site';
@@ -61,7 +62,7 @@ describe('seoBuild', () => {
       'downloads.html': files['downloads.html'],
       ...Object.fromEntries(playable.map((g) => [gamePage(g.id), gamePageHtml(play, g)])),
       ...Object.fromEntries(GUIDE_SECTIONS.map((s) => [`help-${s[0]}.html`, guidePageHtml(home, s, catalog)])),
-      ...Object.fromEntries(staticPages(catalog).map((p) => [p.file, staticPageHtml(home, p)])),
+      ...Object.fromEntries([...staticPages(catalog), ...readingPages].map((p) => [p.file, staticPageHtml(home, p)])),
     };
     const titles = new Set<string>();
     const descriptions = new Set<string>();
@@ -95,6 +96,23 @@ describe('seoBuild', () => {
     }
   });
 
+  it('links every reading from its contents and serves lesson figures and structured chapter text', () => {
+    for (const [slug, count] of [
+      ['art-courses', 7],
+      ['programmers-guide', 19],
+    ] as const) {
+      const contents = readingPages.find((p) => p.file === slug + '.html')!;
+      const readings = readingPages.filter((p) => p.hash.startsWith(contents.hash + '/'));
+      expect(readings).toHaveLength(count);
+      for (const p of readings) {
+        expect(contents.html).toContain('href="./' + p.file + '"');
+        expect(p.html).toContain('href="./' + contents.file + '"');
+        expect(p.html).toContain(p.hash.endsWith('/limits') ? '<table>' : '<h2>');
+        expect(p.html).toContain(slug === 'art-courses' ? '<figcaption>' : '<p>');
+      }
+    }
+  });
+
   it('has secret games to keep out (or the checks below prove nothing)', () => {
     expect(secret.length).toBeGreaterThan(0);
     for (const g of secret) expect(catalog.some((c) => c.id === g.id)).toBe(false);
@@ -113,7 +131,7 @@ describe('seoBuild', () => {
     expect(
       locs
         .slice(4)
-        .filter((l) => !guide.includes(l) && !/\/(cast|library|magazine)\.html$/.test(l))
+        .filter((l) => !guide.includes(l) && !readingPages.some((p) => l === SITE_URL + p.file) && !/\/(cast|library|magazine)\.html$/.test(l))
         .sort(),
     ).toEqual(playable.map((g) => `${SITE_URL}${gamePage(g.id)}`).sort());
     expect(new Set(locs).size).toBe(locs.length);

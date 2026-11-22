@@ -1,6 +1,7 @@
 // Sitemap, robots and llms text for crawlers.
 import type { CdCatalogEntry } from './cdGames';
 import { GUIDE_SECTIONS } from '../src/manual/guideSections';
+import { readingPages } from './seoReadings';
 import { staticPages } from './seoStaticPages';
 import { credit, groups, playable, readable } from './seoCatalog';
 import { guideFile } from './seoTemplates';
@@ -15,7 +16,7 @@ export function sitemapXml(catalog: CdCatalogEntry[], lastmod: string): string {
     { loc: `${SITE_URL}web-player.html`, priority: '0.5' },
     ...playable(catalog).map((g) => ({ loc: playUrl(g.id), priority: g.original ? '0.8' : '0.6' })),
     ...GUIDE_SECTIONS.map(([id]) => ({ loc: `${SITE_URL}${guideFile(id)}`, priority: '0.5' })),
-    ...staticPages(catalog).map((p) => ({ loc: `${SITE_URL}${p.file}`, priority: '0.5' })),
+    ...[...staticPages(catalog), ...readingPages].map((p) => ({ loc: `${SITE_URL}${p.file}`, priority: '0.5' })),
   ];
   return `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
