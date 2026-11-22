@@ -219,7 +219,7 @@ export const PLAYING_ACHIEVEMENTS: readonly Achievement[] = [
     icon: '💩',
     category: 'playing',
     hidden: true,
-    hint: 'A corgi with three adventures, and something soft in each.',
+    hint: 'Soft surprises are waiting to be found. Can you collect the whole set?',
   },
   {
     id: 'egg-all',
