@@ -64,6 +64,7 @@ game folder opens in the browser unchanged.
 
 ## Credits
 
+- OpenAI Codex clarified the contributor instructions for pre-merge checks and walkthrough timing.
 - OpenAI Codex fixed map zoom at large wheel deltas and added its regression test.
 - OpenAI Codex clarified the origins of the desk manuals in the web Guide and updated the contributor instructions for release notes.
 - OpenAI Codex updated the SDK consumer verifier and its regression tests (November 22, 2026).
