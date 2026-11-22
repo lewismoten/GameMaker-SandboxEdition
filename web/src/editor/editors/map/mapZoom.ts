@@ -23,7 +23,7 @@ export function zoomToUrl(zoom: number): string | undefined {
 
 /** The new zoom after a wheel or pinch delta (pixels; negative zooms in): continuous, never stepped. */
 export function wheelZoom(current: number, deltaY: number, pinch = false): number {
-  return clampZoom(current * Math.exp(-deltaY * (pinch ? 0.01 : 0.0015)));
+  return clampZoom(Math.min(MAX_ZOOM, current * Math.exp(-deltaY * (pinch ? 0.01 : 0.0015))));
 }
 
 /**
