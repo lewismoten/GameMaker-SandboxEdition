@@ -22,10 +22,13 @@ export function registerServiceWorker(): void {
     if (event.data?.type === 'offline-missing') showNotice('Not in your offline copy. Connect and choose Play offline to add this content.', true);
   });
   // there was a worker before this one: a newer one taking over is a new version
-  const hadController = !!sw.controller;
+  let hadController = !!sw.controller;
   let reloading = false;
   sw.addEventListener('controllerchange', () => {
-    if (!hadController || reloading) return;
+    if (!sw.controller || reloading) return;
+    const firstControl = !hadController;
+    hadController = true;
+    if (firstControl && !asked) return;
     // updated from this page, or from another tab of the site: then this page asks too
     if (!asked) return offerUpdate(undefined);
     reloading = true;
@@ -33,7 +36,7 @@ export function registerServiceWorker(): void {
   });
   sw.register('./sw.js')
     .then((reg) => {
-      const offer = (worker: ServiceWorker | null) => worker && sw.controller && offerUpdate(worker);
+      const offer = (worker: ServiceWorker | null) => worker && (sw.controller || reg.active) && offerUpdate(worker);
       offer(reg.waiting);
       reg.addEventListener('updatefound', () => {
         const worker = reg.installing;
