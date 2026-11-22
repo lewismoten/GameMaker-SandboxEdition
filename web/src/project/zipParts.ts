@@ -35,14 +35,20 @@ export function zipDataRanges(zip: Uint8Array): [start: number, length: number][
   if (end < 0) throw new Error('zipParts: no end of central directory');
   const count = v.getUint16(end + 10, true);
   let p = v.getUint32(end + 16, true);
+  const dirStart = p;
   const out: [number, number][] = [];
   for (let i = 0; i < count; i++) {
+    if (p + 46 > end) throw new Error('zipParts: central directory cut short');
     if (v.getUint32(p, true) !== 0x02014b50) throw new Error('zipParts: bad central directory');
     const stored = v.getUint32(p + 20, true);
     const local = v.getUint32(p + 42, true);
+    if (local + 30 > dirStart) throw new Error('zipParts: local header cut short');
     if (v.getUint32(local, true) !== 0x04034b50) throw new Error('zipParts: bad local header');
-    out.push([local + 30 + v.getUint16(local + 26, true) + v.getUint16(local + 28, true), stored]);
+    const start = local + 30 + v.getUint16(local + 26, true) + v.getUint16(local + 28, true);
+    if (start + stored > dirStart) throw new Error('zipParts: entry data cut short');
+    out.push([start, stored]);
     p += 46 + v.getUint16(p + 28, true) + v.getUint16(p + 30, true) + v.getUint16(p + 32, true);
+    if (p > end) throw new Error('zipParts: central directory cut short');
   }
   return out;
 }
