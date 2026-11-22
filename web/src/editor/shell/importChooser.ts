@@ -54,6 +54,7 @@ function zipNotes(r: ScanReport): HTMLElement | undefined {
     ...r.badZips.map((z) => h('li', null, z.path, h('small', null, ` · ${z.error}`))),
   ];
   if (!rows.length) return undefined;
+  if (!r.games.length && rows.length === 1 && r.badZips.length) return h('ul', null, ...rows);
   return h('details', { class: 'ic-notes' }, h('summary', null, `Zips with no game (${rows.length})`), h('ul', null, ...rows));
 }
 

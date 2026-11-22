@@ -37,6 +37,26 @@ async function sfx(entries: [string, Uint8Array][], absolute: boolean): Promise<
 const loose = (entries: [string, Uint8Array][]) => entries.map(([p, b]) => file(p, b));
 
 describe('scanImport', () => {
+  it('rejects a game with an unsupported member before extracting it', async () => {
+    const bytes = await createZip([
+      { name: 'hero.cel', data: enc.encode('hero') },
+      { name: 'game.gam', data: gam('Game') },
+    ]);
+    const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+    const directory = view.getUint32(bytes.length - 6, true);
+    view.setUint16(8, 12, true); // BZIP2, local header
+    view.setUint16(directory + 10, 12, true); // central directory
+    const report = await scanImport([file('game.zip', bytes)]);
+    expect(scanSummary(report)).toBe('0 games found, 1 zip could not be read');
+    expect(report.badZips).toEqual([{ path: 'game.zip', error: 'hero.cel uses an unsupported ZIP compression method and could not be imported.' }]);
+  });
+
+  it('rejects duplicate member paths before either file can be overwritten', async () => {
+    const report = await scanImport([await zip('game.zip', [...game('level/', 'Game'), ['level/hero.cel', enc.encode('other hero')]])]);
+    expect(scanSummary(report)).toBe('0 games found, 1 zip could not be read');
+    expect(report.badZips).toEqual([{ path: 'game.zip', error: 'The ZIP contains more than one file named level/hero.cel.' }]);
+  });
+
   it('finds one game folder, every file in it', async () => {
     const given = loose([...game('zark/', 'Zark'), ['zark/notes/readme.txt', enc.encode('hi')], ['zark/play.exe', enc.encode('x')]]);
     const r = await scanImport(given);
