@@ -155,6 +155,14 @@ export function flushRedCode(): void {
   while (drawing.length) drawing.shift()!();
 }
 
+/** The sheet switches these names together, including hints rendered after it opens. */
+function hintNames(hidden: string, revealed: string): HTMLElement[] {
+  return [
+    h('span', { class: 'rf-hidden-name', role: 'img', 'aria-label': hidden }),
+    h('span', { class: 'rf-revealed-name', role: 'img', 'aria-label': revealed }),
+  ];
+}
+
 /** An answer hidden among red lines: each word is its own picture so the answer wraps like text
  * (one picture for the screen, one in a stronger cyan for printing). The pictures are drawn one
  * per task after the answer is built, so a page of answers doesn't hold up the click that opened it. */
@@ -171,7 +179,7 @@ export function redCode(text: string): HTMLElement {
     img.style.width = `${wordWidth(word) / PX}em`; // the room is kept, so the words don't jump when drawn
     img.style.height = `${LINE}em`;
   }
-  const box = h('span', { class: 'rf-code', role: 'img', 'aria-label': 'Hidden answer: lay the red film over it' }, ...imgs.map((p) => p.img));
+  const box = h('span', { class: 'rf-code' }, ...hintNames('Hidden answer: lay the red film over it', text), ...imgs.map((p) => p.img));
   // the box is as wide as the column, so the space after the last word is filled with the
   // same noise (no letters in it) and every answer box looks alike, whatever its length
   const fillBackground = () => {
@@ -432,9 +440,18 @@ export function redSketch(sketch: HintSketch): HTMLElement {
     img.style.aspectRatio = `${cv.width} / ${cv.height}`;
     return img;
   };
+  const labels = (sketch.labels ?? []).map((label) => label.text);
+  const symbols = new Set(sketch.rows.join('').replaceAll(' ', ''));
+  const description = [...labels, ...Array.from(symbols, (ch) => SKETCH_GLYPHS[ch])];
+  for (const [row, cells] of sketch.rows.entries()) {
+    for (const [column, ch] of [...cells].entries()) {
+      if (ch === 'X') description.push(`X marks row ${row + 1}, column ${column + 1}`);
+    }
+  }
   return h(
     'span',
-    { class: 'rf-code rf-sketch-box', role: 'img', 'aria-label': 'Hidden drawing: lay the red film over it' },
+    { class: 'rf-code rf-sketch-box' },
+    ...hintNames('Hidden drawing: lay the red film over it', 'Drawing: ' + description.join(', ')),
     picture(CYAN_INK, 'rf-screen'),
     picture(PRINT_CYAN_INK, 'rf-print'),
   );
@@ -516,6 +533,29 @@ export class RedFilm {
   /** `el`: a different thing to drag as the film (Final Curtain's spyglass, spyglass.ts); it brings its own red lens. */
   constructor(el?: HTMLElement) {
     this.el = el ?? h('div', { class: 'rf-film', hidden: true, role: 'img', 'aria-label': 'Red film (drag it over the answers)' });
+    this.el.tabIndex = 0;
+    this.el.setAttribute('aria-description', 'Use the arrow keys to move the film.');
+    this.el.addEventListener('keydown', (event) => {
+      const step = 24;
+      switch (event.key) {
+        case 'ArrowRight':
+          this.place(this.x + step, this.y);
+          break;
+        case 'ArrowLeft':
+          this.place(this.x - step, this.y);
+          break;
+        case 'ArrowUp':
+          this.place(this.x, this.y - step);
+          break;
+        case 'ArrowDown':
+          this.place(this.x, this.y + step);
+          break;
+        default:
+          return;
+      }
+      event.preventDefault();
+      event.stopPropagation();
+    });
     // Keep the caption above the sheet so the multiply blend affects only the film.
     if (!el) this.caption = h('div', { class: 'rf-film-caption', 'aria-hidden': 'true' }, h('span', { class: 'rf-film-label' }, 'RED FILM · drag me'));
     let start: { px: number; py: number; x: number; y: number } | undefined;
@@ -549,18 +589,26 @@ export class RedFilm {
     void hh;
   }
 
+  ownsArrow(event: KeyboardEvent): boolean {
+    return event.target === this.el && event.key.startsWith('Arrow');
+  }
+
   toggle(): void {
-    if (this.el.hidden) this.show();
-    else this.hide();
+    if (this.el.hidden) {
+      this.show();
+      this.el.focus();
+    } else this.hide();
   }
 
   show(): void {
+    this.el.parentElement?.classList.add('rf-revealing');
     this.el.hidden = false;
     const w = this.el.offsetWidth;
     this.place((window.innerWidth - w) / 2, window.innerHeight * 0.35);
   }
 
   hide(): void {
+    this.el.parentElement?.classList.remove('rf-revealing');
     this.el.hidden = true;
   }
 

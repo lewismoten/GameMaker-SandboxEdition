@@ -21,11 +21,15 @@ function sketches(): [string, HintSketch][] {
 }
 
 describe('hint book drawings', () => {
-  it('every Sandbox game with a felt egg draws one', () => {
-    expect(sketches().length).toBeGreaterThanOrEqual(8);
-  });
+  const drawings = sketches();
+  it.each(['bakers', 'blaster', 'brief', 'depth', 'logic', 'maximus', 'realm', 'sandcast', 'sleuth', 'snowbound', 'teddy', 'teddy2', 'year2000'])(
+    '%s keeps its promised hint drawing',
+    (id) => {
+      expect(drawings.some(([where]) => where.startsWith(id + ': '))).toBe(true);
+    },
+  );
   it('use only known glyphs, and keep their labels on the drawing', () => {
-    for (const [where, s] of sketches()) {
+    for (const [where, s] of drawings) {
       expect(unknownGlyphs(s), where).toEqual([]);
       // small enough for the red film sheet to cover at once
       expect(s.rows.length, where).toBeLessThanOrEqual(7);

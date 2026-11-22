@@ -69,6 +69,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex fixed empty ZIP recognition and the editor import message and added regression tests (November 22, 2026).
 - OpenAI Codex fixed the pause after the first manual in the Library tour on narrow screens (November 21, 2026).
 - OpenAI Codex corrected references in the phone kit booklet and contributor documentation and extended the book link tests (November 21, 2026).
+- OpenAI Codex improved screen reader and keyboard access to red-film hints and added regression tests (November 22, 2026).
 - OpenAI Codex fixed the repeated red film caption for screen readers and added a regression test (November 21, 2026).
 - OpenAI Codex improved contrast for the draggable red film label (November 21, 2026).
 - OpenAI Codex fixed the landscape touch player start poster and added phone layout regression coverage (November 21, 2026).
