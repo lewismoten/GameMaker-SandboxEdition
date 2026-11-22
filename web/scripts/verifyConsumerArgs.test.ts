@@ -8,9 +8,10 @@ const run = (...a: string[]) => spawnSync('node', [script, ...a], { encoding: 'u
 
 describe('verify-consumer --source', () => {
   it('exits 2 with a message when the value is missing or unknown', () => {
-    for (const a of [['--source'], ['--source', 'bogus'], ['--source', '--keep']]) {
+    for (const a of [['--source'], ['--source', 'registery'], ['--source', 'registry', '--source', 'bogus'], ['--source', '--keep']]) {
       const r = run(...a);
       expect(r.status, a.join(' ')).toBe(2);
+      expect(r.stderr).toContain('Usage:');
       expect(r.stderr).toContain('--source must be tarball or registry');
     }
   });

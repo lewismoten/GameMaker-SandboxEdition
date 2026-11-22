@@ -64,6 +64,7 @@ game folder opens in the browser unchanged.
 
 ## Credits
 
+- OpenAI Codex updated the SDK consumer verifier and its regression tests (November 22, 2026).
 - OpenAI Codex scoped the site and exported game worker caches and tested activation with shared cache storage.
 - OpenAI Codex added ZIP entry CRC-32 validation and regression tests (November 22, 2026).
 - OpenAI Codex fixed empty ZIP recognition and the editor import message and added regression tests (November 22, 2026).
