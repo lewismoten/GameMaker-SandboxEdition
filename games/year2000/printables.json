@@ -144,6 +144,7 @@
               "q": "Beam me the blueprints.",
               "a": "On the Moon Shuttle pad, get into the row of the boarding ramp, on the ramp's right side (don't step on the ramp itself, or you're off to the Moon). Walk right into the glowing brick: you walk straight through it. Press G to pick up the felt egg, then walk on into the rocket hatch at the far end.",
               "sketch": {
+                "description": "Stand to the right of the boarding ramp and move up until you are level with it. Go right through the glowing brick to the egg at X, then on to the hatch.",
                 "rows": ["", "  ==     ----|", "  ==     |   |", "   = >>>>: X o", "     ^   |   |", "     @   ----|"],
                 "labels": [
                   { "x": 0, "y": 0, "text": "SHUTTLE" },

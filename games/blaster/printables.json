@@ -254,6 +254,7 @@
               "q": "Just give me the coordinates.",
               "a": "Fly to the top of 2-A and hug the left wall. In the row right under the gate, fly onto the floor beside the missing finger (the first open cell from the left). You drop into A Corner of Memory. Fly over the pad and press Enter to pick up the felt egg, then fly up and out.",
               "sketch": {
+                "description": "Fly up to the row just under the gate, then left to X beside the missing finger.",
                 "rows": ["", "|==========", "|X <<<", "|    ^", "|    ^", "|    @"],
                 "labels": [
                   {

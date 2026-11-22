@@ -96,6 +96,7 @@
               "q": "Step by step?",
               "a": "In the Reserve Stacks, walk to the bottom right corner, past the fern, and keep walking right into the shelf with the ribbon. In the Lost and Found, stand on the shoebox with the egg and press Space. Leave by the OUT door.",
               "sketch": {
+                "description": "Walk right past the fern. The loose shelf at X is one step to your right.",
                 "rows": [
                   "    =",
                   "  o@X",

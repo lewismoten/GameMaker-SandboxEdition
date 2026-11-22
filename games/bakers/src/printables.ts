@@ -130,7 +130,12 @@ export function printables(): unknown {
               {
                 q: 'Just tell me.',
                 a: 'Cold Cellar, bottom left: the caps along the bottom hall lead west to the corner. The wall below the last cap is false; the second vanilla bean behind it drops you into the hidey-hole, whose spare tea takes you past the Tea Room altogether.',
-                sketch: { rows: ['##########', '#o.o.o.o.#', ':#########', 'X.########', '..########'], labels: [{ x: 2, y: 3, text: 'bean' }] },
+                sketch: {
+                  description: 'Follow the bottle caps west. In the row above the bean at X, look for the false wall.',
+                  landmarks: { ':': 'False wall' },
+                  rows: ['##########', '#o.o.o.o.#', ':#########', 'X.########', '..########'],
+                  labels: [{ x: 2, y: 3, text: 'bean' }],
+                },
               },
             ],
           },

@@ -80,3 +80,35 @@ it('reveals the answer and drawing and moves the focused film without turning th
     await browser.close();
   }
 });
+
+it('locates the Cold Cellar false wall even when only its cell moves', async () => {
+  const script = await build({
+    stdin: {
+      contents: `
+        import { redSketch } from './redFilm';
+        import paper from '../../../../games/bakers/printables.json';
+        const sketch = paper.items.find(item => item.kind === 'hintbook').sections
+          .find(section => section.head === 'The Room Nobody Mentions').hints.find(hint => hint.sketch).sketch;
+        const moved = sketch.rows.map(row => row === ':#########' ? '#########:' : row);
+        document.body.append(redSketch(sketch), redSketch({ ...sketch, rows: moved }));
+      `,
+      resolveDir: 'src/manual/printables',
+    },
+    bundle: true,
+    write: false,
+  });
+  const browser = await chromium.launch();
+  try {
+    const page = await browser.newPage();
+    await page.addScriptTag({ content: script.outputFiles[0].text });
+    const names = page.locator('.rf-revealed-name');
+    const original = await names.nth(0).getAttribute('aria-label');
+    const moved = await names.nth(1).getAttribute('aria-label');
+    expect(original).toContain('row above the bean at X');
+    expect(original).toContain('False wall at row 3, column 1,');
+    expect(moved).toContain('False wall at row 3, column 10,');
+    for (const name of [original, moved]) expect(name).toContain('X marks row 4, column 1');
+  } finally {
+    await browser.close();
+  }
+});
