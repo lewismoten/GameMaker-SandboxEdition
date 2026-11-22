@@ -5,14 +5,14 @@
 //   1. Gravity On:  side.bbl, every air block has Gravity "down".
 //   2. Gravity Off: top.bbl, every block has Gravity "none", and top.chr walks in four directions.
 import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { addCompactPlaques } from '../../kit/starter/microPlaque';
 import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { Book, PULL } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
-import { addTopBlocks } from './topBlocks';
+import { addTopBlocks, onLawn } from './topBlocks';
 import { TopMap } from './topMap';
 
 export type SignName = 'jump' | 'wall' | 'ledge' | 'exit';
@@ -47,13 +47,13 @@ export const TOP_HEIGHT = 11;
 /** Shared opaque boards float above the top view's lawn. */
 function compactSigns(book: Book, pal: Pal, view: 'side' | 'top'): Record<SignName, Sign> {
   const plaques = view === 'top' ? new Book('bbl') : book;
-  const signs = addMicroPlaques(
+  const signs = addCompactPlaques(
     plaques,
     pal,
     Object.fromEntries(Object.entries(WORDS[view]).map(([name, lines]) => [name, { lines, post: view === 'side' && name !== 'exit' }])),
   );
-  if (view === 'top') for (const [name, pic] of plaques.pics) book.add(name, pic, { grav: PULL.none });
-  return signs as Record<SignName, Sign>;
+  if (view === 'top') for (const [name, pic] of plaques.pics) book.add(name, onLawn(pic, pal, book.pics.get('lawn')!), { grav: PULL.none });
+  return signs;
 }
 
 /** Level 1: a side view, 40 blocks wide. */
@@ -77,10 +77,10 @@ function sideLevel(book: Book, signs: Record<SignName, Sign>): StarterMap {
   const m = new StarterMap(book, g.rows());
   m.start[0] += 1; // Stand beside the door, on the right half of the step.
   // The introduction stands beside the raised entrance, before the wall lesson.
-  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 5, 8, signs.jump, 1, { maxPostHeight: 1 });
-  stampTiledSign(m, 11, 8, signs.wall, 1, { maxPostHeight: 1 });
-  stampTiledSign(m, 18, 8, signs.ledge, 1, { maxPostHeight: 1 });
-  stampTiledSign(m, 34, 7, signs.exit, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: (x, y, block) => m.setOnSky(x, y, block) }, 5, 7, signs.jump, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 10, 7, signs.wall, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 18, 4, signs.ledge, 0, { maxPostHeight: 1 });
+  stampTiledSign(m, 33, 6, signs.exit, 1, { maxPostHeight: 1 });
   return m;
 }
 

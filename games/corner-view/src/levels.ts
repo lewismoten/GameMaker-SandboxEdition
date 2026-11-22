@@ -14,7 +14,7 @@ import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { Book, SOLID } from '../../kit/starter/book';
 import { ORIGIN, type Exit } from '../../kit/starter/map';
 import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
-import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { addCompactPlaques } from '../../kit/starter/microPlaque';
 import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { cubeShades, floor, pad, tower } from './iso';
 
@@ -100,8 +100,8 @@ const SPECS: Spec[] = [
     towers: RING3,
     signs: [
       ['upright', 0, 0],
-      ['downleft', 14, 0],
-      ['zig', 13, 7],
+      ['downleft', 13, 0],
+      ['zig', 12, 7],
     ],
     start: START,
     exit: EXITS[2],
@@ -188,7 +188,7 @@ function build(pal: Pal, file: string, spec: Spec, title: string, hint: string):
   // Plaques hang in the dark corners, clear of every cube, pad and floor cell.
   // The last hint floats over the dark margin, which has no ground for a post.
   const scratch = new Book('bbl');
-  const signs = spec.signs.length ? addMicroPlaques(scratch, pal, WORDS) : undefined;
+  const signs = spec.signs.length ? addCompactPlaques(scratch, pal, WORDS) : undefined;
   const sky = skyOf(pal);
   for (const [name, col, top] of spec.signs) {
     stampTiledSign(
@@ -199,7 +199,7 @@ function build(pal: Pal, file: string, spec: Spec, title: string, hint: string):
             const pic = scratch.pics.get(src)!;
             book.add(
               src,
-              src.includes('.post') ? pic.crop(0, 0, 20, 20).map((_x, _y, c) => (c === sky ? dark : c)) : pic,
+              pic.crop(0, 0, 20, 20).map((_x, _y, c) => (c === sky ? dark : c)),
               solid.has(`${x},${y}`) ? { solid: SOLID } : {},
             );
           }

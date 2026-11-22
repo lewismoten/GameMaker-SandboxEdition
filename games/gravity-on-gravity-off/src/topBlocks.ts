@@ -23,7 +23,7 @@ function lawnTile(pal: Pal): Pixels {
 }
 
 /** `pic` with its sky colored pixels showing the lawn instead. */
-const onLawn = (pic: Pixels, pal: Pal, lawn: Pixels): Pixels =>
+export const onLawn = (pic: Pixels, pal: Pal, lawn: Pixels): Pixels =>
   pic.crop(0, 0, pic.w, pic.h).map((x, y, c) => (c === skyOf(pal) ? lawn.get(x % 20, y % 20) : c));
 
 /** The block set, with `side`'s hedge and coin pictures borrowed. */

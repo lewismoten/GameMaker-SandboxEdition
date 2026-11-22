@@ -13,7 +13,7 @@ import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
-import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { addCompactPlaques } from '../../kit/starter/microPlaque';
 import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { addGateBlocks } from './gateBlocks';
@@ -26,7 +26,7 @@ function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
   addGateBlocks(book, pal);
-  const signs = addMicroPlaques(book, pal, {
+  const signs = addCompactPlaques(book, pal, {
     dial: { lines: ['BUMP', 'DIAL'] },
     light: { lines: ['WALK', 'IN'] },
     three: { lines: ['ALL', 'ON!'] },
@@ -134,8 +134,8 @@ function bothTogether(book: Book, signs: Record<SignName, Sign>): Omit<Level, 'f
   for (const [x, y] of dials) m.mon(DIAL_OFF, x, y);
   const lamp: [number, number] = [23, 1];
   m.mon(LAMP, lamp[0], lamp[1]);
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 10, onGround(GROUND, signs.dial), signs.dial, 1, { maxPostHeight: 1 });
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 25, onGround(GROUND, signs.light), signs.light, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 11, onGround(GROUND, signs.dial), signs.dial, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 26, onGround(GROUND, signs.light), signs.light, 1, { maxPostHeight: 1 });
   gate(m, 35);
   return { map: m, route: routeOf([...pts, [23, 1]]), dials, lamp };
 }
@@ -173,7 +173,7 @@ function allThree(book: Book, signs: Record<SignName, Sign>): Omit<Level, 'file'
   const lamp: [number, number] = [24, 1];
   m.mon(LAMP, lamp[0], lamp[1]);
   stampTiledSign({ set: m.setOnSky.bind(m) }, 4, onGround(GROUND, signs.three), signs.three, 1, { maxPostHeight: 1 });
-  stampTiledSign({ set: m.setOnSky.bind(m) }, 7, onGround(GROUND, signs.climb), signs.climb, 1, { maxPostHeight: 1 });
+  stampTiledSign({ set: m.setOnSky.bind(m) }, 10, onGround(GROUND, signs.climb), signs.climb, 1, { maxPostHeight: 1 });
   stampTiledSign({ set: m.setOnSky.bind(m) }, 26, onGround(GROUND, signs.light2), signs.light2, 1, { maxPostHeight: 1 });
   gate(m, 38);
   return { map: m, route: routeOf([...pts, [24, 1]]), dials, lamp };

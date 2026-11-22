@@ -21,7 +21,7 @@ import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
 import type { Sign as Panel } from '../../kit/starter/sign';
 import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { addCompactPlaques } from '../../kit/starter/microPlaque';
 import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { BURR } from './monsters';
 import { STORM, bolt, lamp, lampPost, nope, onSky } from './props';
@@ -67,7 +67,7 @@ const WORDS: Record<SignName, { lines: string[]; post?: boolean }> = {
 function startBook(pal: Pal, names: SignName[]): { book: Book; signs: Record<string, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
-  const signs = addMicroPlaques(book, pal, Object.fromEntries(names.map((name) => [name, WORDS[name]]))) as Record<SignName, Sign>;
+  const signs = addCompactPlaques(book, pal, Object.fromEntries(names.map((name) => [name, WORDS[name]]))) as Record<SignName, Sign>;
   return { book, signs };
 }
 
@@ -248,7 +248,7 @@ function stormHeld(pal: Pal): Level {
   const { book: signBook, signs } = startBook(pal, ['storm', 'bolt']);
   const skyTiles = new Set<string>();
   for (const [name, pic] of signBook.pics) {
-    if (!name.startsWith('microPlaque.')) continue;
+    if (!name.startsWith('compactPlaque.')) continue;
     if (pic.px.includes(skyOf(pal))) {
       skyTiles.add(name);
       ring(

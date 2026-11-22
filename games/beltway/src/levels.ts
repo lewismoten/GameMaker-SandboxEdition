@@ -18,7 +18,7 @@ import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
-import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { addCompactPlaques } from '../../kit/starter/microPlaque';
 import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { type TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { CAR } from './monsters';
@@ -30,7 +30,7 @@ export type SignName = 'ring' | 'speed' | 'loop' | 'lamps';
 /** Plaques stand on the truck deck or beside the track; LAPS floats beside the lamps. */
 const SIGNS = {
   ring: { at: [1, 6], lines: ['LOOP'] },
-  speed: { at: [7, 6], lines: ['NEAR', 'FAST'] },
+  speed: { at: [7, 5], lines: ['NEAR', 'FAST'] },
   loop: { at: [1, 7], lines: ['LOOP'] },
   lamps: { at: [11, 4], lines: ['LAPS'], post: false },
 } as const;
@@ -58,7 +58,7 @@ class Stage {
     signNames: SignName[],
   ) {
     addStarterBlocks(this.book, pal);
-    Object.assign(this.signs, addMicroPlaques(this.scratch, pal, Object.fromEntries(signNames.map((n) => [n, SIGNS[n]]))));
+    Object.assign(this.signs, addCompactPlaques(this.scratch, pal, Object.fromEntries(signNames.map((n) => [n, SIGNS[n]]))));
   }
 
   /** A block of this picture (the same picture is the same block), solid or air. */
@@ -92,11 +92,11 @@ class Stage {
     const put = (x: number, y: number, src: string) => {
       const pic = this.scratch.pics.get(src)!;
       // Opaque boards retain shared palette bytes; posts show the truck or meadow behind them.
-      const name = src.startsWith('microPlaque.post') ? this.plain(this.over(pic, cellOf(this.base, x, y))) : src;
+      const name = pic.px.includes(skyOf(this.pal)) ? this.plain(this.over(pic, cellOf(this.base, x, y))) : src;
       if (!this.book.has(name)) this.book.add(name, pic, AIR);
       m.set(x, y, name);
     };
-    stampTiledSign({ set: put }, at[0], at[1], this.signs[n], GROUND_ROW - at[1] - 1, { maxPostHeight: 1 });
+    stampTiledSign({ set: put }, at[0], at[1], this.signs[n], GROUND_ROW - at[1] - this.signs[n].board.length, { maxPostHeight: 1 });
   }
 
   /** The exit door standing at column `x`, its bottom on row 8, over whatever is behind it; `barred` for a version with two red and white bars. */
