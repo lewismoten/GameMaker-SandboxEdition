@@ -9,6 +9,7 @@ interface Copy {
 }
 // Also embedded in siteWorker.ts; its lifecycle tests exercise the generated worker.
 export const offlineNames = (base: string) => ({
+  browsing: `gamemaker-site:${encodeURIComponent(base)}:browse`,
   control: `gm-offline-control:${base}`,
   prefix: `gm-offline-copy:${base}:`,
   pointer: `${base}__gm-offline.json`,
@@ -58,7 +59,9 @@ export async function fourWorkers<T>(items: T[], run: (item: T) => Promise<void>
 export async function reusableStores(base: string): Promise<Cache[]> {
   const names = offlineNames(base);
   const keys = await caches.keys();
-  return Promise.all(keys.filter((k) => k.startsWith(names.prefix) || k === 'gm-site' || k === 'gm-site-v2').map((k) => caches.open(k)));
+  return Promise.all(
+    keys.filter((k) => k.startsWith(names.prefix) || k === 'gm-site' || k === names.browsing || k === 'gm-site-v2').map((k) => caches.open(k)),
+  );
 }
 export async function findVerified(base: string, file: OfflineFile, stores: Cache[]): Promise<Response | undefined> {
   const url = siteUrl(base, file.path);
@@ -74,7 +77,7 @@ export async function verificationStores(base: string) {
   const keys = await caches.keys();
   const stores = await Promise.all(
     keys
-      .filter((key) => key.startsWith(names.prefix) || key === 'gm-site' || key === 'gm-site-v2')
+      .filter((key) => key.startsWith(names.prefix) || key === 'gm-site' || key === names.browsing || key === 'gm-site-v2')
       .map(async (name) => {
         const cache = await caches.open(name);
         const [requests, responses] = await Promise.all([cache.keys(), cache.matchAll()]);

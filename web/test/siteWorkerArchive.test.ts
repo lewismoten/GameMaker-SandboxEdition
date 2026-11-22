@@ -31,7 +31,7 @@ function harness(version: string) {
   runInNewContext(siteWorkerSource({ version, precache: ['./', 'assets/main.js'], groups: {}, assets: ['assets/main.js'] }), {
     self: {
       location: { href: base + 'sw.js' },
-      registration: { active: true },
+      registration: { active: true, scope: base },
       addEventListener: (type: string, h: (event: unknown) => void) => handlers.set(type, h),
       clients: { claim: async () => {} },
     },
@@ -100,7 +100,7 @@ it('serves the committed snapshot and preserves it through activation', async ()
 it('falls back to the old complete snapshot after a deployment when offline', async () => {
   const h = harness('two');
   await seed(h, 'one');
-  await (await h.caches.open('gm-site-v2')).put(base, new Response('new shell'));
+  await (await h.caches.open(offlineNames(base).browsing)).put(base, new Response('new shell'));
   expect(await (await h.request('', 'navigate')).text()).toBe('old home');
   expect(await (await h.request('assets/old.js')).text()).toBe('old code');
 });
@@ -108,7 +108,7 @@ it('falls back to the old complete snapshot after a deployment when offline', as
 it('bypasses both the committed copy and browsing cache for verified update acquisition', async () => {
   const h = harness('one');
   await seed(h, 'one');
-  await (await h.caches.open('gm-site-v2')).put(base + 'assets/old.js', new Response('stale browsing'));
+  await (await h.caches.open(offlineNames(base).browsing)).put(base + 'assets/old.js', new Response('stale browsing'));
   h.fetcher.mockImplementation(async () => new Response('changed deployment'));
   expect(await (await h.request('assets/old.js', 'cors', 'no-store')).text()).toBe('changed deployment');
   expect(h.fetcher).toHaveBeenCalledTimes(1);

@@ -221,6 +221,7 @@ export function listZip(bytes: Uint8Array, limits: ZipLimits = DEFAULT_ZIP_LIMIT
   for (let i = 0; i < count; i++) {
     if (p + 46 > eocd || v.getUint32(p, true) !== 0x02014b50) throw new Error('Damaged ZIP directory');
     const method = v.getUint16(p + 10, true);
+    const expectedCrc = v.getUint32(p + 16, true);
     const size = v.getUint32(p + 20, true);
     const unpacked = v.getUint32(p + 24, true);
     const nameLen = v.getUint16(p + 28, true);
@@ -233,7 +234,6 @@ export function listZip(bytes: Uint8Array, limits: ZipLimits = DEFAULT_ZIP_LIMIT
     // Folder entries carry no data. Sizes come from the central directory because the
     // local header's may be 0 when the writer used a data descriptor; its name and extra
     // lengths can differ from the directory's, so they are read from the local header.
-    // CRCs are not checked, and entries using other methods read as undefined.
     if (localOffset + 30 > dirStart || v.getUint32(localOffset, true) !== 0x04034b50) throw new Error('Damaged ZIP local header');
     const start = localOffset + 30 + v.getUint16(localOffset + 26, true) + v.getUint16(localOffset + 28, true);
     if (start > dirStart || start + size > dirStart) throw new Error('Damaged ZIP entry extent');
@@ -243,22 +243,23 @@ export function listZip(bytes: Uint8Array, limits: ZipLimits = DEFAULT_ZIP_LIMIT
     const read = async (): Promise<Uint8Array | undefined> => {
       if (headers.some(([a, b]) => a < start + size && b > start)) throw new Error('ZIP data overlaps a local header');
       const body = bytes.subarray(start, start + size);
+      let data: Uint8Array;
       if (method === 0) {
         // A stored entry is copied as is, so a directory that declares a size other than the
         // bytes it holds would slip past the size budget above.
         if (size !== unpacked) throw new Error(`The ZIP entry ${name} is damaged (its stored size does not match its declared size)`);
-        return body.slice();
-      }
-      if (method === 8) {
+        data = body.slice();
+      } else if (method === 8) {
         // The stream's own errors are TypeErrors with little or no message; say what is wrong.
         try {
-          return await inflateCapped(body, unpacked);
+          data = await inflateCapped(body, unpacked);
         } catch (e) {
           if (e instanceof TypeError) throw new Error(`The ZIP entry ${name} is damaged (its compressed data does not unpack)`, { cause: e });
           throw e;
         }
-      }
-      return undefined;
+      } else return undefined;
+      if (crc32(data) !== expectedCrc) throw new Error(`The ZIP entry ${name} is damaged (CRC-32 mismatch)`);
+      return data;
     };
     out.push({ name, size: unpacked, read });
   }
@@ -275,5 +276,5 @@ export async function readZip(bytes: Uint8Array, limits: ZipLimits = DEFAULT_ZIP
 }
 
 export function isZip(bytes: Uint8Array): boolean {
-  return bytes[0] === 0x50 && bytes[1] === 0x4b && bytes[2] === 0x03 && bytes[3] === 0x04;
+  return bytes[0] === 0x50 && bytes[1] === 0x4b && ((bytes[2] === 0x03 && bytes[3] === 0x04) || (bytes[2] === 0x05 && bytes[3] === 0x06));
 }
