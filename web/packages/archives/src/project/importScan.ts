@@ -434,11 +434,13 @@ export interface ReadGame {
 export type FileProgress = (done: number, total: number, path: string) => void | Promise<void>;
 
 /** Fills a game's files from these, as an import of the game's own files always has. */
-export async function gameFromFiles(list: ScanFile[], onFile?: FileProgress): Promise<ReadGame> {
+export async function gameFromFiles(list: ScanFile[], onFile?: FileProgress, signal?: AbortSignal): Promise<ReadGame> {
   const files = new GameFiles();
   const players: ReadGame['players'] = [];
   for (const [i, f] of list.entries()) {
+    signal?.throwIfAborted();
     await onFile?.(i, list.length, f.path);
+    signal?.throwIfAborted();
     const name = baseOf(clean(f.path));
     if (PLAYER_EXE(name, f.size)) {
       const bytes = await f.read();
@@ -448,6 +450,7 @@ export async function gameFromFiles(list: ScanFile[], onFile?: FileProgress): Pr
       if (bytes) files.set(name, bytes);
     }
   }
+  signal?.throwIfAborted();
   return { files, players };
 }
 
@@ -480,24 +483,28 @@ export class GameReader {
     return game.gam ?? game.paths.filter(isGam).map(normalize).sort()[0];
   }
 
-  async read(game: FoundGame, onFile?: FileProgress): Promise<ReadGame> {
-    const from = game.zips.length ? await this.zipEntries(game) : this.loose;
+  async read(game: FoundGame, onFile?: FileProgress, signal?: AbortSignal): Promise<ReadGame> {
+    signal?.throwIfAborted();
+    const from = game.zips.length ? await this.zipEntries(game, signal) : this.loose;
     const read = await gameFromFiles(
       game.paths.map((p) => from.get(p)).filter((f): f is ScanFile => !!f),
       onFile,
+      signal,
     );
     return game.gam ? { ...read, name: game.name, gam: game.gam } : read;
   }
 
-  private async zipEntries(game: FoundGame): Promise<Map<string, ScanFile>> {
+  private async zipEntries(game: FoundGame, signal?: AbortSignal): Promise<Map<string, ScanFile>> {
     const key = [game.zips[0].path, ...game.inner].join('\n');
     if (this.last?.key === key) return this.last.entries;
     this.last = undefined;
     let bytes = await game.zips[0].read();
     for (const name of game.inner) {
+      signal?.throwIfAborted();
       const inside = bytes && listZip(bytes, this.zipLimits).find((e) => e.name === name);
       bytes = inside ? await inside.read() : undefined;
     }
+    signal?.throwIfAborted();
     if (!bytes) throw new Error(`${fromLabel([game.zips[0].path, ...game.inner].map(clean), '')} could not be read again.`);
     const entries = new Map(listZip(bytes, this.zipLimits).map((e) => [e.name, { path: e.name, size: e.size, read: e.read }]));
     this.last = { key, entries };
