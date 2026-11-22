@@ -3,7 +3,8 @@
 The Programmer's Guide to Game-Maker 3.0 (`#/programmers-guide`, a card on the Library's shelf), and
 the words of the 1994 booklet in the Game-Maker box.
 
-- `chapters.ts`: the chapters in order (the contents page) and `loadChapter`, which loads one chapter's
+- `chapterList.ts` lists chapters in reading order for the app and static pages.
+- `chapters.ts` provides the reader with that list and `loadChapter`, which loads one chapter's
   Markdown from `chapters/<id>.md` when its page opens.
 - `chapters/*.md`: the text. Each starts with one `#` title; `##` and `###` headings follow. Marks in
   brackets: the causes of a limit (`[16-bit]`, `[64K]`, `[VGA]`, `[PIT]`, `[file]`, `[DOS]`, `[design]`),

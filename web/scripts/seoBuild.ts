@@ -6,6 +6,7 @@ import { cdCatalog, cdFiles, type CdCatalogEntry } from './cdGames';
 import { gameCardPng } from './ogImage';
 import { readScoopDates, scoopRss } from './scoopFeed';
 import { GUIDE_SECTIONS } from '../src/manual/guideSections';
+import { readingPages } from './seoReadings';
 import { staticPages, type StaticPage } from './seoStaticPages';
 import { gameImagePath, gamePage } from '../src/seo/site';
 import { playable } from './seoCatalog';
@@ -36,7 +37,7 @@ const BODY_MARK = '<!--SEO:BODY-->';
 /** The static page whose file this is, if any. */
 function pageStatic(catalog: CdCatalogEntry[], path: string): StaticPage | undefined {
   const file = path.split('?')[0].replace(/^.*\//, '');
-  return staticPages(catalog).find((p) => p.file === file);
+  return readingPages.find((p) => p.file === file) ?? staticPages(catalog).find((p) => p.file === file);
 }
 
 /** The Guide section whose page this is (help-<id>.html), if any. */
@@ -134,7 +135,7 @@ export function seoPages(cdRoot: string): Plugin {
           for (const section of GUIDE_SECTIONS)
             this.emitFile({ type: 'asset', fileName: guideFile(section[0]), source: guidePageHtml(String(index.source), section, cdCatalog(cdRoot)) });
         if (index?.type === 'asset')
-          for (const page of staticPages(cdCatalog(cdRoot)))
+          for (const page of [...staticPages(cdCatalog(cdRoot)), ...readingPages])
             this.emitFile({ type: 'asset', fileName: page.file, source: staticPageHtml(String(index.source), page) });
         const play = bundle['play.html'];
         if (play?.type !== 'asset') return;
