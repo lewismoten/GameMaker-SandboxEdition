@@ -5,9 +5,9 @@
 // entries. No DOM: piRemotePage.ts draws it.
 import type { Reply } from './protocol';
 
-export type Level = 'error' | 'warn' | 'info';
+type Level = 'error' | 'warn' | 'info';
 
-export interface LogEntry {
+interface LogEntry {
   kind: Reply['kind'] | 'note';
   text: string;
   level: Level;
@@ -20,7 +20,7 @@ export interface LogEntry {
 }
 
 /** What the Pi is doing, as far as its log has said. */
-export interface PiState {
+interface PiState {
   program?: string;
   game?: string;
   mode?: string;
@@ -34,7 +34,7 @@ export function isNoisy(text: string): boolean {
   return BOOT_ASSET.test(text) || CRC.test(text);
 }
 
-export function levelOf(kind: LogEntry['kind'], text: string): Level {
+function levelOf(kind: LogEntry['kind'], text: string): Level {
   if (kind === 'error' || /^err\b|\b(error|fail(ed|ure)?|fatal|panic|abort)\b/i.test(text)) return 'error';
   if (/\b(warn(ing)?|timeout|retry|missing|not found|no-device)\b/i.test(text)) return 'warn';
   return 'info';

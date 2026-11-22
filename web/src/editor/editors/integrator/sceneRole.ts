@@ -8,7 +8,7 @@ import { parseMap, MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/forma
 import { parseSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
 import { fromCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 
-export type SceneRole = 'title' | 'ending' | 'pass' | 'branch' | 'cutscene' | 'level' | 'unused';
+type SceneRole = 'title' | 'ending' | 'pass' | 'branch' | 'cutscene' | 'level' | 'unused';
 
 /** Where the scene's links lead: the distinct scenes that exist. */
 function exits(game: Game, i: number): number[] {

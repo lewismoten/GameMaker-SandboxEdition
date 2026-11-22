@@ -10,7 +10,7 @@ export interface SerialPortLike {
   readonly readable: ReadableStream<Uint8Array> | null;
   readonly writable: WritableStream<Uint8Array> | null;
 }
-export interface SerialLike {
+interface SerialLike {
   getPorts?(): Promise<SerialPortLike[]>;
   addEventListener?(type: 'connect' | 'disconnect', listener: (e: Event) => void): void;
   removeEventListener?(type: 'connect' | 'disconnect', listener: (e: Event) => void): void;
