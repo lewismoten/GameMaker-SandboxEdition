@@ -64,3 +64,15 @@ it('bypasses both the committed copy and browsing cache for verified update acqu
   expect(h.fetcher).toHaveBeenCalledTimes(1);
   expect(await (await h.request('assets/old.js')).text()).toBe('old code');
 });
+
+it.each(['browsing cache', 'older saved copy'])('opens the offline home from nested pages with the %s', async (source) => {
+  const h = harness('two');
+  if (source === 'older saved copy') await seed(h, 'one');
+  else await (await h.caches.open(offlineNames(base).browsing)).put(base, new Response('home'));
+
+  const nested = await h.request('player/index.html', 'navigate');
+  expect(nested.status).toBe(302);
+  expect(nested.headers.get('location')).toBe(base);
+  expect(await (await h.request('', 'navigate')).text()).toContain('home');
+  expect(await (await h.request('missing.html', 'navigate')).text()).toContain('home');
+});
