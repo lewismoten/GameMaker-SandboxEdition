@@ -14,7 +14,8 @@ export function sceneHeroPairs(game: Game): Map<string, Set<string>> {
     const key = JSON.stringify([index, hero, blocks]);
     if (seen.has(key)) continue;
     seen.add(key);
-    if (hero && blocks) {
+    // An empty block name records a reachable scene with no inherited art.
+    if (hero) {
       const sets = pairs.get(hero) ?? new Set<string>();
       sets.add(blocks);
       pairs.set(hero, sets);
