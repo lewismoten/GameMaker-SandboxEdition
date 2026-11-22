@@ -183,6 +183,7 @@ async function importFiles(nav: HomeNav, imported: Imported, origin: Origin, mis
   const { files } = imported;
   if (!files.size) return panel?.end();
   const shareware = await sharewareMatch(files);
+  panel?.signal.throwIfAborted();
   if (shareware) {
     panel?.end();
     // Shareware is copyrighted by its author: play it as released, but don't open it for editing.
@@ -204,6 +205,7 @@ async function importFiles(nav: HomeNav, imported: Imported, origin: Origin, mis
   }
   const had = alreadyHave(origin.fingerprint);
   await panel?.step('Opening', 'saving the game, then opening it');
+  panel?.signal.throwIfAborted();
   const { project: p, note, madeGam } = await saveImported(imported);
   noteImport(p.id, origin.source, origin.fingerprint);
   recordImport({ at: Date.now(), source: origin.source, added: 1, skipped: 0, failed: [] });
@@ -296,7 +298,13 @@ async function importGiven(nav: HomeNav, given: ScanFile[], list: File[], onAdde
   if (list.some((f) => /\.html?$/i.test(f.name))) {
     const { gameFromPageFiles } = await import('../../project/importPage'); // loaded with the first import, not the home page
     await panel?.step('Reading', 'the web page');
-    const page = await gameFromPageFiles(list).catch((e: Error) => (toast(e.message, 'error'), undefined));
+    panel?.signal.throwIfAborted();
+    const page = await gameFromPageFiles(list, panel?.signal).catch((e: Error) => {
+      panel?.signal.throwIfAborted();
+      toast(e.message, 'error');
+      return undefined;
+    });
+    panel?.signal.throwIfAborted();
     if (page)
       return importFiles(
         nav,
@@ -315,13 +323,14 @@ async function importGiven(nav: HomeNav, given: ScanFile[], list: File[], onAdde
         onStep: (step, path) => void panel.step(step === 'unpack' ? 'Unpacking' : 'Finding the game', path),
       })
     : await chooser.scanWithProgress(given);
+  panel?.signal.throwIfAborted();
   if (!report) return panel?.end();
   // the games to pick from (or the notes on finding none) are their own dialogs
   if (report.games.length !== 1 || removedMatch(fingerprintOf(report.games[0]))) panel?.end();
   // one game opens as it always has, unless it was removed before: then it is listed, unticked, to say so
   const one = report.games.length === 1 && report.games[0];
   if (one && !removedMatch(fingerprintOf(one))) {
-    const read = await new GameReader(given).read(one, (done, total, path) => panel?.step('Extracting', path.split('/').pop(), done, total));
+    const read = await new GameReader(given).read(one, (done, total, path) => panel?.step('Extracting', path.split('/').pop(), done, total), panel?.signal);
     return importFiles(nav, read, originOf(one), one.missing, panel);
   }
   if (report.games.length) return importChosen(report, given, onAdded);

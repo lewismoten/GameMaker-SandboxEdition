@@ -2,7 +2,7 @@
 // step it is at (reading, unpacking, finding the game, opening), a progress bar, and the file
 // being unpacked (n of m). It also guards the import: while one runs, another can't start.
 // A status line read aloud changes at each step and every fifth of the files, not on every file.
-import { h, modal } from '../core/ui';
+import { h, modal, toast } from '../core/ui';
 import './importChooser.css';
 
 /** The steps in the order they come; the bar fills a fifth at each. */
@@ -43,11 +43,16 @@ export function openImportPanel(label: string): ImportPanel | undefined {
   const cancel = h('button', { type: 'button' }, 'Cancel');
   let ended = false;
   let failed = false;
+  let singleGame = false;
   let finish: (() => void) | undefined;
   let spoke = -1;
   let last = 0;
 
-  cancel.addEventListener('click', () => (ctl.abort(), finish?.()));
+  cancel.addEventListener('click', () => {
+    ctl.abort();
+    finish?.();
+    toast(singleGame ? 'Canceled: imported 0 of 1 game.' : 'Canceled: imported 0 games.');
+  });
   void modal<void>('Importing', (close) => {
     finish = () => {
       if (ended) return;
@@ -67,6 +72,7 @@ export function openImportPanel(label: string): ImportPanel | undefined {
     signal: ctl.signal,
     async step(step, detail, done, total) {
       if (ended || failed) return;
+      if (step === 'Extracting' || (step === 'Reading' && detail === 'the web page')) singleGame = true;
       const at = STEPS.indexOf(step);
       // saving the game can't be stopped half way
       cancel.hidden = step === 'Opening';

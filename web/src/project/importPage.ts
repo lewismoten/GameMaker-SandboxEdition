@@ -20,10 +20,13 @@ export async function gameFromPageHtml(html: string): Promise<PageGame | undefin
 }
 
 /** The first picked/dropped .html file that holds a game. */
-export async function gameFromPageFiles(list: File[]): Promise<PageGame | undefined> {
+export async function gameFromPageFiles(list: File[], signal?: AbortSignal): Promise<PageGame | undefined> {
   for (const f of list) {
     if (!/\.html?$/i.test(f.name)) continue;
-    const found = await gameFromPageHtml(await f.text());
+    signal?.throwIfAborted();
+    const html = await f.text();
+    signal?.throwIfAborted();
+    const found = await gameFromPageHtml(html);
     if (found) return found;
   }
   return undefined;

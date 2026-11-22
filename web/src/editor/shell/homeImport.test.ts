@@ -40,3 +40,34 @@ it('explains an empty ZIP upload without creating a project', async () => {
   expect(create).not.toHaveBeenCalled();
   expect(openProject).not.toHaveBeenCalled();
 });
+
+it.each(['HTML read', 'ZIP extraction', 'Opening'])('cancels during %s before saving or navigating', async (phase) => {
+  const controller = new AbortController();
+  const panel = {
+    signal: controller.signal,
+    step: vi.fn(async (step: string) => {
+      if ((phase === 'ZIP extraction' && step === 'Extracting') || (phase === 'Opening' && step === 'Opening')) controller.abort();
+    }),
+    fail: vi.fn(),
+    end: vi.fn(),
+  };
+  const nav = { openProject: vi.fn() };
+  const zip = await createZip(['LEVEL.GAM', 'FIRST.TXT', 'SECOND.TXT'].map((name) => ({ name, data: new Uint8Array(32) })));
+  const file = phase === 'HTML read' ? new File([''], 'game.html') : new File([Uint8Array.from(zip)], 'game.zip');
+  if (phase === 'HTML read')
+    vi.spyOn(file, 'text').mockImplementation(async () => {
+      controller.abort();
+      return '<script type="application/json" id="gm-game">{"v":1,"id":"game","title":"Game","gam":"LEVEL.GAM","enc":"raw","files":[["LEVEL.GAM",1]],"data":"AA=="}</script>';
+    });
+  const save = vi.spyOn(Project.prototype, 'saveNow');
+  try {
+    await importPicked(nav, [file], undefined, panel);
+    expect(controller.signal.aborted).toBe(true);
+    expect(save).not.toHaveBeenCalled();
+    expect(nav.openProject).not.toHaveBeenCalled();
+    expect(panel.fail).not.toHaveBeenCalled();
+    if (phase === 'ZIP extraction') expect(panel.step.mock.calls.filter(([step]) => step === 'Extracting')).toHaveLength(1);
+  } finally {
+    save.mockRestore();
+  }
+});
