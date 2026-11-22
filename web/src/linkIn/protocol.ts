@@ -19,9 +19,9 @@ const TARGETS: readonly Target[] = ['desk', 'dos', 'web'];
 export const MAX_FILES = 1024;
 /** The most bytes in all, unpacked (the biggest CD game is under 20 MB). */
 export const MAX_TOTAL_BYTES = 48 * 1024 * 1024;
-/** The most bytes in one file. */
+/** The most bytes per file when there are two or more files. */
 export const MAX_FILE_BYTES = 16 * 1024 * 1024;
-/** A game's name is cut to this many characters. */
+/** A game's name is cut to at most this many UTF-16 code units. */
 const MAX_NAME = 60;
 /** How long the page waits for the opener's files after saying it is ready. */
 export const WAIT_MS = 60_000;
@@ -88,11 +88,17 @@ function asBytes(v: unknown): Uint8Array | undefined {
   return undefined;
 }
 
+/** Keep a UTF-16 prefix without splitting a surrogate pair at the cut. */
+function shortenName(name: string, limit: number): string {
+  const last = name.codePointAt(limit - 1);
+  return name.slice(0, last !== undefined && last > 0xffff ? limit - 1 : limit);
+}
+
 /** A name made safe to show and store: no control characters, trimmed, at most MAX_NAME long. */
 export function cleanName(v: unknown): string | undefined {
   if (typeof v !== 'string') return undefined;
   const s = v.replace(/[\u0000-\u001f\u007f-\u009f\u2028\u2029\u202a-\u202e\u2066-\u2069]/g, '').trim();
-  return s ? s.slice(0, MAX_NAME).trim() : undefined;
+  return s ? shortenName(s, MAX_NAME).trim() : undefined;
 }
 
 /** One received file's name, kept to a safe file name (folders are dropped later, as DOS names). */
@@ -127,14 +133,13 @@ export function checkLimits(files: readonly (readonly [string, Uint8Array])[]): 
   if (files.length > MAX_FILES) throw new LinkError(`That is ${files.length} files; a game may have at most ${MAX_FILES}.`, 'too-big');
   let total = 0;
   for (const [name, bytes] of files) {
-    if (files.length > 1 && bytes.length > MAX_FILE_BYTES)
-      throw new LinkError(`${name} is ${mb(bytes.length)}; one file may be at most ${mb(MAX_FILE_BYTES)}.`, 'too-big');
+    if (files.length > 1 && bytes.length > MAX_FILE_BYTES) throw new LinkError(`${name} exceeds the per-file limit of ${mb(MAX_FILE_BYTES)}.`, 'too-big');
     total += bytes.length;
   }
-  if (total > MAX_TOTAL_BYTES) throw new LinkError(`The game is ${mb(total)}; it may be at most ${mb(MAX_TOTAL_BYTES)}.`, 'too-big');
+  if (total > MAX_TOTAL_BYTES) throw new LinkError(`The game exceeds the total limit of ${mb(MAX_TOTAL_BYTES)}.`, 'too-big');
 }
 
-export const mb = (n: number) => (n >= 1024 * 1024 ? `${(n / (1024 * 1024)).toFixed(1)} MB` : `${Math.max(1, Math.round(n / 1024))} KB`);
+export const mb = (n: number) => (n >= 1024 * 1024 ? `${(n / (1024 * 1024)).toFixed(1)} MiB` : `${Math.max(1, Math.round(n / 1024))} KiB`);
 
 /**
  * A gm-files message, checked: its files as bytes and its settings, or a LinkError saying
@@ -175,5 +180,5 @@ export function originLabel(origin: string): string {
 /** The name a received game is kept under, so it is clear where it came from. */
 export function keptName(name: string, origin: string): string {
   const host = origin && origin !== 'null' ? originLabel(origin) : 'another page';
-  return `${name} (from ${host})`.slice(0, MAX_NAME + 40);
+  return shortenName(`${name} (from ${host})`, MAX_NAME + 40);
 }
