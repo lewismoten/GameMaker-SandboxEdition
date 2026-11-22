@@ -1,8 +1,14 @@
 // Tests: Reading and writing zip files (project/zip.ts).
 import { describe, expect, it } from 'vitest';
-import { createZip, readZip, crc32 } from '@lewismoten/gamemaker-sandbox-archives/zip';
+import { createZip, readZip, isZip, crc32 } from '@lewismoten/gamemaker-sandbox-archives/zip';
 
 describe('zip', () => {
+  it('recognizes an empty archive', async () => {
+    const bytes = await createZip([]);
+    expect(isZip(bytes)).toBe(true);
+    expect(await readZip(bytes)).toEqual([]);
+  });
+
   it('computes CRC-32', () => {
     expect(crc32(new TextEncoder().encode('123456789'))).toBe(0xcbf43926);
   });

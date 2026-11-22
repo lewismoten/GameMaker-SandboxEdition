@@ -54,7 +54,7 @@ export interface ScanReport {
   /** Zips looked in (inside others too). */
   zips: number;
   /** Zips with no .gam file in them, and what they did hold ("only text files"). */
-  emptyZips: { path: string; held: string }[];
+  emptyZips: { path: string; held: string; empty?: boolean }[];
   /** Zips that could not be read, and why. */
   badZips: { path: string; error: string }[];
   /** Files in no game, zips aside (none of them is imported, unless no game was found at all). */
@@ -363,7 +363,7 @@ export async function scanImport(given: ScanFile[], { signal, onProgress, onStep
     const files = depth + 1 >= MAX_DEPTH ? entries.filter((e) => !isZipName(e.path)) : entries;
     onStep?.('find', label);
     const n = await look(files, zips, inner, depth + 1);
-    if (!n) report.emptyZips.push({ path: asSfx ? sfxNote(label) : label, held: heldBy(files, sfx) });
+    if (!n) report.emptyZips.push({ path: asSfx ? sfxNote(label) : label, held: heldBy(files, sfx), ...(!entries.length && { empty: true }) });
     return n;
   };
   /** Labels of the self-extracting archives found. */
