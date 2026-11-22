@@ -53,7 +53,7 @@ export const PLAYING_ACHIEVEMENTS: readonly Achievement[] = [
     COUNT_LEVELS[family].goals.map((count, i): Achievement => ({
       id: `${family}-${count}`,
       title: titles[i],
-      desc: `${verb} ${count} different games.`,
+      desc: `${verb} ${count} different listed games.`,
       icon,
       category: 'playing',
       from,
@@ -93,7 +93,7 @@ export const PLAYING_ACHIEVEMENTS: readonly Achievement[] = [
   {
     id: 'play-sandbox',
     title: 'Sandbox regular',
-    desc: 'Played every Sandbox Software game.',
+    desc: 'Played every boxed Sandbox Software game.',
     icon: '🏖️',
     category: 'playing',
     from: 'sandbox',
@@ -131,7 +131,7 @@ export const PLAYING_ACHIEVEMENTS: readonly Achievement[] = [
     id: 'finish-sandbox',
     hard: true,
     title: 'Sandbox champion',
-    desc: 'Played every Sandbox Software game all the way to its ending.',
+    desc: 'Played every boxed Sandbox Software game all the way to its ending.',
     icon: '🥇',
     category: 'playing',
     from: 'sandboxDone',

@@ -102,6 +102,8 @@ game folder opens in the browser unchanged.
 
 - **Shared block timer finalization (November 18, 2026):** OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, extracted the shared timer helper and added regression tests. Existing game art and content credits remain; no third-party material was added.
 
+- **Achievement descriptions (November 22, 2026):** OpenAI Codex clarified which games count toward the Sandbox badges and game-count milestones.
+
 - **Achievement catalog organization (November 18, 2026):** OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, split the existing achievement catalog into typed modules by group. No new third-party code or assets were added.
 
 - **Sample CD build organization (November 18, 2026)**: OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, split the existing catalog build script into modules by responsibility. No new third-party code or assets were added.
