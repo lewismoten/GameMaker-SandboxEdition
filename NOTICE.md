@@ -1399,3 +1399,5 @@ maker "ZORP" is invented. The shell is untested: nothing has been printed.
 - **Embedding limits (November 22, 2026)**: OpenAI Codex updated the guide, name shortening, size messages, and regression tests.
 
 - **Compact Starter sign layouts (November 22, 2026):** OpenAI Codex adapted the layouts and shared Starter plaque helper using the project’s existing tiled-sign font and artwork.
+
+- **SDK consumer-check documentation (November 22, 2026)**: OpenAI Codex clarified package sources, build steps, and test dependencies in the scripts README.

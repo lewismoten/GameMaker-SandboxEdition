@@ -99,7 +99,12 @@ A final consumer exercises engine, archives and tools together. Run this longer 
 and tarballs are removed afterwards. This catches hidden repository source dependencies
 that testing a package inside the workspace would miss.
 
-`verify-consumer.mjs` runs through root `npm run verify:consumer [-- --source tarball|registry]`. In a fresh project outside the repository it installs the three SDKs (the packed `web/packages/*` tarballs, or the published versions from npm), imports every export in Node, typechecks every export under `bundler` and `node16` resolution, and Vite-builds one browser-safe import per package (plus a check that the tools' Node-only `drawing` entry is rejected in a browser build, as its README says). A third TypeScript pass omits the DOM library and reports known engine declaration dependencies. Use `--all-browser` to build each distinct export and check its browser condition. Tarball mode checks declaration freshness before packing and verifies the installed SDK paths against the packed files. Build the packages first (`npm run build:packages`); `--keep` leaves the scratch project. Needs network for `typescript` and `vite`.
+From the repository root, run `npm run verify:consumer` to test the three SDKs in a fresh project outside the workspace. Choose the package source as follows:
+
+- The default uses local tarballs. Run `npm run build:packages` first. The check verifies declaration freshness, packs the SDKs, and checks the installed paths against the packed files.
+- To test the published SDKs, run `npm run verify:consumer -- --source registry`. This mode installs the SDKs from npm and skips the local build.
+
+Both modes install `typescript@5`, `vite@6`, and `@types/node@22` in the scratch project. npm needs registry access for packages missing from its cache. The check imports each export in Node and typechecks it with both `bundler` and `node16` resolution. A third TypeScript pass omits the DOM library and reports known engine declaration dependencies. Vite builds one browser-safe import per package and checks that a browser build rejects the tools package’s Node-only `drawing` entry. Pass `--all-browser` to check the browser condition of each distinct export, or `--keep` to keep the scratch project. Pass script options after npm’s `--` separator.
 
 `build-games.mjs` rebuilds the ignored game outputs (root `npm run build:games`), caching a key and an
 output hash per game, written as each game lands so a build stopped partway keeps what it finished (CI
