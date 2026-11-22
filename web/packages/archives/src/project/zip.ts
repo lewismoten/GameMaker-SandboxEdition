@@ -193,33 +193,48 @@ export interface ZipListing {
  */
 export function listZip(bytes: Uint8Array, limits: ZipLimits = DEFAULT_ZIP_LIMITS): ZipListing[] {
   const v = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
-  let eocd = -1;
-  // The end record is 22 bytes plus a comment of up to 65535 bytes, so scan back from the
-  // end of the file at most that far for its signature.
-  for (let i = bytes.length - 22; i >= Math.max(0, bytes.length - 65557); i--) {
-    if (v.getUint32(i, true) === 0x06054b50) {
-      eocd = i;
-      break;
+  let damage: Error | undefined;
+  // A stored ZIP can have its own end record before ours, and a comment can contain one
+  // after ours. Prefer the record reaching furthest, then the one enclosing the comment.
+  const candidates: { offset: number; end: number }[] = [];
+  for (let i = Math.max(0, bytes.length - 65557); i <= bytes.length - 22; i++) {
+    if (v.getUint32(i, true) === 0x06054b50) candidates.push({ offset: i, end: i + 22 + v.getUint16(i + 20, true) });
+  }
+  candidates.sort((a, b) => Math.min(bytes.length, b.end) - Math.min(bytes.length, a.end) || a.offset - b.offset);
+  for (const { offset, end } of candidates) {
+    try {
+      const entries = readDirectory(bytes, v, offset, limits);
+      if (end > bytes.length) throw new Error('Truncated ZIP archive comment');
+      return entries;
+    } catch (error) {
+      if (!(error instanceof DirectoryError)) throw error;
+      damage ??= error;
     }
   }
-  if (eocd < 0) throw new Error('Not a ZIP file');
+  throw damage ?? new Error('Not a ZIP file');
+}
+
+class DirectoryError extends Error {}
+
+function readDirectory(bytes: Uint8Array, v: DataView, eocd: number, limits: ZipLimits): ZipListing[] {
   const count = v.getUint16(eocd + 10, true);
-  if (count > limits.maxEntries) throw new Error(`The ZIP holds ${count} entries, more than ${limits.maxEntries}`);
   let declared = 0;
   // A self-extracting .EXE is a program with the zip after it: its packer may have counted the
   // offsets from the zip's start, not the file's, so they are moved by however far the
   // directory (which ends where the end record starts) really is from where they say.
   const dirSize = v.getUint32(eocd + 12, true);
   const dirAt = v.getUint32(eocd + 16, true);
-  const shift = Math.max(0, eocd - dirSize - dirAt);
+  const shift = isZip(bytes) ? 0 : Math.max(0, eocd - dirSize - dirAt);
   const dirStart = dirAt + shift;
-  if (dirStart + dirSize !== eocd) throw new Error('Damaged ZIP directory extent');
+  if (dirStart + dirSize !== eocd) throw new DirectoryError('Damaged ZIP directory extent');
+  if (v.getUint16(eocd + 8, true) !== count || count * 46 > dirSize) throw new DirectoryError('Damaged ZIP directory count');
+  if (count > limits.maxEntries) throw new Error(`The ZIP holds ${count} entries, more than ${limits.maxEntries}`);
   let p = dirStart;
   const headers: [number, number][] = [];
   const dec = new TextDecoder();
   const out: ZipListing[] = [];
   for (let i = 0; i < count; i++) {
-    if (p + 46 > eocd || v.getUint32(p, true) !== 0x02014b50) throw new Error('Damaged ZIP directory');
+    if (p + 46 > eocd || v.getUint32(p, true) !== 0x02014b50) throw new DirectoryError('Damaged ZIP directory');
     const method = v.getUint16(p + 10, true);
     const expectedCrc = v.getUint32(p + 16, true);
     const size = v.getUint32(p + 20, true);
@@ -228,15 +243,15 @@ export function listZip(bytes: Uint8Array, limits: ZipLimits = DEFAULT_ZIP_LIMIT
     const extraLen = v.getUint16(p + 30, true);
     const commentLen = v.getUint16(p + 32, true);
     const localOffset = v.getUint32(p + 42, true) + shift;
-    if (p + 46 + nameLen + extraLen + commentLen > eocd) throw new Error('Damaged ZIP directory entry');
+    if (p + 46 + nameLen + extraLen + commentLen > eocd) throw new DirectoryError('Damaged ZIP directory entry');
     const name = dec.decode(bytes.subarray(p + 46, p + 46 + nameLen));
     p += 46 + nameLen + extraLen + commentLen;
     // Folder entries carry no data. Sizes come from the central directory because the
     // local header's may be 0 when the writer used a data descriptor; its name and extra
     // lengths can differ from the directory's, so they are read from the local header.
-    if (localOffset + 30 > dirStart || v.getUint32(localOffset, true) !== 0x04034b50) throw new Error('Damaged ZIP local header');
+    if (localOffset + 30 > dirStart || v.getUint32(localOffset, true) !== 0x04034b50) throw new DirectoryError('Damaged ZIP local header');
     const start = localOffset + 30 + v.getUint16(localOffset + 26, true) + v.getUint16(localOffset + 28, true);
-    if (start > dirStart || start + size > dirStart) throw new Error('Damaged ZIP entry extent');
+    if (start > dirStart || start + size > dirStart) throw new DirectoryError('Damaged ZIP entry extent');
     headers.push([localOffset, start]);
     if (name.endsWith('/')) continue;
     if ((declared += unpacked) > limits.maxBytes) throw new Error(`The ZIP unpacks to more than ${limits.maxBytes} bytes`);
@@ -263,6 +278,7 @@ export function listZip(bytes: Uint8Array, limits: ZipLimits = DEFAULT_ZIP_LIMIT
     };
     out.push({ name, size: unpacked, read });
   }
+  if (p !== eocd) throw new DirectoryError('Damaged ZIP directory size');
   return out;
 }
 

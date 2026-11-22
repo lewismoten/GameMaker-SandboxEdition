@@ -1,12 +1,30 @@
 // Tests: Reading and writing zip files (the archives package).
 import { describe, expect, it } from 'vitest';
-import { createZip, readZip, isZip, crc32 } from '@lewismoten/gamemaker-sandbox-archives/zip';
+import { createZip, listZip, readZip, isZip, crc32 } from '@lewismoten/gamemaker-sandbox-archives/zip';
 
 describe('zip', () => {
   it('recognizes an empty archive', async () => {
     const bytes = await createZip([]);
     expect(isZip(bytes)).toBe(true);
     expect(await readZip(bytes)).toEqual([]);
+  });
+
+  it('reads the real directory when the comment contains an empty ZIP end record', async () => {
+    const entries = [{ name: 'LEVEL.GAM', data: Uint8Array.of(42) }];
+    const zip = await createZip(entries);
+    const comment = await createZip([]);
+    const bytes = new Uint8Array(zip.length + comment.length);
+    bytes.set(zip);
+    bytes.set(comment, zip.length);
+    new DataView(bytes.buffer).setUint16(zip.length - 2, comment.length, true);
+    expect(listZip(bytes).map((entry) => entry.name)).toEqual(['LEVEL.GAM']);
+    expect(await readZip(bytes)).toEqual(entries);
+  });
+
+  it('reports a truncated archive comment', async () => {
+    const zip = await createZip([]);
+    new DataView(zip.buffer, zip.byteOffset).setUint16(zip.length - 2, 10, true);
+    await expect(readZip(zip)).rejects.toThrow(/truncated ZIP archive comment/i);
   });
 
   it('computes CRC-32', () => {
