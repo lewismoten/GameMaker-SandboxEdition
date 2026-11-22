@@ -135,6 +135,18 @@ self.addEventListener('activate', (event) => {
       if (req.url === new URL(META, SCOPE).href) continue;
       if (path === undefined || !(unchanged(path, before) || (isHashed(path) && previous.has(path)))) await cache.delete(req);
     }
+    // Only the first scoped activation inherits browsing history. The old cache is
+    // shared across registrations, so read its metadata for this scope and leave it intact.
+    if (!await cache.match(META) && await caches.has('gm-site-v2')) {
+      const legacy = await caches.open('gm-site-v2');
+      const legacyVersion = await cachedVersion(legacy);
+      for (const req of await legacy.keys()) {
+        const path = sitePath(req.url);
+        if (path === undefined || !unchanged(path, legacyVersion)) continue;
+        const res = await legacy.match(req);
+        if (res) await cache.put(req, res);
+      }
+    }
     // the shell files the install fetched
     if (await caches.has(STAGE)) {
       const stage = await caches.open(STAGE);

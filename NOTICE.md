@@ -64,7 +64,7 @@ game folder opens in the browser unchanged.
 
 ## Credits
 
-- OpenAI Codex scoped the site and exported game worker caches and tested activation with shared cache storage.
+- OpenAI Codex scoped the site and exported game worker caches and migrated unchanged browsing entries from the shared cache, with lifecycle tests.
 - OpenAI Codex added ZIP entry CRC-32 validation and regression tests (November 22, 2026).
 - OpenAI Codex fixed empty ZIP recognition and the editor import message and added regression tests (November 22, 2026).
 - OpenAI Codex fixed the pause after the first manual in the Library tour on narrow screens (November 21, 2026).
