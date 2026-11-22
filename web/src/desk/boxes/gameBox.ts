@@ -183,8 +183,7 @@ async function paintBox(
   print?: PrintSize,
   lean = false,
 ): Promise<BoxSides | undefined> {
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion -- the catalog's box type lacks `sticker`, which Box has
-  const box = entry.original?.box as Box | undefined;
+  const box: Box | undefined = entry.original?.box;
   if (!box) return undefined;
   // the desk's box, or one to print
   const [faceW, faceH, k] = print ? [print.w, print.h, print.scale] : [W, H, 1];
