@@ -5,7 +5,7 @@ import { describe, expect, it } from 'vitest';
 import { ADVTYPE, ENDTYPE, STARTTYPE, parseGame, serializeGame, type Game, type Scene } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { screensAndSongs } from './sceneSlots';
 import { passesThrough } from '../../../project/sceneArrivals';
-import { levelCheckNote, roleNote, roleLabel, mapSceneLabels, sceneRole } from './sceneRole';
+import { levelCheckNote, roleNote, roleLabel, mapSceneLabels } from './sceneRole';
 
 const link = (fx: number, fy: number, toScene: number, tx = 5, ty = 5) => ({ from: { x: fx, y: fy }, toScene, to: { x: tx, y: ty } });
 const scene = (gametype: number, links: ReturnType<typeof link>[] = []) => ({ gametype, files: [], desc: new Uint8Array(), links }) as unknown as Scene;
@@ -24,7 +24,7 @@ describe('sceneRole', () => {
   const room = (entries: typeof entrances) => game([scene(STARTTYPE, entries), scene(ENDTYPE), scene(ADVTYPE, [link(5, 5, 1)])]);
 
   it('requires an exit at every arrival, in either link order', () => {
-    for (const entries of [entrances, [...entrances].reverse()]) expect(sceneRole(room(entries), 2)).toBe('level');
+    for (const entries of [entrances, [...entrances].reverse()]) expect(roleLabel(room(entries), 2)).toBe('level');
     const isolated = game([scene(ADVTYPE, [link(50, 50, 1)]), scene(ENDTYPE)]);
     expect(passesThrough(isolated, [0])).toBe(false);
   });
@@ -47,7 +47,7 @@ describe('sceneRole', () => {
   it('counts only destinations outside the scene as ways out', () => {
     const g = room([link(0, 0, 2, 8, 8)]);
     g.scenes[2].links.push(link(8, 8, 2, 5, 5));
-    expect(sceneRole(g, 2)).toBe('level');
+    expect(roleLabel(g, 2)).toBe('level');
     expect(roleNote(g, 2)).toBeUndefined();
   });
 
@@ -58,7 +58,7 @@ describe('sceneRole', () => {
   });
 
   it('names each pattern from the data', () => {
-    expect([0, 1, 2, 3, 4].map((i) => sceneRole(g, i))).toEqual(['title', 'ending', 'branch', 'pass', 'level']);
+    expect([0, 1, 2, 3, 4].map((i) => roleLabel(g, i))).toEqual(['Title/Menu', 'Ending', '2 ways out', 'pass', 'level']);
   });
   it('says what it is only when it is not a plain level', () => {
     expect(roleNote(g, 2)).toBe('2 ways out');
@@ -85,56 +85,61 @@ describe('roles from real games', () => {
   const carl = native('carl', 'carl.gam');
 
   it('finds the timed stage and both tales, and keeps the menu room a branch', () => {
-    expect([0, 1, 2, 3, 4, 5].map((i) => sceneRole(cuts.game, i, cuts.files))).toEqual(['title', 'ending', 'cutscene', 'branch', 'cutscene', 'cutscene']);
+    expect([0, 1, 2, 3, 4, 5].map((i) => roleLabel(cuts.game, i, cuts.files))).toEqual([
+      'Title/Menu',
+      'Ending',
+      'cutscene',
+      '3 ways out',
+      'cutscene',
+      'cutscene',
+    ]);
     expect(roleNote(cuts.game, 2, cuts.files)).toBe('cutscene');
-
-    expect(roleLabel(cuts.game, 3, cuts.files)).toBe('3 ways out');
   });
 
   it('keeps the Bard logo intro in Carl’s title role and its timed level cards in level roles', () => {
     expect(parseSlideList(carl.files.get('title.lst')!).some((s) => s.name.endsWith('.fli') && s.pause === 0)).toBe(true);
-    expect(sceneRole(carl.game, 0, carl.files)).toBe('title');
-    expect(sceneRole(carl.game, 1, carl.files)).toBe('ending');
-    expect(sceneRole(carl.game, 2, carl.files)).toBe('level');
+    expect(roleLabel(carl.game, 0, carl.files)).toBe('Title/Menu');
+    expect(roleLabel(carl.game, 1, carl.files)).toBe('Ending');
+    expect(roleLabel(carl.game, 2, carl.files)).toBe('level');
   });
 
   const changed = (name: string, bytes?: Uint8Array) => ({ get: (file: string) => (file === name ? bytes : cuts.files.get(file)) });
   it('does not guess without map or block data, or from a slide list alone', () => {
-    expect(sceneRole(cuts.game, 2)).toBe('level');
-    for (const name of ['one.map', 'cuts.bbl']) expect(sceneRole(cuts.game, 2, changed(name))).toBe('level');
-    expect(sceneRole(cuts.game, 2, changed('one.map', new Uint8Array()))).toBe('level');
+    expect(roleLabel(cuts.game, 2)).toBe('level');
+    for (const name of ['one.map', 'cuts.bbl']) expect(roleLabel(cuts.game, 2, changed(name))).toBe('level');
+    expect(roleLabel(cuts.game, 2, changed('one.map', new Uint8Array()))).toBe('level');
   });
 
   it('requires finite explicit slide waits, including nested lists', () => {
     for (const text of ['one.gif', 'one.gif 65535', 'one.gif -1', 'one.lst 1', 'missing.gif 1', '']) {
-      expect(sceneRole(cuts.game, 2, changed('one.lst', new TextEncoder().encode(text))), text).toBe('level');
+      expect(roleLabel(cuts.game, 2, changed('one.lst', new TextEncoder().encode(text))), text).toBe('level');
     }
-    expect(sceneRole(cuts.game, 2, changed('one.lst', new TextEncoder().encode('tale1.lst 1')))).toBe('cutscene');
+    expect(roleLabel(cuts.game, 2, changed('one.lst', new TextEncoder().encode('tale1.lst 1')))).toBe('cutscene');
   });
 
   it('requires a timed opening along the arrival column, not animated decoration or a permanent floor', () => {
     const blocks = parseBlocks(cuts.files.get('cuts.bbl')!, BACKBL);
     const permanent = structuredClone(blocks);
     for (const b of permanent) b.ntime = 0;
-    expect(sceneRole(cuts.game, 2, changed('cuts.bbl', serializeBlocks(permanent)))).toBe('level');
+    expect(roleLabel(cuts.game, 2, changed('cuts.bbl', serializeBlocks(permanent)))).toBe('level');
     const loop = structuredClone(blocks);
     // Loop each timed floor back to itself instead of opening.
     loop.forEach((b, i) => {
       if (b.ntime > 0 && b.solid & SOLTOP) b.nextBl = i;
     });
-    expect(sceneRole(cuts.game, 2, changed('cuts.bbl', serializeBlocks(loop)))).toBe('level');
+    expect(roleLabel(cuts.game, 2, changed('cuts.bbl', serializeBlocks(loop)))).toBe('level');
     const moved = structuredClone(cuts.game);
     for (const l of moved.scenes[2].links) l.from.x = 90;
-    expect(sceneRole(moved, 2, cuts.files)).toBe('level');
+    expect(roleLabel(moved, 2, cuts.files)).toBe('level');
   });
 
   it('keeps an immediate link a pass and checks every entrance', () => {
     const g = structuredClone(cuts.game);
     g.scenes[2].links[0].from = { ...g.scenes[0].links[0].to };
-    expect(sceneRole(g, 2, cuts.files)).toBe('pass');
+    expect(roleLabel(g, 2, cuts.files)).toBe('pass');
     g.scenes[2].links[0] = structuredClone(cuts.game.scenes[2].links[0]);
     g.scenes[0].links.push(link(0, 0, 2, 90, 90));
-    expect(sceneRole(g, 2, cuts.files)).toBe('level');
+    expect(roleLabel(g, 2, cuts.files)).toBe('level');
   });
 
   it('uses the same short role in the scene screen and music lists', () => {

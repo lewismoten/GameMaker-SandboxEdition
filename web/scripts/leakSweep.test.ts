@@ -69,6 +69,7 @@ it.each([
   '/Users/synthetic/project',
   'user@example.com.evil.org',
   'UPPER@FOREIGN.INVALID',
+  'wordsmith@dict.sandbox-u.edu.evil.org',
 ])('rejects a build containing %s', (value) => {
   fixture('FixturePrivateSurname', (dist, run) => {
     writeFileSync(join(dist, 'test.txt'), value);
@@ -78,7 +79,10 @@ it.each([
 it('scans the phone book chunk and accepts SVG coordinates and known domains', () => {
   fixture('FixturePrivateSurname', (dist, run) => {
     const file = join(dist, 'phoneBook-test.js');
-    writeFileSync(file, 'M10.5.3.2l1 Windows NT 10.0.19041.1 chrome 110.0.0.0 / 10.15.7.1 sandbox@sandbox.pgh.pa.us git@github.com');
+    writeFileSync(
+      file,
+      'M10.5.3.2l1 Windows NT 10.0.19041.1 chrome 110.0.0.0 / 10.15.7.1 sandbox@sandbox.pgh.pa.us git@github.com wordsmith@dict.sandbox-u.edu',
+    );
     expect(run().status).toBe(0);
     writeFileSync(file, 'fetch("/.for-lewis/file")');
     expect(run().status).toBe(1);

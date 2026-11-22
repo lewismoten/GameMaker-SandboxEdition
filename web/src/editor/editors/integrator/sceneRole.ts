@@ -83,7 +83,7 @@ function advancesByTime(game: Game, i: number, files: SceneFiles): boolean {
   }
 }
 
-export function sceneRole(game: Game, i: number, files?: SceneFiles): SceneRole {
+function sceneRole(game: Game, i: number, files?: SceneFiles): SceneRole {
   const kind = sceneKind(game.scenes[i]);
   if (kind === 'start') return 'title';
   if (kind === 'end') return 'ending';

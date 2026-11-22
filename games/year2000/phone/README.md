@@ -11,9 +11,7 @@ I wrote; nothing was powered, soldered or listened to.
 
 Rev C is the cheap, easy-to-build revision. Rev B cost about $68 a phone in parts (most of it a $24 display driver), needed a
 72 x 172 mm board (about $96 for three from OSH Park) and a programmer that may not support its chip. Rev C is about $17 a phone in
-parts, a 99 x 99 mm board in the cheapest tier at JLCPCB and PCBWay, and a programmer built from an Arduino Nano. The numbers and
-sources are in the cost sheet (`.for-lewis/research/phone-of-the-future-parts.md`, not in the repository); the short version is
-in "What Rev C changed" below.
+parts, a 99 x 99 mm board in the cheapest tier at JLCPCB and PCBWay, and a programmer built from an Arduino Nano. See "What Rev C changed" below for the cost breakdown.
 
 ## Two builds, named the way Dex would
 

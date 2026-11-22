@@ -2,8 +2,9 @@
 import { readFileSync } from 'node:fs';
 import { isIP } from 'node:net';
 
-const { mockDomains } = JSON.parse(readFileSync(new URL('../src/manual/magazine/mockSites.json', import.meta.url), 'utf8'));
+const { mockDomains, sites } = JSON.parse(readFileSync(new URL('../src/manual/magazine/mockSites.json', import.meta.url), 'utf8'));
 const allowedDomains = new Set([...mockDomains.map(({ domain }) => domain), 'example.org', 'example.net', 'example.com', 'users.noreply.github.com']);
+const allowedEmails = new Set(['git@github.com', ...sites.flatMap(({ contact }) => (contact ? [contact.toLowerCase()] : []))]);
 const unknownEmails = new Set();
 let addressFiles = 0;
 for (const file of readFileSync(0, 'utf8').split('\0').filter(Boolean)) {
@@ -24,7 +25,7 @@ for (const file of readFileSync(0, 'utf8').split('\0').filter(Boolean)) {
     console.log('     ' + file);
   }
   for (const [email, domain] of text.matchAll(/[\w.%+-]+@([\w-]+(?:\.[\w-]+)*\.[a-z]{2,})/gi)) {
-    if (email.toLowerCase() !== 'git@github.com' && !allowedDomains.has(domain.toLowerCase())) unknownEmails.add(email.toLowerCase());
+    if (!allowedEmails.has(email.toLowerCase()) && !allowedDomains.has(domain.toLowerCase())) unknownEmails.add(email.toLowerCase());
   }
 }
 console.log('-- private network addresses: ' + addressFiles + ' file(s)');
