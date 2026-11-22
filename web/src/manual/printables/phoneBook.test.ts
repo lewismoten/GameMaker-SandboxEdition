@@ -1,7 +1,9 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { readFileSync } from 'node:fs';
+import { FakeDoc } from '../../../test/fakeDom';
+import type { FakeEl } from '../../../test/fakeDom';
 import { phoneChapters } from './phoneBook';
-import { blockText } from './markdownBlocks';
+import { blockText, element } from './markdownBlocks';
 
 const dir = '../games/year2000/phone/';
 const readme = readFileSync(`${dir}README.md`, 'utf8');
@@ -51,6 +53,33 @@ describe('phoneChapters (the real README and parts list)', () => {
       '',
     );
     expect(chapter.blocks.map(blockText)).toEqual(['Fit the dial.', 'Attach the cover.', 'Check Result Dial Turns freely']);
+  });
+
+  it('keeps the dial designer credit, pulse range, and mechanical guidance in their original items', () => {
+    const dial = chapters.find((chapter) => chapter.head === 'The dial module')!;
+    const items = dial.blocks.flatMap((b) => (b.tag === 'ul' ? b.items.map((kids) => blockText({ tag: 'p', kids })) : []));
+    expect(items.find((s) => s.startsWith('Credit.'))).toMatch(/Rotary Dial mechanism.*dAcid.*CC BY 4\.0/);
+    expect(items.find((s) => s.startsWith('Speed.'))).toMatch(/grease film.*thin the grease.*8 to 15 pulses a second/);
+    expect(items.find((s) => s.startsWith('One-way counting'))).toContain('exactly n pulses');
+  });
+
+  it('keeps builder guidance in a table cell that also mentions a tool', () => {
+    const [chapter] = phoneChapters('# Kit\nCheck | Result | Tool\n---|---|---\nDial | Adjust the spring; run picsim.py. | shell.ts', '');
+    expect(chapter.blocks[0]).toMatchObject({ tag: 'table', rows: [[['Dial'], ['Adjust the spring.'], []]] });
+  });
+
+  it('renders the original step numbers after leading and interior tool steps are removed', () => {
+    const [chapter] = phoneChapters('# Kit\n4. Run shell.ts.\n5. Attach the cover.\n6. Run picsim.py.\n7. Test the dial.', '');
+    vi.stubGlobal('document', new FakeDoc());
+    try {
+      const lists = chapter.blocks.map((b) => element(b) as unknown as FakeEl);
+      expect(lists.map((list) => [list.tag, list.attrs.start, list.children[0].children[0].textContent])).toEqual([
+        ['ol', '5', 'Attach the cover.'],
+        ['ol', '7', 'Test the dial.'],
+      ]);
+    } finally {
+      vi.unstubAllGlobals();
+    }
   });
 
   it('shows the parts as four columns', () => {
