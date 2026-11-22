@@ -78,6 +78,34 @@ describe('quick switcher', () => {
     expect(fileUses(p, 'for.pal').map((u) => u.text)).toEqual(['forest.bbl editor preview']);
   });
 
+  it('names an animation that keeps a file in its Scene Maker scene', () => {
+    const p = project();
+    p.files.set('intro.fli', new Uint8Array(1));
+    p.files.set('sky.gif', new Uint8Array(1));
+    p.files.set('hero.chr', new Uint8Array(1));
+    p.files.set('hero.cbl', new Uint8Array(1));
+    // as an older editor stored it: one background, no ids, an upper-case name
+    p.setExtras('intro.fli', 'scene', {
+      background: { kind: 'picture', file: 'SKY.GIF' },
+      tracks: [
+        {
+          items: [
+            { kind: 'actor', source: { type: 'chr', chr: 'hero.chr', cbl: 'hero.cbl', seq: -1 } },
+            { kind: 'block', bbl: 'forest.bbl', block: 3 },
+            { kind: 'block', bbl: 'forest.bbl', block: 4 },
+          ],
+        },
+      ],
+    });
+    p.setExtras('gone.fli', 'scene', { background: { kind: 'picture', file: 'sky.gif' } });
+    expect(fileUses(p, 'sky.gif')).toEqual([{ file: 'intro.fli', text: 'intro.fli Scene Maker source', count: 1 }]);
+    expect(fileUses(p, 'forest.bbl')).toEqual([{ file: 'intro.fli', text: 'intro.fli Scene Maker source', count: 2 }]);
+    expect(fileUses(p, 'hero.cbl').map((u) => u.file)).toEqual(['intro.fli']);
+    expect(embeddedFiles(p, 'INTRO.FLI')).toEqual(['SKY.GIF', 'hero.chr', 'hero.cbl', 'forest.bbl', 'forest.bbl']);
+    expect(deleteMessage(p, 'sky.gif')).toContain('intro.fli Scene Maker source');
+    expect(replaceMessage(p, 'sky.gif', 'sea.gif')).toContain('intro.fli Scene Maker source');
+  });
+
   it('names what uses a file before deleting it', () => {
     const p = project();
     expect(deleteMessage(p, 'one.map')).toMatch(/still used by: Meadow · map/);

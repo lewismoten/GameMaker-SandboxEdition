@@ -9,7 +9,7 @@ import { newMap, serializeMap } from '@lewismoten/gamemaker-sandbox-engine/forma
 import { defaultPalette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 import { decodeFliFrames } from '@lewismoten/gamemaker-sandbox-engine/formats/fliFrames';
 import { textBytes } from '@lewismoten/gamemaker-sandbox-engine/formats/binary';
-import { actorAt, allItems, emptyScene, normalizeScene, textItem, type ActorItem, type Scene, type TextItem } from './sceneModel';
+import { actorAt, allItems, emptyScene, normalizeScene, sceneFiles, textItem, type ActorItem, type Scene, type TextItem } from './sceneModel';
 import { drawText, fitText, restBox, textAt, textSize, textWarnings, wrapText } from './sceneText';
 import { mergePalettes, sceneAssets, walkSequence } from './sceneAssets';
 import { mirrored, renderScene, sceneFli } from './sceneRender';
@@ -147,6 +147,21 @@ describe('actors', () => {
     const chr = newCharacter();
     chr.sequences[3].frames[0] = { ...chr.sequences[3].frames[0], x: -5, pic1: 0, pic2: 1 };
     expect(walkSequence(chr.sequences)).toEqual({ seq: 3, faces: 'left' });
+  });
+});
+
+describe('source files', () => {
+  it('lists every file the scene draws with, once per use, and skips blanks', () => {
+    const s = normalizeScene({
+      frames: 30,
+      backgrounds: [
+        { start: 0, kind: 'color', palette: 'night.pal', color: 1 },
+        { start: 10, kind: 'map', map: 'one.map', x: 0, y: 0 },
+        { start: 20, kind: 'color', palette: '', color: 0 },
+      ],
+      tracks: [{ items: [textItem('Hi'), { kind: 'actor', source: { type: 'mon', mon: 'foes.mon', mbl: 'foes.mbl', index: 2 } }, { kind: 'block', bbl: '' }] }],
+    })!;
+    expect(sceneFiles(s)).toEqual(['night.pal', 'one.map', 'foes.mon', 'foes.mbl']);
   });
 });
 
