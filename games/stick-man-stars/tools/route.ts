@@ -6,7 +6,7 @@
 import type { Result, StarterBot } from '../../kit/starter/bot';
 import { ORIGIN } from '../../kit/starter/map';
 import { L0, L1, L2, L4 } from '../src/levels';
-import { BIG1, BIG2, BIG3, BOT, BOT_SCORE, COTTAGE, POP_SCORE, SHED, STAR, TOWER } from '../src/monsters';
+import { BIG1, BIG2, BIG3, BOT, BOT_SCORE, COTTAGE, POP_SCORE, SHED, STAR, STAR_LIFE, STAR_SPEED, TOWER } from '../src/monsters';
 import { GATE_STARS, PICK_SCORE } from '../src/pickStar';
 import { KEYS } from '../../kit/starter/blocks';
 import { SCAN_JUMP, SCAN_THROW } from '../src/hero';
@@ -47,7 +47,9 @@ async function throwStar(bot: StarterBot, what: string, checkRange = false): Pro
       farthest = Math.max(farthest, ...foes(bot, STAR));
       await must(bot, bot.tick(), 'watching the star');
     }
-    if (farthest - origin < 100) throw new Error('The star hit something before reaching its range');
+    // The final tick replaces the star with its sparkle before the route samples its position.
+    const range = STAR_SPEED * (STAR_LIFE - 1);
+    if (farthest - origin < range) throw new Error(`The star flew ${farthest - origin} pixels, expected at least ${range}`);
   } else await must(bot, bot.wait(THROW_WATCH), 'watching the star');
   bot.say(`threw a star ${what}, score ${bot.sim.ci.score}`);
 }
