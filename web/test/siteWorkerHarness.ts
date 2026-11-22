@@ -6,6 +6,8 @@ export const base = 'https://example.test/project/';
 export function harness(version: string, options: Partial<Parameters<typeof siteWorkerSource>[0]> = {}) {
   const stores = new Map<string, Map<string, Response>>();
   const key = (u: string | Request) => new URL(typeof u === 'string' ? u : u.url, base).href.split('?')[0];
+  const beforePut = vi.fn<(name: string, url: string) => void>();
+  const claim = vi.fn(async () => {});
   const caches = {
     has: async (n: string) => stores.has(n),
     keys: async () => [...stores.keys()],
@@ -16,6 +18,7 @@ export function harness(version: string, options: Partial<Parameters<typeof site
       return {
         match: async (u: string | Request) => store.get(key(u))?.clone(),
         put: async (u: string | Request, r: Response) => {
+          beforePut(n, key(u));
           store.set(key(u), r.clone());
         },
         keys: async () => [...store.keys()].map((u) => new Request(u)),
@@ -27,12 +30,15 @@ export function harness(version: string, options: Partial<Parameters<typeof site
   const fetcher = vi.fn(async (_request: Request): Promise<Response> => {
     throw new Error('offline');
   });
+  const registration = { active: true, scope: base };
+  const skipWaiting = vi.fn(async () => {});
   runInNewContext(siteWorkerSource({ version, precache: ['./', 'assets/main.js'], groups: {}, assets: ['assets/main.js'], ...options }), {
     self: {
       location: { href: base + 'sw.js' },
-      registration: { active: true, scope: base },
+      registration,
+      skipWaiting,
       addEventListener: (type: string, h: (event: unknown) => void) => handlers.set(type, h),
-      clients: { claim: async () => {} },
+      clients: { claim },
     },
     caches,
     fetch: fetcher,
@@ -49,5 +55,5 @@ export function harness(version: string, options: Partial<Parameters<typeof site
         respondWith: (p: Promise<Response>) => p.then(resolve, reject),
       }),
     );
-  return { caches, handlers, fetcher, lifecycle, request };
+  return { registration, skipWaiting, beforePut, claim, caches, handlers, fetcher, lifecycle, request };
 }

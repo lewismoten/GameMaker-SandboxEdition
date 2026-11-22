@@ -83,7 +83,7 @@ const groupFor = (path) => {
 async function cachedVersion(cache) {
   const res = await cache.match(META);
   const v = res ? await res.json().catch(() => undefined) : undefined;
-  return { groups: (v && v.groups) || {}, assets: (v && v.assets) || [] };
+  return { groups: (v && v.groups) || {}, assets: (v && v.assets) || [], migrated: v && v.migrated === true };
 }
 
 /** Still good in this version: a hashed file this build has, or one of a group whose content did not change. */
@@ -93,15 +93,23 @@ function unchanged(path, before) {
   return g !== undefined && before.groups[g] !== undefined && before.groups[g] === GROUPS[g];
 }
 
+async function legacyBrowsing(before) {
+  if (before.migrated || !await caches.has('gm-site-v2')) return undefined;
+  const store = await caches.open('gm-site-v2');
+  return { store, version: await cachedVersion(store) };
+}
+
 self.addEventListener('install', (event) => {
   event.waitUntil((async () => {
     const cache = await caches.open(CACHE);
     const before = await cachedVersion(cache);
+    const legacy = await legacyBrowsing(before);
     const stage = await caches.open(STAGE);
     await Promise.all(PRECACHE.map(async (path) => {
       const url = SCOPE + path;
       if (unchanged(path, before) && (await cache.match(url))) return; // kept from the last version
-      const res = await fetch(new Request(url, { cache: 'no-cache' }));
+      const cached = legacy && unchanged(path, legacy.version) && await legacy.store.match(url);
+      const res = cached || await fetch(new Request(url, { cache: 'no-cache' }));
       if (!res.ok) throw new Error('precache ' + path + ': ' + res.status);
       await stage.put(url, res);
     }));
@@ -135,26 +143,29 @@ self.addEventListener('activate', (event) => {
       if (req.url === new URL(META, SCOPE).href) continue;
       if (path === undefined || !(unchanged(path, before) || (isHashed(path) && previous.has(path)))) await cache.delete(req);
     }
-    // Only the first scoped activation inherits browsing history. The old cache is
-    // shared across registrations, so read its metadata for this scope and leave it intact.
-    if (!await cache.match(META) && await caches.has('gm-site-v2')) {
-      const legacy = await caches.open('gm-site-v2');
-      const legacyVersion = await cachedVersion(legacy);
-      for (const req of await legacy.keys()) {
-        const path = sitePath(req.url);
-        if (path === undefined || !unchanged(path, legacyVersion)) continue;
-        const res = await legacy.match(req);
-        if (res) await cache.put(req, res);
-      }
-    }
-    // the shell files the install fetched
+    // Promote the staged shell before spending storage on optional browsing history.
     if (await caches.has(STAGE)) {
       const stage = await caches.open(STAGE);
       for (const req of await stage.keys()) await cache.put(req, await stage.match(req));
     }
-    await cache.put(META, new Response(JSON.stringify({ version: VERSION, groups: GROUPS, assets: [...ASSETS] }), { headers: { 'content-type': 'application/json' } }));
+    await cache.put(META, new Response(JSON.stringify({ version: VERSION, groups: GROUPS, assets: [...ASSETS], migrated: true }), { headers: { 'content-type': 'application/json' } }));
     // The shell is in the browsing cache now. Discard staging for this registration.
     for (const k of await caches.keys()) if (k.startsWith(STAGE_PREFIX)) await caches.delete(k);
+    const legacy = await legacyBrowsing(before);
+    if (legacy) {
+      for (const req of await legacy.store.keys()) {
+        const path = sitePath(req.url);
+        if (path === undefined || !unchanged(path, legacy.version) || await cache.match(req)) continue;
+        const res = await legacy.store.match(req);
+        if (res) {
+          try {
+            await cache.put(req, res);
+          } catch (err) {
+            if (err.name !== 'QuotaExceededError') throw err;
+          }
+        }
+      }
+    }
     await self.clients.claim();
   })());
 });
