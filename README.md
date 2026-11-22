@@ -157,7 +157,7 @@ npm run typecheck  # tsc --noEmit
 npm run build      # refresh game output, typecheck, then the static site in web/dist
 npm run format     # Prettier (config at the repo root)
 npm run lint       # ESLint
-npm run verify:changed  # quick pre-merge check of only what your branch touched (vs origin/develop; --base <ref>)
+npm run verify:changed  # check changed files and related tests, plus a whole-project typecheck (vs origin/develop; --base <ref>)
 npm run verify     # the full check: format, lint, typecheck, every test, packages, release notes
 ```
 
