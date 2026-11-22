@@ -1,12 +1,31 @@
 Third-party parts bundled in ESP Web Tools 10.2.1 (this folder)
 ================================================================
 
-ESP Web Tools itself, esptool-js (Espressif Systems), @material/web (Google) and
-improv-wifi-serial-sdk are Apache License 2.0: the full text is in
-LICENSE-esp-web-tools.txt. The flash stub programs in the stub_flasher_*.js files
-come with esptool-js.
+ESP Web Tools (Open Home Foundation), esptool-js (Espressif Systems),
+@material/web (Google) and improv-wifi-serial-sdk (Improv Wi-Fi maintainers)
+use Apache License 2.0. The full text is in LICENSE-esp-web-tools.txt. The flash stub programs in the stub_flasher_*.js files
+come with esptool-js and use GNU GPL version 2 or later. The full license is
+in LICENSE-flasher-stubs.txt. The main flasher code credits Cesanta Software
+Limited (2016) and Espressif Systems (Shanghai) CO LTD (2016-2022).
 
-tslib (Microsoft) is under the 0BSD license, which asks for nothing in return.
+Corresponding upstream source releases for the bundled flash programs:
+ESP32-C5: https://github.com/espressif/esptool-legacy-flasher-stub/tree/v1.5.1
+All other bundled stubs: https://github.com/espressif/esptool-legacy-flasher-stub/tree/v1.3.0
+
+tslib 2.8.1 (Microsoft), 0BSD:
+
+Copyright (c) Microsoft Corporation.
+
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
+AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+PERFORMANCE OF THIS SOFTWARE.
 
 Lit (Google LLC), BSD-3-Clause:
 
@@ -62,6 +81,27 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
+
+The zlib notice in pako 2.1.0:
+
+(C) 1995-2013 Jean-loup Gailly and Mark Adler
+(C) 2014-2017 Vitaly Puzrin and Andrey Tupitsin
+
+This software is provided 'as-is', without any express or implied
+warranty. In no event will the authors be held liable for any damages
+arising from the use of this software.
+
+Permission is granted to anyone to use this software for any purpose,
+including commercial applications, and to alter it and redistribute it
+freely, subject to the following restrictions:
+
+1. The origin of this software must not be misrepresented; you must not
+  claim that you wrote the original software. If you use this software
+  in a product, an acknowledgment in the product documentation would be
+  appreciated but is not required.
+2. Altered source versions must be plainly marked as such, and must not be
+  misrepresented as being the original software.
+3. This notice may not be removed or altered from any source distribution.
 
 atob-lite 2.0.0 (used by esptool-js), MIT; its LICENSE.md names no copyright holder:
 
