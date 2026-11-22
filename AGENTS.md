@@ -34,7 +34,7 @@ lives under `web/packages/*/src/`. See `docs/monorepo.md`.
 ## Commands (run from `web/`)
 
 ```sh
-npm ci                                            # uses the root workspace lockfile
+(cd .. && npm ci)                                 # install from the root so verify gets its tools
 npm run format                                     # Prettier: web/, games/*.ts, code/README.md
 npm run format:check                               # checking only (part of the root npm run verify)
 npm run lint                                       # ESLint (type-aware) on web/; lint:fix fixes; lint:full skips the cache
