@@ -1,6 +1,6 @@
 // Tests: secret games stay out of the catalog until what reveals each is found, 13 felt eggs or
-// every tin heart (project/secretGames.ts), and the build lists them only in games/extra.json
-// (scripts/cdGames.ts). The hearts' game is never named here: its id is read from its about.json.
+// every tin heart (project/secretGames.ts), and the build lists them only in games/extra-1.json and games/extra-2.json
+// (scripts/cdGamesOutput.ts). The hearts' game is never named here: its id is read from its about.json.
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';

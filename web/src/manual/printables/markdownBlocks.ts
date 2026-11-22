@@ -56,6 +56,8 @@ interface Section {
  */
 export function readMarkdown(source: string, columns?: string[]): Section[] {
   const lines = source.replace(/\r\n?/g, '\n').split('\n');
+  const hasPipe = (line: string) => /(?<!\\)\|/.test(line);
+  const tableStarts = (i: number) => hasPipe(lines[i]) && i + 1 < lines.length && isRule(lines[i + 1]);
   const sections: Section[] = [{ title: '', level: 0, blocks: [] }];
   const add = (b: Block) => sections[sections.length - 1].blocks.push(b);
   for (let i = 0; i < lines.length;) {
@@ -74,11 +76,11 @@ export function readMarkdown(source: string, columns?: string[]): Section[] {
     } else if (heading) {
       sections.push({ title: heading[2].replace(/`/g, ''), level: heading[1].length, blocks: [] });
       i++;
-    } else if (line.trim().startsWith('|') && i + 1 < lines.length && isRule(lines[i + 1])) {
+    } else if (tableStarts(i)) {
       const head = cells(line);
       const keep = columns ? head.map((c, k) => (columns.includes(c) ? k : -1)).filter((k) => k >= 0) : head.map((_, k) => k);
       const rows: string[][] = [];
-      for (i += 2; i < lines.length && lines[i].trim().startsWith('|'); i++) rows.push(cells(lines[i]));
+      for (i += 2; i < lines.length && hasPipe(lines[i]); i++) rows.push(cells(lines[i]));
       add({ tag: 'table', head: keep.map((k) => inline(head[k])), rows: rows.map((r) => keep.map((k) => inline(r[k] ?? ''))) });
     } else if (bullet.test(line)) {
       const ordered = /\d/.test(bullet.exec(line)![2]);
@@ -94,7 +96,7 @@ export function readMarkdown(source: string, columns?: string[]): Section[] {
     } else {
       // The first line always belongs to the paragraph: a pipe line that is not a table's head stops the loop below at once, and without this it never advanced (a heap crash).
       const text: string[] = [line.trim()];
-      for (i++; i < lines.length && lines[i].trim() && !/^(#{1,6}\s|```|\s*\||\s*\[diagram:)/.test(lines[i]) && !bullet.test(lines[i]); i++)
+      for (i++; i < lines.length && lines[i].trim() && !/^(#{1,6}\s|```|\s*\||\s*\[diagram:)/.test(lines[i]) && !bullet.test(lines[i]) && !tableStarts(i); i++)
         text.push(lines[i].trim());
       add({ tag: 'p', kids: inline(text.join(' ')) });
     }
