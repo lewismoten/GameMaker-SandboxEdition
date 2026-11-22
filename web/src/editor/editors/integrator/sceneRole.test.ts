@@ -30,8 +30,14 @@ describe('sceneRole', () => {
   });
 
   it('keeps the Level check note off a room that needs play from one entrance', () => {
-    expect(levelCheckNote(room(entrances), 2)).toBe('');
-    expect(levelCheckNote(room(entrances.slice(0, 1)), 2)).toContain('leaves at once');
+    for (const entries of [entrances, [...entrances].reverse()]) expect(levelCheckNote(room(entries), 2)).toBe('');
+    expect(levelCheckNote(room([]), 2)).toBe('');
+  });
+
+  it('shows the Level check note when both arrival cells have exits', () => {
+    const g = room(entrances);
+    g.scenes[2].links.push(link(8, 8, 1));
+    expect(levelCheckNote(g, 2)).toContain('leaves at once');
   });
   it('recognizes an arrival on a link that ends play at a missing destination', () => {
     const g = room(entrances.slice(0, 1));
