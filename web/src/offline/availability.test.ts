@@ -1,7 +1,8 @@
 // Actual cache bodies, rather than an old completion flag, determine absent content labels.
 import { afterEach, expect, it, vi } from 'vitest';
 import { availableOffline, requireOfflineFile, markOfflineAction } from './availability';
-vi.mock('./archiveStore', () => ({ readOfflineCopy: async () => ({ cache: 'complete' }) }));
+import { offlineNames } from './archiveStore';
+vi.mock(import('./archiveStore'), async (original) => ({ ...(await original()), readOfflineCopy: async () => ({ version: 'one', cache: 'complete' }) }));
 afterEach(() => vi.unstubAllGlobals());
 it('allows online downloads and checks both committed and browsing entries offline', async () => {
   vi.stubGlobal('location', { href: 'https://example.test/' });
@@ -9,7 +10,7 @@ it('allows online downloads and checks both committed and browsing entries offli
   vi.stubGlobal('navigator', nav);
   const stored = new Set(['https://example.test/kept.zip']);
   vi.stubGlobal('caches', {
-    has: async () => true,
+    has: async (name: string) => name === offlineNames(location.href).browsing,
     open: async () => ({ match: async (url: string) => (stored.has(url) ? new Response('kept') : undefined) }),
   });
   expect(await availableOffline('./missing.zip')).toBe(true);
