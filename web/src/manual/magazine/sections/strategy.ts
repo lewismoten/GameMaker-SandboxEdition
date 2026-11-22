@@ -120,7 +120,10 @@ const BIZARRE_TIPS: [id: string, tip: string][] = [
     'A fog machine’s red light warns before it hisses, and each one gets you only once. Tackle a paper witch, then walk over her to say sorry: five sorries open STAFF ONLY.',
   ],
   ['sweats', 'The curtain only lets you through with a cup in hand: a coffee is five tips. Some things are too tough for words. Hop over them.'],
-  ['tickle', 'PIN first (Z), then TICKLE (X). A tickle without a pin goes right over a wary rat. And Mortimer at the top of the tower takes two.'],
+  [
+    'tickle',
+    'Pin with Down or Z. When the rat rolls onto its back, tickle with Space or X. A tickle without a pin goes right over a wary rat. And Mortimer at the top of the tower takes two.',
+  ],
 ];
 
 /** The CD's gameware and shareware: hints from the games' own instruction files. */

@@ -64,6 +64,7 @@ game folder opens in the browser unchanged.
 
 ## Credits
 
+- OpenAI Codex clarified the pin and tickle controls in the game help and TURBO BUTTON.
 - OpenAI Codex updated the SDK consumer verifier and its regression tests (November 22, 2026).
 - OpenAI Codex scoped the site and exported game worker caches and migrated unchanged browsing entries from the shared cache, including offline shell reuse and recovery after an intermediate upgrade or a single quota failure, with lifecycle tests.
 - OpenAI Codex fixed Reload after another tab activates an update and tested both click orderings.
