@@ -20,24 +20,65 @@ const CHAPTERS = [
   'Assumptions to confirm',
 ];
 /** Repository references omitted from the printed build instructions. */
-const DEV = /\.for[-]lewis|\btools\/|viewer\/|games\/year2000|vite-node|\bnpm\b|\bshell\.ts\b|\bNOTICE\.md\b|\bmy own\b[^.]*\bsimulator\b|\bRev B sheet\b/;
+const DEV =
+  /\.for[-]lewis|\btools\/|viewer\/|games\/year2000|vite-node|\bnpm\b|\b(?:shell\.ts|picsim\.py)\b|\bNOTICE\.md\b|\bmy own\b[^.]*\bsimulator\b|\bRev B sheet\b/;
 
 interface Chapter {
   head: string;
   blocks: Block[];
 }
 
+const hasReference = (kids: Inline[]) => DEV.test(blockText({ tag: 'p', kids }));
+
+/** Keep complete builder clauses and their inline formatting when a tool note shares an entry. */
+function builderText(kids: Inline[]): Inline[] {
+  if (!hasReference(kids)) return kids;
+  const clauses: Inline[][] = [[]];
+  for (const kid of kids) {
+    if (typeof kid !== 'string') {
+      clauses.at(-1)!.push(kid);
+      continue;
+    }
+    const pieces = kid.split(/(?<=[.;])(?=\s)/);
+    clauses.at(-1)!.push(pieces[0]);
+    for (const piece of pieces.slice(1)) clauses.push([piece]);
+  }
+  const kept = clauses.filter((clause) => !hasReference(clause)).flat();
+  if (typeof kept[0] === 'string') kept[0] = kept[0].trimStart();
+  const last = kept.at(-1);
+  if (typeof last === 'string') kept[kept.length - 1] = last.replace(/;$/, '.');
+  return kept;
+}
+
 function readable(b: Block): Block[] {
-  const keep = (kids: Inline[]) => !DEV.test(blockText({ tag: 'p', kids }));
-  if (b.tag === 'p' && !keep(b.kids)) return [];
+  if (b.tag === 'p' && hasReference(b.kids)) return [];
   if (b.tag === 'ol' || b.tag === 'ul') {
     const list = b.tag === 'ol' ? fixSteps(b) : b;
-    const items = list.items.filter(keep);
-    return items.length ? [{ ...list, items }] : [];
+    const runs: (typeof list)[] = [];
+    let run: typeof list | undefined;
+    for (const [index, item] of list.items.entries()) {
+      const kids = builderText(item);
+      if (!kids.length) {
+        if (list.tag === 'ol') run = undefined;
+        continue;
+      }
+      if (!run) {
+        const start = (list.start ?? 1) + index;
+        run = { tag: list.tag, items: [], ...(list.tag === 'ol' && start !== 1 ? { start } : {}) };
+        runs.push(run);
+      }
+      run.items.push(kids);
+    }
+    return runs;
   }
   if (b.tag === 'table') {
-    const rows = b.rows.filter((row) => row.every(keep));
-    return rows.length && b.head.every(keep) ? [{ ...b, rows }] : [];
+    const rows = b.rows.flatMap((row) => {
+      const cells = row.map(builderText);
+      // A check label alone cannot report a result. Keep other surviving columns in place.
+      const removedCell = cells.some((cell, i) => !cell.length && row[i].length);
+      return removedCell && !cells.slice(1).some((cell) => cell.length) ? [] : [cells];
+    });
+    return rows.length && !b.head.some(hasReference) ? [{ ...b, rows }] : [];
   }
   return [b];
 }
@@ -46,6 +87,8 @@ function readable(b: Block): Block[] {
 export function phoneChapters(readme: string, parts: string): Chapter[] {
   const sections = readMarkdown(
     readme
+      .replace(', so NOTICE.md has no entry for it', '')
+      .replace('`shell.ts` prints an estimate for several greases; the first print decides', 'The first print decides')
       .replace('see `PARTS.md` and the cost sheet', 'see the Parts list chapter and the Junior Lab parts list CSV')
       .replace('continue with step 6 above', 'continue with step 6 of Build order for a beginner'),
   );

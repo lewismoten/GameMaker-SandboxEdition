@@ -46,6 +46,13 @@ describe('readMarkdown', () => {
     expect(blockText(table)).toBe('Color Red Blue 10');
   });
 
+  it('ends a borderless table at a heading containing a pipe', () => {
+    const [intro, chapter] = readMarkdown('| A | B |\n|---|---|\nx | y\n## Open | closed\nChapter text.');
+    expect(intro.blocks).toMatchObject([{ tag: 'table', rows: [[['x'], ['y']]] }]);
+    expect(chapter.title).toBe('Open | closed');
+    expect(chapter.blocks.map(blockText)).toEqual(['Chapter text.']);
+  });
+
   it('keeps only the named columns of a table', () => {
     const table = readMarkdown(sample, ['Refs', 'Value'])[2].blocks[2];
     expect(table).toMatchObject({ tag: 'table', head: [['Refs'], ['Value']] });

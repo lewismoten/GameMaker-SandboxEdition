@@ -41,6 +41,7 @@ const cells = (line: string): string[] =>
     .map((c) => c.trim().replace(/\\\|/g, '|'));
 
 const isRule = (line: string) => /^\s*\|?\s*:?-+:?\s*(\|\s*:?-+:?\s*)*\|?\s*$/.test(line);
+const headingLine = /^(#{1,6})\s+(.*?)\s*#*\s*$/;
 const bullet = /^(\s*)([-*]|\d+\.)\s+(.*)$/;
 
 interface Section {
@@ -62,7 +63,7 @@ export function readMarkdown(source: string, columns?: string[]): Section[] {
   const add = (b: Block) => sections[sections.length - 1].blocks.push(b);
   for (let i = 0; i < lines.length;) {
     const line = lines[i];
-    const heading = /^(#{1,6})\s+(.*?)\s*#*\s*$/.exec(line);
+    const heading = headingLine.exec(line);
     const diagram = /^\s*\[diagram:\s*([\w-]+)\s*\]\s*$/.exec(line);
     if (!line.trim()) i++;
     else if (diagram) {
@@ -80,7 +81,12 @@ export function readMarkdown(source: string, columns?: string[]): Section[] {
       const head = cells(line);
       const keep = columns ? head.map((c, k) => (columns.includes(c) ? k : -1)).filter((k) => k >= 0) : head.map((_, k) => k);
       const rows: string[][] = [];
-      for (i += 2; i < lines.length && hasPipe(lines[i]); i++) rows.push(cells(lines[i]));
+      for (
+        i += 2;
+        i < lines.length && hasPipe(lines[i]) && !headingLine.test(lines[i]) && !bullet.test(lines[i]) && !lines[i].startsWith('```') && !tableStarts(i);
+        i++
+      )
+        rows.push(cells(lines[i]));
       add({ tag: 'table', head: keep.map((k) => inline(head[k])), rows: rows.map((r) => keep.map((k) => inline(r[k] ?? ''))) });
     } else if (bullet.test(line)) {
       const ordered = /\d/.test(bullet.exec(line)![2]);
