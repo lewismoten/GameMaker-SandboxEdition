@@ -174,6 +174,7 @@ function feltEgg(): { head: string; hints: { q: string; a: string; sketch?: unkn
         q: 'Show me the wiring.',
         a: `On ${board.title}, roll down from the pad, left along the bottom row to the corner, and keep rolling down into the seam. You land in the house's main fuse box. Roll onto the felt egg and press the space bar to pick it up, then roll into the black main switch to get back.`,
         sketch: {
+          description: 'From the pad, roll down to the bottom row, left to the corner, then down into the seam at X.',
           rows: ['-------------', '|    ---=---|', '|      @    |', '|      v    |', '|v<<<<<<    |', '|X-----------'],
           labels: [
             { x: 1, y: 2, text: `BOARD ${n + 1}` },
