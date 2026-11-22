@@ -161,6 +161,8 @@ npm run verify:changed  # check changed files and related tests, plus a whole-pr
 npm run verify     # the full check: format, lint, typecheck, every test, packages, release notes
 ```
 
+On the 1994 desk, choose **Web**, then **+ New game**. Follow [Make a first level](docs/editor.md#make-a-first-level) to build and play your game.
+
 This is an npm workspace monorepo with one root lockfile. The root `package.json` exists to declare
 the workspaces (`web` and `web/packages/*`) so a single `npm ci` links them and one
 `package-lock.json` pins everything; `npm start` there runs the web dev server. The app is in `web/`;
