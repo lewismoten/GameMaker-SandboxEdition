@@ -6,7 +6,7 @@
   "hero": "RIMA",
   "year": 1994,
   "price": "Free",
-  "version": "1.2",
+  "version": "1.3",
   "blurb": "Two short levels about a boss that is really several monsters. A monster is one block, so a giant is four standing together: Rocky, made of stone, fills a narrow way with the exit door behind her, and each part pops on its own. A star flies level with Rima's hand, so the head needs a step to stand on. In level 2 a tin robot takes two hits a part: after the first it blinks red for a moment and a star goes right through, so you wait. Signs in the levels say how. Play it, then open it in Game-Maker and look at the parts.",
   "exe": "GIANT.EXE",
   "dosName": "GIANT",

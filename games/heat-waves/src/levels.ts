@@ -20,7 +20,7 @@ import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { skyOf, type Pal } from '../../kit/starter/palette';
 import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { addCompactPlaques } from '../../kit/starter/microPlaque';
 import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { MIRAGE } from './monsters';
 import { buildPalettes } from './palettes';
@@ -57,7 +57,7 @@ export class Stage {
   ) {
     addStarterBlocks(this.book, pal);
     this.band = bandPicture(pal);
-    Object.assign(this.signs, addMicroPlaques(this.book, pal, Object.fromEntries(names.map((name) => [name, SIGN_WORDS[name]]))));
+    Object.assign(this.signs, addCompactPlaques(this.book, pal, Object.fromEntries(names.map((name) => [name, SIGN_WORDS[name]]))));
   }
 
   /** A block of this picture (the same picture is the same block), solid or air. */
@@ -110,7 +110,11 @@ export class Stage {
 
   /** Stamp an opaque shared plaque above the scenery, without a post. */
   sign(m: StarterMap, n: SignName, at: readonly [number, number]): void {
-    stampTiledSign(m, at[0], at[1], this.signs[n], 0, { maxPostHeight: 1 });
+    const set = (x: number, y: number, name: string) => {
+      const pic = this.book.pics.get(name)!;
+      m.set(x, y, pic.px.includes(skyOf(this.pal)) ? this.plain(this.over(pic, this.under(x, y))) : name);
+    };
+    stampTiledSign({ set }, at[0], at[1], this.signs[n], 0);
   }
 
   /** The exit door standing on the road at column `x`, its bottom on row 8. */

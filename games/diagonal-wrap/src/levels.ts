@@ -8,8 +8,8 @@
 //      right edge as well, and comes out on the left.
 // A dashed white line marks the map's top row and left column wherever the road crosses them. Hedges you can see
 // close the road in, so nothing stops Mia that she can't see.
-import { addMicroPlaques } from '../../kit/starter/microPlaque';
-import { stampTiledSign, stampMicroPlaques } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
+import { addCompactPlaques } from '../../kit/starter/microPlaque';
+import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { Book } from '../../kit/starter/book';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { buildStarterPalette, skyOf, type Pal } from '../../kit/starter/palette';
@@ -111,8 +111,8 @@ function build(book: Book, course: Course, signs: Record<SignName, Sign>, placed
         set(x, y, block);
       },
     };
-    if (name === 'length2') stampMicroPlaques(target, 0, 0, [s, signs.distance], 0, { maxPostHeight: 1 });
-    else stampTiledSign(target, 0, 0, s, 1, { maxPostHeight: 1 });
+    stampTiledSign(target, 0, 0, s, 0);
+    if (name === 'length2') stampTiledSign(target, 1, s.board.length, signs.distance, 0);
   }
   return { start: [sx, sy], exits, done: () => map };
 }
@@ -161,9 +161,12 @@ export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
   const book = new Book('bbl');
   const road = addTopBlocks(book, pal, side);
   const scratch = new Book('bbl');
-  const signs = addMicroPlaques(scratch, pal, WORDS);
+  const signs = addCompactPlaques(scratch, pal, WORDS);
   for (const [name, pic] of scratch.pics)
-    book.add(name, name.includes('.post') ? pic.crop(0, 0, 20, 20).map((x, y, c) => (c === skyOf(pal) ? road.get(x, y) : c)) : pic);
+    book.add(
+      name,
+      pic.crop(0, 0, 20, 20).map((x, y, c) => (c === skyOf(pal) ? road.get(x, y) : c)),
+    );
   const levels: Level[] = [
     { file: 'one', title: 'Straight On', hint: 'Down the map, and round to the top.', course: STRAIGHT, map: straight(book, signs) },
     { file: 'two', title: 'Tilted', hint: 'The same map, three times as far.', course: TILTED, map: tilted(book, signs) },

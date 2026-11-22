@@ -16,15 +16,23 @@ export function addMicroPlaques<K extends string>(book: Book, pal: Pal, texts: R
   for (const [name, plaque] of Object.entries<MicroPlaqueText>(texts))
     if (plaque.lines.length < 1 || plaque.lines.length > 2 || plaque.lines.some((line) => line.trim().length > 8))
       throw new Error(`Plaque ${name} needs one or two lines of at most eight characters`);
+  return addPlaques(book, pal, texts, false, glyphs);
+}
+
+/** Larger 4×8 letters with a separate tile on each side of the board. */
+export function addCompactPlaques<K extends string>(book: Book, pal: Pal, texts: Record<K, MicroPlaqueText>): Record<K, TiledSign> {
+  return addPlaques(book, pal, texts, true);
+}
+
+function addPlaques<K extends string>(book: Book, pal: Pal, texts: Record<K, MicroPlaqueText>, compact: boolean, glyphs?: MicroGlyphs): Record<K, TiledSign> {
   const { blocks, signs } = buildTiledSigns(
     Object.fromEntries(
       Object.entries<MicroPlaqueText>(texts).map(([name, text]) => [name, { rows: text.lines.map((line) => [line]), post: text.post }]),
     ) as Record<K, { rows: string[][]; post?: boolean }>,
     {
-      font: 'micro',
+      ...(compact ? { compact: true, maxWidth: 5 } : { font: 'micro' as const, maxWidth: 2 }),
       glyphs,
-      maxWidth: 2,
-      prefix: 'microPlaque',
+      prefix: compact ? 'compactPlaque' : 'microPlaque',
       maxBlocks: Math.min(100, book.size - book.index.size),
       colors: {
         background: skyOf(pal),

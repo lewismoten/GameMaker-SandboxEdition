@@ -15,7 +15,7 @@ import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
 import type { TiledSign as Sign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
-import { addMicroPlaques } from '../../kit/starter/microPlaque';
+import { addCompactPlaques } from '../../kit/starter/microPlaque';
 import { stampTiledSign } from '@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns';
 import { addCeiling } from './ceilingArt';
 import { FRESH, ROCKY } from './monsters';
@@ -32,7 +32,7 @@ const WORDS: Record<SignName, { lines: string[]; post?: boolean }> = {
 function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
   const book = new Book('bbl');
   addStarterBlocks(book, pal);
-  const signs = addMicroPlaques(book, pal, WORDS) as Record<SignName, Sign>;
+  const signs = addCompactPlaques(book, pal, WORDS);
   addCeiling(book, pal);
   return { book, signs };
 }

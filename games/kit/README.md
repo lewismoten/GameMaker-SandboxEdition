@@ -492,6 +492,8 @@ Boards contain only the shared paper, ink and wood indices, so they are byte-ide
 across Starter palettes. Only post tiles use `skyOf(pal)`, and all tiles are passable
 with downward gravity.
 
+`addCompactPlaques(book, pal, texts)` takes the same text records and uses the 4×8 font. Its five-block width limit includes both border tiles. On patterned scenery, composite the sky pixels in those borders over the map art.
+
 Place one with `stampTiledSign(map, x, y, sign, postHeight, { maxPostHeight: 1 })` from
 `@lewismoten/gamemaker-sandbox-tools/kit/tiledSigns`; `postHeight` is the full distance
 to the supporting ground in 20-pixel blocks. Starters explicitly set `maxPostHeight: 1`:
