@@ -6,7 +6,7 @@
 // A test keeps this table in step with CHECKS, so a new check can't be added without a class and a reason.
 import type { CheckId } from './findings';
 
-export type CheckClass = 'hard' | 'judged' | 'taste';
+type CheckClass = 'hard' | 'judged' | 'taste';
 type Row = [CheckClass, string];
 
 export const CHECK_CLASS: Record<CheckId, Row> = {

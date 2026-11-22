@@ -8,9 +8,9 @@
 // with no entry, falls back to the key's own name; the aria-label still carries the full name.
 
 /** The longest name drawn on a button, in characters. */
-export const MAX_NAME = 12;
+const MAX_NAME = 12;
 /** The longest single word drawn on a button (a longer word would not fit the circle's width). */
-export const MAX_WORD = 8;
+const MAX_WORD = 8;
 
 /** A controls.json (or any value) as scan code -> short name; entries without a usable short name are left out. */
 export function keyNames(controls: unknown): Map<number, string> {
@@ -30,7 +30,7 @@ export function nameFits(name: string): boolean {
   return name.length <= MAX_NAME && name.split(' ').every((w) => w.length <= MAX_WORD);
 }
 
-export interface ActionLabel {
+interface ActionLabel {
   /** The big text: the game's name for the key when it fits, else the key's name. */
   main: string;
   /** The small text under it: the key's name, only when `main` is the game's name. */

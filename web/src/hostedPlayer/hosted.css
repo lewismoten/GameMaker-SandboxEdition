@@ -125,8 +125,7 @@ body.wp-body {
   color: var(--wp-muted);
   vertical-align: 2px;
 }
-.wp button,
-.wp .wp-button {
+.wp button {
   box-sizing: border-box;
   min-height: 32px;
   min-width: 24px;
@@ -141,8 +140,7 @@ body.wp-body {
   display: inline-flex;
   align-items: center;
 }
-.wp button.wp-primary,
-.wp .wp-button.wp-primary {
+.wp button.wp-primary {
   border-color: var(--wp-accent);
   background: var(--wp-accent);
   color: var(--wp-accent-text);
