@@ -1074,7 +1074,7 @@ A firmware for the ESP32-3248S035 board that plays the Starter games, and an ins
 OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, added capture-matrix validation and failure regressions to the PLAYGAME measurement collector and plotter (`tools/dosbox-286/`).
 
 Built with [TypeScript](https://www.typescriptlang.org/) (Apache-2.0),
-[Vite](https://vitejs.dev/), [Vitest](https://vitest.dev/) and vite-node (MIT, both from the
+[Vite](https://vite.dev/), [Vitest](https://vitest.dev/) and vite-node (MIT, both from the
 Vitest project), and
 `@types/node` (MIT), and checked with [Prettier](https://prettier.io/) and
 [ESLint](https://eslint.org/) with `@eslint/js`, `typescript-eslint`, `eslint-config-prettier`
