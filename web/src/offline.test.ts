@@ -39,7 +39,7 @@ async function offerWaitingUpdate() {
     sw.controller = worker;
     sw.dispatchEvent(new Event('controllerchange'));
   };
-  return { clickReload: () => button!.fire('click'), takeOver, worker, reload, sw };
+  return { clickReload: () => button!.fire('click'), takeOver, worker, reload, sw, doc };
 }
 
 it('reloads once when the requested update first takes control', async () => {
@@ -60,6 +60,18 @@ it('reloads on click when another tab has already activated the offered worker',
   expect(reload).not.toHaveBeenCalled();
 
   clickReload();
+  expect(reload).toHaveBeenCalledOnce();
+  expect(worker.postMessage).not.toHaveBeenCalledWith({ type: 'skip-waiting' });
+});
+
+it('reloads from the load-error notice when another tab already activated the update', async () => {
+  const { takeOver, worker, reload, doc } = await offerWaitingUpdate();
+  takeOver();
+  window.dispatchEvent(new Event('vite:preloadError'));
+  const notice = doc.body.children.find((el) => el.isConnected);
+  expect(notice?.children[0].textContent).toContain('Reload to try again.');
+  expect(reload).not.toHaveBeenCalled();
+  notice?.children.find((el) => el.textContent === 'Reload')?.fire('click');
   expect(reload).toHaveBeenCalledOnce();
   expect(worker.postMessage).not.toHaveBeenCalledWith({ type: 'skip-waiting' });
 });
