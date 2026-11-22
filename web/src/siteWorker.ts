@@ -186,6 +186,11 @@ self.addEventListener('message', (event) => {
   }))));
 });
 
+// Relative shell resources need the registration directory as their document base.
+function fallbackHome(req, home) {
+  return new URL('./', req.url).href === SCOPE ? home : Response.redirect(SCOPE);
+}
+
 self.addEventListener('fetch', (event) => {
   const req = event.request;
   if (req.method !== 'GET') return;
@@ -210,7 +215,7 @@ self.addEventListener('fetch', (event) => {
         if (snapshot) return snapshot;
         if (req.mode === 'navigate') {
           const home = await copy.store.match(SCOPE);
-          if (home) return home;
+          if (home) return fallbackHome(req, home);
         }
       }
     }
@@ -224,7 +229,7 @@ self.addEventListener('fetch', (event) => {
       if (req.mode === 'navigate') {
         // offline, and a page never opened: the home page
         const page = (await cache.match(SCOPE)) || (await cache.match(SCOPE + 'index.html'));
-        if (page) return page;
+        if (page) return fallbackHome(req, page);
       }
       // A failed network request AND no cached body establish actual unavailability.
       const client = event.clientId && await self.clients.get(event.clientId);
