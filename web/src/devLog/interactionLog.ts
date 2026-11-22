@@ -81,6 +81,7 @@ function input(): void {
 function watchPerformance(): void {
   const watch = (type: string, fn: (e: PerformanceEntry) => void, extra: Record<string, unknown> = {}) => {
     try {
+      if (PerformanceObserver.supportedEntryTypes && !PerformanceObserver.supportedEntryTypes.includes(type)) return;
       new PerformanceObserver((l) => l.getEntries().forEach(fn)).observe({ type, buffered: true, ...extra });
     } catch {
       // not in this browser
