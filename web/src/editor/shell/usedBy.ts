@@ -9,8 +9,9 @@ import { openInEditor, sceneUses, scriptUses } from '../core/uses';
 export function usedByLine(project: Project, file: string): HTMLElement {
   const scenes = sceneUses(project, file);
   const scripts = scriptUses(project, file);
-  const line = h('p', { class: 'meta used-by' });
-  if (!scenes.length && !scripts.length) {
+  const uses = [...scenes, ...scripts];
+  const line = h('p', { class: 'meta used-by', dataset: { count: String(uses.length) } });
+  if (!uses.length) {
     line.append(
       'Not used by any scene yet: choose it for a scene in ',
       h('button', { class: 'used-by-link', onclick: () => openInEditor(project, project.gam) }, project.gam),
@@ -20,7 +21,6 @@ export function usedByLine(project: Project, file: string): HTMLElement {
   }
   // a palette or sound set can be used by twenty scenes: the first few, and the rest on request,
   // so the line stays one line and the editor below keeps its room
-  const uses = [...scenes, ...scripts];
   const link = (u: (typeof uses)[number]) =>
     h(
       'button',
@@ -61,7 +61,7 @@ function usesLine(project: Project, files: readonly string[]): HTMLElement | nul
   const seen = new Set<string>();
   const found = files.filter((f) => f && project.files.has(f) && !seen.has(f.toLowerCase()) && !!seen.add(f.toLowerCase()));
   if (!found.length) return null;
-  const line = h('p', { class: 'meta used-by uses' }, 'Uses ');
+  const line = h('p', { class: 'meta used-by uses', dataset: { count: String(found.length) } }, 'Uses ');
   found.forEach((f, i) => {
     if (i) line.append(', ');
     line.append(h('button', { class: 'used-by-link', title: `Open ${f}`, onclick: () => openInEditor(project, f) }, f));
