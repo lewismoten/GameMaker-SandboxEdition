@@ -66,6 +66,7 @@ game folder opens in the browser unchanged.
 
 - OpenAI Codex fixed and tested cancellation of single-game ZIP and HTML imports.
 - OpenAI Codex fixed and tested ZIP import reporting for unsupported compression and duplicate member paths.
+- OpenAI Codex fixed and tested the import dialog after a save fails without an error message.
 - OpenAI Codex extended the repository’s dead-code audit and reviewed unused type exports and Library styles.
 - OpenAI Codex revised the recovery instructions in Quicksand and Lightning.
 - OpenAI Codex corrected the Participation trophy badge description.

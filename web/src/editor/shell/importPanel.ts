@@ -97,8 +97,8 @@ export function openImportPanel(label: string): ImportPanel | undefined {
     fail(message) {
       if (ended || failed) return;
       failed = true;
-      line.textContent = 'The import stopped.';
-      status.textContent = `The import stopped. ${message}`;
+      line.textContent = `The import stopped. ${message}`;
+      status.textContent = line.textContent;
       bar.hidden = true;
       buttons.replaceChildren(h('button', { type: 'button', class: 'primary', autofocus: true, onclick: () => finish?.() }, 'OK'));
     },

@@ -363,7 +363,7 @@ async function guarded(panel: ImportPanel, work: Promise<void>): Promise<void> {
     await work;
   } catch (e) {
     if (panel.signal.aborted) return;
-    panel.fail((e as Error).message || 'Something went wrong while reading the file.');
+    panel.fail((e as Error | null | undefined)?.message || 'Something went wrong while reading the file.');
     return;
   }
   panel.end();
