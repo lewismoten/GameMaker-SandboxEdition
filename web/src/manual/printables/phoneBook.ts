@@ -19,15 +19,28 @@ const CHAPTERS = [
   'Checked and not checked',
   'Assumptions to confirm',
 ];
-/** A paragraph about the repository, not the kit, stays out of the book. */
-const DEV = /\.for[-]lewis|\btools\/|viewer\/|games\/year2000|vite-node|\bnpm\b/;
+/** Repository references omitted from the printed build instructions. */
+const DEV = /\.for[-]lewis|\btools\/|viewer\/|games\/year2000|vite-node|\bnpm\b|\bshell\.ts\b|\bNOTICE\.md\b|\bmy own\b[^.]*\bsimulator\b|\bRev B sheet\b/;
 
 interface Chapter {
   head: string;
   blocks: Block[];
 }
 
-const readable = (b: Block) => b.tag !== 'p' || !DEV.test(blockText(b));
+function readable(b: Block): Block[] {
+  const keep = (kids: Inline[]) => !DEV.test(blockText({ tag: 'p', kids }));
+  if (b.tag === 'p' && !keep(b.kids)) return [];
+  if (b.tag === 'ol' || b.tag === 'ul') {
+    const list = b.tag === 'ol' ? fixSteps(b) : b;
+    const items = list.items.filter(keep);
+    return items.length ? [{ ...list, items }] : [];
+  }
+  if (b.tag === 'table') {
+    const rows = b.rows.filter((row) => row.every(keep));
+    return rows.length && b.head.every(keep) ? [{ ...b, rows }] : [];
+  }
+  return [b];
+}
 
 /** The book's chapters from the README's and the parts list's Markdown: the intro, the build chapters, the parts. */
 export function phoneChapters(readme: string, parts: string): Chapter[] {
@@ -38,26 +51,23 @@ export function phoneChapters(readme: string, parts: string): Chapter[] {
   );
   const chapters: Chapter[] = [];
   const intro = sections.find((s) => s.level === 1);
-  if (intro) chapters.push({ head: 'About this kit', blocks: intro.blocks.filter(readable) });
+  if (intro) chapters.push({ head: 'About this kit', blocks: intro.blocks.flatMap(readable) });
   let inside = false;
   for (const s of sections) {
     if (s.level === 2) inside = CHAPTERS.some((c) => s.title.startsWith(c));
     if (!inside || s.level < 2) continue;
     chapters.push({
       head: s.title,
-      blocks: [...(s.level > 2 ? [{ tag: 'p', kids: [{ tag: 'strong', kids: [s.title] }] } as Block] : []), ...s.blocks.filter(readable)],
+      blocks: [...(s.level > 2 ? [{ tag: 'p', kids: [{ tag: 'strong', kids: [s.title] }] } as Block] : []), ...s.blocks.flatMap(readable)],
     });
   }
   const list = readMarkdown(parts, ['Refs', 'Qty', 'Value', 'Description']).find((s) => s.level === 1);
-  if (list) chapters.push({ head: 'Parts list', blocks: list.blocks.filter(readable) });
-  return chapters
-    .filter((c) => c.blocks.length)
-    .map((c) => ({ head: c.head.replace(/\s*\(.*$/, ''), blocks: c.blocks.map((b) => (b.tag === 'ol' ? fixSteps(b) : b)) }));
+  if (list) chapters.push({ head: 'Parts list', blocks: list.blocks.flatMap(readable) });
+  return chapters.filter((c) => c.blocks.length).map((c) => ({ head: c.head.replace(/\s*\(.*$/, ''), blocks: c.blocks }));
 }
 
 /** Steps that point to files made on the builder's own machine point to the ZIPs in the book: the Gerbers, and the firmware's hex. */
-function fixSteps(b: Block): Block {
-  if (b.tag !== 'ol') return b;
+function fixSteps(b: Extract<Block, { items: Inline[][] }>) {
   const swap = (s: unknown): unknown =>
     typeof s === 'string'
       ? s.replace(/out\/phone-gerbers\.zip/g, 'the circuit board ZIP’s gerbers folder').replace(/out\/firmware\/phone\.hex/g, 'phone.hex')

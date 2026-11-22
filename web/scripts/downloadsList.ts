@@ -8,7 +8,7 @@ import { builtTitlePath } from '../src/gfx/titlePicture';
 import { cdFiles } from './cdGames';
 import { gameShots } from './gameShots';
 
-/** A card's pictures, as image sources: a games/shots/ path, or a data URL for a secret game. */
+/** A card's pictures, as image sources: a games/shots/ path, or an inline data URL. */
 export interface CardPictures {
   title?: string;
   level?: string;
@@ -59,7 +59,7 @@ export const DOWNLOADS_STYLE = `<style>
       }
     </style>`;
 
-/** One game's card (`playHref` undefined: no play page, as for a secret game). `first` pictures load at once; the rest are lazy. */
+/** One game's card (`playHref` undefined: omit the play link). `first` pictures load at once; the rest are lazy. */
 export function downloadCard(g: CdCatalogEntry, version: string | undefined, playHref: string | undefined, first: boolean, pics: CardPictures = {}): string {
   const img = (src: string | undefined, alt: string) =>
     src ? `<img src="${esc(src)}" width="320" height="200" alt="${esc(alt)}"${first ? '' : ' loading="lazy"'} decoding="async" />` : '';

@@ -21,7 +21,7 @@ describe('phoneChapters (the real README and parts list)', () => {
 
   it('leaves out repository paths and commands, and points the Gerbers at the ZIP', () => {
     const all = chapters.flatMap((c) => c.blocks.map(blockText)).join('\n');
-    expect(all).not.toMatch(/\.for-lewis|vite-node|\bnpm\b|out\/phone-gerbers/);
+    expect(all).not.toMatch(/\.for-lewis|vite-node|\bnpm\b|out\/phone-gerbers|tools\/|shell\.ts|NOTICE\.md|my own|Rev B sheet/);
     expect(all).toContain('circuit board ZIP');
   });
 
@@ -30,6 +30,27 @@ describe('phoneChapters (the real README and parts list)', () => {
     const text = blockText(steps!);
     expect(text).not.toMatch(/out\/firmware|build_firmware/);
     expect(text).toContain('firmware folder of the circuit board ZIP');
+  });
+
+  it('keeps neighboring kit instructions when a list item or table row mentions repository tools', () => {
+    const [chapter] = phoneChapters(
+      [
+        '# Kit',
+        '- Fit the dial.',
+        '* Check the pulses with',
+        '  `tools/picsim.py`.',
+        '',
+        '4. Run `shell.ts`.',
+        '5. Attach the cover.',
+        '',
+        '| Check | Result |',
+        '| --- | --- |',
+        'Mesh | Run `tools/glb_check.py`',
+        '| Dial | Turns freely |',
+      ].join('\n'),
+      '',
+    );
+    expect(chapter.blocks.map(blockText)).toEqual(['Fit the dial.', 'Attach the cover.', 'Check Result Dial Turns freely']);
   });
 
   it('shows the parts as four columns', () => {
