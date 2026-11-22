@@ -66,6 +66,7 @@ game folder opens in the browser unchanged.
 
 - OpenAI Codex corrected the Participation trophy badge description.
 - OpenAI Codex tested focus restoration in the four game link dialogs and fixed Escape reaching the screen underneath.
+- OpenAI Codex documented the tools package’s level grid and synthesized speech helpers, build cache inputs, and contributor troubleshooting for Node memory and Git worktree permissions.
 - OpenAI Codex reviewed wrapping map views and corrected keyboard movement of link markers and Level check seam and link findings with regression tests.
 - OpenAI Codex fixed phone booklet filtering and Markdown table boundaries and added regression tests.
 - OpenAI Codex revised Starter page labels, game preview descriptions, offline instructions and page links during the November 22, 2026 SEO review.

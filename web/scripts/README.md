@@ -476,7 +476,7 @@ The specialized web commands are listed with their scripts above or in the [kit 
 - `npm run typecheck` — root or `web/`: checks TypeScript with an incremental build-info cache.
 - `npm run format` — root or `web/`: formats the repository with Prettier’s content cache.
 - `npm run format:check` — `web/` only: checks repository formatting with the same Prettier cache.
-- `npm run lint` — root or `web/`: runs type-aware ESLint with a content cache.
+- `npm run lint` — root or `web/`: runs type-aware ESLint with a content cache. Loading the web TypeScript project can exhaust Node’s default heap. On a host with enough memory, retry with `NODE_OPTIONS=--max-old-space-size=8192 npm run lint`. The same setting works with `npm run typecheck`.
 - `npm run lint:full` — `web/` only: runs ESLint without its cache.
 - `npm run lint:fix` — `web/` only: runs ESLint and applies available fixes.
 - `npm run pretypecheck` — web hook: checks SDK declaration freshness before typechecking.
