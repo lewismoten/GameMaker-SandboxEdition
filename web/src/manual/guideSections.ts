@@ -19,9 +19,9 @@ export const GUIDE_SECTIONS: [id: string, title: string, html: string][] = [
     <p>To be shown around, press <b>?</b> at the top of any page and choose <b>Show me around this
     page</b>: characters from the games point out each control and say what it does.</p>
     <h3>The two printed guides</h3>
-    <p>The Game-Maker box holds two guides written for the DOS version. Their menus and keys
-    are DOS Game-Maker’s, but what they teach holds here too, since this edition makes the
-    same games.</p>
+    <p>Sandbox Edition includes two new guides in the Game-Maker box on the desk. They use
+    the menus and keys from DOS Game-Maker. Their lessons on building games also apply in
+    the web editor.</p>
     <ul>
       <li><b>The Owner’s Guide</b> explains every part of a game (palettes, blocks, maps,
       monsters, the hero, sounds and music) and how they fit together.

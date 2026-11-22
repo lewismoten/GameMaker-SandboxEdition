@@ -38,9 +38,11 @@ once if its built content changed since the last push to `master`.
 
 ## Release notes
 
-A change that users or package consumers see adds one line under Unreleased in `CHANGELOG.md`
-(the site) or in `web/packages/<package>/CHANGELOG.md`. Plain words, US English, one voice
-([docs/package-releases.md](docs/package-releases.md)).
+For a change users or package consumers see, add a Markdown file under
+`changes/unreleased/<target>/`. Choose `pages` for the site or `engine`, `archives`, or
+`tools` for the package. Give the file a unique name and write one category heading, a blank
+line, and one single-line bullet in plain US English. The release command collects the
+fragments into the changelog. See the [release guide](docs/package-releases.md).
 
 ## Credits
 
