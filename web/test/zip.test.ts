@@ -1,10 +1,28 @@
 // Tests: Reading and writing zip files (the archives package).
 import { describe, expect, it } from 'vitest';
-import { createZip, readZip, crc32 } from '@lewismoten/gamemaker-sandbox-archives/zip';
+import { createZip, readZip, isZip, crc32 } from '@lewismoten/gamemaker-sandbox-archives/zip';
 
 describe('zip', () => {
+  it('recognizes an empty archive', async () => {
+    const bytes = await createZip([]);
+    expect(isZip(bytes)).toBe(true);
+    expect(await readZip(bytes)).toEqual([]);
+  });
+
   it('computes CRC-32', () => {
     expect(crc32(new TextEncoder().encode('123456789'))).toBe(0xcbf43926);
+  });
+
+  it('writes both classic ZIP counts at 65,535 entries and rejects 65,536', async () => {
+    const data = new Uint8Array();
+    const entries = Array.from({ length: 65535 }, (_, i) => ({ name: String(i), data }));
+    const zip = await createZip(entries);
+    const endRecord = new DataView(zip.buffer, zip.byteOffset + zip.length - 22);
+    expect(endRecord.getUint16(8, true)).toBe(65535); // Entries on this disk
+    expect(endRecord.getUint16(10, true)).toBe(65535); // Total entries
+
+    entries.push({ name: 'overflow', data });
+    await expect(createZip(entries)).rejects.toThrow(/too many entries/i);
   });
 
   it('round-trips stored and deflated entries', async () => {

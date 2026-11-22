@@ -65,6 +65,7 @@ game folder opens in the browser unchanged.
 ## Credits
 
 - OpenAI Codex added ZIP entry CRC-32 validation and regression tests (November 22, 2026).
+- OpenAI Codex fixed empty ZIP recognition and the editor import message and added regression tests (November 22, 2026).
 - OpenAI Codex fixed the pause after the first manual in the Library tour on narrow screens (November 21, 2026).
 - OpenAI Codex corrected references in the phone kit booklet and contributor documentation and extended the book link tests (November 21, 2026).
 - OpenAI Codex fixed the repeated red film caption for screen readers and added a regression test (November 21, 2026).
@@ -700,6 +701,10 @@ formats from their published descriptions and from Game-Maker's own source.
   patents expired in 2003–2004.
 - **FLI** animations: the Autodesk Animator format of Autodesk, Inc., implemented from its
   public documentation.
+- **ZIP**: the ZIP reader and writer in `web/packages/archives/src/project/zip.ts` follow
+  PKWARE's _.ZIP File Format Specification_ (`code/GM/APPNOTE.TXT`). PKWARE disclaims
+  any warranty that the information is current or accurate. Anyone using it assumes the
+  risk of damage from inaccuracies, and the information may change without notice.
 - **Sound Blaster**, **CMF** (Creative Music File), **VOC** and **SBI**: trademarks and
   formats of Creative Technology Ltd. The CMF player is a port of Game-Maker's own
   `SBMUSIC.C` and of the behavior of Creative's SBFMDRV driver; no Creative code is used.
