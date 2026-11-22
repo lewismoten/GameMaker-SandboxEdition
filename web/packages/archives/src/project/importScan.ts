@@ -340,18 +340,26 @@ export async function scanImport(given: ScanFile[], { signal, onProgress, onStep
     try {
       onStep?.('unpack', label);
       const bytes = await z.read();
+      let listing: ReturnType<typeof listZip>;
       if (asSfx) {
         // an MS-DOS program (MZ) with a zip's end record in it
         if (!bytes || bytes[0] !== 0x4d || bytes[1] !== 0x5a) return undefined;
         try {
-          entries = listShared(bytes).map((e) => ({ path: e.name, size: e.size, read: e.read }));
+          listing = listShared(bytes);
         } catch {
           return undefined;
         }
       } else {
         if (!bytes || !isZip(bytes)) throw new Error('It is not a zip file.');
-        entries = listShared(bytes).map((e) => ({ path: e.name, size: e.size, read: e.read }));
+        listing = listShared(bytes);
       }
+      const names = new Set<string>();
+      entries = listing.map(({ name, size, supported, read }) => {
+        if (!supported) throw new Error(`${name} uses an unsupported ZIP compression method and could not be imported.`);
+        if (names.has(name)) throw new Error(`The ZIP contains more than one file named ${name}.`);
+        names.add(name);
+        return { path: name, size, read };
+      });
     } catch (e) {
       report.zips++;
       report.badZips.push({ path: label, error: (e as Error).message || 'It could not be read.' });

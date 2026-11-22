@@ -180,6 +180,8 @@ async function inflateCapped(data: Uint8Array, cap: number): Promise<Uint8Array>
 /** An entry of a zip's directory, read only when asked (listZip). */
 export interface ZipListing {
   name: string;
+  /** Whether read() supports this entry’s compression method. */
+  supported: boolean;
   /** Unpacked bytes, as the directory says. */
   size: number;
   /** Inflates it (stored and deflated entries; others give undefined). */
@@ -275,7 +277,7 @@ function readDirectory(bytes: Uint8Array, v: DataView, eocd: number, limits: Zip
       if (crc32(data) !== expectedCrc) throw new Error(`The ZIP entry ${name} is damaged (CRC-32 mismatch)`);
       return data;
     };
-    out.push({ name, size: unpacked, read });
+    out.push({ name, size: unpacked, supported: method === 0 || method === 8, read });
   }
   if (p !== eocd) throw new DirectoryError('Damaged ZIP directory size');
   return out;
