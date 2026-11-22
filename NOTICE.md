@@ -1438,3 +1438,5 @@ maker "ZORP" is invented. The shell is untested: nothing has been printed.
 - <https://github.com/googlefonts/caveat> ([Wayback](https://web.archive.org/web/20261014040614/https://github.com/googlefonts/caveat))
 - <http://scripts.sil.org/OFL> ([Wayback](https://web.archive.org/web/20080821114713/http://scripts.sil.org/OFL))
 - <https://github.com/lewismoten/GameMaker-SandboxEdition/blob/master/docs/embed.md> ([Wayback](https://web.archive.org/web/20261122125817/https://github.com/lewismoten/GameMaker-SandboxEdition/blob/master/docs/embed.md))
+
+- **Editor asset references (November 22, 2026)**: OpenAI Codex updated reference links, replacement and deletion messages, and regression tests.
