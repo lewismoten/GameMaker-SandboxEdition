@@ -30,6 +30,17 @@ describe('phoneChapters (the real README and parts list)', () => {
     expect(markings?.blocks.map(blockText).join(' ')).toContain('MADE WITH GAME-MAKER');
   });
 
+  it('prints the tested firmware behavior and the simulation limits in the same result cell', () => {
+    const chapter = chapters.find((c) => c.head === 'Checked and not checked');
+    const rows = chapter?.blocks.flatMap((b) => (b.tag === 'table' ? b.rows : []));
+    const result = rows?.find(([label]) => blockText({ tag: 'p', kids: label }) === 'Firmware simulation')?.[1];
+    const text = blockText({ tag: 'p', kids: result ?? [] });
+    expect(text).toContain('start-up and display');
+    expect(text).toContain('dialing at 33 ms and 8 ms pulses');
+    expect(text).toContain('TALK mutes and lights the point');
+    expect(text).toContain('It does not model CMCON, the comparators or the configuration word');
+  });
+
   it('leaves out repository paths and commands, and points the Gerbers at the ZIP', () => {
     const all = chapters.flatMap((c) => c.blocks.map(blockText)).join('\n');
     expect(all).not.toMatch(/\.for-lewis|vite-node|\bnpm\b|out\/phone-gerbers|tools\/|shell\.ts|NOTICE\.md|my own|Rev B sheet/);
