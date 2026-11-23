@@ -64,6 +64,7 @@ game folder opens in the browser unchanged.
 
 ## Credits
 
+- OpenAI Codex checked internal publication references, updated the Programmer’s Guide chapter map and tour documentation, and extended the book-link tests.
 - OpenAI Codex sped up Scene Maker source lookups and added regression tests.
 - OpenAI Codex fixed and tested hostname wrapping in the download consent dialog.
 - OpenAI Codex capped animation source links in the editor header and tested keyboard expansion.
@@ -1445,7 +1446,7 @@ maker "ZORP" is invented. The shell is untested: nothing has been printed.
 ## Archived sources from the credits and manual
 
 - <https://lewismoten.com/> ([Archived Lewis Moten’s website](https://web.archive.org/web/20261007233234/https://lewismoten.com/))
-- <https://aderack.com/game-maker/index.php?title=List_of_Game-Maker_games> ([Archived Game-Maker Archive wiki game list](https://web.archive.org/web/20260807224837/https://aderack.com/game-maker/index.php?title=List_of_Game-Maker_games))
+- `https://aderack.com/game-maker/index.php?title=List_of_Game-Maker_games` ([Archived Game-Maker Archive wiki game list](https://web.archive.org/web/20260807224837/https://aderack.com/game-maker/index.php?title=List_of_Game-Maker_games))
 - <https://www.mobygames.com/group/10554/game-engine-rsd-game-maker/> ([Archived MobyGames RSD Game-Maker catalog](https://web.archive.org/web/20250405165801/https://www.mobygames.com/group/10554/game-engine-rsd-game-maker/))
 - <https://www.mazeguy.net/blobs1.html> ([Archived Mazeguy’s Invasion of the Blobs page](https://web.archive.org/web/20260921212325/https://www.mazeguy.net/blobs1.html))
 - <https://www.glorioustrainwrecks.com/node/7454> ([Archived Glorious Trainwrecks Game-Maker Source Release Jam](https://web.archive.org/web/20260122012324/https://www.glorioustrainwrecks.com/node/7454))

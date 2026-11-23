@@ -444,7 +444,7 @@ export const GUIDE_SECTIONS: [id: string, title: string, html: string][] = [
     sound sets slot by slot, voice clips that aren’t cut off, FM music tricks, demos and
     play-testing, and tricks from the Sandbox games: wind, vehicles, two planes, warning frames
     and bosses in stages. Every tip is how PLAYGAME really plays a game, so it holds here and in
-    DOS. Its last chapter is about this editor’s own helpers: the 🩺 Level check, its ✨ fixes,
+    DOS. Chapter 14 covers this editor’s own helpers: the 🩺 Level check, its ✨ fixes,
     and the 🤖 walkthrough bot.</p>
     <p><button type="button" class="guide-open-ultimate">📒 Open The Ultimate Owner’s Guide</button></p>
     <p>It opens in the box with everything else that came in it (the Library has it too), and

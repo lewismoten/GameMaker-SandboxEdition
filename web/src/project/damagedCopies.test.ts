@@ -9,6 +9,17 @@ import { recoverRecord } from './recover';
 import { emptyCompanion } from './companion';
 import { makeCheckpoint } from './checkpoint';
 import { holdsNothingExtra, redundantCopies } from './damagedCopies';
+import { FakeDoc, type FakeEl } from '../../test/fakeDom';
+import type { Project } from '../editor/core/project';
+
+vi.mock('../editor/shell/workspace', () => ({
+  Workspace: class {
+    constructor(
+      _host: HTMLElement,
+      readonly project: Project,
+    ) {}
+  },
+}));
 
 type Row = Record<string, unknown> & { id: string };
 
@@ -65,6 +76,7 @@ beforeEach(async () => {
   storage = await import('./storage');
 });
 afterEach(() => {
+  vi.restoreAllMocks();
   vi.useRealTimers();
   vi.unstubAllGlobals();
 });
@@ -124,6 +136,59 @@ describe('damaged copies are made only by opening the game', () => {
     rows.set('a~damaged', { ...damaged(), id: 'a~damaged', name: 'A (damaged copy)' });
     expect((await run(storage.listProjects())).map((p) => p.id)).toEqual(['a']);
     expect((await run(storage.listDamagedCopies())).map((p) => p.id)).toEqual(['a~damaged']);
+  });
+});
+
+function elements(root: FakeEl): FakeEl[] {
+  return [root, ...root.children.flatMap(elements)];
+}
+
+describe('opening and restoring a damaged project', () => {
+  it.each(['cut-short game.gam', 'malformed companion JSON'] as const)('%s', async (scenario) => {
+    const doc = new FakeDoc();
+    vi.stubGlobal('document', doc);
+    vi.stubGlobal('window', { setTimeout });
+    const ui = await import('../editor/core/ui');
+    vi.spyOn(ui, 'toast').mockImplementation(() => {});
+    const { showDamagedCopies } = await import('../editor/shell/damagedCopiesDialog');
+
+    const truncated = scenario === 'cut-short game.gam';
+    const intact = files();
+    const notes = { ...emptyCompanion(), releaseNotes: { '1.0': 'First' } };
+    const storedFiles = Object.fromEntries(intact.entries());
+    if (truncated) storedFiles['game.gam'] = storedFiles['game.gam'].slice(0, 10);
+    const raw = {
+      id: 'mine',
+      name: 'Mine',
+      gam: 'game.gam',
+      updated: 5,
+      files: storedFiles,
+      companion: truncated ? notes : '{"format":',
+    };
+    rows.set(raw.id, structuredClone(raw));
+    const { openStored } = await import('../modernUi');
+    const workspace = (await run(openStored(raw.id, document.body)))!;
+    const expectedFiles = Object.fromEntries(intact.entries());
+    if (truncated) delete expectedFiles['game.gam'];
+    for (const [name, bytes] of Object.entries(expectedFiles)) expect(workspace.project.files.get(name)).toEqual(bytes);
+    expect(workspace.project.companion).toEqual(truncated ? notes : undefined);
+    const message = truncated ? /game\.gam is cut short/i : /editor-only notes.*damaged/i;
+    await vi.waitFor(() => expect(elements(doc.body).map((el) => el.textContent)).toContainEqual(expect.stringMatching(message)));
+
+    const dialog = showDamagedCopies(() => {});
+    await vi.runAllTimersAsync();
+    const button = (label: string) => elements(doc.body).find((el) => el.tag === 'button' && el.attrs['aria-label'] === label)!;
+    button('Keep as a game: Mine (damaged copy)').fire('click');
+    await vi.runAllTimersAsync();
+    button('Close').fire('click');
+    await dialog;
+
+    expect(await run(storage.listDamagedCopies())).toEqual([]);
+    const restored = (await run(storage.listProjects())).find((game) => game.id !== raw.id)!;
+    expect(await run(storage.loadRecord(restored.id))).toEqual({ ...raw, id: restored.id, name: 'Mine (damaged copy)' });
+    const reopened = (await run(storage.loadProject(restored.id)))!;
+    expect(Object.fromEntries(reopened.files.entries())).toEqual(expectedFiles);
+    expect(reopened.damage).toEqual([expect.objectContaining({ message: expect.stringMatching(message) })]);
   });
 });
 

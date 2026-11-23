@@ -8,8 +8,11 @@ import { join, resolve } from 'node:path';
 import { inflateRawSync } from 'node:zlib';
 import { listZip } from '@lewismoten/gamemaker-sandbox-archives/zip';
 import { unpackFiles } from '@lewismoten/gamemaker-sandbox-tools/pack/meshPack';
+import { CHAPTERS as tourChapters } from '../tour/chapters';
+import { parseHash } from '../urlState';
+import { ZINE } from './zine/zinePages';
 import { GUIDE_SECTIONS } from './guideSections';
-import { chapterById, loadChapter } from '../programmersGuide/chapters';
+import { CHAPTERS as programmerChapters, chapterById, loadChapter } from '../programmersGuide/chapters';
 import { CHAPTERS } from './ultimate/plan';
 import { STARTER_ORDER } from '../project/starter';
 import { pagesA } from './printables/dexReportPagesA';
@@ -24,22 +27,6 @@ import { blockText } from './printables/markdownBlocks';
 const here = import.meta.dirname;
 const src = (f: string) => readFileSync(join(here, f), 'utf8');
 const pub = resolve(here, '../../public');
-const SITE_PATHS = [
-  'p',
-  'game',
-  'help',
-  'cast',
-  'credits',
-  'achievements',
-  'mac',
-  'windows',
-  'linux',
-  'magazine',
-  'library',
-  'programmers-guide',
-  'art-courses',
-];
-
 /** The DOS folder name of every game that has one. */
 function sampleNames(): Set<string> {
   const games = resolve(here, '../../../games');
@@ -53,13 +40,19 @@ function sampleNames(): Set<string> {
 
 describe('the Guide’s links', () => {
   it('point at a Guide section or a page of the site', () => {
-    const ids = new Set(GUIDE_SECTIONS.map(([id]) => id));
+    const destinations = new Set(['#/credits', '#/magazine', '#/mac', '#/windows', '#/linux', ...GUIDE_SECTIONS.map(([id]) => `#/help/${id}`)]);
     for (const [id, , html] of GUIDE_SECTIONS) {
-      for (const m of html.matchAll(/href="#\/([a-z]+)(?:\/([a-z-]+))?"/g)) {
-        expect(SITE_PATHS, `${id} links #/${m[1]}`).toContain(m[1]);
-        if (m[1] === 'help' && m[2]) expect(ids.has(m[2]), `${id} links #/help/${m[2]}`).toBe(true);
+      for (const [, href] of html.matchAll(/\bhref=["'](#[^"']*)["']/gi)) {
+        expect(destinations, `${id} links to ${href}`).toContain(href);
       }
     }
+  });
+
+  it('names the Ultimate chapter that shows the Level check and walkthrough bot', () => {
+    const overview = GUIDE_SECTIONS.find(([id]) => id === 'ultimate')![2];
+    const reference = overview.match(/Chapter (\d+)[^.]*Level check[^.]*walkthrough bot/);
+    expect(reference).toBeTruthy();
+    expect(CHAPTERS[Number(reference![1]) - 1].title).toBe('The Level Check and the Walkthrough Bot');
   });
 
   it('has Try it boxes whose game/question keys exist in the Starters’ manuals', () => {
@@ -123,6 +116,34 @@ describe('the Guide’s links', () => {
   });
 });
 
+it('keeps the Programmer’s Guide chapter map in reading order through the appendix', async () => {
+  const numbered = programmerChapters.filter((c) => c.no);
+  const map = (await loadChapter('reading')).split('## Chapter map')[1];
+  expect(numbered.map((c) => Number(c.no))).toEqual(numbered.map((_, i) => i + 1));
+  expect([...map.matchAll(/(?:^|;)\s*(\d+) /g)].map((m) => m[1])).toEqual(numbered.slice(1).map((c) => c.no));
+  expect(programmerChapters.at(-1)?.id).toBe('limits');
+  expect(map).toMatch(/appendix.*limits at a glance/i);
+  const memory = programmerChapters.findIndex((c) => c.id === 'memory');
+  expect(programmerChapters[memory + 1].id).toBe('screen');
+});
+
+it('resolves the documentation’s Markdown heading links in their destination files', () => {
+  const docs = import.meta.glob<string>('../../../docs/**/*.md', { eager: true, query: '?raw', import: 'default' });
+  for (const [file, markdown] of Object.entries(docs)) {
+    for (const [, path, anchor] of markdown.matchAll(/\]\(([^():#\s]*)#([\w-]+)\)/g)) {
+      const destination = path ? resolve(here, file, '..', path) : resolve(here, file);
+      const contents = readFileSync(destination, 'utf8').replace(/^```[^\n]*[\s\S]*?^```/gm, '');
+      const anchors = [...contents.matchAll(/^#{1,6} (.+)$/gm)].map((m) =>
+        m[1]
+          .toLowerCase()
+          .replace(/[^\w -]/g, '')
+          .replace(/ /g, '-'),
+      );
+      expect(anchors, `${file} links to ${path}#${anchor}`).toContain(anchor);
+    }
+  }
+});
+
 it('opens the Programmer’s Guide chapter named in the Under the Hood manual', async () => {
   const manual = JSON.parse(src('../../../games/under-the-hood/manual.json')) as { pages: { html: string }[] };
   const reference = manual.pages
@@ -133,6 +154,32 @@ it('opens the Programmer’s Guide chapter named in the Under the Hood manual', 
   const [, no, id, title] = reference!;
   expect(chapterById(id)).toMatchObject({ no, title });
   expect((await loadChapter(id)).trim()).not.toBe('');
+});
+
+it('opens the documented tour chapter routes and their sample files', () => {
+  const readme = src('../tour/README.md');
+  for (const [, id, hash] of readme.matchAll(/^\| `([a-z-]+)`[^|]*\| `(#\/[^`]*)`/gm)) {
+    expect(tourChapters.find((c) => c.id === id)?.hash, id).toBe(hash);
+  }
+  for (const c of tourChapters) {
+    for (const hash of [c.hash, ...c.steps.flatMap((s) => (s.go ? [s.go.hash] : []))]) {
+      const {
+        path: [kind, id, file],
+      } = parseHash(hash);
+      if (kind === 'help' && id) expect(GUIDE_SECTIONS.map(([section]) => section)).toContain(id);
+      if (kind === 'p') {
+        expect(id, hash).toMatch(/^look:/);
+        expect(existsSync(resolve(here, '../../../games', id.slice(5), 'disk', file ?? '')), hash).toBe(true);
+      }
+    }
+  }
+});
+
+it('continues the NO CARRIER phone list on the next page', () => {
+  const start = ZINE.findIndex((p) => p.scrawl?.includes('continued over ->'));
+  expect(ZINE[start].title).toBe('THE PHONE LIST');
+  expect(ZINE[start + 1].title).toBe('MORE NUMBERS');
+  expect(ZINE[start + 1].list?.length).toBeGreaterThan(0);
 });
 
 it('indexes each Tiny Pockets story under the volume that prints it', () => {
@@ -177,10 +224,19 @@ describe('the Owner’s Guide', () => {
     }
   });
 
+  it('sends the sample backup reference to the ZIP instructions', () => {
+    const reference = pages
+      .map((p) => p.body)
+      .join('')
+      .match(/SAMPLE\.ZIP<\/code> under its own name \(page (\d+)\)/);
+    expect(reference).toBeTruthy();
+    expect(pages[Number(reference![1])].body).toMatch(/<h3>Backup<\/h3>[\s\S]*?\.ZIP/);
+  });
+
   it('names chapters and appendices that exist', () => {
     const heads = new Set(pages.map((p) => p.head));
     for (const p of pages) {
-      for (const m of p.body.matchAll(/\(Chapter (\d)\)/g))
+      for (const m of p.body.matchAll(/\bChapter (\d+)\b/gi))
         expect(
           [...heads].some((h) => h.startsWith(`${m[1]}. `)),
           `${p.head}: Chapter ${m[1]}`,
