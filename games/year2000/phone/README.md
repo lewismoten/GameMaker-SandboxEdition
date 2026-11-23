@@ -139,12 +139,18 @@ Nothing was printed. The fits (0.3 mm), the lobes' travel (0.15 mm of overtravel
 
 Front: the project name ("SCIENCE PROJECT NO. 2" and "JUNIOR LAB EDITION", or "NO. 1" and "DELUXE MODEL"), "IN THE YEAR 2000!", "SANDBOX SOFTWARE" and
 "MADE WITH GAME-MAKER". The front of the 99 x 99 board is full of through-hole pads, and the dial and speaker cover their circles, so there is no
-room there for a code. On the back, in the blank spots: two QR codes (the game's site, and this folder's parts list and build steps on GitHub) and a
-block-art picture of Dex (`tools/dex_art.py`, from his sprite, as big as the back's pads leave room for: 16.8 x 18.9 mm on the Junior Lab board, with the few pixels that would land on a pad left out like the front's art clipped away from pads): one color of silkscreen, with tone shown by diagonal hatching and cross-hatching and his
-face and hands left bare, so he is never an undressed outline. A code is silkscreen where a module is light and bare soldermask where it is dark.
-`tools/silkart.py` draws them (QR from OpenCV's encoder, Apache-2.0). Modules are 0.5 mm, except the parts code on the Junior Lab board (0.44 mm) and the
-site code on the Deluxe board (0.45 mm), which had to be a little smaller to fit. `tools/qrscan.py` decodes the rendered preview and compares it with the URL:
-the layout scans; whether a phone camera reads these small modules from a real board has not been tried.
+room there for a code.
+
+On the back of the board, two QR codes fit between the pads. One points to the game's site. The other points to this folder's parts list and build steps on GitHub.
+A block-art picture of Dex fits between the pads too. On the Junior Lab board it measures 16.8 x 18.9 mm, with the few pixels that would land on a pad left out,
+just as on the front. Diagonal hatching and cross-hatching give the single silkscreen color its shading. His face and hands are left bare, so he is never an undressed outline.
+
+A code is silkscreen where a module is light and bare soldermask where it is dark. Modules are 0.5 mm, except the parts code on the Junior Lab board (0.44 mm) and the
+site code on the Deluxe board (0.45 mm), which had to be a little smaller to fit. The codes scan in the rendered preview. No one has tried scanning these small modules
+with a phone camera on a real board.
+
+`tools/dex_art.py` draws Dex from his sprite. `tools/silkart.py` draws the codes using OpenCV's QR encoder (Apache-2.0).
+`tools/qrscan.py` decodes the rendered preview and compares each result with its URL.
 
 ## Rebuild everything
 
