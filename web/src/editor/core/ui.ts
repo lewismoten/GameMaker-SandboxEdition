@@ -132,7 +132,7 @@ export function notice(message: string, kind: 'info' | 'error' = 'info', opts: {
 let modalHeadingId = 0;
 
 /** A modal <dialog>. Resolves with the value passed to close(). */
-export function modal<T>(title: string, build: (close: (v: T | undefined) => void) => Child): Promise<T | undefined> {
+export function modal<T>(title: string, build: (close: (v: T | undefined) => void) => Child, onDismiss?: () => void): Promise<T | undefined> {
   return new Promise((resolve) => {
     const headingId = `modal-heading-${++modalHeadingId}`;
     const dlg = h('dialog', { class: 'modal', 'aria-labelledby': headingId });
@@ -141,20 +141,21 @@ export function modal<T>(title: string, build: (close: (v: T | undefined) => voi
       dlg.remove();
       resolve(v);
     };
+    const dismiss = onDismiss ?? (() => close(undefined));
     // Keep the native cancel action, but do not send Escape to the screen underneath.
     dlg.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') e.stopPropagation();
     });
     dlg.addEventListener('cancel', (e) => {
       e.preventDefault();
-      close(undefined);
+      dismiss();
     });
     append(dlg, [
       h(
         'header',
         { class: 'modal-head' },
         h('h2', { id: headingId }, title),
-        h('button', { class: 'modal-close', 'aria-label': 'Close', title: 'Close (Esc)', onclick: () => close(undefined) }, '×'),
+        h('button', { class: 'modal-close', 'aria-label': 'Close', title: 'Close (Esc)', onclick: dismiss }, '×'),
       ),
       build(close),
     ]);
