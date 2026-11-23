@@ -13,7 +13,7 @@
  */
 import ts from 'typescript';
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
-import { dirname, join, relative, resolve } from 'node:path';
+import { dirname, join, matchesGlob, relative, resolve } from 'node:path';
 
 const root = resolve(__dirname, '../..');
 const args = process.argv.slice(2);
@@ -207,17 +207,9 @@ for (const f of sources) {
       n.expression.name.text === 'glob' &&
       ts.isStringLiteralLike(n.arguments[0])
     ) {
-      const pat = n.arguments[0].text;
-      const rx = new RegExp(
-        '^' +
-          resolve(dirname(f), pat)
-            .replace(/[.+^${}()|[\]\\]/g, '\\$&')
-            .replace(/\*\*\//g, '(?:.*/)?')
-            .replace(/\*/g, '[^/]*') +
-          '$',
-      );
+      const pattern = resolve(dirname(f), n.arguments[0].text);
       for (const g of all)
-        if (rx.test(g)) {
+        if (matchesGlob(g, pattern)) {
           dependencies.add(g);
           useName(g, ALL);
         }
