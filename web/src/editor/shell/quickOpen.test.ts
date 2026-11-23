@@ -71,6 +71,21 @@ describe('quick switcher', () => {
     expect(fileUses(p, 'photo.gif').map((u) => u.file)).toEqual(['intro.lst', 'intro.bkd']);
   });
 
+  it('names animations that draw a shared GIF through a backdrop before either destructive action', () => {
+    const p = project();
+    p.files.set('view.bkd', serializeBackdrop({ x: 0, y: 0, gif: 'PHOTO.GIF' }));
+    for (const clip of ['first.fli', 'second.fli']) {
+      p.files.set(clip, new Uint8Array());
+      p.setExtras(clip, 'scene', { background: { kind: 'picture', file: 'VIEW.BKD' } });
+      expect(embeddedFiles(p, clip)).toEqual(['VIEW.BKD', 'PHOTO.GIF']);
+    }
+    for (const message of [deleteMessage(p, 'photo.gif'), replaceMessage(p, 'photo.gif', 'next.gif')]) {
+      expect(message).toContain('backdrop view.bkd');
+      expect(message).toContain('first.fli Scene Maker source');
+      expect(message).toContain('second.fli Scene Maker source');
+    }
+  });
+
   it('names an editor-only preview palette and ignores stale owners', () => {
     const p = project();
     p.setExtras('forest.bbl', 'showPalette', 'FOR.PAL');

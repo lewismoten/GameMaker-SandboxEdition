@@ -10,6 +10,8 @@ interface BrushItem {
 
 interface BrushPanelOpts<T extends BrushItem> {
   kind: BrushKind;
+  blockSet: string;
+  sceneCount: number;
   items: T[];
   selected?: string;
   thumb: (item: T) => HTMLCanvasElement;
@@ -26,6 +28,7 @@ const NOUN: Record<BrushKind, string> = { terrains: 'terrain', stamps: 'stamp', 
 /** Fills `host` with the list and its buttons. */
 export function renderBrushPanel<T extends BrushItem>(host: HTMLElement, o: BrushPanelOpts<T>): void {
   const noun = NOUN[o.kind];
+  const owner = `${o.blockSet.toUpperCase()} · assigned in ${o.sceneCount} ${o.sceneCount === 1 ? 'scene' : 'scenes'}`;
   const list = rovingGrid(h('div', { class: 'block-picker mt-brushes' }), `${noun[0].toUpperCase()}${noun.slice(1)}s to paint with`);
   for (const it of o.items)
     list.append(
@@ -39,6 +42,7 @@ export function renderBrushPanel<T extends BrushItem>(host: HTMLElement, o: Brus
   const current = o.items.find((it) => it.id === o.selected);
   clear(
     host,
+    o.items.length ? h('p', { class: 'meta' }, owner) : null,
     o.items.length ? list : h('p', { class: 'meta' }, o.empty),
     h(
       'div',
@@ -53,7 +57,13 @@ export function renderBrushPanel<T extends BrushItem>(host: HTMLElement, o: Brus
               class: 'danger',
               'aria-label': `Delete ${current.name}`,
               onclick: async () => {
-                if (await confirmDialog(`Delete ${noun}`, `Delete the ${noun} “${current.name}”? The map keeps what was painted with it.`, 'Delete'))
+                if (
+                  await confirmDialog(
+                    `Delete ${noun}`,
+                    `Delete the ${noun} “${current.name}”? This removes the brush from every map using ${o.blockSet.toUpperCase()}. Maps keep the blocks already painted.`,
+                    'Delete',
+                  )
+                )
                   o.onDelete(current);
               },
             },
