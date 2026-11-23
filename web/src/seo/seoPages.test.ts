@@ -45,6 +45,15 @@ function jsonLd(html: string): Record<string, unknown>[] {
   });
 }
 
+/** The JSON-LD nodes from an already-parsed script's text content (null/missing is no nodes at all,
+ * so a commented-out script correctly yields nothing instead of still matching the raw HTML). */
+function graphFrom(scriptText: string | null): Record<string, unknown>[] {
+  if (!scriptText) return [];
+  const data = JSON.parse(scriptText) as { '@context': string; '@graph': Record<string, unknown>[] };
+  expect(data['@context']).toBe('https://schema.org');
+  return data['@graph'];
+}
+
 /** Anything that would name or point at a secret game. */
 function secretHits(text: string): string[] {
   return secret.flatMap((g) =>
@@ -424,8 +433,12 @@ describe('seoBuild', () => {
             h1s: document.querySelectorAll('h1').length,
             alts: attrs('img', 'alt'),
             preview: [...document.querySelectorAll('main img')].filter((img) => img.getAttribute('src') === src).map((img) => img.getAttribute('alt')),
+            // read from the parsed DOM, not the raw HTML text, so a commented-out script or title
+            // element is really gone instead of still matching a raw-HTML regex (Q188)
+            jsonLd: document.querySelector('script[type="application/ld+json"]')?.textContent ?? null,
           };
         }, `./og/${g.id}.png`);
+        expect(parsed.title.trim(), g.id).toBeTruthy();
         expect(titles.has(parsed.title), parsed.title).toBe(false);
         titles.add(parsed.title);
         expect(parsed.canonical, g.id).toEqual([url]);
@@ -438,9 +451,9 @@ describe('seoBuild', () => {
         expect(parsed.preview, g.id).toEqual([expectedAlt]);
         expect(html).not.toContain('its title screen');
         if (g.series === 'starter') expect(html).toContain('<p>A Starter game that shows one Game-Maker idea');
-        const game = jsonLd(html).find((n) => n['@type'] === 'VideoGame');
-        expect(game?.name).toBe(g.title);
-        expect(game?.url).toBe(url);
+        const game = graphFrom(parsed.jsonLd).find((n) => n['@type'] === 'VideoGame');
+        expect(game?.name, g.id).toBe(g.title);
+        expect(game?.url, g.id).toBe(url);
       }
     } finally {
       await browser.close();
