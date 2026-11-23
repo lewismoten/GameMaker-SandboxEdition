@@ -64,6 +64,7 @@ game folder opens in the browser unchanged.
 
 ## Credits
 
+- OpenAI Codex fixed and tested hostname wrapping in the download consent dialog.
 - OpenAI Codex capped animation source links in the editor header and tested keyboard expansion.
 - OpenAI Codex fixed and tested the phone editor’s reference counts after Scene Maker saves.
 - OpenAI Codex fixed and tested scrolling the focused achievement tab into view during keyboard navigation and record refreshes.
