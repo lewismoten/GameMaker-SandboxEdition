@@ -13,7 +13,11 @@
     600 13px system-ui,
     sans-serif;
   opacity: 0.75;
-  transition: opacity 0.2s;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .gm-player .gm-corner .gm-speed {
+    transition: opacity 0.2s;
+  }
 }
 
 .gm-player .gm-corner .gm-speed:hover,

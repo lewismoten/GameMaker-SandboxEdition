@@ -194,6 +194,7 @@ export class Tour {
 
   private go(i: number): void {
     if (now.tour !== this) return;
+    this.sound.stopVoice();
     if (i >= this.flat.length) return void this.finale();
     i = Math.max(0, i);
     const token = ++this.token;
@@ -459,7 +460,7 @@ export class Tour {
       this.actedIn.add(chapter);
       held = pageAct(step.act);
     }
-    if (step.demo) tourDemo(step.demo);
+    if (step.demo && (step.demo === 'stop' || !this.still)) tourDemo(step.demo);
     if (!this.live(token)) return;
     if (step.action === 'enter' && actor) await actor.hop(this.still);
     if (!this.live(token)) return;

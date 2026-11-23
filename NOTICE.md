@@ -64,6 +64,7 @@ game folder opens in the browser unchanged.
 
 ## Credits
 
+- OpenAI Codex corrected reduced-motion and sound controls for the tour and added regression tests.
 - OpenAI Codex sped up Scene Maker source lookups and added regression tests.
 - OpenAI Codex fixed and tested hostname wrapping in the download consent dialog.
 - OpenAI Codex capped animation source links in the editor header and tested keyboard expansion.

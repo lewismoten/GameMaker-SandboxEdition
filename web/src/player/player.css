@@ -473,8 +473,12 @@
   color: #ffd400;
   cursor: pointer;
   opacity: 0.75;
-  transition: opacity 0.2s;
   touch-action: manipulation;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .gm-player .gm-snapshot {
+    transition: opacity 0.2s;
+  }
 }
 
 .gm-player .gm-snapshot-note {
