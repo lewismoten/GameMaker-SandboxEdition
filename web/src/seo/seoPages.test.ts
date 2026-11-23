@@ -96,6 +96,17 @@ describe('seoBuild', () => {
     }
   });
 
+  it('follows the static Library’s TURBO BUTTON link to the magazine without scripts', () => {
+    const documents = new Map([[SITE_URL, home]]);
+    for (const p of staticPages(catalog)) documents.set(new URL(p.file, SITE_URL).href, staticPageHtml(home, p));
+    const libraryUrl = new URL('library.html', SITE_URL);
+    const href = /<a href="([^"]+)">TURBO BUTTON<\/a>/.exec(documents.get(libraryUrl.href)!)?.[1];
+    expect(href).toBeTruthy();
+    const destination = new URL(href!, libraryUrl);
+    destination.hash = '';
+    expect(documents.get(destination.href)).toContain('<h1>TURBO BUTTON</h1>');
+  });
+
   it('links every reading from its contents and serves lesson figures and structured chapter text', () => {
     for (const [slug, count] of [
       ['art-courses', 7],
