@@ -91,6 +91,7 @@ describe('scanImport', () => {
       file('b/HERO.CEL', Uint8Array.of(2)),
     ]);
     expect(report.games.map((g) => g.name)).toEqual(['Good']);
+    expect(report.games[0].from).toBe('good.zip');
     expect(report.looseErrors).toEqual(['a/hero.cel and b/HERO.CEL both use the DOS name hero.cel.']);
     expect(report.loose).toEqual([]);
     expect(report.badZips).toEqual([]);
