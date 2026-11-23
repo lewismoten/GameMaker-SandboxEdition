@@ -27,7 +27,13 @@ describe('phoneChapters (the real README and parts list)', () => {
       /An ordinary PICkit also works on J1 .* is the way to reprogram a chip whose LVP bit is off\./,
     );
     const markings = chapters.find((c) => c.head === 'What is printed on the board');
-    expect(markings?.blocks.map(blockText).join(' ')).toContain('MADE WITH GAME-MAKER');
+    const text = markings?.blocks.map(blockText).join(' ');
+    expect(text).toContain('MADE WITH GAME-MAKER');
+    expect(text).toContain(
+      "On the back of the board, two QR codes fit between the pads. One points to the game's site. The other points to this folder's parts list and build steps on GitHub.",
+    );
+    expect(text).toContain('A block-art picture of Dex');
+    expect(text).toContain('The codes scan in the rendered preview. No one has tried scanning these small modules with a phone camera on a real board.');
   });
 
   it('keeps the lead projection assumption and minimum gap in the opening clearance paragraph', () => {
