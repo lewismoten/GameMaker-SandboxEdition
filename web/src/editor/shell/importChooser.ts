@@ -207,7 +207,7 @@ export async function importWithProgress(games: FoundGame[], each: (g: FoundGame
             await each(g);
             done++;
           } catch (e) {
-            failed.push(`${g.name} (${(e as Error).message})`);
+            failed.push(`${g.name} (${(e as Error | null | undefined)?.message || 'Something went wrong while importing the game.'})`);
           }
         }
         tell(games.length, games.length, 'Done.');
