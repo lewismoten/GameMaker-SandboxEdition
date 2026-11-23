@@ -65,12 +65,16 @@ it('bypasses both the committed copy and browsing cache for verified update acqu
   expect(await (await h.request('assets/old.js')).text()).toBe('old code');
 });
 
-it.each(['browsing cache', 'older saved copy', 'current saved copy'])('opens the offline home from nested pages with the %s', async (source) => {
+it.each([
+  { source: 'browsing cache', version: null, browsingHome: 'home', expectedHome: 'home' },
+  { source: 'older saved copy', version: 'one', browsingHome: null, expectedHome: 'snapshot home' },
+  { source: 'current saved copy', version: 'two', browsingHome: null, expectedHome: 'snapshot home' },
+  { source: 'current saved copy and browsing cache', version: 'two', browsingHome: 'stale browsing', expectedHome: 'snapshot home' },
+])('opens the offline home from nested pages with the $source', async ({ version, browsingHome, expectedHome }) => {
   const h = harness('two');
   const browsing = await h.caches.open(offlineNames(base).browsing);
-  if (source === 'browsing cache') await browsing.put(base, new Response('home'));
-  else await seed(h, source === 'older saved copy' ? 'one' : 'two');
-  const expectedHome = source === 'browsing cache' ? 'home' : 'snapshot home';
+  if (browsingHome) await browsing.put(base, new Response(browsingHome));
+  if (version) await seed(h, version);
 
   const nested = await h.request('player/index.html', 'navigate');
   expect(nested.status).toBe(302);
