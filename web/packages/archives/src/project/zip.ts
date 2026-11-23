@@ -20,20 +20,52 @@ export interface ZipEntry {
 }
 
 // CRC-32 (reflected polynomial 0xEDB88320, initial value and final XOR 0xFFFFFFFF),
-// computed a byte at a time from a 256-entry table.
-const CRC_TABLE = (() => {
-  const t = new Uint32Array(256);
+// computed eight bytes at a time ("slicing-by-8") from eight 256-entry tables.
+const CRC_TABLES = (() => {
+  const t = new Uint32Array(256 * 8);
   for (let n = 0; n < 256; n++) {
     let c = n;
     for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1;
     t[n] = c >>> 0;
   }
+  for (let n = 0; n < 256; n++) for (let k = 1; k < 8; k++) t[k * 256 + n] = (t[(k - 1) * 256 + n] >>> 8) ^ t[t[(k - 1) * 256 + n] & 0xff];
   return t;
 })();
 
+/** Running CRC state over data[start, end); begin with 0xffffffff, finish with `^ 0xffffffff`. */
+function crcRun(c: number, data: Uint8Array, start: number, end: number): number {
+  const t = CRC_TABLES;
+  let i = start;
+  for (; i + 8 <= end; i += 8) {
+    const lo = c ^ (data[i] | (data[i + 1] << 8) | (data[i + 2] << 16) | (data[i + 3] << 24));
+    c =
+      t[1792 + (lo & 0xff)] ^
+      t[1536 + ((lo >>> 8) & 0xff)] ^
+      t[1280 + ((lo >>> 16) & 0xff)] ^
+      t[1024 + (lo >>> 24)] ^
+      t[768 + data[i + 4]] ^
+      t[512 + data[i + 5]] ^
+      t[256 + data[i + 6]] ^
+      t[data[i + 7]];
+  }
+  for (; i < end; i++) c = t[(c ^ data[i]) & 0xff] ^ (c >>> 8);
+  return c;
+}
+
 export function crc32(data: Uint8Array): number {
+  return (crcRun(0xffffffff, data, 0, data.length) ^ 0xffffffff) >>> 0;
+}
+
+const CRC_SLICE = 1 << 20;
+
+/** The same CRC-32, in 1 MiB slices with a hand-back to the event loop between them, so a large entry does not freeze the page. */
+async function crc32Yielding(data: Uint8Array): Promise<number> {
+  if (data.length <= CRC_SLICE) return crc32(data);
   let c = 0xffffffff;
-  for (let i = 0; i < data.length; i++) c = CRC_TABLE[(c ^ data[i]) & 0xff] ^ (c >>> 8);
+  for (let at = 0; at < data.length; at += CRC_SLICE) {
+    c = crcRun(c, data, at, Math.min(data.length, at + CRC_SLICE));
+    await new Promise<void>((done) => setTimeout(done, 0));
+  }
   return (c ^ 0xffffffff) >>> 0;
 }
 
@@ -274,7 +306,7 @@ function readDirectory(bytes: Uint8Array, v: DataView, eocd: number, limits: Zip
           throw e;
         }
       } else return undefined;
-      if (crc32(data) !== expectedCrc) throw new Error(`The ZIP entry ${name} is damaged (CRC-32 mismatch)`);
+      if ((await crc32Yielding(data)) !== expectedCrc) throw new Error(`The ZIP entry ${name} is damaged (CRC-32 mismatch)`);
       return data;
     };
     out.push({ name, size: unpacked, supported: method === 0 || method === 8, read });
