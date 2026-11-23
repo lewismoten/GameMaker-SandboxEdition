@@ -1,8 +1,10 @@
 // "What uses this?": block uses in maps, chains, monsters and heroes; colors in blocks.
 import { describe, expect, it } from 'vitest';
 import { GameFiles } from '../../project/files';
+import { emptyCompanion } from '../../project/companion';
+import { normalizeScene, sceneFiles } from '../editors/animation/scene/sceneModel';
 import { Project } from './project';
-import { blockUses, colorUses, listRuns, sceneUses } from './uses';
+import { blockUses, colorUses, embeddedFiles, fileUses, listRuns, sceneUses } from './uses';
 import { newGame, emptyScene, serializeGame, ADVTYPE } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { newBlockSet, serializeBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { newMap, serializeMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
@@ -32,6 +34,7 @@ function project(): Project {
   mons[5].pic[1] = [100, 0];
   mons[5].pic[2] = [8, 3]; // after the end marker: not shown
   const files = new GameFiles([
+    ['intro.fli', new Uint8Array()],
     ['test.gam', serializeGame(game)],
     ['day.pal', serializePalette(defaultPalette())],
     ['one.map', serializeMap(map)],
@@ -63,4 +66,53 @@ describe('uses', () => {
     expect(colorUses(project(), 'day.pal', 77).map((u) => u.text)).toEqual(['land.bbl: blocks 3–4']);
     expect(listRuns([1, 2, 3, 7, 9, 10])).toBe('1–3, 7, 9–10');
   });
+});
+
+it('reads saved scene sources in order without reading actor paths', () => {
+  const p = project();
+  p.companion = emptyCompanion();
+  const actor = { kind: 'actor', source: { chr: 'hero.chr', cbl: 'hero.cbl' }, path: [{ f: 9 }, { f: 2 }] };
+  const tracks = [
+    {
+      items: [actor, { kind: 'text' }, { kind: 'actor', source: { type: 'mon', mon: 'foes.mon', mbl: 'foes.mbl' } }, { kind: 'block', bbl: 'land.bbl' }, actor],
+    },
+  ];
+  const background = { kind: 'picture', file: 'sky.gif', start: 8 };
+  for (const scene of [
+    { background, tracks },
+    { backgrounds: [background, { kind: 'map', start: 2, map: 'one.map' }, { kind: 'color', start: 0 }, { ...background, file: 'hidden.gif' }], tracks },
+  ]) {
+    const expected = sceneFiles(normalizeScene(scene), p);
+    p.companion.files['intro.fli'] = { scene };
+    const path = actor.path;
+    Object.defineProperty(actor, 'path', {
+      configurable: true,
+      get() {
+        throw new Error('lookup read actor.path');
+      },
+    });
+    expect(embeddedFiles(p, 'intro.fli')).toEqual(expected);
+    expect(fileUses(p, 'hero.chr')).toEqual([{ file: 'intro.fli', text: 'intro.fli Scene Maker source', count: 2 }]);
+    Object.defineProperty(actor, 'path', { value: path, configurable: true });
+  }
+});
+
+it('extracts saved filenames faster than normalizing a motion-heavy scene', () => {
+  const p = project();
+  const path = Array.from({ length: 200 }, (_, i) => ({ f: (i * 37) % 200, x: i, y: 0 }));
+  const items = Array.from({ length: 100 }, () => ({ kind: 'actor', source: { chr: 'hero.chr', cbl: 'hero.cbl' }, path }));
+  const scene = { tracks: [{ items }] };
+  p.companion = emptyCompanion();
+  p.companion.files['intro.fli'] = { scene };
+  function medianTime(read: () => string[]): number {
+    read();
+    const samples = Array.from({ length: 7 }, () => {
+      const start = performance.now();
+      for (let i = 0; i < 3; i++) read();
+      return performance.now() - start;
+    });
+    return samples.sort((a, b) => a - b)[3];
+  }
+  const baseline = medianTime(() => sceneFiles(normalizeScene(scene), p));
+  expect(medianTime(() => embeddedFiles(p, 'intro.fli'))).toBeLessThan(baseline / 2);
 });
