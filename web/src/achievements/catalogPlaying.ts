@@ -177,7 +177,7 @@ export const PLAYING_ACHIEVEMENTS: readonly Achievement[] = [
   {
     id: 'trophy-first',
     title: 'Participation trophy',
-    desc: 'Won, lost, or quit a listed game with points on the scoreboard.',
+    desc: 'Win, lose, or quit a listed game after adding to your total points or improving your best score.',
     icon: '🎖️',
     category: 'playing',
   },
