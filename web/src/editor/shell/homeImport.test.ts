@@ -66,6 +66,37 @@ it('explains an empty ZIP upload without creating a project', async () => {
   expect(openProject).not.toHaveBeenCalled();
 });
 
+it('shows both colliding loose MAP paths in the No game found dialog without creating a project', async () => {
+  const { modal: realModal } = await vi.importActual<typeof import('../core/ui')>('../core/ui');
+  const doc = new FakeDoc();
+  vi.stubGlobal('document', doc);
+  vi.mocked(modal).mockImplementation(realModal);
+  const create = vi.spyOn(Project, 'fromFiles');
+  const nav = { openProject: vi.fn() };
+  try {
+    const files = ['a/level.map', 'b/LEVEL.MAP'].map((path) => {
+      const file = new File([path], path.split('/')[1]);
+      Object.defineProperty(file, 'webkitRelativePath', { value: path });
+      return file;
+    });
+    const importing = importPicked(nav, files);
+    await vi.waitFor(() => expect(modal).toHaveBeenCalledWith('No game found', expect.any(Function)));
+    const dialog = doc.body.children.at(-1)!;
+    expect(dialog.open).toBe(true);
+    expect(dialog.children.filter((el) => el.tag === 'p').map((el) => el.children[0].textContent)).toContain(
+      'a/level.map and b/LEVEL.MAP both use the DOS name level.map.',
+    );
+    dialog.fire('cancel');
+    await importing;
+    expect(create).not.toHaveBeenCalled();
+    expect(nav.openProject).not.toHaveBeenCalled();
+  } finally {
+    vi.mocked(modal).mockResolvedValue(undefined);
+    create.mockRestore();
+    vi.unstubAllGlobals();
+  }
+});
+
 it.each(['HTML read', 'ZIP extraction', 'Opening'])('cancels during %s before saving or navigating', async (phase) => {
   const controller = new AbortController();
   const panel = {

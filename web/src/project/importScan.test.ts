@@ -72,6 +72,15 @@ describe('scanImport', () => {
     expect(report.badZips).toEqual([{ path: 'game.zip', error: `${first} and ${second} both use the DOS name ${key}.` }]);
   });
 
+  it('reports a DOS name collision when only loose MAP files are selected', async () => {
+    const report = await scanImport([file('a/level.map'), file('b/LEVEL.MAP')]);
+    expect(report).toMatchObject({
+      games: [],
+      loose: [],
+      looseErrors: ['a/level.map and b/LEVEL.MAP both use the DOS name level.map.'],
+    });
+  });
+
   it.each([false, true])('keeps a ZIP game alongside colliding loose files (loose GAM present: %s)', async (withGam) => {
     const good = await zip('good.zip', [['good.gam', gam('Good')]]);
     expect((await scanImport([good])).games.map((g) => g.name)).toEqual(['Good']);
