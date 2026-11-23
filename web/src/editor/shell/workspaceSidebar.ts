@@ -173,6 +173,7 @@ export class WorkspaceSidebar {
     const p = this.project;
     const names = p.files.names();
     const current = this.host.current();
+    const dot = current?.lastIndexOf('.') ?? -1;
     const filesLabel = `Files (${names.length})`;
     this.listed = new Set(names);
     const groups = new Map<FileKind, string[]>();
@@ -204,7 +205,14 @@ export class WorkspaceSidebar {
           },
           h('span', { 'aria-hidden': 'true' }, '☰ '),
           h('span', { class: 'files-toggle-prefix' }, current ? `${filesLabel} ·` : filesLabel),
-          current ? h('span', { class: 'files-toggle-current' }, h('bdi', null, current)) : null,
+          current
+            ? h(
+                'span',
+                { class: 'files-toggle-current', dir: 'ltr' },
+                h('bdi', { class: 'files-toggle-stem' }, dot < 0 ? current : current.slice(0, dot)),
+                dot < 0 ? null : h('bdi', { class: 'files-toggle-extension', dir: 'ltr' }, current.slice(dot)),
+              )
+            : null,
         ),
         (this.playEl = this.host.playButton()),
         this.host.firstSteps()?.button(),

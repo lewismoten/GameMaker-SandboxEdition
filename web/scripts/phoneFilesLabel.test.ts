@@ -4,54 +4,63 @@ import { expect, it } from 'vitest';
 import { forceTheme, assertTheme } from './forceTheme';
 import { launch, target } from './perfLib';
 
-it('keeps a visible filename ending inside the only overflowing label at 390px', async () => {
+it('keeps the extension visible when a file selected from the phone picker overflows at 390px', async () => {
   const server = await target(6183);
   let browser: Browser | undefined;
   try {
     browser = await launch();
-    const filename = 'notes-for-the-last-level.txt';
+    const filenames = { latin: 'wwwwwwww.txt', rtl: 'שששששששש.txt' };
     for (const theme of ['light', 'dark'] as const) {
       const context = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
       await forceTheme(context, theme);
       await context.addInitScript(() => localStorage.setItem('gm-ui', 'modern'));
       const page = await context.newPage();
-      await page.goto(server.base);
+      // Seed storage before starting the app so its initial route cannot race project creation.
+      await page.route('**/seed-project', (route) => route.fulfill({ contentType: 'text/html', body: '<body></body>' }));
+      await page.goto(server.base + '/seed-project');
       await page.addScriptTag({
         type: 'module',
         content: `import { Project } from '/src/editor/core/project.ts';
           import { beginFirstSteps } from '/src/editor/shell/firstSteps.ts';
           const project = Project.create('My Game');
           beginFirstSteps(project);
-          project.files.set('${filename}', new TextEncoder().encode('Level notes'));
+          for (const name of ${JSON.stringify(Object.values(filenames))}) project.files.set(name, new TextEncoder().encode(name));
           await project.saveNow();
-          location.hash = '#/p/' + project.id + '/${filename}';`,
+          document.body.dataset.project = project.id;`,
       });
-      const button = page.getByRole('button', { name: new RegExp('^Files .*' + filename + '$') });
-      await button.waitFor();
-      await assertTheme(page, theme);
-      const layout = await button.evaluate((button) => {
-        const name = button.querySelector('.files-toggle-current')!;
-        const style = getComputedStyle(name);
-        const suffix = document.createRange();
-        const text = name.querySelector('bdi')!.firstChild!;
-        suffix.setStart(text, text.textContent!.length - 5);
-        suffix.setEnd(text, text.textContent!.length);
-        const ellipsis = document.createElement('canvas').getContext('2d')!;
-        ellipsis.font = style.font;
-        const rect = suffix.getBoundingClientRect();
-        const box = name.getBoundingClientRect();
-        return {
-          overflowing: [button, ...button.querySelectorAll('*')]
-            .filter((el) => el.scrollWidth > el.clientWidth && getComputedStyle(el).display !== 'inline')
-            .map((el) => el.className),
-          truncation: [style.textOverflow, style.overflowX, style.direction],
-          suffixVisible: rect.left >= box.left + ellipsis.measureText('…').width && rect.right <= box.right + 1,
-        };
-      });
-      expect(layout).toEqual({ overflowing: ['files-toggle-current'], truncation: ['ellipsis', 'hidden', 'rtl'], suffixVisible: true });
-      if (process.env.GM_PHONE_FILES_SHOTS) {
-        await page.locator('.ach-toast').first().waitFor({ state: 'hidden' });
-        await page.screenshot({ path: `${process.env.GM_PHONE_FILES_SHOTS}/files-${theme}.png` });
+      const projectId = await page.locator('body[data-project]').getAttribute('data-project');
+      await page.goto(`${server.base}/#/p/${projectId}`);
+      const button = page.getByRole('button', { name: /^Files \(/ });
+      await button.waitFor({ timeout: 60_000 });
+      for (const [script, filename] of Object.entries(filenames)) {
+        await button.click();
+        await page.locator(`.file-row[data-name="${filename}"] button.file`).click();
+        const selected = page.locator(`.file-row.active[data-name="${filename}"]`);
+        await selected.locator('button.file').waitFor({ state: 'attached' });
+        expect(await selected.getAttribute('data-name')).toBe(filename);
+        expect(decodeURIComponent(new URL(page.url()).hash.split('?')[0].split('/').pop()!)).toBe(filename);
+        const count = await page.locator('.file-row').count();
+        await page.getByRole('button', { name: `Files (${count}) · ${filename}`, exact: true }).waitFor();
+        await assertTheme(page, theme);
+        const layout = await button.evaluate((button) => {
+          const stem = button.querySelector('.files-toggle-stem')!;
+          const extension = button.querySelector('.files-toggle-extension')!;
+          const range = document.createRange();
+          range.selectNodeContents(extension);
+          const rect = range.getBoundingClientRect();
+          const box = button.getBoundingClientRect();
+          return {
+            overflowing: [button, ...button.querySelectorAll('*')].filter((el) => el.scrollWidth > el.clientWidth).map((el) => el.className),
+            truncation: getComputedStyle(stem).textOverflow,
+            suffix: extension.textContent,
+            visible: rect.width > 0 && rect.left >= stem.getBoundingClientRect().right - 1 && rect.right <= box.right,
+          };
+        });
+        expect(layout).toEqual({ overflowing: ['files-toggle-stem'], truncation: 'ellipsis', suffix: '.txt', visible: true });
+        if (process.env.GM_PHONE_FILES_SHOTS) {
+          await page.locator('.ach-toast').first().waitFor({ state: 'hidden' });
+          await page.screenshot({ path: `${process.env.GM_PHONE_FILES_SHOTS}/files-${script}-${theme}.png` });
+        }
       }
       await context.close();
     }
