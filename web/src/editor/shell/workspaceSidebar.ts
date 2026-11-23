@@ -172,6 +172,8 @@ export class WorkspaceSidebar {
   private drawSidebar(): void {
     const p = this.project;
     const names = p.files.names();
+    const current = this.host.current();
+    const filesLabel = `Files (${names.length})`;
     this.listed = new Set(names);
     const groups = new Map<FileKind, string[]>();
     for (const n of names) {
@@ -192,6 +194,7 @@ export class WorkspaceSidebar {
           'button',
           {
             class: 'files-toggle',
+            'aria-label': current ? `${filesLabel} · ${current}` : filesLabel,
             'aria-expanded': String(open),
             'aria-controls': 'side-files',
             onclick: () => {
@@ -200,8 +203,8 @@ export class WorkspaceSidebar {
             },
           },
           h('span', { 'aria-hidden': 'true' }, '☰ '),
-          `Files (${names.length})`,
-          this.host.current() ? h('span', { class: 'files-toggle-current' }, ` · ${this.host.current()}`) : null,
+          h('span', { class: 'files-toggle-prefix' }, current ? `${filesLabel} ·` : filesLabel),
+          current ? h('span', { class: 'files-toggle-current' }, h('bdi', null, current)) : null,
         ),
         (this.playEl = this.host.playButton()),
         this.host.firstSteps()?.button(),
