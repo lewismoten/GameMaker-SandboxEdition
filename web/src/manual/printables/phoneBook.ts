@@ -51,7 +51,10 @@ function builderText(kids: Inline[]): Inline[] {
 }
 
 function readable(b: Block): Block[] {
-  if (b.tag === 'p' && hasReference(b.kids)) return [];
+  if (b.tag === 'p') {
+    const kids = builderText(b.kids);
+    return kids.length ? [{ ...b, kids }] : [];
+  }
   if (b.tag === 'ol' || b.tag === 'ul') {
     const list = b.tag === 'ol' ? fixSteps(b) : b;
     const runs: (typeof list)[] = [];
