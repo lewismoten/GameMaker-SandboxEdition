@@ -126,11 +126,12 @@ The STLs in `shell/` are in printing orientation.
 
 ### Lead and solder clearance
 
-Every pad is a plated through-hole, so a part on one face has its trimmed lead and solder fillet standing out of the other. The viewer's models leave them out,
-so `tools/clearance.ts` adds them (a 0.9 mm radius fillet 1 mm tall, then a 0.3 mm wire, to **LEAD = 2.5 mm** from the board face, at every pad of
-`kicad/placement.json`) and measures every printed part (including the whole dial module and the six screw bosses) against those stubs and against every part
-body. `shell.ts` fails the build, and `web/src/desk/boxes/phone/phoneClearance.test.ts` fails the tests, if any gap is under 1 mm; the numbers go to
-`viewer/clearance.json`. The 2.5 mm is an **assumption** (IPC-A-610 allows 0.5 to 1.5 mm; a hobbyist trims to about 1 to 2 mm). The dial module is below the board, so
+Every pad is a plated through-hole, so a part on one face has its trimmed lead and solder fillet standing out of the other. The clearance check
+**assumes the trimmed lead and solder extend 2.5 mm from the board face** (IPC-A-610 allows 0.5 to 1.5 mm; a hobbyist trims to about 1 to 2 mm).
+It requires at least 1 mm between every printed part and each lead stub or component body, including checks for the whole dial module and all six screw bosses.
+The viewer's models omit the stubs, so `tools/clearance.ts` adds a 0.9 mm radius fillet 1 mm tall followed by a 0.3 mm wire at every pad in `kicad/placement.json`.
+If any gap falls below the minimum, `shell.ts` fails the build and `web/src/desk/boxes/phone/phoneClearance.test.ts` fails the tests. The measurements go to
+`viewer/clearance.json`. The dial module is below the board, so
 it is far from every stub; the closest approaches are the screw bosses and the cover over the board.
 
 Nothing was printed. The fits (0.3 mm), the lobes' travel (0.15 mm of overtravel), the spring and the grease are starting guesses.
