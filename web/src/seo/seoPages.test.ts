@@ -129,6 +129,15 @@ describe('seoBuild', () => {
     }
   }, 60000);
 
+  it('uses the magazine document’s canonical URL for the periodical and both issues', () => {
+    const magazine = staticPages(catalog).find((p) => p.file === 'magazine.html')!;
+    const canonical = /<link rel="canonical" href="([^"]+)"/.exec(staticPageHtml(home, magazine))?.[1];
+    expect(canonical).toBe(new URL(magazine.file, SITE_URL).href);
+    const nodes = jsonLd(home);
+    expect(nodes.filter((n) => n['@type'] === 'Periodical').map((n) => n.url)).toEqual([canonical]);
+    expect(nodes.filter((n) => n['@type'] === 'PublicationIssue').map((n) => n.url)).toEqual([canonical, canonical]);
+  });
+
   it('follows the static Library’s TURBO BUTTON link to the magazine without scripts', () => {
     const documents = new Map([[SITE_URL, home]]);
     for (const p of staticPages(catalog)) documents.set(new URL(p.file, SITE_URL).href, staticPageHtml(home, p));
