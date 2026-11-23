@@ -45,11 +45,11 @@
   "pages": [
     {
       "head": "Welcome",
-      "html": "<h1>Welcome</h1><p><b>Quicksand</b> is a Starter: a small game that shows a few Game-Maker ideas, with signs in the levels that say what you are looking at. It has two short levels and nothing in it can cost a life.</p><p>Play it first. Then open it in Game-Maker (<b>Edit a copy</b> on the home page keeps the original safe) and read the pages below, which say where each thing in the levels is made.</p><h2>The keys</h2><p><kbd>Left</kbd> and <kbd>Right</kbd> walk. <kbd>Space</kbd> jumps. <kbd>F2</kbd> shows your lives, hit points and score.</p><p>Sand here sinks only where you stand. Stand still and the sand under your feet ripples, then gives way, and you drop into a hole one block deep. Hold <kbd>Right</kbd>, then press <kbd>Space</kbd> to jump out and keep walking.</p>"
+      "html": "<h1>Welcome</h1><p><b>Quicksand</b> is a Starter: a small game that shows a few Game-Maker ideas, with signs in the levels that say what you are looking at. It has two short levels and nothing in it can cost a life.</p><p>Play it first. Then open it in Game-Maker (<b>Edit a copy</b> on the home page keeps the original safe) and read the pages below, which say where each thing in the levels is made.</p><h2>The keys</h2><p><kbd>Left</kbd> and <kbd>Right</kbd> walk. <kbd>Space</kbd> jumps. <kbd>F2</kbd> shows your lives, hit points and score.</p><p>Sand here sinks only where you stand. Stand still and the sand under your feet ripples, then gives way, and you drop into a hole one block deep. Hold <kbd>Right</kbd>, then hold <kbd>Space</kbd> until you clear the edge of the hole. Keep walking.</p>"
     },
     {
       "head": "Level 1: Don't Stand Still",
-      "html": "<h1>Level 1: Don't Stand Still</h1><p>Past the two signs is a patch of sand between two grassy banks. Walk onto it and stop. Under Lena's feet the sand ripples: one ring, then two, then three with grains sliding in. About two seconds after she stopped, the sand gives way and she drops into a hole a block deep. Hold <kbd>Right</kbd>, then press <kbd>Space</kbd> to jump out.</p><p>The first sign says that standing still makes sand sink. The second says to keep walking, or jump out. Walk across without stopping and the sand holds; it only keeps a faint ripple where you went. There are four coins, two over the sand and two past it, worth ten points each.</p>"
+      "html": "<h1>Level 1: Don't Stand Still</h1><p>Past the two signs is a patch of sand between two grassy banks. Walk onto it and stop. Under Lena's feet the sand ripples: one ring, then two, then three with grains sliding in. About two seconds after she stopped, the sand gives way and she drops into a hole a block deep. Hold <kbd>Right</kbd>, then hold <kbd>Space</kbd> until you clear the edge of the hole.</p><p>The first sign says that standing still makes sand sink. The second says to keep walking, or jump out. Walk across without stopping and the sand holds; it only keeps a faint ripple where you went. There are four coins, two over the sand and two past it, worth ten points each.</p>"
     },
     {
       "head": "How this level is made",
@@ -57,7 +57,7 @@
     },
     {
       "head": "Level 2: Stepping Stones",
-      "html": "<h1>Level 2: Stepping Stones</h1><p>A wide patch of sand, with three gray stones across it and a coin over each. The stones never sink, so stand on one as long as you like. Between the second and third stones the sand is dark and wet. It gives way in well under a second, so cross it without stopping.</p><p>The first sign says stones never sink. The second says dark wet sand sinks faster. If you do drop into a hole, hold <kbd>Right</kbd>, then press <kbd>Space</kbd> to jump out and hurry on to the next stone.</p>"
+      "html": "<h1>Level 2: Stepping Stones</h1><p>A wide patch of sand, with three gray stones across it and a coin over each. The stones never sink, so stand on one as long as you like. Between the second and third stones the sand is dark and wet. It gives way in well under a second, so cross it without stopping.</p><p>The first sign says stones never sink. The second says dark wet sand sinks faster. If you do drop into a hole, hold <kbd>Right</kbd>, then hold <kbd>Space</kbd> until you clear the edge of the hole. Hurry on to the next stone.</p>"
     },
     {
       "head": "How this level is made",
