@@ -32,22 +32,42 @@ const hasReference = (kids: Inline[]) => DEV.test(blockText({ tag: 'p', kids }))
 
 /** Keep complete builder clauses and their inline formatting when a tool note shares an entry. */
 function builderText(kids: Inline[]): Inline[] {
-  if (!hasReference(kids)) return kids;
-  const clauses: Inline[][] = [[]];
-  for (const kid of kids) {
-    if (typeof kid !== 'string') {
-      clauses.at(-1)!.push(kid);
-      continue;
+  const text = blockText({ tag: 'p', kids });
+  if (!DEV.test(text)) return kids;
+  const kept: Inline[] = [];
+  let offset = 0;
+  for (const clause of text.split(/(?<=[.;])(?=\s)/)) {
+    const end = offset + clause.length;
+    if (!DEV.test(clause)) {
+      const start = kept.length ? offset : end - clause.trimStart().length;
+      kept.push(...sliceInline(kids, start, end));
     }
-    const pieces = kid.split(/(?<=[.;])(?=\s)/);
-    clauses.at(-1)!.push(pieces[0]);
-    for (const piece of pieces.slice(1)) clauses.push([piece]);
+    offset = end;
   }
-  const kept = clauses.filter((clause) => !hasReference(clause)).flat();
-  if (typeof kept[0] === 'string') kept[0] = kept[0].trimStart();
-  const last = kept.at(-1);
-  if (typeof last === 'string') kept[kept.length - 1] = last.replace(/;$/, '.');
+  // A surviving clause that used to introduce a tool note now ends the entry.
+  function finish(nodes: Inline[]) {
+    const last = nodes.at(-1);
+    if (typeof last === 'string') nodes[nodes.length - 1] = last.replace(/;$/, '.');
+    else if (last) finish(last.kids);
+  }
+  finish(kept);
   return kept;
+}
+
+/** Take a range in the visible text, retaining the marks around each surviving piece. */
+function sliceInline(kids: Inline[], start: number, end: number): Inline[] {
+  const result: Inline[] = [];
+  for (const kid of kids) {
+    if (end <= 0) break;
+    const length = typeof kid === 'string' ? kid.length : blockText({ tag: 'p', kids: kid.kids }).length;
+    if (start < length) {
+      if (typeof kid === 'string') result.push(kid.slice(Math.max(0, start), end));
+      else result.push({ ...kid, kids: sliceInline(kid.kids, start, end) });
+    }
+    start -= length;
+    end -= length;
+  }
+  return result;
 }
 
 function readable(b: Block): Block[] {
