@@ -12,7 +12,8 @@ import { readingPages } from '../../scripts/seoReadings';
 import { staticPages } from '../../scripts/seoStaticPages';
 import { chapterById } from '../programmersGuide/chapterList';
 import { GUIDE_SECTIONS } from '../manual/guideSections';
-import { gamePage, ROUTES, SITE_URL } from './site';
+import { PRODUCT } from '../edition';
+import { escapeHtml, gamePage, ROUTES, SITE_URL } from './site';
 import { isStarterGame } from '../project/starter';
 
 const cdRoot = join(__dirname, '../../../cd');
@@ -390,10 +391,14 @@ describe('seoBuild', () => {
       titles.add(title);
       expect(html).toContain(`<link rel="canonical" href="${url}" />`);
       expect(html).toContain(`<meta property="og:image" content="${SITE_URL}og/${g.id}.png" />`);
-      expect(html).toMatch(/<meta property="og:image:alt" content="[^"]+" \/>/);
+      const expectedAlt = escapeHtml(`${g.title} — Play in your browser · ${PRODUCT}`);
+      expect(html).toContain(`<meta property="og:image:alt" content="${expectedAlt}" />`);
+      expect(html).toContain(`<meta name="twitter:image:alt" content="${expectedAlt}" />`);
       expect(html.match(/<h1\b/g), g.id).toHaveLength(1);
-      for (const img of html.match(/<img\b[^>]*>/g) ?? []) expect(img).toMatch(/\balt="[^"]+"/);
-      expect(html).toContain('Play in your browser · Game-Maker');
+      const images = html.match(/<img\b[^>]*>/g) ?? [];
+      for (const img of images) expect(img).toMatch(/\balt="[^"]+"/);
+      const preview = images.find((img) => img.includes(` src="./og/${g.id}.png"`));
+      expect(preview, g.id).toContain(` alt="${expectedAlt}"`);
       expect(html).not.toContain('its title screen');
       if (g.series === 'starter') expect(html).toContain('<p>A Starter game that shows one Game-Maker idea');
       const game = jsonLd(html).find((n) => n['@type'] === 'VideoGame');
