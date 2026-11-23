@@ -50,7 +50,7 @@ function libraryHtml(games: CdCatalogEntry[]): string {
         <li>Maps of the levels</li>
         <li>The Sandbox Scoop, the newsletter, and sticker sheets and cards</li>
         <li>The Game-Maker box's own paper, with the Owner's Guide</li>
-        <li><a href="./#/magazine">TURBO BUTTON</a>, the shareware gamer's magazine</li>
+        <li><a href="./magazine.html">TURBO BUTTON</a>, the shareware gamer's magazine</li>
         <li><a href="./#/help">The Guide</a> to the web editor</li>
       </ul>
       <h2>Games with a shelf</h2>
