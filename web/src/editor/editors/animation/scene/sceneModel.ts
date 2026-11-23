@@ -5,6 +5,8 @@
 // `normalizeScene` turns whatever the companion holds into a valid scene, so a scene a newer
 // editor wrote (or a hand-edited one) never breaks the editor.
 
+import type { SceneSource } from './sceneAssets';
+
 export const SCENE_SECTION = 'scene';
 export const SCENE_W = 320;
 export const SCENE_H = 200;
@@ -260,10 +262,16 @@ export function itemLabel(it: Item): string {
   return it.source.type === 'chr' ? `${it.source.chr.toUpperCase() || 'Character'}` : `Monster ${it.source.index} of ${it.source.mon.toUpperCase() || '?'}`;
 }
 
+/** The first level's available palette, or the first palette file on disk. */
+export function gamePaletteName(src: Pick<SceneSource, 'game' | 'files'>): string | undefined {
+  const scene = src.game().scenes.find((s) => s.gametype === 10 && s.files[0] && src.files.get(s.files[0]));
+  return scene?.files[0] ?? src.files.byExtension('pal')[0];
+}
+
 /** The game files a scene draws with, as named (one entry per use), for "what uses this?". */
-export function sceneFiles(s: Scene): string[] {
+export function sceneFiles(s: Scene, src: Pick<SceneSource, 'game' | 'files'>): string[] {
   const out: string[] = [];
-  for (const b of s.backgrounds) out.push(b.kind === 'picture' ? b.file : b.kind === 'map' ? b.map : b.palette);
+  for (const b of s.backgrounds) out.push(b.kind === 'picture' ? b.file : b.kind === 'map' ? b.map : b.palette || gamePaletteName(src) || '');
   for (const { item } of allItems(s))
     if (item.kind === 'block') out.push(item.bbl);
     else if (item.kind === 'actor') out.push(...(item.source.type === 'chr' ? [item.source.chr, item.source.cbl] : [item.source.mon, item.source.mbl]));

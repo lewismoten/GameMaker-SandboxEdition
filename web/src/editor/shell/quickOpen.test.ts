@@ -106,6 +106,26 @@ describe('quick switcher', () => {
     expect(replaceMessage(p, 'sky.gif', 'sea.gif')).toContain('intro.fli Scene Maker source');
   });
 
+  it('warns for solid backgrounds using a named palette or the game palette', () => {
+    const files = new GameFiles([
+      ['test.gam', serializeGame(newGame('Test'))],
+      ['night.pal', new Uint8Array(768).fill(13)],
+    ]);
+    const p = new Project('t', 'Test', 'test.gam', files);
+    for (const [file, palette] of [
+      ['title.fli', ''],
+      ['credits.fli', 'NIGHT.PAL'],
+    ]) {
+      files.set(file, new Uint8Array(1));
+      p.setExtras(file, 'scene', { frames: 1, backgrounds: [{ start: 0, kind: 'color', palette, color: 1 }] });
+    }
+    expect(fileUses(p, 'night.pal').map((use) => use.file)).toEqual(['title.fli', 'credits.fli']);
+    for (const message of [deleteMessage(p, 'night.pal'), replaceMessage(p, 'night.pal', 'new.pal')]) {
+      expect(message).toContain('title.fli Scene Maker source');
+      expect(message).toContain('credits.fli Scene Maker source');
+    }
+  });
+
   it('names what uses a file before deleting it', () => {
     const p = project();
     expect(deleteMessage(p, 'one.map')).toMatch(/still used by: Meadow · map/);
