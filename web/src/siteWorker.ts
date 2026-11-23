@@ -70,7 +70,12 @@ ${WORKER_GROUP_OF}
 function sitePath(url) {
   const u = new URL(url, SCOPE);
   if (!u.href.startsWith(SCOPE)) return undefined;
-  return decodeURIComponent(u.pathname.slice(new URL(SCOPE).pathname.length));
+  const path = u.pathname.slice(new URL(SCOPE).pathname.length);
+  try {
+    return decodeURIComponent(path);
+  } catch {
+    return path;
+  }
 }
 
 /** The key of a file's group in GROUPS (the home page is served as its index.html). */

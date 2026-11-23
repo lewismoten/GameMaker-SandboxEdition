@@ -78,3 +78,9 @@ it.each(['browsing cache', 'older saved copy', 'current saved copy'])('opens the
   expect(await (await h.request('', 'navigate')).text()).toBe(expectedHome);
   expect(await (await h.request('missing.html', 'navigate')).text()).toBe(expectedHome);
 });
+
+it('serves the saved home offline for an unvisited path containing a literal percent sign', async () => {
+  const h = harness('one');
+  await seed(h, 'one');
+  expect(await (await h.request('50%.html', 'navigate')).text()).toBe('snapshot home');
+});
