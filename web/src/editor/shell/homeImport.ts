@@ -213,11 +213,7 @@ async function importFiles(nav: HomeNav, imported: Imported, origin: Origin, mis
   const { project: p, note, madeGam } = await saveImported(imported);
   noteImport(p.id, origin.source, origin.fingerprint);
   recordImport({ at: Date.now(), source: origin.source, added: 1, skipped: 0, failed: [] });
-  if (panel?.stayInLibrary || panel?.signal.aborted) {
-    panel.end();
-    onAdded?.();
-    return;
-  }
+  // what is wrong with the game is said whether it opens or the visitor stayed in the library
   if (madeGam) toast('No .gam file found — a new one was created for these files.');
   if (note) toast(note);
   if (missing) {
@@ -226,6 +222,11 @@ async function importFiles(nav: HomeNav, imported: Imported, origin: Origin, mis
       `${p.name} names ${these} that weren’t in what you gave, so parts of it will be missing or won’t play. Was the rest of the game left behind?`,
       'error',
     );
+  }
+  if (panel?.stayInLibrary || panel?.signal.aborted) {
+    panel.end();
+    onAdded?.();
+    return;
   }
   toast(
     `Opened ${p.name} (${files.size} files). It is listed under Imported.${had ? ' You already had a copy of this game, so this is a second one; delete either from its ⋯ More menu.' : ''}`,

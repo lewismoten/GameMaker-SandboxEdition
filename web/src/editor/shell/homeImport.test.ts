@@ -1,6 +1,7 @@
-// Import failures on the home page explain what went wrong.
+// Import failures on the home page explain what went wrong, and closing the panel mid-save frees the library.
 import { expect, it, vi } from 'vitest';
 import { createZip } from '@lewismoten/gamemaker-sandbox-archives/zip';
+import { newGame, serializeGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { FakeDoc } from '../../../test/fakeDom';
 import { importRunning, openImportPanel } from './importPanel';
 import { modal, toast } from '../core/ui';
@@ -132,13 +133,16 @@ it.each([
 });
 
 it.each([
-  ['Escape', 'disk.zip'],
-  ['Close', 'disk.zip'],
-  ['Escape', 'LEVEL.MAP'],
-  ['Close', 'LEVEL.MAP'],
-])('refreshes the library when %s is pressed while saving %s', async (action, name) => {
+  ['Escape', 'disk.zip', 0],
+  ['Close', 'disk.zip', 0],
+  ['Escape', 'LEVEL.MAP', 0],
+  ['Close', 'LEVEL.MAP', 0],
+  ['Escape', 'disk.zip', 1],
+  ['Close', 'disk.zip', 1],
+] as const)('frees the library at once and refreshes it when %s is pressed while saving %s (%i missing)', async (action, name, missing) => {
   const { modal: realModal } = await vi.importActual<typeof import('../core/ui')>('../core/ui');
   vi.mocked(modal).mockImplementationOnce(realModal);
+  vi.mocked(toast).mockClear();
   const doc = new FakeDoc();
   vi.stubGlobal('document', doc);
   const panel = openImportPanel(name)!;
@@ -149,25 +153,69 @@ it.each([
   const save = vi.spyOn(Project.prototype, 'saveNow').mockImplementation(() => pending);
   const nav = { openProject: vi.fn() };
   try {
-    const data = name === 'disk.zip' ? await createZip([{ name: 'LEVEL.GAM', data: new Uint8Array(32) }]) : new Uint8Array(32);
+    const game = newGame('Partial');
+    if (missing) game.scenes[0].files = ['GONE.MAP'];
+    const data = name === 'disk.zip' ? await createZip([{ name: 'LEVEL.GAM', data: serializeGame(game) }]) : new Uint8Array(32);
     const refresh = vi.fn();
     const work = importPicked(nav, [new File([Uint8Array.from(data)], name)], refresh, panel);
     await vi.waitFor(() => expect(save).toHaveBeenCalledOnce());
     const dialog = doc.body.children.find((el) => el.tag === 'dialog')!;
     if (action === 'Escape') dialog.fire('cancel');
     else dialog.children[0].children[1].fire('click');
-    expect(dialog.open).toBe(true);
+    // the library is usable again while the save is still pending, but no second import starts
+    expect(dialog.open).toBe(false);
+    expect(dialog.isConnected).toBe(false);
     expect(panel.signal.aborted).toBe(false);
+    expect(importRunning()).toBe(true);
     expect(openImportPanel('second.zip')).toBeUndefined();
+    expect(refresh).not.toHaveBeenCalled();
     release();
     await work;
     expect(nav.openProject).not.toHaveBeenCalled();
     expect(refresh).toHaveBeenCalledOnce();
-    expect(dialog.open).toBe(false);
     expect(importRunning()).toBe(false);
+    const said = vi.mocked(toast).mock.calls;
+    expect(said.some(([message]) => message.startsWith('Opened'))).toBe(false);
+    const warned = said.filter(([message, kind]) => kind === 'error' && message.includes('1 file that weren’t in what you gave'));
+    expect(warned).toHaveLength(missing);
   } finally {
     release();
     panel.end();
+    vi.unstubAllGlobals();
+  }
+});
+
+it('tells a save failure in a toast after the panel was closed while saving', async () => {
+  const { modal: realModal } = await vi.importActual<typeof import('../core/ui')>('../core/ui');
+  vi.mocked(modal).mockImplementationOnce(realModal);
+  vi.mocked(toast).mockClear();
+  const doc = new FakeDoc();
+  vi.stubGlobal('document', doc);
+  const panel = openImportPanel('disk.zip')!;
+  let reject!: (e: Error) => void;
+  const pending = new Promise<void>((_, no) => {
+    reject = no;
+  });
+  const save = vi.spyOn(Project.prototype, 'saveNow').mockImplementation(() => pending);
+  const nav = { openProject: vi.fn() };
+  try {
+    const data = await createZip([{ name: 'LEVEL.GAM', data: new Uint8Array(32) }]);
+    const refresh = vi.fn();
+    const work = importPicked(nav, [new File([Uint8Array.from(data)], 'disk.zip')], refresh, panel);
+    await vi.waitFor(() => expect(save).toHaveBeenCalledOnce());
+    const dialog = doc.body.children.find((el) => el.tag === 'dialog')!;
+    dialog.fire('cancel');
+    expect(dialog.open).toBe(false);
+    reject(new Error('The disk is full.'));
+    await work;
+    expect(toast).toHaveBeenLastCalledWith('The import stopped. The disk is full.', 'error');
+    expect(refresh).not.toHaveBeenCalled();
+    expect(nav.openProject).not.toHaveBeenCalled();
+    expect(importRunning()).toBe(false);
+  } finally {
+    save.mockRestore();
+    panel.end();
+    vi.unstubAllGlobals();
   }
 });
 
