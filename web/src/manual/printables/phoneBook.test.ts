@@ -21,6 +21,15 @@ describe('phoneChapters (the real README and parts list)', () => {
     for (const dev of ['Rebuild everything', 'What is here', 'Commands', 'Theory of operation']) expect(heads.some((h) => h.startsWith(dev))).toBe(false);
   });
 
+  it('keeps the PICkit recovery instruction and board markings from mixed paragraphs', () => {
+    const programming = chapters.find((c) => c.head === 'Programming the PIC');
+    expect(programming?.blocks.map(blockText).join(' ')).toMatch(
+      /An ordinary PICkit also works on J1 .* is the way to reprogram a chip whose LVP bit is off\./,
+    );
+    const markings = chapters.find((c) => c.head === 'What is printed on the board');
+    expect(markings?.blocks.map(blockText).join(' ')).toContain('MADE WITH GAME-MAKER');
+  });
+
   it('leaves out repository paths and commands, and points the Gerbers at the ZIP', () => {
     const all = chapters.flatMap((c) => c.blocks.map(blockText)).join('\n');
     expect(all).not.toMatch(/\.for-lewis|vite-node|\bnpm\b|out\/phone-gerbers|tools\/|shell\.ts|NOTICE\.md|my own|Rev B sheet/);
