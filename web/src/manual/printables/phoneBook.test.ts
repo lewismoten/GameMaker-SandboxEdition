@@ -72,6 +72,11 @@ describe('phoneChapters (the real README and parts list)', () => {
     expect(items.find((s) => s.startsWith('One-way counting'))).toContain('exactly n pulses');
   });
 
+  it('keeps formatted builder instructions when a sentence ends inside emphasis', () => {
+    const [chapter] = phoneChapters('# Kit\n- **Fit the cover.** Run shell.ts.\n- *Run picsim.py. Test the dial.*', '');
+    expect(chapter?.blocks).toEqual([{ tag: 'ul', items: [[{ tag: 'strong', kids: ['Fit the cover.'] }], [{ tag: 'em', kids: ['Test the dial.'] }]] }]);
+  });
+
   it('keeps builder guidance in a table cell that also mentions a tool', () => {
     const [chapter] = phoneChapters('# Kit\nCheck | Result | Tool\n---|---|---\nDial | Adjust the spring; run picsim.py. | shell.ts', '');
     expect(chapter.blocks[0]).toMatchObject({ tag: 'table', rows: [[['Dial'], ['Adjust the spring.'], []]] });
