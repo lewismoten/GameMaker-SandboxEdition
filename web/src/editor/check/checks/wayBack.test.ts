@@ -33,20 +33,36 @@ describe('one-way spots', () => {
   });
 
   it.each([
-    [99, 0],
-    [99, 1],
-  ])('checks a return from row %i to row %i across the seam', (start, end) => {
+    [99, 0, 0],
+    [99, 1, 0],
+    [95, 98, 0],
+    [99, 2, 0],
+    [4, 2, 1],
+    [0, 98, 1],
+    [90, 50, 0, 60],
+    [10, 50, 1, -60],
+  ])('checks a return from row %i to row %i with %i one-way findings', (start, end, findings, entryMoveRows?) => {
     const run = {
       from: { scene: 0 },
       ex: {
         links: [{ toScene: 1 }],
         places: [
           { cell: cell(5, start), out: [1], exits: [], done: true },
-          { cell: cell(5, end), out: [1], exits: [0], done: true },
+          { cell: cell(5, end), entryMoveRows, out: [1], exits: [0], done: true },
         ],
       },
     } as unknown as SceneRun;
-    expect(oneWay(run, undefined)).toHaveLength(end === 0 ? 0 : 1);
+    expect(oneWay(run, undefined)).toHaveLength(findings);
+  });
+
+  it('records a three-row descent when the first move crosses the seam', async () => {
+    const rows = Array<string>(100).fill('#####');
+    rows[5] = '#E###';
+    for (const y of [98, 99, 0, 1, 2]) rows[y] = '##.##';
+    const t = testGame(rows);
+    const ex = await explore(t.game, 2, t, { start: { x: 2, y: 99 }, ci: startCharInfo(), clock: 1 });
+    const landing = ex.places[0].out.map((i) => ex.places[i]).find((p) => p.cell === cell(2, 2));
+    expect(landing).toMatchObject({ entryMoveRows: 3, dropIn: 3 });
   });
 
   it('finds none on a flat floor', async () => {

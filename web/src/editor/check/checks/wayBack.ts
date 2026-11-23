@@ -62,9 +62,15 @@ function startCells(ex: Exploration): Set<number> {
   const first = ex.places[0];
   if (!first) return out;
   around(first.cell);
+  const startX = first.cell % MLEN;
+  const startY = Math.floor(first.cell / MLEN);
   for (const t of first.out) {
     const c = ex.places[t].cell;
-    if (Math.abs((c % MLEN) - (first.cell % MLEN)) <= 1 && c > first.cell + MLEN) around(c);
+    const dx = Math.abs((c % MLEN) - startX);
+    const down = (Math.floor(c / MLEN) - startY + MWID) % MWID;
+    // For graphs without observed motion, infer the direction along the shorter arc.
+    const rows = ex.places[t].entryMoveRows ?? (down < MWID / 2 ? down : down - MWID);
+    if (Math.min(dx, MLEN - dx) <= 1 && rows > 1) around(c);
   }
   return out;
 }
