@@ -221,7 +221,7 @@ export function renderAchievements(el: HTMLElement): void {
     const walk = prefs.hideEarned && first ? ordered.filter((b) => first.unlocked[b.id]) : ordered;
     if (first) openDetails(walk, walk.indexOf(a), () => record ?? first, badge);
   };
-  function draw(r: AchievementRecord): void {
+  function draw(r: AchievementRecord, focusTab = false): void {
     record = r;
     const total = ACHIEVEMENTS.length;
     const done = ACHIEVEMENTS.filter((a) => r.unlocked[a.id]).length;
@@ -235,12 +235,7 @@ export function renderAchievements(el: HTMLElement): void {
     const choose = (id: string, focus: boolean) => {
       tab = id;
       saveTab(id);
-      draw(r);
-      if (focus) {
-        const selected = main.querySelector<HTMLElement>(`#${tabId(id)}`);
-        selected?.focus({ preventScroll: true });
-        selected?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
-      }
+      draw(r, focus);
     };
     const tabs = h(
       'div',
@@ -361,7 +356,11 @@ export function renderAchievements(el: HTMLElement): void {
         (v) => (startOpen = v),
       ),
     );
-    if (focused) main.querySelector<HTMLElement>(`#${tabId(cat.id)}`)?.focus({ preventScroll: true });
+    if (focusTab || focused) {
+      const selected = tabs.querySelector<HTMLElement>(`#${tabId(cat.id)}`);
+      selected?.focus({ preventScroll: true });
+      selected?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+    }
   }
   const update = () => {
     if (!main.isConnected) return window.removeEventListener(ACHIEVEMENTS_CHANGED, update);
