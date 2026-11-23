@@ -30,9 +30,10 @@ describe('map clipping', () => {
     expect(contentBounds(mapWith(3, []))).toEqual(WHOLE_MAP);
   });
 
-  it('shows one game screen round a start point, kept on the map', () => {
+  it('keeps screen-sized crops inside the stored grid near a start point', () => {
     expect(gameView({ x: 50, y: 50 })).toEqual({ x: 42, y: 45, w: 16, h: 10 });
     expect(gameView({ x: 1, y: 98 })).toEqual({ x: 0, y: 90, w: 16, h: 10 });
+    expect(gameView({ x: 99, y: 0 }, { w: 3, h: 3 })).toEqual({ x: 52, y: 0, w: 48, h: 30 });
   });
 
   it('drags and resizes a frame without leaving the map', () => {

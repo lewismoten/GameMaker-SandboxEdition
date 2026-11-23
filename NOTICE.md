@@ -1483,3 +1483,5 @@ maker "ZORP" is invented. The shell is untested: nothing has been printed.
 - **Publication continuity (November 23, 2026)**: OpenAI Codex corrected the Starter cast description, disk-release descriptions, the Tune-Up newsletter preview, and the printed model year of THE CHEZ.
 
 - **Editor shared asset warnings (November 23, 2026)**: OpenAI Codex updated Scene Maker backdrop references and map brush deletion text and wrote the regression test.
+
+- **Map overview and picture labels (November 23, 2026)**: OpenAI Codex clarified the editor text for stored map grids and screen-sized crops.
