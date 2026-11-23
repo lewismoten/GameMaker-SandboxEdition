@@ -3,7 +3,7 @@
  *   1. exports no other file imports ("local" when the file still uses the name itself, so only
  *      the `export` keyword is extra; "dead" when nothing uses it at all),
  *   2. source modules unreachable from known entry points, and
- *   3. CSS classes no TS or HTML file names.
+ *   3. CSS classes without a reference in JavaScript, TypeScript or HTML.
  * Uses counted: static, dynamic and `export ... from` imports, `import.meta.glob`,
  * `new URL('./x', import.meta.url)`, HTML script tags, package `exports` entries (whole file is
  * public API) and test files. Namespace and dynamic imports count only the members they touch
@@ -228,8 +228,7 @@ for (const f of sources) {
         useName(t, ALL);
       }
     }
-    if (/\.tsx?$/.test(f) && (ts.isStringLiteralLike(n) || ts.isTemplateHead(n) || ts.isTemplateMiddle(n) || ts.isTemplateTail(n) || ts.isJsxText(n)))
-      addWords(n.text);
+    if (ts.isStringLiteralLike(n) || ts.isTemplateHead(n) || ts.isTemplateMiddle(n) || ts.isTemplateTail(n) || ts.isJsxText(n)) addWords(n.text);
     ts.forEachChild(n, visit);
   };
   visit(sf);
@@ -350,7 +349,7 @@ if (asJson) {
     console.log('');
   }
   if (!only || only === 'css') {
-    console.log(`CSS classes no TS or HTML names: ${unusedClasses.length}`);
+    console.log(`CSS classes without a reference in JavaScript, TypeScript or HTML: ${unusedClasses.length}`);
     for (const [f, xs] of byFile(unusedClasses)) console.log(`  ${f}: ${xs.map((x) => x.cls).join(' ')}`);
   }
 }
