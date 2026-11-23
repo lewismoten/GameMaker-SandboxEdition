@@ -30,6 +30,14 @@ describe('phoneChapters (the real README and parts list)', () => {
     expect(markings?.blocks.map(blockText).join(' ')).toContain('MADE WITH GAME-MAKER');
   });
 
+  it('keeps the lead projection assumption and minimum gap in the opening clearance paragraph', () => {
+    const paragraph = chapters.find((chapter) => chapter.head === 'Lead and solder clearance')!.blocks[1];
+    expect(paragraph.tag).toBe('p');
+    const text = blockText(paragraph);
+    expect(text).toContain('assumes the trimmed lead and solder extend 2.5 mm from the board face');
+    expect(text).toContain('at least 1 mm between every printed part and each lead stub or component body');
+  });
+
   it('prints the tested firmware behavior and the simulation limits in the same result cell', () => {
     const chapter = chapters.find((c) => c.head === 'Checked and not checked');
     const rows = chapter?.blocks.flatMap((b) => (b.tag === 'table' ? b.rows : []));
