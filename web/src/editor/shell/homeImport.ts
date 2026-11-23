@@ -150,7 +150,10 @@ async function saveImported({ files, name, gam, players }: Imported): Promise<{ 
     // which build it came from and what its author changed, read-only (the Player file shows it)
     p.setExtras(p.gam, ORIGIN_SECTION, player.origin);
   }
-  await p.saveNow();
+  await p.saveNow().catch((e: unknown) => {
+    if ((e as Error | null | undefined)?.message) throw e;
+    throw new Error('Something went wrong while saving the game.');
+  });
   // listed under Imported, apart from the games made here (⋯ More can move it to My games)
   setImported(p.id, true);
   return { project: p, note: player?.message || undefined, madeGam };
@@ -334,8 +337,6 @@ async function importGiven(nav: HomeNav, given: ScanFile[], list: File[], onAdde
     : await chooser.scanWithProgress(given);
   panel?.signal.throwIfAborted();
   if (!report) return panel?.end();
-  // the games to pick from (or the notes on finding none) are their own dialogs
-  if (report.games.length !== 1 || removedMatch(fingerprintOf(report.games[0]))) panel?.end();
   // one game opens as it always has, unless it was removed before: then it is listed, unticked, to say so
   const one = report.games.length === 1 && report.games[0];
   if (one && !removedMatch(fingerprintOf(one))) {
@@ -343,11 +344,16 @@ async function importGiven(nav: HomeNav, given: ScanFile[], list: File[], onAdde
     const read = await new GameReader(given).read(one, (done, total, path) => panel?.step('Extracting', path.split('/').pop(), done, total), panel?.signal);
     return importFiles(nav, read, originOf(one), one.missing, panel, onAdded);
   }
-  if (report.games.length) return importChosen(report, given, onAdded);
+  if (report.games.length) {
+    panel?.end();
+    return importChosen(report, given, onAdded);
+  }
   // no .gam anywhere: loose files (no zips) still make a new game around them, as they always have
   const files = await gameFromFiles(report.loose);
   if (!report.zips && files.files.size && looksLikeGamePieces(report.loose.map((f) => f.path)))
-    return importFiles(nav, files, { source: 'the files picked', fingerprint: fingerprintOfFiles(Object.fromEntries(files.files.entries())) });
+    return importFiles(nav, files, { source: 'the files picked', fingerprint: fingerprintOfFiles(Object.fromEntries(files.files.entries())) }, 0, panel);
+  panel?.signal.throwIfAborted();
+  panel?.end();
   await chooser.showNothingFound(report);
 }
 

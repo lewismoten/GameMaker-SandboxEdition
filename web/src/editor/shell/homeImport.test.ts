@@ -6,6 +6,7 @@ import { importRunning, openImportPanel } from './importPanel';
 import { modal, toast } from '../core/ui';
 import { Project } from '../core/project';
 import { importPicked } from './homeImport';
+import * as chooser from './importChooser';
 
 vi.mock('./homeCards', () => ({ playLink: vi.fn(), showNotice: vi.fn() }));
 vi.mock('../core/ui', async (original) => ({
@@ -97,7 +98,11 @@ it.each(['HTML read', 'ZIP extraction', 'Opening'])('cancels during %s before sa
   }
 });
 
-it.each([null, undefined])('shows a dismissible error when saving rejects with %s', async (reason) => {
+it.each([
+  ['disk.zip', null],
+  ['disk.zip', undefined],
+  ['LEVEL.MAP', null],
+] as const)('shows a dismissible save error for %s when saving rejects with %s', async (name, reason) => {
   const { modal: realModal } = await vi.importActual<typeof import('../core/ui')>('../core/ui');
   vi.mocked(modal).mockImplementationOnce(realModal);
   const doc = new FakeDoc();
@@ -106,13 +111,14 @@ it.each([null, undefined])('shows a dismissible error when saving rejects with %
   const nav = { openProject: vi.fn() };
   try {
     const zip = await createZip([{ name: 'LEVEL.GAM', data: new Uint8Array(32) }]);
-    await importPicked(nav, [new File([Uint8Array.from(zip)], 'disk.zip')]);
+    const data = name === 'disk.zip' ? zip : new Uint8Array(32);
+    await importPicked(nav, [new File([Uint8Array.from(data)], name)]);
     expect(save).toHaveBeenCalledOnce();
     expect(nav.openProject).not.toHaveBeenCalled();
     const dialog = doc.body.children.find((el) => el.tag === 'dialog')!;
     expect(dialog.open).toBe(true);
     const work = dialog.children.find((el) => el.className === 'ic-work')!;
-    expect(work.children.some((el) => el.className === 'ic-line' && el.textContent.includes('Something went wrong while reading the file.'))).toBe(true);
+    expect(work.children.some((el) => el.className === 'ic-line' && el.textContent.includes('Something went wrong while saving the game.'))).toBe(true);
     const [ok] = work.children.find((el) => el.className === 'buttons')!.children;
     expect(ok.children[0].textContent).toBe('OK');
     ok.fire('click');
@@ -156,6 +162,48 @@ it.each(['Escape', 'Close'])('keeps the library open when %s is pressed during a
   } finally {
     release();
     panel.end();
+  }
+});
+
+it('lists the failed game in the summary after saving the next game', async () => {
+  const doc = new FakeDoc();
+  vi.stubGlobal('document', doc);
+  const { modal: realModal } = await vi.importActual<typeof import('../core/ui')>('../core/ui');
+  const choose = vi.spyOn(chooser, 'chooseGames').mockImplementation(async (report) => report.games);
+  const save = vi.spyOn(Project.prototype, 'saveNow').mockRejectedValueOnce(null).mockResolvedValueOnce(undefined);
+  const panel = {
+    signal: new AbortController().signal,
+    step: vi.fn(),
+    fail: vi.fn(),
+    end: vi.fn(),
+    confirmGame: vi.fn(),
+    beginSave: vi.fn(),
+    stayInLibrary: false,
+  };
+  try {
+    const files = await Promise.all(
+      ['A', 'B'].map(async (name, i) => {
+        const zip = await createZip([{ name: name + '.GAM', data: new Uint8Array(32).fill(i) }]);
+        return new File([Uint8Array.from(zip)], name + '.zip');
+      }),
+    );
+    vi.mocked(modal)
+      .mockImplementationOnce(realModal)
+      .mockImplementationOnce((title, build) => {
+        const result = realModal(title, build);
+        doc.body.children.at(-1)!.fire('cancel');
+        return result;
+      });
+    await importPicked({ openProject: vi.fn() }, files, undefined, panel);
+    expect(panel.fail).not.toHaveBeenCalled();
+    expect(save).toHaveBeenCalledTimes(2);
+    const summary = doc.body.children.at(-1)!;
+    expect(summary.children.find((el) => el.tag === 'p')?.children[0].textContent).toContain('Imported 1 of 2 games.');
+    const details = summary.children.find((el) => el.tag === 'details')!;
+    expect(details.children[0].children[0].textContent).toBe('Not imported (1)');
+    expect(details.children[1].children[0].children[0].textContent).toBe('a.gam (Something went wrong while saving the game.)');
+  } finally {
+    choose.mockRestore();
     save.mockRestore();
     vi.unstubAllGlobals();
   }
