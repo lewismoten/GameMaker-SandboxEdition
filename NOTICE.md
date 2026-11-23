@@ -87,6 +87,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex fixed phone booklet filtering and Markdown table boundaries and added regression tests.
 - OpenAI Codex generated and tested the static Art courses and Programmer’s Guide pages.
 - OpenAI Codex revised Starter page labels, game preview descriptions, offline instructions and page links during the November 22, 2026 SEO review.
+- OpenAI Codex corrected the TURBO BUTTON structured data and tested its URLs against the generated magazine page.
 - OpenAI Codex fixed and tested offline home navigation from nested pages.
 - OpenAI Codex corrected the mobile editor's asset reference count.
 - OpenAI Codex adjusted touch target sizes on the Achievements page (November 22, 2026).

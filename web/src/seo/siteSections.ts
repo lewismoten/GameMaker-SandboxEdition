@@ -7,7 +7,7 @@ import { PRODUCT, SHORT } from '../edition';
 import { ISSUES, MAG } from '../manual/magazine/masthead';
 import { escapeHtml, OG_IMAGE, REPO_URL, ROUTES, SITE_URL } from './site';
 
-const MAGAZINE_URL = `${SITE_URL}#/magazine`;
+const MAGAZINE_URL = `${SITE_URL}magazine.html`;
 
 /** The site as a schema.org WebSite (the app node, appJsonLd, is what it is about). */
 export function websiteJsonLd(): Record<string, unknown> {
