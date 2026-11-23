@@ -212,6 +212,10 @@ function normalizeItem(v: unknown, frames: number): Item | undefined {
   return undefined;
 }
 
+function savedBackgrounds(v: Record<string, unknown>, frames: number): Background[] {
+  return sortBackgrounds((Array.isArray(v.backgrounds) ? v.backgrounds : [v.background]).map((b) => normalizeBackground(b, frames)));
+}
+
 /** A valid scene from whatever was stored; undefined when nothing scene-like is there. */
 export function normalizeScene(v: unknown): Scene | undefined {
   if (!isObj(v)) return undefined;
@@ -226,7 +230,7 @@ export function normalizeScene(v: unknown): Scene | undefined {
     speed: clampInt(v.speed, 1, 1000, 5),
     fadeIn: clampInt(v.fadeIn, 0, frames, 0),
     fadeOut: clampInt(v.fadeOut, 0, frames, 0),
-    backgrounds: sortBackgrounds((Array.isArray(v.backgrounds) ? v.backgrounds : [v.background]).map((b) => normalizeBackground(b, frames))),
+    backgrounds: savedBackgrounds(v, frames),
     tracks,
   };
 }
@@ -269,11 +273,22 @@ export function gamePaletteName(src: Pick<SceneSource, 'game' | 'files'>): strin
 }
 
 /** The game files a scene draws with, as named (one entry per use), for "what uses this?". */
-export function sceneFiles(s: Scene, src: Pick<SceneSource, 'game' | 'files'>): string[] {
+export function sceneFiles(v: unknown, src: Pick<SceneSource, 'game' | 'files'>): string[] {
+  if (!isObj(v)) return [];
   const out: string[] = [];
-  for (const b of s.backgrounds) out.push(b.kind === 'picture' ? b.file : b.kind === 'map' ? b.map : b.palette || gamePaletteName(src) || '');
-  for (const { item } of allItems(s))
-    if (item.kind === 'block') out.push(item.bbl);
-    else if (item.kind === 'actor') out.push(...(item.source.type === 'chr' ? [item.source.chr, item.source.cbl] : [item.source.mon, item.source.mbl]));
+  for (const b of savedBackgrounds(v, clampInt(v.frames, 1, MAX_FRAMES, 60)))
+    out.push(b.kind === 'picture' ? b.file : b.kind === 'map' ? b.map : b.palette || gamePaletteName(src) || '');
+  for (const track of Array.isArray(v.tracks) ? v.tracks : []) {
+    if (!isObj(track) || !Array.isArray(track.items)) continue;
+    for (const item of track.items) {
+      if (!isObj(item)) continue;
+      if (item.kind === 'block') out.push(str(item.bbl));
+      if (item.kind === 'actor' && isObj(item.source)) {
+        const s = item.source;
+        if (s.type === 'mon') out.push(str(s.mon), str(s.mbl));
+        else out.push(str(s.chr), str(s.cbl));
+      }
+    }
+  }
   return out.filter(Boolean);
 }

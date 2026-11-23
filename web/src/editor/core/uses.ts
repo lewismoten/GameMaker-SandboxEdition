@@ -9,7 +9,7 @@ import { parseCharacter, frameCount } from '@lewismoten/gamemaker-sandbox-engine
 import { ADVTYPE, ADV_FILES, START_FILES, END_FILES } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { parseBackdrop, parseSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
 import { parseSoundSet } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
-import { SCENE_SECTION, normalizeScene, sceneFiles } from '../editors/animation/scene/sceneModel';
+import { SCENE_SECTION, sceneFiles } from '../editors/animation/scene/sceneModel';
 import type { Project } from './project';
 import { formatHash } from '../../urlState';
 
@@ -56,10 +56,7 @@ export function embeddedFiles(project: Project, file: string): string[] {
   const bytes = project.files.get(file);
   if (!bytes) return [];
   const name = normalize(file);
-  if (name.endsWith('.fli')) {
-    const scene = normalizeScene(project.extras(file, SCENE_SECTION, undefined));
-    return scene ? sceneFiles(scene, project) : [];
-  }
+  if (name.endsWith('.fli')) return sceneFiles(project.extras(file, SCENE_SECTION, undefined), project);
   if (name.endsWith('.lst')) return tryParse(() => parseSlideList(bytes).map((entry) => entry.name)) ?? [];
   if (name.endsWith('.bkd')) return tryParse(() => [parseBackdrop(bytes).gif]) ?? [];
   if (name.endsWith('.snd'))
