@@ -1,6 +1,6 @@
 # @lewismoten/gamemaker-sandbox-archives
 
-Version **3.2.1**. Discover and unpack Game-Maker games in modern browsers or Node.js
+Discover and unpack Game-Maker games in modern browsers or Node.js
 **22.12+**, using ES modules with TypeScript declarations. The only runtime npm dependency
 is `@lewismoten/gamemaker-sandbox-engine` **^3.2.0**. Compressed inputs use
 `DecompressionStream` (including `deflate-raw` for ZIP and `gzip` for compressed packs);
