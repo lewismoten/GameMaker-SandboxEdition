@@ -6,6 +6,7 @@ import { importRunning, openImportPanel } from './importPanel';
 import { modal, toast } from '../core/ui';
 import { Project } from '../core/project';
 import { importPicked } from './homeImport';
+import * as library from '../../imported/alreadyHave';
 import * as chooser from './importChooser';
 
 vi.mock('./homeCards', () => ({ playLink: vi.fn(), showNotice: vi.fn() }));
@@ -130,12 +131,17 @@ it.each([
   }
 });
 
-it.each(['Escape', 'Close'])('keeps the library open when %s is pressed during a save', async (action) => {
+it.each([
+  ['Escape', 'disk.zip'],
+  ['Close', 'disk.zip'],
+  ['Escape', 'LEVEL.MAP'],
+  ['Close', 'LEVEL.MAP'],
+])('refreshes the library when %s is pressed while saving %s', async (action, name) => {
   const { modal: realModal } = await vi.importActual<typeof import('../core/ui')>('../core/ui');
   vi.mocked(modal).mockImplementationOnce(realModal);
   const doc = new FakeDoc();
   vi.stubGlobal('document', doc);
-  const panel = openImportPanel('disk.zip')!;
+  const panel = openImportPanel(name)!;
   let release!: () => void;
   const pending = new Promise<void>((resolve) => {
     release = resolve;
@@ -143,9 +149,9 @@ it.each(['Escape', 'Close'])('keeps the library open when %s is pressed during a
   const save = vi.spyOn(Project.prototype, 'saveNow').mockImplementation(() => pending);
   const nav = { openProject: vi.fn() };
   try {
-    const zip = await createZip([{ name: 'LEVEL.GAM', data: new Uint8Array(32) }]);
+    const data = name === 'disk.zip' ? await createZip([{ name: 'LEVEL.GAM', data: new Uint8Array(32) }]) : new Uint8Array(32);
     const refresh = vi.fn();
-    const work = importPicked(nav, [new File([Uint8Array.from(zip)], 'disk.zip')], refresh, panel);
+    const work = importPicked(nav, [new File([Uint8Array.from(data)], name)], refresh, panel);
     await vi.waitFor(() => expect(save).toHaveBeenCalledOnce());
     const dialog = doc.body.children.find((el) => el.tag === 'dialog')!;
     if (action === 'Escape') dialog.fire('cancel');
@@ -165,10 +171,11 @@ it.each(['Escape', 'Close'])('keeps the library open when %s is pressed during a
   }
 });
 
-it('lists the failed game in the summary after saving the next game', async () => {
+it('lists a failed duplicate without counting it as a copy after saving the next game', async () => {
   const doc = new FakeDoc();
   vi.stubGlobal('document', doc);
   const { modal: realModal } = await vi.importActual<typeof import('../core/ui')>('../core/ui');
+  const held = vi.spyOn(library, 'alreadyHave').mockReturnValueOnce('existing-project').mockReturnValue(undefined);
   const choose = vi.spyOn(chooser, 'chooseGames').mockImplementation(async (report) => report.games);
   const save = vi.spyOn(Project.prototype, 'saveNow').mockRejectedValueOnce(null).mockResolvedValueOnce(undefined);
   const panel = {
@@ -198,11 +205,12 @@ it('lists the failed game in the summary after saving the next game', async () =
     expect(panel.fail).not.toHaveBeenCalled();
     expect(save).toHaveBeenCalledTimes(2);
     const summary = doc.body.children.at(-1)!;
-    expect(summary.children.find((el) => el.tag === 'p')?.children[0].textContent).toContain('Imported 1 of 2 games.');
+    expect(summary.children.find((el) => el.tag === 'p')?.children[0].textContent).toBe('Imported 1 of 2 games. They are listed under Imported.');
     const details = summary.children.find((el) => el.tag === 'details')!;
     expect(details.children[0].children[0].textContent).toBe('Not imported (1)');
     expect(details.children[1].children[0].children[0].textContent).toBe('a.gam (Something went wrong while saving the game.)');
   } finally {
+    held.mockRestore();
     choose.mockRestore();
     save.mockRestore();
     vi.unstubAllGlobals();
@@ -228,6 +236,34 @@ it('uses generic cancellation while reading a blank HTML file', async () => {
     expect(toast).toHaveBeenLastCalledWith('Canceled');
     expect(nav.openProject).not.toHaveBeenCalled();
   } finally {
+    vi.unstubAllGlobals();
+  }
+});
+
+it('stops reading loose files when Cancel is pressed during the first read', async () => {
+  const { modal: realModal } = await vi.importActual<typeof import('../core/ui')>('../core/ui');
+  vi.mocked(modal).mockImplementationOnce(realModal);
+  const doc = new FakeDoc();
+  vi.stubGlobal('document', doc);
+  const first = new File(['a'], 'FIRST.MAP');
+  const second = new File(['b'], 'SECOND.MAP');
+  const nextRead = vi.spyOn(second, 'arrayBuffer');
+  const firstRead = vi.spyOn(first, 'arrayBuffer').mockImplementation(async () => {
+    const dialog = doc.body.children.find((el) => el.tag === 'dialog')!;
+    const work = dialog.children.find((el) => el.className === 'ic-work')!;
+    work.children.find((el) => el.className === 'buttons')!.children[0].fire('click');
+    return new ArrayBuffer(1);
+  });
+  const nav = { openProject: vi.fn() };
+  const save = vi.spyOn(Project.prototype, 'saveNow');
+  try {
+    await importPicked(nav, [first, second]);
+    expect(firstRead).toHaveBeenCalledOnce();
+    expect(nextRead).not.toHaveBeenCalled();
+    expect(save).not.toHaveBeenCalled();
+    expect(nav.openProject).not.toHaveBeenCalled();
+  } finally {
+    save.mockRestore();
     vi.unstubAllGlobals();
   }
 });

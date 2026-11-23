@@ -256,11 +256,12 @@ async function importChosen(report: ScanReport, given: ScanFile[], onAdded?: () 
   let repeats = 0;
   const { done, failed } = await importWithProgress(chosen, async (g) => {
     const { source, fingerprint } = originOf(g);
-    if (alreadyHave(fingerprint)) repeats++;
+    const held = alreadyHave(fingerprint);
     const { project } = await saveImported(await reader.read(g));
     markBatch([project.id], batch);
     // its source and fingerprint; one removed before takes back its rating and note
     noteImport(project.id, source, fingerprint);
+    if (held) repeats++;
   });
   onAdded?.();
   if (!done && !failed.length) return;
@@ -349,9 +350,16 @@ async function importGiven(nav: HomeNav, given: ScanFile[], list: File[], onAdde
     return importChosen(report, given, onAdded);
   }
   // no .gam anywhere: loose files (no zips) still make a new game around them, as they always have
-  const files = await gameFromFiles(report.loose);
+  const files = await gameFromFiles(report.loose, undefined, panel?.signal);
   if (!report.zips && files.files.size && looksLikeGamePieces(report.loose.map((f) => f.path)))
-    return importFiles(nav, files, { source: 'the files picked', fingerprint: fingerprintOfFiles(Object.fromEntries(files.files.entries())) }, 0, panel);
+    return importFiles(
+      nav,
+      files,
+      { source: 'the files picked', fingerprint: fingerprintOfFiles(Object.fromEntries(files.files.entries())) },
+      0,
+      panel,
+      onAdded,
+    );
   panel?.signal.throwIfAborted();
   panel?.end();
   await chooser.showNothingFound(report);
