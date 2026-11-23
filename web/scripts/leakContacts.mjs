@@ -24,7 +24,7 @@ for (const file of readFileSync(0, 'utf8').split('\0').filter(Boolean)) {
     addressFiles++;
     console.log('     ' + file);
   }
-  for (const [email, domain] of text.matchAll(/[\w.%+-]+@([\w-]+(?:\.[\w-]+)*\.[a-z]{2,})/gi)) {
+  for (const [email, domain] of text.matchAll(/[\w.%+'-]+@([\w-]+(?:\.[\w-]+)*\.[a-z]{2,})/gi)) {
     if (!allowedEmails.has(email.toLowerCase()) && !allowedDomains.has(domain.toLowerCase())) unknownEmails.add(email.toLowerCase());
   }
 }

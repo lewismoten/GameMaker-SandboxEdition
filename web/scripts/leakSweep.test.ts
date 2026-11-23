@@ -69,6 +69,8 @@ it.each([
   '/Users/synthetic/project',
   'user@example.com.evil.org',
   'UPPER@FOREIGN.INVALID',
+  "o'wordsmith@dict.sandbox-u.edu",
+  'other@dict.sandbox-u.edu',
   'wordsmith@dict.sandbox-u.edu.evil.org',
 ])('rejects a build containing %s', (value) => {
   fixture('FixturePrivateSurname', (dist, run) => {
