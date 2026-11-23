@@ -59,6 +59,8 @@ export interface ScanReport {
   badZips: { path: string; error: string }[];
   /** Files in no game, zips aside (none of them is imported, unless no game was found at all). */
   loose: ScanFile[];
+  /** DOS name collisions in skipped loose-file groups. */
+  looseErrors?: string[];
   /** Files whose contents aren't what their extension says (a renamed text file named .FLI). */
   misnamed?: { path: string; says: string }[];
 }
@@ -243,6 +245,17 @@ const breathe = () => new Promise<void>((r) => setTimeout(r, 0));
 
 class DosNameCollision extends Error {}
 
+function dosNameCollision(files: ScanFile[]): string | undefined {
+  const paths = new Map<string, string>();
+  for (const f of files) {
+    if (PLAYER_EXE(f.path, f.size)) continue;
+    const key = normalize(f.path);
+    const previous = paths.get(key);
+    if (previous !== undefined) return `${previous} and ${f.path} both use the DOS name ${key}.`;
+    paths.set(key, f.path);
+  }
+}
+
 /** Looks through what was given for its games. Throws an AbortError when canceled. */
 export async function scanImport(given: ScanFile[], { signal, onProgress, onStep, zipLimits }: ScanOptions = {}): Promise<ScanReport> {
   const report: ScanReport = { games: [], zips: 0, emptyZips: [], badZips: [], loose: [] };
@@ -259,13 +272,12 @@ export async function scanImport(given: ScanFile[], { signal, onProgress, onStep
     const localGames: FoundGame[] = [];
     /** Adds a game; how many files its .gam names that it lacks. */
     const add = async (g: Group, gams: ScanFile[], files: ScanFile[], gam?: string, leftover?: (missing: number) => string | undefined) => {
-      const paths = new Map<string, string>();
-      for (const f of files) {
-        if (PLAYER_EXE(f.path, f.size)) continue;
-        const key = normalize(f.path);
-        const previous = paths.get(key);
-        if (previous !== undefined) throw new DosNameCollision(`${previous} and ${f.path} both use the DOS name ${key}.`);
-        paths.set(key, f.path);
+      const collision = dosNameCollision(files);
+      if (collision) {
+        if (zips.length) throw new DosNameCollision(collision);
+        const errors = (report.looseErrors ??= []);
+        if (!errors.includes(collision)) errors.push(collision);
+        return;
       }
       const crcs: number[] = [];
       let title = '';
@@ -402,6 +414,11 @@ export async function scanImport(given: ScanFile[], { signal, onProgress, onStep
   await look(given, [], [], 0);
   report.games = markZipLeftovers(sameGamesOnce(report.games, sfxPaths));
   report.loose = report.loose.filter((f) => !sfx.has(f));
+  const collision = dosNameCollision(report.loose.filter(brings));
+  if (collision) {
+    (report.looseErrors ??= []).push(collision);
+    report.loose = [];
+  }
   // listed by where they are (a zip's games stay together, so GameReader reads it once)
   report.games.sort((a, b) => a.from.localeCompare(b.from, undefined, { numeric: true, sensitivity: 'base' }));
   onProgress?.(topZips.length, topZips.length);

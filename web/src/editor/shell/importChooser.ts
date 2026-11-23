@@ -74,12 +74,13 @@ function looseNotes(r: ScanReport): HTMLElement | undefined {
 
 /** Says what was found when no game was; nothing is imported. */
 export function showNothingFound(r: ScanReport): Promise<void> {
-  const empty = r.zips === 1 && !r.loose.length && r.emptyZips[0]?.empty;
+  const empty = r.zips === 1 && !r.looseErrors?.length && !r.loose.length && r.emptyZips[0]?.empty;
   const what = 'A game is a folder or zip with a .GAM file in it, so nothing was imported.';
   return modal<void>(empty ? 'This archive is empty' : 'No game found', (close) => [
     h('p', null, empty ? `${r.emptyZips[0].path} contains no files to import.` : `${scanSummary(r)}. ${what}`),
     empty ? null : zipNotes(r),
     looseNotes(r),
+    ...(r.looseErrors ?? []).map((error) => h('p', null, error)),
     misnamedNotes(r),
     h('div', { class: 'buttons' }, h('button', { type: 'button', class: 'primary', onclick: () => close(undefined) }, 'OK')),
   ]).then(() => undefined);
@@ -175,6 +176,7 @@ export async function chooseGames(
       ),
       totals,
       zipNotes(r),
+      ...(r.looseErrors ?? []).map((error) => h('p', null, error)),
       misnamedNotes(r),
       h(
         'div',

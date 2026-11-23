@@ -341,7 +341,7 @@ async function importGiven(nav: HomeNav, given: ScanFile[], list: File[], onAdde
   if (!report) return panel?.end();
   // one game opens as it always has, unless it was removed before: then it is listed, unticked, to say so
   const one = report.games.length === 1 && report.games[0];
-  if (one && !removedMatch(fingerprintOf(one))) {
+  if (one && !report.looseErrors?.length && !removedMatch(fingerprintOf(one))) {
     panel?.confirmGame();
     const read = await new GameReader(given).read(one, (done, total, path) => panel?.step('Extracting', path.split('/').pop(), done, total), panel?.signal);
     return importFiles(nav, read, originOf(one), one.missing, panel, onAdded);
