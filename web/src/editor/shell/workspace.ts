@@ -26,14 +26,14 @@ import { fileActions } from './fileActions';
 import { foldHint } from './hintFold';
 import { SHORT } from '../../edition';
 import { noteOpened, quickOpen } from './quickOpen';
-import { usedByLine, fileDependenciesLine, deleteMessage } from './usedBy';
+import { deleteMessage } from './usedBy';
 import { viewChanged } from './viewSync';
 import { firstStepsState, notePlayed } from './firstSteps';
 import type { FirstStepsPanel } from './firstStepsPanel';
 import { readOnlyBar } from './released';
 import { saveNote } from './saveNote';
 import { crumbs } from './crumbs';
-import { foldRefs } from './refsFold';
+import { fileRefs } from './refsFold';
 import './editorHead.css';
 import { restoreScroll, savedScroll, stampEntry, watchScroll } from './scrollMemory';
 import { assistantHost, setAssistantHost, type AssistantHost } from '../../assistant/hostSlot';
@@ -47,6 +47,7 @@ export class Workspace implements AssistantHost {
   }
   private main = h('main', { class: 'editor', 'aria-label': 'Editor' });
   private current?: string;
+  private refs?: ReturnType<typeof fileRefs>;
   private readonly unwatchScroll: () => void;
   private assetView?: { kind?: FileKind; tab: OverviewTab };
   private assetReturn?: { kind?: FileKind; tab: OverviewTab };
@@ -211,11 +212,18 @@ export class Workspace implements AssistantHost {
     this.unwatchScroll();
     this.saved?.dispose();
     this.firstSteps?.dispose();
-    this.cleanup?.();
+    this.closeEditor();
     this.playSession.dispose();
     this.unlisten();
     this.unbind?.();
     if (assistantHost() === this) setAssistantHost(undefined);
+  }
+
+  private closeEditor(): void {
+    this.refs?.dispose();
+    this.refs = undefined;
+    this.cleanup?.();
+    this.cleanup = undefined;
   }
 
   private renderSidebar(): void {
@@ -251,8 +259,7 @@ export class Workspace implements AssistantHost {
   private openAssets(kind?: FileKind, tab: OverviewTab = 'files'): void {
     if (tab !== 'files') kind = undefined;
     noteLastPlace();
-    this.cleanup?.();
-    this.cleanup = undefined;
+    this.closeEditor();
     this.playSession.stop();
     this.playSession.clear();
     this.playSession.back = undefined;
@@ -317,8 +324,7 @@ export class Workspace implements AssistantHost {
     const left = savedScroll();
     this.assetView = this.assetReturn = undefined;
     this.main.classList.remove('asset-editor');
-    this.cleanup?.();
-    this.cleanup = undefined;
+    this.closeEditor();
     this.playSession.stop();
     this.playSession.clear();
     this.playSession.back = undefined;
@@ -348,7 +354,7 @@ export class Workspace implements AssistantHost {
     const isGam = file === this.project.gam;
     const changes = !this.looking;
     // beside the title row's other parts, so a phone puts it next to the Read-only chip (editorHead.css)
-    const refs = isGam ? null : foldRefs(h('div', { class: 'file-refs' }, usedByLine(this.project, file), fileDependenciesLine(this.project, file)));
+    this.refs = isGam ? undefined : fileRefs(this.project, file);
     this.bar?.classList.add('released-inline'); // beside the file's title
     clear(
       this.main,
@@ -407,7 +413,7 @@ export class Workspace implements AssistantHost {
             ...(isGam || !changes ? [] : [{ label: 'Delete', run: () => void this.remove(file), danger: true }]),
           ]),
         ),
-        refs,
+        this.refs?.el,
       ),
       isGam ? this.nextSteps() : null,
       body,
@@ -520,8 +526,7 @@ export class Workspace implements AssistantHost {
     const level = how === 'title' ? undefined : (how ?? this.playSession.defaultPick(back));
     notePlayed(this.project);
     setHashParams({ play: level ? pickParam(level) : 'title' });
-    this.cleanup?.();
-    this.cleanup = undefined;
+    this.closeEditor();
     this.playSession.stop();
     this.playSession.clear();
     this.current = undefined;
