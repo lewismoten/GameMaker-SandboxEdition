@@ -350,6 +350,11 @@ async function importGiven(nav: HomeNav, given: ScanFile[], list: File[], onAdde
     panel?.end();
     return importChosen(report, given, onAdded);
   }
+  if (report.looseErrors?.length) {
+    panel?.end();
+    await chooser.showNothingFound(report);
+    return;
+  }
   // no .gam anywhere: loose files (no zips) still make a new game around them, as they always have
   const files = await gameFromFiles(report.loose, undefined, panel?.signal);
   if (!report.zips && files.files.size && looksLikeGamePieces(report.loose.map((f) => f.path)))

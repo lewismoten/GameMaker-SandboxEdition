@@ -1,7 +1,7 @@
 // What an import finds: a game folder, a folder of them, zips of games (folders inside,
 // several games, zips in zips), any mix of those, and zips or folders with no game.
 import { describe, expect, it } from 'vitest';
-import { GameReader, groupGames, scanImport, scanSummary, type ScanFile } from '@lewismoten/gamemaker-sandbox-archives/scan';
+import { GameReader, gameFromFiles, groupGames, scanImport, scanSummary, type ScanFile } from '@lewismoten/gamemaker-sandbox-archives/scan';
 import { createZip } from '@lewismoten/gamemaker-sandbox-archives/zip';
 import { newGame, serializeGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 
@@ -73,12 +73,15 @@ describe('scanImport', () => {
   });
 
   it('reports a DOS name collision when only loose MAP files are selected', async () => {
-    const report = await scanImport([file('a/level.map'), file('b/LEVEL.MAP')]);
+    const report = await scanImport([file('a/level.map', Uint8Array.of(1)), file('b/LEVEL.MAP', Uint8Array.of(2))]);
     expect(report).toMatchObject({
       games: [],
       loose: [],
       looseErrors: ['a/level.map and b/LEVEL.MAP both use the DOS name level.map.'],
     });
+    // The no-.gam fallback must receive no partial project after the warning.
+    const fallback = await gameFromFiles(report.loose);
+    expect(fallback.files.size).toBe(0);
   });
 
   it.each([false, true])('keeps a ZIP game alongside colliding loose files (loose GAM present: %s)', async (withGam) => {

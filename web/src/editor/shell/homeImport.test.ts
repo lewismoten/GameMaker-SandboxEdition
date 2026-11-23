@@ -74,8 +74,8 @@ it('shows both colliding loose MAP paths in the No game found dialog without cre
   const create = vi.spyOn(Project, 'fromFiles');
   const nav = { openProject: vi.fn() };
   try {
-    const files = ['a/level.map', 'b/LEVEL.MAP'].map((path) => {
-      const file = new File([path], path.split('/')[1]);
+    const files = ['a/level.map', 'b/LEVEL.MAP'].map((path, index) => {
+      const file = new File([Uint8Array.of(index + 1)], path.split('/')[1]);
       Object.defineProperty(file, 'webkitRelativePath', { value: path });
       return file;
     });
