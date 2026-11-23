@@ -10,6 +10,7 @@ import { unlock } from '@lewismoten/gamemaker-sandbox-engine/audio/context';
 import { watchForUpdates } from './devReload';
 import { watchErrors } from './errorNotice/watch';
 import { GameFiles, loadCatalogList, withDetails, type CatalogEntry } from './project/files';
+import { isStarterGame } from './project/starter';
 import { streamHostedGame } from './project/streamGame';
 import { loadProject, loadSaveData } from './project/storage';
 import { markUsed } from './project/projectUse';
@@ -137,7 +138,7 @@ async function choose(): Promise<
         // back to the game's own page in the catalog, with its Look inside, manual and saves
         back: `./#/game/cd:${encodeURIComponent(entry.id)}`,
         poster: posterOf(entry).catch(() => undefined),
-        notice: entry.kind === 'shareware' ? entry.notice || 'This game is shareware, copyrighted by its author.' : undefined,
+        notice: entry.kind === 'shareware' && !isStarterGame(entry) ? entry.notice || 'This game is shareware, copyrighted by its author.' : undefined,
         player: catalogPatches(entry),
         controls: entry.controls,
       };
