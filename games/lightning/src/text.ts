@@ -26,7 +26,7 @@ export const HOWTO = wrap(`
 
 Walk to each level's exit door. The sky flashes about every 7 seconds.
 
-Jump across the ditch on the stones. A fall is safe. Hold LEFT, then hold SPACE until you clear the edge of the step. Release SPACE on the step and repeat for the next one.
+Cross on the stones. If you fall, keep LEFT held. Hold SPACE to rise above the step. Let go of SPACE in the air to move left. Repeat each step.
 
 |ESC for the menu.
 `);

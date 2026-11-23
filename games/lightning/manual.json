@@ -49,7 +49,7 @@
     },
     {
       "head": "Level 2: Light the Way",
-      "html": "<h1>Level 2: Light the Way</h1><p>A ditch in the dark, with three stepping stones over it. <b>THE STONES LIGHT UP WITH THE SKY</b> and <b>DIM, BUT YOU CAN ALWAYS SEE THEM</b> stand before it. Jump from stone to stone to the other side. If you walk straight on and drop into the ditch, the fall is safe. Hold <kbd>Left</kbd>, then hold <kbd>Space</kbd> until you clear the edge of the step. Release <kbd>Space</kbd> on the step and repeat for the next one. The title screen demo shows the fall.</p>"
+      "html": "<h1>Level 2: Light the Way</h1><p>A ditch in the dark, with three stepping stones over it. <b>THE STONES LIGHT UP WITH THE SKY</b> and <b>DIM, BUT YOU CAN ALWAYS SEE THEM</b> stand before it. Jump from stone to stone to the other side. If you walk straight on and drop into the ditch, the fall is safe. Hold <kbd>Left</kbd>, then hold <kbd>Space</kbd> to rise above the step. Let go of <kbd>Space</kbd> in the air and keep holding <kbd>Left</kbd> to move onto the step. Repeat for the next one. The title screen demo shows the fall.</p>"
     },
     {
       "head": "How this level is made",

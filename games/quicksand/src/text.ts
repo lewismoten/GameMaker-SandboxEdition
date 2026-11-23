@@ -22,13 +22,10 @@ export const HOWTO = wrap(`
 |LEFT, RIGHT   walk
 |SPACE         jump
 |F2            lives, score
+Walk to stay on top. Stand still and the sand sinks.
+In a hole, keep RIGHT held. Hold SPACE to rise above the rim. Release SPACE in the air to move right.
 
-Keep walking and the sand holds. Stand still and it ripples, then gives way. Hold RIGHT, then hold SPACE until you clear the edge of the hole.
-
-Gray stones never sink. Dark wet sand sinks faster than dry sand.
-
-Coins add to your score.
-
+Gray stones stay up. Dark wet sand sinks faster. Coins score points.
 |ESC for the menu.
 `);
 
