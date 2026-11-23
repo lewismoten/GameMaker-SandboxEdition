@@ -64,7 +64,7 @@ export function waitingDialog(text: string, onCancel: () => void): { close: () =
 /** Consent to contact the external host, before any game download begins. */
 export function askToFetch(from: string): Promise<boolean> {
   return dialog('Download a game from another site?', false, (close) => [
-    h('p', null, 'Download the game’s files from ', h('strong', null, from), '? That site will receive the download request.'),
+    h('p', { class: 'gm-link-what' }, 'Download the game’s files from ', h('strong', null, from), '? That site will receive the download request.'),
     h('p', null, 'After the download, you can review the game before opening it.'),
     h(
       'div',
