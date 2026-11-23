@@ -161,7 +161,26 @@ describe('source files', () => {
       ],
       tracks: [{ items: [textItem('Hi'), { kind: 'actor', source: { type: 'mon', mon: 'foes.mon', mbl: 'foes.mbl', index: 2 } }, { kind: 'block', bbl: '' }] }],
     })!;
-    expect(sceneFiles(s, fixture())).toEqual(['night.pal', 'one.map', 'lvl.pal', 'foes.mon', 'foes.mbl']);
+    // night.pal is not in the fixture, so that background draws with (and uses) the game palette too
+    expect(sceneFiles(s, fixture())).toEqual(['night.pal', 'lvl.pal', 'one.map', 'lvl.pal', 'foes.mon', 'foes.mbl']);
+  });
+
+  it('counts the game palette for a missing named palette, and looks the game palette up once', () => {
+    const src = fixture();
+    const backgrounds = Array.from({ length: 2000 }, (_, start) => ({ start, kind: 'color', palette: start === 1 ? 'missing.pal' : '', color: start % 256 }));
+    const s = normalizeScene({ frames: 2000, backgrounds })!;
+    let reads = 0;
+    const byExtension = src.files.byExtension.bind(src.files);
+    const game = src.game.bind(src);
+    const counted = {
+      ...src,
+      game: () => (reads++, game()),
+      files: { get: src.files.get.bind(src.files), byExtension: (e: string) => (reads++, byExtension(e)) },
+    };
+    const out = sceneFiles(s, counted);
+    expect(out.slice(0, 4)).toEqual(['lvl.pal', 'missing.pal', 'lvl.pal', 'lvl.pal']);
+    expect(out.filter((f) => f === 'lvl.pal')).toHaveLength(2000);
+    expect(reads).toBe(1);
   });
 });
 
