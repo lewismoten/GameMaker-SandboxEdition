@@ -1,6 +1,6 @@
 # @lewismoten/gamemaker-sandbox-tools
 
-Version **3.4.0**. Tools for creating and checking native RSD Game-Maker data, without
+Tools for creating and checking native RSD Game-Maker data, without
 game assets. ES modules with TypeScript declarations; Node.js **22.12+**. Runtime npm
 dependencies are `@lewismoten/gamemaker-sandbox-engine` **^3.2.0** and
 `@lewismoten/gamemaker-sandbox-archives` **^3.2.0**.
