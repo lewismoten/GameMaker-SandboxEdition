@@ -331,7 +331,7 @@ const backIssues = (ctx: MagContext): MagPage => {
         tone: 'white',
       }),
       note(
-        'Prices are part of the story: every issue is in its game’s box, free to read here. The Bard of Bizarre’s song-games come on a single disk, with no box and no newsletter.',
+        'Prices are part of the story: every issue is in its game’s box, free to read here. The Bard of Bizarre’s song-games come from The Sofa BBS, with no box and no newsletter.',
       ),
     ],
   };
