@@ -144,6 +144,12 @@
       "gamemaker-source": "./src/embroidery/*.ts",
       "import": "./dist/embroidery/*.js"
     },
+    "./mesh/trinketTool": {
+      "types": "./dist/types/mesh/trinketTool.d.ts",
+      "browser": null,
+      "gamemaker-source": "./src/mesh/trinketTool.ts",
+      "import": "./dist/mesh/trinketTool.js"
+    },
     "./mesh/*": {
       "types": "./dist/types/mesh/*.d.ts",
       "gamemaker-source": "./src/mesh/*.ts",
