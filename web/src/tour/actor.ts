@@ -44,7 +44,7 @@ export class Actor {
     this.el.style.width = `${this.size.w}px`;
     this.el.style.height = `${this.size.h}px`;
     this.draw();
-    if (!still) this.timer = window.setInterval(() => this.tick(), sprite.sprite.ms);
+    if (!still && !matchMedia('(prefers-reduced-motion: reduce)').matches) this.timer = window.setInterval(() => this.tick(), sprite.sprite.ms);
   }
 
   private get frames(): HTMLCanvasElement[] {

@@ -228,6 +228,8 @@ export function openDiskBox(disks: Disk[], startId: string | undefined, onPick: 
       }
     }
 
+    const scrollBehavior = (): ScrollBehavior => (matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth');
+
     /** A tab above the case: open that group, bring its divider to the top and pick its first disk. */
     function jumpTo(id: DiskGroup): void {
       const view = views.get(id)!;
@@ -235,7 +237,7 @@ export function openDiskBox(disks: Disk[], startId: string | undefined, onPick: 
       const first = disks.findIndex((_, i) => groupOf[i] === id && visible(i));
       if (first >= 0) select(first, false);
       const box = view.section.closest<HTMLElement>('.disk-case');
-      if (box) box.scrollTo({ top: view.section.offsetTop - 8, behavior: 'smooth' });
+      if (box) box.scrollTo({ top: view.section.offsetTop - 8, behavior: scrollBehavior() });
     }
 
     let back = () => {};
@@ -253,7 +255,7 @@ export function openDiskBox(disks: Disk[], startId: string | undefined, onPick: 
     function select(i: number, scroll = true): void {
       index = Math.max(0, Math.min(disks.length - 1, i));
       items.forEach((el, j) => el.setAttribute('aria-selected', String(j === index)));
-      if (scroll) items[index].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      if (scroll) items[index].scrollIntoView({ block: 'nearest', behavior: scrollBehavior() });
       const d = disks[index];
       clear(
         info,

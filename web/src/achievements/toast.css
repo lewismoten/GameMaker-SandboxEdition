@@ -272,7 +272,11 @@
 
 .ach-toast.ach-leaving {
   opacity: 0;
-  transition: opacity 0.3s;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .ach-toast.ach-leaving {
+    transition: opacity 0.3s;
+  }
 }
 
 /* a phone: two at a time is plenty */

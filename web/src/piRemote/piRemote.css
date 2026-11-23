@@ -88,7 +88,11 @@ main.pi-remote .pi-switch-knob::after {
   height: 16px;
   border-radius: 50%;
   background: var(--text);
-  transition: left 0.12s;
+}
+@media (prefers-reduced-motion: no-preference) {
+  main.pi-remote .pi-switch-knob::after {
+    transition: left 0.12s;
+  }
 }
 
 main.pi-remote .pi-switch[aria-checked='true'] .pi-switch-knob {

@@ -28,6 +28,10 @@ export class TourSound {
   private files = new Map<string, Promise<Uint8Array | undefined>>();
   private song?: MusicId;
   private started = false;
+  private paused = false;
+  private voiceGeneration = 0;
+  private voiceReady = false;
+  private bark?: HTMLAudioElement;
   private voice?: HTMLAudioElement;
   /** Clips loading ahead of their step (prefetch), by address. */
   private warm = new Map<string, HTMLAudioElement>();
@@ -87,20 +91,27 @@ export class TourSound {
   }
 
   effect(id: SoundId | undefined): void {
-    if (!id || !this.started) return;
+    if (!id || !this.started || this.paused) return;
     if (id in BARKS) {
       const clips: readonly string[] = BARKS[id as keyof typeof BARKS];
       const a = new Audio(barkUrl(clips[Math.floor(Math.random() * clips.length)]));
+      this.bark?.pause();
+      this.bark = a;
       a.volume = 0.6 * channelGain('sfx');
       void a.play().catch(() => undefined);
       return;
     }
-    void this.file(`${SOUNDS[id as keyof typeof SOUNDS]}.voc`).then((b) => this.started && this.engine.playVoc(b));
+    void this.file(`${SOUNDS[id as keyof typeof SOUNDS]}.voc`).then((b) => this.started && !this.paused && this.engine.playVoc(b));
   }
 
   pause(paused: boolean): void {
+    this.paused = paused;
     if (this.started) this.engine.pauseMusic(paused);
-    if (paused) this.voice?.pause();
+    if (paused) {
+      if (this.started) this.engine.stopVoc();
+      this.bark?.pause();
+      this.voice?.pause();
+    } else if (this.voiceReady && this.voice && !this.voice.ended) void this.voice.play().catch(() => undefined);
   }
 
   /** Sound on or off (from the tour's switch, so a click is under way). */
@@ -114,6 +125,7 @@ export class TourSound {
     if (on) this.start();
     else {
       this.started = false;
+      this.bark?.pause();
       this.engine.stopAll();
       this.stopVoice();
     }
@@ -147,7 +159,8 @@ export class TourSound {
     if (!url) return Promise.resolve(0);
     // Voice off in the sound settings: the bubble's own timing is used, as with a step that has no clip
     if (!this.on || channelGain('voice') === 0) return Promise.resolve(0);
-    if (!(await availableOffline(url))) return 0;
+    const generation = this.voiceGeneration;
+    if (!(await availableOffline(url)) || generation !== this.voiceGeneration) return 0;
     const early = this.warm.get(url);
     this.warm.delete(url);
     const a = early ?? new Audio();
@@ -169,7 +182,8 @@ export class TourSound {
           // ready after the step stopped waiting for it: playing now would be cut off mid-word
           if (given) return;
           if (this.voice !== a || !isFinite(a.duration)) return give(0);
-          void a.play().catch(() => undefined);
+          this.voiceReady = true;
+          if (!this.paused) void a.play().catch(() => undefined);
           give(Math.ceil(a.duration * 1000) + 300);
         },
         { once: true },
@@ -182,12 +196,15 @@ export class TourSound {
   }
 
   stopVoice(): void {
+    this.voiceGeneration++;
+    this.voiceReady = false;
     this.voice?.pause();
     this.voice?.removeAttribute('src');
     this.voice = undefined;
   }
 
   dispose(): void {
+    this.bark?.pause();
     this.stopVoice();
     this.started = false;
     this.unmix();
