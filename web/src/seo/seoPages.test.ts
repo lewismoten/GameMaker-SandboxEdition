@@ -4,8 +4,9 @@
 import { join } from 'node:path';
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import type { IndexHtmlTransformContext } from 'vite';
-import { cdCatalog, cdSecretCatalog } from '../../scripts/cdGames';
+import { createServer, type IndexHtmlTransformContext } from 'vite';
+import { chromium } from 'playwright-core';
+import { cdCatalog, cdGames, cdSecretCatalog } from '../../scripts/cdGames';
 import { gamePageHtml, guidePageHtml, seoPages, staticPageHtml } from '../../scripts/seoBuild';
 import { readingPages } from '../../scripts/seoReadings';
 import { staticPages } from '../../scripts/seoStaticPages';
@@ -177,6 +178,43 @@ describe('seoBuild', () => {
     expect(html).toMatch(/name="description" content="[^"]*Starter game made with Game-Maker/);
     expect(html).not.toMatch(/name="description" content="[^"]*shareware/);
   });
+
+  it('omits the notice on the loaded First Steps screen and opens the author’s notice for AJ’s Quest', async () => {
+    const server = await createServer({
+      configFile: false,
+      plugins: [cdGames(cdRoot), plugin],
+      server: { host: '127.0.0.1', port: 6154, hmr: false, watch: null },
+      logLevel: 'error',
+    });
+    try {
+      await server.listen();
+      const browser = await chromium.launch();
+      try {
+        const page = await browser.newPage();
+        const base = server.resolvedUrls!.local[0];
+        for (const id of ['first-steps', 'ajquest']) {
+          const game = playable.find((g) => g.id === id)!;
+          await page.goto(new URL(gamePage(id), base).href);
+          const player = page.locator('#player');
+          await player.getByRole('button', { name: `▶ Play ${game.title}` }).waitFor();
+          const button = player.getByRole('button', { name: 'Shareware · read the author’s notice' });
+          if (id === 'first-steps') {
+            expect(await button.count()).toBe(0);
+            expect(await player.locator('.gm-notice').count()).toBe(0);
+          } else {
+            expect(game.notice?.trim()).toBeTruthy();
+            await button.click();
+            const dialog = player.getByRole('dialog', { name: 'Shareware notice' });
+            expect(await dialog.locator('pre').textContent()).toBe(game.notice);
+          }
+        }
+      } finally {
+        await browser.close();
+      }
+    } finally {
+      await server.close();
+    }
+  }, 60000);
 
   it('gives every play page one accurate VideoGame: no invented dates, ratings or reviews, and no secret game anywhere on it', () => {
     const shell = page('play.html');
