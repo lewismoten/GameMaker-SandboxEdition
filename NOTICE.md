@@ -74,6 +74,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex fixed and tested scrolling the focused achievement tab into view during keyboard navigation and record refreshes.
 - **Import panel dismissal (November 22, 2026)**: OpenAI Codex updated the import panel, cancellation messages, and regression tests.
 - OpenAI Codex fixed and tested DOS filename collisions and duplicate metadata handling during ZIP import.
+- OpenAI Codex (GPT-6) verified mixed ZIP and loose-file collision reporting and extended its regression test.
 - OpenAI Codex fixed and tested loose-file import cancellation, library refresh after saving, and duplicate counts in batch import summaries.
 - OpenAI Codex fixed and tested save failure reporting for batch imports and loose game files.
 - OpenAI Codex fixed and tested Level check routing through unused DOS contacts and one-way findings at map edges.
