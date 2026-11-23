@@ -188,6 +188,7 @@ export function openDiskBox(disks: Disk[], startId: string | undefined, onPick: 
       }
     };
 
+    const noMatch = h('p', null, 'No matching disks. Try another title or author.');
     const search = h('input', {
       type: 'search',
       'aria-label': 'Find a disk',
@@ -208,7 +209,7 @@ export function openDiskBox(disks: Disk[], startId: string | undefined, onPick: 
         settle();
         const first = disks.findIndex((_, i) => visible(i));
         if (first >= 0) select(visible(index) ? index : first, false);
-        else clear(info, h('p', { role: 'status' }, 'No matching disks. Try another title or author.'));
+        else if (!info.contains(noMatch)) clear(info, noMatch);
       },
     });
 

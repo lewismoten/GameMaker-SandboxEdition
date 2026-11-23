@@ -93,11 +93,11 @@ export async function openOfflineDialog(): Promise<void> {
       const bar = h('progress', { max: String(s.wireTotal || 1), value: '0', 'aria-label': 'Verified files' });
       const line = h('p', { class: 'meta' });
       clear(content, bar, line, h('button', { type: 'button', onclick: () => stop.abort() }, 'Cancel'));
+      status.textContent = 'Preparing the offline copy…';
       try {
         const result = await makeOffline(
           s,
           (p) => {
-            status.textContent = 'Preparing the offline copy…';
             bar.value = p.bytes;
             line.textContent = `${p.done} of ${p.total} files verified · ${sizeText(p.bytes)} of ${sizeText(p.totalBytes)}`;
           },

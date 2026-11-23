@@ -191,9 +191,10 @@ registerEditor(['pal'], (host, project, file) => {
     buttons.forEach((b, i) => (alike.includes(i) ? (b.dataset.alike = '1') : delete b.dataset.alike));
     alike.forEach((i) => buttons[i].setAttribute('aria-label', `${buttons[i].getAttribute('aria-label')}; may look like color ${selected} to some eyes`));
     alikeNote.hidden = !alike.length;
-    alikeNote.textContent = alike.length
+    const warning = alike.length
       ? `Color ${selected} may look like ${alike.length} other ${alike.length === 1 ? 'color' : 'colors'} to some eyes (dashed outlines): ${alike.slice(0, 6).join(', ')}${alike.length > 6 ? ', ...' : ''}.`
       : '';
+    if (alikeNote.textContent !== warning) alikeNote.textContent = warning;
     const views = previewViews(help.preview);
     seenRow.hidden = views.length < 2;
     clear(

@@ -75,7 +75,7 @@ export function renderPiRemote(el: HTMLElement): () => void {
   });
 
   function say(text: string): void {
-    status.textContent = text;
+    if (status.textContent !== text) status.textContent = text;
   }
 
   /** The log pane drawn again from the model (at most once a frame). */

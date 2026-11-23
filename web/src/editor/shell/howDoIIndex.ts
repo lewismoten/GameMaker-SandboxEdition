@@ -65,9 +65,8 @@ function indexBody(id: string, dialog: boolean, onGo?: () => void): { root: HTML
     ({ entries, questions }) => {
       const show = () => {
         const found = filterQuestions(questions, search.value);
-        count.textContent = search.value.trim()
-          ? `${found.length} of ${questions.length} questions`
-          : `${questions.length} questions; scroll the list for more`;
+        const total = search.value.trim() ? `${found.length} of ${questions.length} questions` : `${questions.length} questions; scroll the list for more`;
+        if (count.textContent !== total) count.textContent = total;
         list.replaceChildren(
           ...found.map((q) => {
             const entry = entries.get(q.game)!;
@@ -87,7 +86,7 @@ function indexBody(id: string, dialog: boolean, onGo?: () => void): { root: HTML
       search.addEventListener('input', show);
       show();
     },
-    () => root.replaceChildren(h('p', { class: 'hint' }, 'The questions could not be loaded.')),
+    () => root.replaceChildren(h('p', { class: 'hint', role: 'alert' }, 'The questions could not be loaded.')),
   );
   return { root, search };
 }

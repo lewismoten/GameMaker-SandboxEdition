@@ -52,7 +52,7 @@ export function foldViewer(item: BalloonCubeItem): HTMLElement {
       'aria-label',
       `The paper cube, ${STEPS[shown].label.toLowerCase()}. Drag or use the arrow keys to turn it; the wheel, pinch, plus and minus zoom; Home resets the view.`,
     );
-    caption.textContent = STEPS[shown].caption;
+    if (caption.textContent !== STEPS[shown].caption) caption.textContent = STEPS[shown].caption;
     count.textContent = `Step ${shown} of ${last}: ${STEPS[shown].label}`;
     slider.setAttribute('aria-valuetext', `Step ${shown} of ${last}: ${STEPS[shown].label}`);
     back.disabled = target <= 0;

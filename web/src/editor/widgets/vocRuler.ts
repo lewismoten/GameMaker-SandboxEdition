@@ -50,10 +50,11 @@ export function vocRuler(rate: number): VocRuler {
       if (p.limitAt !== undefined) track.append(mark('voc-64k', p.limitAt, '64 KB'));
       const bytes = vocBytesFor(Math.max(1, samples));
       const level = stutterLevel(bytes);
-      note.replaceChildren(
-        `${LEVEL_TEXT[level]} ` + (level === 'ok' ? '' : stutterNote(bytes)),
-        ` Ticks: small marks are game ticks (${TICK_MS} ms each), long marks are seconds. These times are estimates.`,
-      );
+      const message =
+        `${LEVEL_TEXT[level]} ` +
+        (level === 'ok' ? '' : stutterNote(bytes)) +
+        ` Ticks: small marks are game ticks (${TICK_MS} ms each), long marks are seconds. These times are estimates.`;
+      if (note.textContent !== message) note.textContent = message;
       note.classList.toggle('warn', level !== 'ok');
     },
   };

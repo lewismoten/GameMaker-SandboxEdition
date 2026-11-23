@@ -44,7 +44,8 @@ export function courierCard(setup: HTMLElement): CourierCard {
   );
   const tablist = h('div', { class: 'courier-tabs', role: 'tablist', 'aria-label': 'Scoot’s satchel' }, ...tabs);
   const panel = h('div', { class: 'courier-panel', id: 'courier-panel', role: 'tabpanel', tabindex: '0' });
-  const el = h('div', { class: 'courier-sections' }, tablist, panel);
+  const spoken = h('p', { class: 'sr-only', role: 'status' });
+  const el = h('div', { class: 'courier-sections' }, tablist, panel, spoken);
 
   const emptyNote = (text: string) => h('p', { class: 'courier-empty' }, text);
 
@@ -183,6 +184,7 @@ export function courierCard(setup: HTMLElement): CourierCard {
       said = words;
       draw();
       panel.querySelector<HTMLElement>('.courier-trips button')?.focus();
+      spoken.textContent = words;
     };
     const load = () =>
       void run(async () => {
@@ -213,7 +215,7 @@ export function courierCard(setup: HTMLElement): CourierCard {
         ),
     );
     // what just happened comes first, so it shows without scrolling the panel
-    return h('div', { class: 'courier-trips' }, h('p', { class: 'courier-said', role: 'status' }, said), ...tripStatus(c).map((t) => h('p', null, t)), actions);
+    return h('div', { class: 'courier-trips' }, h('p', { class: 'courier-said' }, said), ...tripStatus(c).map((t) => h('p', null, t)), actions);
   };
 
   const draw = () => {

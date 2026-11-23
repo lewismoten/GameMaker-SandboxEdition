@@ -28,8 +28,9 @@ export function blockColorHelp(
     if (!pairs.length) return clear(note);
     const chip = (i: number) =>
       h('span', { class: 'alike-chip', style: `background:rgb(${[0, 1, 2].map((k) => Math.round((p[i * 3 + k] * 255) / 63)).join(',')})` });
-    clear(
-      note,
+    const message = h(
+      'span',
+      null,
       'Some colors touching here may look alike to some eyes: ',
       ...pairs
         .slice(0, 3)
@@ -37,6 +38,7 @@ export function blockColorHelp(
       pairs.length > 3 ? `; and ${pairs.length - 3} more` : '',
       '. A darker or lighter shade of one can help.',
     );
+    if (!note.firstChild?.isEqualNode(message)) clear(note, message);
   }
   const stop = onColorHelp(() => last && el.isConnected && refresh(last.px, last.w, last.h));
   const el = h('div', { class: 'stack' }, control, preview.el, note);

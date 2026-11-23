@@ -450,6 +450,7 @@ export class WorkspaceSidebar {
       sec.hidden = !!q && !any && !matchesFile(KIND_LABELS[sec.dataset.kind as FileKind] ?? '', q);
     }
     const count = this.search.querySelector('.file-search-count')!;
-    count.textContent = q ? `${shown} of ${total}` : '';
+    const text = q ? `${shown} of ${total}` : '';
+    if (count.textContent !== text) count.textContent = text;
   }
 }

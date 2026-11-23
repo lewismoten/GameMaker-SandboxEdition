@@ -114,9 +114,12 @@ export function offerUpdate(worker: ServiceWorker | undefined): void {
 
 /** A short status notice (dismissible), for a part of the site that would not load. */
 function showNotice(message: string, calm = false): void {
+  const canReload = navigator.onLine !== false && !calm;
+  const host = [...document.querySelectorAll(':modal')].at(-1) ?? document.body;
+  if (notice?.parentElement === host && notice.dataset.message === message && notice.dataset.reload === String(canReload)) return;
   if (notice?.isConnected) notice.remove();
   const text = document.createElement('span');
-  text.textContent = message;
+  text.setAttribute('role', 'status');
   const close = document.createElement('button');
   close.type = 'button';
   close.textContent = 'OK';
@@ -133,13 +136,17 @@ function showNotice(message: string, calm = false): void {
   });
   notice = document.createElement('div');
   notice.className = 'gm-update';
-  notice.setAttribute('role', 'status');
+  notice.dataset.message = message;
+  notice.dataset.reload = String(canReload);
   notice.style.cssText =
     'position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:2147483000;display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;' +
     'max-width:calc(100vw - 32px);box-sizing:border-box;padding:10px 14px;border-radius:6px;background:#000080;color:#fff;' +
     'font:14px/1.3 system-ui,-apple-system,"Segoe UI",sans-serif;box-shadow:0 4px 16px rgba(0,0,0,.45)';
-  notice.append(text, ...(navigator.onLine === false || calm ? [] : [reload]), close);
+  notice.append(text, ...(canReload ? [reload] : []), close);
   // first in the page, so a keyboard user's first Tab reaches it (it is fixed at the bottom, so
   // the order on screen is unchanged); at the end of the body it took every control to get there
-  document.body.prepend(notice);
+  host.prepend(notice);
+  window.setTimeout(() => {
+    if (text.isConnected && !text.textContent) text.textContent = message;
+  }, 0);
 }
