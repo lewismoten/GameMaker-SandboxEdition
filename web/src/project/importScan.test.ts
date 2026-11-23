@@ -57,6 +57,45 @@ describe('scanImport', () => {
     expect(report.badZips).toEqual([{ path: 'game.zip', error: 'The ZIP contains more than one file named level/hero.cel.' }]);
   });
 
+  it.each([
+    ['level/hero.cel', 'level/HERO.CEL', 'hero.cel'],
+    ['one/character1.cells', 'two/character2.cel', 'characte.cel'],
+  ])('reports both paths when %s and %s share a DOS name', async (first, second, key) => {
+    const report = await scanImport([
+      await zip('game.zip', [
+        ['g.gam', gam('Game')],
+        [first, Uint8Array.of(1)],
+        [second, Uint8Array.of(2)],
+      ]),
+    ]);
+    expect(scanSummary(report)).toBe('0 games found, 1 zip could not be read');
+    expect(report.badZips).toEqual([{ path: 'game.zip', error: `${first} and ${second} both use the DOS name ${key}.` }]);
+  });
+
+  it('imports a game alongside duplicate Mac metadata', async () => {
+    const given = [await zip('game.zip', [...game('', 'Game'), ['__MACOSX/n', Uint8Array.of(1)], ['__MACOSX/n', Uint8Array.of(1)]])];
+    const report = await scanImport(given);
+    expect(report.badZips).toEqual([]);
+    expect(report.games).toHaveLength(1);
+    expect((await new GameReader(given).read(report.games[0])).files.names()).toEqual(['game.gam', 'game.pal', 'hero.cel']);
+  });
+
+  it('keeps each game’s bytes when separate games use the same DOS name', async () => {
+    const given = [
+      await zip('both.zip', [
+        ['a/a.gam', gam('A')],
+        ['a/hero.cel', Uint8Array.of(1)],
+        ['b/b.gam', gam('B')],
+        ['b/HERO.CEL', Uint8Array.of(2)],
+      ]),
+    ];
+    const report = await scanImport(given);
+    expect(report.badZips).toEqual([]);
+    const reader = new GameReader(given);
+    const games = await Promise.all(report.games.map((g) => reader.read(g)));
+    expect(games.map((g) => g.files.get('hero.cel'))).toEqual([Uint8Array.of(1), Uint8Array.of(2)]);
+  });
+
   it('finds one game folder, every file in it', async () => {
     const given = loose([...game('zark/', 'Zark'), ['zark/notes/readme.txt', enc.encode('hi')], ['zark/play.exe', enc.encode('x')]]);
     const r = await scanImport(given);

@@ -241,6 +241,8 @@ function sharedBudgetLister(limits: ZipLimits = DEFAULT_ZIP_LIMITS) {
 /** Waits a moment, so a long look through many zips leaves the page free to draw and click. */
 const breathe = () => new Promise<void>((r) => setTimeout(r, 0));
 
+class DosNameCollision extends Error {}
+
 /** Looks through what was given for its games. Throws an AbortError when canceled. */
 export async function scanImport(given: ScanFile[], { signal, onProgress, onStep, zipLimits }: ScanOptions = {}): Promise<ScanReport> {
   const report: ScanReport = { games: [], zips: 0, emptyZips: [], badZips: [], loose: [] };
@@ -254,9 +256,17 @@ export async function scanImport(given: ScanFile[], { signal, onProgress, onStep
     const { games, loose } = groupGames(files, played);
     (report.misnamed ??= []).push(...(await misnamedIn(files.filter((f) => !isZipName(f.path)))));
     if (!zips.length) report.loose.push(...loose);
-    let found = 0;
+    const localGames: FoundGame[] = [];
     /** Adds a game; how many files its .gam names that it lacks. */
     const add = async (g: Group, gams: ScanFile[], files: ScanFile[], gam?: string, leftover?: (missing: number) => string | undefined) => {
+      const paths = new Map<string, string>();
+      for (const f of files) {
+        if (PLAYER_EXE(f.path, f.size)) continue;
+        const key = normalize(f.path);
+        const previous = paths.get(key);
+        if (previous !== undefined) throw new DosNameCollision(`${previous} and ${f.path} both use the DOS name ${key}.`);
+        paths.set(key, f.path);
+      }
       const crcs: number[] = [];
       let title = '';
       let missing = 0;
@@ -269,7 +279,7 @@ export async function scanImport(given: ScanFile[], { signal, onProgress, onStep
         }
       }
       const playerCrcs = files.map((f) => exeCrcs.get(f)).filter((c): c is number => c !== undefined);
-      report.games.push({
+      localGames.push({
         name: title,
         from: fromLabel(zips.length ? [zips[0].path, ...inner].map(clean) : [], g.dir),
         gamCrcs: crcs,
@@ -283,7 +293,6 @@ export async function scanImport(given: ScanFile[], { signal, onProgress, onStep
         ...(missing ? { missing } : {}),
         ...(leftover?.(missing) ? { leftover: leftover(missing) } : {}),
       });
-      found++;
     };
     for (const g of games) {
       const gams = g.files.filter((f) => isGam(f.path) || played.has(f)).sort((a, b) => normalize(a.path).localeCompare(normalize(b.path)));
@@ -309,6 +318,8 @@ export async function scanImport(given: ScanFile[], { signal, onProgress, onStep
         );
       }
     }
+    report.games.push(...localGames);
+    let found = localGames.length;
     for (const z of files.filter((f) => isZipName(f.path) && !isJunk(clean(f.path)))) {
       signal?.throwIfAborted();
       const top = depth === 0;
@@ -337,6 +348,7 @@ export async function scanImport(given: ScanFile[], { signal, onProgress, onStep
   const lookInZip = async (z: ScanFile, zips: ScanFile[], inner: string[], depth: number, asSfx = false): Promise<number | undefined> => {
     const label = [zips[0].path, ...inner].map(clean).join(' › ');
     let entries: ScanFile[];
+    let empty: boolean;
     try {
       onStep?.('unpack', label);
       const bytes = await z.read();
@@ -353,13 +365,16 @@ export async function scanImport(given: ScanFile[], { signal, onProgress, onStep
         if (!bytes || !isZip(bytes)) throw new Error('It is not a zip file.');
         listing = listShared(bytes);
       }
+      empty = listing.length === 0;
       const names = new Set<string>();
-      entries = listing.map(({ name, size, supported, read }) => {
-        if (!supported) throw new Error(`${name} uses an unsupported ZIP compression method and could not be imported.`);
-        if (names.has(name)) throw new Error(`The ZIP contains more than one file named ${name}.`);
-        names.add(name);
-        return { path: name, size, read };
-      });
+      entries = listing
+        .filter((e) => !isJunk(clean(e.name)))
+        .map(({ name, size, supported, read }) => {
+          if (!supported) throw new Error(`${name} uses an unsupported ZIP compression method and could not be imported.`);
+          if (names.has(name)) throw new Error(`The ZIP contains more than one file named ${name}.`);
+          names.add(name);
+          return { path: name, size, read };
+        });
     } catch (e) {
       report.zips++;
       report.badZips.push({ path: label, error: (e as Error).message || 'It could not be read.' });
@@ -370,8 +385,15 @@ export async function scanImport(given: ScanFile[], { signal, onProgress, onStep
     // zips deeper than this are left unopened
     const files = depth + 1 >= MAX_DEPTH ? entries.filter((e) => !isZipName(e.path)) : entries;
     onStep?.('find', label);
-    const n = await look(files, zips, inner, depth + 1);
-    if (!n) report.emptyZips.push({ path: asSfx ? sfxNote(label) : label, held: heldBy(files, sfx), ...(!entries.length && { empty: true }) });
+    let n: number;
+    try {
+      n = await look(files, zips, inner, depth + 1);
+    } catch (error) {
+      if (!(error instanceof DosNameCollision)) throw error;
+      report.badZips.push({ path: label, error: error.message });
+      return 0;
+    }
+    if (!n) report.emptyZips.push({ path: asSfx ? sfxNote(label) : label, held: heldBy(files, sfx), ...(empty && { empty }) });
     return n;
   };
   /** Labels of the self-extracting archives found. */
