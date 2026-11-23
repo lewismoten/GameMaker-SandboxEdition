@@ -246,17 +246,7 @@ type Item = { file: string; name: string; kind: 'dead' | 'local' };
 const unusedExports: Item[] = [];
 const publicExports: Item[] = [];
 const unreferencedFiles: string[] = [];
-for (const f of sources.filter(isCandidate)) {
-  const sf = ts.createSourceFile(f, readFileSync(f, 'utf8'), ts.ScriptTarget.Latest, true);
-  const u = used.get(f);
-  if (!reachable.has(f)) unreferencedFiles.push(f);
-  if (u?.has(ALL)) continue;
-  const idCount = new Map<string, number>();
-  const count = (n: ts.Node): void => {
-    if (ts.isIdentifier(n)) idCount.set(n.text, (idCount.get(n.text) ?? 0) + 1);
-    ts.forEachChild(n, count);
-  };
-  count(sf);
+function declaredNames(sf: ts.SourceFile): string[] {
   const declared: string[] = [];
   for (const st of sf.statements) {
     const exported = ts.canHaveModifiers(st) && ts.getModifiers(st)?.some((m) => m.kind === ts.SyntaxKind.ExportKeyword);
@@ -284,6 +274,32 @@ for (const f of sources.filter(isCandidate)) {
       for (const e of st.exportClause.elements) declared.push(e.name.text);
     else if (ts.isExportAssignment(st)) declared.push('default');
   }
+  return declared;
+}
+
+// Resolve package entries with the same source condition used by the workspace.
+const publicProgram = ts.createProgram(sources.filter(isPublic), {
+  module: ts.ModuleKind.ESNext,
+  moduleResolution: ts.ModuleResolutionKind.Bundler,
+  customConditions: ['gamemaker-source'],
+  types: [],
+  allowJs: true,
+});
+const checker = publicProgram.getTypeChecker();
+for (const f of sources.filter(isCandidate)) {
+  const u = used.get(f);
+  if (!reachable.has(f)) unreferencedFiles.push(f);
+  if (u?.has(ALL)) continue;
+  const publicEntry = isPublic(f) ? publicProgram.getSourceFile(f) : undefined;
+  const sf = publicEntry ?? ts.createSourceFile(f, readFileSync(f, 'utf8'), ts.ScriptTarget.Latest, true);
+  const idCount = new Map<string, number>();
+  const count = (n: ts.Node): void => {
+    if (ts.isIdentifier(n)) idCount.set(n.text, (idCount.get(n.text) ?? 0) + 1);
+    ts.forEachChild(n, count);
+  };
+  count(sf);
+  const moduleSymbol = publicEntry && checker.getSymbolAtLocation(publicEntry);
+  const declared = moduleSymbol ? checker.getExportsOfModule(moduleSymbol).map((symbol) => symbol.getName()) : declaredNames(sf);
   for (const name of declared) {
     if (u?.has(name)) continue;
     const local = name !== 'default' && (idCount.get(name) ?? 0) > 1;
