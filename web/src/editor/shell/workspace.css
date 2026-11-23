@@ -184,20 +184,30 @@
     flex: 1 1 auto;
     gap: 4px;
     min-width: 0;
-    overflow: hidden;
+    container-type: inline-size;
     white-space: nowrap;
-    text-overflow: ellipsis;
     font-weight: 600;
   }
   .sidebar .side-play {
     flex: none;
   }
+  @container (max-width: 16ch) {
+    .files-toggle-prefix:has(+ .files-toggle-current) {
+      display: none;
+    }
+  }
+  .sidebar .files-toggle-prefix,
   .sidebar .files-toggle-current {
+    min-width: 0;
     overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .sidebar .files-toggle-current {
+    /* Ellipsize the start so the filename ending and extension stay visible. */
+    direction: rtl;
     color: var(--muted);
     font-family: ui-monospace, monospace;
     font-weight: 400;
-    text-overflow: ellipsis;
   }
   .sidebar:not(.open) > .side-files {
     display: none;
