@@ -138,16 +138,28 @@ describe('seoBuild', () => {
     expect(nodes.filter((n) => n['@type'] === 'PublicationIssue').map((n) => n.url)).toEqual([canonical, canonical]);
   });
 
-  it('follows the static Library’s TURBO BUTTON link to the magazine without scripts', () => {
+  it('follows the static Library’s TURBO BUTTON link to the magazine without scripts', async () => {
     const documents = new Map([[SITE_URL, home]]);
     for (const p of staticPages(catalog)) documents.set(new URL(p.file, SITE_URL).href, staticPageHtml(home, p));
     const libraryUrl = new URL('library.html', SITE_URL);
-    const href = /<a href="([^"]+)">TURBO BUTTON<\/a>/.exec(documents.get(libraryUrl.href)!)?.[1];
-    expect(href).toBeTruthy();
-    const destination = new URL(href!, libraryUrl);
+    // A real HTML parser, so a link inside a comment, a script or an attribute doesn't count.
+    const browser = await chromium.launch();
+    let hrefs: (string | null)[];
+    try {
+      const page = await (await browser.newContext({ javaScriptEnabled: false })).newPage();
+      await page.route('**/*', (route) => route.abort());
+      await page.setContent(documents.get(libraryUrl.href)!, { waitUntil: 'domcontentloaded' });
+      const links = page.locator('main').getByRole('link', { name: 'TURBO BUTTON', exact: true });
+      hrefs = await links.evaluateAll((as) => as.map((a) => a.getAttribute('href')));
+    } finally {
+      await browser.close();
+    }
+    expect(hrefs).toHaveLength(1);
+    const destination = new URL(hrefs[0]!, libraryUrl);
     destination.hash = '';
+    expect(destination.href).toBe(new URL('magazine.html', SITE_URL).href);
     expect(documents.get(destination.href)).toContain('<h1>TURBO BUTTON</h1>');
-  });
+  }, 30000);
 
   it('links every reading from its contents and serves lesson figures and structured chapter text', () => {
     for (const [slug, count] of [
