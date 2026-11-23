@@ -9,6 +9,7 @@ import { emptyMonster } from '@lewismoten/gamemaker-sandbox-engine/formats/monst
 import { newSoundSet } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
 import { GameFiles } from '../../../project/files';
 import { runChecks } from '../report';
+import { SceneSim } from '../sim';
 import { scenesOf } from '../sceneData';
 import { testGame, type TestGame } from '../testGame';
 import { cornerLinks, offMap, shadowedLinks, solidLinks, startsOnLink, wonRoute } from './linkChecks';
@@ -36,6 +37,20 @@ describe('the link checks', () => {
     expect(offMap(t.game, sceneOf(t))[0].title).toContain('never fire');
     link.from = { x: 100, y: 100 };
     expect(offMap(t.game, sceneOf(t))[0].title).toContain('can fire anywhere');
+  });
+
+  it('can win on an unused DOS contact on the first tick without input', async () => {
+    const t = testGame(['#####', '#...#', '#S.E#', '#####']);
+    const links = t.game.scenes[2].links;
+    links[0].from = { x: 100, y: 100 };
+    const all = scenesOf(t.game, t);
+    expect(offMap(t.game, all[0])[0].title).toContain('can fire anywhere');
+    expect(await new SceneSim(t.game, 2, t, { x: 1, y: 2 }).tick()).toEqual({ link: 0 });
+    expect(wonRoute(t.game, all)).toEqual([]);
+
+    links[1] = { ...links[0] };
+    links[0].toScene = 2;
+    expect(wonRoute(t.game, all).map((f) => f.check)).toEqual(['won-route']);
   });
 
   it('finds a second link on a cell, which never fires', () => {

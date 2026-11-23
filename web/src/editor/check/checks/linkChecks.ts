@@ -14,6 +14,7 @@ import type { SceneData } from '../sceneData';
 import { openFrom, passable } from './sealed';
 
 const onMap = (p: { x: number; y: number }) => p.x >= 0 && p.x < MLEN && p.y >= 0 && p.y < MWID;
+const unusedContact = (p: Link['from']) => p.x === MLEN && p.y === MWID;
 const cellOf = (p: { x: number; y: number }) => p.y * MLEN + p.x;
 const used = (l: Link) => l.toScene !== NOSCENE;
 
@@ -188,7 +189,7 @@ export function offMap(game: Game, d: SceneData): Finding[] {
   const out: Finding[] = [];
   game.scenes[d.scene].links.forEach((l, i) => {
     if (!used(l) || onMap(l.from)) return;
-    const unusedTouch = l.from.x === MLEN && l.from.y === MWID;
+    const unusedTouch = unusedContact(l.from);
     out.push({
       check: 'off-map',
       severity: 'error',
@@ -217,14 +218,18 @@ export function wonRoute(game: Game, all: SceneData[]): Finding[] {
   const first = game.scenes[0]?.links[0];
   if (!first || !used(first)) return [];
   const byScene = new Map(all.map((s) => [s.scene, s]));
-  // the links a hero in each scene could take: on the map, not under an earlier link, not walled up
+  // An unused DOS contact can match anywhere. Only real cells need the wall check.
   const ways = (n: number): Link[] => {
     const links = game.scenes[n]?.links ?? [];
     const d = byScene.get(n);
     const shadow = shadowedBy(links);
-    return links.filter(
-      (l, i) => used(l) && onMap(l.from) && shadow[i] === undefined && !(d && walled(d, cellOf(l.from)) && !d.entries.includes(cellOf(l.from))),
-    );
+    return links.filter((l, i) => {
+      if (!used(l) || shadow[i] !== undefined) return false;
+      if (unusedContact(l.from)) return true;
+      if (!onMap(l.from)) return false;
+      const cell = cellOf(l.from);
+      return !d || !walled(d, cell) || d.entries.includes(cell);
+    });
   };
   const seen = new Set<number>([first.toScene]);
   const queue = [first.toScene];

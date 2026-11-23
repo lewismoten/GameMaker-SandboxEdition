@@ -126,6 +126,7 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
   let via: Via | undefined;
   let moveTicks = 0;
   let verticalMotion = 0;
+  let moveY = 0;
   const touch = new Int32Array(6);
 
   const cellOf = () => w.chr.y[0] * MLEN + w.chr.x[0];
@@ -262,6 +263,7 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
     verticalMotion = sim.px.y - before.y;
     if (verticalMotion > (MWID * BLEN) / 2) verticalMotion -= MWID * BLEN;
     if (verticalMotion < -(MWID * BLEN) / 2) verticalMotion += MWID * BLEN;
+    moveY += verticalMotion;
     opt.onTick?.(w);
     // the death sequence has started: nothing the player does stops it (touch.ts sets it at 0 hit points)
     const r = t === undefined && w.chr.cseq === DIESEQ ? 'dead' : t;
@@ -382,7 +384,15 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
   /** Plays one move from the place restored. Returns the places it ended in, and links reached. */
   const play = async (m: Move): Promise<{ to: number[]; exits: number[]; dead?: boolean }> => {
     const to: number[] = [];
-    const startY = w.chr.y[0];
+    moveY = w.chr.y[1];
+    const recordPlace = (drop?: number) => {
+      const id = addPlace(drop);
+      to.push(id);
+      if (via?.parent === 0 && id >= 0) {
+        const place = places[id];
+        place.entryMoveRows = Math.max(place.entryMoveRows ?? -Infinity, Math.floor(moveY / BLEN));
+      }
+    };
     fall = undefined;
     landedAt = -1;
     hurtRun.n = 0;
@@ -391,14 +401,14 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
     moveTicks = 0;
     const r = await driveMove(sim, m, {
       tick: step,
-      carried: () => to.push(addPlace()),
-      active: opt.steerAirborne && (gravity || turning) && !flying ? () => to.push(addPlace()) : undefined,
-      airborne: opt.steerAirborne ? () => to.push(addPlace()) : undefined,
+      carried: () => recordPlace(),
+      active: opt.steerAirborne && (gravity || turning) && !flying ? () => recordPlace() : undefined,
+      airborne: opt.steerAirborne ? () => recordPlace() : undefined,
     });
     if (typeof r.end === 'number') return { to, exits: [r.end] };
     if (r.end === 'dead') return { to, exits: [], dead: true };
-    const drop = w.chr.y[0] - startY > 2 ? w.chr.y[0] - startY : undefined;
-    to.push(addPlace(drop));
+    const rows = Math.floor(moveY / BLEN);
+    recordPlace(rows > 2 ? rows : undefined);
     return { to, exits: [] };
   };
 

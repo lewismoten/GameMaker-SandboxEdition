@@ -90,6 +90,8 @@ export interface Place {
   exits: number[];
   /** The move that brought the hero here fell more than two blocks. */
   dropIn?: number;
+  /** Largest signed row displacement observed on a move directly from the entry to this place. */
+  entryMoveRows?: number;
   /** What the hero has gathered by here: things carried, counters and score (a bot that collects). */
   worth: number;
   /** Every move tried from here ended in a death: the hero is doomed here, not stuck. */
