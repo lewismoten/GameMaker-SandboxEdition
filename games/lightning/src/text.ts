@@ -26,7 +26,7 @@ export const HOWTO = wrap(`
 
 Walk to each level's exit door. The sky flashes about every 7 seconds.
 
-Jump across the ditch on the stones. A fall is safe. Hold LEFT, then press SPACE to jump up each step. You can pause between the two jumps.
+Jump across the ditch on the stones. A fall is safe. Hold LEFT, then hold SPACE until you clear the edge of the step. Release SPACE on the step and repeat for the next one.
 
 |ESC for the menu.
 `);

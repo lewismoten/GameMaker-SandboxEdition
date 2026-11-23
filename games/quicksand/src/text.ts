@@ -23,7 +23,7 @@ export const HOWTO = wrap(`
 |SPACE         jump
 |F2            lives, score
 
-Keep walking and the sand holds. Stand still and it ripples, then gives way. Hold RIGHT, then press SPACE to jump out.
+Keep walking and the sand holds. Stand still and it ripples, then gives way. Hold RIGHT, then hold SPACE until you clear the edge of the hole.
 
 Gray stones never sink. Dark wet sand sinks faster than dry sand.
 
