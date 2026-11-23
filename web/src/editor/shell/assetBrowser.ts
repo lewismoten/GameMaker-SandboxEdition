@@ -65,6 +65,7 @@ export function assetBrowser(host: BrowserHost): { el: HTMLElement; dispose(): v
         h('div', { class: 'row' }, kind ? h('button', { type: 'button', onclick: host.all }, '← All assets') : null, h('h1', null, title)),
         h('p', { class: 'asset-project' }, project.name),
         count,
+        kind === 'map' ? h('p', { class: 'meta' }, 'Each thumbnail shows the stored grid once. During play, opposite edges meet.') : null,
       ),
       host.bar ?? null,
       kind ? null : optimizeEntry(project),

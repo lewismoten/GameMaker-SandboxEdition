@@ -187,7 +187,7 @@ export function createMapPicture(editor: Context) {
       modeBar.append(
         modeBtn('whole', 'Whole map', `All ${MLEN}×${MWID} blocks`),
         modeBtn('level', 'Just the level', 'Leaves out the background fill round the level, which the character never sees'),
-        modeBtn('screen', 'Game screen', 'One screen as the game shows it when the character starts there (a screenshot)'),
+        modeBtn('screen', 'Screen-sized crop', 'Select an area in screen units within the stored map edges'),
         modeBtn(
           'players',
           'As players see it',
