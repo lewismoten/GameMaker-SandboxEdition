@@ -4,7 +4,7 @@ import { BOOK_TITLE as artTitle, COURSES, type Part } from '../src/artCourses/co
 import { BOOK_TITLE as guideTitle, CHAPTERS } from '../src/programmersGuide/chapterList';
 import { citationHref } from '../src/programmersGuide/citations';
 import { readMarkdown, type Block, type Inline } from '../src/manual/printables/markdownBlocks';
-import { escapeHtml as esc, ROUTES } from '../src/seo/site';
+import { escapeHtml as esc, readingDescription, ROUTES } from '../src/seo/site';
 import type { StaticPage } from './seoStaticPages';
 
 function coursePart(part: Part): string {
@@ -68,7 +68,7 @@ function collection(
       file: `${slug}-${i.id}.html`,
       hash: `#/${slug}/${i.id}`,
       title: `${i.title} · ${title}`,
-      description: i.about.length < 50 ? `${title}. ${i.about}` : i.about,
+      description: readingDescription(title, i.about),
       h1: i.title,
       get html() {
         return `<p><a href="./${file}">${esc(title)}</a></p><p>${esc(i.about)}</p><article style="overflow-wrap:anywhere">${i.body()}</article>`;

@@ -2,7 +2,9 @@
 // tags in step with what is on screen (the 1994 desk, today's home page, the Guide, a game
 // in the editor). It watches the page rather than being called by the app: main.ts sets
 // document.title and switches #app between the desk and the modern UI.
-import { clip, ROUTES, type RouteName } from './site';
+import { BOOK_TITLE, chapterById } from '../programmersGuide/chapterList';
+import { parseHash } from '../urlState';
+import { clip, readingDescription, ROUTES, type RouteName } from './site';
 
 const GENERIC_TITLES = new Set(['Game-Maker 1994', 'Game-Maker: Sandbox Edition', '']);
 
@@ -63,6 +65,10 @@ function syncRouteMeta(): void {
  * #/help/<id>, so each gets a description of what it says rather than the guide's).
  */
 function pageDescription(route: RouteName): string | undefined {
+  if (route === 'programmersGuide') {
+    const chapter = chapterById(parseHash(location.hash).path[1]);
+    return chapter && readingDescription(BOOK_TITLE, chapter.about);
+  }
   // a course in the art courses says what it teaches; the contents page keeps its own description
   if (route === 'artCourses' && /^#\/art-courses\/[^/?]/.test(location.hash)) {
     const text = document.querySelector('.ac-page > h1 + p')?.textContent?.trim();

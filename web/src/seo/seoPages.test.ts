@@ -10,6 +10,7 @@ import { cdCatalog, cdGames, cdSecretCatalog } from '../../scripts/cdGames';
 import { gamePageHtml, guidePageHtml, seoPages, staticPageHtml } from '../../scripts/seoBuild';
 import { readingPages } from '../../scripts/seoReadings';
 import { staticPages } from '../../scripts/seoStaticPages';
+import { chapterById } from '../programmersGuide/chapterList';
 import { GUIDE_SECTIONS } from '../manual/guideSections';
 import { gamePage, ROUTES, SITE_URL } from './site';
 import { isStarterGame } from '../project/starter';
@@ -96,6 +97,36 @@ describe('seoBuild', () => {
       if (name !== 'play.html') expect(files['sitemap.xml'], name).toContain(`<loc>${url}</loc>`);
     }
   });
+
+  it('keeps each chapter description after the interactive Programmer’s Guide loads', async () => {
+    const server = await createServer({
+      configFile: false,
+      plugins: [cdGames(cdRoot), plugin],
+      server: { host: '127.0.0.1', port: 6155, hmr: false, watch: null },
+      logLevel: 'error',
+    });
+    try {
+      await server.listen();
+      const browser = await chromium.launch();
+      try {
+        const page = await browser.newPage();
+        const descriptions = [];
+        for (const id of ['memory', 'screen']) {
+          const chapter = chapterById(id)!;
+          await page.goto(new URL(`programmers-guide-${id}.html`, server.resolvedUrls!.local[0]).href);
+          await page.locator('.pg-page').getByRole('heading', { level: 1, name: chapter.title, exact: true }).waitFor();
+          const description = await page.locator('meta[name="description"]').getAttribute('content');
+          expect(description).toBe(chapter.about);
+          descriptions.push(description);
+        }
+        expect(new Set(descriptions).size).toBe(2);
+      } finally {
+        await browser.close();
+      }
+    } finally {
+      await server.close();
+    }
+  }, 60000);
 
   it('follows the static Library’s TURBO BUTTON link to the magazine without scripts', () => {
     const documents = new Map([[SITE_URL, home]]);

@@ -163,6 +163,10 @@ export function gameDescription(game: GameSeo): string {
   return clip(text, 160);
 }
 
+export function readingDescription(title: string, about: string): string {
+  return about.length < 50 ? `${title}. ${about}` : about;
+}
+
 export function clip(text: string, max: number): string {
   const one = text.replace(/\s+/g, ' ').trim();
   return one.length > max ? `${one.slice(0, max - 1).replace(/\s+\S*$/, '')}…` : one;
