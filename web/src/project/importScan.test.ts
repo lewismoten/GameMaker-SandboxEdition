@@ -72,6 +72,21 @@ describe('scanImport', () => {
     expect(report.badZips).toEqual([{ path: 'game.zip', error: `${first} and ${second} both use the DOS name ${key}.` }]);
   });
 
+  it.each([false, true])('keeps a ZIP game alongside colliding loose files (loose GAM present: %s)', async (withGam) => {
+    const good = await zip('good.zip', [['good.gam', gam('Good')]]);
+    expect((await scanImport([good])).games.map((g) => g.name)).toEqual(['Good']);
+    const report = await scanImport([
+      good,
+      ...(withGam ? [file('bad.gam', gam('Bad'))] : []),
+      file('a/hero.cel', Uint8Array.of(1)),
+      file('b/HERO.CEL', Uint8Array.of(2)),
+    ]);
+    expect(report.games.map((g) => g.name)).toEqual(['Good']);
+    expect(report.looseErrors).toEqual(['a/hero.cel and b/HERO.CEL both use the DOS name hero.cel.']);
+    expect(report.loose).toEqual([]);
+    expect(report.badZips).toEqual([]);
+  });
+
   it('imports a game alongside duplicate Mac metadata', async () => {
     const given = [await zip('game.zip', [...game('', 'Game'), ['__MACOSX/n', Uint8Array.of(1)], ['__MACOSX/n', Uint8Array.of(1)]])];
     const report = await scanImport(given);
