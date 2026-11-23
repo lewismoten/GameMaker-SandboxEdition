@@ -3,8 +3,9 @@
 // to the won scene, missing .VOC files and level files, numbers past a set, moves over the cap,
 // and the fixes, opposites and key-name repairs the archive's games asked for.
 import { describe, expect, it } from 'vitest';
-import { BACKBL, parseBlocks, serializeBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
-import { NOSCENE, serializeGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { BACKBL, CHARBL, parseBlocks, serializeBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { IDLESEQ, newCharacter, serializeCharacter } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import { ADVTYPE, emptyScene, NOSCENE, serializeGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { emptyMonster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { newSoundSet } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
 import { GameFiles } from '../../../project/files';
@@ -51,6 +52,36 @@ describe('the link checks', () => {
     links[1] = { ...links[0] };
     links[0].toScene = 2;
     expect(wonRoute(t.game, all).map((f) => f.check)).toEqual(['won-route']);
+  });
+
+  it.each([false, true])('takes the first contact at entry (winning sentinel first: %s)', async (winFirst) => {
+    const t = testGame(['#####', '#...#', '#S.E#', '#####']);
+    const hero = newCharacter();
+    hero.sequences[IDLESEQ].frames[0].pic1 = CHARBL;
+    t.files.set('test.chr', serializeCharacter(hero));
+    t.game.scenes.push(emptyScene(ADVTYPE));
+    const entry = t.game.scenes[0].links[0].to;
+    const links = t.game.scenes[2].links;
+    const win = { ...links[0], from: { x: 100, y: 100 } };
+    const deadEnd = { ...links[0], from: entry, toScene: 3 };
+    [links[0], links[1]] = winFirst ? [win, deadEnd] : [deadEnd, win];
+    expect(await new SceneSim(t.game, 2, t, entry).tick()).toEqual({ link: 0 });
+    expect(links[0].toScene).toBe(winFirst ? 1 : 3);
+    for (const all of [[], scenesOf(t.game, t)]) {
+      expect(wonRoute(t.game, all).map((f) => f.check)).toEqual(winFirst ? [] : ['won-route']);
+    }
+  });
+
+  it('checks both landings when two links enter the same scene', () => {
+    const t = testGame(ROWS);
+    const fork = t.game.scenes[2].links;
+    const next = emptyScene(ADVTYPE);
+    t.game.scenes.push(next, emptyScene(ADVTYPE));
+    fork[0] = { from: { x: 1, y: 2 }, toScene: 3, to: { x: 1, y: 2 } };
+    fork[1] = { from: { x: 2, y: 2 }, toScene: 3, to: { x: 2, y: 2 } };
+    next.links[0] = { from: fork[0].to, toScene: 4, to: { x: 0, y: 0 } };
+    next.links[1] = { from: { x: 100, y: 100 }, toScene: 1, to: { x: 0, y: 0 } };
+    expect(wonRoute(t.game, [])).toEqual([]);
   });
 
   it('finds a second link on a cell, which never fires', () => {

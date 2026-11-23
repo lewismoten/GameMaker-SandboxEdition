@@ -219,9 +219,15 @@ export function wonRoute(game: Game, all: SceneData[]): Finding[] {
   if (!first || !used(first)) return [];
   const byScene = new Map(all.map((s) => [s.scene, s]));
   // An unused DOS contact can match anywhere. Only real cells need the wall check.
-  const ways = (n: number): Link[] => {
+  const ways = (n: number, entry: Link['to']): Link[] => {
     const links = game.scenes[n]?.links ?? [];
     const d = byScene.get(n);
+    if (onMap(entry) && links.some((l) => used(l) && unusedContact(l.from))) {
+      // At an aligned entry, unused touch slots and the occupied cells compete in slot order.
+      const cells = d ? arrivalCells(d, entry) : [cellOf(entry)];
+      const forced = links.find((l) => used(l) && (unusedContact(l.from) || (onMap(l.from) && cells.includes(cellOf(l.from)))));
+      if (forced) return [forced];
+    }
     const shadow = shadowedBy(links);
     return links.filter((l, i) => {
       if (!used(l) || shadow[i] !== undefined) return false;
@@ -231,13 +237,18 @@ export function wonRoute(game: Game, all: SceneData[]): Finding[] {
       return !d || !walled(d, cell) || d.entries.includes(cell);
     });
   };
-  const seen = new Set<number>([first.toScene]);
-  const queue = [first.toScene];
+  const seen = new Set<number>();
+  const entries = new Set<string>();
+  const queue = [first];
   while (queue.length) {
-    const n = queue.shift()!;
+    const { toScene: n, to } = queue.shift()!;
+    const key = `${n},${to.x},${to.y}`;
+    if (entries.has(key)) continue;
+    entries.add(key);
+    seen.add(n);
     if (n === 1) return [];
     if (n < 2 || n >= game.scenes.length) continue;
-    for (const l of ways(n)) if (!seen.has(l.toScene)) (seen.add(l.toScene), queue.push(l.toScene));
+    queue.push(...ways(n, to));
   }
   const reached = [...seen].filter((n) => n >= 2 && n < game.scenes.length);
   return [
