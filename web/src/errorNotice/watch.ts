@@ -26,13 +26,13 @@ export function refusedChange(reason: unknown): boolean {
 const loadFailures = new WeakSet<object>();
 
 /** Notes the failure in a "vite:preloadError" event (its `payload` is what Vite then rethrows). */
-export function noteLoadFailure(event: Event): void {
+function noteLoadFailure(event: Event): void {
   const payload: unknown = (event as Event & { payload?: unknown }).payload;
   if (typeof payload === 'object' && payload !== null) loadFailures.add(payload);
 }
 
 /** A part of the site that failed to load, already shown by the load-failure notice. */
-export function shownAsLoadFailure(reason: unknown): boolean {
+function shownAsLoadFailure(reason: unknown): boolean {
   return typeof reason === 'object' && reason !== null && loadFailures.has(reason);
 }
 
