@@ -48,7 +48,7 @@ export function printables(): unknown {
         name: 'DOC LEO',
         role: 'Root Beer Stand No. 13',
         fields: [
-          ['Vehicle', 'THE CHEZ (1976 CitiCar)'],
+          ['Vehicle', 'THE CHEZ (1976½ CitiCar)'],
           ['Top speed', 'Parade pace'],
           ['Price', '5 cents a mug'],
           ['Recipe', 'Family. Do not ask.'],

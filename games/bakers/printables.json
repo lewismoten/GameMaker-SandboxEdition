@@ -91,9 +91,7 @@
           "note": "The second boil took longer. It was waiting on a quorum."
         }
       ],
-      "blank": [
-        13
-      ],
+      "blank": [13],
       "stamp": "CLASSIFIED",
       "back": "For ingredient 13, see other side."
     },
@@ -117,22 +115,10 @@
       "name": "DOC LEO",
       "role": "Root Beer Stand No. 13",
       "fields": [
-        [
-          "Vehicle",
-          "THE CHEZ (1976 CitiCar)"
-        ],
-        [
-          "Top speed",
-          "Parade pace"
-        ],
-        [
-          "Price",
-          "5 cents a mug"
-        ],
-        [
-          "Recipe",
-          "Family. Do not ask."
-        ]
+        ["Vehicle", "THE CHEZ (1976½ CitiCar)"],
+        ["Top speed", "Parade pace"],
+        ["Price", "5 cents a mug"],
+        ["Recipe", "Family. Do not ask."]
       ],
       "color": "#3a1608",
       "ink": "#fff6e0",
@@ -234,13 +220,7 @@
                 "landmarks": {
                   ":": "False wall"
                 },
-                "rows": [
-                  "##########",
-                  "#o.o.o.o.#",
-                  ":#########",
-                  "X.########",
-                  "..########"
-                ],
+                "rows": ["##########", "#o.o.o.o.#", ":#########", "X.########", "..########"],
                 "labels": [
                   {
                     "x": 2,

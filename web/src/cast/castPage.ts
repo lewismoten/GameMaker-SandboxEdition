@@ -123,7 +123,7 @@ const families = () =>
       h(
         'p',
         null,
-        'Small, free games from Sandbox Software that each show one Game-Maker idea, with signs in the levels saying how it works. Kit, a kid in a teal beanie, is the hero of all of them, and each is made to be opened in the editor and taken apart.',
+        'Small, free games from Sandbox Software that each show one Game-Maker idea, with signs in the levels saying how it works. Kit and eight other explorers take turns leading them. Open any Starter in the editor to see how it works.',
       ),
       h('a', { href: tabHref('starter') }, 'Browse Starters →'),
     ),

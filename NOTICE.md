@@ -1478,3 +1478,5 @@ maker "ZORP" is invented. The shell is untested: nothing has been printed.
 - **Lightning and Quicksand jump instructions (November 23, 2026)**: OpenAI Codex revised the help screens and manuals and wrote regression tests for early and airborne releases when climbing the ditch steps and escaping both kinds of sand.
 
 - **Screen-reader announcements (November 23, 2026)**: OpenAI Codex reviewed and revised announcement handling for editor controls and imports, offline downloads, hosted saves, desk tools, printable viewers, and the Pi remote, and wrote the offline download regression test.
+
+- **Publication continuity (November 23, 2026)**: OpenAI Codex corrected the Starter cast description, disk-release descriptions, the Tune-Up newsletter preview, and the printed model year of THE CHEZ.
