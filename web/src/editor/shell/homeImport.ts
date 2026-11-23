@@ -179,7 +179,7 @@ function sourcesText(games: FoundGame[]): string {
 }
 
 /** `missing`: how many files the game's .gam names that were not among those given. */
-async function importFiles(nav: HomeNav, imported: Imported, origin: Origin, missing = 0, panel?: ImportPanel): Promise<void> {
+async function importFiles(nav: HomeNav, imported: Imported, origin: Origin, missing = 0, panel?: ImportPanel, onAdded?: () => void): Promise<void> {
   const { files } = imported;
   if (!files.size) return panel?.end();
   const shareware = await sharewareMatch(files);
@@ -206,9 +206,15 @@ async function importFiles(nav: HomeNav, imported: Imported, origin: Origin, mis
   const had = alreadyHave(origin.fingerprint);
   await panel?.step('Opening', 'saving the game, then opening it');
   panel?.signal.throwIfAborted();
+  panel?.beginSave();
   const { project: p, note, madeGam } = await saveImported(imported);
   noteImport(p.id, origin.source, origin.fingerprint);
   recordImport({ at: Date.now(), source: origin.source, added: 1, skipped: 0, failed: [] });
+  if (panel?.stayInLibrary || panel?.signal.aborted) {
+    panel.end();
+    onAdded?.();
+    return;
+  }
   if (madeGam) toast('No .gam file found — a new one was created for these files.');
   if (note) toast(note);
   if (missing) {
@@ -305,14 +311,17 @@ async function importGiven(nav: HomeNav, given: ScanFile[], list: File[], onAdde
       return undefined;
     });
     panel?.signal.throwIfAborted();
-    if (page)
+    if (page) {
+      panel?.confirmGame();
       return importFiles(
         nav,
         { files: page.files, players: [], name: page.title, gam: page.gam },
         { source: list.find((f) => /\.html?$/i.test(f.name))!.name, fingerprint: fingerprintOfFiles(Object.fromEntries(page.files.entries())) },
         0,
         panel,
+        onAdded,
       );
+    }
     panel?.end();
     return;
   }
@@ -330,8 +339,9 @@ async function importGiven(nav: HomeNav, given: ScanFile[], list: File[], onAdde
   // one game opens as it always has, unless it was removed before: then it is listed, unticked, to say so
   const one = report.games.length === 1 && report.games[0];
   if (one && !removedMatch(fingerprintOf(one))) {
+    panel?.confirmGame();
     const read = await new GameReader(given).read(one, (done, total, path) => panel?.step('Extracting', path.split('/').pop(), done, total), panel?.signal);
-    return importFiles(nav, read, originOf(one), one.missing, panel);
+    return importFiles(nav, read, originOf(one), one.missing, panel, onAdded);
   }
   if (report.games.length) return importChosen(report, given, onAdded);
   // no .gam anywhere: loose files (no zips) still make a new game around them, as they always have

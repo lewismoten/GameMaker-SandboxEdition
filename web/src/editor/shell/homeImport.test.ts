@@ -2,20 +2,32 @@
 import { expect, it, vi } from 'vitest';
 import { createZip } from '@lewismoten/gamemaker-sandbox-archives/zip';
 import { FakeDoc } from '../../../test/fakeDom';
-import { importRunning } from './importPanel';
-import { modal } from '../core/ui';
+import { importRunning, openImportPanel } from './importPanel';
+import { modal, toast } from '../core/ui';
 import { Project } from '../core/project';
 import { importPicked } from './homeImport';
 
 vi.mock('./homeCards', () => ({ playLink: vi.fn(), showNotice: vi.fn() }));
-vi.mock('../core/ui', async (original) => ({ ...(await original<typeof import('../core/ui')>()), modal: vi.fn().mockResolvedValue(undefined) }));
+vi.mock('../core/ui', async (original) => ({
+  ...(await original<typeof import('../core/ui')>()),
+  toast: vi.fn(),
+  modal: vi.fn().mockResolvedValue(undefined),
+}));
 
 it('names the damaged file in the import panel and leaves the project unsaved', async () => {
   const name = 'LEVEL.GAM';
   const zip = await createZip([{ name, data: new Uint8Array(32) }]);
   zip[30 + name.length] ^= 1;
   const file = new File([Uint8Array.from(zip)], 'disk.zip');
-  const panel = { step: vi.fn(async () => {}), fail: vi.fn(), end: vi.fn(), signal: new AbortController().signal };
+  const panel = {
+    confirmGame: vi.fn(),
+    beginSave: vi.fn(),
+    stayInLibrary: false,
+    step: vi.fn(async () => {}),
+    fail: vi.fn(),
+    end: vi.fn(),
+    signal: new AbortController().signal,
+  };
   const nav = { openProject: vi.fn() };
   const create = vi.spyOn(Project, 'fromFiles');
   const save = vi.spyOn(Project.prototype, 'saveNow');
@@ -34,7 +46,15 @@ it('names the damaged file in the import panel and leaves the project unsaved', 
 it('explains an empty ZIP upload without creating a project', async () => {
   const create = vi.spyOn(Project, 'fromFiles');
   const openProject = vi.fn();
-  const panel = { signal: new AbortController().signal, step: vi.fn(), fail: vi.fn(), end: vi.fn() };
+  const panel = {
+    confirmGame: vi.fn(),
+    beginSave: vi.fn(),
+    stayInLibrary: false,
+    signal: new AbortController().signal,
+    step: vi.fn(),
+    fail: vi.fn(),
+    end: vi.fn(),
+  };
   const file = new File([Uint8Array.from(await createZip([]))], 'empty.zip');
   await importPicked({ openProject }, [file], undefined, panel);
   expect(modal).toHaveBeenCalledWith('This archive is empty', expect.any(Function));
@@ -46,6 +66,9 @@ it('explains an empty ZIP upload without creating a project', async () => {
 it.each(['HTML read', 'ZIP extraction', 'Opening'])('cancels during %s before saving or navigating', async (phase) => {
   const controller = new AbortController();
   const panel = {
+    confirmGame: vi.fn(),
+    beginSave: vi.fn(),
+    stayInLibrary: false,
     signal: controller.signal,
     step: vi.fn(async (step: string) => {
       if ((phase === 'ZIP extraction' && step === 'Extracting') || (phase === 'Opening' && step === 'Opening')) controller.abort();
@@ -97,6 +120,66 @@ it.each([null, undefined])('shows a dismissible error when saving rejects with %
     expect(importRunning()).toBe(false);
   } finally {
     save.mockRestore();
+    vi.unstubAllGlobals();
+  }
+});
+
+it.each(['Escape', 'Close'])('keeps the library open when %s is pressed during a save', async (action) => {
+  const { modal: realModal } = await vi.importActual<typeof import('../core/ui')>('../core/ui');
+  vi.mocked(modal).mockImplementationOnce(realModal);
+  const doc = new FakeDoc();
+  vi.stubGlobal('document', doc);
+  const panel = openImportPanel('disk.zip')!;
+  let release!: () => void;
+  const pending = new Promise<void>((resolve) => {
+    release = resolve;
+  });
+  const save = vi.spyOn(Project.prototype, 'saveNow').mockImplementation(() => pending);
+  const nav = { openProject: vi.fn() };
+  try {
+    const zip = await createZip([{ name: 'LEVEL.GAM', data: new Uint8Array(32) }]);
+    const refresh = vi.fn();
+    const work = importPicked(nav, [new File([Uint8Array.from(zip)], 'disk.zip')], refresh, panel);
+    await vi.waitFor(() => expect(save).toHaveBeenCalledOnce());
+    const dialog = doc.body.children.find((el) => el.tag === 'dialog')!;
+    if (action === 'Escape') dialog.fire('cancel');
+    else dialog.children[0].children[1].fire('click');
+    expect(dialog.open).toBe(true);
+    expect(panel.signal.aborted).toBe(false);
+    expect(openImportPanel('second.zip')).toBeUndefined();
+    release();
+    await work;
+    expect(nav.openProject).not.toHaveBeenCalled();
+    expect(refresh).toHaveBeenCalledOnce();
+    expect(dialog.open).toBe(false);
+    expect(importRunning()).toBe(false);
+  } finally {
+    release();
+    panel.end();
+    save.mockRestore();
+    vi.unstubAllGlobals();
+  }
+});
+
+it('uses generic cancellation while reading a blank HTML file', async () => {
+  const { modal: realModal } = await vi.importActual<typeof import('../core/ui')>('../core/ui');
+  vi.mocked(modal).mockImplementationOnce(realModal);
+  const doc = new FakeDoc();
+  vi.stubGlobal('document', doc);
+  const file = new File([''], 'blank.html');
+  const nav = { openProject: vi.fn() };
+  try {
+    const read = vi.spyOn(file, 'text').mockImplementation(async () => {
+      const dialog = doc.body.children.find((el) => el.tag === 'dialog')!;
+      const work = dialog.children.find((el) => el.className === 'ic-work')!;
+      work.children.find((el) => el.className === 'buttons')!.children[0].fire('click');
+      return '';
+    });
+    await importPicked(nav, [file]);
+    expect(read).toHaveBeenCalledOnce();
+    expect(toast).toHaveBeenLastCalledWith('Canceled');
+    expect(nav.openProject).not.toHaveBeenCalled();
+  } finally {
     vi.unstubAllGlobals();
   }
 });

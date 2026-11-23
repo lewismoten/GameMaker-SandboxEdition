@@ -16,6 +16,9 @@ export interface ImportPanel {
   end(): void;
   /** Shows what went wrong, to dismiss. */
   fail(message: string): void;
+  confirmGame(): void;
+  beginSave(): void;
+  readonly stayInLibrary: boolean;
   readonly signal: AbortSignal;
 }
 
@@ -43,39 +46,55 @@ export function openImportPanel(label: string): ImportPanel | undefined {
   const cancel = h('button', { type: 'button' }, 'Cancel');
   let ended = false;
   let failed = false;
+  let saving = false;
+  let stayInLibrary = false;
   let singleGame = false;
   let finish: (() => void) | undefined;
   let spoke = -1;
   let last = 0;
 
-  cancel.addEventListener('click', () => {
-    ctl.abort();
+  function dismiss() {
+    if (ended) return;
+    if (saving) {
+      stayInLibrary = true;
+      line.textContent = status.textContent = 'Finishing the save. The library will stay open.';
+      return;
+    }
     finish?.();
-    toast(singleGame ? 'Canceled: imported 0 of 1 game.' : 'Canceled: imported 0 games.');
-  });
-  void modal<void>('Importing', (close) => {
-    finish = () => {
-      if (ended) return;
-      ended = true;
-      running = false;
-      close(undefined);
-    };
-    buttons.append(cancel);
-    return h('div', { class: 'ic-work' }, name, line, bar, status, buttons);
-  }).finally(() => {
-    ended = true;
-    running = false;
-    ctl.abort();
-  });
+    if (!failed) toast(singleGame ? 'Canceled: imported 0 of 1 game.' : 'Canceled');
+  }
+  cancel.addEventListener('click', dismiss);
+  void modal<void>(
+    'Importing',
+    (close) => {
+      finish = () => {
+        if (ended) return;
+        ended = true;
+        running = false;
+        ctl.abort();
+        close(undefined);
+      };
+      buttons.append(cancel);
+      return h('div', { class: 'ic-work' }, name, line, bar, status, buttons);
+    },
+    dismiss,
+  );
 
   return {
+    confirmGame() {
+      singleGame = true;
+    },
+    beginSave() {
+      saving = true;
+      cancel.hidden = true;
+    },
+    get stayInLibrary() {
+      return stayInLibrary;
+    },
     signal: ctl.signal,
     async step(step, detail, done, total) {
       if (ended || failed) return;
-      if (step === 'Extracting' || (step === 'Reading' && detail === 'the web page')) singleGame = true;
       const at = STEPS.indexOf(step);
-      // saving the game can't be stopped half way
-      cancel.hidden = step === 'Opening';
       const inside = total && done !== undefined ? Math.min(1, done / total) : 0;
       bar.value = at + inside;
       const where = total ? ` (${done! + 1} of ${total})` : '';
@@ -96,6 +115,7 @@ export function openImportPanel(label: string): ImportPanel | undefined {
     end: () => finish?.(),
     fail(message) {
       if (ended || failed) return;
+      saving = false;
       failed = true;
       line.textContent = `The import stopped. ${message}`;
       status.textContent = line.textContent;
