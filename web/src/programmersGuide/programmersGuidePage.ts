@@ -107,8 +107,10 @@ async function chapterPage(el: HTMLElement, c: Chapter): Promise<void> {
   const prev = CHAPTERS[i - 1];
   const next = CHAPTERS[i + 1];
   const body = chapterElements(await loadChapter(c.id), c.id);
+  const staticGuide = /\/programmers-guide(?:-[^/]+)?\.html$/.test(location.pathname);
+  const href = (id: string) => (staticGuide ? `./programmers-guide-${id}.html` : `${ROOT}/${id}`);
   const link = (to: Chapter | undefined, text: string, cls: string) =>
-    to ? h('a', { href: `${ROOT}/${to.id}`, class: cls }, text, h('br'), h('strong', null, to.title)) : h('span');
+    to ? h('a', { href: href(to.id), class: cls }, text, h('br'), h('strong', null, to.title)) : h('span');
   clear(el);
   el.append(
     h(

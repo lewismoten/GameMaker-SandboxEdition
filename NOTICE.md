@@ -1464,3 +1464,5 @@ maker "ZORP" is invented. The shell is untested: nothing has been printed.
 - **Editor asset references (November 22, 2026)**: OpenAI Codex updated reference links, replacement and deletion messages, and regression tests.
 
 - **Editor animation dependencies (November 22, 2026)**: OpenAI Codex reviewed asset dependency visibility, added scene-paired character and monster graphics links, and wrote browser regression coverage and the review report. No third-party material was added.
+
+- **Programmer’s Guide chapter pager (November 23, 2026)**: OpenAI Codex fixed the chapter links and wrote the browser regression test.
