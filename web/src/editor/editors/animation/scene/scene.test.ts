@@ -161,7 +161,7 @@ describe('source files', () => {
       ],
       tracks: [{ items: [textItem('Hi'), { kind: 'actor', source: { type: 'mon', mon: 'foes.mon', mbl: 'foes.mbl', index: 2 } }, { kind: 'block', bbl: '' }] }],
     })!;
-    expect(sceneFiles(s)).toEqual(['night.pal', 'one.map', 'foes.mon', 'foes.mbl']);
+    expect(sceneFiles(s, fixture())).toEqual(['night.pal', 'one.map', 'lvl.pal', 'foes.mon', 'foes.mbl']);
   });
 });
 

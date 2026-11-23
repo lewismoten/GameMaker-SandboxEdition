@@ -11,7 +11,7 @@ import { parseMonsters } from '@lewismoten/gamemaker-sandbox-engine/formats/mons
 import { defaultPalette, matchColor, parsePalette, type Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 import type { Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { mapPixels } from '../../../../gfx/levelPicture';
-import { SCENE_H, SCENE_W, allItems, backgroundEnd, type ActorItem, type Background, type BlockItem, type Scene } from './sceneModel';
+import { SCENE_H, SCENE_W, allItems, backgroundEnd, gamePaletteName, type ActorItem, type Background, type BlockItem, type Scene } from './sceneModel';
 
 /** What a scene reads its files through (a Project fits). */
 export interface SceneSource {
@@ -53,8 +53,7 @@ const ext = (n: string) => n.toLowerCase().split('.').pop() ?? '';
 
 /** The palette of the game's first level, else its first .pal, else the editor's default. */
 export function gamePalette(src: SceneSource): Palette {
-  const scene = src.game().scenes.find((s) => s.gametype === 10 && s.files[0] && src.files.get(s.files[0]));
-  const name = scene?.files[0] ?? src.files.byExtension('pal')[0];
+  const name = gamePaletteName(src);
   const b = name ? src.files.get(name) : undefined;
   return b ? parsePalette(b) : defaultPalette();
 }

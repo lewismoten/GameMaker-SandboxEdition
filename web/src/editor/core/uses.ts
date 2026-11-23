@@ -58,7 +58,7 @@ export function embeddedFiles(project: Project, file: string): string[] {
   const name = normalize(file);
   if (name.endsWith('.fli')) {
     const scene = normalizeScene(project.extras(file, SCENE_SECTION, undefined));
-    return scene ? sceneFiles(scene) : [];
+    return scene ? sceneFiles(scene, project) : [];
   }
   if (name.endsWith('.lst')) return tryParse(() => parseSlideList(bytes).map((entry) => entry.name)) ?? [];
   if (name.endsWith('.bkd')) return tryParse(() => [parseBackdrop(bytes).gif]) ?? [];
