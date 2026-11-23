@@ -1,6 +1,8 @@
 // The panel an import shows from the moment files are picked or dropped: the file's name, the
 // step it is at (reading, unpacking, finding the game, opening), a progress bar, and the file
 // being unpacked (n of m). It also guards the import: while one runs, another can't start.
+// Closing it while the game is being saved hides it at once; the save finishes in the background,
+// still guarding, and a failure then comes as a toast.
 // A status line read aloud changes at each step and every fifth of the files, not on every file.
 import { h, modal, toast } from '../core/ui';
 import './importChooser.css';
@@ -50,14 +52,18 @@ export function openImportPanel(label: string): ImportPanel | undefined {
   let stayInLibrary = false;
   let singleGame = false;
   let finish: (() => void) | undefined;
+  let hide: (() => void) | undefined;
   let spoke = -1;
   let last = 0;
 
   function dismiss() {
     if (ended) return;
     if (saving) {
+      if (stayInLibrary) return;
+      // the save can't be stopped part way: let it finish behind the library, still guarded
       stayInLibrary = true;
-      line.textContent = status.textContent = 'Finishing the save. The library will stay open.';
+      hide?.();
+      toast('Saving the game in the background. It will appear under Imported when the save is done.');
       return;
     }
     finish?.();
@@ -67,12 +73,18 @@ export function openImportPanel(label: string): ImportPanel | undefined {
   void modal<void>(
     'Importing',
     (close) => {
+      let shown = true;
+      hide = () => {
+        if (!shown) return;
+        shown = false;
+        close(undefined);
+      };
       finish = () => {
         if (ended) return;
         ended = true;
         running = false;
         ctl.abort();
-        close(undefined);
+        hide?.();
       };
       buttons.append(cancel);
       return h('div', { class: 'ic-work' }, name, line, bar, status, buttons);
@@ -117,6 +129,12 @@ export function openImportPanel(label: string): ImportPanel | undefined {
       if (ended || failed) return;
       saving = false;
       failed = true;
+      if (stayInLibrary) {
+        // the panel is already closed: say so on the page, and let another import start
+        toast(`The import stopped. ${message}`, 'error');
+        finish?.();
+        return;
+      }
       line.textContent = `The import stopped. ${message}`;
       status.textContent = line.textContent;
       bar.hidden = true;
