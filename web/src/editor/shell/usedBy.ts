@@ -20,9 +20,14 @@ export function usedByLine(project: Project, file: string): HTMLElement {
       { class: 'used-by-link', title: `Open ${u.file}`, onclick: () => openInEditor(project, u.file, u.scene === undefined ? {} : { scene: u.scene }) },
       u.text,
     );
+  renderLinks(line, 'Used by ', uses, link);
+  return line;
+}
+
+function renderLinks<T>(line: HTMLElement, prefix: string, uses: readonly T[], link: (use: T) => HTMLElement) {
   const show = (all: boolean) => {
     const shown = all || uses.length <= SHOWN + 1 ? uses : uses.slice(0, SHOWN);
-    line.replaceChildren('Used by ');
+    line.replaceChildren(prefix);
     shown.forEach((u, i) => {
       if (i) line.append(', ');
       line.append(link(u));
@@ -46,19 +51,14 @@ export function usedByLine(project: Project, file: string): HTMLElement {
     line.append('.');
   };
   show(false);
-  return line;
 }
 
 /** "Uses" for a list of files: each a link that opens it (so the breadcrumb and Back work), or nothing when none exist. */
 function usesLine(project: Project, files: readonly string[]): HTMLElement | null {
   const found = [...new Set(files.map(normalize))].filter((name) => name && project.files.has(name));
   if (!found.length) return null;
-  const line = h('p', { class: 'meta used-by uses', dataset: { count: String(found.length) } }, 'Uses ');
-  found.forEach((f, i) => {
-    if (i) line.append(', ');
-    line.append(h('button', { class: 'used-by-link', title: `Open ${f}`, onclick: () => openInEditor(project, f) }, f));
-  });
-  line.append('.');
+  const line = h('p', { class: 'meta used-by uses', dataset: { count: String(found.length) } });
+  renderLinks(line, 'Uses ', found, (f) => h('button', { class: 'used-by-link', title: `Open ${f}`, onclick: () => openInEditor(project, f) }, f));
   return line;
 }
 

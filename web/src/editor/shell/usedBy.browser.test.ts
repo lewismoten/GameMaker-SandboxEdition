@@ -132,3 +132,44 @@ it('updates the open animation disclosure when Scene Maker saves its first pictu
     await browser.close();
   }
 });
+
+it('caps a source-rich animation on a phone and keeps every source keyboard accessible', async () => {
+  const script = await build({
+    stdin: {
+      resolveDir: 'src/editor/shell',
+      contents: `
+        import { newGame, serializeGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+        import { GameFiles } from '../../project/files';
+        import { Project } from '../core/project';
+        import { fileRefs } from './refsFold';
+
+        const files = new GameFiles([['test.gam', serializeGame(newGame('Test'))], ['clip.fli', new Uint8Array()]]);
+        const project = new Project('sources-test', 'Test', 'test.gam', files);
+        const items = Array.from({ length: 160 }, (_, i) => {
+          const bbl = 'b' + i + '.bbl';
+          files.set(bbl, new Uint8Array());
+          return { kind: 'block', bbl, block: 0 };
+        });
+        project.setExtras('clip.fli', 'scene', { tracks: [{ items }] });
+        document.body.append(fileRefs(project, 'clip.fli').el);
+      `,
+    },
+    bundle: true,
+    format: 'esm',
+    write: false,
+    loader: { '.css': 'empty' },
+  });
+  const browser = await chromium.launch();
+  try {
+    const page = await browser.newPage({ viewport: { width: 320, height: 640 } });
+    await page.addScriptTag({ type: 'module', content: script.outputFiles[0].text });
+    await page.getByRole('button', { name: 'Used by 0 · Uses 160 ▸' }).press('Enter');
+    const buttons = page.locator('.uses button');
+    expect(await buttons.allTextContents()).toEqual(['b0.bbl', 'b1.bbl', 'b2.bbl', '157 more']);
+    await buttons.last().press('Enter');
+    expect(await buttons.allTextContents()).toEqual(Array.from({ length: 160 }, (_, i) => `b${i}.bbl`));
+    expect(await page.locator(':focus').textContent()).toBe('b3.bbl');
+  } finally {
+    await browser.close();
+  }
+});

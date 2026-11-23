@@ -64,6 +64,7 @@ game folder opens in the browser unchanged.
 
 ## Credits
 
+- OpenAI Codex capped animation source links in the editor header and tested keyboard expansion.
 - OpenAI Codex fixed and tested the phone editor’s reference counts after Scene Maker saves.
 - OpenAI Codex fixed and tested scrolling the focused achievement tab into view during keyboard navigation and record refreshes.
 - **Import panel dismissal (November 22, 2026)**: OpenAI Codex updated the import panel, cancellation messages, and regression tests.
