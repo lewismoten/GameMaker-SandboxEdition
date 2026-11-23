@@ -197,17 +197,20 @@
     }
   }
   .sidebar .files-toggle-prefix,
-  .sidebar .files-toggle-current {
+  .sidebar .files-toggle-stem {
     min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
   }
   .sidebar .files-toggle-current {
-    /* Ellipsize the start so the filename ending and extension stay visible. */
-    direction: rtl;
+    display: flex;
+    min-width: 0;
     color: var(--muted);
     font-family: ui-monospace, monospace;
     font-weight: 400;
+  }
+  .sidebar .files-toggle-extension {
+    flex: none;
   }
   .sidebar:not(.open) > .side-files {
     display: none;
