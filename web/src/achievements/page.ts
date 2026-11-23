@@ -236,7 +236,11 @@ export function renderAchievements(el: HTMLElement): void {
       tab = id;
       saveTab(id);
       draw(r);
-      if (focus) main.querySelector<HTMLElement>(`#${tabId(id)}`)?.focus();
+      if (focus) {
+        const selected = main.querySelector<HTMLElement>(`#${tabId(id)}`);
+        selected?.focus({ preventScroll: true });
+        selected?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+      }
     };
     const tabs = h(
       'div',

@@ -64,6 +64,7 @@ game folder opens in the browser unchanged.
 
 ## Credits
 
+- OpenAI Codex fixed and tested keyboard scrolling in the achievements category tabs.
 - **Import panel dismissal (November 22, 2026)**: OpenAI Codex updated the import panel, cancellation messages, and regression tests.
 - OpenAI Codex fixed and tested DOS filename collisions and duplicate metadata handling during ZIP import.
 - OpenAI Codex fixed and tested save failure reporting for batch imports and loose game files.
