@@ -44,6 +44,8 @@ import {diffDisks,formatDiff} from '@lewismoten/gamemaker-sandbox-tools/disk-dif
 import {releaseNotes} from '@lewismoten/gamemaker-sandbox-tools/release-notes';
 for(const name of ['actors','align','coverPaint','disk','fadeOut','fliClips','hopBot','levelPicture','menuVersion','microText','palRamps','photo','png','quantize','raytrace','recordedDemo','road3d','routeChecks','saveSlots','sceneInit','screenText','sdftext','song','songFx','synthParts','textfit','transforms'])
   await import('@lewismoten/gamemaker-sandbox-tools/kit/'+name);
+for (const entry of ['image/animatedGif', 'image/surface', 'kit/laserPreview', 'kit/vocRate', 'mesh/trinketTool'])
+  await import('@lewismoten/gamemaker-sandbox-tools/' + entry);
 assert.equal(libraryDefaultPalette().length,768);assert.deepEqual(libraryDefaultPalette().slice(0,3),Uint8Array.of(0,0,0));const changed=libraryDefaultPalette();changed[0]=63;assert.equal(libraryDefaultPalette()[0],0);
 assert.equal(PALETTE_PRESETS.length,20);assert.equal(createPalettePreset('atari-pal').length,768);assert.deepEqual(createPalettePreset('nes').slice(765),Uint8Array.of(0,0,0));
 assert.equal(MICRO_GLYPHS['µ'],'000101101111100');assert.notEqual(MICRO_GLYPHS.C,MICRO_SQUARE_GLYPHS.C);

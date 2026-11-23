@@ -2,7 +2,7 @@
 
 `@lewismoten/gamemaker-sandbox-engine` runs RSD Game-Maker games from their original DOS files in a browser. It is the same TypeScript engine used by the Game-Maker: Sandbox Edition web player. The package includes its audio worklet and TypeScript declarations; it does not include games or the site's editor and catalog.
 
-Version **3.3.1**. ES modules with TypeScript declarations; no runtime npm dependencies.
+ES modules with TypeScript declarations; no runtime npm dependencies.
 Playback needs a modern browser with canvas, Web Audio (including AudioWorklet) and keyboard
 events. Node.js **22.12+** is declared for Node consumers and builds.
 
