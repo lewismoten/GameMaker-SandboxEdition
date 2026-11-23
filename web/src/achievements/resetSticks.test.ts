@@ -15,6 +15,7 @@ vi.mock('../tinHearts/tinHearts', () => ({ huntStates: async () => hearts }));
 vi.mock('../eggs/eggState', () => ({ eggStates: async () => eggs }));
 
 import { SAVE_ID as SCORE_ID, FILE as SCORE_FILE, recordEnd } from '../scoreTrophies/scores';
+import { achievementById } from './catalog';
 import { eggsAfter, heartsAfter, laterMark, scoresAfter, type ResetMark } from './resetMark';
 import { FILE, SAVE_ID, achievementsWritten, forgetForTests, loadAchievements, mergeRecords, parseRecord, resetAchievements } from './store';
 
@@ -84,7 +85,8 @@ describe('reset marks', () => {
     expect((await loadAchievements()).reset).toEqual(r.reset);
   });
 
-  it('a score trophy does not come back after a reset until new points are scored', async () => {
+  it('the Participation trophy hint describes the score growth needed after a reset', async () => {
+    expect(achievementById('trophy-first')?.desc).toBe('Win, lose, or quit a listed game after adding to your total points or improving your best score.');
     saves[SCORE_ID] = { [SCORE_FILE]: new TextEncoder().encode(JSON.stringify({ best: { g: 700 }, total: 900, plays: 2 })) };
     await loadAchievements();
     await resetAchievements();
@@ -93,7 +95,7 @@ describe('reset marks', () => {
     await new Promise((r) => setTimeout(r, 50)); // the unlock is asked for after the score is stored
     await achievementsWritten();
     expect(stored().unlocked['trophy-first']).toBeUndefined();
-    await recordEnd('h', 50);
+    await recordEnd('g', 50);
     await vi.waitFor(async () => {
       await achievementsWritten();
       expect(stored().unlocked['trophy-first']).toBeTypeOf('number');
