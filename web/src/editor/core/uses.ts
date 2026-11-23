@@ -56,7 +56,10 @@ export function embeddedFiles(project: Project, file: string): string[] {
   const bytes = project.files.get(file);
   if (!bytes) return [];
   const name = normalize(file);
-  if (name.endsWith('.fli')) return sceneFiles(project.extras(file, SCENE_SECTION, undefined), project);
+  if (name.endsWith('.fli'))
+    return sceneFiles(project.extras(file, SCENE_SECTION, undefined), project).flatMap((source) =>
+      normalize(source).endsWith('.bkd') ? [source, ...embeddedFiles(project, source)] : [source],
+    );
   if (name.endsWith('.lst')) return tryParse(() => parseSlideList(bytes).map((entry) => entry.name)) ?? [];
   if (name.endsWith('.bkd')) return tryParse(() => [parseBackdrop(bytes).gif]) ?? [];
   if (name.endsWith('.snd'))

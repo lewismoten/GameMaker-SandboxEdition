@@ -1,5 +1,6 @@
 // The map editor's newer tools: line, rectangle, select (copy, cut, paste), terrain, stamp and building, with their side panel.
 import { h, clear, promptText, toast, selectField } from '../../../core/ui';
+import { scenesUsing } from '../../../shell/assetUsedBy';
 import { blockCanvas } from '../../../core/draw';
 import type { Project } from '../../../core/project';
 import { newId } from '../../../../project/storage';
@@ -468,6 +469,7 @@ export class MapTools {
       const box = h('input', { type: 'checkbox', checked: this.erase, onchange: () => (this.erase = box.checked) });
       const host = h('div', { class: 'stack' });
       renderBrushPanel(host, {
+        ...this.brushOwner(),
         kind: 'terrains',
         items: list,
         selected: this.terrainId,
@@ -493,6 +495,7 @@ export class MapTools {
       }
       const host = h('div', { class: 'stack' });
       renderBrushPanel(host, {
+        ...this.brushOwner(),
         kind: 'stamps',
         items: list,
         selected: this.stampId,
@@ -513,6 +516,7 @@ export class MapTools {
       if (!list.some((b) => b.id === this.buildingId)) this.buildingId = list[0]?.id;
       const host = h('div', { class: 'stack' });
       renderBrushPanel(host, {
+        ...this.brushOwner(),
         kind: 'buildings',
         items: list,
         selected: this.buildingId,
@@ -525,6 +529,12 @@ export class MapTools {
       });
       return clear(p, head('Buildings'), host);
     }
+  }
+
+  private brushOwner() {
+    const blockSet = this.host.bbl();
+    const sceneCount = scenesUsing([blockSet], (file) => this.host.project.usesOf(file));
+    return { blockSet, sceneCount };
   }
 
   private turnBar(): HTMLElement {

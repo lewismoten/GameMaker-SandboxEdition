@@ -1475,3 +1475,5 @@ maker "ZORP" is invented. The shell is untested: nothing has been printed.
 - **Programmer’s Guide chapter pager (November 23, 2026)**: OpenAI Codex fixed the chapter links and wrote the browser regression test.
 
 - **Lightning and Quicksand jump instructions (November 23, 2026)**: OpenAI Codex revised the help screens and manuals and wrote regression tests for early and airborne releases when climbing the ditch steps and escaping both kinds of sand.
+
+- **Editor shared asset warnings (November 23, 2026)**: OpenAI Codex updated Scene Maker backdrop references and map brush deletion text and wrote the regression test.
