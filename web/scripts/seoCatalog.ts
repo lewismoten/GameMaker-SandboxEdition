@@ -9,10 +9,13 @@ export const credit = (g: CdCatalogEntry) => [g.author ?? g.company, g.year].fil
 export const pageHref = (g: CdCatalogEntry) => `./${gamePage(g.id)}`;
 
 export function groups(catalog: CdCatalogEntry[]): [string, string, CdCatalogEntry[]][] {
-  const games = playable(catalog);
+  const entries = playable(catalog);
+  const starters = entries.filter((g) => g.series === 'starter');
+  const games = entries.filter((g) => g.series !== 'starter');
   // The Bard of Bizarre's games: a group of their own once there are enough (src/project/bizarre.ts)
   const bizarre = hasBizarreTab(games) ? games.filter(isBizarreGame) : [];
   return [
+    ['Starters', 'Each Starter game shows one Game-Maker idea. Open it in the editor to see how it works.', starters],
     ['New games', 'Made for this project with Game-Maker, released as shareware.', games.filter((g) => g.original && !bizarre.includes(g))],
     ['Bizarre', 'Songs by The Bard of Bizarre (Lewis Moten as his hobo clown Doc Leo), turned into games.', bizarre],
     [
