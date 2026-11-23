@@ -13,7 +13,7 @@ import { staticPages } from '../../scripts/seoStaticPages';
 import { chapterById } from '../programmersGuide/chapterList';
 import { GUIDE_SECTIONS } from '../manual/guideSections';
 import { PRODUCT } from '../edition';
-import { escapeHtml, gamePage, ROUTES, SITE_URL } from './site';
+import { gamePage, ROUTES, SITE_URL } from './site';
 import { isStarterGame } from '../project/starter';
 
 const cdRoot = join(__dirname, '../../../cd');
@@ -402,31 +402,50 @@ describe('seoBuild', () => {
     for (const href of ['./#/help', './magazine.html', './cast.html', './#/credits', './dos.html']) expect(home).toContain(`<a href="${href}">`);
   });
 
-  it('gives every game page its own title, canonical address, picture with alt text, VideoGame data and one h1', () => {
-    const titles = new Set<string>();
-    for (const g of playable) {
-      const html = gamePageHtml(play, g);
-      const url = `${SITE_URL}${gamePage(g.id)}`;
-      const title = /<title>([^<]*)<\/title>/.exec(html)?.[1] ?? '';
-      expect(titles.has(title), title).toBe(false);
-      titles.add(title);
-      expect(html).toContain(`<link rel="canonical" href="${url}" />`);
-      expect(html).toContain(`<meta property="og:image" content="${SITE_URL}og/${g.id}.png" />`);
-      const expectedAlt = escapeHtml(`${g.title} — Play in your browser · ${PRODUCT}`);
-      expect(html).toContain(`<meta property="og:image:alt" content="${expectedAlt}" />`);
-      expect(html).toContain(`<meta name="twitter:image:alt" content="${expectedAlt}" />`);
-      expect(html.match(/<h1\b/g), g.id).toHaveLength(1);
-      const images = html.match(/<img\b[^>]*>/g) ?? [];
-      for (const img of images) expect(img).toMatch(/\balt="[^"]+"/);
-      const preview = images.find((img) => img.includes(` src="./og/${g.id}.png"`));
-      expect(preview, g.id).toContain(` alt="${expectedAlt}"`);
-      expect(html).not.toContain('its title screen');
-      if (g.series === 'starter') expect(html).toContain('<p>A Starter game that shows one Game-Maker idea');
-      const game = jsonLd(html).find((n) => n['@type'] === 'VideoGame');
-      expect(game?.name).toBe(g.title);
-      expect(game?.url).toBe(url);
+  it('gives every game page its own title, canonical address, picture with alt text, VideoGame data and one h1', async () => {
+    // A real HTML parser, so a tag inside a comment, a script or an attribute doesn't count.
+    const browser = await chromium.launch();
+    try {
+      const reader = await (await browser.newContext({ javaScriptEnabled: false })).newPage();
+      await reader.route('**/*', (route) => route.abort());
+      const titles = new Set<string>();
+      for (const g of playable) {
+        const html = gamePageHtml(play, g);
+        const url = `${SITE_URL}${gamePage(g.id)}`;
+        await reader.setContent(html, { waitUntil: 'domcontentloaded' });
+        const parsed = await reader.evaluate((src) => {
+          const attrs = (selector: string, name: string) => [...document.querySelectorAll(selector)].map((e) => e.getAttribute(name));
+          return {
+            title: document.title,
+            canonical: attrs('head link[rel="canonical"]', 'href'),
+            ogImage: attrs('head meta[property="og:image"]', 'content'),
+            ogImageAlt: attrs('head meta[property="og:image:alt"]', 'content'),
+            twitterImageAlt: attrs('head meta[name="twitter:image:alt"]', 'content'),
+            h1s: document.querySelectorAll('h1').length,
+            alts: attrs('img', 'alt'),
+            preview: [...document.querySelectorAll('main img')].filter((img) => img.getAttribute('src') === src).map((img) => img.getAttribute('alt')),
+          };
+        }, `./og/${g.id}.png`);
+        expect(titles.has(parsed.title), parsed.title).toBe(false);
+        titles.add(parsed.title);
+        expect(parsed.canonical, g.id).toEqual([url]);
+        expect(parsed.ogImage, g.id).toEqual([`${SITE_URL}og/${g.id}.png`]);
+        const expectedAlt = `${g.title} — Play in your browser · ${PRODUCT}`;
+        expect(parsed.ogImageAlt, g.id).toEqual([expectedAlt]);
+        expect(parsed.twitterImageAlt, g.id).toEqual([expectedAlt]);
+        expect(parsed.h1s, g.id).toBe(1);
+        for (const alt of parsed.alts) expect(alt?.trim(), g.id).toBeTruthy();
+        expect(parsed.preview, g.id).toEqual([expectedAlt]);
+        expect(html).not.toContain('its title screen');
+        if (g.series === 'starter') expect(html).toContain('<p>A Starter game that shows one Game-Maker idea');
+        const game = jsonLd(html).find((n) => n['@type'] === 'VideoGame');
+        expect(game?.name).toBe(g.title);
+        expect(game?.url).toBe(url);
+      }
+    } finally {
+      await browser.close();
     }
-  });
+  }, 60_000);
 
   it('writes each route description whole (at most 160 characters before any clipping) in one voice', () => {
     for (const [name, route] of Object.entries(ROUTES)) {
