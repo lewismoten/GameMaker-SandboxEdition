@@ -162,9 +162,18 @@ describe('seoBuild', () => {
     }
   });
 
-  it('describes a Starter as a small teaching game, not a shareware release', () => {
-    const starter = playable.find((g) => isStarterGame(g))!;
-    const html = gamePageHtml(page('play.html'), starter);
+  it('describes First Steps as a Starter on both indexes and its play page', () => {
+    const starter = playable.find((g) => g.id === 'first-steps')!;
+    for (const index of [home, play]) {
+      const sections = index.match(/<section>[\s\S]*?<\/section>/g) ?? [];
+      const listings = sections.filter((section) => section.includes('id="game-first-steps"'));
+      expect(listings).toHaveLength(1);
+      expect(listings[0]).toContain('<h2>Starters</h2>');
+      expect(listings[0]).not.toMatch(/shareware|registration/i);
+    }
+    const html = gamePageHtml(play, starter);
+    expect(html).toContain('<p>A Starter game');
+    expect(html).not.toMatch(/registration Free|Shareware: the author/i);
     expect(html).toMatch(/name="description" content="[^"]*Starter game made with Game-Maker/);
     expect(html).not.toMatch(/name="description" content="[^"]*shareware/);
   });
