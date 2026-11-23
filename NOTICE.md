@@ -6,7 +6,7 @@ This repository is a **modified fork** of the source code of _Game-Maker_, the g
 construction kit produced from 1991 to 1995 by Recreational Software Designs (RSD) of
 Amherst, New Hampshire. It was sold by direct mail in the US by KD Software (RSD also made a
 distribution deal with GameLynk), in the UK as _Captain GameMaker_ by Screen Entertainment,
-and worldwide on CD-ROM by Microforum, as [Wikipedia](https://en.wikipedia.org/wiki/Game-Maker) ([Wayback](https://web.archive.org/web/20261116130812/https://en.wikipedia.org/wiki/Game-Maker))
+and worldwide on CD-ROM by Microforum, as [Wikipedia](https://en.wikipedia.org/wiki/Game-Maker) ([Archived Wikipedia article on Game-Maker](https://web.archive.org/web/20261116130812/https://en.wikipedia.org/wiki/Game-Maker))
 records. Game-Maker was created by
 G. Andrew (Andy) Stone with G. Oliver Stone, Oliver Stone Jr. and Joan Stone. Today it is
 usually called **RSD Game-Maker**, to tell it apart from later, unrelated products with
@@ -14,7 +14,7 @@ similar names; this repository does the same.
 
 On 12 July 2014 Andy Stone, Game-Maker's original programmer, published the source code,
 the CD image and an installed copy on GitHub under the **MIT License**
-([gandrewstone/GameMaker](https://github.com/gandrewstone/GameMaker) ([Wayback](https://web.archive.org/web/20260612183225/https://github.com/gandrewstone/GameMaker))). This fork keeps
+([gandrewstone/GameMaker](https://github.com/gandrewstone/GameMaker) ([Archived original Game-Maker source repository](https://web.archive.org/web/20260612183225/https://github.com/gandrewstone/GameMaker))). This fork keeps
 that history and that license. Everything added here (the browser version in `web/`, the
 "1994 desk", the Sandbox Software and Bard of Bizarre games in `games/`, and the Mac,
 Windows and Linux players in `mac/`, `win/` and `linux/`) is released under the same MIT
@@ -43,7 +43,7 @@ program, and the pieces it draws are its own:
 - the DOS **Game-Maker** you run on the desk is a recreation drawn to look like the original,
   rebuilt in TypeScript from its source on a simulated PC; no DOS or x86 code runs.
 
-Refer to this project as _Game-Maker: Sandbox Edition_ (https://github.com/lewismoten/GameMaker-SandboxEdition ([Wayback](https://web.archive.org/web/20261104181935/https://github.com/lewismoten/GameMaker-SandboxEdition)))
+Refer to this project as _Game-Maker: Sandbox Edition_ (https://github.com/lewismoten/GameMaker-SandboxEdition ([Archived Game-Maker Sandbox Edition repository](https://web.archive.org/web/20261104181935/https://github.com/lewismoten/GameMaker-SandboxEdition)))
 and to the original as _RSD Game-Maker 3.0_ (Game-Maker 3.0 by Recreational Software Designs)
 (https://github.com/gandrewstone/GameMaker).
 
@@ -301,12 +301,12 @@ game folder opens in the browser unchanged.
   directed by Lewis Moten. Auditions read artwork from the selected source game;
   that artwork remains the work of its credited authors.
 - **First-run hardware setup and FASTPLAY** (`web/src/player/`, `web/src/retro/hacks/fastPlay.ts`): browser setup controls, remembered per-game choices, the BBS utility, regression checks and playful UI lines implemented with **OpenAI Codex (GPT-6)**, directed by Lewis Moten. The original PLAYGAME configuration flow in `code/GM/PLAYGAME.C` is the behavioral reference; no original DOS files are changed.
-- **Incremental JPEGs and interrupted BBS picture transfers** (`web/packages/engine/src/formats/jpeg.ts`, `web/src/retro/bbs/`): completed-MCU visibility, atomic scan refinements, verified-prefix transfer handling, viewer cleanup and regression checks implemented with **OpenAI Codex (GPT-6)**, directed by Lewis Moten. JPEG syntax follows [ITU-T T.81 (1992)](https://www.w3.org/Graphics/JPEG/itu-t81.pdf) ([Wayback](https://web.archive.org/web/20261106030330/https://www.w3.org/Graphics/JPEG/itu-t81.pdf)), by CCITT/ITU and the Joint Photographic Experts Group. The existing AC-refinement procedure identifies libjpeg as its algorithm reference (Independent JPEG Group, Thomas G. Lane and contributors; [IJG License](https://github.com/libjpeg-turbo/libjpeg-turbo/blob/main/README.ijg) ([Wayback](https://web.archive.org/web/20261013120606/https://github.com/libjpeg-turbo/libjpeg-turbo/blob/main/README.ijg))). This software is based in part on the work of the Independent JPEG Group. The tiny test images are original program-generated color patterns encoded locally with libjpeg-turbo 3.2.0's cjpeg ([IJG and BSD-style licenses](https://github.com/libjpeg-turbo/libjpeg-turbo/blob/main/LICENSE.md) ([Wayback](https://web.archive.org/web/20261107095357/https://github.com/libjpeg-turbo/libjpeg-turbo/blob/main/LICENSE.md))); no encoder source or binaries are bundled. The ZMODEM simulation follows Chuck Forsberg/Omen Technology's [1988 protocol description](https://techheap.packetizer.com/communications/modems/zmodem8.html) ([Wayback](https://web.archive.org/web/20261122125104/https://techheap.packetizer.com/communications/modems/zmodem8.html)): damaged subpackets are rejected instead of painting invented pixel corruption. These publications are references; their text and diagrams are not bundled.
+- **Incremental JPEGs and interrupted BBS picture transfers** (`web/packages/engine/src/formats/jpeg.ts`, `web/src/retro/bbs/`): completed-MCU visibility, atomic scan refinements, verified-prefix transfer handling, viewer cleanup and regression checks implemented with **OpenAI Codex (GPT-6)**, directed by Lewis Moten. JPEG syntax follows [ITU-T T.81 (1992)](https://www.w3.org/Graphics/JPEG/itu-t81.pdf) ([Archived JPEG specification (ITU-T T.81)](https://web.archive.org/web/20261106030330/https://www.w3.org/Graphics/JPEG/itu-t81.pdf)), by CCITT/ITU and the Joint Photographic Experts Group. The existing AC-refinement procedure identifies libjpeg as its algorithm reference (Independent JPEG Group, Thomas G. Lane and contributors; [IJG License](https://github.com/libjpeg-turbo/libjpeg-turbo/blob/main/README.ijg) ([Archived IJG license](https://web.archive.org/web/20261013120606/https://github.com/libjpeg-turbo/libjpeg-turbo/blob/main/README.ijg))). This software is based in part on the work of the Independent JPEG Group. The tiny test images are original program-generated color patterns encoded locally with libjpeg-turbo 3.2.0's cjpeg ([IJG and BSD-style licenses](https://github.com/libjpeg-turbo/libjpeg-turbo/blob/main/LICENSE.md) ([Archived libjpeg-turbo licenses](https://web.archive.org/web/20261107095357/https://github.com/libjpeg-turbo/libjpeg-turbo/blob/main/LICENSE.md))); no encoder source or binaries are bundled. The ZMODEM simulation follows Chuck Forsberg/Omen Technology's [1988 protocol description](https://techheap.packetizer.com/communications/modems/zmodem8.html) ([Archived 1988 ZMODEM protocol description](https://web.archive.org/web/20261122125104/https://techheap.packetizer.com/communications/modems/zmodem8.html)): damaged subpackets are rejected instead of painting invented pixel corruption. These publications are references; their text and diagrams are not bundled.
 - **Continuous course maps** (`web/src/manual/printables/levelCourseSvg.ts`): shared-coordinate image assembly and map annotations implemented with **OpenAI Codex (GPT-6)**, directed by Lewis Moten. Game artwork retains its existing authors and credits.
 - **Fictional hint line** (`web/src/desk/room/phone/hintBill.ts`, `hintLine.ts`): local elapsed-time accounting, backup integration, phone menu and cancellation, achievement, original Teddy dialogue and regression tests implemented with **OpenAI Codex (GPT-6)**, directed by Lewis Moten. The charges are simulated game data; no payment service is used. The per-minute billing paid up front, the automated game-by-game phone tree (`hintTree.ts`, `audio/phone/hintGames.ts`, hints adapted from each game's own hint book) and the Hint Giant script were reworked with **Claude (Sonnet 5.5)**, directed by Lewis Moten.
-- **BBS callback signup** (`web/src/retro/bbs/signup*.ts`): local verified-handle records, simulated incoming modem callbacks, signup flow, tests and playful lines implemented with **OpenAI Codex (GPT-6)**, directed by Lewis Moten. Manual `ATA` answering and `RING` result codes follow the [U.S. Robotics modem command reference](https://ads.usr.com/support/3cxm756/3cxm756-ug/ATCOMS.HTM) ([Wayback](https://web.archive.org/web/20261122125139/https://ads.usr.com/support/3cxm756/3cxm756-ug/ATCOMS.HTM)). This is a behavioral reference; no vendor source, documentation text or modem binaries are bundled.
+- **BBS callback signup** (`web/src/retro/bbs/signup*.ts`): local verified-handle records, simulated incoming modem callbacks, signup flow, tests and playful lines implemented with **OpenAI Codex (GPT-6)**, directed by Lewis Moten. Manual `ATA` answering and `RING` result codes follow the [U.S. Robotics modem command reference](https://ads.usr.com/support/3cxm756/3cxm756-ug/ATCOMS.HTM) ([Archived U.S. Robotics modem command reference](https://web.archive.org/web/20261122125139/https://ads.usr.com/support/3cxm756/3cxm756-ug/ATCOMS.HTM)). This is a behavioral reference; no vendor source, documentation text or modem binaries are bundled.
 - **The Programmer's Guide to Game-Maker 3.0** (`web/src/programmersGuide/`) and the 1994 booklet **Technical Reference and Limits**: the research (reading `code/GM`, the sample CD and the shareware archives) and the prose were made by **Claude** (Sonnet 5.5 workers, reviewed by Opus 5.5, Anthropic), directed by Lewis Moten. The original source is the reference and is quoted only in short lines; the numbers are the original authors'. Nothing is copied from RSD's printed manual. **OpenAI Codex (GPT-6)**, directed by Lewis Moten, expanded the file-format and utility-architecture chapters, wrote original byte-layout and launch-flow figures, and checked the worked examples against the supplied files and the engine codecs. The original RSD source and installed sample files are the reference material; their existing MIT notice and authorship remain.
-- **Final Curtain's paper spyglass and evidence sheet** (`web/src/manual/printables/spyglass.ts`, `fingerprint.ts`, `sleuthPrints.ts`; the stage door in `games/sleuth/`): the black-ink spyglass drawing, the seeded fingerprint patterns and the stage-door puzzle were written by **Claude Sonnet 5.5** (Anthropic), from Lewis Moten's idea. The prints are hidden with the red-film technique the hint book uses (`redFilm.ts`), after Daniel C. Wilson's "red reveal" (danielcwilson.com/blog/2018/02/optical-fun-red-reveal/ ([Wayback](https://web.archive.org/web/20251130000240/https://danielcwilson.com/blog/2018/02/optical-fun-red-reveal/))); no code was copied from it. No third-party artwork or fingerprint data was used.
+- **Final Curtain's paper spyglass and evidence sheet** (`web/src/manual/printables/spyglass.ts`, `fingerprint.ts`, `sleuthPrints.ts`; the stage door in `games/sleuth/`): the black-ink spyglass drawing, the seeded fingerprint patterns and the stage-door puzzle were written by **Claude Sonnet 5.5** (Anthropic), from Lewis Moten's idea. The prints are hidden with the red-film technique the hint book uses (`redFilm.ts`), after Daniel C. Wilson's "red reveal" (danielcwilson.com/blog/2018/02/optical-fun-red-reveal/ ([Archived Daniel C. Wilson’s red reveal article](https://web.archive.org/web/20251130000240/https://danielcwilson.com/blog/2018/02/optical-fun-red-reveal/))); no code was copied from it. No third-party artwork or fingerprint data was used.
 - **The Specials** (limited-time games, about.json `"series": "special"`): `games/thank-you-parade/` (The Thank-You Parade: its screen-printed poster look, Penny the drum major and her band, Marge the crop duster pilot and her banner, Gigi and the Ridgemont band, the llama rescue, the veterans with their scorecards, fifteen levels (3.2: Crosswalk Corner, Frost Lot and The Clock Tower, made by Claude Sonnet 5.5), three cartoons and five songs), `games/lucky-cat/` (Lucky Cat: its white-line woodcut look, Midnight the black cat, the 13 lucky charms, the town and the Committee, the crows, Rascal the raccoon and his two levels, seven more levels (3.0: Saucer Alley, Thirteen Steps, The Mirror Shop, Earlier Still; 3.1: The Other Side, Wash Day, The Night Market; made by Claude Sonnet 5.5), two cartoons and six songs), `games/pass-the-pie/` (Pass the Pie: its block-print art, Rory, Mr. Plume the turkey and his kick, its first six streets (later grown to thirteen levels, below), the three cartoons and street cards, the long-table ending and three songs) and `games/mountain-next-door/` (The Mountain Moved Next Door: its trail-guide woodcut look, Tess the trail marker, Old Mossback the mountain and its face, Wisp the little cloud, Nutmeg the squirrel, Mrs. Lin, Mr. Hale and Mrs. Okoro, its first fourteen levels, from a foggy dawn to the next sunrise (later grown, below), two cartoons and four songs), each with its levels, title and cartoons, bot and walkthrough, were first made fresh with **Claude Sonnet 5.5** (Anthropic), directed by Lewis Moten, on the starter kit's shared helpers. Their 2.0 versions (new art styles, rewritten words and story, new levels and songs, the Mountain's 2.1 fixes) were made with **Claude Opus 5.5** (Anthropic), and the Mountain's 2.2 roof fix with Claude Sonnet 5.5. The Thank-You Parade's 3.0 (five more levels: Bakery Row, Mill Creek, Practice Hall, the Bleachers and the Cannon Truck, a page of story after every level card, the donuts, the street sweeper, the fuses and two more songs) was made with Claude Sonnet 5.5. Their calendar, the Special tab, the desk's floppy and BBS arrivals and SPECIALS.EXE (`web/src/specials/`) were written with **Claude Opus 5.5** (Anthropic). Everything is drawn and composed in code; apart from that one voice line, no third-party artwork or audio was used.
 - **The Mountain Moved Next Door 3.0** (`games/mountain-next-door/`): its bolder printed look (the carved woodcut stone, ledges, turf, posts and trail signs, a printer's ink and palette for each time of day, the hand-cut lettering, torn-paper level cards and poster border, the bigger Old Mossback whose eyes follow Tess, ladders, braces and landings that meet what they join, and `tools/joins.ts`) was made with **Claude Opus 5.5** (Anthropic); its three new levels (Gathering Mist, Excuse Me and The Ford), the longer Stepping Stones, Empty Spot, Windy Ridge and Ford, their art, sounds, two songs and bot routes were made with **Claude Sonnet 5.5** (Anthropic), directed by Lewis Moten. The mountain's one spoken line ("Oh. Excuse me.", `games/mountain-next-door/src/sound/excuse.wav`) was made with **Pocket TTS** (Kyutai, CC BY 4.0) in a voice cloned from the "Scroobie" sample, lowered four semitones and slowed with `web/scripts/narrate.ts` and checked with OpenAI’s **Whisper**; the model and the sample are not in the repository. Its 3.1 growth pass (three more levels: The Survey Line, The Spillway and The Bell Loft, with their signs, story cards and bot routes, and the Bell Loft's plank, clock face, pendulum and smoke art) was made with **Claude Sonnet 5.5** (Anthropic), directed by Lewis Moten. Its 3.2 pass (four more levels: Hale's Orchard, The Lamplighter's Stair, The Records Cellar and The Frozen Tarn, with the windfall apple, their signs, story cards, inks for their times of day and bot routes) was made with **Claude Sonnet 5.5** (Anthropic), directed by Lewis Moten. Everything is drawn and composed in code.
 - **Stick Man Stars polish** (`games/stick-man-stars/`): **Hermes Agent running OpenAI Codex GPT-6.1 Sol**, directed by Lewis Moten, added the code-synthesized lighting chime, lit-house confetti, palette-animated ending, quiet garden before Spam Row and regression checks. The original game's credits and thank-you remain unchanged; no third-party artwork or audio was added.
@@ -447,9 +447,9 @@ game folder opens in the browser unchanged.
   _TURBO BUTTON_'s Design Desk letters (`sections/mailBag.ts`), "What Players Hate (and How to
   Fix It)" (`sections/gripes.ts`) and "Readers' Picks: Polish Over Size" (`sections/readersPicks.ts`,
   whose three games are made up): **levelengine**'s livestream
-  "[RSD Game Maker Binge](https://www.youtube.com/playlist?list=PLmyqeI1gB83ufUYjoFYJ2WeAMjlJQoq76) ([Wayback](https://web.archive.org/web/20221014221812/https://www.youtube.com/playlist?list=PLmyqeI1gB83ufUYjoFYJ2WeAMjlJQoq76))" (YouTube, 2020, 34 parts, with
+  "[RSD Game Maker Binge](https://www.youtube.com/playlist?list=PLmyqeI1gB83ufUYjoFYJ2WeAMjlJQoq76) ([Archived RSD Game Maker Binge playlist](https://web.archive.org/web/20221014221812/https://www.youtube.com/playlist?list=PLmyqeI1gB83ufUYjoFYJ2WeAMjlJQoq76))" (YouTube, 2020, 34 parts, with
   its viewers' chat), and **Pixelmusement**'s
-  "[ADG Episode 250 - Game-Maker](https://www.youtube.com/watch?v=8oy5pXPXxbk) ([Wayback](https://web.archive.org/web/20250703134904/https://www.youtube.com/watch?v=8oy5pXPXxbk))" (Ancient DOS
+  "[ADG Episode 250 - Game-Maker](https://www.youtube.com/watch?v=8oy5pXPXxbk) ([Archived ADG Episode 250 watch page (metadata only)](https://web.archive.org/web/20250703134904/https://www.youtube.com/watch?v=8oy5pXPXxbk))" (Ancient DOS
   Games, YouTube, 2018). What made players stuck, quit or grin is retold in this project's own
   words, and every engine claim was checked against `code/GM/PLAYGAME.C` and its port (where a
   video and PLAYGAME disagree, PLAYGAME wins). No material is copied: the videos and the chat
@@ -474,7 +474,7 @@ game folder opens in the browser unchanged.
   Doc Leo and THE CHEZ (Lewis's CitiCar) appear as themselves.
 - **KEEP IT BRIEF!'s stories** are Lewis's 100 Word Stories, written for **Laurence Simon**'s
   weekly 100 Word Stories challenge on the
-  [100 Word Stories Podcast](https://oneadayuntilthedayidie.com/) ([Wayback](https://web.archive.org/web/20261010133101/https://oneadayuntilthedayidie.com/)). Each week's topic, shown on
+  [100 Word Stories Podcast](https://oneadayuntilthedayidie.com/) ([Archived 100 Word Stories Podcast](https://web.archive.org/web/20261010133101/https://oneadayuntilthedayidie.com/)). Each week's topic, shown on
   the game's story cards, was set by Laurence or chosen by the week before's winner, voted for
   by the podcast's writers and listeners; thanks to all of them.
 - **The Bard of Bizarre games** (`games/`: Third Goat from the Left, Mustard Seed Hustle,
@@ -520,10 +520,10 @@ game folder opens in the browser unchanged.
 - **The guided tour's voices** (`web/public/tour/voice`): Doc Leo's lines (and Teddy's, when he
   talks) are spoken in voices cloned from **Lewis Moten's own recordings**, made by him, with his
   consent, by
-  **Pocket TTS** (Kyutai, [huggingface.co/kyutai/pocket-tts](https://huggingface.co/kyutai/pocket-tts) ([Wayback](https://web.archive.org/web/20261116170646/https://huggingface.co/kyutai/pocket-tts)),
+  **Pocket TTS** (Kyutai, [huggingface.co/kyutai/pocket-tts](https://huggingface.co/kyutai/pocket-tts) ([Archived Kyutai Pocket TTS model](https://web.archive.org/web/20261116170646/https://huggingface.co/kyutai/pocket-tts)),
   model weights under the Creative Commons Attribution 4.0 International License, CC BY 4.0),
   in **vlapky**'s ONNX conversion,
-  [pocket-tts-onnx](https://huggingface.co/vlapky/pocket-tts-onnx) ([Wayback](https://web.archive.org/web/20261013220530/https://huggingface.co/vlapky/pocket-tts-onnx)) (its weights CC BY 4.0, its
+  [pocket-tts-onnx](https://huggingface.co/vlapky/pocket-tts-onnx) ([Archived vlapky Pocket TTS ONNX conversion](https://web.archive.org/web/20261013220530/https://huggingface.co/vlapky/pocket-tts-onnx)) (its weights CC BY 4.0, its
   conversion code Apache-2.0). The clips are made on the developer's computer by
   `web/scripts/narrate.ts`, whose engine (`web/scripts/narrate/pocketTts.ts`) is ported from
   vlapky's **pocket-tts-js** (MIT License, Copyright (c) 2026 vlapky; the notice is kept in that
@@ -537,7 +537,7 @@ game folder opens in the browser unchanged.
   "Sky" voice (`af_sky`), pitched up, Dex Dynamo's in its "Puck" voice (`am_puck`), Inspector
   Ada Penn's in its "Emma" voice (`bf_emma`) and Courier Max's in its "Michael" voice
   (`am_michael`), a little faster: **Kokoro-82M**
-  by hexgrad ([huggingface.co/hexgrad/Kokoro-82M](https://huggingface.co/hexgrad/Kokoro-82M) ([Wayback](https://web.archive.org/web/20261116173621/https://huggingface.co/hexgrad/Kokoro-82M)),
+  by hexgrad ([huggingface.co/hexgrad/Kokoro-82M](https://huggingface.co/hexgrad/Kokoro-82M) ([Archived hexgrad Kokoro-82M model](https://web.archive.org/web/20261116173621/https://huggingface.co/hexgrad/Kokoro-82M)),
   Apache-2.0) in the ONNX Community's conversion, run by **kokoro-js** (Apache-2.0) with Hugging
   Face's **Transformers.js** (Apache-2.0), the **phonemizer** package (Apache-2.0) and ONNX
   Runtime (MIT). These are installed by `npm run voice:setup` into a git-ignored folder outside
@@ -606,12 +606,12 @@ game folder opens in the browser unchanged.
   authors distributed them, and are not licensed by this project:
   - _Nebula_ (`cd/gameware/nebula`, RSD): `BLUE.GIF` is the **Blue Marble**, the photograph
     of the Earth taken by the crew of Apollo 17 in 1972
-    ([NASA](https://en.wikipedia.org/wiki/The_Blue_Marble) ([Wayback](https://web.archive.org/web/20261027005634/https://en.wikipedia.org/wiki/The_Blue_Marble))), also small in `MENU.GIF` and
+    ([NASA](https://en.wikipedia.org/wiki/The_Blue_Marble) ([Archived Wikipedia article on The Blue Marble](https://web.archive.org/web/20261027005634/https://en.wikipedia.org/wiki/The_Blue_Marble))), also small in `MENU.GIF` and
     `NOVA.FLI`. `SATRING.GIF` is a **Voyager 1** picture of Saturn's crescent and rings
     (1980, frame C3501159, the same picture as `cd/picture/space/planets/c3501159.gif`),
     tinted blue. `YELOSUN.GIF`, `YELOLOW.GIF`, `YELOBYE.FLI`, `NOVA.FLI` and `MENU.GIF` appear
     to be a **Voyager 1** color picture of Jupiter's moon **Io** (1979) with a volcanic plume
-    on its edge ([NASA/JPL](https://photojournal.jpl.nasa.gov/target/io) ([Wayback](https://web.archive.org/web/20250710081417/https://photojournal.jpl.nasa.gov/target/Io))). These NASA pictures
+    on its edge ([NASA/JPL](https://photojournal.jpl.nasa.gov/target/io) ([Archived NASA/JPL Io photojournal](https://web.archive.org/web/20250710081417/https://photojournal.jpl.nasa.gov/target/Io))). These NASA pictures
     are in the **public domain** in the US. The green planet in `GREENHI.FLI`, `GREENBYE.FLI`
     and `HISCORE.GIF` is a planet photograph tinted green, likely also from NASA (possibly
     Mars); its source was not identified.
@@ -620,15 +620,15 @@ game folder opens in the browser unchanged.
     pictures (`OLSTART.GIF`, `WARRIOR.GIF`, and the same collage in their `MENU.FLI`,
     `MENUBOX.FLI` and `TEXTBOX.FLI`) and the ending picture `OLENDING.GIF` are frames
     captured from the television series
-    [**The Outer Limits**](<https://en.wikipedia.org/wiki/The_Outer_Limits_(1963_TV_series)>) ([Wayback](<https://web.archive.org/web/20261103071617/https://en.wikipedia.org/wiki/The_Outer_Limits_(1963_TV_series)>))
+    [**The Outer Limits**](<https://en.wikipedia.org/wiki/The_Outer_Limits_(1963_TV_series)>) ([Archived Wikipedia article on The Outer Limits (1963 series)](<https://web.archive.org/web/20261103071617/https://en.wikipedia.org/wiki/The_Outer_Limits_(1963_TV_series)>))
     (1963–1965). The game's own story screen says it "uses parts from two episodes",
-    ["The Cry of Silence"](https://en.wikipedia.org/wiki/Cry_of_Silence) ([Wayback](https://web.archive.org/web/20260319203621/https://en.wikipedia.org/wiki/Cry_of_Silence)) (1964), whose star
+    ["The Cry of Silence"](https://en.wikipedia.org/wiki/Cry_of_Silence) ([Archived Cry of Silence episode article](https://web.archive.org/web/20260319203621/https://en.wikipedia.org/wiki/Cry_of_Silence)) (1964), whose star
     June Havoc the woman appears to be, and
-    ["The Zanti Misfits"](https://en.wikipedia.org/wiki/The_Zanti_Misfits) ([Wayback](https://web.archive.org/web/20261006155152/https://en.wikipedia.org/wiki/The_Zanti_Misfits)) (1963). The series
+    ["The Zanti Misfits"](https://en.wikipedia.org/wiki/The_Zanti_Misfits) ([Archived The Zanti Misfits episode article](https://web.archive.org/web/20261006155152/https://en.wikipedia.org/wiki/The_Zanti_Misfits)) (1963). The series
     is **under copyright** (today MGM's), not licensed by this project.
   - _Paper Airplane_ (`cd/sharware/paperair`), by Matt Bell: its title picture `GMTITLE.GIF`
     is **The Nazgûl** by **Ted Nasmith** (gouache, first published in the 1990 Tolkien
-    Calendar; [tednasmith.com](https://www.tednasmith.com/tolkien/the-nazgul/) ([Wayback](https://web.archive.org/web/20250817133910/http://www.tednasmith.com/tolkien/the-nazgul/))), scanned with the title
+    Calendar; [tednasmith.com](https://www.tednasmith.com/tolkien/the-nazgul/) ([Archived Ted Nasmith’s The Nazgûl](https://web.archive.org/web/20250817133910/http://www.tednasmith.com/tolkien/the-nazgul/))), scanned with the title
     lettered over it. `OPENPAP.GIF`, a falcon turning into an F-16, may be **Jody Sjogren**'s
     _Metamorphosis II: Falconfyre_ (1986;
     [Wright State University](https://wright.libraryhost.com/repositories/2/top_containers/6194)),
@@ -709,7 +709,7 @@ affected.
 ## About this fork
 
 Lewis bought Game-Maker in 1992 with money earned shoveling snow that winter
-([Moten Snow-to-Software Operations](https://lewismoten.com/1992/12/11/moten-snow-to-software-operations-founder-operator/) ([Wayback](https://web.archive.org/web/20260126172455/https://lewismoten.com/1992/12/11/moten-snow-to-software-operations-founder-operator/))).
+([Moten Snow-to-Software Operations](https://lewismoten.com/1992/12/11/moten-snow-to-software-operations-founder-operator/) ([Archived Moten Snow-to-Software Operations history](https://web.archive.org/web/20260126172455/https://lewismoten.com/1992/12/11/moten-snow-to-software-operations-founder-operator/))).
 He made a few games with it, among them a Christmas game full of candy canes and Santa
 Claus, but never sold or gave them out, and none survive: they were lost with much else in
 an apartment fire during college. He never received a newsletter, never knew there were
@@ -775,7 +775,7 @@ formats from their published descriptions and from Game-Maker's own source.
 - **8×8 text font**: Daniel Hepper's `font8x8_basic`, plus accented letters and symbols
   from his `font8x8_ext_latin` and `font8x8_misc` and Greek letters from his `font8x8_greek`
   (`web/packages/engine/src/gfx/cp437Glyphs.ts`), all in the public domain. The
-  [upstream font8x8 headers](https://github.com/dhepper/font8x8/blob/master/font8x8_basic.h) ([Wayback](https://web.archive.org/web/20261006213845/https://github.com/dhepper/font8x8/blob/master/font8x8_basic.h))
+  [upstream font8x8 headers](https://github.com/dhepper/font8x8/blob/master/font8x8_basic.h) ([Archived font8x8 basic glyph header](https://web.archive.org/web/20261006213845/https://github.com/dhepper/font8x8/blob/master/font8x8_basic.h))
   also credit Marcel Sondaar and International Business Machines (public domain VGA fonts)
   as their basis. The other code page 437 glyphs (card suits, notes, arrows, math signs)
   were drawn for this project using Claude Opus 5.5 under Lewis Moten's direction and are
@@ -783,7 +783,7 @@ formats from their published descriptions and from Game-Maker's own source.
 - **3×5 micro font** (`games/teddy/src/art/draw.ts`, extracted into
   `web/packages/tools/src/microFont.ts`): the small sign font introduced by Lewis Moten
   using Anthropic Claude Opus 5.5 in
-  [commit 7241036f49cab9dea52f58541e30ce6c9ce86052](https://github.com/lewismoten/GameMaker-SandboxEdition/commit/7241036f49cab9dea52f58541e30ce6c9ce86052) ([Wayback](https://web.archive.org/web/20261122125458/https://github.com/lewismoten/GameMaker-SandboxEdition/commit/7241036f49cab9dea52f58541e30ce6c9ce86052)).
+  [commit 7241036f49cab9dea52f58541e30ce6c9ce86052](https://github.com/lewismoten/GameMaker-SandboxEdition/commit/7241036f49cab9dea52f58541e30ce6c9ce86052) ([Archived 3×5 micro font commit](https://web.archive.org/web/20261122125458/https://github.com/lewismoten/GameMaker-SandboxEdition/commit/7241036f49cab9dea52f58541e30ce6c9ce86052)).
   It is distributed under this project's MIT License. OpenAI Codex (GPT-6/6.1) extracted
   its bitmap table and added the toolkit's reusable rendering APIs. This font has its own
   project provenance, separate from Daniel Hepper's public-domain 8×8 fonts.
@@ -946,21 +946,21 @@ itself, under its window menu's "Third-party notices…"); the text is in
   `WebView2Loader.dll`.
 - **Windows: finding the WebView2 runtime.** The player loads the runtime's own
   `EmbeddedBrowserWebView.dll` from the folder Edge's updater records in the registry, the
-  approach of the open source [webview](https://github.com/webview/webview) ([Wayback](https://web.archive.org/web/20261029084245/https://github.com/webview/webview)) library (MIT
+  approach of the open source [webview](https://github.com/webview/webview) ([Archived webview repository](https://web.archive.org/web/20261029084245/https://github.com/webview/webview)) library (MIT
   License, Copyright (c) 2017 Serge Zaitsev, Copyright (c) 2022 Steffen André Langnes). The
   approach is credited in `win/Player/main.c`; the player's code is written in C for this
   project.
 - **Windows: the Microsoft Edge WebView2 Runtime** is Microsoft's software, part of Windows
   10 and 11; it is not included. Microsoft Edge and WebView2 are trademarks of Microsoft.
 - **Windows: the C runtime startup code.** The `.exe` players are built by `win/build.sh`
-  with [Zig](https://ziglang.org/) ([Wayback](https://web.archive.org/web/20261118192057/https://ziglang.org/)) (MIT License), whose MinGW-w64 libraries link a little of
+  with [Zig](https://ziglang.org/) ([Archived Zig project](https://web.archive.org/web/20261118192057/https://ziglang.org/)) (MIT License), whose MinGW-w64 libraries link a little of
   the MinGW-w64 runtime's startup code into each program; the program otherwise calls only
   Windows' own DLLs. In the runtime's words, such a program "was built using MinGW-w64 and
   statically linked against the MinGW-w64 runtime. Some parts of the runtime are under
   licenses which require that the copyright and license notices are included when
   distributing the code in binary form." Those permissive notices (the mingw-w64 project's
   own, copyright 2009–2013, and its contributors') are listed in
-  [COPYING.MinGW-w64-runtime.txt](https://github.com/mingw-w64/mingw-w64/blob/master/COPYING.MinGW-w64-runtime/COPYING.MinGW-w64-runtime.txt) ([Wayback](https://web.archive.org/web/20261122125502/https://github.com/mingw-w64/mingw-w64/blob/master/COPYING.MinGW-w64-runtime/COPYING.MinGW-w64-runtime.txt)).
+  [COPYING.MinGW-w64-runtime.txt](https://github.com/mingw-w64/mingw-w64/blob/master/COPYING.MinGW-w64-runtime/COPYING.MinGW-w64-runtime.txt) ([Archived MinGW-w64 runtime license](https://web.archive.org/web/20261122125502/https://github.com/mingw-w64/mingw-w64/blob/master/COPYING.MinGW-w64-runtime/COPYING.MinGW-w64-runtime.txt)).
 - **Linux: GTK 3 and WebKitGTK** (`libwebkit2gtk-4.1` or `-4.0`, with GLib and GTK; GNU
   LGPL 2.1 or later) are loaded with `dlopen` when the player starts, from the computer's own
   packages. None of their code or headers is included: the few functions the player uses are
@@ -1056,7 +1056,7 @@ Savage's `SOUNDC.C`, and `web/src/vga/sndedit.ts` ports `SNDEDIT.C`.
 
 ## DOS reference tables and the scroll overflow: chiguire
 
-Pull request 4 to gandrewstone/GameMaker (https://github.com/gandrewstone/GameMaker/pull/4 ([Wayback](https://web.archive.org/web/20261122125508/https://github.com/gandrewstone/GameMaker/pull/4)),
+Pull request 4 to gandrewstone/GameMaker (https://github.com/gandrewstone/GameMaker/pull/4 ([Archived Game-Maker pull request 4](https://web.archive.org/web/20261122125508/https://github.com/gandrewstone/GameMaker/pull/4)),
 by chiguire, MIT License like the upstream repository) ran the original PLAYGAME in DOS with a
 frame-dump hook and kept the results. This fork uses two things from it:
 
@@ -1068,7 +1068,7 @@ frame-dump hook and kept the results. This fork uses two things from it:
 
 ## The Pocket Player
 
-The firmware's source and its own credits moved to its own repository, https://github.com/lewismoten/gamemaker-pocket ([Wayback](https://web.archive.org/web/20261122125509/https://github.com/lewismoten/gamemaker-pocket)) (see its NOTICE.md). What follows stays here because GameMaker still serves the prebuilt firmware images and the install page (`web/public/pocket/`) and makes the data the board plays.
+The firmware's source and its own credits moved to its own repository, https://github.com/lewismoten/gamemaker-pocket ([Archived GameMaker Pocket Player repository](https://web.archive.org/web/20261122125509/https://github.com/lewismoten/gamemaker-pocket)) (see its NOTICE.md). What follows stays here because GameMaker still serves the prebuilt firmware images and the install page (`web/public/pocket/`) and makes the data the board plays.
 
 OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, implemented the category and six-thumbnail library browser, optional version-1 package/index metadata, source-name overlays, title search scope, disposable card metadata cache, stable project identities, preview packing, host renders and regression checks. The previews reuse existing game artwork and this project's title/level renderers; their original credits remain.
 
@@ -1078,10 +1078,10 @@ A firmware for the ESP32-3248S035 board that plays the Starter games, and an ins
 
 - **LovyanGFX 1.1.16** (lovyan03, FreeBSD/BSD-style license, with its bundled Adafruit_ILI9341, Adafruit_GFX and TFT_eSPI notices), the **Arduino core for ESP32 2.0.16** (LGPL-2.1), **ESP-IDF v4.4.7** (Apache-2.0), and **Mbed TLS 2.28.7** (Apache-2.0 chosen from its Apache-2.0-or-GPL-2.0-or-later offer) are compiled into the firmware image set. Their versions, source and license URLs, copyright lines, and required complete license texts are in the firmware notices file. The Pocket Player's picture tuning (gamemaker-pocket `src/picturetune.h`) resends LovyanGFX's ST7789 and ILI9341 init values and offers alternate panel voltage and gamma-table values after TFT_eSPI's ST7789 init (Bodmer, FreeBSD license, whose notice is in the same file) and common ST7789 and ILI9341 module examples.
 - The firmware is built with **PlatformIO** and its `espressif32` platform; they are build tools, not code asserted to be redistributed in the served firmware binaries.
-- **ESP Web Tools** 10.2.1 (esphome/esp-web-tools, Apache-2.0, Open Home Foundation) is copied, as built, into `web/public/pocket/ewt/` with its license. It bundles **esptool-js** 0.5.7 (Espressif, Apache-2.0: its LICENSE and npm package say so; an earlier line here said MIT, which was wrong), **@material/web** (Google, Apache-2.0), **improv-wifi-serial-sdk** (Improv Wi-Fi maintainers, Apache-2.0), **Lit** (Google, BSD-3-Clause), **pako** (MIT, with zlib-license parts), **atob-lite** 2.0.0 (MIT; its license names no copyright holder) and **tslib** (0BSD); `web/public/pocket/ewt/THIRD-PARTY.txt` carries the notices. The bundled flash stub programs use GPL-2.0-or-later. Their main flasher code credits Cesanta Software Limited and Espressif Systems. The ESP32-C5 payload matches [legacy flasher stub v1.5.1](https://github.com/espressif/esptool-legacy-flasher-stub/tree/v1.5.1) ([Wayback](https://web.archive.org/web/20261122130216/https://github.com/espressif/esptool-legacy-flasher-stub/tree/v1.5.1)), and the other ten match [v1.3.0](https://github.com/espressif/esptool-legacy-flasher-stub/tree/v1.3.0) ([Wayback](https://web.archive.org/web/20261122130222/https://github.com/espressif/esptool-legacy-flasher-stub/tree/v1.3.0)). The installer carries the license in `LICENSE-flasher-stubs.txt`. Nothing loads from outside the site. The install page (`web/public/pocket/index.html`, `install.js`, the two board drawings in `img/`) is Claude Sonnet 5.5's work; it asks "Which board?" and has a manifest for each board.
+- **ESP Web Tools** 10.2.1 (esphome/esp-web-tools, Apache-2.0, Open Home Foundation) is copied, as built, into `web/public/pocket/ewt/` with its license. It bundles **esptool-js** 0.5.7 (Espressif, Apache-2.0: its LICENSE and npm package say so; an earlier line here said MIT, which was wrong), **@material/web** (Google, Apache-2.0), **improv-wifi-serial-sdk** (Improv Wi-Fi maintainers, Apache-2.0), **Lit** (Google, BSD-3-Clause), **pako** (MIT, with zlib-license parts), **atob-lite** 2.0.0 (MIT; its license names no copyright holder) and **tslib** (0BSD); `web/public/pocket/ewt/THIRD-PARTY.txt` carries the notices. The bundled flash stub programs use GPL-2.0-or-later. Their main flasher code credits Cesanta Software Limited and Espressif Systems. The ESP32-C5 payload matches [legacy flasher stub v1.5.1](https://github.com/espressif/esptool-legacy-flasher-stub/tree/v1.5.1) ([Archived Espressif legacy flasher stub v1.5.1](https://web.archive.org/web/20261122130216/https://github.com/espressif/esptool-legacy-flasher-stub/tree/v1.5.1)), and the other ten match [v1.3.0](https://github.com/espressif/esptool-legacy-flasher-stub/tree/v1.3.0) ([Archived Espressif legacy flasher stub v1.3.0](https://web.archive.org/web/20261122130222/https://github.com/espressif/esptool-legacy-flasher-stub/tree/v1.3.0)). The installer carries the license in `LICENSE-flasher-stubs.txt`. Nothing loads from outside the site. The install page (`web/public/pocket/index.html`, `install.js`, the two board drawings in `img/`) is Claude Sonnet 5.5's work; it asks "Which board?" and has a manifest for each board.
 - OpenAI Codex (GPT-6), directed by Lewis Moten, traced the installer’s bundled flash programs to their source releases and updated the installer notices and site credits in November 2026.
-- The board's pin numbers come from community tables: https://homeding.github.io/boards/esp32/panel-3248S035.htm ([Wayback](https://web.archive.org/web/20260810022528/https://homeding.github.io/boards/esp32/panel-3248S035.htm)) and https://community.home-assistant.io/t/help-making-esp32-3248s035-work/748332 ([Wayback](https://web.archive.org/web/20260617005335/https://community.home-assistant.io/t/help-making-esp32-3248s035-work/748332)). Only numbers are used.
-- The speaker pin (GPIO 26, the ESP32's DAC2, wired to the board's JST1.25 2-pin speaker connector) comes from rzeldent's platformio-espressif32-sunton board definition `esp32-3248S035C.json` (`SPEAK=26`; https://github.com/rzeldent/platformio-espressif32-sunton ([Wayback](https://web.archive.org/web/20260224215506/https://github.com/rzeldent/platformio-espressif32-sunton)), MIT License). Only the pin number is used; none of its code. The tune timing (36 steps of 1/145.6 s) follows `code/GM/PLAYGAME.C` and the web engine. Claude Sonnet 5.5 wrote `speaker.h` and `pcspeaker.h`.
+- The board's pin numbers come from community tables: https://homeding.github.io/boards/esp32/panel-3248S035.htm ([Archived HomeDing ESP32-3248S035 board reference](https://web.archive.org/web/20260810022528/https://homeding.github.io/boards/esp32/panel-3248S035.htm)) and https://community.home-assistant.io/t/help-making-esp32-3248s035-work/748332 ([Archived Home Assistant ESP32-3248S035 discussion](https://web.archive.org/web/20260617005335/https://community.home-assistant.io/t/help-making-esp32-3248s035-work/748332)). Only numbers are used.
+- The speaker pin (GPIO 26, the ESP32's DAC2, wired to the board's JST1.25 2-pin speaker connector) comes from rzeldent's platformio-espressif32-sunton board definition `esp32-3248S035C.json` (`SPEAK=26`; https://github.com/rzeldent/platformio-espressif32-sunton ([Archived PlatformIO Sunton board definitions](https://web.archive.org/web/20260224215506/https://github.com/rzeldent/platformio-espressif32-sunton)), MIT License). Only the pin number is used; none of its code. The tune timing (36 steps of 1/145.6 s) follows `code/GM/PLAYGAME.C` and the web engine. Claude Sonnet 5.5 wrote `speaker.h` and `pcspeaker.h`.
 - The files `pocketData.ts` writes into `pocket-out/data/` (copied into gamemaker-pocket's `data/`) are the Starter games' own maps, blocks, palettes and hero files, deflated and shared between games. The firmware unpacks them with an ESP32 ROM raw-deflate decoder; the Mac test uses the system zlib and ships nothing. Its separate primary provenance remains to be pinned before it is credited as a firmware component.
 - **miniz / tinfl** (Rich Geldreich, public domain, with its later MIT-style option): the firmware calls `tinfl_decompress` through ESP-IDF's `rom/miniz.h`. The decoder is code already burned into the ESP32 chip's ROM, so no miniz source is compiled into or shipped in the firmware image set; the header is part of ESP-IDF (Apache-2.0, above). Named here because the firmware depends on it.
 
@@ -1089,14 +1089,14 @@ A firmware for the ESP32-3248S035 board that plays the Starter games, and an ins
 
 OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, added capture-matrix validation and failure regressions to the PLAYGAME measurement collector and plotter (`tools/dosbox-286/`).
 
-Built with [TypeScript](https://www.typescriptlang.org/) ([Wayback](https://web.archive.org/web/20261118025054/https://www.typescriptlang.org/)) (Apache-2.0),
-[Vite](https://vite.dev/) ([Wayback](https://web.archive.org/web/20241002112457/https://vitejs.dev/)), [Vitest](https://vitest.dev/) ([Wayback](https://web.archive.org/web/20261121053836/https://vitest.dev/)) and vite-node (MIT, both from the
+Built with [TypeScript](https://www.typescriptlang.org/) ([Archived TypeScript project](https://web.archive.org/web/20261118025054/https://www.typescriptlang.org/)) (Apache-2.0),
+[Vite](https://vite.dev/) ([Archived Vite project](https://web.archive.org/web/20241002112457/https://vitejs.dev/)), [Vitest](https://vitest.dev/) ([Archived Vitest project](https://web.archive.org/web/20261121053836/https://vitest.dev/)) and vite-node (MIT, both from the
 Vitest project), and
-`@types/node` (MIT), and checked with [Prettier](https://prettier.io/) ([Wayback](https://web.archive.org/web/20261117201724/https://prettier.io/)) and
-[ESLint](https://eslint.org/) ([Wayback](https://web.archive.org/web/20261118040147/https://eslint.org/)) with `@eslint/js`, `typescript-eslint`, `eslint-config-prettier`
+`@types/node` (MIT), and checked with [Prettier](https://prettier.io/) ([Archived Prettier project](https://web.archive.org/web/20261117201724/https://prettier.io/)) and
+[ESLint](https://eslint.org/) ([Archived ESLint project](https://web.archive.org/web/20261118040147/https://eslint.org/)) with `@eslint/js`, `typescript-eslint`, `eslint-config-prettier`
 and `globals` (MIT). The local MCP server for AI tools (`web/scripts/mcp`, `npm run mcp`) uses
-the [Model Context Protocol TypeScript SDK](https://github.com/modelcontextprotocol/typescript-sdk) ([Wayback](https://web.archive.org/web/20261111040111/https://github.com/modelcontextprotocol/typescript-sdk))
-(`@modelcontextprotocol/sdk`, MIT, Anthropic, PBC) and [ws](https://github.com/websockets/ws) ([Wayback](https://web.archive.org/web/20260928043401/https://github.com/websockets/ws))
+the [Model Context Protocol TypeScript SDK](https://github.com/modelcontextprotocol/typescript-sdk) ([Archived Model Context Protocol TypeScript SDK](https://web.archive.org/web/20261111040111/https://github.com/modelcontextprotocol/typescript-sdk))
+(`@modelcontextprotocol/sdk`, MIT, Anthropic, PBC) and [ws](https://github.com/websockets/ws) ([Archived ws WebSocket library](https://web.archive.org/web/20260928043401/https://github.com/websockets/ws))
 (MIT, Einar Otto Stangvik, Arnout Kazemier, Luigi Pinca and contributors) with `@types/ws`
 (MIT, DefinitelyTyped); they run only on the developer's own computer, in Node. These are the
 third-party development dependencies in the workspace manifests, used to build, test and run local tools; none of
@@ -1109,8 +1109,8 @@ computer with Pillow (MIT-CMU License) and NumPy (BSD); the Caveat font was cut 
 fontTools (MIT). Only their output is committed.
 
 The player machine-code diff (`scripts/player-diff/`, research only) runs on the developer's
-computer with [Capstone](https://www.capstone-engine.org/) ([Wayback](https://web.archive.org/web/20261117075234/https://www.capstone-engine.org/)) 5.0.7 (BSD-3-Clause, Nguyen Anh
-Quynh and contributors) to disassemble, and [Deark](https://entropymine.com/deark/) ([Wayback](https://web.archive.org/web/20261116182725/https://entropymine.com/deark/)) (MIT,
+computer with [Capstone](https://www.capstone-engine.org/) ([Archived Capstone disassembler](https://web.archive.org/web/20261117075234/https://www.capstone-engine.org/)) 5.0.7 (BSD-3-Clause, Nguyen Anh
+Quynh and contributors) to disassemble, and [Deark](https://entropymine.com/deark/) ([Archived Deark extraction tool](https://web.archive.org/web/20261116182725/https://entropymine.com/deark/)) (MIT,
 Jason Summers) to unpack PKLITE/EXEPACK copies. The scripts and original player analyses
 were written by **Claude Opus 5.5** (Anthropic), directed by Lewis Moten. Only their small
 text reports are committed; historical corpus binaries and full disassembly are not.
@@ -1144,10 +1144,10 @@ development dependencies of `web/` and ship in nothing.
 ### Previewable source audio conversion
 
 Recorded authoring clips are stored as lossless mono 8-bit PCM WAV files, with RIFF/WAVE
-PCM fields documented by [Microsoft](https://learn.microsoft.com/en-us/windows/win32/api/mmeapi/ns-mmeapi-waveformatex) ([Wayback](https://web.archive.org/web/20261117144611/https://learn.microsoft.com/en-us/windows/win32/api/mmeapi/ns-mmeapi-waveformatex)). Native WAV conversion uses this project’s own reader. The tools package's Node-only `audio-files` entry invokes an external FFmpeg
+PCM fields documented by [Microsoft](https://learn.microsoft.com/en-us/windows/win32/api/mmeapi/ns-mmeapi-waveformatex) ([Archived Microsoft WAVEFORMATEX reference](https://web.archive.org/web/20261117144611/https://learn.microsoft.com/en-us/windows/win32/api/mmeapi/ns-mmeapi-waveformatex)). Native WAV conversion uses this project’s own reader. The tools package's Node-only `audio-files` entry invokes an external FFmpeg
 executable to decode compressed sources such as FLAC and Ogg, or resample audio to native VOCs; no FFmpeg code
 or executable is bundled. FFmpeg is by the FFmpeg developers under LGPL-2.1-or-later, or
-GPL-2.0-or-later when GPL components are enabled ([license](https://ffmpeg.org/legal.html) ([Wayback](https://web.archive.org/web/20261109102526/https://www.ffmpeg.org/legal.html))).
+GPL-2.0-or-later when GPL components are enabled ([license](https://ffmpeg.org/legal.html) ([Archived FFmpeg license information](https://web.archive.org/web/20261109102526/https://www.ffmpeg.org/legal.html))).
 The converter, source-format migration and verification were implemented with OpenAI
 Codex under Lewis Moten's direction. Existing audio, voices, source recordings and their
 credits are unchanged; the native DOS audio bytes are preserved.
@@ -1180,7 +1180,7 @@ Moten's direction, under the project's MIT License. The teapot is a nod to the U
 (Martin Newell, University of Utah, 1975); it is drawn from ellipsoids, a torus and a cone, and
 none of Newell's patch data is used.
 
-The multi-color 3MF files follow the 3MF Core Specification (3MF Consortium, https://3mf.io ([Wayback](https://web.archive.org/web/20261119022037/https://3mf.io/)), published under
+The multi-color 3MF files follow the 3MF Core Specification (3MF Consortium, https://3mf.io ([Archived 3MF Consortium site](https://web.archive.org/web/20261119022037/https://3mf.io/)), published under
 its open license): a ZIP package with `3D/3dmodel.model`, `[Content_Types].xml` and `_rels/.rels`, one
 object per color with a base material color. The ZIP container is written by this project's own small
 writer (`web/packages/tools/src/mesh/zipFile.ts`); no 3MF or ZIP library is used.
@@ -1293,7 +1293,7 @@ It was designed by Claude Sonnet 5.5 (Anthropic) under Lewis Moten's direction, 
 a small PIC16F84A-style simulator are project-owned MIT code. The schematic embeds symbols copied from
 the KiCad stock libraries (CC-BY-SA 4.0 with the KiCad libraries exception, KiCad Libraries
 Development Team). References: the ITU-T Q.23 DTMF frequencies, the MT8870D (Mitel/Zarlink/
-Microchip), CM8870 (California Micro Devices), HT9170 (Holtek), MAX7219 (Maxim Integrated), GNQ-3641 (G-NOR), PIC16F628A and MCP1702 (Microchip) datasheets. The README's programming steps use ZEPPP (Zero External Parts PIC Programmer by battlecoder, MIT License, https://github.com/battlecoder/zeppp ([Wayback](https://web.archive.org/web/20251101025126/https://github.com/battlecoder/zeppp))); none of its code is copied. The 3D models are simple boxes and cylinders written by project code. The design is untested hardware.
+Microchip), CM8870 (California Micro Devices), HT9170 (Holtek), MAX7219 (Maxim Integrated), GNQ-3641 (G-NOR), PIC16F628A and MCP1702 (Microchip) datasheets. The README's programming steps use ZEPPP (Zero External Parts PIC Programmer by battlecoder, MIT License, https://github.com/battlecoder/zeppp ([Archived Zeppp PIC programmer repository](https://web.archive.org/web/20251101025126/https://github.com/battlecoder/zeppp))); none of its code is copied. The 3D models are simple boxes and cylinders written by project code. The design is untested hardware.
 
 The two builds of the kit (the 99 x 99 mm Junior Lab Edition and the 73.66 x 175.26 mm Deluxe Model) carry silkscreen QR codes
 made with **OpenCV**'s `QRCodeEncoder` (Apache-2.0, the OpenCV team; `games/year2000/phone/tools/silkart.py`) and checked by its
@@ -1307,9 +1307,9 @@ maker "ZORP" is invented. The shell is untested: nothing has been printed.
 ## Native SDL host prototype
 
 - **OpenAI Codex**, directed by Lewis Moten, implemented the SDL launcher, file/input/display/timing adapters, PCM VOC first cut, replay checks and documentation in `hardware/pi-player/`. It compiles the existing Pocket C++ core and font directly; their existing credits remain. The VOC implementation follows this project's own decoder and the original RSD file-format behavior. No original DOS source is modified.
-- **SDL2**, by Sam Lantinga and contributors, is linked as an external library under the **zlib license** ([upstream license](https://www.libsdl.org/license.php) ([Wayback](https://web.archive.org/web/20261003234122/https://www.libsdl.org/license.php))); no SDL source is copied. The host was built against Homebrew SDL2 2.32.70.
-- **zlib**, by Jean-loup Gailly and Mark Adler, is linked externally for raw-deflate asset loading under the **zlib license** ([upstream license](https://zlib.net/zlib_license.html) ([Wayback](https://web.archive.org/web/20261118022621/https://zlib.net/zlib_license.html))). Neither library is relicensed by this project; retain their license notices when distributing binaries and dependencies.
-- **ymfm**, by Aaron Giles and contributors, **BSD-3-Clause** ([upstream](https://github.com/aaronsgiles/ymfm) ([Wayback](https://web.archive.org/web/20260818045944/https://github.com/aaronsgiles/ymfm))), is the planned OPL2 backend documented in `hardware/pi-player/MUSIC.md`. No ymfm code or binary is included or linked yet.
+- **SDL2**, by Sam Lantinga and contributors, is linked as an external library under the **zlib license** ([upstream license](https://www.libsdl.org/license.php) ([Archived SDL license](https://web.archive.org/web/20261003234122/https://www.libsdl.org/license.php))); no SDL source is copied. The host was built against Homebrew SDL2 2.32.70.
+- **zlib**, by Jean-loup Gailly and Mark Adler, is linked externally for raw-deflate asset loading under the **zlib license** ([upstream license](https://zlib.net/zlib_license.html) ([Archived zlib license](https://web.archive.org/web/20261118022621/https://zlib.net/zlib_license.html))). Neither library is relicensed by this project; retain their license notices when distributing binaries and dependencies.
+- **ymfm**, by Aaron Giles and contributors, **BSD-3-Clause** ([upstream](https://github.com/aaronsgiles/ymfm) ([Archived ymfm repository](https://web.archive.org/web/20260818045944/https://github.com/aaronsgiles/ymfm))), is the planned OPL2 backend documented in `hardware/pi-player/MUSIC.md`. No ymfm code or binary is included or linked yet.
 - **Player Patching Manual** (`web/src/programmersGuide/patching1994.md`, `web/src/manual/printables/patchingManual.ts`, `patchingPlates.ts`): original words, byte-layout figures, booklet integration and verification written with **OpenAI Codex (GPT-6)**, directed by Lewis Moten. References are this project's Programmer's Guide, player patch tables, Sandbox game metadata and the original RSD source and CD executables; the existing RSD MIT credit remains. No text from the printed RSD manual was copied.
 
 - **Livestream game follow-up (November 2026):** OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, implemented Colors That Work’s playable palette lesson, removed unused Beat the Clock monster templates, drew the paper cube’s intermediate folding diagram, revised the Stage Box assembly and lock diagrams, and added the phone BOM’s numeric cost export and regressions. Existing game art, music, source data, and color-vision algorithm credits remain.
@@ -1431,29 +1431,29 @@ maker "ZORP" is invented. The shell is untested: nothing has been printed.
 
 ## Archived sources from the credits and manual
 
-- <https://lewismoten.com/> ([Wayback](https://web.archive.org/web/20261007233234/https://lewismoten.com/))
-- <https://aderack.com/game-maker/index.php?title=List_of_Game-Maker_games> ([Wayback](https://web.archive.org/web/20260807224837/https://aderack.com/game-maker/index.php?title=List_of_Game-Maker_games))
-- <https://www.mobygames.com/group/10554/game-engine-rsd-game-maker/> ([Wayback](https://web.archive.org/web/20250405165801/https://www.mobygames.com/group/10554/game-engine-rsd-game-maker/))
-- <https://www.mazeguy.net/blobs1.html> ([Wayback](https://web.archive.org/web/20260921212325/https://www.mazeguy.net/blobs1.html))
-- <https://www.glorioustrainwrecks.com/node/7454> ([Wayback](https://web.archive.org/web/20260122012324/https://www.glorioustrainwrecks.com/node/7454))
-- <https://www.dosgamesarchive.com/related-games/game-maker> ([Wayback](https://web.archive.org/web/20260717235002/https://www.dosgamesarchive.com/related-games/game-maker))
-- <https://effluviaofascatteredmind.blogspot.com/2011/06/rsd-gamemaker.html> ([Wayback](https://web.archive.org/web/20261108011509/http://effluviaofascatteredmind.blogspot.com/2011/06/rsd-gamemaker.html))
-- <https://github.com/openai/whisper> ([Wayback](https://web.archive.org/web/20261121073154/https://github.com/openai/whisper))
-- <https://www.npmjs.com/package/kokoro-js> ([Wayback](https://web.archive.org/web/20250405051358/https://www.npmjs.com/package/kokoro-js))
-- <https://github.com/ggml-org/whisper.cpp> ([Wayback](https://web.archive.org/web/20261027101424/https://github.com/ggml-org/whisper.cpp))
-- <https://github.com/dhepper/font8x8> ([Wayback](https://web.archive.org/web/20260418144224/https://github.com/dhepper/font8x8))
-- <https://www.thegamecrafter.com> ([Wayback](https://web.archive.org/web/20261117031815/https://www.thegamecrafter.com/))
-- <https://github.com/lewismoten/Tiny-Pockets-Press> ([Wayback](https://web.archive.org/web/20261104182208/https://github.com/lewismoten/Tiny-Pockets-Press))
-- <https://bids.github.io/colormap/> ([Wayback](https://web.archive.org/web/20261012165653/https://bids.github.io/colormap/))
-- <https://homestarrunner.com/> ([Wayback](https://web.archive.org/web/20261117175701/https://homestarrunner.com/))
-- <https://modelcontextprotocol.io/> ([Wayback](https://web.archive.org/web/20261122130336/https://modelcontextprotocol.io/docs/2026-07-28/getting-started/intro))
-- <https://webmachinelearning.github.io/webmcp/> ([Wayback](https://web.archive.org/web/20261116090024/https://webmachinelearning.github.io/webmcp/))
-- <https://www.rfc-editor.org/info/rfc2083/> ([Wayback](https://web.archive.org/web/20261116121118/https://www.rfc-editor.org/info/rfc2083/))
-- <https://github.com/lewismoten/GameMaker-SandboxEdition/blob/master/NOTICE.md> ([Wayback](https://web.archive.org/web/20261114070511/https://github.com/lewismoten/GameMaker-SandboxEdition/blob/master/NOTICE.md))
-- <https://github.com/lewismoten/GameMaker-SandboxEdition/blob/master/LICENSE> ([Wayback](https://web.archive.org/web/20261122130343/https://github.com/lewismoten/GameMaker-SandboxEdition/blob/master/LICENSE))
-- <https://github.com/googlefonts/caveat> ([Wayback](https://web.archive.org/web/20261014040614/https://github.com/googlefonts/caveat))
-- <http://scripts.sil.org/OFL> ([Wayback](https://web.archive.org/web/20080821114713/http://scripts.sil.org/OFL))
-- <https://github.com/lewismoten/GameMaker-SandboxEdition/blob/master/docs/embed.md> ([Wayback](https://web.archive.org/web/20261122125817/https://github.com/lewismoten/GameMaker-SandboxEdition/blob/master/docs/embed.md))
+- <https://lewismoten.com/> ([Archived Lewis Moten’s website](https://web.archive.org/web/20261007233234/https://lewismoten.com/))
+- <https://aderack.com/game-maker/index.php?title=List_of_Game-Maker_games> ([Archived Game-Maker Archive wiki game list](https://web.archive.org/web/20260807224837/https://aderack.com/game-maker/index.php?title=List_of_Game-Maker_games))
+- <https://www.mobygames.com/group/10554/game-engine-rsd-game-maker/> ([Archived MobyGames RSD Game-Maker catalog](https://web.archive.org/web/20250405165801/https://www.mobygames.com/group/10554/game-engine-rsd-game-maker/))
+- <https://www.mazeguy.net/blobs1.html> ([Archived Mazeguy’s Invasion of the Blobs page](https://web.archive.org/web/20260921212325/https://www.mazeguy.net/blobs1.html))
+- <https://www.glorioustrainwrecks.com/node/7454> ([Archived Glorious Trainwrecks Game-Maker Source Release Jam](https://web.archive.org/web/20260122012324/https://www.glorioustrainwrecks.com/node/7454))
+- <https://www.dosgamesarchive.com/related-games/game-maker> ([Archived DOS Games Archive Game-Maker list](https://web.archive.org/web/20260717235002/https://www.dosgamesarchive.com/related-games/game-maker))
+- <https://effluviaofascatteredmind.blogspot.com/2011/06/rsd-gamemaker.html> ([Archived Effluvia of a Scattered Mind article on RSD GameMaker](https://web.archive.org/web/20261108011509/http://effluviaofascatteredmind.blogspot.com/2011/06/rsd-gamemaker.html))
+- <https://github.com/openai/whisper> ([Archived OpenAI Whisper repository](https://web.archive.org/web/20261121073154/https://github.com/openai/whisper))
+- <https://www.npmjs.com/package/kokoro-js> ([Archived kokoro-js npm package](https://web.archive.org/web/20250405051358/https://www.npmjs.com/package/kokoro-js))
+- <https://github.com/ggml-org/whisper.cpp> ([Archived whisper.cpp repository](https://web.archive.org/web/20261027101424/https://github.com/ggml-org/whisper.cpp))
+- <https://github.com/dhepper/font8x8> ([Archived font8x8 repository](https://web.archive.org/web/20260418144224/https://github.com/dhepper/font8x8))
+- <https://www.thegamecrafter.com> ([Archived Game Crafter website](https://web.archive.org/web/20261117031815/https://www.thegamecrafter.com/))
+- <https://github.com/lewismoten/Tiny-Pockets-Press> ([Archived Tiny Pockets Press repository](https://web.archive.org/web/20261104182208/https://github.com/lewismoten/Tiny-Pockets-Press))
+- <https://bids.github.io/colormap/> ([Archived BIDS colormap project](https://web.archive.org/web/20261012165653/https://bids.github.io/colormap/))
+- <https://homestarrunner.com/> ([Archived Homestar Runner website](https://web.archive.org/web/20261117175701/https://homestarrunner.com/))
+- <https://modelcontextprotocol.io/> ([Archived Model Context Protocol introduction](https://web.archive.org/web/20261122130336/https://modelcontextprotocol.io/docs/2026-07-28/getting-started/intro))
+- <https://webmachinelearning.github.io/webmcp/> ([Archived WebMCP specification](https://web.archive.org/web/20261116090024/https://webmachinelearning.github.io/webmcp/))
+- <https://www.rfc-editor.org/info/rfc2083/> ([Archived PNG specification (RFC 2083)](https://web.archive.org/web/20261116121118/https://www.rfc-editor.org/info/rfc2083/))
+- <https://github.com/lewismoten/GameMaker-SandboxEdition/blob/master/NOTICE.md> ([Archived Game-Maker Sandbox Edition notices](https://web.archive.org/web/20261114070511/https://github.com/lewismoten/GameMaker-SandboxEdition/blob/master/NOTICE.md))
+- <https://github.com/lewismoten/GameMaker-SandboxEdition/blob/master/LICENSE> ([Archived Game-Maker Sandbox Edition license](https://web.archive.org/web/20261122130343/https://github.com/lewismoten/GameMaker-SandboxEdition/blob/master/LICENSE))
+- <https://github.com/googlefonts/caveat> ([Archived Caveat font repository](https://web.archive.org/web/20261014040614/https://github.com/googlefonts/caveat))
+- <http://scripts.sil.org/OFL> ([Archived SIL Open Font License](https://web.archive.org/web/20080821114713/http://scripts.sil.org/OFL))
+- <https://github.com/lewismoten/GameMaker-SandboxEdition/blob/master/docs/embed.md> ([Archived Game-Maker Sandbox Edition embedding guide](https://web.archive.org/web/20261122125817/https://github.com/lewismoten/GameMaker-SandboxEdition/blob/master/docs/embed.md))
 
 - **Editor asset references (November 22, 2026)**: OpenAI Codex updated reference links, replacement and deletion messages, and regression tests.
 
