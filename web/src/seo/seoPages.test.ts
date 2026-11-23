@@ -125,6 +125,43 @@ describe('seoBuild', () => {
     }
   });
 
+  it('opens the next Guide chapter at its static address with and without JavaScript', async () => {
+    const server = await createServer({
+      configFile: false,
+      plugins: [cdGames(cdRoot), plugin],
+      server: { host: '127.0.0.1', port: 6155, hmr: false, watch: null },
+      logLevel: 'error',
+    });
+    try {
+      await server.listen();
+      const browser = await chromium.launch();
+      try {
+        const page = await browser.newPage();
+        const base = server.resolvedUrls!.local[0];
+        const file = 'programmers-guide-screen.html';
+        const title = 'The screen and the blocks';
+        await page.goto(new URL('programmers-guide-memory.html', base).href);
+        const next = page.getByRole('link', { name: `Next → ${title}` });
+        const copied = await next.evaluate((a: HTMLAnchorElement) => a.href);
+        await next.click();
+        await page.locator('.pg-page').getByRole('heading', { name: title, exact: true }).waitFor();
+        const address = new URL(page.url());
+        address.hash = '';
+        expect(address.href).toBe(new URL(file, base).href);
+        expect(copied).toBe(address.href);
+        expect(await page.locator('link[rel="canonical"]').getAttribute('href')).toBe(new URL(file, SITE_URL).href);
+
+        const reader = await browser.newPage({ javaScriptEnabled: false });
+        await reader.goto(page.url());
+        expect(await reader.locator('h1').innerText()).toBe(title);
+      } finally {
+        await browser.close();
+      }
+    } finally {
+      await server.close();
+    }
+  }, 60_000);
+
   it('has secret games to keep out (or the checks below prove nothing)', () => {
     expect(secret.length).toBeGreaterThan(0);
     for (const g of secret) expect(catalog.some((c) => c.id === g.id)).toBe(false);
