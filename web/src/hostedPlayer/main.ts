@@ -60,7 +60,7 @@ function saveFailed(): void {
   if (document.querySelector('.wp-save-failed')) return;
   const note = document.createElement('p');
   note.className = 'wp-save-failed';
-  note.setAttribute('role', 'status');
+  note.setAttribute('role', 'alert');
   note.textContent = 'Couldn’t save: the browser’s storage is full or blocked. Your progress from now on won’t be kept.';
   document.body.append(note);
 }

@@ -2,6 +2,7 @@
 // the zips, with a progress bar and Cancel; the games found, each with its title screen
 // (importThumbs.ts), to tick the ones to import; importing them one at a time, again with
 // Cancel; and what was found when no game was.
+import { progressAnnouncements } from '../core/progressAnnouncements';
 import { h, modal } from '../core/ui';
 import { sizeText, totalsOf, totalsText } from '../../imported/collectionPreview';
 import { scanImport, scanSummary, type FoundGame, type GameReader, type ScanFile, type ScanReport } from '@lewismoten/gamemaker-sandbox-archives/scan';
@@ -18,7 +19,12 @@ export function working<T>(
   let ended = false;
   return modal<T>(title, (close) => {
     const bar = h('progress', { max: '1', value: '0', 'aria-label': title });
-    const line = h('p', { class: 'ic-line', 'aria-live': 'polite' }, start);
+    const line = h('p', { class: 'ic-line' }, start);
+    const spoken = h('p', { class: 'sr-only', role: 'status' });
+    const speech = progressAnnouncements((text) => (spoken.textContent = text));
+    queueMicrotask(() => {
+      if (!ended) speech.progress(start);
+    });
     const end = (v: T | undefined) => {
       if (ended) return;
       ended = true;
@@ -29,8 +35,16 @@ export function working<T>(
       bar.max = Math.max(1, total);
       bar.value = done;
       line.textContent = what;
+      if (spoken.isConnected && !ended) speech.progress(what);
     }).then(end, () => end(undefined));
-    return h('div', { class: 'ic-work' }, line, bar, h('div', { class: 'buttons' }, h('button', { type: 'button', onclick: () => end(undefined) }, 'Cancel')));
+    return h(
+      'div',
+      { class: 'ic-work' },
+      line,
+      spoken,
+      bar,
+      h('div', { class: 'buttons' }, h('button', { type: 'button', onclick: () => end(undefined) }, 'Cancel')),
+    );
   }).finally(() => ((ended = true), ctl.abort()));
 }
 

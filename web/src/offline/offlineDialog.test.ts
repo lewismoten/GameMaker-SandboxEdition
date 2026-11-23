@@ -2,9 +2,9 @@
 import { afterEach, expect, it, vi } from 'vitest';
 import { FakeDoc, type FakeEl } from '../../test/fakeDom';
 import { openOfflineDialog } from './offlineDialog';
-import { offlineStatus, removeOffline, type OfflineStatus } from './offlineCopy';
+import { hasRoom, makeOffline, offlineStatus, removeOffline, type OfflineStatus } from './offlineCopy';
 vi.mock('./replay', () => ({ inArchiveReplay: () => false }));
-vi.mock('./offlineCopy', () => ({ offlineStatus: vi.fn(), removeOffline: vi.fn(), hasRoom: () => false, sizeText: () => '1 KB' }));
+vi.mock('./offlineCopy', () => ({ offlineStatus: vi.fn(), removeOffline: vi.fn(), makeOffline: vi.fn(), hasRoom: vi.fn(() => false), sizeText: () => '1 KB' }));
 vi.mock('../editor/core/ui', async (original) => ({
   ...(await original<typeof import('../editor/core/ui')>()),
   modal: async (_title: string, build: (close: () => void) => unknown) => {
@@ -84,4 +84,36 @@ it('renders saved choices while verification is pending without claiming readine
   expect(verifiedInputs).toHaveLength(9);
   expect(verifiedInputs.filter((el) => el.hasAttribute('disabled'))).toHaveLength(1);
   expect(elements.some((el) => el.textContent.includes('Ready offline'))).toBe(true);
+});
+
+it('announces preparation once across file callbacks and announces the terminal outcome', async () => {
+  const doc = new FakeDoc();
+  const elements: FakeEl[] = [];
+  const create = doc.createElement.bind(doc);
+  doc.createElement = (tag) => {
+    const el = create(tag);
+    elements.push(el);
+    return el;
+  };
+  vi.stubGlobal('document', doc);
+  vi.mocked(hasRoom).mockReturnValueOnce(true);
+  vi.mocked(offlineStatus).mockResolvedValue({
+    supported: true,
+    ready: false,
+    tiers: ['core'],
+    tierFiles: [],
+    storedMissing: 10,
+    wireMissing: 10,
+  } as unknown as OfflineStatus);
+  vi.mocked(makeOffline).mockImplementation(async (_selection, progress) => {
+    for (let done = 1; done <= 10; done++) progress({ done, total: 10, bytes: done, totalBytes: 10 });
+    return { ok: false, reason: 'canceled', message: 'Download canceled.' };
+  });
+  await openOfflineDialog();
+  const status = elements.find((el) => el.attrs.role === 'status')!;
+  const writes: string[] = [];
+  Object.defineProperty(status, 'textContent', { set: (text: string) => writes.push(text) });
+  elements.find((el) => el.tag === 'button' && el.children.some((c) => c.textContent.startsWith('Download ')))!.fire('click');
+  await vi.waitFor(() => expect(writes).toContain('Download canceled.'));
+  expect(writes).toEqual(['Preparing the offline copy…', 'Download canceled.']);
 });

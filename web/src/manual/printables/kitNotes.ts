@@ -108,11 +108,8 @@ function standalone(title: string, doc: HTMLElement): string {
 /** Opens the build notes of `kit` (its README at `href`) in a dialog: read, Save as web page, Print or save as PDF. */
 export function openKitNotes(kit: LaserKit, href: string, from?: HTMLElement): void {
   const dialog = h('dialog', { class: 'kn', 'aria-label': `${kit.title}: build notes` });
-  const body = h(
-    'div',
-    { class: 'kn-body', tabindex: 0, role: 'region', 'aria-label': 'Build notes' },
-    h('p', { class: 'kn-wait', role: 'status' }, 'Making the pictures…'),
-  );
+  const wait = h('p', { class: 'kn-wait', role: 'status' });
+  const body = h('div', { class: 'kn-body', tabindex: 0, role: 'region', 'aria-label': 'Build notes' }, wait);
   const save = h('a', { class: 'oc-btn kn-save', role: 'button', 'aria-disabled': 'true' }, 'Save as web page');
   // a link with role=button: Space presses it like a button
   save.addEventListener('keydown', (e) => e.key === ' ' && save.getAttribute('aria-disabled') !== 'true' && (e.preventDefault(), save.click()));
@@ -133,16 +130,19 @@ export function openKitNotes(kit: LaserKit, href: string, from?: HTMLElement): v
   document.body.append(dialog);
   dialog.showModal();
   body.focus({ preventScroll: true });
+  wait.textContent = 'Making the pictures…';
   void fetch(href)
     .then((r) => (r.ok ? r.text() : Promise.reject(new Error(String(r.status)))))
     .then((text) => kitNotesPage(kit, text))
     .then((doc) => {
-      body.replaceChildren(doc);
+      body.append(doc);
       url = URL.createObjectURL(new Blob([standalone(`${kit.title}: build notes`, doc)], { type: 'text/html' }));
       save.href = url;
       save.setAttribute('download', `${(href.split('/').slice(-2, -1)[0] || 'kit').replace(/[^\w-]/g, '-')}-build-notes.html`);
       save.removeAttribute('aria-disabled');
       print.disabled = false;
+      wait.classList.add('sr-only');
+      wait.textContent = 'Build notes ready to save or print.';
     })
     .catch(() => body.replaceChildren(h('p', { role: 'alert' }, 'The build notes would not load. Close this and try again.')));
 }

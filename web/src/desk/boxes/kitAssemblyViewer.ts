@@ -39,9 +39,10 @@ export function kitAssemblyViewer(kit: LaserKit): { root: HTMLElement; close(): 
   const render = (shown = target) => {
     const p = model.steps[shown - 1];
     count.textContent = shown ? `${shown} of ${model.steps.length}: ${p.label}` : '0: Exploded parts';
-    caption.textContent =
+    const stepCaption =
       p?.caption ??
       'All parts are separated. Use Next to slide each part into place. Drag or use the arrow keys on the model to turn it; the wheel, pinch, + and - zoom. Escape returns to the box.';
+    if (caption.textContent !== stepCaption) caption.textContent = stepCaption;
     if (jump) jump.value = String(shown ? ([...model.sections].reverse().find((s) => s.step <= shown)?.step ?? 0) : 0);
     slider.setAttribute('aria-valuetext', count.textContent);
     table.canvas.setAttribute(

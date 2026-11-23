@@ -115,6 +115,8 @@ export function homeFilters(
   let lastShown = 0;
   let countTimer: ReturnType<typeof setTimeout> | undefined;
 
+  atEnd(() => clearTimeout(countTimer));
+
   const filterTiles = (fromDeep = false) => {
     const q = search.value.trim().toLowerCase();
     deepHits = deep.find(q);
@@ -131,13 +133,14 @@ export function homeFilters(
       } else hint?.remove();
       if (hit) shown++;
     }
-    // a screen reader hears when the background read added games to the list
-    if (fromDeep && shown > lastShown && q) announce(`${shown} ${shown === 1 ? 'game matches' : 'games match'} “${search.value.trim()}”`);
+    if (!fromDeep || shown !== lastShown) {
+      clearTimeout(countTimer);
+      if (q) {
+        const query = search.value.trim();
+        countTimer = setTimeout(() => announce(`${shown} ${shown === 1 ? 'game matches' : 'games match'} “${query}”`), 800);
+      }
+    }
     lastShown = shown;
-    // typing says how many games match, once the typing pauses (the background read speaks for itself above)
-    clearTimeout(countTimer);
-    if (!fromDeep && q && shown)
-      countTimer = setTimeout(() => announce(`${shown} ${shown === 1 ? 'game matches' : 'games match'} “${search.value.trim()}”`), 800);
     // a collection's heading only while one of its games shows
     for (const sub of tiles.querySelectorAll<HTMLElement>('.lib-sub')) {
       let any = false;
@@ -157,7 +160,7 @@ export function homeFilters(
     tiles.append(
       h(
         'div',
-        { class: 'meta lib-none', role: 'status' },
+        { class: 'meta lib-none' },
         `No game in ${CATEGORIES.find((c) => c.id === current)!.name} matches “${search.value.trim()}”.`,
         ...elsewhere.map(({ c, n }) =>
           h(
