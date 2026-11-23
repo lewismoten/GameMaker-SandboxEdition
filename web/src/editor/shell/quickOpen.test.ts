@@ -126,6 +126,21 @@ describe('quick switcher', () => {
     }
   });
 
+  it('warns for a solid background whose named palette is missing, since it draws with the game palette', () => {
+    const files = new GameFiles([
+      ['test.gam', serializeGame(newGame('Test'))],
+      ['night.pal', new Uint8Array(768).fill(13)],
+      ['intro.fli', new Uint8Array(1)],
+    ]);
+    const p = new Project('t', 'Test', 'test.gam', files);
+    p.setExtras('intro.fli', 'scene', { frames: 1, backgrounds: [{ start: 0, kind: 'color', palette: 'missing.pal', color: 1 }] });
+    expect(embeddedFiles(p, 'intro.fli')).toEqual(['missing.pal', 'night.pal']);
+    expect(fileUses(p, 'night.pal')).toEqual([{ file: 'intro.fli', text: 'intro.fli Scene Maker source', count: 1 }]);
+    expect(fileUses(p, 'missing.pal').map((use) => use.file)).toEqual(['intro.fli']);
+    expect(deleteMessage(p, 'night.pal')).toBe('Delete night.pal? It is still used by: intro.fli Scene Maker source.');
+    expect(replaceMessage(p, 'night.pal', 'new.pal')).toContain('Used by: intro.fli Scene Maker source.');
+  });
+
   it('names what uses a file before deleting it', () => {
     const p = project();
     expect(deleteMessage(p, 'one.map')).toMatch(/still used by: Meadow · map/);

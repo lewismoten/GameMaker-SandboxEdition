@@ -276,8 +276,16 @@ export function gamePaletteName(src: Pick<SceneSource, 'game' | 'files'>): strin
 export function sceneFiles(v: unknown, src: Pick<SceneSource, 'game' | 'files'>): string[] {
   if (!isObj(v)) return [];
   const out: string[] = [];
-  for (const b of savedBackgrounds(v, clampInt(v.frames, 1, MAX_FRAMES, 60)))
-    out.push(b.kind === 'picture' ? b.file : b.kind === 'map' ? b.map : b.palette || gamePaletteName(src) || '');
+  // looked up once per call, "none" included: every unnamed solid background has the same answer
+  let gamePal: string | undefined;
+  const fallback = () => (gamePal ??= gamePaletteName(src) ?? '');
+  for (const b of savedBackgrounds(v, clampInt(v.frames, 1, MAX_FRAMES, 60))) {
+    if (b.kind === 'picture') out.push(b.file);
+    else if (b.kind === 'map') out.push(b.map);
+    else if (!b.palette) out.push(fallback());
+    // a named palette that is missing draws with the game palette (backgroundOf), so it counts too
+    else out.push(b.palette, ...(src.files.get(b.palette) ? [] : [fallback()]));
+  }
   for (const track of Array.isArray(v.tracks) ? v.tracks : []) {
     if (!isObj(track) || !Array.isArray(track.items)) continue;
     for (const item of track.items) {
