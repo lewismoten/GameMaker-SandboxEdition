@@ -90,6 +90,9 @@ export class FakeDoc {
   constructor() {
     this.body.isConnected = true;
   }
+  querySelectorAll() {
+    return [];
+  }
   createElement(tag: string) {
     return new FakeEl(tag, this);
   }

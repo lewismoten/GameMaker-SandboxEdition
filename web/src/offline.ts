@@ -146,7 +146,5 @@ function showNotice(message: string, calm = false): void {
   // first in the page, so a keyboard user's first Tab reaches it (it is fixed at the bottom, so
   // the order on screen is unchanged); at the end of the body it took every control to get there
   host.prepend(notice);
-  window.setTimeout(() => {
-    if (text.isConnected && !text.textContent) text.textContent = message;
-  }, 0);
+  text.textContent = message;
 }
