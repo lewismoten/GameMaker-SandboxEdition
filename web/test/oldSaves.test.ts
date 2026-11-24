@@ -96,8 +96,10 @@ describe.each(dirs)('saves from %s', (dir) => {
     expect(JSON.parse(readFileSync(join(root, dir, 'settings.json'), 'utf8'))).toEqual(settings);
   });
 
-  it('restores the .gmbackup with games, companion, checkpoints, saves and settings', async () => {
-    const b = await readBackup(read(dir, 'game-maker.gmbackup'));
+  const projectSlotBackup = 'game-maker-project-slot.gmbackup';
+  const backups = november24 ? ['game-maker.gmbackup', projectSlotBackup] : ['game-maker.gmbackup'];
+  it.each(backups)('restores %s with games, companion, checkpoints, saves and settings', async (backup) => {
+    const b = await readBackup(read(dir, backup));
     expect(b.manifest.sections.map((s) => s.id)).toEqual([...SECTION_IDS]);
     const { next } = await planImport(
       emptyWorld(),
@@ -140,10 +142,12 @@ describe.each(dirs)('saves from %s', (dir) => {
     }
     expect(first.get('B.PIC')).toBeUndefined();
     expect([...second.get('B.PIC')!]).toEqual([5]);
-    if (november24) {
+    if (backup === projectSlotBackup) {
       const projectSaves = next.stores.saves[`project:${p.id}`] as Record<string, Uint8Array> | undefined;
       expect(projectSaves?.['game0.sav']).toBeDefined();
       expectMineResumes(new GameFiles(Object.entries(p.files)), projectSaves!['game0.sav']);
+    } else if (november24) {
+      expect(next.stores.saves[`project:${p.id}`]).toBeUndefined();
     }
     const saves = next.stores.saves['game:blaster'] as Record<string, Uint8Array>;
     expect(parseSave(saves['game0.sav']).doscene).toBe(2);
