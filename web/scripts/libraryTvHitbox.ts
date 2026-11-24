@@ -57,7 +57,7 @@ try {
             );
           });
           assert.deepEqual(missedPoints, [], 'Every sampled point should hit the Guide spine');
-          await page.mouse.click(rect.x + rect.width / 2, rect.y + rect.height / 2);
+          await page.mouse.click(rect.x + 2, rect.y + rect.height / 2);
         }
         await page.waitForURL('**/#/programmers-guide');
         console.log(width, theme, 'passed');
