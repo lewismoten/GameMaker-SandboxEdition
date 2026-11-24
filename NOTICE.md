@@ -64,6 +64,7 @@ game folder opens in the browser unchanged.
 
 ## Credits
 
+- OpenAI Codex fixed trinket build cleanup, cache returns, and worker shutdown and added regression tests.
 - OpenAI Codex fixed keyboard focus in the player speed selector and added its regression test.
 - OpenAI Codex fixed and tested the focused filename in the phone editor after a guided tour.
 - OpenAI Codex corrected reduced-motion and sound controls for the tour and added regression tests.
