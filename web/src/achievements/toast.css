@@ -88,6 +88,13 @@
   cursor: pointer;
 }
 
+@media (any-pointer: coarse) {
+  .ach-toast-close {
+    min-width: 44px;
+    min-height: 44px;
+  }
+}
+
 .ach-toast-close:hover {
   background: rgba(0, 0, 0, 0.08);
 }

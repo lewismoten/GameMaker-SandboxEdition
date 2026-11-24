@@ -735,6 +735,29 @@ dialog.modal .buttons {
   margin-top: 16px;
 }
 
+@media (any-pointer: coarse) {
+  /* Extend the hit area around the 30px circle without moving the heading. */
+  dialog.modal .modal-close {
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  dialog.modal .modal-close::after {
+    content: '';
+    position: absolute;
+    inset: -8px;
+  }
+
+  dialog.modal .buttons {
+    flex-wrap: wrap;
+  }
+
+  dialog.modal .buttons button {
+    min-width: 44px;
+    min-height: 44px;
+  }
+}
+
 .toasts {
   position: fixed;
   right: 16px;
