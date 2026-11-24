@@ -35,7 +35,7 @@ it('switches between DOS input and native toolbar navigation', async () => {
     expect(await typed()).toEqual(['Tab']);
     await page.keyboard.press('Shift+F6');
     expect(await select.evaluate((el) => el === document.activeElement)).toBe(true);
-    for (const preset of ['486', '386']) {
+    for (const preset of ['486', '386', '286']) {
       await page.keyboard.press('ArrowDown');
       expect(await select.inputValue()).toBe(preset);
       expect(await select.evaluate((el) => el === document.activeElement)).toBe(true);
@@ -46,10 +46,16 @@ it('switches between DOS input and native toolbar navigation', async () => {
     expect(await page.locator('body').getAttribute('data-activated')).toBe('yes');
     await page.keyboard.press('Shift+Tab');
     expect(await select.evaluate((el) => el === document.activeElement)).toBe(true);
+    await page.keyboard.press('ArrowRight');
+    expect(await select.inputValue()).toBe('ps1');
+    expect(await select.evaluate((el) => el === document.activeElement)).toBe(true);
+    await page.keyboard.press('Shift+Tab');
+    expect(await page.locator('canvas:focus').count()).toBe(1);
+    await page.keyboard.press('Shift+F6');
     await page.keyboard.press('Shift+F6');
     expect(await page.locator('canvas:focus').count()).toBe(1);
     await page.keyboard.press('Tab');
-    expect(await typed()).toEqual(['Tab', 'Shift', 'Tab']);
+    expect(await typed()).toEqual(['Tab', 'Shift', 'Shift', 'Tab']);
     expect(await page.evaluate('fixture.keyboard.down.size')).toBe(0);
   } finally {
     await browser.close();
