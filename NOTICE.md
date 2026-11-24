@@ -64,6 +64,7 @@ game folder opens in the browser unchanged.
 
 ## Credits
 
+- OpenAI Codex fixed and tested the focused filename in the phone editor after a guided tour.
 - OpenAI Codex corrected reduced-motion and sound controls for the tour and added regression tests.
 - OpenAI Codex checked internal publication references, updated the Programmer’s Guide chapter map and tour documentation, and extended the book-link tests.
 - OpenAI Codex sped up Scene Maker source lookups and added regression tests.
