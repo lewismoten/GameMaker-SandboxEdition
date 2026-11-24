@@ -24,27 +24,42 @@ vi.mock('../editor/shell/workspace', () => ({
 type Row = Record<string, unknown> & { id: string };
 
 // a stand-in for IndexedDB: one store, values cloned in and out, requests that answer on a later
-// tick and a transaction that completes once nothing is pending
+// tick, and transactions on that store processed in creation order
 function fakeIdb(rows: Map<string, Row>) {
+  let queue = Promise.resolve();
   const tx = () => {
     const t: { oncomplete?: () => void; onerror?: () => void; onabort?: () => void; objectStore: () => unknown } = { objectStore: () => store };
-    let pending = 0;
+    const requests: (() => void)[] = [];
     const req = <T>(run: () => T) => {
       const r: { result?: T; onsuccess?: () => void } = {};
-      pending++;
-      setTimeout(() => {
+      requests.push(() => {
         r.result = structuredClone(run());
         r.onsuccess?.();
-        if (--pending === 0) setTimeout(() => pending === 0 && t.oncomplete?.(), 0);
-      }, 0);
+      });
       return r;
     };
     const store = {
       get: (k: string) => req(() => rows.get(k)),
       getAll: () => req(() => [...rows.values()]),
       put: (v: Row) => req(() => (rows.set(v.id, structuredClone(v)), v.id)),
+      add: (v: Row) =>
+        req(() => {
+          if (rows.has(v.id)) throw new Error('Duplicate project ID');
+          rows.set(v.id, structuredClone(v));
+          return v.id;
+        }),
       delete: (k: string) => req(() => (rows.delete(k), undefined)),
     };
+    queue = queue.then(
+      () =>
+        new Promise<void>((resolve) => {
+          setTimeout(() => {
+            for (const request of requests) request();
+            t.oncomplete?.();
+            resolve();
+          }, 0);
+        }),
+    );
     return t;
   };
   const db = { transaction: tx, objectStoreNames: { contains: () => true } };
@@ -144,7 +159,11 @@ function elements(root: FakeEl): FakeEl[] {
 }
 
 describe('opening and restoring a damaged project', () => {
-  it.each(['cut-short game.gam', 'malformed companion JSON'] as const)('%s', async (scenario) => {
+  it.each([
+    ['cut-short game.gam', 1],
+    ['malformed companion JSON', 1],
+    ['malformed companion JSON', 2],
+  ] as const)('%s with %i Keep activation(s)', async (scenario, clicks) => {
     const doc = new FakeDoc();
     vi.stubGlobal('document', doc);
     vi.stubGlobal('window', { setTimeout });
@@ -178,13 +197,17 @@ describe('opening and restoring a damaged project', () => {
     const dialog = showDamagedCopies(() => {});
     await vi.runAllTimersAsync();
     const button = (label: string) => elements(doc.body).find((el) => el.tag === 'button' && el.attrs['aria-label'] === label)!;
-    button('Keep as a game: Mine (damaged copy)').fire('click');
+    const keep = button('Keep as a game: Mine (damaged copy)');
+    for (let i = 0; i < clicks; i++) keep.fire('click');
     await vi.runAllTimersAsync();
     button('Close').fire('click');
     await dialog;
 
     expect(await run(storage.listDamagedCopies())).toEqual([]);
-    const restored = (await run(storage.listProjects())).find((game) => game.id !== raw.id)!;
+    expect(await run(storage.loadRecord(raw.id))).toEqual(raw);
+    const games = await run(storage.listProjects());
+    const restored = games.find((game) => game.id !== raw.id)!;
+    expect(games.map((game) => game.id).sort()).toEqual([raw.id, restored.id].sort());
     expect(await run(storage.loadRecord(restored.id))).toEqual({ ...raw, id: restored.id, name: 'Mine (damaged copy)' });
     const reopened = (await run(storage.loadProject(restored.id)))!;
     expect(Object.fromEntries(reopened.files.entries())).toEqual(expectedFiles);

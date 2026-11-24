@@ -2,18 +2,9 @@
 // (project/damagedCopies.ts). They are not games in the list; here each can become one again
 // (Keep as a game) or go to Recently deleted (Delete), one by one or all at once.
 import { confirmDialog, h, modal, toast } from '../core/ui';
-import { deleteProject, listDamagedCopies, listProjects, loadRecord, newId, putRecord } from '../../project/storage';
+import { deleteProject, listDamagedCopies, listProjects, restoreDamagedCopy } from '../../project/storage';
 import { originalOf } from '../../project/damagedCopies';
 import { shelve } from './deletedShelf';
-
-/** Makes a kept copy an ordinary game under a new id, with every byte it held. */
-async function keepAsGame(copyId: string): Promise<boolean> {
-  const rec = await loadRecord(copyId);
-  if (!rec) return false;
-  await putRecord({ ...rec, id: newId() });
-  await deleteProject(copyId);
-  return true;
-}
 
 /** Sends a kept copy to Recently deleted. */
 async function letGo(copyId: string): Promise<void> {
@@ -63,7 +54,7 @@ export async function showDamagedCopies(refresh: () => unknown): Promise<void> {
               'div',
               { class: 'dc-acts' },
               act('Keep as a game', `Keep as a game: ${c.name}`, async () =>
-                (await keepAsGame(c.id)) ? `“${c.name}” is now under My games.` : 'That copy is gone.',
+                (await restoreDamagedCopy(c.id)) ? `“${c.name}” is now under My games.` : 'That copy is gone.',
               ),
               act('Delete', `Delete ${c.name}`, async () => (await letGo(c.id), `Deleted “${c.name}”.`)),
             ),
