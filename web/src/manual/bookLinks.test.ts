@@ -156,13 +156,17 @@ it('opens the Programmer’s Guide chapter named in the Under the Hood manual', 
   expect((await loadChapter(id)).trim()).not.toBe('');
 });
 
+const tourRow = /^\| `([a-z-]+)`[^|\n]*\|([^|\n]*)\|/gm;
+
 function expectTourDestinations(readme: string) {
-  const rows = [...readme.matchAll(/^\| `([a-z-]+)`[^|\n]*\|([^|\n]*)\|/gm)];
+  const rows = [...readme.matchAll(tourRow)];
   expect(rows.map(([, id]) => id)).toEqual(tourChapters.map((chapter) => chapter.id));
 
   rows.forEach(([, id, page], index) => {
     const chapter = tourChapters[index];
     const stops = [chapter.file ?? chapter.hash, ...chapter.steps.flatMap((step) => (step.go ? [step.go.hash] : []))];
+    const continuation = /\bthen\b(.*)$/i.exec(page);
+    if (continuation) expect(continuation[1].trim(), id).toMatch(/^`[^`]+`(?:\s*,\s*(?:then\s+)?`[^`]+`)*$/i);
     let route = chapter.hash;
     const documented = [...page.matchAll(/`([^`]+)`/g)].map(([, reference]) => {
       if (chapter.file || reference.startsWith('#/')) route = reference;
@@ -176,13 +180,31 @@ function expectTourDestinations(readme: string) {
   });
 }
 
+function replaceTourPageText(readme: string, chapter: string, original: string, replacement: string) {
+  return readme.replace(tourRow, (row: string, id: string, page: string) => {
+    if (id !== chapter) return row;
+    const start = row.indexOf('|', 1) + 1;
+    return row.slice(0, start) + page.replace(original, replacement) + '|';
+  });
+}
+
 it.each([
-  ['intro.fli', 'missing.fli', 'edit-animation'],
-  ['blender.lst', 'missing.lst', 'edit-animation'],
-  ['?tab=player', '?tab=missing', 'edit-player'],
-])('rejects the documented tour destination %s when mistyped as %s', (original, typo, chapter) => {
-  const readme = src('../tour/README.md').replace(`\`${original}\``, `\`${typo}\``);
+  ['edit-animation', '`intro.fli`', '`missing.fli`'],
+  ['edit-animation', '`blender.lst`', '`missing.lst`'],
+  ['edit-player', '`?tab=player`', '`?tab=missing`'],
+  ['edit-monsters', '`watt.chr`', 'missing.chr'],
+])('rejects the %s Page destination %s when replaced with %s', (chapter, original, replacement) => {
+  const readme = replaceTourPageText(src('../tour/README.md'), chapter, original, replacement);
   expect(() => expectTourDestinations(readme)).toThrow(chapter);
+});
+
+it('mutates the animation Page even when a preceding paragraph mentions its file', () => {
+  const paragraph = 'The animation opens with `intro.fli`.';
+  const readme = paragraph + '\n\n' + src('../tour/README.md');
+  expectTourDestinations(readme);
+  const mutated = replaceTourPageText(readme, 'edit-animation', '`intro.fli`', '`missing.fli`');
+  expect(mutated.startsWith(paragraph)).toBe(true);
+  expect(() => expectTourDestinations(mutated)).toThrow('edit-animation');
 });
 
 it('opens the documented tour chapter routes and their sample files', () => {
