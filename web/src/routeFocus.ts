@@ -20,6 +20,20 @@ export function startedByPerson(lastInput: number, now: number): boolean {
   return lastInput > 0 && now - lastInput >= 0 && now - lastInput <= FRESH_MS;
 }
 
+let requestedFilenameHash: string | undefined;
+
+/** An editor tour is restoring the file the visitor had open. */
+export function requestFilenameFocus(hash: string): void {
+  requestedFilenameHash = hash;
+}
+
+/** Claim the request before asynchronous renders can finish out of order. */
+export function takeFilenameFocus(hash: string): boolean {
+  const requested = requestedFilenameHash === hash;
+  requestedFilenameHash = undefined;
+  return requested;
+}
+
 let lastInput = 0;
 /** Starts noting presses and clicks (Enter and Space on links and buttons, any click). */
 export function trackPersonInput(): void {
@@ -39,10 +53,13 @@ function keepsFocus(active: Element | null): boolean {
 }
 
 /** After the new view is drawn: focus its h1, else its main area, else the content area, without scrolling. */
-export function focusNewView(content: HTMLElement, from: string, to: string): void {
-  if (!viewChanged(from, to) || !startedByPerson(lastInput, Date.now())) return;
+export function focusNewView(content: HTMLElement, from: string, to: string, filename = false): void {
+  if (!filename && (!viewChanged(from, to) || !startedByPerson(lastInput, Date.now()))) return;
   if (keepsFocus(document.activeElement)) return;
-  const target = content.querySelector<HTMLElement>('h1') ?? content.querySelector<HTMLElement>('main, [role="main"]') ?? content;
+  const target = filename
+    ? content.querySelector<HTMLElement>('.file-head > h1.file-title')
+    : (content.querySelector<HTMLElement>('h1') ?? content.querySelector<HTMLElement>('main, [role="main"]') ?? content);
+  if (!target) return;
   if (!target.hasAttribute('tabindex')) target.setAttribute('tabindex', '-1');
   target.style.outline = 'none';
   target.addEventListener('blur', () => target.style.removeProperty('outline'), { once: true });

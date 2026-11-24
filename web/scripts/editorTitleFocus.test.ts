@@ -25,3 +25,49 @@ it('reveals the phone file heading during route focus and clips it again on Tab'
     await browser.close();
   }
 }, 30_000);
+
+it.each(['Escape', 'automatic completion'])(
+  'returns focus to the filename after %s with expired input',
+  async (ending) => {
+    const bundle = await build({
+      stdin: { contents: "export { Tour } from './src/tour/tourEngine'; export * from './src/routeFocus'", resolveDir: process.cwd() },
+      bundle: true,
+      write: false,
+      format: 'iife',
+      globalName: 'fixture',
+      define: { 'import.meta.url': 'location.href', 'import.meta.env.DEV': 'false' },
+      loader: { '.css': 'empty' },
+    });
+    const browser = await launch();
+    try {
+      const page = await browser.newPage();
+      const personal = '#/p/mine/mygame.map';
+      const sample = '#/p/look:logic/kitchen.map';
+      await page.route('http://fixture.test/**', (route) =>
+        route.fulfill({ contentType: 'text/html', body: '<button class="tour-btn">Tour</button><main></main>' }),
+      );
+      await page.goto('http://fixture.test/' + personal);
+      await page.addScriptTag({ content: bundle.outputFiles[0].text });
+      await page.clock.setFixedTime(10000);
+      await page.evaluate('fixture.trackPersonInput()');
+      await page.locator('.tour-btn').focus();
+      await page.keyboard.press('Enter');
+      await page.clock.setFixedTime(15000);
+      await page.evaluate(`new fixture.Tour([{ page: 'editor', hash: '${sample}', always: true, ready: '#ready', steps: [
+      { id: 'skipped', optional: true, target: { css: '#absent' } }
+    ] }]).start()`);
+      await page.waitForURL('**/' + sample);
+      if (ending === 'Escape') await page.keyboard.press('Escape');
+      else await page.locator('.tour-btn').evaluate((el) => (el.id = 'ready'));
+      await page.waitForURL('**/' + personal);
+      expect(await page.locator(':focus').textContent()).toBe('Tour');
+      await page.locator('main').evaluate((el) => (el.innerHTML = '<div class="file-head"><h1 class="file-title">mygame.map</h1></div>'));
+      await page.evaluate(`fixture.focusNewView(document.querySelector('main'), '${sample}', location.hash, fixture.takeFilenameFocus(location.hash))`);
+      expect(await page.locator(':focus').textContent()).toBe('mygame.map');
+      expect(await page.evaluate('fixture.takeFilenameFocus(location.hash)')).toBe(false);
+    } finally {
+      await browser.close();
+    }
+  },
+  30000,
+);
