@@ -43,20 +43,40 @@ it('keeps the extension visible when a file selected from the phone picker overf
         await page.getByRole('button', { name: `Files (${count}) · ${filename}`, exact: true }).waitFor();
         await assertTheme(page, theme);
         const layout = await button.evaluate((button) => {
+          const prefix = button.querySelector('.files-toggle-prefix')!;
+          const filenameRow = button.querySelector('.files-toggle-current')!.getBoundingClientRect();
           const stem = button.querySelector('.files-toggle-stem')!;
           const extension = button.querySelector('.files-toggle-extension')!;
           const range = document.createRange();
           range.selectNodeContents(extension);
           const rect = range.getBoundingClientRect();
+          range.selectNodeContents(prefix);
+          const countRect = range.getBoundingClientRect();
           const box = button.getBoundingClientRect();
           return {
+            prefix: prefix.textContent,
+            countVisible:
+              countRect.width > 0 &&
+              countRect.height > 0 &&
+              countRect.left >= box.left &&
+              countRect.right <= box.right &&
+              countRect.top >= box.top &&
+              countRect.bottom <= box.bottom &&
+              countRect.bottom <= filenameRow.top,
             overflowing: [button, ...button.querySelectorAll('*')].filter((el) => el.scrollWidth > el.clientWidth).map((el) => el.className),
             truncation: getComputedStyle(stem).textOverflow,
             suffix: extension.textContent,
             visible: rect.width > 0 && rect.left >= stem.getBoundingClientRect().right - 1 && rect.right <= box.right,
           };
         });
-        expect(layout).toEqual({ overflowing: ['files-toggle-stem'], truncation: 'ellipsis', suffix: '.txt', visible: true });
+        expect(layout).toEqual({
+          prefix: `Files (${count})`,
+          countVisible: true,
+          overflowing: ['files-toggle-stem'],
+          truncation: 'ellipsis',
+          suffix: '.txt',
+          visible: true,
+        });
         if (process.env.GM_PHONE_FILES_SHOTS) {
           await page.locator('.ach-toast').first().waitFor({ state: 'hidden' });
           await page.screenshot({ path: `${process.env.GM_PHONE_FILES_SHOTS}/files-${script}-${theme}.png` });
