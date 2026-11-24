@@ -4,8 +4,8 @@
 // With --workers N under a plain-node bundle (scripts/build-games.mjs) the trinkets are made in worker threads.
 // Lifted from Depth Perception's trinket tool; its output is byte for byte what it was.
 import { createHash } from 'node:crypto';
-import { lstatSync, mkdirSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from 'node:fs';
-import { join, win32 } from 'node:path';
+import { lstatSync, mkdirSync, mkdtempSync, renameSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from 'node:fs';
+import { dirname, join, resolve, win32 } from 'node:path';
 import { Worker, isMainThread, parentPort } from 'node:worker_threads';
 import { setFlagsFromString } from 'node:v8';
 import { deflateRawSync } from 'node:zlib';
@@ -70,7 +70,7 @@ export async function runTrinketTool<D extends TrinketToolDef>(tool: TrinketTool
   setFlagsFromString('--no-maglev');
   const { game, gameTitle, out, defs, args } = tool;
   /** One trinket: its kinds of file written, its manifest entry returned. */
-  const build = (def: D): Item => {
+  const build = (def: D, staging: string): Item => {
     const t0 = Date.now();
     const { mesh, report, erodedPieces, erodedSpecks, overhang, support, bodies, wholeVolume } = tool.make(def);
     const pieces = def.pieces ?? 1;
@@ -79,7 +79,7 @@ export async function runTrinketTool<D extends TrinketToolDef>(tool: TrinketTool
     if (erodedPieces !== pieces)
       throw new Error(`trinket ${def.id} has parts joined by less than a millimeter (${erodedPieces} bodies when eroded by half a millimeter)`);
     const file = writeStl(mesh, { name: `${gameTitle}: ${def.title}, mm` });
-    writeFileSync(join(out, `${def.id}.stl`), file);
+    writeFileSync(join(staging, `${def.id}.stl`), file);
     const size = report.max.map((v, i) => +(v - report.min[i]).toFixed(1));
     // the colors: one closed body each, together the same solid as the STL
     const reports = bodies.map((b) => inspectMesh(b.mesh));
@@ -99,13 +99,13 @@ export async function runTrinketTool<D extends TrinketToolDef>(tool: TrinketTool
       `${gameTitle}: ${def.title}`,
       { deflate: (d) => deflateRawSync(d, { level: 9 }) },
     );
-    writeFileSync(join(out, `${def.id}.3mf`), colored);
+    writeFileSync(join(staging, `${def.id}.3mf`), colored);
     let supports;
     if (support) {
       const sr = inspectMesh(support);
       if (sr.badEdges || sr.flippedEdges) throw new Error(`trinket ${def.id}: the supports are not closed`);
       const sfile = writeStl(support, { name: `${gameTitle}: ${def.title}, supports, mm` });
-      writeFileSync(join(out, `${def.id}-supports.stl`), sfile);
+      writeFileSync(join(staging, `${def.id}-supports.stl`), sfile);
       supports = { file: `${def.id}-supports.stl`, triangles: support.indices.length / 3, bytes: sfile.length };
     }
     return {
@@ -127,9 +127,14 @@ export async function runTrinketTool<D extends TrinketToolDef>(tool: TrinketTool
 
   if (!isMainThread) {
     // a worker thread of the bundle: makes the trinkets it is sent, one at a time
-    parentPort!.on('message', (id: string) => {
+    parentPort!.on('message', ({ id, staging }: { id: string; staging: string }) => {
       try {
-        parentPort!.postMessage(build(defs.find((d) => d.id === id)!));
+        parentPort!.postMessage(
+          build(
+            defs.find((d) => d.id === id)!,
+            staging,
+          ),
+        );
       } catch (error) {
         parentPort!.postMessage({ id, error: String(error instanceof Error ? error.stack : error) });
       }
@@ -160,48 +165,63 @@ export async function runTrinketTool<D extends TrinketToolDef>(tool: TrinketTool
   const results = new Map<string, Item>();
   // slowest first keeps the last worker busy
   const order = [...defs].sort((a, b) => b.height * b.maxWidth - a.height * a.maxWidth).map((d) => d.id);
-  if (workers > 1 && entry.endsWith('.mjs') && !entry.includes('vite-node')) {
-    const pool: Worker[] = [];
-    try {
-      await Promise.all(
-        Array.from({ length: workers }, () => {
-          const worker = new Worker(entry, { argv: process.argv.slice(2) });
-          pool.push(worker);
-          return new Promise<void>((done, fail) => {
-            const next = () => {
-              const id = order.shift();
-              if (id) worker.postMessage(id);
-              else done();
-            };
-            worker.on('message', (m: Item & { error?: string }) => {
-              if (m.error) fail(new Error(m.error));
-              else {
-                results.set(m.id, m);
-                next();
-              }
+  const staging = mkdtempSync(join(dirname(resolve(out)), '.trinkets-'));
+  try {
+    if (workers > 1 && entry.endsWith('.mjs') && !entry.includes('vite-node')) {
+      const pool: Worker[] = [];
+      try {
+        await Promise.all(
+          Array.from({ length: workers }, () => {
+            const worker = new Worker(entry, { argv: process.argv.slice(2) });
+            pool.push(worker);
+            return new Promise<void>((done, fail) => {
+              const next = () => {
+                const id = order.shift();
+                if (id) worker.postMessage({ id, staging });
+                else done();
+              };
+              worker.on('message', (m: Item & { error?: string }) => {
+                if (m.error) fail(new Error(m.error));
+                else {
+                  results.set(m.id, m);
+                  next();
+                }
+              });
+              worker.on('error', fail);
+              next();
             });
-            worker.on('error', fail);
-            next();
-          });
-        }),
-      );
-    } finally {
-      await Promise.all(pool.map((worker) => worker.terminate()));
+          }),
+        );
+      } finally {
+        await Promise.all(pool.map((worker) => worker.terminate()));
+      }
+    } else {
+      for (const id of order)
+        results.set(
+          id,
+          build(
+            defs.find((d) => d.id === id)!,
+            staging,
+          ),
+        );
     }
-  } else {
-    for (const id of order) results.set(id, build(defs.find((d) => d.id === id)!));
+    const items = defs.map((d) => results.get(d.id)!);
+    for (const item of items) {
+      process.stdout.write(`${item.log}\n`);
+      delete (item as { log?: string }).log;
+    }
+    const stagedManifest = join(staging, 'manifest.json');
+    writeFileSync(stagedManifest, JSON.stringify({ key, game, items }, null, 1) + '\n');
+    for (const name of new Set(items.flatMap(filenames))) renameSync(join(staging, name), join(out, name));
+    const kept = new Set(['manifest.json', ...items.flatMap(filenames)]);
+    for (const name of new Set(previous?.items?.flatMap(filenames))) {
+      if (kept.has(name) || win32.basename(name) !== name || name === '.' || name === '..') continue;
+      const path = join(out, name);
+      if (lstatSync(path, { throwIfNoEntry: false })?.isFile()) rmSync(path);
+    }
+    renameSync(stagedManifest, manifestFile);
+    process.stdout.write(`${`trinkets: ${items.length} made in ${((Date.now() - began) / 1000).toFixed(1)} s`}\n`);
+  } finally {
+    rmSync(staging, { recursive: true, force: true });
   }
-  const items = defs.map((d) => results.get(d.id)!);
-  for (const item of items) {
-    process.stdout.write(`${item.log}\n`);
-    delete (item as { log?: string }).log;
-  }
-  const kept = new Set(['manifest.json', ...items.flatMap(filenames)]);
-  for (const name of new Set(previous?.items?.flatMap(filenames))) {
-    if (kept.has(name) || win32.basename(name) !== name || name === '.' || name === '..') continue;
-    const path = join(out, name);
-    if (lstatSync(path, { throwIfNoEntry: false })?.isFile()) rmSync(path);
-  }
-  writeFileSync(manifestFile, JSON.stringify({ key, game, items }, null, 1) + '\n');
-  process.stdout.write(`${`trinkets: ${items.length} made in ${((Date.now() - began) / 1000).toFixed(1)} s`}\n`);
 }
