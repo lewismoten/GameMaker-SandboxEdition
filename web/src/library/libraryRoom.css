@@ -211,6 +211,21 @@
   z-index: 4;
 }
 
+/* Let clicks through the empty space around the cart to the books behind it. */
+@media (width > 700px) {
+  .lib-o-tv {
+    pointer-events: none;
+  }
+
+  .lib-o-tv svg * {
+    pointer-events: visiblePainted;
+  }
+
+  .lib-o-tv .lib-tag {
+    pointer-events: auto;
+  }
+}
+
 .lib-o-catalog svg,
 .lib-o-copier svg,
 .lib-o-tv svg {
