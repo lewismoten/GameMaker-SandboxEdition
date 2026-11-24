@@ -64,6 +64,7 @@ game folder opens in the browser unchanged.
 
 ## Credits
 
+- OpenAI Codex corrected the WebKit appearance of the player setup dropdowns.
 - OpenAI Codex fixed and tested large loose-file imports and the editor’s guidance for DOS name collisions.
 - OpenAI Codex fixed and tested damaged-copy recovery after repeated Keep clicks.
 - OpenAI Codex fixed and tested batch imports of ZIP files with the same filename.
