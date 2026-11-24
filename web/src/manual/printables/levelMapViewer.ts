@@ -27,7 +27,7 @@ export interface Loaded {
 }
 
 /** On screen: the maps listed beside the one picked, in a view to zoom and drag (Pages); or every map in one column (Scroll, readView.ts). */
-export function levelViewer(opts: Loaded, o: ReaderOptions): Reader {
+export function levelViewer(id: string, opts: Loaded, o: ReaderOptions): Reader {
   const { game, paint, crop } = opts;
   const { root } = o;
   let view = o.view;
@@ -38,7 +38,7 @@ export function levelViewer(opts: Loaded, o: ReaderOptions): Reader {
   const stage = h('div', { class: 'lm-stage' });
   const printNote = h('p', { class: 'lm-print' });
   const notePrint = () => {
-    const counts = pageCounts(game, levels());
+    const counts = pageCounts(id, game, levels());
     const fullBox = h('input', {
       type: 'checkbox',
       id: 'lm-full',

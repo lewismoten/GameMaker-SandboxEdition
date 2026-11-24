@@ -173,7 +173,7 @@ export function levelMaps(ctx: PrintContext):
         paint: painter(x.game, x.files, minter(keep)),
         paintCourse: coursePainter(x.game, x.files, minter(keep)),
         crop: cropper(),
-        full: pageCounts(x.game, seen).full <= MOST_PAGES,
+        full: pageCounts(ctx.entry.id, x.game, seen).full <= MOST_PAGES,
         all: false,
       };
     });
@@ -202,7 +202,7 @@ export function levelMaps(ctx: PrintContext):
       const x = await load();
       if (!x?.seen.length) return { el: h('p', { class: 'gmb-loading' }, 'This game has no levels to map.'), view: () => {} };
       dispatchEvent(new CustomEvent('gm-achievement', { detail: { id: 'print-level-maps' } }));
-      return levelViewer(x, o);
+      return levelViewer(ctx.entry.id, x, o);
     },
     /** The first level's picture, cropped as printed, for a small picture of the Level Maps (the Library's card). */
     async preview() {

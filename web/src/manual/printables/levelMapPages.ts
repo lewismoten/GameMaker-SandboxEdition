@@ -24,7 +24,7 @@ import {
 } from './levelMapDrawing';
 import { type CatalogEntry } from '../../project/files';
 import { type Sheet, sheet } from './kit';
-import { type Level, packPages } from './levelMapLayout';
+import { type Level, mapPrintLayout } from './levelMapLayout';
 import { type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { tiles } from './worldMapLayout';
 import { type Painter, type CoursePainter } from './levelMaps';
@@ -85,8 +85,9 @@ function levelTiles(l: Level) {
 }
 
 /** How many pages the maps print on: overviews only, and with the big ones full size too. */
-export function pageCounts(game: Game, levels: Level[]): { overviews: number; full: number } {
-  const placed = packPages(
+export function pageCounts(id: string, game: Game, levels: Level[]): { overviews: number; full: number } {
+  const { placed } = mapPrintLayout(
+    id,
     levels.map((l) => levelBox(game, l)),
     AREA,
     GAP,
@@ -109,7 +110,7 @@ export async function printSheets(
 ): Promise<Sheet[]> {
   const urls = new Map<Level, string>();
   const boxes = levels.map((l) => levelBox(game, l));
-  const placed = packPages(boxes, AREA, GAP);
+  const { placed, scale } = mapPrintLayout(entry.id, boxes, AREA, GAP);
   // a first-sheet picture paints only the levels on page 0
   for (const [i, l] of levels.entries())
     if (!l.course && (!firstOnly || placed[i].page === 0)) {
@@ -133,13 +134,17 @@ export async function printSheets(
       if (p.page !== k) continue;
       const url = urls.get(l)!;
       if (fits(l)) {
-        const x = MARGIN + p.x;
-        const y = HEAD + p.y;
-        body.push(
+        const left = MARGIN + p.x;
+        const top = HEAD + p.y;
+        const x = scale === 1 ? left : 0;
+        const y = scale === 1 ? top : 0;
+        const artwork = [
           captionSvg(game, l, x, y, Math.max(levelWidth(l), captionWidth(game, l))),
           levelSvg(game, l, url, x, y + CAPTION + labelRoom(game, l).above, FULL),
-        );
-        if (l.cast) body.push(await castSvg(game, l, x + l.area.w * FULL + GAP, y + CAPTION, paint, crop));
+        ];
+        if (l.cast) artwork.push(await castSvg(game, l, x + l.area.w * FULL + GAP, y + CAPTION, paint, crop));
+        if (scale === 1) body.push(...artwork);
+        else body.push(el('g', { transform: `translate(${left} ${top}) scale(${scale})` }, ...artwork));
         continue;
       }
       // a big level: fitted to the page (its atlas grid over it when it also prints full size)

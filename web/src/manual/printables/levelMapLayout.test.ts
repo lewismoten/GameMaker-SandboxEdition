@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 import { emptyBlock } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { ADVTYPE, ENDTYPE, NOSCENE, STARTTYPE, type Game, type Scene } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
-import { fillerBlock, hideSecrets, levelMarks, mapGroups, markLabel, packPages, seenArea, usedArea } from './levelMapLayout';
+import { fillerBlock, hideSecrets, levelMarks, mapGroups, markLabel, mapPrintLayout, packPages, seenArea, usedArea } from './levelMapLayout';
 
 const scene = (gametype: number, files: string[], links: [number, number, number, number, number][] = []): Scene =>
   ({
@@ -39,6 +39,22 @@ const game = {
 const blank = (fill = 0) => new Uint8Array(MLEN * MWID).fill(fill);
 
 describe('Level Maps layout', () => {
+  it('stacks the opening pie maps within the sheet at near-full size', () => {
+    const boxes = [
+      { w: 100, h: 38 },
+      { w: 100, h: 30 },
+      { w: 100, h: 29 },
+    ];
+    const area = { w: 101, h: 67 };
+    const { placed, scale } = mapPrintLayout('pass-the-pie', boxes, area, 2.4);
+    expect(placed.map((p) => p.page)).toEqual([0, 0, 1]);
+    expect(scale).toBeGreaterThanOrEqual(0.9);
+    expect(placed[1].y).toBeCloseTo(38 * scale + 2.4);
+    expect(placed[1].y + 30 * scale).toBeCloseTo(area.h);
+    expect(mapPrintLayout('maximus', boxes, area, 2.4).placed).toEqual(packPages(boxes, area, 2.4));
+    expect(mapPrintLayout('pass-the-pie', boxes, { w: 101, h: 60 }, 2.4).scale).toBe(1);
+  });
+
   it('makes one map of the scenes that share a map and block set', () => {
     expect(mapGroups(game)).toEqual([
       { map: 'a.map', bbl: 'a.bbl', scenes: [2, 3] },

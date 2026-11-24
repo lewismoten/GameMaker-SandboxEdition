@@ -54,6 +54,22 @@ interface Placed {
   y: number;
 }
 
+/** Keep Pass the Pie's opening maps together when a vertical stack fits near full size. */
+export function mapPrintLayout(id: string, boxes: { w: number; h: number }[], area: { w: number; h: number }, gap: number) {
+  const [first, second] = boxes;
+  let scale = 1;
+  if (id === 'pass-the-pie' && first && second && Math.max(first.w, second.w) <= area.w && first.w + gap + second.w > area.w) {
+    const stacked = (area.h - gap) / (first.h + second.h);
+    if (stacked >= 0.9 && stacked < 1) scale = stacked;
+  }
+  const placed = packPages(
+    boxes.map(({ w, h }) => ({ w: w * scale, h: h * scale })),
+    area,
+    gap,
+  );
+  return { placed, scale };
+}
+
 /**
  * Boxes (`w` x `h`) packed onto pages `area` large, in order, in rows (shelves) with `gap`
  * between them; one too big for a page gets a page of its own (the caller tiles it).
