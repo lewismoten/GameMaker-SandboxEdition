@@ -3,7 +3,10 @@
 import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { parseCompanion, getSection, releaseNotesOf } from '../src/project/companion';
+import { readZip } from '@lewismoten/gamemaker-sandbox-archives/zip';
+import { aboutOf } from '../src/project/aboutGame';
+import { GameFiles } from '../src/project/files';
+import { parseCompanion, getSection, releaseNotesOf, exportPreviewsOf, takeCompanion } from '../src/project/companion';
 import { checkpointList, versionAt } from '../src/project/checkpoint';
 import { readReservations } from '../src/editor/editors/palette/paletteReservations';
 import { readBackup } from '../src/backup/file';
@@ -21,8 +24,35 @@ const dirs = readdirSync(root, { withFileTypes: true })
 const read = (dir: string, name: string) => new Uint8Array(readFileSync(join(root, dir, name)));
 
 describe.each(dirs)('saves from %s', (dir) => {
+  const november24 = dir === '2026-11-24-develop-beda6ecc7';
+  const companion = () => parseCompanion(read(dir, 'MINE.GMC.json'));
+  const settings = {
+    'gm-theme': 'dark',
+    'gm-library-only-type': 'maps',
+    'gm-egg-taps': '4',
+    ...(november24 ? { 'gm-chicken': 'lady', 'gm-project-origin': '{"p1":"nebula"}' } : {}),
+  };
+
+  if (november24) {
+    it('opens the browser project ZIP with its game files and companion intact', async () => {
+      const files = new GameFiles((await readZip(read(dir, 'MINE.zip'))).map(({ name, data }) => [name, data]));
+      expect(takeCompanion(files)).toEqual(companion());
+      expect(Object.fromEntries(files.entries().map(([name, data]) => [name, [...data]]))).toEqual({
+        'mine.gam': [1, 2, 3, 5],
+        'a.pic': [9, 8, 7],
+        'b.pic': [5],
+      });
+    });
+  }
+
   it('opens the companion with notes, to-do, release notes and reservations', () => {
-    const c = parseCompanion(read(dir, 'MINE.GMC.json'));
+    const c = companion();
+    expect(aboutOf(c)).toEqual(november24 ? { title: 'My Game', credits: [{ role: 'Music', name: 'Ann' }] } : {});
+    expect(exportPreviewsOf(c)).toBe(!november24);
+    if (november24) {
+      expect(getSection(c, 'TOWN.MAP', 'wrap', false)).toBe(true);
+      expect(getSection(c, 'FOREST.BBL', 'roles', {})).toEqual({ '4': { roles: ['wall'] } });
+    }
     expect(c.version).toBe(1);
     expect(getSection(c, 'MINE.GAM', 'notes', '')).toBe('Remember the key on level 2.');
     expect(getSection(c, 'MINE.GAM', 'todo', [])).toEqual([{ text: 'fix the bridge', done: false }]);
@@ -43,11 +73,7 @@ describe.each(dirs)('saves from %s', (dir) => {
   });
 
   it('opens the settings keys as the plain strings they were', () => {
-    expect(JSON.parse(readFileSync(join(root, dir, 'settings.json'), 'utf8'))).toEqual({
-      'gm-theme': 'dark',
-      'gm-library-only-type': 'maps',
-      'gm-egg-taps': '4',
-    });
+    expect(JSON.parse(readFileSync(join(root, dir, 'settings.json'), 'utf8'))).toEqual(settings);
   });
 
   it('restores the .gmbackup with games, companion, checkpoints, saves and settings', async () => {
@@ -68,14 +94,19 @@ describe.each(dirs)('saves from %s', (dir) => {
     const c = parseCompanion(p.companion);
     expect(getSection(c, 'MINE.GAM', 'notes', '')).toBe('Remember the key on level 2.');
     expect(readReservations(getSection(c, 'MINE.GAM', 'paletteReservations', []))).toHaveLength(2);
+    expect(c).toEqual(companion());
     const cps = checkpointList(p);
+    if (november24) for (const cp of cps) expect(parseCompanion(cp.companion)).toEqual(companion());
     expect(cps.map((x) => [x.name, x.tag])).toEqual([
       ['First stamp', undefined],
       ['Second stamp', 'v1.1'],
     ]);
-    expect([...versionAt(cps, 0).get('MINE.GAM')!]).toEqual([1, 2, 3, 4]);
-    expect([...versionAt(cps, 1).get('MINE.GAM')!]).toEqual([1, 2, 3, 5]);
-    expect(versionAt(cps, 0).has('B.PIC')).toBe(false);
+    const first = new GameFiles(versionAt(cps, 0));
+    const second = new GameFiles(versionAt(cps, 1));
+    expect([...first.get('MINE.GAM')!]).toEqual([1, 2, 3, 4]);
+    expect([...second.get('MINE.GAM')!]).toEqual([1, 2, 3, 5]);
+    expect(first.get('B.PIC')).toBeUndefined();
+    expect([...second.get('B.PIC')!]).toEqual([5]);
     expect(getSection(parseCompanion(cps[1].companion), 'MINE.GAM', 'notes', '')).toBe('Remember the key on level 2.');
     const saves = next.stores.saves['game:blaster'] as Record<string, Uint8Array>;
     expect(parseSave(saves['game0.sav']).doscene).toBe(2);
@@ -83,8 +114,6 @@ describe.each(dirs)('saves from %s', (dir) => {
     expect(parseHighScoreTable(saves['blaster.his']).entries[0].name).toBe('ANN');
     const ach = next.stores.saves['site:achievements'] as Record<string, Uint8Array>;
     expect((JSON.parse(new TextDecoder().decode(ach['achievements.json'])) as { unlocked: unknown }).unlocked).toEqual({ a: 1, b: 2 });
-    expect(next.local['gm-theme']).toBe('dark');
-    expect(next.local['gm-library-only-type']).toBe('maps');
-    expect(next.local['gm-egg-taps']).toBe('4');
+    expect(next.local).toMatchObject(settings);
   });
 });
