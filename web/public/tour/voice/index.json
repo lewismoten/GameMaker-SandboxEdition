@@ -1146,9 +1146,9 @@
   "edit-assistant-button": {
     "chapter": "edit-assistant",
     "where": "Editor: Dex points at the Assistant button",
-    "text": "The star button opens the chat beside the editor, or over the whole screen on a phone. Press it again, or Escape, to put it away.",
-    "seconds": 8.85,
-    "hash": "d4d8d22381e6",
+    "text": "To open chat, use the Assistant star button beside the editor. On a phone, choose Assistant in the file menu. Press Escape to close chat.",
+    "seconds": 9.6,
+    "hash": "462bbbdac560",
     "voice": "be82d9d1db7e"
   },
   "edit-assistant-bye": {
@@ -1641,10 +1641,10 @@
   },
   "edit-integrator-player": {
     "chapter": "edit-integrator",
-    "where": "Editor: Inspector Penn points at the DOS player button",
-    "text": "And this button opens the DOS player, the program that runs the game on a real computer. That is the last stop.",
-    "seconds": 7.55,
-    "hash": "4e58cc36a0e1",
+    "where": "Editor: Inspector Penn points at the DOS player tab",
+    "text": "The last stop is the DOS player tab in Overview. Open it to edit the words, colors and frames players see in DOS.",
+    "seconds": 7.63,
+    "hash": "34c2f3cfeac0",
     "voice": "f969522e51c0"
   },
   "edit-integrator-scene": {
@@ -2658,9 +2658,9 @@
   "home-offline": {
     "chapter": "home",
     "where": "Home: Teddy points at Play offline in the Settings menu",
-    "text": "Settings has Play offline, which saves the whole site so it works with no connection.",
-    "seconds": 5.77,
-    "hash": "ee0a0f1e712d",
+    "text": "Play offline lets you choose what to save. Core comes along, and you can pick extras by size. Video needs the internet.",
+    "seconds": 7.99,
+    "hash": "225a5fdc4a40",
     "voice": "a50c8e805452"
   },
   "home-play": {
@@ -2978,9 +2978,9 @@
   "settings-offline": {
     "chapter": "settings",
     "where": "Settings: Max points at Play offline in the Settings menu",
-    "text": "Play offline says how big the whole site is, then saves it all, so it works with no connection.",
-    "seconds": 6.79,
-    "hash": "cb6d54a0554f",
+    "text": "Play offline packs Core in every delivery. Check the sizes and choose which extras to save. Video needs the internet.",
+    "seconds": 8.73,
+    "hash": "19d1935ac2b1",
     "voice": "3705d98401bd"
   },
   "settings-page": {

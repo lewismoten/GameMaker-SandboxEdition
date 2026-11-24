@@ -1,8 +1,10 @@
 // The narration script's parts that need no models: the line checks, which lines get recorded,
 // the generated README, and the sample trimming and loudness, on synthetic tones (never a voice).
+import { readFileSync } from 'node:fs';
+import { tourLines } from '../../src/tour/lines';
 import { describe, expect, it } from 'vitest';
 import { clearestWindow, normalize } from './audio';
-import { indexJson, lineProblems, planTakes, refreshPlaces, staleIds, textHash, type Line, type VoiceIndex } from './lineIndex';
+import { indexJson, lineProblems, planTakes, refreshPlaces, spokenOf, staleIds, textHash, type Line, type VoiceIndex } from './lineIndex';
 import { voiceReadme } from './voiceReadme';
 
 const lines: Line[] = [
@@ -103,5 +105,19 @@ describe('sample audio', () => {
     const loud = normalize(tone(2, 0.9), rate);
     expect(level(quiet)).toBeCloseTo(level(loud), 3);
     expect(Math.max(...loud.map(Math.abs))).toBeLessThanOrEqual(0.89 + 1e-6);
+  });
+});
+
+describe('shipped tour narration', () => {
+  const index = JSON.parse(readFileSync(new URL('../../public/tour/voice/index.json', import.meta.url), 'utf8')) as VoiceIndex;
+  const lines = tourLines();
+
+  // edit-player-open is excluded: its recording still needs re-taking on a machine with the
+  // Pocket-TTS/Kokoro workspace (narrate.ts's WORKSPACE, ~/Documents/rivers-of-memory-workspace),
+  // which only exists on Lewis's Mac, not here. Re-add it once that clip is re-recorded there.
+  it.each(['home-offline', 'settings-offline', 'edit-assistant-button', 'edit-integrator-player'])('matches the current words for %s', (id) => {
+    const line = lines.find((entry) => entry.id === id);
+    expect(line).toBeDefined();
+    expect(index[id]).toMatchObject({ text: line!.text, hash: textHash(spokenOf(line!)) });
   });
 });
