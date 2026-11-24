@@ -223,7 +223,7 @@ dialog.modal:has(.tr-dialog) {
 }
 @media (max-width: 600px) {
   .cert-grid.with-diploma {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 6px;
   }
   .cert-grid.with-diploma .cert-canvas {
@@ -238,6 +238,10 @@ dialog.modal:has(.tr-dialog) {
   .cert-grid.with-diploma .cert-right {
     grid-column: auto;
     grid-row: auto !important;
+  }
+  .cert-grid.with-diploma .cert-left figcaption,
+  .cert-grid.with-diploma .cert-right figcaption {
+    flex-wrap: wrap;
   }
 }
 .cert.locked .cert-lock {
