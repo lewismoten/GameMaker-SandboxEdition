@@ -191,6 +191,9 @@
   .sidebar .side-play {
     flex: none;
   }
+  .files-toggle-prefix:has(+ .files-toggle-current)::after {
+    content: ' ·';
+  }
   @container (max-width: 16ch) {
     .files-toggle-prefix:has(+ .files-toggle-current) {
       display: none;
@@ -428,6 +431,30 @@
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+  }
+}
+
+/* Stack the count and filename inside the same phone target. */
+@media (max-width: 600px) {
+  .sidebar .files-toggle:has(.files-toggle-current) {
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 0;
+    padding-block: 2px;
+  }
+
+  .files-toggle:has(.files-toggle-current) > [aria-hidden],
+  .sidebar .files-toggle-prefix::after {
+    display: none;
+  }
+
+  .sidebar .files-toggle .files-toggle-prefix {
+    display: block;
+  }
+
+  .sidebar .files-toggle-current {
+    max-width: 100%;
   }
 }
 

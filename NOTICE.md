@@ -71,6 +71,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex capped animation source links in the editor header and tested keyboard expansion.
 - OpenAI Codex fixed and tested the phone editor’s reference counts after Scene Maker saves.
 - OpenAI Codex fixed and tested filename truncation in the phone editor’s Files button. OpenAI Codex (GPT-6) added right-to-left filename support and tested selection through the file picker.
+- OpenAI Codex adjusted the phone editor’s Files label and the desk keyboard’s printed function-key labels.
 - OpenAI Codex fixed and tested scrolling the focused achievement tab into view during keyboard navigation and record refreshes.
 - **Import panel dismissal (November 22, 2026)**: OpenAI Codex updated the import panel, cancellation messages, and regression tests.
 - OpenAI Codex fixed and tested DOS filename collisions and duplicate metadata handling during ZIP import.

@@ -204,7 +204,7 @@ export class WorkspaceSidebar {
             },
           },
           h('span', { 'aria-hidden': 'true' }, '☰ '),
-          h('span', { class: 'files-toggle-prefix' }, current ? `${filesLabel} ·` : filesLabel),
+          h('span', { class: 'files-toggle-prefix' }, filesLabel),
           current
             ? h(
                 'span',
