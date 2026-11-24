@@ -140,8 +140,12 @@ describe.each(dirs)('saves from %s', (dir) => {
     }
     expect(first.get('B.PIC')).toBeUndefined();
     expect([...second.get('B.PIC')!]).toEqual([5]);
+    if (november24) {
+      const projectSaves = next.stores.saves[`project:${p.id}`] as Record<string, Uint8Array> | undefined;
+      expect(projectSaves?.['game0.sav']).toBeDefined();
+      expectMineResumes(new GameFiles(Object.entries(p.files)), projectSaves!['game0.sav']);
+    }
     const saves = next.stores.saves['game:blaster'] as Record<string, Uint8Array>;
-    if (november24) expectMineResumes(new GameFiles(Object.entries(p.files)), saves['game0.sav']);
     expect(parseSave(saves['game0.sav']).doscene).toBe(2);
     expect(parseSlotNames(saves['savnames.dat'])[0]).toBe('first slot');
     expect(parseHighScoreTable(saves['blaster.his']).entries[0].name).toBe('ANN');
