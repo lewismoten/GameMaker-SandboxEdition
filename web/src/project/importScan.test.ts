@@ -93,6 +93,16 @@ describe('scanImport', () => {
     expect(report.loose).toEqual([]);
   });
 
+  it('reports every misnamed file and both colliding paths in a large loose selection', async () => {
+    const bytes = Uint8Array.of(0);
+    const files = Array.from({ length: 149_998 }, (_, i) => file(`${i + 1}.gif`, bytes));
+    files.unshift(file('a/0.gif', bytes));
+    files.push(file('b/0.GIF', bytes));
+    const report = await scanImport(files);
+    expect(report.misnamed).toHaveLength(150_000);
+    expect(report.looseErrors).toEqual(['a/0.gif and b/0.GIF both use the DOS name 0.gif.']);
+  });
+
   it.each([false, true])('keeps a ZIP game alongside colliding loose files (loose GAM present: %s)', async (withGam) => {
     const good = await zip('good.zip', [['good.gam', gam('Good')]]);
     expect((await scanImport([good])).games.map((g) => g.name)).toEqual(['Good']);

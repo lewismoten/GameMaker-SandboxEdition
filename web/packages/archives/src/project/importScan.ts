@@ -267,7 +267,8 @@ export async function scanImport(given: ScanFile[], { signal, onProgress, onStep
   const look = async (files: ScanFile[], zips: ScanFile[], inner: string[], depth: number): Promise<number> => {
     const { players, games: played, crcs: exeCrcs } = await playedBy(files);
     const { games, loose } = groupGames(files, played);
-    (report.misnamed ??= []).push(...(await misnamedIn(files.filter((f) => !isZipName(f.path)))));
+    const misnamed = (report.misnamed ??= []);
+    for (const entry of await misnamedIn(files.filter((f) => !isZipName(f.path)))) misnamed.push(entry);
     if (!zips.length) {
       for (const file of loose) report.loose.push(file);
     }
