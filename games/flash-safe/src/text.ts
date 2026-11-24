@@ -49,13 +49,13 @@ One of the Starters: small games that each show one idea.
 export const WON = wrap(`
 |ALL CLEAR!
 
-Three rooms, and not one flash.
+The little lamp blinked once a second. Did you notice how little of the room changed?
 
 The simple rules: no more than 3 flashes in any one second. Avoid big flashes of red. Keep anything that flashes small. And never let a flash be the only sign of something: add a sound, a shape or a number.
 
-Level 1 showed a hit with a beep, an ouch face, a number and fewer hit points. Level 2 blinked a small lamp once a second and pulsed another in soft steps. Level 3 lifted a dark sky a little, held it, and let it settle.
+Level 1 showed a hit with a beep, an ouch face, a number and fewer hit points. Level 2 paired the blinking lamp with one that pulsed in soft steps. Level 3 lifted a dark sky a little, held it, and let it settle.
 
-To check your own game, play it in the editor's preview and count flashes in a second. Fewer than 3, and small.
+To check your own game, play it in the editor's preview. Count each change to light and back as one flash. Keep it to no more than 3 flashes in any one second.
 `);
 
 export const LOST = wrap(`
