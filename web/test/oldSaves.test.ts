@@ -2,7 +2,7 @@
 // is opened with the current code and nothing may be lost. See test/fixtures/saves/README.md.
 import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { GameReader, scanImport } from '@lewismoten/gamemaker-sandbox-archives/scan';
 import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { Recorder } from '@lewismoten/gamemaker-sandbox-engine/engine/recorder';
@@ -153,4 +153,45 @@ describe.each(dirs)('saves from %s', (dir) => {
     expect((JSON.parse(new TextDecoder().decode(ach['achievements.json'])) as { unlocked: unknown }).unlocked).toEqual({ a: 1, b: 2 });
     expect(next.local).toMatchObject(settings);
   });
+});
+
+vi.mock('../src/player/player', () => ({ mountPlayer: vi.fn() }));
+vi.mock('../src/gfx/titlePoster', () => ({ titlePoster: vi.fn() }));
+vi.mock('../src/achievements/playSaves', () => ({ playSaves: () => ({}) }));
+vi.mock('../src/achievements', () => ({ playAchievements: () => ({}) }));
+vi.mock('../src/offline', () => ({ registerServiceWorker: vi.fn() }));
+vi.mock('../src/errorNotice/watch', () => ({ watchErrors: vi.fn() }));
+vi.mock('../src/devReload', () => ({ watchForUpdates: vi.fn() }));
+
+it('mounts the project slot when a catalog game has the same ID and slot name', async () => {
+  const storage = await import('../src/project/storage');
+  const { mountPlayer } = await import('../src/player/player');
+  const projectSlot = Uint8Array.of(1);
+  const buckets: Record<string, Record<string, Uint8Array>> = {
+    'game:blaster': { 'game0.sav': Uint8Array.of(2) },
+    'project:blaster': { 'game0.sav': projectSlot },
+  };
+  const element = () => ({ style: {}, append: vi.fn(), prepend: vi.fn() });
+  try {
+    vi.stubGlobal('location', { search: '?project=blaster' });
+    vi.stubGlobal('document', {
+      querySelector: (selector: string) => (selector === '#player' ? element() : null),
+      documentElement: element(),
+      body: element(),
+      createElement: element,
+    });
+    vi.spyOn(storage, 'loadProject').mockResolvedValue({
+      record: { id: 'blaster', name: 'My Game', gam: 'MINE.GAM', updated: 0, files: {} },
+      files: new GameFiles(),
+      damage: [],
+    });
+    vi.spyOn(storage, 'loadSaveData').mockImplementation(async (id) => buckets[id] ?? {});
+    await import('../src/play');
+    await vi.waitFor(() => expect(mountPlayer).toHaveBeenCalledOnce());
+    const [, files] = vi.mocked(mountPlayer).mock.calls[0];
+    expect(files.get('game0.sav')).toEqual(projectSlot);
+  } finally {
+    vi.restoreAllMocks();
+    vi.unstubAllGlobals();
+  }
 });
