@@ -17,7 +17,11 @@ afterAll(async () => {
 
 function extensionVisible(button: Element): boolean {
   const extension = button.querySelector('.files-toggle-extension')!;
-  if (getComputedStyle(extension).visibility !== 'visible' || extension.getBoundingClientRect().height === 0) return false;
+  const style = getComputedStyle(extension);
+  // Computed rgba() uses a fourth comma-separated channel. Modern color functions use a slash.
+  const alpha = style.color.match(/(?:^rgba\([^)]*,|\/)\s*([\d.e+-]+)%?\s*\)$/i)?.[1];
+  if (Number(alpha) === 0) return false;
+  if (style.visibility !== 'visible' || extension.getBoundingClientRect().height === 0) return false;
   for (let element: Element | null = extension; element; element = element.parentElement) {
     if (Number(getComputedStyle(element).opacity) === 0) return false;
   }
@@ -48,6 +52,7 @@ it.each([
   ['zero-height extension', '.files-toggle-extension { display:inline-block; height:0; overflow:hidden; vertical-align:top }'],
   ['clipped ancestor', '.filename { display:inline-block; height:8px; overflow:hidden; vertical-align:top }'],
   ['transparent extension', '.files-toggle-extension { opacity: 0 }'],
+  ['transparent text color', '.files-toggle-extension { color: transparent }'],
   ['transparent ancestor', 'body { opacity: 0 }'],
   ['clipped second line', 'button { height: 20px }'],
 ])('rejects a %s', async (_name, css) => {
