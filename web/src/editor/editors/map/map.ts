@@ -956,7 +956,7 @@ registerEditor(['map'], (host, project, file) => {
         chooser.el,
         h(
           'button',
-          { class: 'mt-big', onclick: () => void exportImage(), title: 'Save the map, just the level, or one game screen as a picture' },
+          { class: 'mt-big', onclick: () => void exportImage(), title: 'Save the map, just the level, or a screen-sized crop as a picture' },
           '🖼 Download picture',
         ),
       ),
