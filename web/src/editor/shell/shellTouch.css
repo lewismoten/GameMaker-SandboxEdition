@@ -1,5 +1,5 @@
 /* The editor shell on a touch screen: the file list, play buttons, Overview tabs, search box,
-   "Used by" links, Download, Optimize and dialog buttons are at least 44px (Lewis's touch rule).
+   "Used by" links, Download, and Optimize are at least 44px (Lewis's touch rule).
    Desktop pointers keep their compact sizes. */
 @media (hover: none) and (pointer: coarse) {
   .sidebar .files-toggle,
@@ -20,7 +20,6 @@
   .asset-more,
   .asset-search input[type='search'],
   .used-by-link,
-  dialog.modal .buttons button,
   dialog.modal input,
   dialog.modal select {
     min-height: 44px;
@@ -31,7 +30,6 @@
   .asset-more,
   .panel-tabs .panel-tabs-list button,
   .overview > .panel-tabs .panel-tabs-list button,
-  dialog.modal .buttons button,
   .released-bar button {
     min-width: 44px;
   }
@@ -50,9 +48,6 @@
     flex-wrap: wrap;
     gap: 0 10px;
     align-items: center;
-  }
-  dialog.modal .buttons {
-    flex-wrap: wrap;
   }
 }
 
