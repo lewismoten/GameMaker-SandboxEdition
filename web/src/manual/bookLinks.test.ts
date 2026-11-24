@@ -165,8 +165,7 @@ function expectTourDestinations(readme: string) {
   rows.forEach(([, id, page], index) => {
     const chapter = tourChapters[index];
     const stops = [chapter.file ?? chapter.hash, ...chapter.steps.flatMap((step) => (step.go ? [step.go.hash] : []))];
-    const continuation = /\bthen\b(.*)$/i.exec(page);
-    if (continuation) expect(continuation[1].trim(), id).toMatch(/^`[^`]+`(?:\s*,\s*(?:then\s+)?`[^`]+`)*$/i);
+    expect(page.trim(), id).toMatch(/^`[^`]+`(?:\s*,\s*(?:then\s+)?`[^`]+`)*(?:\s+\([^`()]+\))?$/i);
     let route = chapter.hash;
     const documented = [...page.matchAll(/`([^`]+)`/g)].map(([, reference]) => {
       if (chapter.file || reference.startsWith('#/')) route = reference;
@@ -193,6 +192,8 @@ it.each([
   ['edit-animation', '`blender.lst`', '`missing.lst`'],
   ['edit-player', '`?tab=player`', '`?tab=missing`'],
   ['edit-monsters', '`watt.chr`', 'missing.chr'],
+  ['edit-monsters', 'then `watt.chr`', 'missing.chr'],
+  ['edit-monsters', 'then `watt.chr`', 'missing.chr, then `watt.chr`'],
 ])('rejects the %s Page destination %s when replaced with %s', (chapter, original, replacement) => {
   const readme = replaceTourPageText(src('../tour/README.md'), chapter, original, replacement);
   expect(() => expectTourDestinations(readme)).toThrow(chapter);
