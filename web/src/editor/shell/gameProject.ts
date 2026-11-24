@@ -39,3 +39,19 @@ export function gameProject(project: Project, filename: string): Project {
     },
   });
 }
+
+/** Game contexts whose scene lists can be read when inspecting directory-wide asset usage. */
+export function assetGames(project: Project): Project[] {
+  const games = [project];
+  for (const file of project.files.byExtension('gam')) {
+    const other = gameProject(project, file);
+    if (other === project) continue;
+    try {
+      other.game();
+      games.push(other);
+    } catch {
+      // An unreadable secondary GAM provides no scene list.
+    }
+  }
+  return games;
+}

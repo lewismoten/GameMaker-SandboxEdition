@@ -10,6 +10,7 @@ import { ADVTYPE, ADV_FILES, START_FILES, END_FILES } from '@lewismoten/gamemake
 import { parseBackdrop, parseSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
 import { parseSoundSet } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
 import { SCENE_SECTION, sceneFiles } from '../editors/animation/scene/sceneModel';
+import { assetGames } from '../shell/gameProject';
 import type { Project } from './project';
 import { formatHash } from '../../urlState';
 
@@ -76,7 +77,7 @@ export function embeddedFiles(project: Project, file: string): string[] {
 /** Direct scene slots, embedded file references, Scene Maker sources and explicit editor preview palettes. */
 export function fileUses(project: Project, file: string): Use[] {
   const n = normalize(file);
-  const out = sceneUses(project, file);
+  const out = assetGames(project).flatMap((game) => sceneUses(game, file));
   for (const [ext, label] of [
     ['lst', 'slide show'],
     ['bkd', 'backdrop'],

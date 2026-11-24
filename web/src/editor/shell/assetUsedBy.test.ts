@@ -1,5 +1,10 @@
+import { Project } from '../core/project';
+import { GameFiles } from '../../project/files';
+import { fileUses } from '../core/uses';
+import { assetGames } from './gameProject';
+import { newGame, serializeGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { describe, expect, it } from 'vitest';
-import { scenesUsing, usedByShort, usedByText } from './assetUsedBy';
+import { categoryScenesUsing, scenesUsing, usedByShort, usedByText } from './assetUsedBy';
 
 describe('Overview used-by line', () => {
   const uses: Record<string, { scene: number }[]> = {
@@ -21,4 +26,28 @@ describe('Overview used-by line', () => {
     expect(usedByShort(12)).toBe('12 scenes');
     expect(usedByShort(0)).toBe('');
   });
+});
+
+it('counts shared picture scenes separately in each GAM and links their actual owners', () => {
+  const main = newGame('Main');
+  const second = newGame('Second');
+  main.scenes[0].files[0] = 'shared.gif';
+  second.scenes[0].files[0] = 'SHARED.GIF';
+  second.scenes[0].files[2] = 'shared.gif';
+  second.scenes[1].files[0] = 'other.gif';
+  const files = new GameFiles([
+    ['main.gam', serializeGame(main)],
+    ['second.gam', serializeGame(second)],
+    ['shared.gif', new Uint8Array()],
+    ['other.gif', new Uint8Array()],
+  ]);
+  const project = new Project('test', 'Two games', 'main.gam', files);
+  const games = assetGames(project);
+  expect(categoryScenesUsing(['other.gif'], games)).toBe(1);
+  expect(categoryScenesUsing(['shared.gif', 'other.gif'], games)).toBe(3);
+  expect(fileUses(project, 'shared.gif').map(({ file, scene }) => [file, scene])).toEqual([
+    ['main.gam', 0],
+    ['second.gam', 0],
+    ['second.gam', 0],
+  ]);
 });
