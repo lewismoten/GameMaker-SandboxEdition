@@ -69,6 +69,7 @@ export const tourPlaying = (): boolean => !!now.tour;
 export class Tour {
   private flat: { chapter: Chapter; step: TourStep; n: number }[];
   private i = -1;
+  private skipped = new Set<number>();
   /** Bumped by every move, so a step still running knows it was left. */
   private token = 0;
   private paused = false;
@@ -109,7 +110,7 @@ export class Tour {
   private onResize = () => this.stage.resize();
   private caption = h('p', { class: 'tour-caption', 'aria-live': 'polite' });
   private count = h('span', { class: 'tour-count' });
-  private backBtn = h('button', { type: 'button', class: 'tour-back', onclick: () => this.go(this.i - 1) }, '◀ Back');
+  private backBtn = h('button', { type: 'button', class: 'tour-back', onclick: () => this.back() }, '◀ Back');
   private notice?: HTMLElement;
   private pauseBtn = h('button', { type: 'button', class: 'tour-pause', onclick: () => this.setPaused(!this.paused) }, 'Pause');
   private nextBtn = h('button', { type: 'button', class: 'tour-next', onclick: () => this.go(this.i + 1) }, 'Next ▶');
@@ -193,25 +194,49 @@ export class Tour {
 
   // ---- moving through the steps ------------------------------------------------------------
 
-  private go(i: number): void {
+  /** Back crosses chapter boundaries. Away from the current address, use the last observed
+   * eligibility until run() can check the step on its own page. */
+  private previousIndex(): number {
+    if (this.i <= 0) return -1;
+    const here = this.addressOf(this.i)?.hash;
+    for (let i = this.i - 1; i >= 0; i--) {
+      const { chapter, step } = this.flat[i];
+      if (!step.when && !step.optional) return i;
+      if (chapter !== this.chapterShown || this.addressOf(i)?.hash !== here) {
+        if (!this.skipped.has(i)) return i;
+        continue;
+      }
+      if (step.when && !document.querySelector(step.when)) continue;
+      if (step.optional && step.target && !findTarget(step.target)) {
+        if (!(step.target.in || step.target.reveal) || this.skipped.has(i)) continue;
+      }
+      return i;
+    }
+    return -1;
+  }
+
+  private back(): void {
+    const previous = this.previousIndex();
+    if (previous >= 0) this.go(previous, this.i);
+  }
+
+  private go(i: number, backFrom?: number): void {
     if (now.tour !== this) return;
     this.sound.stopVoice();
     if (i >= this.flat.length) return void this.finale();
-    i = Math.max(0, i);
     const token = ++this.token;
     this.clock.cancelHold();
     this.i = i;
-    void this.run(token).catch((e: unknown) => console.warn('Tour step failed:', e));
+    void this.run(token, backFrom).catch((e: unknown) => console.warn('Tour step failed:', e));
   }
 
   private live = (token: number) => token === this.token && now.tour === this;
 
-  private async run(token: number): Promise<void> {
+  private async run(token: number, backFrom?: number): Promise<void> {
     // out of the click on Next first: its trip up to the document would close a menu opened here
     await sleep(0);
     if (!this.live(token)) return;
     const { chapter, step, n } = this.flat[this.i];
-    this.backBtn.disabled = this.i === 0;
     this.nextBtn.textContent = this.i === this.flat.length - 1 ? 'Finish' : 'Next ▶';
     this.count.textContent = `${chapter.title} · ${n + 1} of ${chapter.steps.length}`;
     this.unpress();
@@ -260,7 +285,15 @@ export class Tour {
       if (!this.live(token)) return;
     }
     // the control: shown from its menu or overlay if it is in one, others the tour opened closed
-    if (step.when && !document.querySelector(step.when)) return this.go(this.i + 1);
+    const skip = () => {
+      this.skipped.add(this.i);
+      if (backFrom === undefined) return this.go(this.i + 1);
+      const previous = this.previousIndex();
+      // A candidate on another page or behind an opener can disappear before it is shown.
+      if (previous < 0) return this.go(backFrom);
+      this.go(previous, backFrom);
+    };
+    if (step.when && !document.querySelector(step.when)) return skip();
     const need = this.handleFor(step);
     for (const [k, m] of this.opened) if (k !== need?.key) (this.closeKeepingFocus(m), this.opened.delete(k));
     let target = step.target ? findTarget(step.target) : undefined;
@@ -280,8 +313,10 @@ export class Tour {
       if (step.target.in) this.unopenable.add(step.target.in);
       console.warn(`Tour: nothing on the page for ${step.id} (${cssList(step.target.css).join(', ')})`);
       this.bar.dataset.missing = step.id;
-      if (step.optional) return this.go(this.i + 1);
+      if (step.optional) return skip();
     }
+    this.skipped.delete(this.i);
+    this.backBtn.disabled = this.previousIndex() < 0;
     if (target) await this.stage.bringIntoView(target);
     if (!this.live(token)) return;
     this.stage.clearBar(target);
@@ -548,7 +583,7 @@ export class Tour {
     const typing = (e.target as HTMLElement).closest?.('input, textarea, select');
     if (typing) return;
     if (e.key === 'ArrowRight') this.go(this.i + 1);
-    else if (e.key === 'ArrowLeft') this.go(this.i - 1);
+    else if (e.key === 'ArrowLeft') this.back();
     else if (this.opts.record && e.key === ' ') this.setPaused(!this.paused);
     else if (this.opts.record && e.key.toLowerCase() === 'm') this.toggleSound();
     else return;
