@@ -89,11 +89,13 @@ export function deskPc(scene: Scene, hooks: PcHooks) {
         },
         // what the PC runs: a game (play), Game-Maker from a disk (design) or the hard disk / CD (gm), the BBS
         // (a PC switched off says nothing more)
-        onProgram: (p) =>
-          computer?.powered &&
-          deskView.set({
-            run: !p ? 'dos' : p.kind === 'game' ? 'play' : p.kind === 'gm' ? (p.drive === 'A' ? 'design' : 'gm') : p.kind === 'terminal' ? 'bbs' : 'dos',
-          }),
+        onProgram: (p) => {
+          desk.toggleAttribute('data-pc-busy', !!p);
+          if (computer?.powered)
+            deskView.set({
+              run: !p ? 'dos' : p.kind === 'game' ? 'play' : p.kind === 'gm' ? (p.drive === 'A' ? 'design' : 'gm') : p.kind === 'terminal' ? 'bbs' : 'dos',
+            });
+        },
         // the drive lights (even an empty drive lights up while DOS tries it; C:'s is the case's HDD
         // light), and while the PC starts, the drives' sounds
         onDriveAccess: (drive, ms) => {

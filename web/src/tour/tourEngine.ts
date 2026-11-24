@@ -260,6 +260,7 @@ export class Tour {
       if (!this.live(token)) return;
     }
     // the control: shown from its menu or overlay if it is in one, others the tour opened closed
+    if (step.when && !document.querySelector(step.when)) return this.go(this.i + 1);
     const need = this.handleFor(step);
     for (const [k, m] of this.opened) if (k !== need?.key) (this.closeKeepingFocus(m), this.opened.delete(k));
     let target = step.target ? findTarget(step.target) : undefined;
