@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import { readFileSync } from 'node:fs';
+import juniorLab from '../../../../games/year2000/phone/kicad/qr_spots.json';
 import { FakeDoc } from '../../../test/fakeDom';
 import type { FakeEl } from '../../../test/fakeDom';
 import { phoneChapters } from './phoneBook';
@@ -33,6 +34,7 @@ describe('phoneChapters (the real README and parts list)', () => {
       "On the back of the board, two QR codes fit between the pads. One points to the game's site. The other points to this folder's parts list and build steps on GitHub.",
     );
     expect(text).toContain('A block-art picture of Dex');
+    expect(text).toContain(`On the Junior Lab board it measures ${juniorLab.dex.width} x ${juniorLab.dex.height} mm`);
     expect(text).toContain('The codes scan in the rendered preview. No one has tried scanning these small modules with a phone camera on a real board.');
   });
 
