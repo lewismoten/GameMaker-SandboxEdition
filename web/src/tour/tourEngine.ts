@@ -29,6 +29,7 @@ import { hushDemos } from '../media/demoAudio';
 const tourDemo = (what: 'play' | 'stop') => window.dispatchEvent(new CustomEvent('gm-tour-demo', { detail: what }));
 import { askPage } from './pageAct';
 import { onDosPage, pageHere, pageOf } from './tourPages';
+import { requestFilenameFocus } from '../routeFocus';
 import { parseHash, setHashParams } from '../urlState';
 
 interface TourOptions {
@@ -657,8 +658,10 @@ export class Tour {
     window.removeEventListener('resize', this.onResize);
     // a tour of just this page goes back to what the visitor had open on it (their own game, not the one shown)
     const page = pageOf(this.startHash);
-    if (this.moved && this.chapters.every((c) => c.page === page) && pageOf(location.hash) === page && location.hash !== this.startHash)
+    if (this.moved && this.chapters.every((c) => c.page === page) && pageOf(location.hash) === page && location.hash !== this.startHash) {
+      if (page === 'editor') requestFilenameFocus(this.startHash);
       location.hash = this.startHash;
+    }
     const back = this.returnFocus;
     if (back && back !== document.body && back.isConnected && visible(back)) back.focus();
     else document.querySelector<HTMLElement>('.tour-btn')?.focus();
