@@ -246,6 +246,26 @@ describe('scanImport', () => {
     expect([left.files.names(), left.players.map((p) => p.name), left.gam]).toEqual([['shared.z0q', 'space.z0g'], ['ZAPAK.EXE'], 'space.gam']);
   });
 
+  it('marks missing files beside a whole game only in the same picked zip', async () => {
+    const needsMap = (title: string) => {
+      const game = newGame(title);
+      game.scenes[0].files = ['LEVEL.MAP'];
+      return serializeGame(game);
+    };
+    const first = await zip('good.zip', [
+      ['main/main.gam', needsMap('Main')],
+      ['main/level.map', enc.encode('map')],
+      ['old/test.gam', needsMap('Test')],
+    ]);
+    const second = await zip('good.zip', [['solo/solo.gam', needsMap('Solo')]]);
+    const report = await scanImport([first, second]);
+    expect(report.games.map((g) => [g.name, g.missing, g.leftover])).toEqual([
+      ['Main', undefined, undefined],
+      ['Test', 1, 'TEST.GAM: 1 of its files isn’t in the zip'],
+      ['Solo', 1, undefined],
+    ]);
+  });
+
   it('lists a .gam missing files in a folder of its own, beside a whole game of the same zip, as a leftover', async () => {
     const test = newGame('Title Screen');
     test.scenes[0].files = ['AVTEST.MAP', 'AVTEST.CBL'];
