@@ -81,6 +81,7 @@ const diskLabels: Scene = {
 
 export const extraScenes: Scene[] = [
   diskLabels,
+  moduleScene('unsaved-import', 'editor/shell/importWorkspaceFiles', 'confirmUnsavedImport'),
   moduleScene('describe-game', 'assistant/chat/homeDescribe', 'askDescription'),
   moduleScene('quick-color-check', 'editor/colorHelp/quickCheck', 'openQuickCheck'),
   moduleScene('import-history', 'editor/shell/importHistoryDialog', 'showImportHistory'),

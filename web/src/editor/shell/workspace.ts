@@ -12,7 +12,7 @@ import { keyboardIcon, showShortcuts, wantsShortcuts } from '../widgets/shortcut
 import { icon } from './homeIcons';
 import { loadEditor, type EditorFn } from '../editors/registry';
 import { loadFileList, normalize } from '../../project/files';
-import { takeCompanion } from '../../project/companion';
+import { importWorkspaceFiles } from './importWorkspaceFiles';
 import { chooseDownload } from './download';
 import { gameTitle } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { parsePick, pickParam, playChoices, type PlayPick } from './playLevel';
@@ -577,13 +577,11 @@ export class Workspace implements AssistantHost {
   private async addFiles(): Promise<void> {
     const list = await pickFiles({ multiple: true });
     const files = await loadFileList(list);
-    // a backup's <game>.GMX adds its editor-only extras, not a file
-    const extras = takeCompanion(files);
-    for (const [file, sections] of Object.entries(extras?.files ?? {})) for (const [k, v] of Object.entries(sections)) this.project.setExtras(file, k, v);
-    for (const [n, b] of files.entries()) this.project.files.set(n, b);
-    if (files.size) toast(`Added ${files.size} file(s).`);
+    if (!(await importWorkspaceFiles(this.project, files))) return;
+    if (files.size) toast(`Imported ${files.size} file(s).`);
     (await import('../widgets/bigVocWarning')).warnBigVocs(files.entries());
-    this.renderSidebar();
+    if (this.current && files.has(this.current)) this.open(this.current);
+    else this.renderSidebar();
   }
 
   private async rename(file: string): Promise<void> {

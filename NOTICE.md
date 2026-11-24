@@ -68,6 +68,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex fixed the hosted player’s save export status and added browser regression tests.
 - OpenAI Codex corrected the WebKit appearance of the player setup dropdowns.
 - OpenAI Codex fixed and tested large loose-file imports and the editor’s guidance for DOS name collisions.
+- OpenAI Codex added and tested the editor confirmation for imports over unsaved edits.
 - OpenAI Codex fixed and tested damaged-copy recovery after repeated Keep clicks.
 - OpenAI Codex fixed and tested batch imports of ZIP files with the same filename.
 - OpenAI Codex fixed trinket build cleanup, cache returns, and worker shutdown and added regression tests.

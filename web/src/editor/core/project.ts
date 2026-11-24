@@ -90,6 +90,11 @@ export class Project {
   }
 
   private revision = 0;
+  private savedRevision = 0;
+  get hasUnsavedChanges(): boolean {
+    return this.revision !== this.savedRevision;
+  }
+
   private saveRequest = 0;
   private saveQueue = Promise.resolve();
   private persist(): void {
@@ -114,6 +119,7 @@ export class Project {
     this.saveQueue = write.catch(() => undefined);
     return write.then(
       () => {
+        this.savedRevision = revision;
         if (revision === this.revision && request === this.saveRequest) this.tellSave('saved');
       },
       (e: unknown) => {
