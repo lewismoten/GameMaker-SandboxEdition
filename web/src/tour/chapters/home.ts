@@ -301,9 +301,7 @@ export const homeChapter: Chapter = {
       target: setting('Play offline'),
       // the whole tour shows the Settings menu on its own page
       pageOnly: true,
-      say: 'Settings has Play offline, which saves the whole site so it works with no connection.',
-      // Kokoro's "has" after "Settings" was heard as "is"
-      spoken: 'Settings hass Play offline, which saves the whole site so it works with no connection.',
+      say: 'Play offline lets you choose what to save. Core comes along, and you can pick extras by size. Video needs the internet.',
       sound: 'pop',
     },
     { id: 'home-theme', action: 'point', target: setting('Theme'), pageOnly: true, say: 'Theme switches between dark, light, or whatever your computer uses.' },

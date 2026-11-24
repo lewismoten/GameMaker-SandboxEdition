@@ -91,7 +91,7 @@ export const editIntegratorChapter: Chapter = {
       action: 'point',
       go: { hash: '#/p/look:logic', ready: '.overview [role="tab"]' },
       target: { label: 'the DOS player tab', css: '.overview [role="tab"]', text: 'DOS player' },
-      say: 'And this button opens the DOS player, the program that runs the game on a real computer. That is the last stop.',
+      say: 'The last stop is the DOS player tab in Overview. Open it to edit the words, colors and frames players see in DOS.',
       sound: 'chime',
     },
     {

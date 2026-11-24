@@ -31,7 +31,7 @@ export const editPlayerChapter: Chapter = {
       id: 'edit-player-open',
       action: 'press',
       target: { label: 'the DOS player tab', css: '.overview [role="tab"]', text: 'DOS player' },
-      say: 'This button opens the DOS player. That is the program the DOS download uses to run a game outside the editor.',
+      say: 'Open the DOS player tab in Overview. Here you can change the words, colors and frames for your DOS download.',
     },
     {
       id: 'edit-player-intro',
