@@ -2,7 +2,7 @@
 import { describe, expect, it } from 'vitest';
 import { MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { WHOLE_MAP, clampRect, contentBounds, dragRect, gameView } from '../src/editor/editors/map/mapClip';
-import mapEditorSource from '../src/editor/editors/map/map.ts?raw';
+import { editorBrowser } from './editorBrowser';
 
 function mapWith(fill: number, cells: [number, number, number][]): Uint8Array {
   const b = new Uint8Array(MLEN * MWID).fill(fill);
@@ -35,13 +35,37 @@ describe('map clipping', () => {
     expect(gameView({ x: 50, y: 50 })).toEqual({ x: 42, y: 45, w: 16, h: 10 });
     expect(gameView({ x: 1, y: 98 })).toEqual({ x: 0, y: 90, w: 16, h: 10 });
     expect(gameView({ x: 99, y: 0 }, { w: 3, h: 3 })).toEqual({ x: 52, y: 0, w: 48, h: 30 });
-  });
-
-  it('describes the Download picture edge selection as a screen-sized crop', () => {
-    const title = mapEditorSource.match(/title: '([^']+)'\s*},\s*'🖼 Download picture'/)?.[1];
-    expect(title).toBe('Save the map, just the level, or a screen-sized crop as a picture');
     expect(gameView({ x: MLEN - 1, y: 0 })).toEqual({ x: MLEN - 16, y: 0, w: 16, h: 10 });
   });
+
+  it('names the dialog crop option in the Download picture tooltip', async () => {
+    const fixture = await editorBrowser();
+    try {
+      const { page } = fixture;
+      await page.evaluate(`(async () => {
+        const { Project } = await import('/src/editor/core/project.ts');
+        const { GameFiles } = await import('/src/project/files.ts');
+        const { newGame, serializeGame } = await import('/packages/engine/src/formats/game.ts');
+        const { newMap, serializeMap } = await import('/packages/engine/src/formats/map.ts');
+        const { loadEditor } = await import('/src/editor/editors/registry.ts');
+        const files = new GameFiles();
+        files.set('a.gam', serializeGame(newGame('Map clipping')));
+        files.set('a.map', serializeMap(newMap()));
+        const project = new Project('map-clip', 'Map clipping', 'a.gam', files);
+        (await loadEditor('map'))(document.querySelector('#host'), project, 'a.map');
+      })()`);
+      const download = page.getByRole('button', { name: /Download picture/ });
+      const title = await download.getAttribute('title');
+      await download.click();
+      const crop = page.getByRole('dialog').locator('[role="radio"][data-mode="screen"]');
+      await crop.waitFor({ state: 'visible' });
+      const label = (await crop.innerText()).trim();
+      expect(label).not.toBe('');
+      expect(title?.toLowerCase()).toContain(label.toLowerCase());
+    } finally {
+      await fixture.close();
+    }
+  }, 30_000);
 
   it('drags and resizes a frame without leaving the map', () => {
     const r = { x: 10, y: 10, w: 20, h: 10 };
