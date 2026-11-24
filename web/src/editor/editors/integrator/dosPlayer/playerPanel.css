@@ -467,3 +467,26 @@ dialog.modal .dp-preview [hidden] {
     overflow-y: auto;
   }
 }
+
+@media (any-pointer: coarse) {
+  .dp .dp-tool,
+  .dp .dp-tab,
+  .dp input:is([type='text'], [type='number'], .dp-text),
+  .dp select,
+  .dp summary {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  .dp summary {
+    align-content: center;
+  }
+
+  .dp-tools {
+    gap: 4px;
+  }
+
+  .dp-tool + .dp-tool {
+    margin-left: 0;
+  }
+}
