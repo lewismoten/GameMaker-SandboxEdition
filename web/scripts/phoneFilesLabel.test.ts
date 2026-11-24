@@ -18,6 +18,9 @@ afterAll(async () => {
 function extensionVisible(button: Element): boolean {
   const extension = button.querySelector('.files-toggle-extension')!;
   if (getComputedStyle(extension).visibility !== 'visible') return false;
+  for (let element: Element | null = extension; element; element = element.parentElement) {
+    if (Number(getComputedStyle(element).opacity) === 0) return false;
+  }
   const stem = button.querySelector('.files-toggle-stem')!;
   const range = document.createRange();
   range.selectNodeContents(extension);
@@ -36,6 +39,8 @@ function extensionVisible(button: Element): boolean {
 
 it.each([
   ['hidden extension', '.files-toggle-extension { visibility: hidden }'],
+  ['transparent extension', '.files-toggle-extension { opacity: 0 }'],
+  ['transparent ancestor', 'body { opacity: 0 }'],
   ['clipped second line', 'button { height: 20px }'],
 ])('rejects a %s', async (_name, css) => {
   const page = await browser.newPage();
