@@ -7,6 +7,7 @@ Entry point: `dos.html` loads `dosPage.ts`.
 
 - `dosPage.ts`: puts the page together: the PC (`retro/computer.ts`), the bar, the disk menu, the footer and the tour hook.
 - `dosPage.css`: the page's layout.
+- `placeNotesHere.ts`: sizes the space above the DOS screen for achievement notices.
 - `moreMenu.ts`: the ⋯ menu with the controls used less often (reset, the Sound Blaster card, and so on).
 - `diskMenu.ts`: the disk box as a menu: every disk the desk's box holds (`retro/dos/disks.ts`).
 - `lineSpeed.ts`: the modem speed as a control, because there is no desk modem to click.

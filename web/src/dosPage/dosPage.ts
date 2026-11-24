@@ -27,6 +27,7 @@ import { PRODUCT } from '../edition';
 import { registerServiceWorker } from '../offline';
 import { watchForUpdates } from '../devReload';
 import { watchErrors } from '../errorNotice/watch';
+import { placeNotesHere } from './placeNotesHere';
 import { diskMenu } from './diskMenu';
 import { keypad } from './keypad';
 import { viewSwitch } from '../viewSwitch';
@@ -316,31 +317,7 @@ clear(
   ),
 );
 
-// Achievement notes: in a band the screen makes room for at the top of the stage, as wide as
-// the screen, so they never cover it, the controls or the copy check's guide and card (which lie
-// beside the screen, or over the bottom of the window). Two at a time; clicks go through them.
-const NOTES_BAND = 48;
-let notesWatched = false;
-function placeNotesHere(host: HTMLElement): void {
-  const fit = () => {
-    const shown = host.childElementCount > 0;
-    stage.style.paddingTop = shown ? `${NOTES_BAND}px` : '';
-    if (!shown) return;
-    const s = stage.getBoundingClientRect();
-    const c = crt.getBoundingClientRect();
-    host.style.top = `${s.top + 4}px`;
-    host.style.left = `${Math.max(8, c.left)}px`;
-    host.style.right = 'auto';
-    host.style.width = `${Math.min(c.width, innerWidth - 16)}px`;
-  };
-  fit();
-  requestAnimationFrame(fit); // once the screen has made room
-  if (notesWatched) return;
-  notesWatched = true;
-  new MutationObserver(fit).observe(host, { childList: true });
-  new ResizeObserver(fit).observe(crt);
-}
-placeNotes(placeNotesHere);
+placeNotes(placeNotesHere(stage, crt));
 
 // GM's copy check and GM REGISTER: the Owner's Guide and the registration card beside the screen
 regSideLater(
