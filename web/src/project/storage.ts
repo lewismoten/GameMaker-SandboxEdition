@@ -129,6 +129,24 @@ export async function listDamagedCopies(): Promise<Summary[]> {
   return summaries((await allRecords()).filter((r) => isDamagedCopy(r.id)));
 }
 
+/** Moves the raw copy to a fresh game ID. Concurrent restores see the copy only once. */
+export async function restoreDamagedCopy(copyId: string): Promise<boolean> {
+  if (!isDamagedCopy(copyId)) return false;
+  const d = await db();
+  return new Promise<boolean>((resolve, reject) => {
+    const tx = d.transaction(PROJECTS, 'readwrite');
+    const store = tx.objectStore(PROJECTS);
+    const get = store.get(copyId) as IDBRequest<ProjectRecord | undefined>;
+    get.onsuccess = () => {
+      if (!get.result) return;
+      store.add({ ...get.result, id: newId() });
+      store.delete(copyId);
+    };
+    tx.oncomplete = () => resolve(get.result !== undefined);
+    tx.onabort = () => reject(tx.error);
+  });
+}
+
 let pruned: Promise<number> | undefined;
 
 /**

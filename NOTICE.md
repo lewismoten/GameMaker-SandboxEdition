@@ -64,6 +64,7 @@ game folder opens in the browser unchanged.
 
 ## Credits
 
+- OpenAI Codex fixed and tested damaged-copy recovery after repeated Keep clicks.
 - OpenAI Codex fixed and tested batch imports of ZIP files with the same filename.
 - OpenAI Codex fixed trinket build cleanup, cache returns, and worker shutdown and added regression tests.
 - OpenAI Codex fixed DOS achievement notice placement on short touchscreens and added its browser regression test.
