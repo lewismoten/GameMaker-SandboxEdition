@@ -1,3 +1,5 @@
+import { build } from 'esbuild';
+import { chromium } from 'playwright-core';
 import { Project } from '../core/project';
 import { GameFiles } from '../../project/files';
 import { fileUses } from '../core/uses';
@@ -50,4 +52,43 @@ it('counts shared picture scenes separately in each GAM and links their actual o
     ['second.gam', 0],
     ['second.gam', 0],
   ]);
+});
+
+it('names each owning GAM in confirmations and header buttons for identical scene slots', async () => {
+  const script = await build({
+    stdin: {
+      resolveDir: 'src/editor/shell',
+      contents: `
+        import { GameFiles } from '../../project/files';
+        import { Project } from '../core/project';
+        import { newGame, serializeGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+        import { deleteMessage, replaceMessage, usedByLine } from './usedBy';
+        const game = newGame();
+        game.scenes[0].desc = 'Start';
+        game.scenes[0].files[0] = 'shared.gif';
+        const bytes = serializeGame(game);
+        const files = new GameFiles([['main.gam', bytes], ['second.gam', bytes], ['shared.gif', new Uint8Array()]]);
+        const project = new Project('test', 'Two games', 'main.gam', files);
+        document.body.append(usedByLine(project, 'shared.gif'));
+        window.messages = [deleteMessage(project, 'shared.gif'), replaceMessage(project, 'shared.gif', 'copy.gif')];
+      `,
+    },
+    loader: { '.css': 'empty' },
+    bundle: true,
+    format: 'esm',
+    write: false,
+  });
+  const browser = await chromium.launch();
+  try {
+    const page = await browser.newPage();
+    await page.addScriptTag({ type: 'module', content: script.outputFiles[0].text });
+    const messages = await page.evaluate<string[]>('window.messages');
+    for (const gam of ['main.gam', 'second.gam']) {
+      const label = `${gam} · Start · title graphic`;
+      for (const message of messages) expect(message).toContain(label);
+      expect(await page.getByRole('button', { name: label, exact: true }).count()).toBe(1);
+    }
+  } finally {
+    await browser.close();
+  }
 });
