@@ -65,6 +65,7 @@ game folder opens in the browser unchanged.
 ## Credits
 
 - OpenAI Codex added the regression test for stale tour narration.
+- OpenAI Codex fixed and tested backward navigation in the guided tour.
 - OpenAI Codex fixed and tested the magazine toolbar layout on phones.
 - OpenAI Codex fixed the hosted player’s save export status and added browser regression tests.
 - OpenAI Codex corrected the WebKit appearance of the player setup dropdowns.
