@@ -888,13 +888,17 @@
   }
   .gmb-print .pp-cut {
     position: relative;
-    padding: 0.12in;
+  }
+  .gmb-print .pp-cut::after {
+    content: '';
+    position: absolute;
+    inset: -0.5px;
     border: 1px dashed #888;
   }
   .gmb-print .pp-cut::before {
     content: '✂';
     position: absolute;
-    top: -0.11in;
+    bottom: 100%;
     left: 0.3in;
     padding: 0 3px;
     background: #fff;
