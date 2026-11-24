@@ -15,7 +15,7 @@ beforeEach(() => {
 });
 afterEach(() => rmSync(out, { recursive: true, force: true }));
 
-function sampleTool(ids) {
+function sampleTool(ids = ['old', 'keep']) {
   const mesh = {
     positions: new Float32Array([0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1]),
     indices: new Uint32Array([0, 2, 1, 0, 1, 3, 1, 2, 3, 2, 0, 3]),
@@ -55,8 +55,24 @@ it('keeps every manifest download when an ID changes only in case', async () => 
   for (const name of downloads) expect(readFileSync(join(out, name)).length).toBeGreaterThan(0);
 });
 
+it('discards every staged file when a later trinket fails color-volume validation', async () => {
+  const tool = sampleTool();
+  await expect(
+    runTrinketTool({
+      ...tool,
+      make: (def) => (def.id === 'keep' ? { ...tool.make(), wholeVolume: 200 } : tool.make()),
+    }),
+  ).rejects.toThrow(/trinket keep: its colors fill/);
+  expect(readdirSync(out)).toEqual([]);
+
+  const next = { ...tool.defs[0], id: 'next' };
+  await runTrinketTool({ ...tool, defs: [next] });
+  expect(readdirSync(out).sort()).toEqual(['manifest.json', 'next-supports.stl', 'next.3mf', 'next.stl']);
+  expect(JSON.parse(readFileSync(join(out, 'manifest.json'), 'utf8')).items.map((item) => item.id)).toEqual(['next']);
+});
+
 it('preserves unrelated files and removes only obsolete manifest outputs', async () => {
-  const tool = sampleTool(['old', 'keep']);
+  const tool = sampleTool();
   const note = join(out, 'extra.stl');
   writeFileSync(note, 'mine');
   await runTrinketTool(tool);
