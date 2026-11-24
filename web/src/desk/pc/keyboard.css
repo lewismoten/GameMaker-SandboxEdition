@@ -86,7 +86,6 @@
 
   .keyboard .key-template .kt-brand {
     top: 15%;
-    right: 0;
   }
 
   .pc > .key-strip {
@@ -162,10 +161,26 @@
   }
 }
 
-@media (max-width: 390px) {
-  /* Keep the printed Setup caption legible on the narrowest boards. */
-  .keyboard .kt-brand {
-    display: none;
+/* On a short desk the PC shrinks with the viewport height. Give the brand a
+   tab above the labels when the template has too little room beside Setup. */
+.keyboard .key-template {
+  container: key-template / inline-size;
+}
+
+@media (max-width: 960px) {
+  .keyboard .key-template .kt-brand {
+    right: 0;
+  }
+}
+
+@container key-template (max-width: 200px) {
+  .keyboard .key-template .kt-brand {
+    top: auto;
+    bottom: calc(100% + 5px);
+    translate: none;
+    padding: 1px 2px;
+    border-radius: 2px;
+    background: #202024;
   }
 }
 

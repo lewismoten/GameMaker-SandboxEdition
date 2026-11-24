@@ -16,14 +16,19 @@ it('keeps the F9 caption clear of the brand on phone keyboards', async () => {
   const browser = await launch();
   try {
     const page = await browser.newPage();
-    await page.setContent('<div class="pc"><div class="kb-tray"></div></div>');
-    for (const path of ['desk.css', 'pc/tray.css', 'pc/keyboard.css']) {
+    await page.setContent('<div class="desk"><div class="desk-scene"><div class="pc"><div class="kb-tray"></div></div></div></div>');
+    for (const path of ['desk.css', 'deskStage.css', 'pc/tray.css', 'pc/keyboard.css']) {
       await page.addStyleTag({ content: await readFile('src/desk/' + path, 'utf8') });
     }
     await page.addScriptTag({ content: bundle.outputFiles[0].text + '\ndocument.querySelector(".kb-tray").append(fixture.keyboard(() => {}).board)' });
     for (const [width, height] of [
       [320, 740],
       [375, 812],
+      [393, 550],
+      [568, 320],
+      [393, 812],
+      [812, 375],
+      [844, 590],
     ]) {
       await page.setViewportSize({ width, height });
       const bounds = await page.evaluate(() => {
@@ -36,12 +41,15 @@ it('keeps the F9 caption clear of the brand on phone keyboards', async () => {
         const brand = rect('.kt-brand');
         return {
           setupWidth: setup.width,
+          brandWidth: brand.width,
           overlapX: Math.min(setup.right, brand.right) - Math.max(setup.left, brand.left),
           overlapY: Math.min(setup.bottom, brand.bottom) - Math.max(setup.top, brand.top),
         };
       });
-      expect(bounds.setupWidth).toBeGreaterThan(0);
-      expect.soft(Math.min(bounds.overlapX, bounds.overlapY), JSON.stringify({ width, ...bounds })).toBeLessThanOrEqual(0);
+      const viewport = JSON.stringify({ width, height, ...bounds });
+      expect.soft(bounds.setupWidth, viewport).toBeGreaterThan(0);
+      expect.soft(bounds.brandWidth, viewport).toBeGreaterThan(0);
+      expect.soft(Math.min(bounds.overlapX, bounds.overlapY), viewport).toBeLessThan(0);
     }
   } finally {
     await browser.close();
