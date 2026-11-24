@@ -156,11 +156,37 @@ it('opens the Programmer’s Guide chapter named in the Under the Hood manual', 
   expect((await loadChapter(id)).trim()).not.toBe('');
 });
 
+function expectTourDestinations(readme: string) {
+  const rows = [...readme.matchAll(/^\| `([a-z-]+)`[^|\n]*\|([^|\n]*)\|/gm)];
+  expect(rows.map(([, id]) => id)).toEqual(tourChapters.map((chapter) => chapter.id));
+
+  rows.forEach(([, id, page], index) => {
+    const chapter = tourChapters[index];
+    const stops = [chapter.file ?? chapter.hash, ...chapter.steps.flatMap((step) => (step.go ? [step.go.hash] : []))];
+    let route = chapter.hash;
+    const documented = [...page.matchAll(/`([^`]+)`/g)].map(([, reference]) => {
+      if (chapter.file || reference.startsWith('#/')) route = reference;
+      else if (reference.startsWith('?')) route = route.split('?')[0] + reference;
+      else route = route.slice(0, route.lastIndexOf('/') + 1) + reference;
+      return route;
+    });
+    expect(documented.length, id).toBeGreaterThan(0);
+    // Some rows give only the opening page and omit later navigation within the chapter.
+    expect(documented, id).toEqual(stops.slice(0, documented.length));
+  });
+}
+
+it.each([
+  ['intro.fli', 'missing.fli', 'edit-animation'],
+  ['blender.lst', 'missing.lst', 'edit-animation'],
+  ['?tab=player', '?tab=missing', 'edit-player'],
+])('rejects the documented tour destination %s when mistyped as %s', (original, typo, chapter) => {
+  const readme = src('../tour/README.md').replace(`\`${original}\``, `\`${typo}\``);
+  expect(() => expectTourDestinations(readme)).toThrow(chapter);
+});
+
 it('opens the documented tour chapter routes and their sample files', () => {
-  const readme = src('../tour/README.md');
-  for (const [, id, hash] of readme.matchAll(/^\| `([a-z-]+)`[^|]*\| `(#\/[^`]*)`/gm)) {
-    expect(tourChapters.find((c) => c.id === id)?.hash, id).toBe(hash);
-  }
+  expectTourDestinations(src('../tour/README.md'));
   for (const c of tourChapters) {
     for (const hash of [c.hash, ...c.steps.flatMap((s) => (s.go ? [s.go.hash] : []))]) {
       const {
