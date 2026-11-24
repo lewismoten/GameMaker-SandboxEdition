@@ -1502,3 +1502,5 @@ maker "ZORP" is invented. The shell is untested: nothing has been printed.
 - **Editor shared asset warnings (November 23, 2026)**: OpenAI Codex updated Scene Maker backdrop references and map brush deletion text and wrote the regression test.
 
 - **Map overview and picture labels (November 23, 2026)**: OpenAI Codex clarified the editor text for stored map grids and screen-sized crops.
+
+- **Honors dialog (November 24, 2026)**: OpenAI Codex fixed the earned diploma layout on phones.
