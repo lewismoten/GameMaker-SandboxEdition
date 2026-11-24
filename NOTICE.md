@@ -1112,6 +1112,10 @@ A firmware for the ESP32-3248S035 board that plays the Starter games, and an ins
 
 ## Tools used to build and test
 
+- **Tesseract OCR** (Tesseract contributors, Apache-2.0) reads camera screenshots in `scripts/look.mjs`.
+- **pySerial** (Chris Liechti, BSD-3-Clause) connects to the Pocket Player for setup and SD card writing.
+- **cwebp** (WebP project authors, BSD-3-Clause) is the libwebp encoder used for editor and old-web screenshots.
+
 OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, added capture-matrix validation and failure regressions to the PLAYGAME measurement collector and plotter (`tools/dosbox-286/`).
 
 Built with [TypeScript](https://www.typescriptlang.org/) ([Archived TypeScript project](https://web.archive.org/web/20261118025054/https://www.typescriptlang.org/)) (Apache-2.0),
