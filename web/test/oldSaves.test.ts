@@ -3,7 +3,11 @@
 import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { readZip } from '@lewismoten/gamemaker-sandbox-archives/zip';
+import { GameReader, scanImport } from '@lewismoten/gamemaker-sandbox-archives/scan';
+import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { Recorder } from '@lewismoten/gamemaker-sandbox-engine/engine/recorder';
+import { restoreSaved, type Saved } from '@lewismoten/gamemaker-sandbox-engine/engine/scene';
+import { newCharInfo } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
 import { aboutOf } from '../src/project/aboutGame';
 import { GameFiles } from '../src/project/files';
 import { parseCompanion, getSection, releaseNotesOf, exportPreviewsOf, takeCompanion } from '../src/project/companion';
@@ -23,6 +27,20 @@ const dirs = readdirSync(root, { withFileTypes: true })
   .map((d) => d.name);
 const read = (dir: string, name: string) => new Uint8Array(readFileSync(join(root, dir, name)));
 
+function expectMineResumes(files: GameFiles, bytes: Uint8Array) {
+  const game = parseGame(files.get('mine.gam')!);
+  const save: Saved = JSON.parse(new TextDecoder().decode(bytes));
+  expect(save.doscene).toBe(2);
+  expect(game.scenes[save.doscene].desc).toBe('Mine Entrance');
+  const session = { m: { files }, game, ci: newCharInfo(), rec: new Recorder(), sndClock: 0 };
+  const loaded = restoreSaved(session, undefined, save);
+  expect(loaded).toBeDefined();
+  const { chr, ci } = loaded!.world;
+  expect([chr.x[0], chr.y[0]]).toEqual([12, 7]);
+  expect(ci.inv).toEqual([149, 150, 150, 150, 150, 150, 150, 150, 150, 150]);
+  expect(ci.meter.slice(0, 2)).toEqual([3, 4]);
+}
+
 describe.each(dirs)('saves from %s', (dir) => {
   const november24 = dir === '2026-11-24-develop-beda6ecc7';
   const companion = () => parseCompanion(read(dir, 'MINE.GMC.json'));
@@ -35,13 +53,15 @@ describe.each(dirs)('saves from %s', (dir) => {
 
   if (november24) {
     it('opens the browser project ZIP with its game files and companion intact', async () => {
-      const files = new GameFiles((await readZip(read(dir, 'MINE.zip'))).map(({ name, data }) => [name, data]));
+      const zip = read(dir, 'MINE.zip');
+      const input = [{ path: 'MINE.zip', size: zip.length, read: () => Promise.resolve(zip) }];
+      const { games } = await scanImport(input);
+      expect(games).toHaveLength(1);
+      const { files } = await new GameReader(input).read(games[0]);
       expect(takeCompanion(files)).toEqual(companion());
-      expect(Object.fromEntries(files.entries().map(([name, data]) => [name, [...data]]))).toEqual({
-        'mine.gam': [1, 2, 3, 5],
-        'a.pic': [9, 8, 7],
-        'b.pic': [5],
-      });
+      expect([...files.get('a.pic')!]).toEqual([9, 8, 7]);
+      expect([...files.get('b.pic')!]).toEqual([5]);
+      expectMineResumes(files, read(dir, 'GAME0.SAV'));
     });
   }
 
@@ -89,26 +109,39 @@ describe.each(dirs)('saves from %s', (dir) => {
     );
     const p = next.stores.projects.p1 as ProjectRecord;
     expect(p.name).toBe('My Game');
-    expect(Object.keys(p.files).sort()).toEqual(['A.PIC', 'B.PIC', 'MINE.GAM']);
+    expect(Object.keys(p.files).sort()).toEqual(
+      november24 ? ['A.PIC', 'B.PIC', 'FOREST.BBL', 'MINE.GAM', 'MINER.CBL', 'MINER.CHR', 'TOWN.MAP'] : ['A.PIC', 'B.PIC', 'MINE.GAM'],
+    );
     expect([...p.files['B.PIC']]).toEqual([5]);
     const c = parseCompanion(p.companion);
     expect(getSection(c, 'MINE.GAM', 'notes', '')).toBe('Remember the key on level 2.');
     expect(readReservations(getSection(c, 'MINE.GAM', 'paletteReservations', []))).toHaveLength(2);
     expect(c).toEqual(companion());
     const cps = checkpointList(p);
-    if (november24) for (const cp of cps) expect(parseCompanion(cp.companion)).toEqual(companion());
     expect(cps.map((x) => [x.name, x.tag])).toEqual([
       ['First stamp', undefined],
       ['Second stamp', 'v1.1'],
     ]);
     const first = new GameFiles(versionAt(cps, 0));
     const second = new GameFiles(versionAt(cps, 1));
-    expect([...first.get('MINE.GAM')!]).toEqual([1, 2, 3, 4]);
-    expect([...second.get('MINE.GAM')!]).toEqual([1, 2, 3, 5]);
+    if (november24) {
+      expect(parseGame(first.get('MINE.GAM')!).scenes[2].desc).toBe('Old Shaft');
+      expect(parseGame(second.get('MINE.GAM')!).scenes[2].desc).toBe('Mine Entrance');
+      for (const [i, note] of ['Sketch the shaft.', 'Finish the entrance.'].entries()) {
+        const expected = companion();
+        expected.files['mine.gam'].notes = note;
+        expect(cps[i].made).toBe([1000, 2000][i]);
+        expect(parseCompanion(cps[i].companion)).toEqual(expected);
+      }
+    } else {
+      expect([...first.get('MINE.GAM')!]).toEqual([1, 2, 3, 4]);
+      expect([...second.get('MINE.GAM')!]).toEqual([1, 2, 3, 5]);
+      expect(getSection(parseCompanion(cps[1].companion), 'MINE.GAM', 'notes', '')).toBe('Remember the key on level 2.');
+    }
     expect(first.get('B.PIC')).toBeUndefined();
     expect([...second.get('B.PIC')!]).toEqual([5]);
-    expect(getSection(parseCompanion(cps[1].companion), 'MINE.GAM', 'notes', '')).toBe('Remember the key on level 2.');
     const saves = next.stores.saves['game:blaster'] as Record<string, Uint8Array>;
+    if (november24) expectMineResumes(new GameFiles(Object.entries(p.files)), saves['game0.sav']);
     expect(parseSave(saves['game0.sav']).doscene).toBe(2);
     expect(parseSlotNames(saves['savnames.dat'])[0]).toBe('first slot');
     expect(parseHighScoreTable(saves['blaster.his']).entries[0].name).toBe('ANN');
