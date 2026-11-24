@@ -143,7 +143,7 @@ Front: the project name ("SCIENCE PROJECT NO. 2" and "JUNIOR LAB EDITION", or "N
 room there for a code.
 
 On the back of the board, two QR codes fit between the pads. One points to the game's site. The other points to this folder's parts list and build steps on GitHub.
-A block-art picture of Dex fits between the pads too. On the Junior Lab board it measures 16.8 x 18.9 mm, with the few pixels that would land on a pad left out,
+A block-art picture of Dex fits between the pads too. On the Junior Lab board it measures 20.8 x 23.4 mm, with the few pixels that would land on a pad left out,
 just as on the front. Diagonal hatching and cross-hatching give the single silkscreen color its shading. His face and hands are left bare, so he is never an undressed outline.
 
 A code is silkscreen where a module is light and bare soldermask where it is dark. Modules are 0.5 mm, except the parts code on the Junior Lab board (0.44 mm) and the
