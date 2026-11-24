@@ -5,11 +5,16 @@ import { chromium } from 'playwright-core';
 const base = process.argv[2] ?? 'http://127.0.0.1:6154';
 const browser = await chromium.launch();
 try {
-  for (const width of [1440, 390]) {
+  for (const [width, height] of [
+    [1280, 800],
+    [1440, 900],
+    [1920, 1080],
+    [390, 844],
+  ]) {
     const phone = width === 390;
     for (const theme of ['light', 'dark']) {
       const page = await browser.newPage({
-        viewport: { width, height: phone ? 844 : 900 },
+        viewport: { width, height },
         isMobile: phone,
         hasTouch: phone,
       });
@@ -43,14 +48,16 @@ try {
         } else {
           const rect = await spine.boundingBox();
           assert.ok(rect);
-          assert.equal(
-            await spine.evaluate((link) => {
-              const bounds = link.getBoundingClientRect();
-              return document.elementFromPoint(bounds.x + 2, bounds.y + bounds.height / 2)?.closest('a') === link;
-            }),
-            true,
-          );
-          await page.mouse.click(rect.x + 2, rect.y + rect.height / 2);
+          const missedPoints = await spine.evaluate((link) => {
+            const { left, top, width, height } = link.getBoundingClientRect();
+            return [2, width / 2, width - 2].flatMap((dx) =>
+              [2, height / 2, height - 2]
+                .map((dy) => ({ x: left + dx, y: top + dy }))
+                .filter(({ x, y }) => document.elementFromPoint(x, y)?.closest('a') !== link),
+            );
+          });
+          assert.deepEqual(missedPoints, [], 'Every sampled point should hit the Guide spine');
+          await page.mouse.click(rect.x + rect.width / 2, rect.y + rect.height / 2);
         }
         await page.waitForURL('**/#/programmers-guide');
         console.log(width, theme, 'passed');
