@@ -5,7 +5,7 @@ import { join } from 'node:path';
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { createServer, type IndexHtmlTransformContext } from 'vite';
-import { chromium } from 'playwright-core';
+import { chromium, type Page } from 'playwright-core';
 import { cdCatalog, cdGames, cdSecretCatalog } from '../../scripts/cdGames';
 import { gamePageHtml, guidePageHtml, seoPages, staticPageHtml } from '../../scripts/seoBuild';
 import { readingPages } from '../../scripts/seoReadings';
@@ -38,20 +38,18 @@ function page(name: string): string {
 
 /** The JSON-LD nodes in a page. */
 function jsonLd(html: string): Record<string, unknown>[] {
-  return [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].flatMap((m) => {
-    const data = JSON.parse(m[1]) as { '@context': string; '@graph': Record<string, unknown>[] };
-    expect(data['@context']).toBe('https://schema.org');
-    return data['@graph'];
-  });
+  return [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].flatMap((m) => graphFrom(m[1]));
 }
 
-/** The JSON-LD nodes from an already-parsed script's text content (null/missing is no nodes at all,
- * so a commented-out script correctly yields nothing instead of still matching the raw HTML). */
-function graphFrom(scriptText: string | null): Record<string, unknown>[] {
-  if (!scriptText) return [];
+function graphFrom(scriptText: string): Record<string, unknown>[] {
   const data = JSON.parse(scriptText) as { '@context': string; '@graph': Record<string, unknown>[] };
   expect(data['@context']).toBe('https://schema.org');
   return data['@graph'];
+}
+
+async function liveVideoGames(reader: Page) {
+  const scripts = await reader.locator('script[type="application/ld+json"]').allTextContents();
+  return scripts.flatMap(graphFrom).filter((node) => node['@type'] === 'VideoGame');
 }
 
 /** Anything that would name or point at a secret game. */
@@ -411,6 +409,22 @@ describe('seoBuild', () => {
     for (const href of ['./#/help', './magazine.html', './cast.html', './#/credits', './dos.html']) expect(home).toContain(`<a href="${href}">`);
   });
 
+  it.each(['VideoGame', 'WebPage'])('reads adjacent JSON-LD graphs with %s first', async (firstType) => {
+    const game = { '@type': 'VideoGame', name: 'Example game' };
+    const page = { '@type': 'WebPage' };
+    const nodes = firstType === 'VideoGame' ? [game, page] : [page, game];
+    const browser = await chromium.launch();
+    try {
+      const reader = await browser.newPage();
+      await reader.setContent(
+        nodes.map((node) => `<script type="application/ld+json">${JSON.stringify({ '@context': 'https://schema.org', '@graph': [node] })}</script>`).join(''),
+      );
+      expect(await liveVideoGames(reader)).toEqual([game]);
+    } finally {
+      await browser.close();
+    }
+  });
+
   it('gives every game page its own title, canonical address, picture with alt text, VideoGame data and one h1', async () => {
     // A real HTML parser, so a tag inside a comment, a script or an attribute doesn't count.
     const browser = await chromium.launch();
@@ -433,9 +447,6 @@ describe('seoBuild', () => {
             h1s: document.querySelectorAll('h1').length,
             alts: attrs('img', 'alt'),
             preview: [...document.querySelectorAll('main img')].filter((img) => img.getAttribute('src') === src).map((img) => img.getAttribute('alt')),
-            // read from the parsed DOM, not the raw HTML text, so a commented-out script or title
-            // element is really gone instead of still matching a raw-HTML regex (Q188)
-            jsonLd: document.querySelector('script[type="application/ld+json"]')?.textContent ?? null,
           };
         }, `./og/${g.id}.png`);
         expect(parsed.title.trim(), g.id).toBeTruthy();
@@ -451,9 +462,7 @@ describe('seoBuild', () => {
         expect(parsed.preview, g.id).toEqual([expectedAlt]);
         expect(html).not.toContain('its title screen');
         if (g.series === 'starter') expect(html).toContain('<p>A Starter game that shows one Game-Maker idea');
-        const game = graphFrom(parsed.jsonLd).find((n) => n['@type'] === 'VideoGame');
-        expect(game?.name, g.id).toBe(g.title);
-        expect(game?.url, g.id).toBe(url);
+        expect(await liveVideoGames(reader), g.id).toEqual([expect.objectContaining({ name: g.title, url })]);
       }
     } finally {
       await browser.close();
