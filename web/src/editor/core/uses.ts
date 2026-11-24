@@ -43,10 +43,11 @@ function slotName(project: Project, scene: number, slot: number): string {
 }
 
 /** Every scene slot that names the file, as readable lines. */
-export function sceneUses(project: Project, file: string): Use[] {
+export function sceneUses(project: Project, file: string, includeGame = false): Use[] {
+  const prefix = includeGame ? `${project.gam} · ` : '';
   return project.usesOf(file).map((u) => ({
     file: project.gam,
-    text: `${sceneName(project, u.scene)} · ${slotName(project, u.scene, u.slot).toLowerCase()}`,
+    text: `${prefix}${sceneName(project, u.scene)} · ${slotName(project, u.scene, u.slot).toLowerCase()}`,
     count: 1,
     scene: u.scene,
   }));
@@ -77,7 +78,8 @@ export function embeddedFiles(project: Project, file: string): string[] {
 /** Direct scene slots, embedded file references, Scene Maker sources and explicit editor preview palettes. */
 export function fileUses(project: Project, file: string): Use[] {
   const n = normalize(file);
-  const out = assetGames(project).flatMap((game) => sceneUses(game, file));
+  const games = assetGames(project);
+  const out = games.flatMap((game) => sceneUses(game, file, games.length > 1));
   for (const [ext, label] of [
     ['lst', 'slide show'],
     ['bkd', 'backdrop'],
