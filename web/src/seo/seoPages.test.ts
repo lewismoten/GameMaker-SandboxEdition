@@ -436,12 +436,13 @@ describe('seoBuild', () => {
 
   const game = { '@type': 'VideoGame', name: 'Example game' };
   const pageNode = { '@type': 'WebPage' };
-  const multiTypeGame = { '@type': ['VideoGame', 'SoftwareApplication'], name: 'Second game' };
+  const multiTypeGame = { '@type': ['SoftwareApplication', 'VideoGame'], name: 'Second game' };
+  const multiTypePage = { '@type': ['WebPage', 'CreativeWork'] };
 
   it.each([
     { fixture: 'game first', nodes: [game, pageNode], expectedGames: [game] },
     { fixture: 'web page first', nodes: [pageNode, game], expectedGames: [game] },
-    { fixture: 'scalar and array game types', nodes: [game, multiTypeGame], expectedGames: [game, multiTypeGame] },
+    { fixture: 'scalar and array game types', nodes: [game, multiTypePage, multiTypeGame], expectedGames: [game, multiTypeGame] },
   ])('reads adjacent JSON-LD graphs with $fixture', async ({ nodes, expectedGames }) => {
     const browser = await chromium.launch();
     try {
