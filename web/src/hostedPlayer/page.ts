@@ -122,6 +122,16 @@ function savesSection(titles: Map<string, string>, onChange: () => void): HTMLEl
   const note = h('p', { class: 'wp-meta' });
   const say = (text: string) => (status.textContent = text);
   const exportAll = h('button', { type: 'button' }, 'Export all (.zip)');
+  const exportSaves = async (id?: string) => {
+    const description = id === undefined ? 'every game’s saves' : `the saves of ${titles.get(id) ?? id}`;
+    try {
+      const saves = id === undefined ? await allSaves() : { [id]: await loadSaves(id) };
+      download(saveZipName(id), await exportSaveZip(saves), 'application/zip');
+      say(`Exported ${description}.`);
+    } catch {
+      say(`Could not export ${description}. Try again.`);
+    }
+  };
   const refresh = async () => {
     const rows = await saveSummaries();
     note.textContent = (await savesPersist())
@@ -150,10 +160,7 @@ function savesSection(titles: Map<string, string>, onChange: () => void): HTMLEl
                   {
                     type: 'button',
                     'aria-label': `Export the saves of ${title}`,
-                    onclick: async () => {
-                      download(saveZipName(r.id), await exportSaveZip({ [r.id]: await loadSaves(r.id) }), 'application/zip');
-                      say(`Exported the saves of ${title}.`);
-                    },
+                    onclick: () => exportSaves(r.id),
                   },
                   'Export',
                 ),
@@ -179,12 +186,7 @@ function savesSection(titles: Map<string, string>, onChange: () => void): HTMLEl
         : [h('li', null, h('span', { class: 'wp-meta' }, 'No saves yet. Play a game: its high scores and saved games appear here.'))]),
     );
   };
-  exportAll.addEventListener('click', () => {
-    void (async () => {
-      download(saveZipName(), await exportSaveZip(await allSaves()), 'application/zip');
-      say('Exported every game’s saves.');
-    })();
-  });
+  exportAll.addEventListener('click', () => void exportSaves());
   const importBtn = h(
     'button',
     {
