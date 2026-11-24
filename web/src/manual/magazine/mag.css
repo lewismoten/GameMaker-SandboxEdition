@@ -258,7 +258,7 @@
 
   .mag-counter {
     min-width: 0;
-    flex: 1;
+    flex: 1 0 auto;
     white-space: nowrap;
   }
 
@@ -267,9 +267,7 @@
     top: 48px;
   }
 
-  /* one row on a phone: tighter gaps and padding, the buttons still 24px or more */
   .mag-bar {
-    flex-wrap: nowrap;
     gap: 4px;
     padding: 6px 8px;
   }
@@ -281,7 +279,7 @@
     white-space: nowrap;
   }
 
-  /* a phone scrolls the pages: the bar keeps to one row without Back and Next */
+  /* Scrolling through pages replaces Back and Next on a phone. */
   .scrolled .mag-turn {
     display: none;
   }
