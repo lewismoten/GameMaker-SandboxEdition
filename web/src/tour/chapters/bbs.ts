@@ -14,6 +14,9 @@ import type { Chapter, Target } from '../steps';
 /** The PC's screen, while the tour's call is going as planned. */
 const screen: Target = { label: 'the screen', css: '.desk[data-tour-bbs="on"] .desk-scene .crt' };
 
+// A call already started by this tour also qualifies when revisiting its opening steps.
+const canCall = '.desk:not([data-pc-busy]), .desk[data-tour-bbs]';
+
 export const bbsChapter: Chapter = {
   id: 'bbs',
   title: 'Calling the BBS',
@@ -28,12 +31,14 @@ export const bbsChapter: Chapter = {
   steps: [
     {
       id: 'bbs-hello',
+      when: canCall,
       action: 'enter',
       say: 'Dex Dynamo, dialing in from the future! In 1994 you called a BBS: somebody’s own PC, answering the phone.',
       sound: 'oneup',
     },
     {
       id: 'bbs-sysop',
+      when: canCall,
       action: 'enter',
       actor: 'lewie',
       speaker: 'lewie',
@@ -43,6 +48,7 @@ export const bbsChapter: Chapter = {
     },
     {
       id: 'bbs-dial',
+      when: canCall,
       action: 'point',
       target: { label: 'the modem', css: '.desk-scene .modem' },
       act: { do: 'bbs-call' },
@@ -53,7 +59,8 @@ export const bbsChapter: Chapter = {
       // the PC was busy with the visitor's own program: no call
       id: 'bbs-busy',
       action: 'point',
-      target: { label: 'the modem', css: '.desk:not([data-tour-bbs]) .desk-scene .modem' },
+      when: '.desk[data-pc-busy]:not([data-tour-bbs])',
+      target: { label: 'the open registration prompt or PC screen', css: ['.rs-panel:not([hidden]) .rs-x', '.desk-scene .crt'] },
       say: 'The PC is busy right now. Quit what’s running, then click the modem to call the BBS yourself.',
       optional: true,
     },
@@ -107,7 +114,7 @@ export const bbsChapter: Chapter = {
         label: 'Unlimited in the modem’s speed menu',
         css: ':root:has(.desk[data-tour-bbs="on"]) .modem-menu .speed-choice',
         text: 'Unlimited',
-        reveal: '.desk-scene .modem-speed',
+        reveal: '.desk[data-tour-bbs="on"] .desk-scene .modem-speed',
       },
       click: true,
       say: 'Too slow? Change the modem’s speed, even mid-call. Unlimited is today’s speed: no waiting!',
@@ -134,6 +141,7 @@ export const bbsChapter: Chapter = {
     },
     {
       id: 'bbs-logoff',
+      when: '.desk[data-tour-bbs]',
       action: 'exit',
       act: { do: 'bbs-logoff', wait: 'Time left', hold: true },
       say: 'That’s a BBS call. The modem on the desk dials one any time you like.',

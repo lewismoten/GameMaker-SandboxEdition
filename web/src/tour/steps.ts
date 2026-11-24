@@ -222,6 +222,8 @@ export interface TourStep {
   pageOnly?: boolean;
   /** Left out, rather than said with nothing to point at, when its target isn't on the page. */
   optional?: boolean;
+  /** Play this step only when the page matches this selector. */
+  when?: string;
   /** The day (YYYY-MM-DD) this step was added: "What's new" offers the steps newer than a visitor's last visit (whatsNew.ts). Left off, the step is old. */
   since?: string;
   /** Starts or stops the page's game preview as the action lands (previews are held still during a tour otherwise). */
