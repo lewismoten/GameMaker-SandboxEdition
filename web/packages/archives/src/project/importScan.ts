@@ -268,7 +268,9 @@ export async function scanImport(given: ScanFile[], { signal, onProgress, onStep
     const { players, games: played, crcs: exeCrcs } = await playedBy(files);
     const { games, loose } = groupGames(files, played);
     (report.misnamed ??= []).push(...(await misnamedIn(files.filter((f) => !isZipName(f.path)))));
-    if (!zips.length) report.loose.push(...loose);
+    if (!zips.length) {
+      for (const file of loose) report.loose.push(file);
+    }
     const localGames: FoundGame[] = [];
     /** Adds a game; how many files its .gam names that it lacks. */
     const add = async (g: Group, gams: ScanFile[], files: ScanFile[], gam?: string, leftover?: (missing: number) => string | undefined) => {

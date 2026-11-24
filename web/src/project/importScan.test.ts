@@ -84,6 +84,15 @@ describe('scanImport', () => {
     expect(fallback.files.size).toBe(0);
   });
 
+  it('reports the colliding paths in a selection of 150,000 loose files', async () => {
+    const empty = new Uint8Array();
+    const files = Array.from({ length: 149_998 }, (_, i) => file(`${i}.map`, empty));
+    files.push(file('a/level.map', empty), file('b/LEVEL.MAP', empty));
+    const report = await scanImport(files);
+    expect(report.looseErrors).toEqual(['a/level.map and b/LEVEL.MAP both use the DOS name level.map.']);
+    expect(report.loose).toEqual([]);
+  });
+
   it.each([false, true])('keeps a ZIP game alongside colliding loose files (loose GAM present: %s)', async (withGam) => {
     const good = await zip('good.zip', [['good.gam', gam('Good')]]);
     expect((await scanImport([good])).games.map((g) => g.name)).toEqual(['Good']);
