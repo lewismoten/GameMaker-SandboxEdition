@@ -26,7 +26,15 @@ try {
         if (phone) await tv.locator('.lib-tag').tap();
         else await tv.locator('rect[fill="url(#av-glow)"]').click();
         await page.waitForURL('**/#/library?open=tv');
-        await page.keyboard.press('Escape');
+        const tvDialog = page.getByRole('dialog', { name: 'TV: videos and walkthroughs', exact: true });
+        await tvDialog.waitFor({ state: 'visible' });
+        if (phone)
+          await tvDialog
+            .getByRole('button', { name: 'Close', exact: true })
+            .filter({ hasText: /^Close$/ })
+            .tap();
+        else await page.keyboard.press('Escape');
+        await tvDialog.waitFor({ state: 'hidden', timeout: 5000 });
         await page.waitForURL('**/#/library');
         if (phone) {
           assert.equal(await spine.isVisible(), false);
