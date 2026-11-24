@@ -15,6 +15,44 @@ afterAll(async () => {
   server?.stop();
 });
 
+function extensionVisible(button: Element): boolean {
+  const extension = button.querySelector('.files-toggle-extension')!;
+  if (getComputedStyle(extension).visibility !== 'visible') return false;
+  const stem = button.querySelector('.files-toggle-stem')!;
+  const range = document.createRange();
+  range.selectNodeContents(extension);
+  const rect = range.getBoundingClientRect();
+  const box = button.getBoundingClientRect();
+  return (
+    rect.width > 0 &&
+    rect.height > 0 &&
+    rect.top >= box.top &&
+    rect.bottom <= box.bottom &&
+    rect.left >= box.left &&
+    rect.left >= stem.getBoundingClientRect().right - 1 &&
+    rect.right <= box.right
+  );
+}
+
+it.each([
+  ['hidden extension', '.files-toggle-extension { visibility: hidden }'],
+  ['clipped second line', 'button { height: 20px }'],
+])('rejects a %s', async (_name, css) => {
+  const page = await browser.newPage();
+  try {
+    await page.setContent(`
+      <style>button { display: block; width: 100px; height: 42px; padding: 0; border: 0; overflow: hidden; line-height: 20px; align-content: start }</style>
+      <button>Files (2)<br><span class="files-toggle-stem">file</span><span class="files-toggle-extension">.txt</span></button>
+    `);
+    const button = page.locator('button');
+    expect(await button.evaluate(extensionVisible)).toBe(true);
+    await page.addStyleTag({ content: css });
+    expect(await button.evaluate(extensionVisible)).toBe(false);
+  } finally {
+    await page.close();
+  }
+});
+
 const filenames = { latin: 'wwwwwwww.txt', rtl: 'שששששששש.txt' };
 const fixtures = [
   { width: 320, narrow: false, script: 'latin', filename: filenames.latin, theme: 'light' },
@@ -66,8 +104,6 @@ it.each(fixtures)(
         const stem = button.querySelector('.files-toggle-stem')!;
         const extension = button.querySelector('.files-toggle-extension')!;
         const range = document.createRange();
-        range.selectNodeContents(extension);
-        const rect = range.getBoundingClientRect();
         range.selectNodeContents(prefix);
         const countRect = range.getBoundingClientRect();
         const box = button.getBoundingClientRect();
@@ -84,11 +120,11 @@ it.each(fixtures)(
           overflowing: [button, ...button.querySelectorAll('*')].filter((el) => el.scrollWidth > el.clientWidth).map((el) => el.className),
           truncation: getComputedStyle(stem).textOverflow,
           suffix: extension.textContent,
-          visible: rect.width > 0 && rect.left >= box.left && rect.left >= stem.getBoundingClientRect().right - 1 && rect.right <= box.right,
         };
       });
+      expect(await button.evaluate(extensionVisible)).toBe(true);
       if (narrow) expect(layout.overflowing).toEqual(['files-toggle-stem']);
-      expect(layout).toMatchObject({ prefix: `Files (${count})`, truncation: 'ellipsis', suffix: '.txt', visible: true });
+      expect(layout).toMatchObject({ prefix: `Files (${count})`, truncation: 'ellipsis', suffix: '.txt' });
       if (!narrow) expect(layout.countVisible).toBe(true);
       if (process.env.GM_PHONE_FILES_SHOTS) {
         await page.locator('.ach-toast').first().waitFor({ state: 'hidden' });
