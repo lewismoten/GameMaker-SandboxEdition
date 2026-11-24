@@ -17,11 +17,17 @@ afterAll(async () => {
 
 function extensionVisible(button: Element): boolean {
   const extension = button.querySelector('.files-toggle-extension')!;
-  if (getComputedStyle(extension).visibility !== 'visible') return false;
+  if (getComputedStyle(extension).visibility !== 'visible' || extension.getBoundingClientRect().height === 0) return false;
   const stem = button.querySelector('.files-toggle-stem')!;
   const range = document.createRange();
   range.selectNodeContents(extension);
   const rect = range.getBoundingClientRect();
+  for (let element: Element | null = extension; element; element = element.parentElement) {
+    const style = getComputedStyle(element);
+    if (style.overflowY === 'visible' || style.display === 'inline' || style.display === 'contents') continue;
+    const top = element.getBoundingClientRect().top + element.clientTop;
+    if (rect.top < top || rect.bottom > top + element.clientHeight) return false;
+  }
   const box = button.getBoundingClientRect();
   return (
     rect.width > 0 &&
@@ -36,13 +42,15 @@ function extensionVisible(button: Element): boolean {
 
 it.each([
   ['hidden extension', '.files-toggle-extension { visibility: hidden }'],
+  ['zero-height extension', '.files-toggle-extension { display:inline-block; height:0; overflow:hidden; vertical-align:top }'],
+  ['clipped ancestor', '.filename { display:inline-block; height:8px; overflow:hidden; vertical-align:top }'],
   ['clipped second line', 'button { height: 20px }'],
 ])('rejects a %s', async (_name, css) => {
   const page = await browser.newPage();
   try {
     await page.setContent(`
       <style>button { display: block; width: 100px; height: 42px; padding: 0; border: 0; overflow: hidden; line-height: 20px; align-content: start }</style>
-      <button>Files (2)<br><span class="files-toggle-stem">file</span><span class="files-toggle-extension">.txt</span></button>
+      <button>Files (2)<br><span class="files-toggle-stem">file</span><span class="filename"><span class="files-toggle-extension">.txt</span></span></button>
     `);
     const button = page.locator('button');
     expect(await button.evaluate(extensionVisible)).toBe(true);
