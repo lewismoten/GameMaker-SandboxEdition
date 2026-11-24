@@ -194,12 +194,16 @@ describe('opening and restoring a damaged project', () => {
     const message = truncated ? /game\.gam is cut short/i : /editor-only notes.*damaged/i;
     await vi.waitFor(() => expect(elements(doc.body).map((el) => el.textContent)).toContainEqual(expect.stringMatching(message)));
 
-    const dialog = showDamagedCopies(() => {});
+    const refresh = vi.fn();
+    vi.mocked(ui.toast).mockClear();
+    const dialog = showDamagedCopies(refresh);
     await vi.runAllTimersAsync();
     const button = (label: string) => elements(doc.body).find((el) => el.tag === 'button' && el.attrs['aria-label'] === label)!;
     const keep = button('Keep as a game: Mine (damaged copy)');
     for (let i = 0; i < clicks; i++) keep.fire('click');
     await vi.runAllTimersAsync();
+    expect(vi.mocked(ui.toast).mock.calls).toEqual([['“Mine (damaged copy)” is now under My games.']]);
+    expect(refresh).toHaveBeenCalledTimes(1);
     button('Close').fire('click');
     await dialog;
 

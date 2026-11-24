@@ -27,6 +27,7 @@ export async function showDamagedCopies(refresh: () => unknown): Promise<void> {
       body.replaceChildren(
         ...copies.map((c) => {
           const from = games.find((g) => g.id === originalOf(c.id));
+          let pending = false;
           const act = (label: string, aria: string, run: () => Promise<string>) =>
             h(
               'button',
@@ -34,9 +35,15 @@ export async function showDamagedCopies(refresh: () => unknown): Promise<void> {
                 type: 'button',
                 'aria-label': aria,
                 onclick: async () => {
-                  toast(await run().catch(() => 'That did not work. The copy is still here.'));
-                  await refresh();
-                  await draw();
+                  if (pending) return;
+                  pending = true;
+                  try {
+                    toast(await run().catch(() => 'That did not work. The copy is still here.'));
+                    await refresh();
+                    await draw();
+                  } finally {
+                    pending = false;
+                  }
                 },
               },
               label,
