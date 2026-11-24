@@ -52,7 +52,7 @@ records every clip again.
 | [home-achievements.ogg](home/home-achievements.ogg) | Achievements keeps track of what you’ve done, here and on the 1994 desk. | Home: Teddy points at Achievements in the header | 5.77 |
 | [home-cast.ogg](home/home-cast.ogg) | The Cast page is where you meet Teddy, me, and everyone else from the new games. | Home: Teddy points at Cast in the header | 5.45 |
 | [home-views.ogg](home/home-views.ogg) | Desk, DOS and Web: a 1994 desk with its PC, DOS Game-Maker on its own, or this page. | Home: Teddy points at the Desk, DOS and Web switch | 7.59 |
-| [home-offline.ogg](home/home-offline.ogg) | Settings has Play offline, which saves the whole site so it works with no connection. | Home: Teddy points at Play offline in the Settings menu | 5.77 |
+| [home-offline.ogg](home/home-offline.ogg) | Play offline lets you choose what to save. Core comes along, and you can pick extras by size. Video needs the internet. | Home: Teddy points at Play offline in the Settings menu | 7.99 |
 | [home-theme.ogg](home/home-theme.ogg) | Theme switches between dark, light, or whatever your computer uses. | Home: Teddy points at Theme in the Settings menu | 5.02 |
 | [home-guides.ogg](home/home-guides.ogg) | Press this button any time to see this tour again, or to have Teddy and me wait on a page for you. | Home: Teddy points at the ? Guides button | 6.27 |
 | [home-bye.ogg](home/home-bye.ogg) | That’s the tour! Now go play something. | Home: Gwinn says goodbye and walks off | 3.24 |
@@ -126,7 +126,7 @@ records every clip again.
 | Clip | Says | Where | Seconds |
 | --- | --- | --- | ---: |
 | [settings-hello.ogg](settings/settings-hello.ogg) | Courier Max, with a delivery: the settings. They live behind the gear, top right. | Settings: Max comes on | 6.12 |
-| [settings-offline.ogg](settings/settings-offline.ogg) | Play offline says how big the whole site is, then saves it all, so it works with no connection. | Settings: Max points at Play offline in the Settings menu | 6.79 |
+| [settings-offline.ogg](settings/settings-offline.ogg) | Play offline packs Core in every delivery. Check the sizes and choose which extras to save. Video needs the internet. | Settings: Max points at Play offline in the Settings menu | 8.73 |
 | [settings-source.ogg](settings/settings-source.ogg) | Source on GitHub: every line of this site’s code, open for anyone to read. | Settings: Max points at Source on GitHub in the Settings menu | 5.86 |
 | [settings-credits.ogg](settings/settings-credits.ogg) | Credits names who and what made everything here. That’s this page. | Settings: Max points at Credits in the Settings menu | 4.75 |
 | [settings-theme.ogg](settings/settings-theme.ogg) | Theme goes dark, light, or whatever your computer uses. Each press picks the next one. | Settings: Max points at Theme in the Settings menu | 6.95 |
@@ -315,7 +315,7 @@ records every clip again.
 | [edit-integrator-links.ogg](edit-integrator/edit-integrator-links.ogg) | Links are the exits. Each goes to another scene, from a block on this map to a block on the next. Point one at the winning ending and the game is won. | Editor: Inspector Penn points at the links table | 9.28 |
 | [edit-integrator-screens.ogg](edit-integrator/edit-integrator-screens.ogg) | Screens lists every title, menu and between-level picture. Click one to jump to the scene that uses it. | Editor: Inspector Penn presses the Screens tab | 7.25 |
 | [edit-integrator-music.ogg](edit-integrator/edit-integrator-music.ogg) | Music lists each scene’s song, with a play button when its file is in the game. | Editor: Inspector Penn presses the Music tab | 5.40 |
-| [edit-integrator-player.ogg](edit-integrator/edit-integrator-player.ogg) | And this button opens the DOS player, the program that runs the game on a real computer. That is the last stop. | Editor: Inspector Penn points at the DOS player button | 7.55 |
+| [edit-integrator-player.ogg](edit-integrator/edit-integrator-player.ogg) | The last stop is the DOS player tab in Overview. Open it to edit the words, colors and frames players see in DOS. | Editor: Inspector Penn points at the DOS player tab | 7.63 |
 | [edit-integrator-bye.ogg](edit-integrator/edit-integrator-bye.ogg) | Case closed. Every scene is where it should be. | Editor: Inspector Penn says goodbye and walks off | 3.73 |
 
 ## edit-player
@@ -380,7 +380,7 @@ records every clip again.
 | Clip | Says | Where | Seconds |
 | --- | --- | --- | ---: |
 | [edit-assistant-hello.ogg](edit-assistant/edit-assistant-hello.ogg) | Behold, the future! An AI helper that looks at your game, tests it and changes it with you. Well, your own AI, that is. | Editor: Dex comes on | 8.67 |
-| [edit-assistant-button.ogg](edit-assistant/edit-assistant-button.ogg) | The star button opens the chat beside the editor, or over the whole screen on a phone. Press it again, or Escape, to put it away. | Editor: Dex points at the Assistant button | 8.85 |
+| [edit-assistant-button.ogg](edit-assistant/edit-assistant-button.ogg) | To open chat, use the Assistant star button beside the editor. On a phone, choose Assistant in the file menu. Press Escape to close chat. | Editor: Dex points at the Assistant button | 9.60 |
 | [edit-assistant-panel.ogg](edit-assistant/edit-assistant-panel.ogg) | There is no AI built in. You bring your own, and while it works it is sent what its tools read of this game, and pictures of it. | Editor: Dex points at the Assistant panel | 8.45 |
 | [edit-assistant-setup.ogg](edit-assistant/edit-assistant-setup.ogg) | AI setup picks the provider: Ollama on this computer or another, or any OpenAI-compatible server. It needs an address and a model of your own. | Editor: Dex points at the AI setup button | 10.80 |
 | [edit-assistant-model.ogg](edit-assistant/edit-assistant-model.ogg) | This line names your model once it is set up. Until then it says No AI set up, and the chat can’t answer yet. The settings stay in your browser. | Editor: Dex points at the model line | 10.12 |
