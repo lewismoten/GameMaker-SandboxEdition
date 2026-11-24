@@ -183,7 +183,7 @@ export function mountPlayer(container: HTMLElement, files: GameFiles, gamFile: s
       back.classList.add('gm-back-small');
       corner.prepend(back);
     }
-    speedPick(corner, speed, canvas);
+    speedPick(corner, speed);
     unkeys = screenKeys(container, corner, canvas);
   }
 

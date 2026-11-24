@@ -15,7 +15,7 @@ const LABELS: Record<SpeedChoice, string> = {
 };
 
 /** Adds the control to the corner; `speed` is the object the running game reads every tick. */
-export function speedPick(corner: HTMLElement, speed: SpeedSetting, canvas: HTMLElement): void {
+export function speedPick(corner: HTMLElement, speed: SpeedSetting): void {
   const label = document.createElement('label');
   label.className = 'gm-speed';
   label.title = 'Slow the game the way an old PC would: the picture, walking, monsters, and the pauses while a sound or a level loads from disk (estimates)';
@@ -23,9 +23,8 @@ export function speedPick(corner: HTMLElement, speed: SpeedSetting, canvas: HTML
   for (const c of SPEED_CHOICES) select.append(Object.assign(document.createElement('option'), { value: c, textContent: LABELS[c] }));
   select.addEventListener('change', () => {
     speed.slowPc = costsFor(select.value as SpeedChoice);
-    canvas.focus();
   });
-  // keys typed here must not reach the game; Esc or Tab leaves
+  // keys typed here must not reach the game; Tab moves on normally
   select.addEventListener('keydown', (e) => e.stopPropagation());
   label.append('Run like a ', select);
   corner.prepend(label);
