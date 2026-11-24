@@ -100,6 +100,23 @@ describe('scanImport', () => {
     expect(report.badZips).toEqual([]);
   });
 
+  it('reads each picked ZIP with the same filename through one batch reader', async () => {
+    const archive = (title: string, hero: number) =>
+      zip('good.zip', [
+        ['main.gam', gam(title)],
+        ['hero.cel', Uint8Array.of(hero)],
+      ]);
+    const given = [await archive('First', 1), await archive('Second', 2), file('a/hero.cel', Uint8Array.of(3)), file('b/HERO.CEL', Uint8Array.of(4))];
+    const { games } = await scanImport(given);
+    expect(games.map((g) => g.name)).toEqual(['First', 'Second']);
+    const reader = new GameReader(given);
+    const first = await reader.read(games[0]);
+    const second = await reader.read(games[1]);
+    expect([first.files.get('hero.cel'), second.files.get('hero.cel')]).toEqual([Uint8Array.of(1), Uint8Array.of(2)]);
+    expect(first.files.get('main.gam')).toEqual(gam('First'));
+    expect(second.files.get('main.gam')).toEqual(gam('Second'));
+  });
+
   it('imports a game alongside duplicate Mac metadata', async () => {
     const given = [await zip('game.zip', [...game('', 'Game'), ['__MACOSX/n', Uint8Array.of(1)], ['__MACOSX/n', Uint8Array.of(1)]])];
     const report = await scanImport(given);

@@ -507,7 +507,7 @@ export async function gameFromFiles(list: ScanFile[], onFile?: FileProgress, sig
  */
 export class GameReader {
   private loose: Map<string, ScanFile>;
-  private last?: { key: string; entries: Map<string, ScanFile> };
+  private last?: { outer: ScanFile; innerKey: string; entries: Map<string, ScanFile> };
 
   constructor(
     given: ScanFile[],
@@ -542,10 +542,11 @@ export class GameReader {
   }
 
   private async zipEntries(game: FoundGame, signal?: AbortSignal): Promise<Map<string, ScanFile>> {
-    const key = [game.zips[0].path, ...game.inner].join('\n');
-    if (this.last?.key === key) return this.last.entries;
+    const outer = game.zips[0];
+    const innerKey = JSON.stringify(game.inner);
+    if (this.last?.outer === outer && this.last.innerKey === innerKey) return this.last.entries;
     this.last = undefined;
-    let bytes = await game.zips[0].read();
+    let bytes = await outer.read();
     for (const name of game.inner) {
       signal?.throwIfAborted();
       const inside = bytes && listZip(bytes, this.zipLimits).find((e) => e.name === name);
@@ -554,7 +555,7 @@ export class GameReader {
     signal?.throwIfAborted();
     if (!bytes) throw new Error(`${fromLabel([game.zips[0].path, ...game.inner].map(clean), '')} could not be read again.`);
     const entries = new Map(listZip(bytes, this.zipLimits).map((e) => [e.name, { path: e.name, size: e.size, read: e.read }]));
-    this.last = { key, entries };
+    this.last = { outer, innerKey, entries };
     return entries;
   }
 }
