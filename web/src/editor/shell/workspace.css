@@ -436,7 +436,13 @@
 
 /* Stack the count and filename inside the same phone target. */
 @media (max-width: 600px) {
+  .sidebar .side-top:has(.files-toggle .files-toggle-current) {
+    flex-wrap: wrap;
+  }
+
   .sidebar .files-toggle:has(.files-toggle-current) {
+    /* Leave room for the four-character DOS suffix and button padding. */
+    min-width: 5em;
     flex-direction: column;
     align-items: flex-start;
     justify-content: center;
