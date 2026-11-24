@@ -4,8 +4,8 @@
 // With --workers N under a plain-node bundle (scripts/build-games.mjs) the trinkets are made in worker threads.
 // Lifted from Depth Perception's trinket tool; its output is byte for byte what it was.
 import { createHash } from 'node:crypto';
-import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { lstatSync, mkdirSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from 'node:fs';
+import { join, win32 } from 'node:path';
 import { Worker, isMainThread, parentPort } from 'node:worker_threads';
 import { setFlagsFromString } from 'node:v8';
 import { deflateRawSync } from 'node:zlib';
@@ -14,7 +14,13 @@ import { inspectMesh } from './meshCheck';
 import { writeStl } from './stl';
 import { write3mf } from './threeMf';
 
-type Item = Record<string, unknown> & { id: string; log: string };
+type ManifestFile = Record<string, unknown> & { file: string };
+type OutputFiles = { file?: string; colors?: ManifestFile; supports?: ManifestFile | null };
+type Item = Record<string, unknown> & OutputFiles & { id: string; log: string };
+
+function filenames(item: OutputFiles) {
+  return [item.file, item.colors?.file, item.supports?.file].filter((name): name is string => typeof name === 'string' && !!name);
+}
 
 export interface TrinketToolDef {
   id: string;
@@ -132,9 +138,20 @@ export async function runTrinketTool<D extends TrinketToolDef>(tool: TrinketTool
   }
   const key = sourceKey(tool.keyFiles);
   const manifestFile = join(out, 'manifest.json');
-  if (!args.includes('--force') && existsSync(manifestFile) && JSON.parse(readFileSync(manifestFile, 'utf8')).key === key) {
+  const manifestStat = lstatSync(manifestFile, { throwIfNoEntry: false });
+  if (manifestStat && !manifestStat.isFile()) throw new Error(`Expected a regular file at ${manifestFile}`);
+  let previous: { key?: string; items?: OutputFiles[] } | undefined;
+  if (manifestStat) {
+    try {
+      previous = JSON.parse(readFileSync(manifestFile, 'utf8'));
+    } catch (error) {
+      // A forced build can replace a damaged manifest, with no known files to clean up.
+      if (!(error instanceof SyntaxError) || !args.includes('--force')) throw error;
+    }
+  }
+  if (!args.includes('--force') && previous?.key === key) {
     process.stdout.write(`${'trinkets: up to date'}\n`);
-    process.exit(0);
+    return;
   }
   mkdirSync(out, { recursive: true });
   const began = Date.now();
@@ -144,27 +161,33 @@ export async function runTrinketTool<D extends TrinketToolDef>(tool: TrinketTool
   // slowest first keeps the last worker busy
   const order = [...defs].sort((a, b) => b.height * b.maxWidth - a.height * a.maxWidth).map((d) => d.id);
   if (workers > 1 && entry.endsWith('.mjs') && !entry.includes('vite-node')) {
-    await Promise.all(
-      Array.from({ length: workers }, () => {
-        const worker = new Worker(entry, { argv: process.argv.slice(2) });
-        return new Promise<void>((done, fail) => {
-          const next = () => {
-            const id = order.shift();
-            if (id) worker.postMessage(id);
-            else void worker.terminate().then(() => done());
-          };
-          worker.on('message', (m: Item & { error?: string }) => {
-            if (m.error) fail(new Error(m.error));
-            else {
-              results.set(m.id, m);
-              next();
-            }
+    const pool: Worker[] = [];
+    try {
+      await Promise.all(
+        Array.from({ length: workers }, () => {
+          const worker = new Worker(entry, { argv: process.argv.slice(2) });
+          pool.push(worker);
+          return new Promise<void>((done, fail) => {
+            const next = () => {
+              const id = order.shift();
+              if (id) worker.postMessage(id);
+              else done();
+            };
+            worker.on('message', (m: Item & { error?: string }) => {
+              if (m.error) fail(new Error(m.error));
+              else {
+                results.set(m.id, m);
+                next();
+              }
+            });
+            worker.on('error', fail);
+            next();
           });
-          worker.on('error', fail);
-          next();
-        });
-      }),
-    );
+        }),
+      );
+    } finally {
+      await Promise.all(pool.map((worker) => worker.terminate()));
+    }
   } else {
     for (const id of order) results.set(id, build(defs.find((d) => d.id === id)!));
   }
@@ -173,10 +196,12 @@ export async function runTrinketTool<D extends TrinketToolDef>(tool: TrinketTool
     process.stdout.write(`${item.log}\n`);
     delete (item as { log?: string }).log;
   }
+  const kept = new Set(['manifest.json', ...items.flatMap(filenames)]);
+  for (const name of new Set(previous?.items?.flatMap(filenames))) {
+    if (kept.has(name) || win32.basename(name) !== name || name === '.' || name === '..') continue;
+    const path = join(out, name);
+    if (lstatSync(path, { throwIfNoEntry: false })?.isFile()) rmSync(path);
+  }
   writeFileSync(manifestFile, JSON.stringify({ key, game, items }, null, 1) + '\n');
-  // the folder is build output the site serves: files no longer in the manifest (a game's earlier designs) go
-  const files = (i: Item) => [i.file, (i.colors as { file: string }).file, (i.supports as { file: string } | null)?.file ?? ''] as string[];
-  const kept = new Set(['manifest.json', ...items.flatMap(files)]);
-  for (const name of readdirSync(out)) if (!kept.has(name) && statSync(join(out, name)).isFile()) rmSync(join(out, name));
   process.stdout.write(`${`trinkets: ${items.length} made in ${((Date.now() - began) / 1000).toFixed(1)} s`}\n`);
 }
