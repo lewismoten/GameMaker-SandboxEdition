@@ -15,7 +15,7 @@ const LABELS: Record<SpeedChoice, string> = {
 };
 
 /** Adds the control to the corner; `speed` is the object the running game reads every tick. */
-export function speedPick(corner: HTMLElement, speed: SpeedSetting): void {
+export function speedPick(corner: HTMLElement, speed: SpeedSetting): HTMLSelectElement {
   const label = document.createElement('label');
   label.className = 'gm-speed';
   label.title = 'Slow the game the way an old PC would: the picture, walking, monsters, and the pauses while a sound or a level loads from disk (estimates)';
@@ -24,8 +24,30 @@ export function speedPick(corner: HTMLElement, speed: SpeedSetting): void {
   select.addEventListener('change', () => {
     speed.slowPc = costsFor(select.value as SpeedChoice);
   });
-  // keys typed here must not reach the game; Tab moves on normally
-  select.addEventListener('keydown', (e) => e.stopPropagation());
   label.append('Run like a ', select);
   corner.prepend(label);
+  return select;
+}
+
+/** Shift+F6 switches between gameplay and the toolbar while plain Tab stays a DOS key. */
+export function toolbarKeyboard(canvas: HTMLCanvasElement, corner: HTMLElement, picker: HTMLSelectElement, releaseKeys: () => void): void {
+  const hint = 'Shift+F6 switches between the game and toolbar';
+  canvas.title = hint;
+  canvas.setAttribute('aria-description', hint);
+  for (const el of [canvas, corner]) {
+    el.addEventListener(
+      'keydown',
+      (e) => {
+        if (e.key === 'F6' && e.shiftKey && !e.altKey && !e.ctrlKey && !e.metaKey) {
+          e.preventDefault();
+          e.stopPropagation();
+          if (!e.repeat) (el === canvas ? picker : canvas).focus();
+        }
+      },
+      true,
+    );
+  }
+  corner.addEventListener('focusin', releaseKeys);
+  // Keep native Tab navigation and button activation, including Space on keyup.
+  for (const type of ['keydown', 'keyup']) corner.addEventListener(type, (e) => e.stopPropagation());
 }

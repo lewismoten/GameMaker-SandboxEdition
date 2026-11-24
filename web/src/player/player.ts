@@ -5,7 +5,7 @@ import { dosHardwareSetup } from './dosConfig/dosSetup';
 import { Machine, GameAborted } from '@lewismoten/gamemaker-sandbox-engine/engine/machine';
 import type { AudioEngine } from '@lewismoten/gamemaker-sandbox-engine/audio/engine';
 import { Keyboard } from '@lewismoten/gamemaker-sandbox-engine/input/keyboard';
-import { speedPick } from './speedPick';
+import { speedPick, toolbarKeyboard } from './speedPick';
 import type { Session, SpeedSetting } from '@lewismoten/gamemaker-sandbox-engine/engine/scene';
 import { runGame, type RunOptions } from '@lewismoten/gamemaker-sandbox-engine/engine/game';
 import type { GameFiles } from '../project/files';
@@ -183,7 +183,8 @@ export function mountPlayer(container: HTMLElement, files: GameFiles, gamFile: s
       back.classList.add('gm-back-small');
       corner.prepend(back);
     }
-    speedPick(corner, speed);
+    toolbarKeyboard(canvas, corner, speedPick(corner, speed), () => machine.keyboard.releaseAll());
+    start.querySelector('small')!.append(' · Shift+F6 for toolbar');
     unkeys = screenKeys(container, corner, canvas);
   }
 

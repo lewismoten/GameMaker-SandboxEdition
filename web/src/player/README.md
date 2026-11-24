@@ -14,3 +14,5 @@ Part of the [source map](../README.md). A self-contained player (canvas, input a
 - [`dosConfig/`](dosConfig/README.md): PLAYGAME's own Configure screen on the 1994 PC's monitor.
 
 On `play.html`, **Save screenshot** (the camera in the corner) downloads exactly the DOS screen: 312 × 196 during a level, 320 × 200 for pictures, animations, text pages, menus and function-key screens. No browser controls, scaling or smoothing are included. Press F12 to save and focus the camera during play; Enter or Space saves again, and Escape returns focus to the game. Tab reaches it before play starts. Clicking or tapping keeps the game’s focus. The button fades with the idle pointer and reappears on pointer movement or keyboard focus. Files use `<game-id>-scene-<number>-YYYYMMDD-HHMMSS.png` during play and `<game-id>-screen-YYYYMMDD-HHMMSS.png` otherwise, with local time.
+
+During play, Shift+F6 focuses the speed picker. Tab and Shift+Tab move between toolbar controls. Shift+F6 returns to the game, where Tab keeps its DOS function.
