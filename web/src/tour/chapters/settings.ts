@@ -31,7 +31,7 @@ export const settingsChapter: Chapter = {
       id: 'settings-offline',
       action: 'point',
       target: setting('Play offline'),
-      say: 'Play offline says how big the whole site is, then saves it all, so it works with no connection.',
+      say: 'Play offline packs Core in every delivery. Check the sizes and choose which extras to save. Video needs the internet.',
       sound: 'warp',
     },
     {

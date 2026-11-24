@@ -40,7 +40,7 @@ export const editAssistantChapter: Chapter = {
       id: 'edit-assistant-button',
       action: 'point',
       target: assistantButton,
-      say: 'The star button opens the chat beside the editor, or over the whole screen on a phone. Press it again, or Escape, to put it away.',
+      say: 'To open chat, use the Assistant star button beside the editor. On a phone, choose Assistant in the file menu. Press Escape to close chat.',
     },
     {
       id: 'edit-assistant-panel',
