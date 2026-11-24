@@ -47,9 +47,14 @@ function graphFrom(scriptText: string): Record<string, unknown>[] {
   return data['@graph'];
 }
 
+function isVideoGame(node: Record<string, unknown>): boolean {
+  const type = node['@type'];
+  return (Array.isArray(type) ? type : [type]).includes('VideoGame');
+}
+
 async function liveVideoGames(reader: Page) {
   const scripts = await reader.locator('script[type="application/ld+json"]').allTextContents();
-  return scripts.flatMap(graphFrom).filter((node) => node['@type'] === 'VideoGame');
+  return scripts.flatMap(graphFrom).filter(isVideoGame);
 }
 
 /** Anything that would name or point at a secret game. */
@@ -321,7 +326,7 @@ describe('seoBuild', () => {
     const shell = page('play.html');
     for (const g of playable) {
       const html = gamePageHtml(shell, g);
-      const games = jsonLd(html).filter((n) => n['@type'] === 'VideoGame');
+      const games = jsonLd(html).filter(isVideoGame);
       expect(games, g.id).toHaveLength(1);
       const v = games[0];
       expect(v.name).toBe(g.title);
@@ -429,17 +434,22 @@ describe('seoBuild', () => {
     }
   });
 
-  it.each(['VideoGame', 'WebPage'])('reads adjacent JSON-LD graphs with %s first', async (firstType) => {
-    const game = { '@type': 'VideoGame', name: 'Example game' };
-    const page = { '@type': 'WebPage' };
-    const nodes = firstType === 'VideoGame' ? [game, page] : [page, game];
+  const game = { '@type': 'VideoGame', name: 'Example game' };
+  const pageNode = { '@type': 'WebPage' };
+  const multiTypeGame = { '@type': ['VideoGame', 'SoftwareApplication'], name: 'Second game' };
+
+  it.each([
+    { fixture: 'game first', nodes: [game, pageNode], expectedGames: [game] },
+    { fixture: 'web page first', nodes: [pageNode, game], expectedGames: [game] },
+    { fixture: 'scalar and array game types', nodes: [game, multiTypeGame], expectedGames: [game, multiTypeGame] },
+  ])('reads adjacent JSON-LD graphs with $fixture', async ({ nodes, expectedGames }) => {
     const browser = await chromium.launch();
     try {
       const reader = await browser.newPage();
       await reader.setContent(
         nodes.map((node) => `<script type="application/ld+json">${JSON.stringify({ '@context': 'https://schema.org', '@graph': [node] })}</script>`).join(''),
       );
-      expect(await liveVideoGames(reader)).toEqual([game]);
+      expect(await liveVideoGames(reader)).toEqual(expectedGames);
     } finally {
       await browser.close();
     }
