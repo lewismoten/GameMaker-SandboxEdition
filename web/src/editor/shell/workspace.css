@@ -447,7 +447,7 @@
     align-items: flex-start;
     justify-content: center;
     gap: 0;
-    padding-block: 2px;
+    padding: 2px 4px;
   }
 
   .files-toggle:has(.files-toggle-current) > [aria-hidden],

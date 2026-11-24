@@ -74,6 +74,7 @@ it.each([
 const filenames = { latin: 'wwwwwwww.txt', rtl: 'שששששששש.txt' };
 const fixtures = [
   { width: 320, narrow: false, script: 'latin', filename: filenames.latin, theme: 'light' },
+  { width: 390, narrow: false, script: 'short-latin', filename: 'mygame.txt', theme: 'light' },
   ...(['light', 'dark'] as const).flatMap((theme) =>
     Object.entries(filenames).flatMap(([script, filename]) => [false, true].map((narrow) => ({ width: 390, narrow, script, filename, theme }))),
   ),
@@ -141,6 +142,7 @@ it.each(fixtures)(
         };
       });
       expect(await button.evaluate(extensionVisible)).toBe(true);
+      if (filename === 'mygame.txt') expect(layout.overflowing).toEqual([]);
       if (narrow) expect(layout.overflowing).toEqual(['files-toggle-stem']);
       expect(layout).toMatchObject({ prefix: `Files (${count})`, truncation: 'ellipsis', suffix: '.txt' });
       if (!narrow) expect(layout.countVisible).toBe(true);
