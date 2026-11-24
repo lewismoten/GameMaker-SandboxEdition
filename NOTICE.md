@@ -67,7 +67,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex fixed and tested batch imports of ZIP files with the same filename.
 - OpenAI Codex fixed trinket build cleanup, cache returns, and worker shutdown and added regression tests.
 - OpenAI Codex fixed DOS achievement notice placement on short touchscreens and added its browser regression test.
-- OpenAI Codex fixed keyboard focus in the player speed selector and added its regression test.
+- OpenAI Codex fixed keyboard focus and toolbar navigation in the player and added the Chromium regression test.
 - OpenAI Codex fixed and tested the focused filename in the phone editor after a guided tour.
 - OpenAI Codex corrected reduced-motion and sound controls for the tour and added regression tests.
 - OpenAI Codex checked internal publication references, updated the Programmer’s Guide chapter map and tour documentation, and extended the book-link tests.
