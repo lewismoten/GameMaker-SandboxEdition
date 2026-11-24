@@ -89,7 +89,9 @@ function looseNotes(r: ScanReport): HTMLElement | undefined {
 /** Says what was found when no game was; nothing is imported. */
 export function showNothingFound(r: ScanReport): Promise<void> {
   const empty = r.zips === 1 && !r.looseErrors?.length && !r.loose.length && r.emptyZips[0]?.empty;
-  const what = 'A game is a folder or zip with a .GAM file in it, so nothing was imported.';
+  const what = r.looseErrors?.length
+    ? 'Rename or deselect one of the colliding files and try again.'
+    : 'A game is a folder or zip with a .GAM file in it, so nothing was imported.';
   return modal<void>(empty ? 'This archive is empty' : 'No game found', (close) => [
     h('p', null, empty ? `${r.emptyZips[0].path} contains no files to import.` : `${scanSummary(r)}. ${what}`),
     empty ? null : zipNotes(r),

@@ -83,9 +83,10 @@ it('shows both colliding loose MAP paths in the No game found dialog without cre
     await vi.waitFor(() => expect(modal).toHaveBeenCalledWith('No game found', expect.any(Function)));
     const dialog = doc.body.children.at(-1)!;
     expect(dialog.open).toBe(true);
-    expect(dialog.children.filter((el) => el.tag === 'p').map((el) => el.children[0].textContent)).toContain(
-      'a/level.map and b/LEVEL.MAP both use the DOS name level.map.',
-    );
+    const paragraphs = dialog.children.filter((el) => el.tag === 'p').map((el) => el.children[0].textContent);
+    expect(paragraphs).toContain('a/level.map and b/LEVEL.MAP both use the DOS name level.map.');
+    expect(paragraphs.join(' ')).toContain('Rename or deselect one of the colliding files and try again.');
+    expect(paragraphs.join(' ')).not.toContain('.GAM');
     dialog.fire('cancel');
     await importing;
     expect(create).not.toHaveBeenCalled();
