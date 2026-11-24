@@ -61,6 +61,10 @@ function secretHits(text: string): string[] {
   );
 }
 
+function expectGameTitle(renderedTitle: string, gameTitle: string) {
+  expect(renderedTitle, gameTitle).toBe(`${gameTitle} · play in your browser · ${PRODUCT}`);
+}
+
 describe('seoBuild', () => {
   const files = generatedFiles();
   const home = page('index.html');
@@ -411,6 +415,22 @@ describe('seoBuild', () => {
     for (const href of ['./#/help', './magazine.html', './cast.html', './#/credits', './dos.html']) expect(home).toContain(`<a href="${href}">`);
   });
 
+  it('rejects a wrong browser title when the expected title is in a comment', async () => {
+    const game = playable[0];
+    const html = gamePageHtml(play, game).replace(/<title>[^<]*<\/title>/, '<!--$&--><title>Wrong</title>');
+    const browser = await chromium.launch();
+    try {
+      const reader = await (await browser.newContext({ javaScriptEnabled: false })).newPage();
+      await reader.route('**/*', (route) => route.abort());
+      await reader.setContent(html, { waitUntil: 'domcontentloaded' });
+      const title = await reader.title();
+      expect(title).toBe('Wrong');
+      expect(() => expectGameTitle(title, game.title)).toThrow();
+    } finally {
+      await browser.close();
+    }
+  });
+
   it('gives every game page its own title, canonical address, picture with alt text, VideoGame data and one h1', async () => {
     // A real HTML parser, so a tag inside a comment, a script or an attribute doesn't count.
     const browser = await chromium.launch();
@@ -426,6 +446,8 @@ describe('seoBuild', () => {
           const attrs = (selector: string, name: string) => [...document.querySelectorAll(selector)].map((e) => e.getAttribute(name));
           return {
             title: document.title,
+            ogTitle: attrs('head meta[property="og:title"]', 'content'),
+            twitterTitle: attrs('head meta[name="twitter:title"]', 'content'),
             canonical: attrs('head link[rel="canonical"]', 'href'),
             ogImage: attrs('head meta[property="og:image"]', 'content'),
             ogImageAlt: attrs('head meta[property="og:image:alt"]', 'content'),
@@ -438,7 +460,9 @@ describe('seoBuild', () => {
             jsonLd: document.querySelector('script[type="application/ld+json"]')?.textContent ?? null,
           };
         }, `./og/${g.id}.png`);
-        expect(parsed.title.trim(), g.id).toBeTruthy();
+        expectGameTitle(parsed.title, g.title);
+        expect(parsed.ogTitle, g.id).toEqual([parsed.title]);
+        expect(parsed.twitterTitle, g.id).toEqual([parsed.title]);
         expect(titles.has(parsed.title), parsed.title).toBe(false);
         titles.add(parsed.title);
         expect(parsed.canonical, g.id).toEqual([url]);
