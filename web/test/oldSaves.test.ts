@@ -172,7 +172,7 @@ it('mounts the project slot when a catalog game has the same ID and slot name', 
   const { mountPlayer } = await import('../src/player/player');
   const projectSlot = Uint8Array.of(1);
   const buckets: Record<string, Record<string, Uint8Array>> = {
-    'game:blaster': { 'game0.sav': Uint8Array.of(2) },
+    'game:blaster': { 'game0.sav': Uint8Array.of(2), 'game1.sav': Uint8Array.of(3) },
     'project:blaster': { 'game0.sav': projectSlot },
   };
   const element = () => ({ style: {}, append: vi.fn(), prepend: vi.fn() });
@@ -194,6 +194,7 @@ it('mounts the project slot when a catalog game has the same ID and slot name', 
     await vi.waitFor(() => expect(mountPlayer).toHaveBeenCalledOnce());
     const [, files] = vi.mocked(mountPlayer).mock.calls[0];
     expect(files.get('game0.sav')).toEqual(projectSlot);
+    expect(files.has('game1.sav')).toBe(false);
   } finally {
     vi.restoreAllMocks();
     vi.unstubAllGlobals();
