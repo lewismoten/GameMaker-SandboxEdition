@@ -37,9 +37,10 @@ it('switches between DOS input and native toolbar navigation', async () => {
     expect(await typed()).toEqual(['Tab']);
     await page.keyboard.press('Shift+F6');
     expect(await select.evaluate((el) => el === document.activeElement)).toBe(true);
-    for (const preset of ['486', '386', '286']) {
+    for (const preset of ['486', '386', '286'] as const) {
       await page.keyboard.press('ArrowDown');
       expect(await select.inputValue()).toBe(preset);
+      expect(await page.evaluate('fixture.speed.slowPc')).toEqual(costsFor(preset));
       expect(await select.evaluate((el) => el === document.activeElement)).toBe(true);
     }
     await page.keyboard.press('Tab');
