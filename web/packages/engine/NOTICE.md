@@ -56,3 +56,7 @@ This software is based in part on the work of the Independent JPEG Group.
 No libjpeg C source or binaries are bundled. Incremental block visibility and atomic
 MCU updates were corrected with OpenAI Codex (GPT-6), directed by Lewis Moten, under
 this project's MIT License.
+
+## Color-vision simulation
+
+The [project notice](https://github.com/lewismoten/GameMaker-SandboxEdition/blob/develop/NOTICE.md#third-party-formats-trademarks-and-code) credits Machado, Oliveira and Fernandes for the simulation matrices and identifies the CIELAB, CIE76 and sRGB formulas used by the engine.
