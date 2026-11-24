@@ -1,4 +1,5 @@
 // Exercise the player's canvas and toolbar with the window keyboard attached in Chromium.
+import { costsFor } from '@lewismoten/gamemaker-sandbox-engine/engine/slowPc';
 import { build } from 'esbuild';
 import { chromium } from 'playwright-core';
 import { expect, it } from 'vitest';
@@ -11,11 +12,12 @@ it('switches between DOS input and native toolbar navigation', async () => {
         const canvas = document.querySelector('canvas');
         const corner = document.querySelector('.gm-corner');
         const keyboard = new Keyboard();
+        const speed = {};
         keyboard.attach();
-        toolbarKeyboard(canvas, corner, speedPick(corner, {}), () => keyboard.releaseAll());
+        toolbarKeyboard(canvas, corner, speedPick(corner, speed), () => keyboard.releaseAll());
         corner.querySelector('button').onclick = () => document.body.dataset.activated = 'yes';
         canvas.focus();
-        export { keyboard };`,
+        export { keyboard, speed };`,
       resolveDir: process.cwd(),
     },
     bundle: true,
@@ -47,6 +49,7 @@ it('switches between DOS input and native toolbar navigation', async () => {
     await page.keyboard.press('Shift+Tab');
     expect(await select.evaluate((el) => el === document.activeElement)).toBe(true);
     await page.keyboard.press('ArrowRight');
+    expect(await page.evaluate('fixture.speed.slowPc')).toEqual(costsFor('ps1'));
     expect(await select.inputValue()).toBe('ps1');
     expect(await select.evaluate((el) => el === document.activeElement)).toBe(true);
     await page.keyboard.press('Shift+Tab');
