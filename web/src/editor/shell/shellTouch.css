@@ -114,3 +114,10 @@
     min-height: 44px;
   }
 }
+
+@media (any-pointer: coarse) {
+  .sidebar h2.file-kind .add {
+    min-width: 44px;
+    min-height: 44px;
+  }
+}
