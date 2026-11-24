@@ -470,9 +470,11 @@ dialog.modal .dp-preview [hidden] {
 
 @media (any-pointer: coarse) {
   .dp .dp-tool,
+  .dp .dp-presets button,
+  .dp .dp-arrow,
   .dp .dp-tab,
   .dp input:is([type='text'], [type='number'], .dp-text),
-  .dp select,
+  dialog.modal[open] .dp select,
   .dp summary {
     min-height: 44px;
     min-width: 44px;
