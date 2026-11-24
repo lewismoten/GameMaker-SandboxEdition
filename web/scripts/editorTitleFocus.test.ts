@@ -26,8 +26,8 @@ it('reveals the phone file heading during route focus and clips it again on Tab'
   }
 }, 30_000);
 
-it.each(['Escape', 'automatic completion'])(
-  'returns focus to the filename after %s with expired input',
+it.each(['Escape', 'automatic completion', 'Close tour'])(
+  'focuses the restored editor view after %s',
   async (ending) => {
     const bundle = await build({
       stdin: { contents: "export { Tour } from './src/tour/tourEngine'; export * from './src/routeFocus'", resolveDir: process.cwd() },
@@ -41,7 +41,8 @@ it.each(['Escape', 'automatic completion'])(
     const browser = await launch();
     try {
       const page = await browser.newPage();
-      const personal = '#/p/mine/mygame.map';
+      const overview = ending === 'Close tour';
+      const personal = overview ? '#/p/mine' : '#/p/mine/mygame.map';
       const sample = '#/p/look:logic/kitchen.map';
       await page.route('http://fixture.test/**', (route) =>
         route.fulfill({ contentType: 'text/html', body: '<button class="tour-btn">Tour</button><main></main>' }),
@@ -58,9 +59,20 @@ it.each(['Escape', 'automatic completion'])(
     ] }]).start()`);
       await page.waitForURL('**/' + sample);
       if (ending === 'Escape') await page.keyboard.press('Escape');
+      else if (overview) await page.getByRole('button', { name: 'Close tour' }).click();
       else await page.locator('.tour-btn').evaluate((el) => (el.id = 'ready'));
       await page.waitForURL('**/' + personal);
       expect(await page.locator(':focus').textContent()).toBe('Tour');
+      if (overview) {
+        await page.locator('main').evaluate((el) => {
+          el.outerHTML = '<div id="content"><main aria-label="Editor"><button>Controls</button></main></div>';
+        });
+        await page.evaluate(`fixture.focusNewView(document.querySelector('#content'), '${sample}', location.hash, fixture.takeFilenameFocus(location.hash))`);
+        const landmark = page.getByRole('main', { name: 'Editor' });
+        expect(await landmark.isVisible()).toBe(true);
+        expect(await landmark.evaluate((el) => el === document.activeElement)).toBe(true);
+        return;
+      }
       await page.locator('main').evaluate((el) => (el.innerHTML = '<div class="file-head"><h1 class="file-title">mygame.map</h1></div>'));
       await page.evaluate(`fixture.focusNewView(document.querySelector('main'), '${sample}', location.hash, fixture.takeFilenameFocus(location.hash))`);
       expect(await page.locator(':focus').textContent()).toBe('mygame.map');

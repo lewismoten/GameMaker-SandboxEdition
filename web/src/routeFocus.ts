@@ -54,12 +54,10 @@ function keepsFocus(active: Element | null): boolean {
 
 /** After the new view is drawn: focus its h1, else its main area, else the content area, without scrolling. */
 export function focusNewView(content: HTMLElement, from: string, to: string, filename = false): void {
-  if (!filename && (!viewChanged(from, to) || !startedByPerson(lastInput, Date.now()))) return;
+  const title = filename ? content.querySelector<HTMLElement>('.file-head > h1.file-title') : null;
+  if (!title && (!viewChanged(from, to) || !startedByPerson(lastInput, Date.now()))) return;
   if (keepsFocus(document.activeElement)) return;
-  const target = filename
-    ? content.querySelector<HTMLElement>('.file-head > h1.file-title')
-    : (content.querySelector<HTMLElement>('h1') ?? content.querySelector<HTMLElement>('main, [role="main"]') ?? content);
-  if (!target) return;
+  const target = title ?? content.querySelector<HTMLElement>('h1') ?? content.querySelector<HTMLElement>('main, [role="main"]') ?? content;
   if (!target.hasAttribute('tabindex')) target.setAttribute('tabindex', '-1');
   target.style.outline = 'none';
   target.addEventListener('blur', () => target.style.removeProperty('outline'), { once: true });
