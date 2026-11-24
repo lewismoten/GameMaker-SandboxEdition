@@ -197,10 +197,21 @@ export async function runTrinketTool<D extends TrinketToolDef>(tool: TrinketTool
     delete (item as { log?: string }).log;
   }
   const kept = new Set(['manifest.json', ...items.flatMap(filenames)]);
-  for (const name of new Set(previous?.items?.flatMap(filenames))) {
-    if (kept.has(name) || win32.basename(name) !== name || name === '.' || name === '..') continue;
-    const path = join(out, name);
-    if (lstatSync(path, { throwIfNoEntry: false })?.isFile()) rmSync(path);
+  const stale = [...new Set(previous?.items?.flatMap(filenames))].filter(
+    (name) => !kept.has(name) && win32.basename(name) === name && name !== '.' && name !== '..',
+  );
+  if (stale.length) {
+    // Another spelling of a retained download may resolve to the same file on this volume.
+    const retainedFiles = new Set<string>();
+    for (const name of kept) {
+      const file = statSync(join(out, name), { bigint: true, throwIfNoEntry: false });
+      if (file) retainedFiles.add(`${file.dev}:${file.ino}`);
+    }
+    for (const name of stale) {
+      const path = join(out, name);
+      const file = lstatSync(path, { bigint: true, throwIfNoEntry: false });
+      if (file?.isFile() && !retainedFiles.has(`${file.dev}:${file.ino}`)) rmSync(path);
+    }
   }
   writeFileSync(manifestFile, JSON.stringify({ key, game, items }, null, 1) + '\n');
   process.stdout.write(`${`trinkets: ${items.length} made in ${((Date.now() - began) / 1000).toFixed(1)} s`}\n`);

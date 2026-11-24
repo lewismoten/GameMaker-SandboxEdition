@@ -1,6 +1,6 @@
 // Exercise output ownership and the lifetime of plain Node callers.
 import { execFileSync } from 'node:child_process';
-import { mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -15,20 +15,20 @@ beforeEach(() => {
 });
 afterEach(() => rmSync(out, { recursive: true, force: true }));
 
-it('preserves unrelated files and removes only obsolete manifest outputs', async () => {
+function sampleTool(ids) {
   const mesh = {
     positions: new Float32Array([0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1]),
     indices: new Uint32Array([0, 2, 1, 0, 1, 3, 1, 2, 3, 2, 0, 3]),
     colors: new Uint8Array(12),
   };
   const report = inspectMesh(mesh);
-  const tool = {
+  return {
     out,
     game: 'sample',
     gameTitle: 'Sample',
     keyFiles: [],
     args: ['--force'],
-    defs: ['old', 'keep'].map((id) => ({ id, title: id, blurb: '', height: 1, maxWidth: 1 })),
+    defs: ids.map((id) => ({ id, title: id, blurb: '', height: 1, maxWidth: 1 })),
     make: () => ({
       mesh,
       report,
@@ -40,6 +40,23 @@ it('preserves unrelated files and removes only obsolete manifest outputs', async
       overhang: { area: 0, share: 0 },
     }),
   };
+}
+
+it('keeps every manifest download when an ID changes only in case', async () => {
+  await runTrinketTool(sampleTool(['Coin']));
+  const downloads = ['coin.stl', 'coin.3mf', 'coin-supports.stl'];
+  // On case-sensitive hosts, give the new spellings the same lookup behavior as on a case-insensitive volume.
+  for (const name of downloads) {
+    if (!existsSync(join(out, name))) symlinkSync(name.replace('coin', 'Coin'), join(out, name));
+  }
+  await runTrinketTool(sampleTool(['coin']));
+  const { items } = JSON.parse(readFileSync(join(out, 'manifest.json'), 'utf8'));
+  expect(items.map(({ id, file, colors, supports }) => [id, file, colors.file, supports.file])).toEqual([['coin', ...downloads]]);
+  for (const name of downloads) expect(readFileSync(join(out, name)).length).toBeGreaterThan(0);
+});
+
+it('preserves unrelated files and removes only obsolete manifest outputs', async () => {
+  const tool = sampleTool(['old', 'keep']);
   const note = join(out, 'extra.stl');
   writeFileSync(note, 'mine');
   await runTrinketTool(tool);
