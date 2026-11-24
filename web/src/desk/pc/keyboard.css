@@ -162,6 +162,13 @@
   }
 }
 
+@media (max-width: 390px) {
+  /* Keep the printed Setup caption legible on the narrowest boards. */
+  .keyboard .kt-brand {
+    display: none;
+  }
+}
+
 /* the lock lights over the keypad: a green LED and its name, as on a 101-key board */
 .kb-locks {
   position: absolute;
