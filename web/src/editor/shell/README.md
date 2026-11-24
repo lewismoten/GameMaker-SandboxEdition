@@ -11,6 +11,7 @@ Builds Home and the project workspace, including asset browsing, import/save act
 - [`homeFilters.ts`](homeFilters.ts): Owns Home filter controls, collection/filter state, focus-triggered deeper search, tile filtering, and home address helpers; Home supplies rendering and lifetime callbacks.
 - [`homeDemoStart.ts`](homeDemoStart.ts): Gates demo inspection, notes and playback behind a painted title picture, viewport visibility and an idle callback (with a timeout). Pointer or keyboard interest can start sooner; Save-Data and reduced-data visitors use Watch demo. Replacing the game or leaving Home cancels pending work.
 - [`workspace.ts`](workspace.ts): Coordinates project navigation, file operations, editor mounting/disposal, Overview, and play-test transitions.
+- [`importWorkspaceFiles.ts`](importWorkspaceFiles.ts) confirms imports over unsaved edits before applying files and companion sections.
 - [`workspaceSidebar.ts`](workspaceSidebar.ts): Owns sidebar rendering, filename search, remembered folds, file-list focus, and phone dismissal listeners. File actions call back into Workspace.
 - [`workspacePlay.ts`](workspacePlay.ts): Owns play-test picks, copied game files, lazy player mounting, the player handle, and the return file. Workspace coordinates navigation and cleanup before mounting.
 - [`overview.ts`](overview.ts): Hosts Files, Controls, DOS player, and Tools tabs; loads non-Files panels dynamically.
