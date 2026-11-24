@@ -1,0 +1,52 @@
+{
+  "format": "gamemaker-companion",
+  "version": 1,
+  "files": {
+    "mine.gam": {
+      "paletteReservations": [
+        {
+          "role": "character",
+          "first": 16,
+          "last": 31
+        },
+        {
+          "role": "monster",
+          "first": 64,
+          "last": 79
+        }
+      ],
+      "notes": "Remember the key on level 2.",
+      "todo": [
+        {
+          "text": "fix the bridge",
+          "done": false
+        }
+      ]
+    },
+    "town.map": {
+      "wrap": true
+    },
+    "forest.bbl": {
+      "roles": {
+        "4": {
+          "roles": [
+            "wall"
+          ]
+        }
+      }
+    }
+  },
+  "releaseNotes": {
+    "1.1": "Added a bridge."
+  },
+  "about": {
+    "title": "My Game",
+    "credits": [
+      {
+        "role": "Music",
+        "name": "Ann"
+      }
+    ]
+  },
+  "exportPreviews": false
+}
