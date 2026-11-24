@@ -21,7 +21,7 @@ function extensionVisible(button: Element): boolean {
   // Computed rgba() uses a fourth comma-separated channel. Modern color functions use a slash.
   const alpha = style.color.match(/(?:^rgba\([^)]*,|\/)\s*([\d.e+-]+)%?\s*\)$/i)?.[1];
   if (Number(alpha) === 0) return false;
-  if (style.visibility !== 'visible' || extension.getBoundingClientRect().height === 0) return false;
+  if (style.visibility !== 'visible' || (style.display !== 'contents' && extension.getBoundingClientRect().height === 0)) return false;
   for (let element: Element | null = extension; element; element = element.parentElement) {
     if (Number(getComputedStyle(element).opacity) === 0) return false;
   }
@@ -31,9 +31,12 @@ function extensionVisible(button: Element): boolean {
   const rect = range.getBoundingClientRect();
   for (let element: Element | null = extension; element; element = element.parentElement) {
     const style = getComputedStyle(element);
-    if (style.overflowY === 'visible' || style.display === 'inline' || style.display === 'contents') continue;
-    const top = element.getBoundingClientRect().top + element.clientTop;
-    if (rect.top < top || rect.bottom > top + element.clientHeight) return false;
+    if (style.display === 'inline' || style.display === 'contents') continue;
+    const bounds = element.getBoundingClientRect();
+    const left = bounds.left + element.clientLeft;
+    const top = bounds.top + element.clientTop;
+    if (style.overflowX !== 'visible' && (rect.left < left || rect.right > left + element.clientWidth)) return false;
+    if (style.overflowY !== 'visible' && (rect.top < top || rect.bottom > top + element.clientHeight)) return false;
   }
   const box = button.getBoundingClientRect();
   return (
@@ -48,14 +51,16 @@ function extensionVisible(button: Element): boolean {
 }
 
 it.each([
-  ['hidden extension', '.files-toggle-extension { visibility: hidden }'],
-  ['zero-height extension', '.files-toggle-extension { display:inline-block; height:0; overflow:hidden; vertical-align:top }'],
-  ['clipped ancestor', '.filename { display:inline-block; height:8px; overflow:hidden; vertical-align:top }'],
-  ['transparent extension', '.files-toggle-extension { opacity: 0 }'],
-  ['transparent text color', '.files-toggle-extension { color: transparent }'],
-  ['transparent ancestor', 'body { opacity: 0 }'],
-  ['clipped second line', 'button { height: 20px }'],
-])('rejects a %s', async (_name, css) => {
+  ['hidden extension', '.files-toggle-extension { visibility: hidden }', false],
+  ['zero-height extension', '.files-toggle-extension { display:inline-block; height:0; overflow:hidden; vertical-align:top }', false],
+  ['clipped ancestor', '.filename { display:inline-block; height:8px; overflow:hidden; vertical-align:top }', false],
+  ['horizontally clipped ancestor', '.filename { display:inline-block; vertical-align:top; width:0; overflow:hidden }', false],
+  ['transparent extension', '.files-toggle-extension { opacity: 0 }', false],
+  ['transparent text color', '.files-toggle-extension { color: transparent }', false],
+  ['transparent ancestor', 'body { opacity: 0 }', false],
+  ['clipped second line', 'button { height: 20px }', false],
+  ['display:contents extension', '.files-toggle-extension { display:contents }', true],
+] as const)('measures visibility for a %s', async (_name, css, visible) => {
   const page = await browser.newPage();
   try {
     await page.setContent(`
@@ -65,7 +70,7 @@ it.each([
     const button = page.locator('button');
     expect(await button.evaluate(extensionVisible)).toBe(true);
     await page.addStyleTag({ content: css });
-    expect(await button.evaluate(extensionVisible)).toBe(false);
+    expect(await button.evaluate(extensionVisible)).toBe(visible);
   } finally {
     await page.close();
   }
