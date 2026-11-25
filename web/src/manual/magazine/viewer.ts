@@ -9,6 +9,7 @@
 // it opens over the desk (openMagazine).
 import './mag.css';
 import { h } from '../../editor/core/ui';
+import { fetchArchive } from '../../project/archiveWait';
 import type { CatalogEntry } from '../../project/files';
 import { setHashParams } from '../../urlState';
 import { spreadAt, stepSpread } from '../printables/imposition';
@@ -40,7 +41,7 @@ const loading = new Map<1 | 2, Promise<Loaded>>();
 function loadIssue(which: 1 | 2): Promise<Loaded> {
   const have = loading.get(which);
   if (have) return have;
-  const made = fetch('./games/index.json')
+  const made = fetchArchive('./games/index.json')
     .then((r) => (r.ok ? (r.json() as Promise<CatalogEntry[]>) : []))
     .catch(() => [] as CatalogEntry[])
     .then(async (list) => {
