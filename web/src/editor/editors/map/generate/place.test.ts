@@ -52,20 +52,18 @@ describe('placing a layout', () => {
     }
   }, 30_000); // 1 to 2 s alone, over 5 s when the machine is loaded
 
-  it('forest with tree edges and a path stays reachable', () => {
-    for (let seed = 1; seed <= 30; seed++) {
-      const base = new Uint8Array(MLEN * MWID).fill(2);
-      const o = generate(roles, { kind: 'forest', seed, rect: WHOLE });
-      if (!o.ok) throw new Error(o.message);
-      const { blocks } = place(base, o.result, roles, [treeSet]);
-      const solid = solidAt(blocks);
-      const seen = openFrom(blocks, bg, [o.result.entry]);
-      // the map wraps, so cells the forest closed off from the far side still count as one region: check reached >= open
-      let open = 0,
-        reached = 0;
-      for (let i = 0; i < blocks.length; i++) if (!solid[i]) (open++, seen[i] && reached++);
-      expect(reached, `seed ${seed}`).toBe(open);
-    }
+  it.each(Array.from({ length: 30 }, (_, i) => i + 1))('forest with tree edges and a path stays reachable (seed %i)', (seed) => {
+    const base = new Uint8Array(MLEN * MWID).fill(2);
+    const o = generate(roles, { kind: 'forest', seed, rect: WHOLE });
+    if (!o.ok) throw new Error(o.message);
+    const { blocks } = place(base, o.result, roles, [treeSet]);
+    const solid = solidAt(blocks);
+    const seen = openFrom(blocks, bg, [o.result.entry]);
+    // the map wraps, so cells the forest closed off from the far side still count as one region: check reached >= open
+    let open = 0,
+      reached = 0;
+    for (let i = 0; i < blocks.length; i++) if (!solid[i]) (open++, seen[i] && reached++);
+    expect(reached, `seed ${seed}`).toBe(open);
   });
 
   it('offers four different, working layouts and nothing when a role is missing', () => {

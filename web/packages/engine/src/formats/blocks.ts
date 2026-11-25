@@ -114,6 +114,8 @@ export function parseBlocks(bytes: Uint8Array, count: number): Block[] {
   return blocks;
 }
 
+// PLAYGAME.C loads a fixed number of blkstruct records, and BLOCC.C saveblks writes exactly those records.
+// Some archived BBLs have an extra 0xff after the last record. DOS ignores it, so omit it on save.
 export function serializeBlocks(blocks: Block[]): Uint8Array {
   const w = new Writer(blocks.length * BLOCK_SIZE);
   for (const b of blocks) writeBlock(w, b);

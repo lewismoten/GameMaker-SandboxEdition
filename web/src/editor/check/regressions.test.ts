@@ -7,7 +7,7 @@ import { GameFiles } from '../../project/files';
 import { landings } from './checks/landings';
 import { playFindings } from './checks/playChecks';
 import { sealed } from './checks/sealed';
-import { explore } from './explore';
+import { explore, type ExploreOptions } from './explore';
 import { diskAt } from './gitDisk';
 import { gameOf } from './playtest';
 import { linksInto } from './sceneLinks';
@@ -50,22 +50,23 @@ async function allSinks(id: string, rev: string): Promise<string[]> {
 }
 
 /** Explores a scene from where the hero is put down (a cell), until the first link he takes. */
-async function exploreFrom(id: string, rev: string, scene: number, x: number, y: number, budgetMs: number) {
+async function exploreFrom(id: string, rev: string, scene: number, x: number, y: number, limits: Pick<ExploreOptions, 'budgetMs' | 'now'>) {
   const g = at(id, rev);
   const into = linksInto(g.game, scene);
   const from = into.find((l) => l.scene !== scene) ?? into[0];
   const sim = new SceneSim(g.game, scene, g.files, from.to);
   sim.place(x, y);
   const entry = { start: from.to, ci: startCharInfo(), clock: 1 };
-  const ex = await explore(g.game, scene, g.files, entry, { start: sim.snapshot(), budgetMs, stopAt: () => true });
+  const ex = await explore(g.game, scene, g.files, entry, { start: sim.snapshot(), ...limits, stopAt: () => true });
   return { g, ex };
 }
 
 describe.skipIf(!has)('the level check on the Sandbox games’ old bugs', () => {
   it('finds Teddy 2’s Midway softlock behind THE BIG DROP (d3701bd9), gone at 128c0619', async () => {
     // a dog who dropped off the deck past the entry card lands beyond the tower's far wall
-    // (the budgets are ceilings: each search stops at its answer, about 30 s here, but a loaded machine ran the old 50 s one dry)
-    const old = await exploreFrom('teddy2', 'd3701bd9', 8, 58, 39, 60_000);
+    // Both searches end at the first exit, an empty queue or the explorer’s node limit.
+    const limits = { now: () => 0 };
+    const old = await exploreFrom('teddy2', 'd3701bd9', 8, 58, 39, limits);
     expect(old.ex.complete).toBe(true);
     expect(old.ex.exits).toHaveLength(0);
     const run = {
@@ -83,14 +84,14 @@ describe.skipIf(!has)('the level check on the Sandbox games’ old bugs', () => 
         old.g.scenes.find((s) => s.scene === 8),
       ).some((f) => f.severity === 'error' && f.check === 'link-unreached'),
     ).toBe(true);
-    const fixed = await exploreFrom('teddy2', '128c0619', 8, 58, 39, 150_000);
+    const fixed = await exploreFrom('teddy2', '128c0619', 8, 58, 39, limits);
     expect(fixed.ex.exits.length).toBeGreaterThan(0);
   }, 300_000);
 
   it('finds Loaf’s brook that held the loaf while it bit (before 298c8e05), gone after', async () => {
     const brook = async (rev: string) => {
       // a loaf that slipped into the water between the stepping stones
-      const { ex } = await exploreFrom('loaf', rev, 5, 25, 13, 6_000);
+      const { ex } = await exploreFrom('loaf', rev, 5, 25, 13, { budgetMs: 6_000 });
       return ex.incidents.filter((i) => i.kind === 'hurt-lock' && /^block (63|64)$/.test(i.source ?? ''));
     };
     expect((await brook('298c8e05^')).length).toBeGreaterThan(0);

@@ -78,7 +78,7 @@ it('neither serves guessed test-disk URLs nor emits them into a production catal
     logLevel: 'silent',
     plugins: [cdGames(join(root, 'cd'))],
     optimizeDeps: { noDiscovery: true },
-    server: { host: '127.0.0.1', port: 25199, hmr: false, watch: null },
+    server: { host: '127.0.0.1', port: 6283, hmr: false, watch: null },
   });
   try {
     await server.listen();
