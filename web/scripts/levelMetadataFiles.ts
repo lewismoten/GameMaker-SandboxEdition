@@ -13,12 +13,17 @@ export function readMetadata<T>(dir: string): Record<string, T> {
 }
 
 export function writeMetadata<T>(dir: string, data: Record<string, T>): void {
-  mkdirSync(dir, { recursive: true });
-  for (const name of readdirSync(dir).filter((n) => n.endsWith('.json'))) if (!Object.hasOwn(data, name.slice(0, -5))) unlinkSync(join(dir, name));
+  const entries = new Map<string, string>();
   for (const id of Object.keys(data).sort()) {
     if (!/^[a-z0-9][a-z0-9-]*$/.test(id)) throw new Error(`Invalid game id: ${id}`);
+    const json = JSON.stringify(data[id]);
+    if (json === undefined) throw new Error(`Invalid JSON metadata for ${id}`);
+    entries.set(id, `${json}\n`);
+  }
+  mkdirSync(dir, { recursive: true });
+  for (const name of readdirSync(dir).filter((n) => n.endsWith('.json'))) if (!entries.has(name.slice(0, -5))) unlinkSync(join(dir, name));
+  for (const [id, text] of entries) {
     const path = join(dir, `${id}.json`);
-    const text = `${JSON.stringify(data[id])}\n`;
     if (!existsSync(path) || readFileSync(path, 'utf8') !== text) writeFileSync(path, text);
   }
 }
