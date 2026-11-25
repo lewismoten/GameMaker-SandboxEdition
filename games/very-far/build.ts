@@ -45,11 +45,12 @@ disk.put('veryfar.bbl', serializeBlocks(book.finish()));
 disk.put('veryfar.mbl', serializeBlocks(monsterBlocks.finish()));
 disk.put('veryfar.mon', serializeMonsters(buildMonsters(monsterBlocks)));
 disk.put('hero.cbl', serializeBlocks(heroBlocks.finish()));
-const nearKit = buildHero(heroBlocks);
+const nearKit = buildHero(heroBlocks, { heldRise: { push: 12 } });
 disk.put('hero.chr', serializeCharacter(nearKit));
 // the tiny Kit: one block file, two character files that differ only in how far a step goes and how long it lasts
-const quickKit = tinyHero(pal, nearKit, heroBlocks, 4, 1);
-const slowKit = tinyHero(pal, nearKit, heroBlocks, 3, 2);
+const farBase = buildHero(heroBlocks);
+const quickKit = tinyHero(pal, farBase, heroBlocks, 4, 1);
+const slowKit = tinyHero(pal, farBase, heroBlocks, 3, 2);
 disk.put('tiny.cbl', serializeBlocks(quickKit.blocks.finish()));
 disk.put('quick.chr', serializeCharacter(quickKit.character));
 disk.put('slow.chr', serializeCharacter(slowKit.character));
