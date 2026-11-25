@@ -1,5 +1,5 @@
 // Catalog ZIPs carry an intact DOS runtime and reversible player customizations.
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 import { copyFileSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
@@ -9,6 +9,7 @@ import { readZip } from '@lewismoten/gamemaker-sandbox-archives/zip';
 import { dosNameProblems } from '../src/export/exportDos';
 import { playerRecord } from '../src/dosPlayer/playerRecord';
 import { readHostedZip } from '../src/project/hostedZip';
+import * as queues from './archiveQueue';
 import { gameArchive } from './gameArchive';
 import { cdGames, type CdCatalogEntry } from './cdGames';
 
@@ -38,16 +39,6 @@ beforeAll(() => {
   ]);
 });
 afterAll(() => rmSync(temp, { recursive: true, force: true }));
-
-/** Asks again until the dev server's worker has built the archive (a 202 means not yet). */
-async function archive(url: string): Promise<Response> {
-  for (let i = 0; i < 200; i++) {
-    const res = await fetch(url);
-    if (res.status !== 202) return res;
-    await new Promise((r) => setTimeout(r, 100));
-  }
-  throw new Error('Archive never became ready');
-}
 
 describe('catalog DOS distribution', () => {
   it('is reproducible, uses 8.3 names and includes game files, runtime, setup and notices', async () => {
@@ -89,6 +80,7 @@ describe('catalog DOS distribution', () => {
     mkdirSync(join(source, 'gm'), { recursive: true });
     writeFileSync(join(disk, 'fixture.gam'), bytes);
     for (const name of ['xferplay.exe', 'sndblast.drv', 'config.hlp']) copyFileSync(join(cd, name), join(source, 'gm', name));
+    const queue = vi.spyOn(queues, 'createArchiveQueue');
     const server = await createServer({
       configFile: false,
       root: temp,
@@ -96,7 +88,7 @@ describe('catalog DOS distribution', () => {
       logLevel: 'silent',
       plugins: [cdGames(source)],
       optimizeDeps: { noDiscovery: true },
-      server: { host: '127.0.0.1', port: 0, hmr: false, watch: null },
+      server: { host: '127.0.0.1', port: 6282, hmr: false, watch: null },
     });
     try {
       await server.listen();
@@ -111,19 +103,32 @@ describe('catalog DOS distribution', () => {
       // the archive is built in a worker process: 202 (also for HEAD) until it is ready
       expect((await fetch(url)).status).toBe(202);
       expect((await fetch(url, { method: 'HEAD' })).headers.get('retry-after')).toBe('2');
-      const response = await archive(url);
+      const created = queue.mock.results[0];
+      if (created?.type !== 'return') throw new Error('The archive queue did not start');
+      const archives = created.value;
+      await archives.idle();
+      const response = await fetch(url);
       expect(response.headers.get('content-type')).toBe('application/zip');
       const first = new Uint8Array(await response.arrayBuffer());
       expect((await readHostedZip(first)).get('fixture.gam')).toEqual(bytes);
-      expect(new Uint8Array(await (await archive(url)).arrayBuffer())).toEqual(first);
+      expect(new Uint8Array(await (await fetch(url)).arrayBuffer())).toEqual(first);
       expect((await fetch(base + game.path + 'fixture.gam')).status).toBe(404);
       const revised = serializeGame(newGame('Revised fixture'));
       writeFileSync(join(disk, 'fixture.gam'), revised);
       server.watcher.emit('change', join(disk, 'fixture.gam'));
-      const next = await archive(url);
+      expect((await fetch(url)).status).toBe(202);
+      const pending = await fetch(base + 'games/index.json', { method: 'HEAD' });
+      expect(pending.status).toBe(202);
+      expect(pending.headers.get('retry-after')).toBe('2');
+      expect(pending.headers.get('cache-control')).toBe('no-store');
+      await archives.idle();
+      const index = await fetch(base + 'games/index.json');
+      expect(await index.json()).toEqual([expect.objectContaining({ id: 'fixture', title: 'Revised fixture' })]);
+      const next = await fetch(url);
       expect(next.status).toBe(200);
       expect((await readHostedZip(new Uint8Array(await next.arrayBuffer()))).get('fixture.gam')).toEqual(revised);
     } finally {
+      queue.mockRestore();
       await server.close();
     }
   }, 30000);

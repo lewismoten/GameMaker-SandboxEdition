@@ -1,6 +1,7 @@
 // Serves Sample CD games in development and connects their production build output.
 import type { Plugin } from 'vite';
 import { createReadStream } from 'node:fs';
+import { setImmediate as yieldToServer } from 'node:timers/promises';
 import { join } from 'node:path';
 import { legacyAlias } from './gameArchive';
 import { createArchiveQueue } from './archiveQueue';
@@ -47,36 +48,82 @@ export function cdGames(cdRoot: string): Plugin {
       // the worker deflates on libuv's threads, so four at once is faster with the same bytes
       const archives = createArchiveQueue(worker, 4);
       const listed = () => [...get().catalog, ...get().secret].map((e) => `${e.path}${e.pack}`);
-      // build every archive in the background so most are ready before they are asked for
-      server.httpServer?.once('listening', () => setTimeout(() => archives.enqueue(listed()), 500));
-      const served = () => {
-        if (preview) return preview;
+      let generation = 0;
+      let preparationError: Error | undefined;
+      let warmTimer: ReturnType<typeof setTimeout>;
+      let preparing: Promise<void> | undefined;
+      const prepare = async (version: number) => {
+        await yieldToServer();
+        if (version !== generation) return;
         const { catalog, secret, files } = get();
         const shots = new Map<string, Uint8Array>();
-        const known = (e: CdCatalogEntry): CdCatalogEntry => {
-          const box = boxGameOf(e, files);
-          return { ...e, fileFacts: libraryFacts(entryFiles(e, files)), health: quickHealth(e, files), ...(box ? { boxGame: box } : {}) };
-        };
-        preview = {
-          catalog: catalog.map((e) => {
+        const listedGames: CdCatalogEntry[] = [];
+        const hiddenGames: CdCatalogEntry[] = [];
+        for (const [entries, result] of [
+          [catalog, listedGames],
+          [secret, hiddenGames],
+        ] as const) {
+          for (const e of entries) {
+            await yieldToServer();
+            if (version !== generation) return;
             const disk = entryFiles(e, files);
-            const pictures = gameShots(e.id, e.gam, disk, e.original?.box?.shots, heroOf(e.original));
-            for (const [name, data] of pictures) shots.set(name, data);
-            return { ...known(e), ...(pictures.size ? { shots: true } : {}), ...(pictures.has(builtHeroPath(e.id)) ? { heroShot: true } : {}) };
-          }),
-          secret: secret.map(known),
-          shots,
-        };
+            const box = boxGameOf(e, files);
+            const known = { ...e, fileFacts: libraryFacts(disk), health: quickHealth(e, files), ...(box ? { boxGame: box } : {}) };
+            if (entries === catalog) {
+              const pictures = gameShots(e.id, e.gam, disk, e.original?.box?.shots, heroOf(e.original));
+              for (const [name, data] of pictures) shots.set(name, data);
+              if (pictures.size) known.shots = true;
+              if (pictures.has(builtHeroPath(e.id))) known.heroShot = true;
+            }
+            result.push(known);
+          }
+        }
+        preview = { catalog: listedGames, secret: hiddenGames, shots };
+        if (server.httpServer?.listening) archives.enqueue(listed());
+      };
+      const warm = () => {
+        const version = generation;
+        return (preparing ??= prepare(version).finally(() => {
+          if (version === generation) preparing = undefined;
+        }));
+      };
+      const served = async () => {
+        while (!preview) await warm();
         return preview;
       };
+      const startWarm = () => {
+        const version = generation;
+        void warm().catch((error: Error) => {
+          if (version === generation) {
+            preparationError = error;
+            server.config.logger.error(error.message);
+          }
+        });
+      };
+      const scheduleWarm = () => {
+        clearTimeout(warmTimer);
+        warmTimer = setTimeout(() => {
+          if (!preview && !preparing) startWarm();
+        }, 100);
+      };
+      server.httpServer?.once('listening', scheduleWarm);
+      server.httpServer?.once('close', () => {
+        clearTimeout(warmTimer);
+        archives.clear();
+        worker.restart();
+        generation++;
+      });
       const forget = (f: string) => {
         if (!f.startsWith(cdRoot) && !f.startsWith(gamesRoot)) return;
+        generation++;
+        preparing = undefined;
+        preparationError = undefined;
         cache = undefined;
         preview = undefined;
         archives.clear();
         worker.restart();
         // vite-node (checks and game builds) has a watcher but its HTTP server never listens: nothing asks for ZIPs, and a worker started there idled for hours
-        if (server.httpServer?.listening) setTimeout(() => archives.enqueue(listed()), 500);
+        if (server.httpServer?.listening) scheduleWarm();
       };
       server.watcher.on('change', forget);
       server.watcher.on('add', forget);
@@ -84,6 +131,17 @@ export function cdGames(cdRoot: string): Plugin {
       server.middlewares.use((req, res, next) => {
         const url = decodeURIComponent((req.url ?? '').split('?')[0]).replace(/^\/+/, '');
         const extra = /^games\/extra-(\d)\.json$/.exec(url);
+        if (url === 'games/index.json' && !preview) {
+          if (preparationError) {
+            const error = preparationError;
+            preparationError = undefined;
+            return next(error);
+          }
+          if (!preparing) startWarm();
+          res.writeHead(202, { 'Retry-After': '2', 'Cache-Control': 'no-store' });
+          res.end();
+          return;
+        }
         if (url === 'gm/index.json') {
           res.setHeader('Content-Type', 'application/json');
           res.end(JSON.stringify(get().gm));
@@ -91,21 +149,24 @@ export function cdGames(cdRoot: string): Plugin {
         }
         if (url === 'games/catalog-files.json') {
           res.setHeader('Content-Type', 'application/json');
-          res.end(JSON.stringify(pageFiles(served().catalog)));
+          res.end(JSON.stringify(pageFiles(get().catalog)));
           return;
         }
         if (url === 'games/index.json' || url === 'games/catalog.json' || (extra && GATES.includes(Number(extra[1])))) {
-          res.setHeader('Content-Type', 'application/json');
-          const { catalog, secret } = served();
-          res.end(
-            JSON.stringify(
-              url.endsWith('catalog.json')
-                ? pageCatalog(catalog)
-                : extra
-                  ? secret.filter((e) => (get().gates.get(e.id) ?? 1) === Number(extra[1]))
-                  : indexCatalog(catalog),
-            ),
-          );
+          void served()
+            .then(({ catalog, secret }) => {
+              res.setHeader('Content-Type', 'application/json');
+              res.end(
+                JSON.stringify(
+                  url.endsWith('catalog.json')
+                    ? pageCatalog(catalog)
+                    : extra
+                      ? secret.filter((e) => (get().gates.get(e.id) ?? 1) === Number(extra[1]))
+                      : indexCatalog(catalog),
+                ),
+              );
+            })
+            .catch(next);
           return;
         }
         const details = /^games\/details\/([a-z0-9_-]+)\.json$/.exec(url);
@@ -115,10 +176,15 @@ export function cdGames(cdRoot: string): Plugin {
           res.end(JSON.stringify(catalogDetails(detailed)));
           return;
         }
-        const picture = url.startsWith('games/shots/') && served().shots.get(url);
-        if (picture) {
-          res.setHeader('Content-Type', 'image/png');
-          res.end(picture);
+        if (url.startsWith('games/shots/')) {
+          void served()
+            .then(({ shots }) => {
+              const picture = shots.get(url);
+              if (!picture) return next();
+              res.setHeader('Content-Type', 'image/png');
+              res.end(picture);
+            })
+            .catch(next);
           return;
         }
         const packed = /^(games\/[a-z]+\/[a-z0-9_-]+\/)([^/]+\.zip)$/.exec(url);
@@ -144,6 +210,7 @@ export function cdGames(cdRoot: string): Plugin {
           res.end('Game data is available in its distribution ZIP.');
           return;
         }
+        if (!/^(gm|dos|games)\//i.test(url)) return next();
         const file = get().files.get(url.toLowerCase());
         if (!file) return next();
         res.setHeader('Content-Type', 'application/octet-stream');

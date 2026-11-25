@@ -1,5 +1,5 @@
 // A stopped keys strategy preserves its compact fetch diagnostics for callers such as walk:auto.
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { newBlockSet, parseBlocks, serializeBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { MLEN, parseMap, serializeMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { testGame, type TestGame } from '../testGame';
@@ -39,7 +39,9 @@ function lockedGame(rows: string[] = ROWS): TestGame {
 describe('keys strategy scene outcome', () => {
   it('retains failed fetch diagnostics on the stopped scene', async () => {
     const t = lockedGame();
-    const result = await autoWalk(t.game, t, 'test', { budgetMs: 10_000, human: false });
+    // Exercise search exhaustion independently of how fast the host simulates a tick.
+    const clock = vi.spyOn(performance, 'now').mockReturnValue(0);
+    const result = await autoWalk(t.game, t, 'test', { human: false }).finally(() => clock.mockRestore());
     expect(result.won).toBe(false);
     expect(result.scenes[0].keys).toMatchObject({
       cutoff: 'no-reachable-state',

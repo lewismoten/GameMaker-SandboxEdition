@@ -5,7 +5,12 @@ Vitest runs the tests here and beside the source modules. From `web/`, use
 `npm test` game-build lifecycle hook. Full suites go through `npm run heavy --`.
 `web/vitest.config.ts` also includes `../games/**/*.test.ts`, so builder and bot
 regressions beside game source run in the normal suite. Use `vitest run ../games`
-from `web/` to run those tests alone.
+from `web/` to run those tests alone. Full runs use at most two workers to leave CPU for
+Chromium, Vite and game simulations. The fast suite uses Vitest’s default worker count.
+
+The app browser project shares one loopback Vite server from `test/appServer.ts`
+and opens fresh browser contexts for each scenario. It uses the port Vite actually
+bound, including when another checkout already occupies the preferred port.
 
 `editorBrowser.ts` supplies a minimal DOM fixture for real editor integration
 regressions. It starts its own loopback Vite server on an OS-assigned port (never
