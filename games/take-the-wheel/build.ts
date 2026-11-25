@@ -46,7 +46,7 @@ disk.put('whl.bbl', serializeBlocks(book.finish()));
 disk.put('whl.mbl', serializeBlocks(finishMonsterPictures(monsterBlocks)));
 disk.put('whl.mon', serializeMonsters(monsterSet(monsterBlocks)));
 disk.put('hero.cbl', serializeBlocks(heroBlocks.finish()));
-const heroChar = buildHero(heroBlocks, { heldRise: { push: 12 } });
+const heroChar = buildHero(heroBlocks);
 heroChar.meter[KEYS] = INF_REPEAT; // no keys in this game
 heroChar.meter[0] = HERO_HIT_POINTS; // nothing here takes any (the kart's file says the same)
 disk.put('hero.chr', serializeCharacter(heroChar));

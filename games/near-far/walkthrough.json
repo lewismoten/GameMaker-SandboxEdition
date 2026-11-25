@@ -1,124 +1,124 @@
 {
- "version": 1,
- "game": "near-far",
- "rand": {
-  "seed": 1,
-  "per": "scene"
- },
- "segments": [
-  {
-   "scene": 2,
-   "keys": "AU0PzQNN"
+  "version": 1,
+  "game": "near-far",
+  "rand": {
+    "seed": 1,
+    "per": "scene"
   },
-  {
-   "scene": 3,
-   "keys": "BE0KzQNL"
-  },
-  {
-   "scene": 4,
-   "keys": "BE0PzQNN"
-  },
-  {
-   "scene": 3,
-   "keys": "BE0="
-  },
-  {
-   "scene": 5,
-   "keys": "BE0KzQNNCs0DOQi5AE1GzQNL"
-  },
-  {
-   "scene": 6,
-   "keys": "BEsKywNN"
-  },
-  {
-   "scene": 7,
-   "keys": "BE0KzQNN"
-  }
- ],
- "chapters": [
-  {
-   "scene": 2,
-   "title": "Level 1: Into the Distance (near)"
-  },
-  {
-   "scene": 3,
-   "title": "Level 1: Into the Distance (far)"
-  },
-  {
-   "scene": 4,
-   "title": "Level 1: Into the Distance (near again)"
-  },
-  {
-   "scene": 3,
-   "title": "Level 1: Into the Distance (far)"
-  },
-  {
-   "scene": 5,
-   "title": "Level 2: Past the Cliff (near, before the cliff)"
-  },
-  {
-   "scene": 6,
-   "title": "Level 2: Past the Cliff (far)"
-  },
-  {
-   "scene": 7,
-   "title": "Level 2: Past the Cliff (near, past the cliff)"
-  }
- ],
- "timeline": {
-  "fps": 60,
-  "frames": 8438,
+  "segments": [
+    {
+      "scene": 2,
+      "keys": "AU0PzQNN"
+    },
+    {
+      "scene": 3,
+      "keys": "BE0KzQNL"
+    },
+    {
+      "scene": 4,
+      "keys": "BE0PzQNN"
+    },
+    {
+      "scene": 3,
+      "keys": "BE0="
+    },
+    {
+      "scene": 5,
+      "keys": "BE0KzQNNCs0DOQi5AE1GzQNL"
+    },
+    {
+      "scene": 6,
+      "keys": "BEsKywNN"
+    },
+    {
+      "scene": 7,
+      "keys": "BE0KzQNN"
+    }
+  ],
   "chapters": [
-   {
-    "title": "Opening",
-    "frame": 0,
-    "time": 0
-   },
-   {
-    "title": "Story",
-    "frame": 913,
-    "time": 15216.666666666471
-   },
-   {
-    "title": "Level 1: Into the Distance (near)",
-    "frame": 2142,
-    "time": 35700.00000000053
-   },
-   {
-    "title": "Level 1: Into the Distance (far)",
-    "frame": 2587,
-    "time": 43116.66666666612
-   },
-   {
-    "title": "Level 1: Into the Distance (near again)",
-    "frame": 2887,
-    "time": 48116.66666666539
-   },
-   {
-    "title": "Level 2: Past the Cliff (near, before the cliff)",
-    "frame": 3313,
-    "time": 55216.66666666436
-   },
-   {
-    "title": "Level 2: Past the Cliff (far)",
-    "frame": 4193,
-    "time": 69883.33333333078
-   },
-   {
-    "title": "Level 2: Past the Cliff (near, past the cliff)",
-    "frame": 4477,
-    "time": 74616.6666666655
-   },
-   {
-    "title": "Ending",
-    "frame": 4678,
-    "time": 77966.66666666647
-   },
-   {
-    "title": "Credits",
-    "frame": 6885,
-    "time": 114750.0000000105
-   }
-  ]
- }
+    {
+      "scene": 2,
+      "title": "Level 1: Into the Distance (near)"
+    },
+    {
+      "scene": 3,
+      "title": "Level 1: Into the Distance (far)"
+    },
+    {
+      "scene": 4,
+      "title": "Level 1: Into the Distance (near again)"
+    },
+    {
+      "scene": 3,
+      "title": "Level 1: Into the Distance (far)"
+    },
+    {
+      "scene": 5,
+      "title": "Level 2: Past the Cliff (near, before the cliff)"
+    },
+    {
+      "scene": 6,
+      "title": "Level 2: Past the Cliff (far)"
+    },
+    {
+      "scene": 7,
+      "title": "Level 2: Past the Cliff (near, past the cliff)"
+    }
+  ],
+  "timeline": {
+    "fps": 60,
+    "frames": 8438,
+    "chapters": [
+      {
+        "title": "Opening",
+        "frame": 0,
+        "time": 0
+      },
+      {
+        "title": "Story",
+        "frame": 913,
+        "time": 15216.666666666471
+      },
+      {
+        "title": "Level 1: Into the Distance (near)",
+        "frame": 2142,
+        "time": 35700.00000000053
+      },
+      {
+        "title": "Level 1: Into the Distance (far)",
+        "frame": 2587,
+        "time": 43116.66666666612
+      },
+      {
+        "title": "Level 1: Into the Distance (near again)",
+        "frame": 2887,
+        "time": 48116.66666666539
+      },
+      {
+        "title": "Level 2: Past the Cliff (near, before the cliff)",
+        "frame": 3313,
+        "time": 55216.66666666436
+      },
+      {
+        "title": "Level 2: Past the Cliff (far)",
+        "frame": 4193,
+        "time": 69883.33333333078
+      },
+      {
+        "title": "Level 2: Past the Cliff (near, past the cliff)",
+        "frame": 4477,
+        "time": 74616.6666666655
+      },
+      {
+        "title": "Ending",
+        "frame": 4678,
+        "time": 77966.66666666647
+      },
+      {
+        "title": "Credits",
+        "frame": 6885,
+        "time": 114750.0000000105
+      }
+    ]
+  }
 }
