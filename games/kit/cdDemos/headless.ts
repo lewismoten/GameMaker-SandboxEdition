@@ -14,7 +14,8 @@ import { rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 
 const FRAME_MS = 1000 / 60;
 let now = 0;
-let frames: ((t: number) => void)[] = [];
+const frames = new Map<number, (t: number) => void>();
+let nextFrame = 0;
 /** Work the next frame waits for (a bot thinking between two game ticks). */
 let gate: Promise<unknown> | undefined;
 
@@ -24,8 +25,6 @@ function install(): void {
   if (g.__headless) return;
   g.__headless = true;
   Object.defineProperty(globalThis, 'performance', { value: { now: () => now }, configurable: true });
-  g.requestAnimationFrame = (cb: (t: number) => void) => (frames.push(cb), frames.length);
-  g.cancelAnimationFrame = () => undefined;
   const target = { addEventListener() {}, removeEventListener() {} };
   g.window = target;
   // a frame every FRAME_MS of virtual time, run as soon as the event loop is free
@@ -36,12 +35,23 @@ function install(): void {
       await g;
     }
     now += FRAME_MS;
-    const f = frames;
-    frames = [];
-    for (const cb of f) cb(now);
-    setImmediate(pump);
+    const callbacks = [...frames.values()];
+    frames.clear();
+    for (const cb of callbacks) cb(now);
   };
-  setImmediate(pump);
+  let scheduled = false;
+  g.requestAnimationFrame = (cb: (t: number) => void) => {
+    if (!scheduled) {
+      scheduled = true;
+      setImmediate(() => {
+        scheduled = false;
+        void pump();
+      });
+    }
+    frames.set(++nextFrame, cb);
+    return nextFrame;
+  };
+  g.cancelAnimationFrame = (id: number) => frames.delete(id);
 }
 
 function fakeCanvas(): HTMLCanvasElement {
@@ -142,8 +152,11 @@ export async function runHeadless(
   }).catch((e: Error) => {
     if (e.name !== 'Error' || e.message !== 'Game aborted') throw e;
   });
-  await finished;
-  Math.random = realRandom;
-  if (!m.aborted) m.destroy();
+  try {
+    await finished;
+  } finally {
+    Math.random = realRandom;
+    m.destroy();
+  }
   return { session: session!, machine: m, rec: o.record ? session?.rec.save() : undefined };
 }
