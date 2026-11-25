@@ -238,6 +238,7 @@ Checking the games:
   editor's `gameKeyMap`, `counterUses` and `soundUses` (a custom slot past the engine's nine that a character plays must be named): lists used-but-not-described, described-but-not-used and text over the limits (32/240/80, sound names 40).
 - `saveSignCheck.ts` — `npx vite-node ../games/kit/saveSignCheck.ts [<id>...]`: every felt-egg game has exactly one save
   sign, where its about.json says, on the egg's map or one it links to; no other game has one.
+- `replayAudit.ts` — from `web/`, run `npm run heavy -- npx vite-node ../games/kit/replayAudit.ts [all|demo|walkthrough] [id ...]` to replay built title demos and saved walkthroughs headlessly. Demo rows give the visited scenes, exit tick, recorded Esc tick and last input tick. Walkthrough rows give the scenes, actual and saved frame counts, and unused keys.
 - `walkCheck.ts` — replays a committed `walkthrough.json` on the real engine: it must reach the ending with the frames and
   chapter marks it was recorded with, and cut off no clip.
 - `integrator.json` (optional, per game) — how the web editor's Game Integrator arranges a big game's scenes into named boards
