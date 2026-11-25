@@ -68,9 +68,8 @@ function drawOffer(canvas: HTMLCanvasElement, blocks: Uint8Array, rect: Rect, im
 
 const NO_MONSTERS = new Set<GenKind>(['home', 'shop', 'town', 'overworld']);
 
-/** What a bot's play of a side view came to, by the layout (kind, seed, difficulty, area): not run yet, playing, or its result. */
+/** What a bot's play of a side view came to, for this generated offer: not run yet, playing, or its result. */
 type BotState = 'playing' | BotRun;
-const botKey = (o: Offer, difficulty: number) => `${o.seed}:${difficulty}:${o.outcome.ok ? o.outcome.result.rect.x + ',' + o.outcome.result.rect.y : ''}`;
 
 const LINK_TARGET: Record<string, string> = {
   home: 'a home interior',
@@ -98,7 +97,7 @@ export async function generateDialog(host: GenerateHost): Promise<void> {
   let addMonsters = monsterIds.length > 0;
   let current: Offer[] = [];
   let difficulty = 80;
-  const bots = new Map<string, BotState>();
+  const bots = new WeakMap<Offer, BotState>();
   let botRun = 0;
   /** The bot playing now, in its worker; stopped when the offers change or the dialog closes. */
   let running: RunningBot | undefined;
@@ -142,7 +141,7 @@ export async function generateDialog(host: GenerateHost): Promise<void> {
     /** The chip of an offer: for a side view, whether a bot has played it, else the proof the generator holds; `more` follows the chip's words in the button's name. */
     function chipOf(o: Offer): { text: string; ok: boolean; more: string } {
       if (kind === 'platform') {
-        const b = bots.get(botKey(o, difficulty));
+        const b = bots.get(o);
         if (b && b !== 'playing' && b.won) return { text: 'Bot won', ok: true, more: 'verified on the real engine' };
         if (b && b !== 'playing') return { text: 'Not proven', ok: false, more: 'the bot could not follow the route' };
         if (o.check?.verified) return { text: 'Jump math', ok: true, more: 'verified reachable by jump math' };
@@ -172,9 +171,8 @@ export async function generateDialog(host: GenerateHost): Promise<void> {
       for (let i = 0; i < current.length; i++) {
         const o = current[i];
         if (token !== botRun) return;
-        const key = botKey(o, difficulty);
-        if (!o.outcome.ok || !o.blocks || bots.has(key)) continue;
-        bots.set(key, 'playing');
+        if (!o.outcome.ok || !o.blocks || bots.has(o)) continue;
+        bots.set(o, 'playing');
         pick();
         await new Promise((res) => setTimeout(res, 0));
         let run: BotRun;
@@ -189,14 +187,14 @@ export async function generateDialog(host: GenerateHost): Promise<void> {
           run = await mine.done;
         } catch (e) {
           if ((e as Error).name === 'AbortError') {
-            bots.delete(key);
+            bots.delete(o);
             return;
           }
           run = { won: false, why: `The bot could not play it (${(e as Error).message}).`, ticks: 0 };
         } finally {
           if (running === mine) running = undefined;
         }
-        bots.set(key, run);
+        bots.set(o, run);
         if (token !== botRun) return;
         const c = chipOf(o);
         const chip = chips[i];
@@ -270,7 +268,7 @@ export async function generateDialog(host: GenerateHost): Promise<void> {
     /** The sentences about a side view: what it asks of the hero, and the proof it holds (jump math, and a bot's play). */
     function sideNote(o: Offer, res: GenResult): string {
       const p = res.platform;
-      const b = bots.get(botKey(o, difficulty));
+      const b = bots.get(o);
       const asks = p
         ? `Drawn at ${Math.round(p.difficulty * 100)}% of his most: pits up to ${p.asked.gap} blocks wide and steps up to ${p.asked.rise} high (he clears ${p.can.gap} across and ${p.can.rise} up).`
         : '';
