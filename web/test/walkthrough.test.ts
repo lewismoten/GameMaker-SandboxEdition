@@ -12,6 +12,13 @@ const walkthroughs = readdirSync(gamesDir)
   .map((id) => JSON.parse(readFileSync(join(gamesDir, id, 'walkthrough.json'), 'utf8')) as Walkthrough);
 
 describe('walkthrough keys', () => {
+  it('uses the shovel in the Dig It trapdoor lesson', () => {
+    const segment = walkthroughs.find((walk) => walk.game === 'walk-the-ground')?.segments.find((scene) => scene.scene === 3);
+    if (!segment) throw new Error('Missing trapdoor lesson');
+    const keys = decodeKeys(segment.keys).map(({ key }) => key);
+    expect(keys.filter((key) => key === 28 || key === 156)).toEqual([28, 156]);
+  });
+
   it('round-trip, with gaps past 16 bits', () => {
     const keys = [
       { delta: 0, key: 72 },
