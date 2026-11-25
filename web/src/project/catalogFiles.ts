@@ -1,4 +1,5 @@
 // Catalog metadata, shared loading and in-place hydration for hosted games.
+import { fetchArchive } from './archiveWait';
 import type { OriginalExtras } from '../../scripts/cdGames';
 import type { LibraryFileFact } from '../../scripts/libraryFacts';
 import { withSecretGames } from './secretGames';
@@ -100,7 +101,7 @@ if (typeof window !== 'undefined') window.addEventListener(SPECIALS_EVENT, forge
 export function loadCatalog(base = './games/'): Promise<CatalogEntry[]> {
   let p = catalogs.get(base);
   if (!p) {
-    p = fetch(`${base}index.json`)
+    p = fetchArchive(`${base}index.json`)
       .then((res) => (res.ok ? (res.json() as Promise<CatalogEntry[]>) : []))
       .then((list) => withSecretGames(list, base))
       .then((list) => withSpecials(list));

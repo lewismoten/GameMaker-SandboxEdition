@@ -120,6 +120,12 @@ describe('catalog DOS distribution', () => {
       const revised = serializeGame(newGame('Revised fixture'));
       writeFileSync(join(disk, 'fixture.gam'), revised);
       server.watcher.emit('change', join(disk, 'fixture.gam'));
+      const pending = await fetch(base + 'games/index.json', { method: 'HEAD' });
+      expect(pending.status).toBe(202);
+      expect(pending.headers.get('retry-after')).toBe('2');
+      expect(pending.headers.get('cache-control')).toBe('no-store');
+      const index = await archive(base + 'games/index.json');
+      expect(await index.json()).toEqual([expect.objectContaining({ id: 'fixture', title: 'Revised fixture' })]);
       const next = await archive(url);
       expect(next.status).toBe(200);
       expect((await readHostedZip(new Uint8Array(await next.arrayBuffer()))).get('fixture.gam')).toEqual(revised);

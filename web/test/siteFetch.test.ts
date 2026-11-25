@@ -26,6 +26,24 @@ describe('hosted file fetching', () => {
     expect(calls).toEqual(['./t1/index.json']);
   });
 
+  it('shares the pending index request until the complete catalog arrives', async () => {
+    vi.useFakeTimers();
+    try {
+      const request = vi
+        .fn()
+        .mockResolvedValueOnce(new Response(null, { status: 202 }))
+        .mockResolvedValueOnce(new Response('[{"id":"ready"}]'));
+      vi.stubGlobal('fetch', request);
+      const first = loadCatalog('./pending/');
+      expect(loadCatalog('./pending/')).toBe(first);
+      await vi.advanceTimersByTimeAsync(2000);
+      expect(await first).toEqual([{ id: 'ready' }]);
+      expect(request).toHaveBeenCalledTimes(2);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
   it('retries the catalog after a failure', async () => {
     let fail = true;
     vi.stubGlobal('fetch', async () => {
