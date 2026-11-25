@@ -1,18 +1,15 @@
 // Measure the Files button with the phone toolbar and a real open file.
 import type { Browser } from 'playwright-core';
-import { afterAll, beforeAll, expect, it } from 'vitest';
+import { afterAll, beforeAll, expect, inject, it } from 'vitest';
 import { forceTheme, assertTheme } from './forceTheme';
-import { launch, target } from './perfLib';
+import { launch } from './perfLib';
 
-let server: Awaited<ReturnType<typeof target>>;
 let browser: Browser;
 beforeAll(async () => {
-  server = await target(6183);
   browser = await launch();
 }, 120_000);
 afterAll(async () => {
   await browser?.close();
-  server?.stop();
 });
 
 function extensionVisible(button: Element): boolean {
@@ -95,7 +92,7 @@ it.each(fixtures)(
       const page = await context.newPage();
       // Seed storage before starting the app so its initial route cannot race project creation.
       await page.route('**/seed-project', (route) => route.fulfill({ contentType: 'text/html', body: '<body></body>' }));
-      await page.goto(server.base + '/seed-project');
+      await page.goto(inject('appBase') + '/seed-project');
       await page.addScriptTag({
         type: 'module',
         content: `import { Project } from '/src/editor/core/project.ts';
@@ -108,7 +105,7 @@ it.each(fixtures)(
           document.body.dataset.project = project.id;`,
       });
       const projectId = await page.locator('body[data-project]').getAttribute('data-project');
-      await page.goto(`${server.base}/#/p/${projectId}`);
+      await page.goto(`${inject('appBase')}/#/p/${projectId}`);
       const button = page.getByRole('button', { name: /^Files \(/ });
       await button.waitFor({ timeout: 60_000 });
 

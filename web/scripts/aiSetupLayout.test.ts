@@ -1,12 +1,11 @@
 // Real-page regression: AI setup must fit a short landscape phone without hiding controls.
-import { expect, it } from 'vitest';
-import { launch, target } from './perfLib';
+import { expect, inject, it } from 'vitest';
+import { launch } from './perfLib';
 import { assertTheme, forceTheme } from './forceTheme';
 import { scenes } from './dialogsFitScenes';
 import { measure } from './dialogsFitMeasure';
 
 it('fits AI setup at 844x390 in both themes with keyboard-reachable actions', async () => {
-  const server = await target(5278);
   const browser = await launch();
   try {
     for (const theme of ['light', 'dark'] as const) {
@@ -15,7 +14,7 @@ it('fits AI setup at 844x390 in both themes with keyboard-reachable actions', as
         await forceTheme(context, theme);
         await context.addInitScript(() => localStorage.setItem('gm-ui', 'modern'));
         const page = await context.newPage();
-        await page.goto(server.base);
+        await page.goto(inject('appBase'), { waitUntil: 'commit' });
         await scenes.find((scene) => scene.id === 'ai-setup')!.open(page);
         await page.waitForSelector('dialog[open] .ai-setup');
         await assertTheme(page, theme);
@@ -32,6 +31,5 @@ it('fits AI setup at 844x390 in both themes with keyboard-reachable actions', as
     }
   } finally {
     await browser.close();
-    server.stop();
   }
 }, 60000);

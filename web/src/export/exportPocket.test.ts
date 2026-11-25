@@ -22,7 +22,7 @@ describe('exportPocket', () => {
     const a = await exportPocket(peach(), { title: 'Peach', gam: 'PEACH.GAM' });
     const b = await exportPocket(peach(), { title: 'Peach', gam: 'PEACH.GAM' });
     expect(a.name).toBe('PEACH.GMP');
-    expect(b.bytes).toEqual(a.bytes);
+    expect(Buffer.compare(a.bytes, b.bytes)).toBe(0);
   });
 
   it('is a bundle the firmware reads: game.txt, the .cfg and every file it names', async () => {

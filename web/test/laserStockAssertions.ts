@@ -12,18 +12,19 @@ export function checkStockCuts(sheets: { sheet: LaserSheet; placed: Placed[] }[]
     expect(s.sheet.w).toBe(STOCK[stock].w);
     expect(s.sheet.h).toBe(STOCK[stock].h);
     expect(stockProblems(s.sheet)).toEqual([]);
-    const cuts = s.placed.map((at) => {
+    // Check all paths once and keep only distances between different placed pieces.
+    const sheet = new LaserSheet(s.sheet.w, s.sheet.h);
+    const owners: number[] = [];
+    for (const [index, placement] of s.placed.entries()) {
       const one = new LaserSheet(s.sheet.w, s.sheet.h);
-      placePart(one, parts.find((p) => p.part.name === at.name)!.part, at);
-      return one.items.filter((it) => it.op === 'cut');
-    });
-    cuts.forEach((a, i) =>
-      cuts.slice(i + 1).forEach((b) => {
-        const pair = new LaserSheet(s.sheet.w, s.sheet.h);
-        pair.items.push(...a, ...b);
-        const bad = cutSpacingProblems(pair, gap + HAIRLINE).filter((p) => Number(p.a.slice(4)) < a.length && Number(p.b.slice(4)) >= a.length);
-        expect(bad).toEqual([]);
-      }),
-    );
+      placePart(one, parts.find((p) => p.part.name === placement.name)!.part, placement);
+      for (const item of one.items) {
+        if (item.op !== 'cut') continue;
+        sheet.items.push(item);
+        owners.push(index);
+      }
+    }
+    const bad = cutSpacingProblems(sheet, gap + HAIRLINE).filter((p) => owners[Number(p.a.slice(4))] !== owners[Number(p.b.slice(4))]);
+    expect(bad).toEqual([]);
   }
 }
