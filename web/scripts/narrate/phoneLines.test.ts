@@ -1,6 +1,7 @@
 // Every line the wall phone can say has a recorded clip in public/phone/voice (so the browser's
 // speech is only ever the fallback for a clip that fails to load), and no phone file says words
 // that phoneScript.ts doesn't know.
+import assert from 'node:assert/strict';
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
@@ -40,10 +41,10 @@ describe('the phone’s recorded lines', () => {
       for (let m = 0; m < 60; m++)
         for (let s = 0; s < 60; s += 10) {
           const text = `${TIME_LEAD} ${timeSentence(h, m, s)}`;
-          expect(castOf(text)).toBe('time-lady');
+          assert.equal(castOf(text), 'time-lady', text);
           const clips = clipsFor(text, text);
-          expect(clips, text).toBeDefined();
-          for (const c of clips!) expect(have.has(c), `${text}: ${c}`).toBe(true);
+          assert.ok(clips, text);
+          for (const c of clips) assert.ok(have.has(c), `${text}: ${c}`);
         }
   });
 
@@ -55,8 +56,8 @@ describe('the phone’s recorded lines', () => {
         const text = `${HINT_KENNEL} ${billSentence(amount)} ${HINT_RATE}`;
         for (const piece of captionPieces(text)) {
           const clips = clipsFor(piece, text);
-          expect(clips, text).toBeDefined();
-          for (const c of clips!) expect(have.has(c), `${amount}: ${c}`).toBe(true);
+          assert.ok(clips, text);
+          for (const c of clips) assert.ok(have.has(c), `${amount}: ${c}`);
         }
       }
     },
@@ -70,7 +71,7 @@ describe('the phone’s recorded lines', () => {
       const text = billSentence(amount);
       expect(castOf(text), amount).toBe('giant');
       expect(cents, amount).toBeLessThan(10000);
-      for (const c of clipsFor(text, text)!) expect(have.has(c), `${amount}: ${c}`).toBe(true);
+      for (const c of clipsFor(text, text)!) expect(have.has(c), `${amount}: ${c}`);
     }
   });
 

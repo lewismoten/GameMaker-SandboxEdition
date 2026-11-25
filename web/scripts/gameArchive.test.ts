@@ -96,7 +96,7 @@ describe('catalog DOS distribution', () => {
       logLevel: 'silent',
       plugins: [cdGames(source)],
       optimizeDeps: { noDiscovery: true },
-      server: { host: '127.0.0.1', port: 0, hmr: false, watch: null },
+      server: { host: '127.0.0.1', port: 25198, hmr: false, watch: null },
     });
     try {
       await server.listen();
