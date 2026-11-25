@@ -22,7 +22,9 @@ This folder holds the build's Vite plugins and the scripts run by hand (from
     catalogs and one DOS ZIP per game at a permanent URL; loose game payloads and GMPK copies are not emitted).
     `cdGamesModel.ts` holds catalog types and historical credits; `cdGamesScan.ts` reads source files
     and derives game facts; `cdGamesCatalog.ts` shapes catalog JSON; `cdGamesOutput.ts` emits the
-    production assets. `cdGames.ts` keeps the public exports and development-server wiring;
+    production assets. In development, `cdGames.ts` prepares the catalog when the server starts,
+    yields between games, and answers `games/index.json` with HTTP 202 and `Retry-After` until the full index is ready.
+    The catalog loader and magazine retry that request;
   - `gameShots.ts` draws each listed game's pictures into `games/shots/`;
   - `singlePageBuild.ts` builds `standalone.html`, and `hostedPlayerBuild.ts` the web player
     (`web-player.html`, `player/index.html` and `player/games.json`);

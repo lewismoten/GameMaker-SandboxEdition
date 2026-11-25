@@ -117,7 +117,13 @@ describe('catalog DOS distribution', () => {
       writeFileSync(join(disk, 'fixture.gam'), revised);
       server.watcher.emit('change', join(disk, 'fixture.gam'));
       expect((await fetch(url)).status).toBe(202);
+      const pending = await fetch(base + 'games/index.json', { method: 'HEAD' });
+      expect(pending.status).toBe(202);
+      expect(pending.headers.get('retry-after')).toBe('2');
+      expect(pending.headers.get('cache-control')).toBe('no-store');
       await archives.idle();
+      const index = await fetch(base + 'games/index.json');
+      expect(await index.json()).toEqual([expect.objectContaining({ id: 'fixture', title: 'Revised fixture' })]);
       const next = await fetch(url);
       expect(next.status).toBe(200);
       expect((await readHostedZip(new Uint8Array(await next.arrayBuffer()))).get('fixture.gam')).toEqual(revised);
