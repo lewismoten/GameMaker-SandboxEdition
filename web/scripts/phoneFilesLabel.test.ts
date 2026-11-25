@@ -75,16 +75,16 @@ it.each([
 
 const filenames = { latin: 'wwwwwwww.txt', rtl: 'שששששששש.txt' };
 const fixtures = [
-  { width: 320, narrow: false, script: 'latin', filename: filenames.latin, theme: 'light' },
-  { width: 390, narrow: false, script: 'short-latin', filename: 'mygame.txt', theme: 'light' },
+  { width: 320, checkNarrow: false, script: 'latin', filename: filenames.latin, theme: 'light' },
+  { width: 390, checkNarrow: false, script: 'short-latin', filename: 'mygame.txt', theme: 'light' },
   ...(['light', 'dark'] as const).flatMap((theme) =>
-    Object.entries(filenames).flatMap(([script, filename]) => [false, true].map((narrow) => ({ width: 390, narrow, script, filename, theme }))),
+    Object.entries(filenames).map(([script, filename]) => ({ width: 390, checkNarrow: true, script, filename, theme })),
   ),
 ] as const;
 
 it.each(fixtures)(
-  'contains the $script extension at viewport width $width ($theme, forced narrow=$narrow)',
-  async ({ width, narrow, script, filename, theme }) => {
+  'contains the $script extension at viewport width $width ($theme)',
+  async ({ width, checkNarrow, script, filename, theme }) => {
     const context = await browser.newContext({ viewport: { width, height: 844 }, isMobile: true, hasTouch: true });
     try {
       await forceTheme(context, theme);
@@ -118,39 +118,42 @@ it.each(fixtures)(
       const count = await page.locator('.file-row').count();
       await page.getByRole('button', { name: `Files (${count}) · ${filename}`, exact: true }).waitFor();
       await assertTheme(page, theme);
-      if (narrow) await page.addStyleTag({ content: '.sidebar .files-toggle { flex: none; width: 80px; }' });
-      const layout = await button.evaluate((button) => {
-        const prefix = button.querySelector('.files-toggle-prefix')!;
-        const filenameRow = button.querySelector('.files-toggle-current')!.getBoundingClientRect();
-        const stem = button.querySelector('.files-toggle-stem')!;
-        const extension = button.querySelector('.files-toggle-extension')!;
-        const range = document.createRange();
-        range.selectNodeContents(prefix);
-        const countRect = range.getBoundingClientRect();
-        const box = button.getBoundingClientRect();
-        return {
-          prefix: prefix.textContent,
-          countVisible:
-            countRect.width > 0 &&
-            countRect.height > 0 &&
-            countRect.left >= box.left &&
-            countRect.right <= box.right &&
-            countRect.top >= box.top &&
-            countRect.bottom <= box.bottom &&
-            countRect.bottom <= filenameRow.top,
-          overflowing: [button, ...button.querySelectorAll('*')].filter((el) => el.scrollWidth > el.clientWidth).map((el) => el.className),
-          truncation: getComputedStyle(stem).textOverflow,
-          suffix: extension.textContent,
-        };
-      });
-      expect(await button.evaluate(extensionVisible)).toBe(true);
-      if (filename === 'mygame.txt') expect(layout.overflowing).toEqual([]);
-      if (narrow) expect(layout.overflowing).toEqual(['files-toggle-stem']);
-      expect(layout).toMatchObject({ prefix: `Files (${count})`, truncation: 'ellipsis', suffix: '.txt' });
-      if (!narrow) expect(layout.countVisible).toBe(true);
-      if (process.env.GM_PHONE_FILES_SHOTS) {
-        await page.locator('.ach-toast').first().waitFor({ state: 'hidden' });
-        await page.screenshot({ path: `${process.env.GM_PHONE_FILES_SHOTS}/files-${script}-${theme}-${width}-${narrow}.png` });
+      // The forced width changes only the mounted toolbar's CSS. Measure both layouts on the same open file.
+      for (const narrow of checkNarrow ? [false, true] : [false]) {
+        if (narrow) await page.addStyleTag({ content: '.sidebar .files-toggle { flex: none; width: 80px; }' });
+        const layout = await button.evaluate((button) => {
+          const prefix = button.querySelector('.files-toggle-prefix')!;
+          const filenameRow = button.querySelector('.files-toggle-current')!.getBoundingClientRect();
+          const stem = button.querySelector('.files-toggle-stem')!;
+          const extension = button.querySelector('.files-toggle-extension')!;
+          const range = document.createRange();
+          range.selectNodeContents(prefix);
+          const countRect = range.getBoundingClientRect();
+          const box = button.getBoundingClientRect();
+          return {
+            prefix: prefix.textContent,
+            countVisible:
+              countRect.width > 0 &&
+              countRect.height > 0 &&
+              countRect.left >= box.left &&
+              countRect.right <= box.right &&
+              countRect.top >= box.top &&
+              countRect.bottom <= box.bottom &&
+              countRect.bottom <= filenameRow.top,
+            overflowing: [button, ...button.querySelectorAll('*')].filter((el) => el.scrollWidth > el.clientWidth).map((el) => el.className),
+            truncation: getComputedStyle(stem).textOverflow,
+            suffix: extension.textContent,
+          };
+        });
+        expect(await button.evaluate(extensionVisible)).toBe(true);
+        if (filename === 'mygame.txt') expect(layout.overflowing).toEqual([]);
+        if (narrow) expect(layout.overflowing).toEqual(['files-toggle-stem']);
+        expect(layout).toMatchObject({ prefix: `Files (${count})`, truncation: 'ellipsis', suffix: '.txt' });
+        if (!narrow) expect(layout.countVisible).toBe(true);
+        if (process.env.GM_PHONE_FILES_SHOTS) {
+          await page.locator('.ach-toast').first().waitFor({ state: 'hidden' });
+          await page.screenshot({ path: `${process.env.GM_PHONE_FILES_SHOTS}/files-${script}-${theme}-${width}-${narrow}.png` });
+        }
       }
     } finally {
       await context.close();
