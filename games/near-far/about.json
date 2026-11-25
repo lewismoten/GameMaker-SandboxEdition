@@ -6,7 +6,7 @@
   "hero": "MARA",
   "year": 1994,
   "price": "Free",
-  "version": "1.1",
+  "version": "1.2",
   "blurb": "Two short levels about near and far. A level can have two planes: a near scene with big, clear scenery and a far scene with the same kind of land drawn small, loading a paler palette. A trail is a link that takes Mara from one to the other. In the second level a cliff blocks the way near, and the far plane has no cliff. Signs say how. Play it, then open it in Game-Maker and change where a trail lands.",
   "exe": "NEARFAR.EXE",
   "dosName": "NEARFAR",

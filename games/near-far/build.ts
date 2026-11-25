@@ -45,7 +45,7 @@ disk.put('nearfar.bbl', serializeBlocks(book.finish()));
 disk.put('nearfar.mbl', serializeBlocks(monsterBlocks.finish()));
 disk.put('nearfar.mon', serializeMonsters(buildMonsters(monsterBlocks)));
 disk.put('hero.cbl', serializeBlocks(heroBlocks.finish()));
-const nearKit = buildHero(heroBlocks);
+const nearKit = buildHero(heroBlocks, { heldRise: { push: 12 } });
 const farKit = farHero(heroBlocks, nearKit);
 disk.put('hero.chr', serializeCharacter(nearKit));
 disk.put('far.cbl', serializeBlocks(farKit.blocks.finish()));
