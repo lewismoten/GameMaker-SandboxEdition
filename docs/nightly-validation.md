@@ -106,7 +106,7 @@ Create an ignored host-owned environment file, for example
 ```ini
 NIGHTLY_REPO=/path/to/maintained/checkout
 NIGHTLY_REPORTS=/path/to/shared/checkout/.for-lewis/nightly
-PATH=/home/ai/.local/bin:/usr/local/bin:/usr/bin:/bin
+PATH=/path/to/service-account/.local/bin:/usr/local/bin:/usr/bin:/bin
 ```
 
 `NIGHTLY_REPO` must contain the reviewed runner and heavy scheduler and have an origin
