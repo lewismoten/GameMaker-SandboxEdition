@@ -1,12 +1,11 @@
 // Leave room for platform font metrics; this synthetic stress is not a macOS emulation.
-import { expect, it } from 'vitest';
-import { launch, target } from './perfLib';
+import { expect, inject, it } from 'vitest';
+import { launch } from './perfLib';
 import { assertTheme, forceTheme } from './forceTheme';
 import { scenes } from './dialogsFitScenes';
 import { measure } from './dialogsFitMeasure';
 
 it('keeps AI setup vertical headroom with taller text in both themes', async () => {
-  const server = await target(5306);
   const browser = await launch();
   try {
     for (const theme of ['light', 'dark'] as const) {
@@ -15,7 +14,7 @@ it('keeps AI setup vertical headroom with taller text in both themes', async () 
         await forceTheme(context, theme);
         await context.addInitScript(() => localStorage.setItem('gm-ui', 'modern'));
         const page = await context.newPage();
-        await page.goto(server.base);
+        await page.goto(inject('appBase'), { waitUntil: 'commit' });
         await scenes.find((scene) => scene.id === 'ai-setup')!.open(page);
         await page.waitForSelector('dialog[open] .ai-setup');
         await assertTheme(page, theme);
@@ -36,6 +35,5 @@ it('keeps AI setup vertical headroom with taller text in both themes', async () 
     }
   } finally {
     await browser.close();
-    server.stop();
   }
 }, 60000);

@@ -122,7 +122,14 @@ it('keeps replayable routes to the same exit with different supplies', async () 
   Object.assign(blocks[2], { scorePts: 0, effect: 20, eamt: 1 });
   t.files.set('test.bbl', serializeBlocks(blocks));
   const entry = { start: { x: 3, y: 3 }, ci: startCharInfo(), clock: 1 };
-  const ex = await explore(t.game, 2, t, entry, { steerAirborne: true, steadyTicks: 3, maxNodes: 2000 });
+  // The pickup and exit are on a flat corridor. Walking either way exercises both routes.
+  const ex = await explore(t.game, 2, t, entry, {
+    steerAirborne: true,
+    steadyTicks: 3,
+    moveFilter: (move) => move.name === 'walk 75' || move.name === 'walk 77',
+    now: () => 0,
+    maxNodes: 2000,
+  });
   expect(ex.exits.some((e) => e.ci.meter[20] === 1)).toBe(true);
   const loaded = ex.exits.find((e) => e.ci.meter[20] > 1);
   expect(loaded).toBeDefined();

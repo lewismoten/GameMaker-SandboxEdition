@@ -3,10 +3,10 @@
 // games leaves out the secret ones, and no page, file or picture name gives one away.
 import { join } from 'node:path';
 import { readFileSync } from 'node:fs';
-import { describe, expect, it } from 'vitest';
-import { createServer, type IndexHtmlTransformContext } from 'vite';
+import { describe, expect, inject, it } from 'vitest';
+import type { IndexHtmlTransformContext } from 'vite';
 import { chromium, type Page } from 'playwright-core';
-import { cdCatalog, cdGames, cdSecretCatalog } from '../../scripts/cdGames';
+import { cdCatalog, cdSecretCatalog } from '../../scripts/cdGames';
 import { gamePageHtml, guidePageHtml, seoPages, staticPageHtml } from '../../scripts/seoBuild';
 import { readingPages } from '../../scripts/seoReadings';
 import { staticPages } from '../../scripts/seoStaticPages';
@@ -116,32 +116,21 @@ describe('seoBuild', () => {
   });
 
   it('keeps each chapter description after the interactive Programmer’s Guide loads', async () => {
-    const server = await createServer({
-      configFile: false,
-      plugins: [cdGames(cdRoot), plugin],
-      server: { host: '127.0.0.1', port: 6155, hmr: false, watch: null },
-      logLevel: 'error',
-    });
+    const browser = await chromium.launch();
     try {
-      await server.listen();
-      const browser = await chromium.launch();
-      try {
-        const page = await browser.newPage();
-        const descriptions = [];
-        for (const id of ['memory', 'screen']) {
-          const chapter = chapterById(id)!;
-          await page.goto(new URL(`programmers-guide-${id}.html`, server.resolvedUrls!.local[0]).href);
-          await page.locator('.pg-page').getByRole('heading', { level: 1, name: chapter.title, exact: true }).waitFor();
-          const description = await page.locator('meta[name="description"]').getAttribute('content');
-          expect(description).toBe(chapter.about);
-          descriptions.push(description);
-        }
-        expect(new Set(descriptions).size).toBe(2);
-      } finally {
-        await browser.close();
+      const page = await browser.newPage();
+      const descriptions = [];
+      for (const id of ['memory', 'screen']) {
+        const chapter = chapterById(id)!;
+        await page.goto(new URL(`programmers-guide-${id}.html`, inject('appBase')).href, { waitUntil: 'commit' });
+        await page.locator('.pg-page').getByRole('heading', { level: 1, name: chapter.title, exact: true }).waitFor();
+        const description = await page.locator('meta[name="description"]').getAttribute('content');
+        expect(description).toBe(chapter.about);
+        descriptions.push(description);
       }
+      expect(new Set(descriptions).size).toBe(2);
     } finally {
-      await server.close();
+      await browser.close();
     }
   }, 60000);
 
@@ -195,39 +184,28 @@ describe('seoBuild', () => {
   });
 
   it('opens the next Guide chapter at its static address with and without JavaScript', async () => {
-    const server = await createServer({
-      configFile: false,
-      plugins: [cdGames(cdRoot), plugin],
-      server: { host: '127.0.0.1', port: 6155, hmr: false, watch: null },
-      logLevel: 'error',
-    });
+    const browser = await chromium.launch();
     try {
-      await server.listen();
-      const browser = await chromium.launch();
-      try {
-        const page = await browser.newPage();
-        const base = server.resolvedUrls!.local[0];
-        const file = 'programmers-guide-screen.html';
-        const title = 'The screen and the blocks';
-        await page.goto(new URL('programmers-guide-memory.html', base).href);
-        const next = page.getByRole('link', { name: `Next → ${title}` });
-        const copied = await next.evaluate((a: HTMLAnchorElement) => a.href);
-        await next.click();
-        await page.locator('.pg-page').getByRole('heading', { name: title, exact: true }).waitFor();
-        const address = new URL(page.url());
-        address.hash = '';
-        expect(address.href).toBe(new URL(file, base).href);
-        expect(copied).toBe(address.href);
-        expect(await page.locator('link[rel="canonical"]').getAttribute('href')).toBe(new URL(file, SITE_URL).href);
+      const page = await browser.newPage();
+      const base = inject('appBase');
+      const file = 'programmers-guide-screen.html';
+      const title = 'The screen and the blocks';
+      await page.goto(new URL('programmers-guide-memory.html', base).href, { waitUntil: 'commit' });
+      const next = page.getByRole('link', { name: `Next → ${title}` });
+      const copied = await next.evaluate((a: HTMLAnchorElement) => a.href);
+      await next.click();
+      await page.locator('.pg-page').getByRole('heading', { name: title, exact: true }).waitFor();
+      const address = new URL(page.url());
+      address.hash = '';
+      expect(address.href).toBe(new URL(file, base).href);
+      expect(copied).toBe(address.href);
+      expect(await page.locator('link[rel="canonical"]').getAttribute('href')).toBe(new URL(file, SITE_URL).href);
 
-        const reader = await browser.newPage({ javaScriptEnabled: false });
-        await reader.goto(page.url());
-        expect(await reader.locator('h1').innerText()).toBe(title);
-      } finally {
-        await browser.close();
-      }
+      const reader = await browser.newPage({ javaScriptEnabled: false });
+      await reader.goto(page.url());
+      expect(await reader.locator('h1').innerText()).toBe(title);
     } finally {
-      await server.close();
+      await browser.close();
     }
   }, 60_000);
 
@@ -286,39 +264,28 @@ describe('seoBuild', () => {
   });
 
   it('omits the notice on the loaded First Steps screen and opens the author’s notice for AJ’s Quest', async () => {
-    const server = await createServer({
-      configFile: false,
-      plugins: [cdGames(cdRoot), plugin],
-      server: { host: '127.0.0.1', port: 6154, hmr: false, watch: null },
-      logLevel: 'error',
-    });
+    const browser = await chromium.launch();
     try {
-      await server.listen();
-      const browser = await chromium.launch();
-      try {
-        const page = await browser.newPage();
-        const base = server.resolvedUrls!.local[0];
-        for (const id of ['first-steps', 'ajquest']) {
-          const game = playable.find((g) => g.id === id)!;
-          await page.goto(new URL(gamePage(id), base).href);
-          const player = page.locator('#player');
-          await player.getByRole('button', { name: `▶ Play ${game.title}` }).waitFor();
-          const button = player.getByRole('button', { name: 'Shareware · read the author’s notice' });
-          if (id === 'first-steps') {
-            expect(await button.count()).toBe(0);
-            expect(await player.locator('.gm-notice').count()).toBe(0);
-          } else {
-            expect(game.notice?.trim()).toBeTruthy();
-            await button.click();
-            const dialog = player.getByRole('dialog', { name: 'Shareware notice' });
-            expect(await dialog.locator('pre').textContent()).toBe(game.notice);
-          }
+      const page = await browser.newPage();
+      const base = inject('appBase');
+      for (const id of ['first-steps', 'ajquest']) {
+        const game = playable.find((g) => g.id === id)!;
+        await page.goto(new URL(gamePage(id), base).href, { waitUntil: 'commit' });
+        const player = page.locator('#player');
+        await player.getByRole('button', { name: `▶ Play ${game.title}` }).waitFor();
+        const button = player.getByRole('button', { name: 'Shareware · read the author’s notice' });
+        if (id === 'first-steps') {
+          expect(await button.count()).toBe(0);
+          expect(await player.locator('.gm-notice').count()).toBe(0);
+        } else {
+          expect(game.notice?.trim()).toBeTruthy();
+          await button.click();
+          const dialog = player.getByRole('dialog', { name: 'Shareware notice' });
+          expect(await dialog.locator('pre').textContent()).toBe(game.notice);
         }
-      } finally {
-        await browser.close();
       }
     } finally {
-      await server.close();
+      await browser.close();
     }
   }, 60000);
 
@@ -340,8 +307,8 @@ describe('seoBuild', () => {
   });
 
   it('keeps the generic player and the player to try out of search results, not the download', () => {
-    expect(page('play.html')).toMatch(/<meta name="robots" content="noindex" \/>/);
-    for (const g of playable.slice(0, 5)) expect(gamePageHtml(page('play.html'), g)).not.toContain('noindex');
+    expect(play).toMatch(/<meta name="robots" content="noindex" \/>/);
+    for (const g of playable.slice(0, 5)) expect(gamePageHtml(play, g)).not.toContain('noindex');
   });
 
   it('gives the cast and the Library pages of their own, in the sitemap, linking only to listed games and naming no secret game', () => {

@@ -1,10 +1,10 @@
 // Browser regression for standalone editor links, measuring the actual rendered hit target.
-import { afterAll, beforeAll, expect, it, vi } from 'vitest';
+import { afterAll, beforeAll, expect, inject, it, vi } from 'vitest';
 import type { Browser } from 'playwright-core';
-import { launch, target } from './perfLib';
+import { launch } from './perfLib';
 import { measureTargets } from './editorTouchAudit';
 
-vi.setConfig({ testTimeout: 60_000, hookTimeout: 60_000 }); // the second test starts a whole Vite server and loads the app
+vi.setConfig({ testTimeout: 60_000, hookTimeout: 60_000 }); // the second test loads the app in Chromium
 let browser: Browser;
 beforeAll(async () => {
   browser = await launch();
@@ -27,25 +27,20 @@ it('counts a pseudo-element hit area only when it really receives pointer hits',
 });
 
 it('gives standalone Overview links a 24px target without phone overflow', async () => {
-  const server = await target(5397);
-  try {
-    const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
-    await page.goto(server.base);
-    await page.addScriptTag({
-      type: 'module',
-      content: `import { overviewLink } from '/src/editor/shell/overviewLink.ts'; document.body.replaceChildren(overviewLink({ id: 'test' }, 'controls', 'Name the counters in Overview › Controls')); document.body.dataset.linkReady = '1';`,
-    });
-    await page.waitForSelector('body[data-link-ready="1"]');
-    const result = await page.evaluate(() => {
-      const link = document.querySelector('a')!;
-      const rect = link.getBoundingClientRect();
-      return { width: rect.width, height: rect.height, overflow: document.documentElement.scrollWidth - 390, href: link.getAttribute('href') };
-    });
-    expect(result.href).toBe('#/p/test?tab=controls');
-    expect(result.width).toBeGreaterThanOrEqual(24);
-    expect(result.height).toBeGreaterThanOrEqual(24);
-    expect(result.overflow).toBeLessThanOrEqual(0);
-  } finally {
-    server.stop();
-  }
+  const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
+  await page.goto(inject('appBase'));
+  await page.addScriptTag({
+    type: 'module',
+    content: `import { overviewLink } from '/src/editor/shell/overviewLink.ts'; document.body.replaceChildren(overviewLink({ id: 'test' }, 'controls', 'Name the counters in Overview › Controls')); document.body.dataset.linkReady = '1';`,
+  });
+  await page.waitForSelector('body[data-link-ready="1"]');
+  const result = await page.evaluate(() => {
+    const link = document.querySelector('a')!;
+    const rect = link.getBoundingClientRect();
+    return { width: rect.width, height: rect.height, overflow: document.documentElement.scrollWidth - 390, href: link.getAttribute('href') };
+  });
+  expect(result.href).toBe('#/p/test?tab=controls');
+  expect(result.width).toBeGreaterThanOrEqual(24);
+  expect(result.height).toBeGreaterThanOrEqual(24);
+  expect(result.overflow).toBeLessThanOrEqual(0);
 });

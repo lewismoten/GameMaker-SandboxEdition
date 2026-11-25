@@ -7,7 +7,9 @@ it.each(['bbl', 'mbl'])(
   async (kind) => {
     const fixture = await editorBrowser();
     try {
-      const result = await fixture.page.evaluate<{ before: number[]; edited: number[]; undo: number[]; redo: number[]; invalidated: boolean }>(`(async () => {
+      await fixture.page.clock.install();
+      await fixture.page.exposeFunction('flushBlockSave', () => fixture.page.clock.fastForward(300));
+      const result = await fixture.page.evaluate<{ changed: boolean; restored: boolean; reapplied: boolean; invalidated: boolean }>(`(async () => {
       const { Project } = await import('/src/editor/core/project.ts');
       const { GameFiles } = await import('/src/project/files.ts');
       const { newGame, serializeGame } = await import('/packages/engine/src/formats/game.ts');
@@ -20,24 +22,25 @@ it.each(['bbl', 'mbl'])(
       const project = new Project('blocks-history-' + kind, 'Blocks regression', 'a.gam', files);
       const host = document.querySelector('#host');
       const dispose = (await loadEditor(kind))(host, project, file);
-      const bytes = () => [...files.get(file)];
+      const bytes = () => files.get(file).slice();
+      const same = (a, b) => a.length === b.length && a.every((v, i) => v === b[i]);
       const button = label => [...host.querySelectorAll('button')].find(b => b.textContent.includes(label));
       const change = value => {
         const field = [...host.querySelectorAll('input')].find(i => i.closest('label')?.textContent.includes('Score points'));
         field.value = String(value); field.dispatchEvent(new Event('change'));
       };
-      const flush = () => new Promise(resolve => setTimeout(resolve, 300));
+      const flush = window.flushBlockSave;
       try {
         const before = bytes(); change(123); await flush(); const edited = bytes();
         button('Undo').click(); await flush(); const undo = bytes();
         button('Redo').click(); await flush(); const redo = bytes();
         button('Undo').click(); change(456); await flush();
-        return { before, edited, undo, redo, invalidated: button('Redo').disabled };
+        return { changed: !same(before, edited), restored: same(before, undo), reapplied: same(edited, redo), invalidated: button('Redo').disabled };
       } finally { dispose?.(); }
     })()`);
-      expect(result.edited).not.toEqual(result.before);
-      expect(result.undo).toEqual(result.before);
-      expect(result.redo).toEqual(result.edited);
+      expect(result.changed).toBe(true);
+      expect(result.restored).toBe(true);
+      expect(result.reapplied).toBe(true);
       expect(result.invalidated).toBe(true);
     } finally {
       await fixture.close();

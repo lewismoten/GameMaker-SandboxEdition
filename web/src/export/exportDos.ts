@@ -38,7 +38,6 @@ interface DosExportOptions {
 
 // Compatibility exports; non-DOS callers import the small helpers directly.
 export { dosNames, dosNameProblems } from './dosNames';
-export { WEB_ONLY } from './webOnly';
 
 /**
  * Stored name -> its name in the DOS folder, for every file the player's renamed extensions

@@ -1,12 +1,11 @@
 // Exercise the real desk button, dialog and persisted hardware with bundled headless Chromium.
 import { readFileSync } from 'node:fs';
 import type { Browser } from 'playwright-core';
-import { expect, it } from 'vitest';
-import { launch, target } from './perfLib';
+import { expect, inject, it } from 'vitest';
+import { launch } from './perfLib';
 import { assertTheme, forceTheme } from './forceTheme';
 
 it('opens by keyboard, applies and remembers hardware, preserves TURBO, and fits both themes', async () => {
-  const server = await target(5198);
   let browser: Browser | undefined;
   try {
     browser = await launch();
@@ -14,24 +13,13 @@ it('opens by keyboard, applies and remembers hardware, preserves TURBO, and fits
       const context = await browser.newContext({ viewport: { width: 1440, height: 900 }, colorScheme: theme });
       await forceTheme(context, theme);
       const page = await context.newPage();
-      await page.goto(`${server.base}/#/desk`);
-      const button = page.getByRole('button', { name: /^Machine settings/ });
+      await page.goto(`${inject('appBase')}/#/desk`, { waitUntil: 'commit' });
+      const button = page.getByRole('button', { name: /^Machine settings, \d+ MHz/ });
       await button.waitFor();
       const dialog = page.getByRole('dialog', { name: 'Machine settings' });
-      // Under load the button can be visible before the desk binds its keys, so a single Enter
-      // was sometimes lost (gate failures 2026-11-12); press again until the dialog opens.
-      for (let tries = 0; ; tries++) {
-        await button.focus();
-        await page.keyboard.press('Enter');
-        if (
-          await dialog.waitFor({ timeout: 5000 }).then(
-            () => true,
-            () => false,
-          )
-        )
-          break;
-        if (tries >= 11) throw new Error('Machine settings dialog never opened after 12 presses');
-      }
+      // The desk adds the clock speed to the button label after binding its controls.
+      await button.press('Enter');
+      await dialog.waitFor();
       await assertTheme(page, theme);
       await dialog.getByLabel('CPU', { exact: true }).selectOption('ps1');
       await dialog.getByLabel('Hard drive timing').selectOption('286');
@@ -84,10 +72,6 @@ it('opens by keyboard, applies and remembers hardware, preserves TURBO, and fits
       await context.close();
     }
   } finally {
-    try {
-      await browser?.close();
-    } finally {
-      server.stop();
-    }
+    await browser?.close();
   }
 }, 180000);
