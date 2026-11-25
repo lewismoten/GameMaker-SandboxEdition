@@ -7,6 +7,7 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import type { Page } from 'playwright-core';
+import { stableScreenshot } from './stableScreenshot';
 import { arg, launch, target } from './perfLib';
 import { assertTheme, forceTheme } from './forceTheme';
 
@@ -49,9 +50,9 @@ try {
       await page.goto(srv.base + route);
       await page.waitForSelector(wait, { timeout: 90000 }).catch(() => console.log(`${name}: "${wait}" never appeared; shot anyway`));
       await page.waitForTimeout(1500);
-      await settle(page);
+      const frame = await settle(page, route, scheme);
       await assertTheme(page, scheme);
-      await page.screenshot({ path: `${out}/${name}-${scheme}.png` });
+      writeFileSync(`${out}/${name}-${scheme}.png`, frame);
       shots.push(`${name}-${scheme}`);
       await page.close();
     }
@@ -118,7 +119,7 @@ try {
 process.exitCode = diffs.length ? 1 : 0;
 
 /** Quiet the page, then wait until two screenshots in a row are byte-identical (late fonts and canvases). */
-async function settle(page: Page) {
+async function settle(page: Page, route: string, scheme: string) {
   await page.addStyleTag({ content: '*,*::before,*::after{animation:none!important;transition:none!important;caret-color:transparent!important}' });
   await page.evaluate(async () => {
     await document.fonts.ready;
@@ -126,13 +127,7 @@ async function settle(page: Page) {
     await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
   });
   await page.mouse.move(0, 0);
-  let last = await page.screenshot();
-  for (let i = 0; i < 20; i++) {
-    await page.waitForTimeout(500);
-    const now = await page.screenshot();
-    if (now.equals(last)) return;
-    last = now;
-  }
+  return stableScreenshot(page, route, scheme);
 }
 
 function dataUrl(file: string) {
