@@ -3,12 +3,12 @@
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { archiveCache, codeStamp } from './archiveCache';
-import { cdCatalog, cdFiles, cdSecretCatalog } from './cdGames';
+import { scan } from './cdGamesScan';
 import { gameArchive } from './gameArchive';
 
 const cdRoot = process.argv[2];
-const files = cdFiles(cdRoot);
-const entries = [...cdCatalog(cdRoot), ...cdSecretCatalog(cdRoot)];
+const { files, catalog, secret } = scan(cdRoot);
+const entries = [...catalog, ...secret];
 // Finished ZIPs are kept by content hash (archiveCache.ts); GAME_ZIP_CACHE=off builds every one afresh.
 const web = join(dirname(fileURLToPath(import.meta.url)), '..');
 const cache =

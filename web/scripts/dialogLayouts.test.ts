@@ -1,12 +1,11 @@
 // Real-page regressions for dialogs that used to need portrait scrolling.
-import { expect, it } from 'vitest';
-import { launch, target } from './perfLib';
+import { expect, inject, it } from 'vitest';
+import { launch } from './perfLib';
 import { assertTheme, forceTheme } from './forceTheme';
 import { extraScenes } from './dialogsExtraScenes';
 import { measure } from './dialogsFitMeasure';
 
 it('fits the Community proposal form on both small portrait phones', async () => {
-  const server = await target(5196);
   const browser = await launch();
   try {
     for (const viewport of [
@@ -17,7 +16,7 @@ it('fits the Community proposal form on both small portrait phones', async () =>
       await forceTheme(context, 'light');
       await context.addInitScript(() => localStorage.setItem('gm-ui', 'modern'));
       const page = await context.newPage();
-      await page.goto(server.base);
+      await page.goto(inject('appBase'), { waitUntil: 'commit' });
       await extraScenes.find((scene) => scene.id === 'community-submit')!.open(page);
       await page.waitForSelector('dialog[open]');
       await assertTheme(page, 'light');
@@ -30,6 +29,5 @@ it('fits the Community proposal form on both small portrait phones', async () =>
     }
   } finally {
     await browser.close();
-    server.stop();
   }
 }, 30000);

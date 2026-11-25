@@ -145,10 +145,13 @@ describe('the build and secret games', () => {
     : [];
 
   it.skipIf(!existsSync(cd) || !secret.length)('lists them only in the secret catalog', () => {
-    const open = JSON.stringify(slimCatalog(cdCatalog(cd))) + JSON.stringify(cdCatalog(cd));
+    const catalog = cdCatalog(cd);
+    const open = JSON.stringify(slimCatalog(catalog)) + JSON.stringify(catalog);
+    const publicIds = catalog.map((e) => e.id);
+    const secretIds = cdSecretCatalog(cd).map((e) => e.id);
     for (const id of secret) {
-      expect(cdSecretCatalog(cd).map((e) => e.id)).toContain(id);
-      expect(cdCatalog(cd).map((e) => e.id)).not.toContain(id);
+      expect(secretIds).toContain(id);
+      expect(publicIds).not.toContain(id);
       expect(open).not.toContain(`/${id}/`);
     }
   });
