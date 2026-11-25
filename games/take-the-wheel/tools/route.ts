@@ -29,6 +29,7 @@ const READ = 40;
 
 /** 1. Hop In: on foot Kit jumps the bird (the bot's walk jumps when blocked), then walks into the kart. */
 export async function hopIn(bot: StarterBot): Promise<void> {
+  bot.jumpHold = 8;
   await must(bot, bot.walk(8, 'the first sign'), 'to the first sign');
   await must(bot, bot.wait(READ), 'reading');
   await must(bot, bot.walk(17, 'the bird sign'), 'to the bird sign');
