@@ -81,6 +81,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex fixed and tested Guide navigation while a level is opening.
 - OpenAI Codex fixed and tested playback cleanup in the paper die fold viewer.
 - OpenAI Codex fixed and tested filename allocation for animation clips.
+- OpenAI Codex fixed and tested black-light image cleanup when a game box is released.
 - OpenAI Codex fixed and tested frame selection for editor screenshots.
 - OpenAI Codex fixed and tested the full-cycle check in the Roll the Dice walkthrough bot.
 - OpenAI Codex fixed and tested the disk box divider controls during search.
