@@ -30,8 +30,6 @@ interface BrowserHost {
   open: (file: string) => void;
   add: (kind: FileKind) => void;
   /** Search results that live in Overview's other tabs. */
-  /** The Read-only bar of a game opened to look inside, shown inline in the heading. */
-  bar?: HTMLElement | null;
   openControls?: () => void;
   openPlayerField?: (patch: string) => void;
 }
@@ -68,7 +66,6 @@ export function assetBrowser(host: BrowserHost): { el: HTMLElement; dispose(): v
         count,
         kind === 'map' ? h('p', { class: 'meta' }, 'Each thumbnail shows the stored grid once. During play, opposite edges meet.') : null,
       ),
-      host.bar ?? null,
       kind ? null : optimizeEntry(project),
     ),
     searchSlot,

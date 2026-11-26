@@ -1,4 +1,6 @@
 // Browser regression for standalone editor links, measuring the actual rendered hit target.
+import { forceTheme } from './forceTheme';
+import { readFileSync } from 'node:fs';
 import { afterAll, beforeAll, expect, inject, it, vi } from 'vitest';
 import type { Browser } from 'playwright-core';
 import { launch } from './perfLib';
@@ -44,3 +46,42 @@ it('gives standalone Overview links a 24px target without phone overflow', async
   expect(result.height).toBeGreaterThanOrEqual(24);
   expect(result.overflow).toBeLessThanOrEqual(0);
 });
+
+it.each([390, 1440].flatMap((width) => (['light', 'dark'] as const).map((theme) => ({ width, theme }))))(
+  'keeps the read-only action reachable across Overview tabs at $width px in $theme',
+  async ({ width, theme }) => {
+    const page = await browser.newPage({ viewport: { width, height: 844 }, hasTouch: width === 390 });
+    try {
+      await forceTheme(page.context(), theme);
+      await page.addInitScript(() => localStorage.setItem('gm-ui', 'modern'));
+      await page.goto(inject('appBase') + '/#/p/look:bcuda?tab=controls');
+      const selected = page.getByRole('tablist', { name: 'Overview' }).getByRole('tab', { selected: true });
+      await selected.waitFor();
+      const action = page.getByRole('region', { name: 'Read-only' }).getByRole('button');
+      for (const label of ['Controls', 'DOS player', 'Tools', 'Files']) {
+        expect(await selected.textContent()).toBe(label);
+        expect(await action.isVisible()).toBe(true);
+        await selected.focus();
+        await page.keyboard.press('Tab');
+        expect(await action.evaluate((button) => button === document.activeElement)).toBe(true);
+        if (label !== 'Files') {
+          await selected.focus();
+          await page.keyboard.press('ArrowRight');
+        }
+      }
+      const notice = await action.boundingBox();
+      const files = await selected.boundingBox();
+      expect(notice!.y).toBeLessThan(width === 390 ? files!.y + files!.height + 24 : files!.y + files!.height);
+      await page.addScriptTag({ content: readFileSync('../node_modules/axe-core/axe.min.js', 'utf8') });
+      const violations = await page.evaluate(async () => {
+        // @ts-expect-error axe is injected above
+        const result = await axe.run(document.querySelector('.panel-tabs-heading'));
+        return result.violations.map((v: { id: string }) => v.id);
+      });
+      expect(violations).toEqual([]);
+      expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
+    } finally {
+      await page.close();
+    }
+  },
+);
