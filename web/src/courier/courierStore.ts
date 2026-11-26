@@ -10,6 +10,7 @@ import { isCourierId, makeCourierId } from './courierId';
 
 export const COURIER_KEY = 'gm-courier';
 const KEY = COURIER_KEY;
+let unsavedCourier: string | undefined;
 /** Scoot's Quiet switch lives with the desk buddy (desk/buddy/buddyStore.ts); SCOOT.EXE may not load the desk. */
 const BUDDY_KEY = 'gm-desk-buddy';
 export const COURIER_CHANGED = 'courier-changed';
@@ -103,7 +104,7 @@ function readVisitor(v: unknown): Visitor | undefined {
 
 export function loadCourier(): Courier {
   try {
-    const o: unknown = JSON.parse(localStorage.getItem(KEY) ?? '{}');
+    const o: unknown = JSON.parse(unsavedCourier ?? localStorage.getItem(KEY) ?? '{}');
     if (!o || typeof o !== 'object') return empty();
     const r = o as Record<string, unknown>;
     const mail = (Array.isArray(r.mail) ? r.mail : [])
@@ -147,10 +148,12 @@ export function loadCourier(): Courier {
 }
 
 export function saveCourier(c: Courier): void {
+  const snapshot = JSON.stringify(c);
   try {
-    localStorage.setItem(KEY, JSON.stringify(c));
+    localStorage.setItem(KEY, snapshot);
+    unsavedCourier = undefined;
   } catch {
-    /* storage blocked: the letter is kept for this visit only */
+    unsavedCourier = snapshot;
   }
   if (typeof window !== 'undefined') window.dispatchEvent(new Event(COURIER_CHANGED));
 }
