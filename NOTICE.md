@@ -88,6 +88,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex corrected and tested the public guide to handing off uncommitted edits.
 - OpenAI Codex fixed and tested pitch handling in the pronunciation word report.
 - OpenAI Codex fixed and tested the Hint Giant’s silence timeout.
+- OpenAI Codex fixed and tested same-family track colors in the music editor.
 - OpenAI Codex fixed and tested the editor’s file count accessibility and shareware notice layout on phones.
 - OpenAI Codex fixed and tested walkthrough segment selection in the Pocket host checker.
 - OpenAI Codex fixed and tested the Switches title demo checker.
