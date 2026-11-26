@@ -6,9 +6,9 @@ import about from '../about.json';
 export const STORY = wrap(`
 |UNDER THE HOOD
 
-The player that runs a Game-Maker game is a program, and a program is a long row of bytes.
+I'm Lian, the explorer in the blue beanie. The player that runs a Game-Maker game is a program, and a program is a long row of bytes.
 
-A small explorer in a blue beanie walks through that row. Some bytes are code. Some are words the menu shows, like Play.
+Walk with me through that row. Some bytes are code. Some are words the menu shows, like Play.
 
 Three short levels: what an EXE is, why a new word must be the same size as the old one, and what to ask before you change anything.
 
@@ -37,6 +37,8 @@ export const CREDITS = withCreditPage(
 |(c) 1994 Sandbox Software
 
 Design, pixels, beeps and levels by Claude Opus 5.5, an AI model made by Anthropic.
+
+Story introduction by OpenAI Codex.
 
 Held-rise controls, bot timing and raised-start camera design by OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten.
 

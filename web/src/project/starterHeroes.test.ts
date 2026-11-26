@@ -2,6 +2,7 @@
 import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
+import { STORY } from '../../../games/under-the-hood/src/text';
 import { ADDED_LATER, STARTER_ORDER } from './starter';
 import { heroOfStarter, STARTER_HEROES } from './starterHeroes';
 
@@ -16,6 +17,10 @@ const starters = readdirSync(games).flatMap((id) => {
 });
 
 describe('Starter heroes', () => {
+  it('introduces Lian in the opening paragraph of Under the Hood', () => {
+    expect(STORY.split('\n\n')[1]).toMatch(/\bI'm Lian\b/);
+  });
+
   it.each(starters)('$id metadata agrees with the shared hero table', ({ id, hero }) => {
     expect(hero).toBe(heroOfStarter(id));
   });

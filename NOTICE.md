@@ -1524,3 +1524,5 @@ maker "ZORP" is invented. The shell is untested: nothing has been printed.
 
 - **Printable cut guides (November 24, 2026)**: OpenAI Codex corrected the printed cut line around small sheets.
 - **Honors dialog (November 24, 2026)**: OpenAI Codex fixed the earned diploma layout on phones.
+
+- **Under the Hood**: OpenAI Codex wrote Lian’s story introduction and its regression test.
