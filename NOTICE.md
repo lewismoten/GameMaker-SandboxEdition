@@ -138,6 +138,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex fixed and tested the saved filename shown after a file picker import.
 - OpenAI Codex corrected and tested the reproduction commands in the file fuzzing case study.
 - OpenAI Codex fixed and tested triangle-to-body clearance measurements for the phone kit.
+- OpenAI Codex added required metadata checks for every Starter in the hero deal.
 - OpenAI Codex fixed and tested validation before writing Level Maps metadata.
 - OpenAI Codex fixed and tested the Score Popups final coin and demo payout checks.
 - OpenAI Codex fixed and tested recovery of missing Year 2000 cryptex kit files.
