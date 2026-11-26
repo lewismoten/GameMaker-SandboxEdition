@@ -85,6 +85,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex strengthened the DOS floppy export test for in-place changes to file bytes.
 - OpenAI Codex fixed and tested file and header size validation in the historical player inventory.
 - OpenAI Codex fixed and tested decoration spacing validation in the graduation hall builder.
+- OpenAI Codex corrected and tested the public guide to handing off uncommitted edits.
 - OpenAI Codex fixed and tested the editor’s file count accessibility and shareware notice layout on phones.
 - OpenAI Codex fixed and tested walkthrough segment selection in the Pocket host checker.
 - OpenAI Codex fixed and tested the Switches title demo checker.
