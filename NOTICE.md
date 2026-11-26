@@ -64,6 +64,7 @@ game folder opens in the browser unchanged.
 
 ## Credits
 
+- OpenAI Codex fixed and tested the duplicate awning block and overwritten flower placement in Kit's Shop.
 - OpenAI Codex fixed and tested the editor’s file count accessibility and shareware notice layout on phones.
 - OpenAI Codex fixed and tested frame selection for editor screenshots.
 - OpenAI Codex fixed and tested validation before writing Level Maps metadata.
