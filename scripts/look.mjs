@@ -99,7 +99,7 @@ export function parseTsv(tsv, minConf = 60) {
   return { all: all.join(' '), text: good.join(' ') };
 }
 
-/** Two parse results as one, keeping each word once (case-insensitive) in the order first seen. */
+/** Keep full reads separate for phrase matching and merge confident words for display. */
 export function mergeWords(a, b) {
   const one = (x, y) => {
     const seen = new Set(
@@ -111,13 +111,14 @@ export function mergeWords(a, b) {
     const add = y.split(' ').filter((w) => w && !seen.has(w.toLowerCase()) && seen.add(w.toLowerCase()));
     return [...x.split(' ').filter(Boolean), ...add].join(' ');
   };
-  return { all: one(a.all, b.all), text: one(a.text, b.text) };
+  return { all: [...a.all, b.all], text: one(a.text, b.text) };
 }
 
 /** Whether the OCR text holds `want`, ignoring case and runs of white space. */
-export function textHas(text, want) {
+export function textHas(reads, want) {
   const n = (s) => s.toLowerCase().replace(/\s+/g, ' ').trim();
-  return n(text).includes(n(want));
+  const phrase = n(want);
+  return reads.some((text) => n(text).includes(phrase));
 }
 
 /** Fetch a bridge route; a refused connection becomes the "start it" message. */
@@ -161,7 +162,7 @@ function defaultOut(shot) {
 
 /** Reads the words in a picture file: preprocess with ffmpeg at each threshold, tesseract on each, merged. */
 export function ocrFile(out, opts) {
-  let words = { all: '', text: '' };
+  let words = { all: [], text: '' };
   let tmp = null;
   try {
     tmp = mkdtempSync(join(tmpdir(), 'look-ocr-'));
@@ -176,9 +177,6 @@ export function ocrFile(out, opts) {
       const tsv = execFileSync('tesseract', tesseractArgs(img, opts.ocrPsm), { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] });
       words = mergeWords(words, parseTsv(tsv));
     }
-  } catch {
-    console.error('tesseract is not installed (or failed); --ocr skipped. Install it yourself, e.g. `brew install tesseract`.');
-    process.exit(opts.expect ? 1 : 0);
   } finally {
     if (tmp) rmSync(tmp, { recursive: true, force: true });
   }
@@ -200,7 +198,14 @@ async function main() {
   writeFileSync(out, jpeg);
   console.log(`${slot == null ? 'current view' : `shot ${slot}`}${settled === '0' ? ' (did not settle; look again)' : ''}: ${out}`);
   if (!o.ocr) return;
-  const words = ocrFile(out, o);
+  let words;
+  try {
+    words = ocrFile(out, o);
+  } catch {
+    console.error('tesseract is not installed (or failed); --ocr skipped. Install it yourself, e.g. `brew install tesseract`.');
+    if (o.expect) process.exitCode = 1;
+    return;
+  }
   console.log(words.text);
   const text = words.all;
   if (o.expect && !textHas(text, o.expect)) {

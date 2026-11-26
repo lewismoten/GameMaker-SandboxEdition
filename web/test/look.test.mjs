@@ -48,7 +48,7 @@ describe('look', () => {
     const row = (conf, w) => ['5', '1', '1', '1', '1', '1', '0', '0', '9', '9', conf, w].join('\t');
     const tsv = ['level\tpage', row(90, 'BOOT'), row(30, 'xq'), row(75, '15'), row(80, 'HOST'), row(10, '')].join('\n');
     expect(parseTsv(tsv)).toEqual({ all: 'BOOT xq 15 HOST', text: 'BOOT HOST' });
-    expect(mergeWords({ all: 'a Boot', text: 'Boot' }, { all: 'boot Host', text: 'boot Host' })).toEqual({ all: 'a Boot Host', text: 'Boot Host' });
+    expect(mergeWords({ all: ['a Boot'], text: 'Boot' }, { all: 'boot Host', text: 'boot Host' })).toEqual({ all: ['a Boot', 'boot Host'], text: 'Boot Host' });
   });
   it('resolves a slot, a name and a prefix', () => {
     expect(resolveShot(shots, '3')).toBe(3);
@@ -58,8 +58,15 @@ describe('look', () => {
     expect(() => resolveShot(shots, 'nope')).toThrow(/saved: 1 CYD, 3 R-HDMI/);
   });
   it('matches expected text loosely', () => {
-    expect(textHas('Hello\n  World', 'hello world')).toBe(true);
-    expect(textHas('abc', 'xyz')).toBe(false);
+    expect(textHas(['Hello\n  World'], 'hello world')).toBe(true);
+    expect(textHas(['abc'], 'xyz')).toBe(false);
+  });
+  it.each([
+    [['GO GO', ''], 'GO GO', true],
+    [['START', 'OVER'], 'START OVER', false],
+  ])('checks a phrase within each complete read', (reads, phrase, expected) => {
+    const words = reads.reduce((words, all) => mergeWords(words, { all, text: '' }), { all: [], text: '' });
+    expect(textHas(words.all, phrase)).toBe(expected);
   });
   it('lists shots then goes once', async () => {
     const calls = [];
