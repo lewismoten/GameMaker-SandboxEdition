@@ -16,7 +16,7 @@ const fail = (m: string) => {
   process.exit(1);
 };
 const hp = sim.ci.hitpts;
-const lives = sim.ci.meter[1];
+const lives = sim.ci.lives;
 await bot.walk(SLEEPER_X - 2, 'the sleeper');
 sim.press(SCAN.right);
 await bot.wait(40);
@@ -26,13 +26,13 @@ console.log(`pushed on for two seconds: stopped at block ${x.toFixed(2)} (the sl
 if (alive(bot, SLEEPERS) !== 1) fail('the sleeper woke before the check (the clock runs from the start of the level)');
 if (x > SLEEPER_X - 0.5) fail('Kit got into the sleeper');
 if (x < SLEEPER_X - 3) fail('Kit did not reach the sleeper');
-if (sim.ci.hitpts !== hp || sim.ci.meter[1] !== lives) fail('touching the sleeper changed hit points or lives');
+if (sim.ci.hitpts !== hp || sim.ci.lives !== lives) fail('touching the sleeper changed hit points or lives');
 for (let i = 0; i < 100 && alive(bot, SLEEPERS) > 0; i++) await bot.wait(10);
 if (alive(bot, AWAKE) !== 1) fail('the sleeper did not become the awake one');
 await bot.wait(20);
 await bot.walk(20, 'through the awake one');
 x = bot.px.x / 20;
 if (x < 19.5) fail(`Kit did not get through the awake one (block ${x.toFixed(2)})`);
-if (sim.ci.hitpts !== hp || sim.ci.meter[1] !== lives) fail('walking through the awake one cost something');
+if (sim.ci.hitpts !== hp || sim.ci.lives !== lives) fail('walking through the awake one cost something');
 if (alive(bot, AWAKE) !== 1) fail('the awake one went away when Kit touched it');
 console.log('bumpCheck ok');
