@@ -68,6 +68,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex fixed and tested transparent padding in the Colors That Work shape check.
 - OpenAI Codex fixed and tested contrast sampling for the text-page ink advisory.
 - OpenAI Codex wrote the scene Escape timing regression test.
+- OpenAI Codex fixed and tested courier trip persistence and replay retention.
 - OpenAI Codex fixed and tested the editor’s file count accessibility and shareware notice layout on phones.
 - OpenAI Codex fixed and tested frame selection for editor screenshots.
 - OpenAI Codex fixed and tested validation before writing Level Maps metadata.
