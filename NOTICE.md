@@ -121,6 +121,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex fixed and tested the Who Wins? lesson check for a star hitting the big one.
 - OpenAI Codex fixed and tested replay error handling in the Who Do You Want to Be? title demo checker.
 - OpenAI Codex fixed and tested update notifications in Settings and the update notice.
+- OpenAI Codex corrected and tested the joystick help in Take the Wheel.
 - OpenAI Codex fixed and tested the editor’s file count accessibility and shareware notice layout on phones.
 - OpenAI Codex fixed and tested walkthrough segment selection in the Pocket host checker.
 - OpenAI Codex fixed and tested the Switches title demo checker.
