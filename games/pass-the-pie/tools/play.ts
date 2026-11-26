@@ -20,6 +20,7 @@ export async function play(seed = SEED, upTo = LEVELS.length, from = 0): Promise
     files.set(gam, serializeGame(game));
   }
   const sim = new GameSim(files, seed);
+  sim.ci.damageTaken = 0;
   const bot = new StarterBot(sim);
   await playLevels(bot, LEVELS.slice(from), upTo - from);
   return { sim, bot };

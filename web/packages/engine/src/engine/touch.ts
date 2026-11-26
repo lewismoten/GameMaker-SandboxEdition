@@ -90,6 +90,7 @@ export function doBlockTouchChar(w: World, blk: Block): number {
 
   // Hit points change only while not already dying (once per death).
   if (chr.cseq !== DIESEQ) {
+    if (blk.chHitPt < 0 && ci.damageTaken !== undefined) ci.damageTaken -= blk.chHitPt;
     if (blk.chHitPt <= 0) ci.hitpts = i16(ci.hitpts + blk.chHitPt);
     else if (u16(ci.hitpts + blk.chHitPt) < INF_REPEAT) ci.hitpts = i16(ci.hitpts + blk.chHitPt);
     else ci.hitpts = INF_REPEAT - 1;
