@@ -188,6 +188,9 @@ game folder opens in the browser unchanged.
 - OpenAI Codex fixed and tested keyboard navigation in the magazine Print menu.
 - OpenAI Codex sped up the block editor history, phone recording, and phone Files button regression tests.
 - OpenAI Codex implemented and tested background catalog preparation and cancellation for the development server.
+- OpenAI Codex implemented and tested background catalog preparation for the development server.
+- OpenAI Codex fixed generated dungeon map filenames and tested DOS filename collisions.
+- OpenAI Codex updated the platform bot regression to require generation for its three named seeds.
 - OpenAI Codex fixed and tested platform layout verification in the map editor.
 - OpenAI Codex added the regression test for stale tour narration.
 - OpenAI Codex fixed and tested tour narration when a BBS prompt fails to appear.
