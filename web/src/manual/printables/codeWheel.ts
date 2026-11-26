@@ -89,10 +89,10 @@ function colorFills(it: CodeWheelItem, g: SVGElement, name: string, rows: string
   const fill = it.fills?.[name];
   if (!fill || !it.fillColors) return cover;
   const byColor = new Map<string, string>();
-  fill.forEach((row, ry) => {
+  fill.slice(0, rows.length).forEach((row, ry) => {
     const y = top(ry);
     if (y === null) return;
-    for (let rx = 0; rx < row.length; rx++) {
+    for (let rx = 0; rx < Math.min(row.length, rows[ry].length); rx++) {
       const ch = row[rx];
       const color = it.fillColors?.[ch.toLowerCase()];
       if (ch === '.' || !color) continue;
