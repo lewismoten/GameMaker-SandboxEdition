@@ -278,7 +278,7 @@ This folder holds the build's Vite plugins and the scripts run by hand (from
   exits 1 when the bot doesn't win. Arguments, `.gam` picking and the table line are in `walkAutoArgs.ts`. It skips the
   author's own plays and walking paths, which live in a project's companion file.
 - `roundTrip.ts` (`npm run roundtrip -- [<folder | .zip>...] [--type gam,map,...] [--out base]`) reads every original file
-  with the engine's reader, writes it back with the matching serializer and compares bytes: one table per type
+  with the engine's reader, writes it back with the matching serializer and compares bytes: counts by type
   (identical, different, unreadable) and the first differing offset. Zips are read in memory. It defaults to the
   CD in `cd/` and includes `.for-lewis/reference/archive` when present. Reports default to
   `.for-lewis/research/roundtrip/YYYY-MM-DD.md` and `.tsv` using the current UTC date.
