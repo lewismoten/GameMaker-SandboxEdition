@@ -252,7 +252,7 @@ This folder holds the build's Vite plugins and the scripts run by hand (from
   `castArt.ts` and `castSprites.ts` make the Cast page's pictures in `../public/cast` (the sprites
   also walk the guided tour, with a few hosts of its own), from the other `cast*.ts` drawings (`castEgg.ts`, `castLeoSide.ts`, `castNeedle.ts`, `castTinHeart.ts`).
 - Downloads from the command line: `macDmg.ts`, `winExe.ts` and `linuxTar.ts` run the same code as
-  the Download button (see [`export/`](../src/export/README.md)).
+  the Download button (see [`export/`](../src/export/README.md)). All three use `namedDownload.ts` to check a requested game.
 - [`mcp/`](mcp) (`npm run mcp`): the local MCP server for AI tools. It uses the
   assistant's tools (`assistant/tools`) on game folders, zips, this project's games and the CD's,
   writing only in the folders it is given, with its own vite-node settings (`mcp/vite.config.ts`).
