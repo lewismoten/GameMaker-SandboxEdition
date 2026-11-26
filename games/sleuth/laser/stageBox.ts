@@ -38,8 +38,16 @@ function main() {
   const out = flag('--out') ?? join(here, '../../../web/public/laser/sleuth/stage-box');
   const source = sourceKey(kerf, stock);
   const made = join(out, 'manifest.json');
-  const previous = existsSync(made) ? (JSON.parse(readFileSync(made, 'utf8')) as { source?: string; sheets?: { svg: string; preview: string }[] }) : undefined;
-  if (!args.includes('--force') && previous?.source === source) {
+  const force = args.includes('--force');
+  let previous: { source?: string; sheets?: { svg: string; preview: string }[] } | undefined;
+  if (existsSync(made)) {
+    try {
+      previous = JSON.parse(readFileSync(made, 'utf8')) as typeof previous;
+    } catch (error) {
+      if (!force || !(error instanceof SyntaxError)) throw error;
+    }
+  }
+  if (!force && previous?.source === source) {
     console.log('Stage Box: up to date');
     return;
   }
