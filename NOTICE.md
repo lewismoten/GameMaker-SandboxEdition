@@ -66,6 +66,7 @@ game folder opens in the browser unchanged.
 
 - OpenAI Codex fixed and tested validation before writing Level Maps metadata.
 - OpenAI Codex wrote the headless audit for built title demos and saved walkthroughs.
+- OpenAI Codex fixed the Gusts title demo check and tested its damage and landing conditions.
 - OpenAI Codex updated the Dig It walkthrough to demonstrate the shovel and tested its recorded controls.
 - OpenAI Codex sped up the block editor history, phone recording, and phone Files button regression tests.
 - OpenAI Codex implemented and tested background catalog preparation for the development server.
