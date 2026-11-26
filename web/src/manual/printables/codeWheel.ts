@@ -115,7 +115,7 @@ let clipSeq = 0;
  */
 function faceArt(it: CodeWheelItem, name: string, x: number, y: number, deg: number, k: number, part: 'whole' | 'top' | 'bottom'): SVGElement | null {
   const shapes = it.faceArt?.[name];
-  if (!shapes) return null;
+  if (!shapes?.length) return null;
   const g = el('g', { class: part === 'whole' ? 'cw-sym' : 'cw-sym cw-half', transform: `translate(${x.toFixed(2)} ${y.toFixed(2)}) rotate(${deg})` });
   const inner = el('g', {
     transform: `translate(${(-24 * k).toFixed(3)} ${(-24 * k).toFixed(3)}) scale(${k.toFixed(4)})`,
