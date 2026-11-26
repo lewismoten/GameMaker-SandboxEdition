@@ -113,6 +113,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex fixed and tested reachability in generated castle keeps.
 - OpenAI Codex fixed and tested exclusion of the Pocket Player installer and firmware from offline downloads.
 - OpenAI Codex fixed and tested the flock visibility report.
+- OpenAI Codex wrote the regression test for the Settings menu’s backup button.
 - OpenAI Codex fixed and tested the editor’s file count accessibility and shareware notice layout on phones.
 - OpenAI Codex fixed and tested walkthrough segment selection in the Pocket host checker.
 - OpenAI Codex fixed and tested the Switches title demo checker.
