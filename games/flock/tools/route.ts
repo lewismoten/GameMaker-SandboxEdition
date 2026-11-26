@@ -5,6 +5,7 @@
 // The checks here fail if anything else happens.
 import type { Result, StarterBot } from '../../kit/starter/bot';
 import { ORIGIN } from '../../kit/starter/map';
+import { V } from '../src/levels';
 import { BIRD, QUICK } from '../src/monsters';
 
 /** Runs an order; anything but carrying on (a scene change, getting stuck) is an error. */
@@ -56,10 +57,19 @@ export function drift(bot: StarterBot, start: { x: number; y: number }[]): numbe
   return Math.max(...now.map((b, i) => Math.max(Math.abs(b.x - now[0].x - (start[i].x - start[0].x)), Math.abs(b.y - now[0].y - (start[i].y - start[0].y)))));
 }
 
+/** Check the spawn offsets before using the flock as a reference for drift. */
+function startingV(bot: StarterBot) {
+  const start = birdsAt(bot);
+  if (start.length !== V.length || V.some(([dx, dy], i) => start[i].x - start[0].x !== dx * 20 || start[i].y - start[0].y !== dy * 20)) {
+    throw new Error('the birds should begin in a V');
+  }
+  return start;
+}
+
 /** 1. One Shape: the birds fly right and back while Kit reads; the V never changes. */
 export async function oneShape(bot: StarterBot): Promise<void> {
   const score = bot.sim.ci.score;
-  const start = birdsAt(bot);
+  const start = startingV(bot);
   let worst = 0;
   const look = (what: string) => {
     worst = Math.max(worst, drift(bot, start));
@@ -89,8 +99,7 @@ export async function oneShape(bot: StarterBot): Promise<void> {
 /** 2. Out of Step: the gold birds pull away and the V comes apart. */
 export async function outOfStep(bot: StarterBot): Promise<void> {
   const score = bot.sim.ci.score;
-  const start = birdsAt(bot);
-  if (drift(bot, start) !== 0) throw new Error('level 2: the birds should begin in a V');
+  const start = startingV(bot);
   await must(bot, bot.wait(READ), 'reading the first sign');
   await must(bot, bot.walk(8, 'the first sign'), 'to the first sign');
   await must(bot, bot.wait(READ), 'reading');
