@@ -35,6 +35,12 @@ describe('the chapters', () => {
     for (const c of CHAPTERS) expect(md(c.id).match(bad)?.[0], c.id).toBeUndefined();
   });
 
+  it.each(['chapters/architecture.md', 'booklet1994.md'])('shows no selection letter for quit or MENU in %s', (file) => {
+    const text = readFileSync(join(here, file), 'utf8');
+    expect.soft(text.match(/^\|\s*0\s*\|\s*(\S+)\s*\|\s*\(quit\)\s*\|/m)?.[1]).toBe('—');
+    expect.soft(text.match(/^\|\s*11\s*\|\s*(\S+)\s*\|\s*MENU\s*\|/m)?.[1]).toBe('—');
+  });
+
   it('explains the two Escape checks and the matching web fade sequence', () => {
     const keys = md('timing').split('## 12.3 Keys')[1].split('## 12.4')[0];
     expect(keys).toContain('hold Escape until the screen goes black');
