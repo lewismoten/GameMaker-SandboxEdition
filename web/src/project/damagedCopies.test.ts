@@ -219,6 +219,36 @@ describe('opening and restoring a damaged project', () => {
   });
 });
 
+describe('deleting damaged copies', () => {
+  it.each([false, true])('retains the record after a shelf write fails (Delete all: %s)', async (all) => {
+    const doc = new FakeDoc();
+    vi.stubGlobal('document', doc);
+    vi.stubGlobal('window', { setTimeout });
+    const ui = await import('../editor/core/ui');
+    const toast = vi.spyOn(ui, 'toast').mockImplementation(() => {});
+    vi.spyOn(ui, 'confirmDialog').mockResolvedValue(true);
+    const shelf = await import('./recentlyDeleted');
+    const keep = vi.spyOn(shelf, 'keepDeleted').mockRejectedValueOnce(new Error('Quota exceeded')).mockResolvedValue(undefined);
+    const record = { id: 'a~damaged', name: 'A', updated: 2, gam: 'game.gam', files: Object.fromEntries(files().entries()) };
+    rows.set(record.id, record);
+    if (all) rows.set('b~damaged', { ...record, id: 'b~damaged', name: 'B', updated: 1 });
+    const { showDamagedCopies } = await import('../editor/shell/damagedCopiesDialog');
+    const dialog = showDamagedCopies(() => {});
+    await vi.runAllTimersAsync();
+    const buttons = elements(doc.body).filter((el) => el.tag === 'button');
+    if (all) {
+      const button = buttons.find((el) => el.children.some((child) => child.textContent === 'Delete all'))!;
+      void (button as unknown as HTMLButtonElement).onclick!.call(button as unknown as HTMLButtonElement, {} as PointerEvent);
+    } else buttons.find((el) => el.attrs['aria-label'] === 'Delete A')!.fire('click');
+    await vi.runAllTimersAsync();
+    expect(keep).toHaveBeenCalledTimes(all ? 2 : 1);
+    expect([...rows.values()]).toEqual([record]);
+    expect(toast).toHaveBeenCalledWith(expect.stringMatching(/still here/));
+    buttons.find((el) => el.children.some((child) => child.textContent === 'Close'))!.fire('click');
+    await dialog;
+  });
+});
+
 describe('the startup clean-up', () => {
   const rec = (id: string, extra: Record<string, unknown> = {}) => ({
     id,
@@ -235,6 +265,13 @@ describe('the startup clean-up', () => {
     rows.set('a~damaged', copy('a'));
     expect(await run(storage.pruneDamagedCopies())).toBe(1);
     expect([...rows.keys()]).toEqual(['a']);
+  });
+  it('compares raw buffers and views by their visible bytes and retains unknown objects', () => {
+    const original = rec('a', { files: { ...rec('a').files, 'x.gif': Uint8Array.of(1).buffer } });
+    const withBytes = (bytes: ArrayBuffer | DataView) => copy('a', { files: { ...rec('a').files, 'x.gif': bytes } });
+    expect(redundantCopies([original, withBytes(Uint8Array.of(2).buffer)])).toEqual([]);
+    expect(redundantCopies([original, withBytes(new DataView(Uint8Array.of(0, 1, 2).buffer, 1, 1))])).toEqual(['a~damaged']);
+    expect(redundantCopies([rec('a', { other: new Map() }), copy('a', { other: new Set() })])).toEqual([]);
   });
   it('keeps a copy whose original is gone', () => {
     expect(redundantCopies([copy('a')])).toEqual([]);
