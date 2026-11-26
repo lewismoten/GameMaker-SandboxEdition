@@ -30,6 +30,7 @@ import { batchOf } from './importBatch';
 import { lastUsed } from '../../project/projectUse';
 import { NOTES_CHANGED } from '../../imported/gameNotes';
 import { loadFinished } from './homeDone';
+import { showQuestions } from './homeQuestions';
 import { loadGrades } from '../../achievements/courseGrades';
 import { currentRoute } from '../../urlState';
 import { libraryCards } from './homeLibraryCards';
@@ -308,10 +309,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
         .catch(() => undefined);
     // the Starters' "How do I…?" questions, loaded when that tab is first shown
     howDoI.hidden = c !== 'starter';
-    if (c === 'starter' && !howDoI.firstChild && !howDoI.dataset.loading) {
-      howDoI.dataset.loading = '1'; // choosing the tab again before the index is in must not add a second one
-      void import('./howDoIIndex').then((m) => howDoI.append(m.howDoIIndex({ compact: true })));
-    }
+    if (c === 'starter') void showQuestions(howDoI, async () => (await import('./howDoIIndex')).howDoIIndex({ compact: true }));
     filters.ratingBox.hidden = c !== 'imported' || !lib.own(c).length;
     filters.tagBox.hidden = filters.ratingBox.hidden;
     filters.doneBox.hidden = c !== 'starter';
