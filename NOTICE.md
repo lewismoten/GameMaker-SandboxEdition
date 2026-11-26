@@ -110,6 +110,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex repaired and tested the hat-tip animation in Final Curtain.
 - OpenAI Codex fixed and tested Windows paths in release size checks.
 - OpenAI Codex fixed and tested partial Stage Box output recovery.
+- OpenAI Codex corrected and tested the one-disk installer wording in the guide.
 - OpenAI Codex fixed and tested validation before writing Level Maps metadata.
 - OpenAI Codex fixed and tested the Score Popups final coin and demo payout checks.
 - OpenAI Codex fixed and tested recovery of missing Year 2000 cryptex kit files.
