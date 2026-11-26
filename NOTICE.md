@@ -113,6 +113,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex corrected and tested the one-disk installer wording in the guide.
 - OpenAI Codex fixed and tested the left hedge and title demo checks in Scroll or Stay.
 - OpenAI Codex fixed and tested waterfall screenshot selection in the developer tools.
+- OpenAI Codex fixed and tested temporary file cleanup in the Pocket Player controls check.
 - OpenAI Codex fixed and tested validation before writing Level Maps metadata.
 - OpenAI Codex fixed and tested the Score Popups final coin and demo payout checks.
 - OpenAI Codex fixed and tested recovery of missing Year 2000 cryptex kit files.
