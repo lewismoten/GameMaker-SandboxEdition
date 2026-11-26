@@ -92,6 +92,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex fixed and tested recovery of missing Year 2000 cryptex kit files.
 - OpenAI Codex fixed and tested the timing of short pull-away sounds for THE CHEZ.
 - OpenAI Codex tested the published ZIP links in development and production builds.
+- OpenAI Codex fixed and tested the Score Popups frame capture tool.
 - OpenAI Codex wrote the headless audit for built title demos and saved walkthroughs.
 - OpenAI Codex fixed and tested the Around the Room title demo checker.
 - OpenAI Codex updated the Dig It walkthrough to demonstrate the shovel and tested its recorded controls.
