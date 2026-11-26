@@ -103,6 +103,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex fixed and tested phone board fabrication exports and download validation.
 - OpenAI Codex corrected and tested the multi-page talk question in Say Something.
 - OpenAI Codex added the browser test for code sheet keyboard selection and puzzle answers.
+- OpenAI Codex corrected and tested the Stick Man Stars joystick jump, star counter description, and demo recording instructions.
 - OpenAI Codex fixed and tested validation before writing Level Maps metadata.
 - OpenAI Codex fixed and tested the Score Popups final coin and demo payout checks.
 - OpenAI Codex fixed and tested recovery of missing Year 2000 cryptex kit files.
