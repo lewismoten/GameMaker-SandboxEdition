@@ -77,6 +77,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex fixed and tested the performance budget verifier.
 - OpenAI Codex fixed and tested Starter Grid validation.
 - OpenAI Codex fixed and tested badge generation in checkout paths containing spaces.
+- OpenAI Codex fixed and tested Starter card overflow detection.
 - OpenAI Codex fixed and tested the editor’s file count accessibility and shareware notice layout on phones.
 - OpenAI Codex fixed and tested walkthrough segment selection in the Pocket host checker.
 - OpenAI Codex fixed and tested the Switches title demo checker.
