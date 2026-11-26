@@ -75,6 +75,15 @@ describe('A read-only project', () => {
     expect(attempts).toHaveLength(2);
   });
 
+  it("keeps the Download chooser's previews choice in memory without refusing it (Q456)", () => {
+    const { p, attempts } = looked();
+    expect(() => p.setExportPreviews(false)).not.toThrow();
+    expect(p.companion?.exportPreviews).toBe(false);
+    p.setExportPreviews(true);
+    expect(p.companion?.exportPreviews).toBeUndefined();
+    expect(attempts).toEqual([]);
+  });
+
   it('never saves', async () => {
     const { p } = looked();
     await p.saveNow();
