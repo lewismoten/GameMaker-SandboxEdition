@@ -8,7 +8,7 @@ import { BLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import type { Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { parseCharacter, type Character } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
-import { MLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { MLEN, type PlacedMonster } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { KINDS, MIN_SIDE, checkNeeds, kindInfo, type GenKind, type GenResult, type Rect } from '@lewismoten/gamemaker-sandbox-tools/kit/levelGen';
 import { readRoles } from '../../blocks/blockRoles';
 import { loadBrushes } from '../tools/brushStore';
@@ -16,7 +16,7 @@ import type { Terrain } from '../tools/autotile';
 import type { MapSelection } from '../tools/selection';
 import { missingRoles } from './missingRoles';
 import { makeScenes, planScenes } from './makeScenes';
-import { WHOLE, offers, usableMonsters, type Offer } from './place';
+import { WHOLE, monsterPreview, offers, usableMonsters, type Offer } from './place';
 import { NOT_CHECKED, NOT_CHECKED_SIDE } from './verifyOffer';
 import type { BotRun } from './platformBot';
 import type { RunningBot } from './platformBotClient';
@@ -35,6 +35,7 @@ interface GenerateHost {
   /** The block set's blocks (for the reach check) and the scene's monsters (for placing some). */
   blockSet: () => Block[];
   monsters: () => Monster[];
+  placedMonsters: () => PlacedMonster[];
   /** The map wraps over its edges (an overworld's land then lines up across the seam). */
   wrap?: () => boolean;
   /** The hero's character file and its blocks, and the monster blocks, as the scene names them (a side view is sized to his jump). */
@@ -365,7 +366,7 @@ export async function generateDialog(host: GenerateHost): Promise<void> {
         res.furniture.filter((f) => !f.open).length ? `${res.furniture.filter((f) => !f.open).length} pieces of furniture` : '',
         res.shopkeeper !== undefined ? `shopkeeper could stand at ${cellText(res.rect, res.shopkeeper)}` : '',
         res.locks.length ? `${res.locks.length} locked door${res.locks.length > 1 ? 's' : ''}` : '',
-        res.monsters.length ? `${res.monsters.length} monsters` : '',
+        monsterPreview(host.placedMonsters(), res),
       ].filter(Boolean);
       note.textContent = [
         `Seed ${o.seed}: hero could start at ${cellText(res.rect, res.entry)}, ${furnished ? 'door' : res.links.length ? 'far end' : 'exit'} at ${cellText(res.rect, res.exit)}; nothing is linked.${has.length ? ` ${has.join(', ')}.` : ''}${res.links.length ? ` ${res.links.length} doors and sites could link to other scenes.` : ''}`,

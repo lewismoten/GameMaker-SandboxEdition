@@ -833,6 +833,7 @@ registerEditor(['map'], (host, project, file) => {
             selection: () => tools.selection,
             blockSet: () => bg,
             monsters: () => mons,
+            placedMonsters: () => map.monsters,
             wrap: () => wrapping,
             scene: set.scenes[0],
             hero: set.chr && project.files.has(set.chr) ? { chr: set.chr, cbl: set.cbl, mbl: mblName } : undefined,
