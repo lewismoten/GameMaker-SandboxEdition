@@ -94,6 +94,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex fixed and tested cleanup when the editor replaces a paused Undo notice.
 - OpenAI Codex corrected the Noodle Observatory scene guide and tested its scene count and palette-specific invisible-wall check.
 - OpenAI Codex fixed and tested Home and End on the active monster path tab.
+- OpenAI Codex fixed and tested the home smoke check for sideways scrolling on phones.
 - OpenAI Codex fixed and tested the editor’s file count accessibility and shareware notice layout on phones.
 - OpenAI Codex fixed and tested walkthrough segment selection in the Pocket host checker.
 - OpenAI Codex fixed and tested the Switches title demo checker.
