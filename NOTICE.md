@@ -1517,3 +1517,5 @@ maker "ZORP" is invented. The shell is untested: nothing has been printed.
 
 - **Printable cut guides (November 24, 2026)**: OpenAI Codex corrected the printed cut line around small sheets.
 - **Honors dialog (November 24, 2026)**: OpenAI Codex fixed the earned diploma layout on phones.
+- **Embroidery compilation limits (November 25, 2026)**: OpenAI Codex added step validation, generation limits and regression tests.
+- **Embroidery EXP reader (November 25, 2026)**: OpenAI Codex added incomplete-record checks and regression tests.

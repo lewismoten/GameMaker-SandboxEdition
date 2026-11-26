@@ -1,5 +1,6 @@
 // Satin columns: stitches that zigzag straight across a line, `density` mm apart along it. A column wider than `maxWidth` is
 // sewn as lanes side by side (long satin stitches snag). Pull compensation widens the column so the thread covers its shape.
+import { checkStitches } from './limits';
 import { evenly } from './geom';
 import type { Pt } from './types';
 
@@ -39,7 +40,12 @@ function lane(path: Pt[], width: number, density: number, closed: boolean, from:
 export function satin(path: Pt[], width: number, density: number, closed: boolean, maxWidth: number): Pt[][] {
   const lanes = Math.max(1, Math.ceil(width / maxWidth - 1e-9));
   const out: Pt[][] = [];
-  for (let k = 0; k < lanes; k++) out.push(lane(path, width, density, closed, -0.5 + k / lanes, -0.5 + (k + 1) / lanes));
+  checkStitches(lanes);
+  for (let k = 0; k < lanes; k++) {
+    const points = lane(path, width, density, closed, -0.5 + k / lanes, -0.5 + (k + 1) / lanes);
+    if (!k) checkStitches(lanes * points.length);
+    out.push(points);
+  }
   return out;
 }
 
