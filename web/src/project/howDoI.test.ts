@@ -36,6 +36,13 @@ describe('howDoI lists', () => {
     }
   });
 
+  it('names the modern computer setting on each Slow Computers page that explains it', () => {
+    const pages = manualOf('slow-computers').pages;
+    for (const head of ['Welcome', 'Level 1: Short and Long', 'Level 2: A Crowd', 'Level 3: Busy Sky', 'The numbers (estimates)']) {
+      expect(pages.find((page) => page.head === head)?.html, head).toContain('<b>modern computer</b>');
+    }
+  });
+
   it('answers the Slow Computers Escape question in its linked lesson', () => {
     const manual = manualOf('slow-computers');
     const question = manual.howDoI?.find((q) => q.id === 'escape');
