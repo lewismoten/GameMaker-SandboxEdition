@@ -169,6 +169,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex fixed and tested the Near and Far title demo checker’s replay timing.
 - OpenAI Codex wrote the headless audit for built title demos and saved walkthroughs.
 - OpenAI Codex fixed and tested the Around the Room title demo checker.
+- OpenAI Codex fixed and tested the Say Something title demo checker.
 - OpenAI Codex updated the Dig It walkthrough to demonstrate the shovel and tested its recorded controls.
 - OpenAI Codex sped up the block editor history, phone recording, and phone Files button regression tests.
 - OpenAI Codex implemented and tested background catalog preparation and cancellation for the development server.
