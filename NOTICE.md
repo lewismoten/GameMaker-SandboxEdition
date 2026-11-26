@@ -65,8 +65,11 @@ game folder opens in the browser unchanged.
 ## Credits
 
 - OpenAI Codex fixed and tested the editor’s file count accessibility and shareware notice layout on phones.
+- OpenAI Codex fixed and tested frame selection for editor screenshots.
 - OpenAI Codex fixed and tested validation before writing Level Maps metadata.
+- OpenAI Codex fixed and tested the Score Popups final coin and demo payout checks.
 - OpenAI Codex wrote the headless audit for built title demos and saved walkthroughs.
+- OpenAI Codex fixed and tested the Around the Room title demo checker.
 - OpenAI Codex updated the Dig It walkthrough to demonstrate the shovel and tested its recorded controls.
 - OpenAI Codex sped up the block editor history, phone recording, and phone Files button regression tests.
 - OpenAI Codex implemented and tested background catalog preparation for the development server.
