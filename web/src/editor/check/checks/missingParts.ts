@@ -81,8 +81,11 @@ export function stutterVocs(d: SceneData, files: FileSource): Finding[] {
   const told = new Set<string>();
   const use = blockUse(d.map);
   const stays = (n: number) => n < 150 && use[n] > 0 && d.bbl[n].touchBl === n;
-  const sticky = (slot: number) =>
-    slot === 5 ? d.bbl.some((b, n) => b.scorePts > 0 && stays(n)) : slot === 0 && d.bbl.some((b, n) => b.chHitPt > 0 && stays(n));
+  const sticky = (slot: number) => {
+    if (slot === 0) return d.bbl.some((b, n) => b.chHitPt > 0 && stays(n));
+    if (slot === 5) return d.bbl.some((b, n) => b.chHitPt <= 0 && b.scorePts > 0 && stays(n));
+    return slot === 6 && d.bbl.some((b, n) => b.chHitPt <= 0 && b.scorePts < 0 && stays(n));
+  };
   snd.digital.forEach((raw, n) => {
     const name = raw.trim();
     if (!name || raw[0] === ' ' || !goodName(name)) return;
@@ -104,7 +107,7 @@ export function stutterVocs(d: SceneData, files: FileSource): Finding[] {
       out.push({
         check: 'voc-stutter',
         severity: 'info',
-        title: `${name.toUpperCase()}.VOC may chop: it plays on a ${n === 5 ? 'score' : 'healing'} block that stays where it is`,
+        title: `${name.toUpperCase()}.VOC may chop: it plays on a ${n === 0 ? 'healing' : 'score'} block that stays where it is`,
         detail: `PLAYGAME replays that sound every game tick (${TICK_MS} ms) the hero overlaps the block, stopping the one before it, so a longer sound is cut and restarted about 18 times a second. You could make the block turn into an empty block when touched, or use a short sound for it. The check can't see whether players stand on it for long.`,
         where,
       });
