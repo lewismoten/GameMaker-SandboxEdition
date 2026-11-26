@@ -64,6 +64,7 @@ game folder opens in the browser unchanged.
 
 ## Credits
 
+- OpenAI Codex corrected the Spend It coin exercise, checked the unpaid stall attempt in its demo, validated Starter shop prices, and added regression tests.
 - OpenAI Codex fixed and tested the editor’s file count accessibility and shareware notice layout on phones.
 - OpenAI Codex fixed and tested frame selection for editor screenshots.
 - OpenAI Codex fixed and tested validation before writing Level Maps metadata.
