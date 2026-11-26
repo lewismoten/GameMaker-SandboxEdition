@@ -1,7 +1,7 @@
 // THE CHEZ's shared sound: the lifecycle of both voices with a fake audio context (what starts,
 // what stops, what is freed). How it sounds is checked by ear from offline renders.
 import { describe, expect, it } from 'vitest';
-import { CHEZ_SOUND, chezMotor, chezPassBy } from './chezSound';
+import { chezMotor, chezPassBy } from './chezSound';
 import { climbSpeed } from './chezSynth';
 
 class FakeParam {
@@ -95,12 +95,6 @@ function fakeContext() {
   };
   return { ctx, nodes, sources, until, as: ctx as unknown as BaseAudioContext, out: ctx.destination as unknown as AudioNode };
 }
-
-describe('CHEZ_SOUND', () => {
-  it('is the made-up voice until Lewis picks', () => {
-    expect(CHEZ_SOUND).toBe('synth');
-  });
-});
 
 describe('the climb', () => {
   it('starts slow, climbs through its steps past cruise, then settles at cruise', () => {
