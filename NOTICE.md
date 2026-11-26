@@ -128,6 +128,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex fixed and tested worker startup and empty runs in the malformed-file checks.
 - OpenAI Codex fixed and tested slow-PC music timing after system-exclusive records.
 - OpenAI Codex fixed and tested reset cancellation when leaving the desk.
+- OpenAI Codex fixed and tested anchor scoring and frame validation in the fidelity scripts.
 - OpenAI Codex fixed and tested validation before writing Level Maps metadata.
 - OpenAI Codex fixed and tested the Score Popups final coin and demo payout checks.
 - OpenAI Codex fixed and tested recovery of missing Year 2000 cryptex kit files.
