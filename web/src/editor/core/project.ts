@@ -157,9 +157,12 @@ export class Project {
     this.persist();
   }
 
-  /** Whether the one-page export includes animation and sound previews (companion.ts); the game's files are not touched. */
+  /**
+   * Whether the one-page export includes animation and sound previews (companion.ts); the game's
+   * files are not touched. A Download choice, not an edit: a look-only game keeps it in memory
+   * (persist saves nothing for one), so the Download chooser's box works there too.
+   */
   setExportPreviews(on: boolean): void {
-    if (this.readOnly) refuse(this, 'export');
     this.companion ??= emptyCompanion();
     setExportPreviews(this.companion, on);
     this.persist();
