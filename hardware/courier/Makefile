@@ -9,7 +9,7 @@ HEADERS = courier_id.h capsule.h tests/vectors.h
 .PHONY: test sanitize clean vectors
 
 test: $(BUILD)/test_courier
-	./$(BUILD)/test_courier
+	$(abspath $<)
 
 $(BUILD)/test_courier: $(SOURCES) $(HEADERS) Makefile
 	mkdir -p $(BUILD)

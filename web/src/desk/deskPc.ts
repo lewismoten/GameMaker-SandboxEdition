@@ -41,8 +41,9 @@ export function deskPc(scene: Scene, hooks: PcHooks) {
   const speed: SpeedSetting = { slowPc: machineCosts(machine, turbo) };
   // the dialog's code: fetched when the desk is idle and when the pointer or focus comes to the lights
   const machineCode = () => import('./pc/machineDialog');
-  machineBtn.addEventListener('pointerenter', () => void machineCode(), { once: true });
-  machineBtn.addEventListener('focus', () => void machineCode(), { once: true });
+  const preloadMachine = () => void machineCode().catch(() => {});
+  machineBtn.addEventListener('pointerenter', preloadMachine, { once: true });
+  machineBtn.addEventListener('focus', preloadMachine, { once: true });
   machineBtn.addEventListener('click', () => {
     void machineCode().then(({ openMachineDialog }) =>
       openMachineDialog(
