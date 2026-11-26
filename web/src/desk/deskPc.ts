@@ -73,7 +73,10 @@ export function deskPc(scene: Scene, hooks: PcHooks) {
       computer = new Computer(crt, {
         speed,
         turbo: () => turbo,
-        cpuName: () => CPU_CHOICES.find((c) => c.id === machine.cpu)!.name,
+        cpuName: () => {
+          const cpu = CPU_CHOICES.find((c) => c.id === machine.cpu)!;
+          return 'postName' in cpu ? cpu.postName : cpu.name;
+        },
         openModern: (projectId, file) => hooks.openModern(projectId, file),
         // The designers take the whole window; afterwards, go back to how the user had it.
         // vga stays in the monitor like the real thing.
