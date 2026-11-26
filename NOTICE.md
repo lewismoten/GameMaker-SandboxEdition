@@ -1640,3 +1640,5 @@ The dial draws on dAcid's [Rotary Dial mechanism](https://www.thingiverse.com/th
 - **Throw It demo check (November 25, 2026)**: OpenAI Codex updated the title demo validator and wrote its missing-projectile regression test.
 
 - **Getting started dialog (November 25, 2026)**: OpenAI Codex fixed the touch target sizes and wrote the browser regression test.
+
+- **Beat the Clock disk license (November 26, 2026)**: OpenAI Codex corrected the game title and wrote the regression test.
