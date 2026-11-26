@@ -82,6 +82,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex clarified the Face Dial color test and fixed and tested fill clipping on code wheels.
 - OpenAI Codex fixed and tested the link preview audit for builds with no preview pictures.
 - OpenAI Codex fixed and tested land connectivity in wrapped overworlds.
+- OpenAI Codex strengthened the DOS floppy export test for in-place changes to file bytes.
 - OpenAI Codex fixed and tested the editor’s file count accessibility and shareware notice layout on phones.
 - OpenAI Codex fixed and tested walkthrough segment selection in the Pocket host checker.
 - OpenAI Codex fixed and tested the Switches title demo checker.
