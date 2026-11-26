@@ -5,6 +5,8 @@ import { execFileSync } from 'node:child_process';
 import { existsSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { runInNewContext } from 'node:vm';
+import ts from 'typescript';
 import { describe, expect, it } from 'vitest';
 
 const web = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -42,4 +44,59 @@ describe.skipIf(!built)('README examples', () => {
       expect(run(code, name)).toBe(expected);
     });
   }
+});
+
+it.each([true, false])('keeps Play disabled during play and restores it for a valid selection: %s', async (validSelection) => {
+  const handlers = new Map<string, () => Promise<void>>();
+  const control = {
+    disabled: true,
+    files: [{ name: 'PLAY.GAM', arrayBuffer: () => new ArrayBuffer(0) }],
+    addEventListener(event: string, handler: () => Promise<void>) {
+      handlers.set(event, handler);
+    },
+  };
+  let machines = 0;
+  let destroyed = 0;
+  let finish!: () => void;
+  const playing = new Promise<void>((resolve) => {
+    finish = resolve;
+  });
+  const example = block('engine/README.md', 'Pass the files').replace(/^import .*;$/m, '');
+  runInNewContext(ts.transpile(example, { target: ts.ScriptTarget.ES2022 }), {
+    document: { querySelector: () => control },
+    GameFiles: class {
+      constructor(private entries: [string, Uint8Array][]) {}
+      mainGame() {
+        return this.entries[0]?.[0];
+      }
+    },
+    Machine: class {
+      audio = { resume: () => Promise.resolve() };
+      constructor() {
+        machines++;
+      }
+      destroy() {
+        destroyed++;
+      }
+    },
+    runGame: () => playing,
+  });
+  const select = handlers.get('change')!;
+  const click = handlers.get('click')!;
+  await select();
+  expect(control.disabled).toBe(false);
+  const first = click();
+  const second = click();
+  try {
+    expect(machines).toBe(1);
+    expect(control.disabled).toBe(true);
+    if (!validSelection) control.files = [];
+    await select();
+    expect(control.disabled).toBe(true);
+  } finally {
+    finish();
+    await Promise.all([first, second]);
+  }
+  expect(destroyed).toBe(1);
+  expect(control.disabled).toBe(!validSelection);
 });
