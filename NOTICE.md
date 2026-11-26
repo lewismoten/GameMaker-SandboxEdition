@@ -1531,3 +1531,5 @@ The dial draws on dAcid's [Rotary Dial mechanism](https://www.thingiverse.com/th
 
 - **Printable cut guides (November 24, 2026)**: OpenAI Codex corrected the printed cut line around small sheets.
 - **Honors dialog (November 24, 2026)**: OpenAI Codex fixed the earned diploma layout on phones.
+
+- **Specials calendar (November 26, 2026)**: OpenAI Codex fixed overnight availability and wrote the boundary tests.
