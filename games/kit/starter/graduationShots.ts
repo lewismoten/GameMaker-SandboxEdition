@@ -49,7 +49,12 @@ if (every) {
     },
     onFrame: (screen, s) => {
       if (s < 2 || ++n % Number(every)) return;
-      writePng(join(out, `${prefix}${id}-walk-s${scene}-x${String(mx).padStart(4, '0')}.png`), pic(screen.pixels, 320, 200), screen.palette, 2);
+      writePng(
+        join(out, `${prefix}${id}-walk-s${scene}-f${String(n).padStart(5, '0')}-x${String(mx).padStart(4, '0')}.png`),
+        pic(screen.pixels, 320, 200),
+        screen.palette,
+        2,
+      );
     },
   });
 }
