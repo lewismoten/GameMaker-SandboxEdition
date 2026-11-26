@@ -46,6 +46,11 @@ describe('readMarkdown', () => {
     expect(blockText(table)).toBe('Color Red Blue 10');
   });
 
+  it('ends a list when a table follows without a blank line', () => {
+    const blocks = readMarkdown('1. One\n| A |\n|---|\n| B |')[0].blocks;
+    expect(blocks.map((b) => b.tag)).toEqual(['ol', 'table']);
+  });
+
   it('ends a borderless table at a heading containing a pipe', () => {
     const [intro, chapter] = readMarkdown('| A | B |\n|---|---|\nx | y\n## Open | closed\nChapter text.');
     expect(intro.blocks).toMatchObject([{ tag: 'table', rows: [[['x'], ['y']]] }]);
@@ -68,7 +73,11 @@ describe('readMarkdown', () => {
 describe('a numbered list a table splits in two', () => {
   it('keeps the number its second half starts at, so “step 6” still names the sixth step', () => {
     const blocks = readMarkdown('# T\n\n1. One\n2. Two\n\n| a | b |\n|---|---|\n| 1 | 2 |\n\n4. Four\n5. Five\n')[1].blocks;
-    expect(blocks.filter((b) => b.tag === 'ol').map((b) => (b as { start?: number }).start)).toEqual([undefined, 4]);
+    expect(blocks).toEqual([
+      { tag: 'ol', items: [['One'], ['Two']] },
+      { tag: 'table', head: [['a'], ['b']], rows: [[['1'], ['2']]] },
+      { tag: 'ol', start: 4, items: [['Four'], ['Five']] },
+    ]);
   });
 });
 
