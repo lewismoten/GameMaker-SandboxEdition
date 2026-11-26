@@ -4,6 +4,6 @@
 
 /** The ID line, e.g. `07/21/93-AWK-486DX2-A1F9A5C5-00`; zeros when the commit isn't known. */
 export function biosId(commit: string | undefined = import.meta.env.VITE_COMMIT as string | undefined): string {
-  const code = /^[0-9a-f]{8}/i.exec(commit ?? '')?.[0].toUpperCase() ?? '00000000';
+  const code = commit && /^[0-9a-f]{8,}$/i.test(commit) ? commit.slice(0, 8).toUpperCase() : '00000000';
   return `07/21/93-AWK-486DX2-${code}-00`;
 }
