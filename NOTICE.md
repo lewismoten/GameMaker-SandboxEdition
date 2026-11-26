@@ -125,6 +125,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex fixed and tested toolkit palette lighting for Node.js buffers and text rendering for large numbers of empty lines.
 - OpenAI Codex fixed and tested touch selection for adjacent map exits.
 - OpenAI Codex aligned the four stars on the Ride Along title screen and tested their rendered positions.
+- OpenAI Codex updated and tested the Room to Room victory caption.
 - OpenAI Codex fixed and tested frame selection for editor screenshots.
 - OpenAI Codex fixed and tested the full-cycle check in the Roll the Dice walkthrough bot.
 - OpenAI Codex fixed and tested the disk box divider controls during search.
