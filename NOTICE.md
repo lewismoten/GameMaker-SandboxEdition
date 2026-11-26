@@ -74,6 +74,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex sped up the block editor history, phone recording, and phone Files button regression tests.
 - OpenAI Codex implemented and tested background catalog preparation for the development server.
 - OpenAI Codex fixed and tested platform layout verification in the map editor.
+- OpenAI Codex revised and tested the home tour cue for the Games link and Game-Maker logo.
 - OpenAI Codex added the regression test for stale tour narration.
 - OpenAI Codex fixed and tested backward navigation in the guided tour.
 - OpenAI Codex fixed and tested the magazine toolbar layout on phones.
