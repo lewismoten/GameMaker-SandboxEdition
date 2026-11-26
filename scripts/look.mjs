@@ -22,7 +22,7 @@ const DOWN = `Ghost Jack bridge not reachable at 127.0.0.1:8787 — start it wit
 export function parseArgs(argv) {
   const o = { shot: null, out: null, width: 1280, crop: null, ocr: false, expect: null, ocrPsm: 11, ocrScale: 1.5, widthSet: false };
   const need = (i, name) => {
-    if (i + 1 >= argv.length) throw new Error(`${name} needs a value`);
+    if (i + 1 >= argv.length || argv[i + 1].startsWith('--')) throw new Error(`${name} needs a value`);
     return argv[i + 1];
   };
   for (let i = 0; i < argv.length; i++) {
@@ -33,8 +33,10 @@ export function parseArgs(argv) {
       o.widthSet = true;
       if (!Number.isInteger(o.width) || o.width < 64 || o.width > 1920) throw new Error('--width is 64 to 1920');
     } else if (a === '--crop') {
-      const p = need(i++, a).split(',').map(Number);
-      if (p.length !== 4 || p.some((n) => !Number.isFinite(n) || n < 0 || n > 1)) throw new Error('--crop is x,y,w,h as fractions 0 to 1');
+      const fields = need(i++, a).split(',');
+      const p = fields.map(Number);
+      if (p.length !== 4 || fields.some((field) => !field.trim()) || p.some((n) => !Number.isFinite(n) || n < 0 || n > 1) || p[2] === 0 || p[3] === 0)
+        throw new Error('--crop needs four fractions from 0 to 1 with positive width and height');
       o.crop = p;
     } else if (a === '--ocr-psm') {
       o.ocrPsm = Number(need(i++, a));
