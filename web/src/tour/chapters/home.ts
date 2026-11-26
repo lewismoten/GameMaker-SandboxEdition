@@ -168,6 +168,7 @@ export const homeChapter: Chapter = {
     {
       // shown once an import has been made (imported/importHistory.ts)
       id: 'home-import-history',
+      newsSetup: 'home-tab-imported',
       action: 'point',
       target: { label: 'the Import history button', css: '.lib-about .lib-remove-all', text: 'Import history…' },
       say: 'Import history keeps the last twenty imports: what came in, what was left out, and anything that failed.',
@@ -177,6 +178,7 @@ export const homeChapter: Chapter = {
     {
       // shown while a game deleted in the last 7 days is waiting (project/recentlyDeleted.ts)
       id: 'home-recently-deleted',
+      newsSetup: 'home-tab-imported',
       action: 'point',
       target: { label: 'the Recently deleted button', css: '.lib-about .lib-remove-all', text: 'Recently deleted…' },
       say: 'Delete a game by mistake? It waits in Recently deleted for seven days, and Restore brings it back just as it was.',
