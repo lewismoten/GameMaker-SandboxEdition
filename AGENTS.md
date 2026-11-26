@@ -258,9 +258,10 @@ preserve what was there.
   - The maintainer's reference photos are reference only, unless they're asked for. The person
     in game art is always Doc Leo, never Lewis: green tie, purple shirt, dark blue corduroy
     jacket, tattered fedora.
-- **Starters** (`"series": "starter"`) live only on the desk's Sample CD: no retail box,
-  manual, Level Maps or goodies, and not on downloads lists. Per-level notes go in the project
-  sidecar.
+- **Starters** (`"series": "starter"`) appear on the desk only on its Sample CD. The web Guide can
+  link directly to a playable level or open its map in the editor. The editor's Starters tab
+  also provides access for learning. Keep Starters off downloads lists and omit retail boxes,
+  manuals, Level Maps and goodies. Per-level notes go in the project sidecar.
 - **Game bar:** a Sandbox game aims for a 15+ minute walkthrough and a "wow" (story, wit,
   sound, animated transitions, palette-swapped variety); collecting alone isn't fun. A level
   that ends on a timer shows an on-screen countdown or meter.
