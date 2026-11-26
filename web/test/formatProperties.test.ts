@@ -37,7 +37,12 @@ import {
   type SlideEntry,
 } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
 
-const CASES = Number(process.env.GM_PROPERTY_CASES) || 200;
+function caseCount(value: string | undefined): number {
+  const count = value === undefined ? 200 : Number(value);
+  if (!Number.isSafeInteger(count) || count <= 0) throw new Error('GM_PROPERTY_CASES must be a positive integer');
+  return count;
+}
+const CASES = caseCount(process.env.GM_PROPERTY_CASES);
 const ONLY = process.env.GM_PROPERTY_SEED ? Number(process.env.GM_PROPERTY_SEED) : undefined;
 
 /** mulberry32: a tiny seeded generator, no dependency. */
@@ -233,6 +238,7 @@ function property(format: string, check: (r: Rng) => void, cases = CASES): void 
 /** First difference between two values (typed arrays compared in a loop: vitest's toEqual is slow on them), or ''. */
 function diff(a: unknown, b: unknown, path = 'value'): string {
   if (ArrayBuffer.isView(a) && ArrayBuffer.isView(b)) {
+    if (a.constructor !== b.constructor) return `${path}: ${a.constructor.name} vs ${b.constructor.name}`;
     const x = a as unknown as ArrayLike<number>;
     const y = b as unknown as ArrayLike<number>;
     if (x.length !== y.length) return `${path}: length ${x.length} vs ${y.length}`;
@@ -259,6 +265,14 @@ function roundTrip<T>(value: T, write: (v: T) => Uint8Array, read: (b: Uint8Arra
   expect(diff(view(back), view(value))).toBe('');
   expect(diff(write(back), bytes)).toBe('');
 }
+
+it.each(['-1', '0', '1.5', 'abc', 'Infinity', ''])('rejects invalid GM_PROPERTY_CASES %j', (value) => {
+  expect(() => caseCount(value)).toThrow('GM_PROPERTY_CASES must be a positive integer');
+});
+
+it('detects a changed typed-array type with equal elements', () => {
+  expect(diff(new Uint16Array([1]), new Uint8Array([1]))).toBe('value: Uint16Array vs Uint8Array');
+});
 
 describe('generated valid files round-trip', () => {
   property('game', (r) => roundTrip(genGame(r), serializeGame, parseGame, plainGame));
