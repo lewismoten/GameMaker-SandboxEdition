@@ -1524,3 +1524,5 @@ maker "ZORP" is invented. The shell is untested: nothing has been printed.
 
 - **Printable cut guides (November 24, 2026)**: OpenAI Codex corrected the printed cut line around small sheets.
 - **Honors dialog (November 24, 2026)**: OpenAI Codex fixed the earned diploma layout on phones.
+
+- OpenAI Codex documented The Thank-You Parade's contributor tools and tested the command list.
