@@ -35,6 +35,13 @@ import { playSaves } from '../achievements/playSaves';
 const POST_HOLD_MS = 2500;
 
 export class Computer extends ComputerFolders {
+  private readonly resetLifetime = new AbortController();
+
+  override dispose(): void {
+    this.resetLifetime.abort();
+    super.dispose();
+  }
+
   async powerOn(): Promise<void> {
     if (this.powered) return;
     this.powered = true;
@@ -147,6 +154,7 @@ export class Computer extends ComputerFolders {
     if (!this.powered) return;
     this.powerOff();
     await sleep(300);
+    if (this.resetLifetime.signal.aborted) return;
     this.keys.resume();
     this.shell.reset();
     await this.powerOn();

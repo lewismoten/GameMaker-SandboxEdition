@@ -127,6 +127,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex fixed silent syllables and tested linear syllable lookup in the mumble synthesizer.
 - OpenAI Codex fixed and tested worker startup and empty runs in the malformed-file checks.
 - OpenAI Codex fixed and tested slow-PC music timing after system-exclusive records.
+- OpenAI Codex fixed and tested reset cancellation when leaving the desk.
 - OpenAI Codex fixed and tested validation before writing Level Maps metadata.
 - OpenAI Codex fixed and tested the Score Popups final coin and demo payout checks.
 - OpenAI Codex fixed and tested recovery of missing Year 2000 cryptex kit files.
