@@ -158,6 +158,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex implemented and tested background catalog preparation and cancellation for the development server.
 - OpenAI Codex fixed and tested platform layout verification in the map editor.
 - OpenAI Codex added the regression test for stale tour narration.
+- OpenAI Codex fixed and tested tour narration when a BBS prompt fails to appear.
 - OpenAI Codex fixed and tested backward navigation in the guided tour.
 - OpenAI Codex fixed and tested the magazine toolbar layout on phones.
 - OpenAI Codex fixed and tested keyboard save retries after project snapshot failures.
