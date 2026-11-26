@@ -84,6 +84,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex fixed and tested circular slide list handling in Pocket Player exports.
 - OpenAI Codex fixed and tested Color help subscription cleanup and course poster PNG encoding.
 - OpenAI Codex fixed and tested viewport clipping for desk screenshots.
+- OpenAI Codex fixed and tested saved map view geometry validation and cleanup when switching maps.
 - OpenAI Codex fixed and tested validation before writing Level Maps metadata.
 - OpenAI Codex fixed and tested the Score Popups final coin and demo payout checks.
 - OpenAI Codex fixed and tested recovery of missing Year 2000 cryptex kit files.
