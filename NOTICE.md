@@ -96,6 +96,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex fixed and tested Home and End on the active monster path tab.
 - OpenAI Codex fixed and tested the home smoke check for sideways scrolling on phones.
 - OpenAI Codex corrected and tested the camera command in the contributor instructions.
+- OpenAI Codex corrected and tested the editor guide’s First steps checklist instructions.
 - OpenAI Codex fixed and tested the editor’s file count accessibility and shareware notice layout on phones.
 - OpenAI Codex fixed and tested walkthrough segment selection in the Pocket host checker.
 - OpenAI Codex fixed and tested the Switches title demo checker.
