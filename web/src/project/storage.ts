@@ -83,7 +83,17 @@ function request<T>(
       new Promise<T>((resolve, reject) => {
         const tx = d.transaction(store, mode);
         const req = run(tx.objectStore(store));
-        req.onsuccess = () => resolve(read ? read(req.result, tx.objectStore(store)) : req.result);
+        let result: T;
+        req.onsuccess = () => {
+          try {
+            result = read ? read(req.result, tx.objectStore(store)) : req.result;
+          } catch (error) {
+            reject(error);
+            tx.abort();
+          }
+        };
+        tx.oncomplete = () => resolve(result);
+        tx.onabort = () => reject(tx.error ?? new DOMException('Transaction aborted', 'AbortError'));
         req.onerror = () => reject(req.error);
       }),
   );
