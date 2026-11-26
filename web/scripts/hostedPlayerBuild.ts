@@ -20,7 +20,7 @@ import { PRODUCT } from '../src/edition';
 const root = resolve(__dirname, '..');
 const ENTRY = resolve(root, 'src/hostedPlayer/main.ts');
 
-/** The two copies of the page each have their own words and address (the download is the one to find). */
+/** The two copies of the page each have their own title and description. */
 const PAGES = {
   download: {
     file: 'web-player.html',
@@ -43,7 +43,7 @@ function headTags(page: keyof typeof PAGES): string {
   const meta = metaTags({
     title: p.title,
     description: p.description,
-    url: `${SITE_URL}${p.file}`,
+    url: page === 'try' ? `${SITE_URL}${p.file}` : undefined,
     image: OG_IMAGE,
     imageAlt: OG_IMAGE_ALT,
   });

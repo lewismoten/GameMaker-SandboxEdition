@@ -8,24 +8,20 @@ import { builtTitlePath } from '../src/gfx/titlePicture';
 import { cdFiles } from './cdGames';
 import { gameShots } from './gameShots';
 
-/** A card's pictures, as image sources: a games/shots/ path, or an inline data URL. */
+/** A card's pictures, as paths to the emitted images. */
 export interface CardPictures {
   title?: string;
   level?: string;
 }
 
-/** Each game's title and level pictures, drawn by the same call that emits games/shots/ (`inline`: as data URLs). */
-export function cardPictures(games: CdCatalogEntry[], cdRoot: string, inline = false): Map<string, CardPictures> {
+/** Each game's title and level pictures, drawn by the same call that emits games/shots/. */
+export function cardPictures(games: CdCatalogEntry[], cdRoot: string): Map<string, CardPictures> {
   const files = cdFiles(cdRoot);
   return new Map(
     games.map((g) => {
       const disk = new Map(g.files.flatMap((n) => (files.get(`${g.path}${n}`) ? [[n, files.get(`${g.path}${n}`)!] as [string, string]] : [])));
       const shots = gameShots(g.id, g.gam, disk);
-      const src = (path: string) => {
-        const png = shots.get(path);
-        if (!png) return undefined;
-        return inline ? `data:image/png;base64,${Buffer.from(png).toString('base64')}` : `./${path}`;
-      };
+      const src = (path: string) => (shots.has(path) ? `./${path}` : undefined);
       return [g.id, { title: src(builtTitlePath(g.id)), level: src(builtShotPath(g.id, 16, 10)) }];
     }),
   );

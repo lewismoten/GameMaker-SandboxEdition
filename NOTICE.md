@@ -64,6 +64,8 @@ game folder opens in the browser unchanged.
 
 ## Credits
 
+- OpenAI Codex removed the unused inline image option for download cards and tested the build helper’s signature.
+- OpenAI Codex corrected the downloadable web player’s canonical metadata and updated its regression test.
 - OpenAI Codex fixed and tested the editor’s file count accessibility and shareware notice layout on phones.
 - OpenAI Codex fixed and tested frame selection for editor screenshots.
 - OpenAI Codex fixed and tested validation before writing Level Maps metadata.
