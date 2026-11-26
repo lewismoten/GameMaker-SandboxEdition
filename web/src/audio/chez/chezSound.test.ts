@@ -198,11 +198,24 @@ describe('the made-up voice', () => {
     expect(m.moving).toBe(true);
   });
 
-  it('a pull-away pass-by clunks through its steps, then drives off and frees itself', () => {
+  it('a one-second pull-away only sounds its initial contactor', () => {
     const f = fakeContext();
-    chezPassBy(f.as, f.out, 10, { outside: true, pullAway: true });
-    expect(f.sources().filter((s) => s.kind === 'osc').length).toBeGreaterThan(7);
-    f.until(11);
+    chezPassBy(f.as, f.out, 1, { pullAway: true });
+    const snaps = f.sources().filter((s) => s.kind === 'source' && !s.loop);
+    expect(snaps.map((s) => s.started)).toEqual([0.01]);
+    f.until(1.1);
+    expect(f.sources().every((n) => n.freed)).toBe(true);
+  });
+
+  it.each([
+    [10, 8.01],
+    [11, 8.31],
+  ])('a %i-second pull-away clunks through its steps, coasts, resumes and frees itself', (seconds, resume) => {
+    const f = fakeContext();
+    chezPassBy(f.as, f.out, seconds, { outside: true, pullAway: true });
+    const snaps = f.sources().filter((s) => s.kind === 'source' && !s.loop);
+    expect(snaps.map((s) => s.started)).toEqual([0.01, 2.31, 2.44, 5.61, resume, resume + 0.13].map((t) => expect.closeTo(t, 6)));
+    f.until(seconds + 1);
     expect(f.sources().every((n) => n.freed)).toBe(true);
   });
 
