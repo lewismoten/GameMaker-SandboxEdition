@@ -96,6 +96,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex fixed and tested how Scoot displays game titles and refreshes the open card.
 - OpenAI Codex fixed and tested pair selection in the color cues audit.
 - OpenAI Codex fixed and tested the offline check for recorded phone and tour playback.
+- OpenAI Codex corrected the Keys and Doors lessons on key costs and tested both text pages.
 - OpenAI Codex fixed and tested validation before writing Level Maps metadata.
 - OpenAI Codex fixed and tested the Score Popups final coin and demo payout checks.
 - OpenAI Codex fixed and tested recovery of missing Year 2000 cryptex kit files.
