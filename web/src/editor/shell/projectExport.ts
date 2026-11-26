@@ -1,7 +1,7 @@
 // Downloading a game of yours from the home page: its Download button and its ⋯ More menu's
 // Download… item open the chooser (download.ts, loaded when pressed) for the stored project.
 import { h, toast } from '../core/ui';
-import { loadProject, saveProject } from '../../project/storage';
+import { loadProject, saveExportPreviews, saveProject } from '../../project/storage';
 import { parseCompanion, setExportPreviews } from '../../project/companion';
 import { parseGame, gameTitle } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import type { DownloadGame } from './download';
@@ -36,7 +36,7 @@ async function projectGame(id: string): Promise<DownloadGame | undefined> {
       const c = parseCompanion(p.record.companion);
       setExportPreviews(c, on);
       p.record.companion = c;
-      void saveProject(id, p.record.name, p.record.gam, p.files, c);
+      void saveExportPreviews(id, on);
     },
   };
 }
