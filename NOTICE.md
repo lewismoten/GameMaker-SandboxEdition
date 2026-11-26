@@ -84,6 +84,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex fixed and tested black-light image cleanup when a game box is released.
 - OpenAI Codex fixed and tested drop cancellation in walkthrough recordings.
 - OpenAI Codex bounded nightly failure log excerpts and tested truncation.
+- OpenAI Codex fixed and tested the More menu’s accessible name.
 - OpenAI Codex fixed and tested frame selection for editor screenshots.
 - OpenAI Codex fixed and tested the full-cycle check in the Roll the Dice walkthrough bot.
 - OpenAI Codex fixed and tested the disk box divider controls during search.

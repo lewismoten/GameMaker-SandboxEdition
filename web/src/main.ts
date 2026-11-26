@@ -145,7 +145,7 @@ function startModern(hash?: string): void {
         h(
           'summary',
           {
-            'aria-label': 'More: the guide on small screens, the library, achievements, the cast, and settings (with the credits)',
+            'aria-label': 'More pages and settings',
             title: 'More',
           },
           '⋯',
