@@ -221,6 +221,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex corrected the Starter level progress messages and tested both Show filters.
 - OpenAI Codex fixed and tested declaration preflight rebuild failures.
 - OpenAI Codex removed and tested a duplicate Starter check in the Sofa file library.
+- OpenAI Codex fixed and tested reply deadlines in the Pocket Player SD card writer.
 - OpenAI Codex wrote the headless audit for built title demos and saved walkthroughs.
 - OpenAI Codex fixed and tested the Snow Trails route checks for drift growth and footprint persistence.
 - OpenAI Codex fixed and tested the Around the Room title demo checker.
