@@ -6,6 +6,7 @@ import { readFileSync } from 'node:fs';
 import { parseRecording } from '@lewismoten/gamemaker-sandbox-engine/formats/recording';
 import { ORIGIN } from '../../kit/starter/map';
 import { DOOR_X, buildLevels } from '../src/levels';
+import { watchDoor } from './demoDoor';
 import { GameSim } from './sim';
 
 const { levels } = buildLevels();
@@ -16,10 +17,15 @@ const heroX = () => (sim.pos.x - ORIGIN) * 20 + sim.pos.sx;
 const open = () => sim.w.blkmap[l.book.n('door.shut.bl')] === l.book.n('door.open.bl');
 let heldBack = 0;
 let openedAt = 0;
+const sample = watchDoor();
+const zero = () => sim.w.blkmap[l.book.n('big9.tl')] === l.book.n('big0.tl');
+sample(zero(), open());
 const step = async () => {
   await sim.tick();
-  if (!open() && sim.trail.length === 1 && heroX() >= (DOOR_X - 1) * 20 - 4 && heroX() < DOOR_X * 20) heldBack++;
-  if (open() && !openedAt) openedAt = sim.ticks;
+  if (sim.trail.length !== 1) return;
+  const doorOpen = open();
+  if (!doorOpen && heroX() >= (DOOR_X - 1) * 20 - 4 && heroX() < DOOR_X * 20) heldBack++;
+  if (sample(zero(), doorOpen)) openedAt = sim.ticks;
 };
 for (const k of keys) {
   for (let i = 0; i < k.delta; i++) await step();
