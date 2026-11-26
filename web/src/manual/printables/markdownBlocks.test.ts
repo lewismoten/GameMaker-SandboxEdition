@@ -100,3 +100,10 @@ describe('underscores and diagrams', () => {
     expect(blockText(blocks[1])).toBe('');
   });
 });
+
+it('ends a list before a standalone diagram', () => {
+  expect(readMarkdown('- one\n[diagram: memory]')[0].blocks).toEqual([
+    { tag: 'ul', items: [['one']] },
+    { tag: 'diagram', name: 'memory' },
+  ]);
+});
