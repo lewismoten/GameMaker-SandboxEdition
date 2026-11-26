@@ -3,6 +3,7 @@
 // the stapled booklet with the box front as its cover, and a "What's in the box" tray.
 // A game with no box (openGameMaps) still gets its World Map and Level Maps.
 import './booklet.css';
+import { loadManual } from './loadManual';
 import { h } from '../editor/core/ui';
 import type { CatalogEntry } from '../project/files';
 import { isSandboxGame, loadCatalog, loadGameList, withDetails } from '../project/files';
@@ -52,7 +53,8 @@ async function openOne(
   games: PickerGame[],
   onGame: (id: string, piece: string) => void,
 ): Promise<void> {
-  const entry = await withDetails(listed); // a listed entry holds only the manual's title
+  const entry = await loadManual(listed);
+  if (!entry) return;
   const manual = entry.original?.manual;
   if (!manual) return;
   const title = manual.title || `${entry.title} Manual`;
