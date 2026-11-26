@@ -67,6 +67,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex fixed and tested the editor’s file count accessibility and shareware notice layout on phones.
 - OpenAI Codex fixed and tested frame selection for editor screenshots.
 - OpenAI Codex fixed and tested validation before writing Level Maps metadata.
+- OpenAI Codex corrected and tested the game version and Frost Lot crossing deadline for the fifteen-level edition of The Thank-You Parade.
 - OpenAI Codex fixed and tested the Score Popups final coin and demo payout checks.
 - OpenAI Codex wrote the headless audit for built title demos and saved walkthroughs.
 - OpenAI Codex fixed and tested the Around the Room title demo checker.
