@@ -114,6 +114,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex reviewed wrapping map views and corrected keyboard movement of link markers and Level check seam and link findings with regression tests.
 - OpenAI Codex preserved emphasized instructions in the phone kit booklet filter and added its regression test.
 - OpenAI Codex revised the phone booklet’s firmware simulation summary and added its regression test.
+- OpenAI Codex fixed and tested upper-page program loading in both phone firmware simulators.
 - OpenAI Codex fixed phone booklet filtering and Markdown table boundaries and added regression tests.
 - OpenAI Codex generated and tested the static Art courses and Programmer’s Guide pages.
 - OpenAI Codex revised Starter page labels, game preview descriptions, offline instructions and page links during the November 22, 2026 SEO review.

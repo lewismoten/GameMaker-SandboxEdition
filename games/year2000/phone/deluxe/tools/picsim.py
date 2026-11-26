@@ -16,7 +16,7 @@ FCY = 3579545 / 4
 
 class Pic:
     def __init__(self, hexfile):
-        self.prog = [0x3FFF] * 1024
+        self.prog = [0x3FFF] * 2048
         ext = 0
         for ln in open(hexfile):
             ln = ln.strip()
@@ -31,7 +31,7 @@ class Pic:
             if t == 0:
                 for k in range(0, n, 2):
                     addr = (ext + a + k) // 2
-                    if addr < 1024:
+                    if addr < len(self.prog):  # Configuration and other non-program words are not simulated.
                         self.prog[addr] = d[k] | (d[k + 1] << 8)
         self.ram = [0] * 256
         self.w = 0
