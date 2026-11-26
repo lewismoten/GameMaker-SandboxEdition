@@ -1235,7 +1235,8 @@ mesh checks are in `web/packages/tools/src/mesh`, and the small WebGL viewer in 
 original code, with no 3D library. They were written with Anthropic Claude Sonnet 5.5 under Lewis
 Moten's direction, under the project's MIT License. The teapot is a nod to the Utah teapot
 (Martin Newell, University of Utah, 1975); it is drawn from ellipsoids, a torus and a cone, and
-none of Newell's patch data is used.
+none of Newell's patch data is used. OpenAI Codex fixed color-body clipping and unused palette
+handling and wrote the mesh regression tests.
 
 The multi-color 3MF files follow the 3MF Core Specification (3MF Consortium, https://3mf.io ([Archived 3MF Consortium site](https://web.archive.org/web/20261119022037/https://3mf.io/)), published under
 its open license): a ZIP package with `3D/3dmodel.model`, `[Content_Types].xml` and `_rels/.rels`, one
