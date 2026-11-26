@@ -1695,3 +1695,5 @@ The dial draws on dAcid's [Rotary Dial mechanism](https://www.thingiverse.com/th
 - **Beat the Clock disk license (November 26, 2026)**: OpenAI Codex corrected the game title and wrote the regression test.
 
 - OpenAI Codex documented The Thank-You Parade's contributor tools and tested the command list.
+
+- **Release version checks (November 26, 2026)**: OpenAI Codex fixed the release cutter's version ordering and wrote its downgrade regression test.
