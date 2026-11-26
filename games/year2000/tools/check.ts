@@ -91,8 +91,8 @@ async function catchSparky(bot: Bot, names: string[]): Promise<boolean> {
 }
 
 /**
- * A player who skipped every page and the Zapper on the way reaches the fair with nothing: the
- * fair's own pages and batteries, Sparky and the copier must still get them to the podium.
+ * Start a fresh character directly at the Science Fair. With no pages or Zapper from earlier
+ * levels, Dex must reach the podium using the fair's pages, batteries, Sparky and the copier.
  */
 async function shortOfPages(): Promise<void> {
   const l = LEVELS.find((v) => v.file === 'school')!;
@@ -116,7 +116,7 @@ async function shortOfPages(): Promise<void> {
   for (const s of bot.log) console.log('   ', s);
   if (!ok) throw new Error(`year2000: short of pages, the bot did not finish (${pages()} pages, cover ${short.meter[CTR.cover] - 1})`);
   console.log(
-    `short of pages: arrived with 0 pages and ${zaps0} zaps, found ${found} at the fair, waited ${(waited / 18.2).toFixed(0)}s at the copier, won in ${(sim.ticks / 18.2).toFixed(0)}s`,
+    `short of pages: started directly at the fair with 0 pages and ${zaps0} zaps, found ${found} at the fair, waited ${(waited / 18.2).toFixed(0)}s at the copier, won in ${(sim.ticks / 18.2).toFixed(0)}s`,
   );
 }
 
