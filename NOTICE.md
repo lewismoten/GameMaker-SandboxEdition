@@ -1254,7 +1254,8 @@ Final Curtain's laser-cut Stage Box (`games/sleuth/laser/`, with the joint and l
 `laserLayout.ts` beside the nickel builder) was designed and coded by Claude Sonnet 5.5 (Anthropic) from Lewis Moten's
 idea of an etched proscenium box with two curtains and a prop dagger. The mechanism (a stack of plates gated by pegs,
 with a comb on the drawer) is original; finger joints and sliding slots are common woodworking. Its engraving uses only
-words already in Final Curtain, set in the same public-domain 8×8 PC font as the nickels.
+words already in Final Curtain, set in the same public-domain 8×8 PC font as the nickels. OpenAI Codex added and tested
+validation of joint dimensions and cell counts, and the engraving containment check for round parts.
 
 The meshes are thinned (`web/packages/tools/src/mesh/decimate.ts`) by quadric edge collapse, the
 method of Michael Garland and Paul Heckbert's "Surface Simplification Using Quadric Error Metrics"
