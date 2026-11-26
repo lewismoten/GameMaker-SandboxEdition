@@ -76,6 +76,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex fixed and tested the editor’s file count accessibility and shareware notice layout on phones.
 - OpenAI Codex fixed and tested walkthrough segment selection in the Pocket host checker.
 - OpenAI Codex fixed and tested the Switches title demo checker.
+- OpenAI Codex fixed and tested how the SDK README examples run from standard input.
 - OpenAI Codex fixed and tested frame selection for editor screenshots.
 - OpenAI Codex fixed and tested the full-cycle check in the Roll the Dice walkthrough bot.
 - OpenAI Codex fixed and tested the disk box divider controls during search.
