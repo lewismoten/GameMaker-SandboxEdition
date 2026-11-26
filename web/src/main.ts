@@ -16,7 +16,7 @@ import { settingsItems, settingsMenu } from './settingsMenu';
 import { viewSwitch } from './viewSwitch';
 import { tourButton } from './tour/tourButton';
 import { parseHash } from './urlState';
-import { focusNewView, takeFilenameFocus, trackPersonInput } from './routeFocus';
+import { focusNewView, takeFilenameFocus, takeNavigationFocus, trackPersonInput } from './routeFocus';
 import { noteLibraryContext } from './libraryStart';
 import { parseLinkRequest, type LinkRequest } from './linkIn/protocol';
 import { beginPage } from './pageLife';
@@ -395,10 +395,9 @@ function storageGone(): void {
 
 trackPersonInput();
 let navigation = 0;
-let lastHash = location.hash;
-window.addEventListener('hashchange', () => {
-  const from = lastHash;
-  const to = (lastHash = location.hash);
+window.addEventListener('hashchange', (event) => {
+  const focus = takeNavigationFocus(event) && event.newURL === location.href;
+  const to = location.hash;
   const current = ++navigation;
   const filename = takeFilenameFocus(to);
   // a link from one interface to the other (the magazine's, say): #/desk from today's web, or a
@@ -411,7 +410,7 @@ window.addEventListener('hashchange', () => {
     startModern();
   } else
     void route().then(() => {
-      if (current === navigation) focusNewView(content, from, to, filename);
+      if (current === navigation) focusNewView(content, focus, filename);
     });
 });
 
