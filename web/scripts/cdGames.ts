@@ -49,6 +49,7 @@ export function cdGames(cdRoot: string): Plugin {
       const archives = createArchiveQueue(worker, 4);
       const listed = () => [...get().catalog, ...get().secret].map((e) => `${e.path}${e.pack}`);
       let generation = 0;
+      let closed = false;
       let preparationError: Error | undefined;
       let warmTimer: ReturnType<typeof setTimeout>;
       let preparing: Promise<void> | undefined;
@@ -88,7 +89,10 @@ export function cdGames(cdRoot: string): Plugin {
         }));
       };
       const served = async () => {
-        while (!preview) await warm();
+        while (!preview) {
+          if (closed) throw new Error('Catalog server closed');
+          await warm();
+        }
         return preview;
       };
       const startWarm = () => {
@@ -108,6 +112,7 @@ export function cdGames(cdRoot: string): Plugin {
       };
       server.httpServer?.once('listening', scheduleWarm);
       server.httpServer?.once('close', () => {
+        closed = true;
         clearTimeout(warmTimer);
         archives.clear();
         worker.restart();
