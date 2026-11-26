@@ -39,12 +39,22 @@ async function run(): Promise<void> {
     return;
   }
   const order = fetchOrder(manifest, q.get('games') === '1');
-  const part = Math.max(0, Number(q.get('part')) || 0);
+  const requested = q.get('part');
+  const part = Number(requested);
+  if (requested !== null) {
+    const count = partCount(order);
+    if (!Number.isInteger(part) || part < 1 || part > count) {
+      const message = count === 1 ? 'Only archive part 1 is available.' : `Choose an archive part from 1 to ${count}.`;
+      $('counts').textContent = message;
+      say(message);
+      return;
+    }
+    $('part').textContent = `Part ${part} of ${count}.`;
+  }
   const list = takePart(order, part);
   const base = new URL('./', location.href);
   const bar = $('bar') as HTMLProgressElement;
   bar.max = Math.max(1, list.length);
-  if (part) $('part').textContent = `Part ${part} of ${partCount(order)}.`;
   let done = 0;
   let failed = 0;
   let next = 0;
