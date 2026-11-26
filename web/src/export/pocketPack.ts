@@ -267,7 +267,7 @@ export async function packPocketGame(src: PocketSource, store: PocketStore, pak:
       const e = fname.split('.').pop()!.toLowerCase();
       if (!real) return;
       if (e === 'lst') {
-        for (const x of parseSlideList(file(real))) await one(x.name, x.pause ?? pause ?? 0xffff, 0xffff);
+        for (const x of parseSlideList(file(real))) await one(x.name, x.pause ?? 0xffff, 0xffff);
       } else if (e === 'gif') {
         const im = decodeGif(file(real));
         if (im.width !== 320 || im.height !== 200) {
