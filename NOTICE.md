@@ -107,6 +107,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex corrected and tested the starting jump count in Boots and Jet Pack.
 - OpenAI Codex fixed and tested candidate reporting in walkthrough key searches.
 - OpenAI Codex added the row-dithering regression check for gradient shading.
+- OpenAI Codex repaired and tested the hat-tip animation in Final Curtain.
 - OpenAI Codex fixed and tested validation before writing Level Maps metadata.
 - OpenAI Codex fixed and tested the Score Popups final coin and demo payout checks.
 - OpenAI Codex fixed and tested recovery of missing Year 2000 cryptex kit files.
