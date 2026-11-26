@@ -109,24 +109,22 @@ export class Project {
     this.saving = this.writeSave().catch((e: unknown) => console.error('Autosave failed', e));
   }, 400);
 
-  private writeSave(): Promise<void> {
+  private async writeSave(): Promise<void> {
     const revision = this.revision;
     const request = ++this.saveRequest;
-    const files = new GameFiles(this.files.entries().map(([name, bytes]) => [name, bytes.slice()]));
-    const companion = this.companion ? structuredClone(this.companion) : undefined;
-    this.tellSave('saving');
-    const write = this.saveQueue.then(() => saveProject(this.id, this.name, this.gam, files, companion));
-    this.saveQueue = write.catch(() => undefined);
-    return write.then(
-      () => {
-        this.savedRevision = revision;
-        if (revision === this.revision && request === this.saveRequest) this.tellSave('saved');
-      },
-      (e: unknown) => {
-        if (revision === this.revision && request === this.saveRequest) this.tellSave('failed', e as Error);
-        throw e;
-      },
-    );
+    try {
+      const files = new GameFiles(this.files.entries().map(([name, bytes]) => [name, bytes.slice()]));
+      const companion = this.companion ? structuredClone(this.companion) : undefined;
+      this.tellSave('saving');
+      const write = this.saveQueue.then(() => saveProject(this.id, this.name, this.gam, files, companion));
+      this.saveQueue = write.catch(() => undefined);
+      await write;
+      this.savedRevision = revision;
+      if (revision === this.revision && request === this.saveRequest) this.tellSave('saved');
+    } catch (e) {
+      if (revision === this.revision && request === this.saveRequest) this.tellSave('failed', e as Error);
+      throw e;
+    }
   }
 
   saveNow(): Promise<void> {
