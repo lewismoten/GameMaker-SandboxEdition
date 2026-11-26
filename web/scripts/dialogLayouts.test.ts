@@ -31,3 +31,41 @@ it('fits the Community proposal form on both small portrait phones', async () =>
     await browser.close();
   }
 }, 30000);
+
+it.each([360, 320])(
+  'keeps the Sounds editor create footer in view at %i px',
+  async (width) => {
+    const scene = extraScenes.find((item) => item.id === 'sound-effect-maker-speaker');
+    expect(scene).toBeDefined();
+    const browser = await launch();
+    try {
+      const page = await browser.newPage({ viewport: { width, height: 740 }, isMobile: true, hasTouch: true });
+      await page.addInitScript(() => localStorage.setItem('gm-ui', 'modern'));
+      await page.goto(inject('appBase'), { waitUntil: 'commit' });
+      await scene!.open(page);
+      const footer = page.locator('dialog[open] .sfxm-foot');
+      await footer.waitFor();
+      expect(await footer.getByRole('checkbox', { name: /PC speaker/ }).isChecked()).toBe(true);
+      expect(await footer.getByRole('textbox').isEditable()).toBe(true);
+      for (const control of [footer, ...(await footer.locator('label, small, input, button').all())]) {
+        const box = await control.boundingBox();
+        expect(box).toBeTruthy();
+        expect(box!.x).toBeGreaterThanOrEqual(0);
+        expect(box!.y).toBeGreaterThanOrEqual(0);
+        expect(box!.x + box!.width).toBeLessThanOrEqual(width);
+        expect(box!.y + box!.height).toBeLessThanOrEqual(740);
+      }
+      for (const control of await footer.locator('input, button').all()) {
+        expect(
+          await control.evaluate((el) => {
+            const box = el.getBoundingClientRect();
+            return el.contains(document.elementFromPoint(box.x + box.width / 2, box.y + box.height / 2));
+          }),
+        ).toBe(true);
+      }
+    } finally {
+      await browser.close();
+    }
+  },
+  30000,
+);

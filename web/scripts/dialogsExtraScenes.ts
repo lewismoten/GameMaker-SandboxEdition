@@ -113,6 +113,7 @@ export const extraScenes: Scene[] = [
   moduleScene('level-card', 'editor/tools/cards/cardDialog', 'levelCardDialog', ['$project', '$game', 1]),
   moduleScene('opening-sting', 'editor/tools/opening/openingDialog', 'openingDialog', ['$project', '$scene', '$scenes']),
   moduleScene('sound-effect-maker', 'editor/tools/sfxMaker', 'sfxMaker', ['$project']),
+  moduleScene('sound-effect-maker-speaker', 'editor/tools/sfxMaker', 'sfxMaker', ['$project', { speaker: true }]),
   moduleScene('file-picker', 'editor/widgets/filePicker', 'pickFile', ['$project', 'bbl']),
   moduleScene('compare-checkpoint', 'editor/disk/compareDialog', 'compareDialog', ['$project', '$version']),
   moduleScene('bot-demo', 'editor/editors/recording/botDemoDialog', 'botDemoDialog', ['$project']),
