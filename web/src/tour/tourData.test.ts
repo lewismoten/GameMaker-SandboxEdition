@@ -1,6 +1,7 @@
 // The tour's data: every step well formed, short enough for a phone's bubble, pointing at
 // controls the page's code really makes, and only Sandbox games' sprites, sounds and music
 // (never a secret game's, never the Bard of Bizarre's recordings).
+import { ASSET_GROUPS } from '../editor/shell/assetGroups';
 import { CAST } from '../cast/castData';
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
@@ -90,6 +91,11 @@ describe('the tour’s data', () => {
       expect(s.id.startsWith(`${c.id}-`)).toBe(true);
     }
     for (const c of CHAPTERS) expect(c.id).toMatch(/^[a-z0-9-]+$/);
+  });
+
+  it('names every Overview group when the tour lists its headings', () => {
+    const line = steps.find(({ s }) => s.id === 'edit-around-groups')?.s.say;
+    for (const group of ASSET_GROUPS) expect(line).toContain(group.title);
   });
 
   it('keeps bubbles and captions short', () => {
