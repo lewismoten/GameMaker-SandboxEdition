@@ -124,6 +124,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex fixed and tested missing capture reporting in the light-shot tool.
 - OpenAI Codex corrected the speed setting name in the Slow Computers manual and tested the five affected pages.
 - OpenAI Codex fixed and tested screen navigation and case selection in the theme recheck.
+- OpenAI Codex fixed silent syllables and tested linear syllable lookup in the mumble synthesizer.
 - OpenAI Codex fixed and tested validation before writing Level Maps metadata.
 - OpenAI Codex fixed and tested the Score Popups final coin and demo payout checks.
 - OpenAI Codex fixed and tested recovery of missing Year 2000 cryptex kit files.
