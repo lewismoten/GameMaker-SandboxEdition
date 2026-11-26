@@ -255,6 +255,13 @@ describe('the Owner’s Guide', () => {
     [...s.matchAll(/(cover: true,)|\bpage\(\s*'([^']+)',\s*`([\s\S]*?)`/g)].map((m) => ({ head: m[2] ?? '', body: m[3] ?? '' })),
   );
 
+  it('uses each sample title as its row header', () => {
+    const section = pages.find((p) => p.body.includes('<h3>Small sample games</h3>'))!.body.split('<h3>Small sample games</h3>')[1];
+    const rows = [...section.matchAll(/<tr>(.*?)<\/tr>/g)];
+    expect(rows.length).toBeGreaterThan(0);
+    for (const [, cells] of rows) expect(cells).toMatch(/^<th scope="row">[^<]+<\/th>/);
+  });
+
   it('lists each chapter, and each section it names, at the page it opens on', () => {
     const contents = pages.find((p) => p.head === 'Contents')!.body;
     let chapter = '';
