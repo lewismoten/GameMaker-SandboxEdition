@@ -81,6 +81,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex corrected the Junior Lab phone dial simulation report and tested the dial and case floor geometry.
 - OpenAI Codex fixed and tested fallback folder names on the Sample CD.
 - OpenAI Codex corrected the Course 1 figure output path in the script guide and wrote its regression test.
+- OpenAI Codex fixed and tested circular slide list handling in Pocket Player exports.
 - OpenAI Codex fixed and tested validation before writing Level Maps metadata.
 - OpenAI Codex fixed and tested the Score Popups final coin and demo payout checks.
 - OpenAI Codex fixed and tested recovery of missing Year 2000 cryptex kit files.
