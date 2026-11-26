@@ -92,6 +92,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex fixed and tested interrupted local backup restores.
 - OpenAI Codex wrote the regression test for the Sandbox BBS menu and prompt colors.
 - OpenAI Codex fixed and tested cleanup when the editor replaces a paused Undo notice.
+- OpenAI Codex corrected the Noodle Observatory scene guide and tested its scene count and palette-specific invisible-wall check.
 - OpenAI Codex fixed and tested the editor’s file count accessibility and shareware notice layout on phones.
 - OpenAI Codex fixed and tested walkthrough segment selection in the Pocket host checker.
 - OpenAI Codex fixed and tested the Switches title demo checker.
