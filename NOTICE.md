@@ -845,7 +845,7 @@ game folder opens in the browser unchanged.
   leaves them alone. The CD's tools are kept as it held them, each its author's: LHarc 1.13
   (`cd/backup/lharc.exe`, "(c)Yoshi, 1988-89") and LHA 2.13 with its
   documentation (`cd/sharware/tools`, Haruyasu Yoshizaki), and Alchemy Mindworks' Graphic
-  Workshop shareware for DOS and Windows (`cd/sharware/tools/gwsdos.zip`, `GWSWIN.ZIP`).
+  Workshop shareware for DOS and Windows (`cd/sharware/tools/gwsdos.zip`, `gwswin.zip`).
   None of them are on the website.
 
 ## The Bard of Bizarre recordings: personal, non-commercial only
