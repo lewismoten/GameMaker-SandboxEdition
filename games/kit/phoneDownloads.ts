@@ -32,7 +32,7 @@ function* walk(dir: string): Generator<string> {
 const entry = (name: string, file: string): ZipEntry => ({ name, data: new Uint8Array(readFileSync(file)) });
 /** The firmware as the board ZIP carries it: its source and the hex tools/build_firmware.sh assembles from it (tracked). */
 function firmware(dir: string, folder: string): ZipEntry[] {
-  return ['phone.asm', 'phone.hex'].flatMap((f) => (existsSync(join(dir, 'firmware', f)) ? [entry(`${folder}/firmware/${f}`, join(dir, 'firmware', f))] : []));
+  return ['phone.asm', 'phone.hex'].map((f) => entry(`${folder}/firmware/${f}`, join(dir, 'firmware', f)));
 }
 
 const text = (name: string, body: string): ZipEntry => ({ name, data: new TextEncoder().encode(body) });
