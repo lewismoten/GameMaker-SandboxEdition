@@ -122,6 +122,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex fixed and tested the Score Popups frame capture tool.
 - OpenAI Codex fixed and tested shelf updates in the Library TV.
 - OpenAI Codex fixed and tested the development web player page metadata.
+- OpenAI Codex corrected the game pack file order documentation and wrote its regression test.
 - OpenAI Codex wrote the headless audit for built title demos and saved walkthroughs.
 - OpenAI Codex fixed and tested the Around the Room title demo checker.
 - OpenAI Codex updated the Dig It walkthrough to demonstrate the shovel and tested its recorded controls.
