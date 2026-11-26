@@ -37,6 +37,10 @@ const cardRoot = opt('--out')[0];
 const gmpDir = opt('--gmp')[0];
 const withDos = !args.includes('--no-dos');
 const gmos = !!gmpDir && args.includes('--gmos');
+if (gmos && !withDos) {
+  console.error('--gmos requires DOS files and cannot be used with --no-dos');
+  process.exit(1);
+}
 const series = opt('--series')[0] ?? (cardRoot || gmpDir ? 'any' : 'starter');
 const outDir = gmpDir ? `${gmpDir}/pocket/` : cardRoot ? `${cardRoot}/pocket/` : pocketOutDir + 'data/';
 /** Games the card leaves out (id: reason): their host check differs from the engine (the same with the old fixed level table, so not the streaming). */
