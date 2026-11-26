@@ -65,6 +65,8 @@ game folder opens in the browser unchanged.
 ## Credits
 
 - OpenAI Codex wrote the headless audit for built title demos and saved walkthroughs.
+- OpenAI Codex added the browser regression test for focus in the DOS page menu.
+- OpenAI Codex fixed and tested keyboard navigation in the magazine Print menu.
 - OpenAI Codex sped up the block editor history, phone recording, and phone Files button regression tests.
 - OpenAI Codex implemented and tested background catalog preparation for the development server.
 - OpenAI Codex fixed and tested platform layout verification in the map editor.
