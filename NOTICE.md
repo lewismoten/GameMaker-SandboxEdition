@@ -236,6 +236,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex updated the platform bot regression to require generation for its three named seeds.
 - OpenAI Codex fixed and tested thumbnail scheduling for paper feelies in the desk.
 - OpenAI Codex fixed and tested platform layout verification in the map editor.
+- OpenAI Codex revised and tested the home tour cue for the Games link and Game-Maker logo.
 - OpenAI Codex added the regression test for stale tour narration.
 - OpenAI Codex fixed and tested tour narration when a BBS prompt fails to appear.
 - OpenAI Codex fixed and tested backward navigation in the guided tour.
