@@ -73,6 +73,8 @@ game folder opens in the browser unchanged.
 - OpenAI Codex updated the Dig It walkthrough to demonstrate the shovel and tested its recorded controls.
 - OpenAI Codex sped up the block editor history, phone recording, and phone Files button regression tests.
 - OpenAI Codex implemented and tested background catalog preparation for the development server.
+- OpenAI Codex fixed generated dungeon map filenames and tested DOS filename collisions.
+- OpenAI Codex updated the platform bot regression to require generation for its three named seeds.
 - OpenAI Codex fixed and tested platform layout verification in the map editor.
 - OpenAI Codex added the regression test for stale tour narration.
 - OpenAI Codex fixed and tested backward navigation in the guided tour.
