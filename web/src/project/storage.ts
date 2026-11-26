@@ -7,7 +7,7 @@
 //   saves: one object per game id mapping file name -> bytes (out-of-line keys).
 import type { Delta } from '@lewismoten/gamemaker-sandbox-tools/delta';
 import { GameFiles } from './files';
-import type { Companion } from './companion';
+import { emptyCompanion, type Companion } from './companion';
 import { recoverRecord, type Damage } from './recover';
 import { repairedTitle } from './importedTitle';
 import { DAMAGED_SUFFIX, isDamagedCopy, redundantCopies } from './damagedCopies';
@@ -213,6 +213,28 @@ export async function saveProject(id: string, name: string, gam: string, files: 
     get.onsuccess = () => store.put(withCompanion(next, get.result as ProjectRecord | undefined, companion));
     tx.oncomplete = () => resolve();
     tx.onerror = () => reject(tx.error);
+    tx.onabort = () => reject(tx.error);
+  });
+}
+
+/** Assign the Pocket identity once across download choosers, using the latest saved row. */
+export async function storedPocketUid(id: string): Promise<string> {
+  const { pocketProjectUid } = await import('../export/pocketLibrary');
+  const d = await db();
+  return new Promise<string>((resolve, reject) => {
+    const tx = d.transaction(PROJECTS, 'readwrite');
+    const store = tx.objectStore(PROJECTS);
+    const get = store.get(id) as IDBRequest<ProjectRecord | undefined>;
+    let uid: string;
+    get.onsuccess = () => {
+      const row = get.result;
+      if (!row) return reject(new Error('The game is not saved yet'));
+      const companion = row.companion ?? emptyCompanion();
+      const previous = companion.pocketUid;
+      uid = pocketProjectUid(companion);
+      if (uid !== previous) store.put({ ...row, companion });
+    };
+    tx.oncomplete = () => resolve(uid);
     tx.onabort = () => reject(tx.error);
   });
 }

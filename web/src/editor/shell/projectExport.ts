@@ -1,14 +1,14 @@
 // Downloading a game of yours from the home page: its Download button and its ⋯ More menu's
 // Download… item open the chooser (download.ts, loaded when pressed) for the stored project.
 import { h, toast } from '../core/ui';
-import { loadProject, saveProject } from '../../project/storage';
+import { loadProject, saveProject, storedPocketUid } from '../../project/storage';
 import { parseCompanion, setExportPreviews } from '../../project/companion';
 import { parseGame, gameTitle } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import type { DownloadGame } from './download';
 import { downloadButton } from './downloadButton';
 
 /** The project as the chooser takes it, or undefined when it is gone from this browser. */
-async function projectGame(id: string): Promise<DownloadGame | undefined> {
+export async function projectGame(id: string): Promise<DownloadGame | undefined> {
   const p = await loadProject(id);
   if (!p) {
     toast('That game is not in this browser any more.', 'error');
@@ -19,11 +19,10 @@ async function projectGame(id: string): Promise<DownloadGame | undefined> {
   return {
     title,
     pocketContext: async () => {
-      const { pocketProjectUid } = await import('../../export/pocketLibrary');
-      const c = parseCompanion(p.record.companion);
-      const uid = pocketProjectUid(c);
-      p.record.companion = c;
-      await saveProject(id, p.record.name, p.record.gam, p.files, c);
+      const uid = await storedPocketUid(id);
+      const companion = parseCompanion(p.record.companion);
+      companion.pocketUid = uid;
+      p.record.companion = companion;
       const { isImported } = await import('./homeOrigin');
       return { uid, category: isImported(id) ? ['imported', 'unsorted'] : ['mine'] };
     },

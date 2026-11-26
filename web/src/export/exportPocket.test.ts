@@ -4,6 +4,7 @@ import { describe, expect, it } from 'vitest';
 import { readFileSync, readdirSync } from 'node:fs';
 import { inflateRawSync } from 'node:zlib';
 import { GameFiles } from '@lewismoten/gamemaker-sandbox-engine/core/gameFiles';
+import { readLibrary } from './pocketLibrary';
 import { exportPocket } from './exportPocket';
 import { gmpName, pocketId, readBundle, writeBundle, writeGmp } from './pocketFile';
 
@@ -18,6 +19,15 @@ const unpack = (b: Uint8Array) => {
 };
 
 describe('exportPocket', () => {
+  it.each([
+    ['棋'.repeat(43), '棋'.repeat(42)],
+    ['a'.repeat(124) + '🎮x', 'a'.repeat(124) + '🎮'],
+  ])('bounds the library title at a whole UTF-8 character', async (title, expected) => {
+    const { bytes } = await exportPocket(peach(), { title, gam: 'PEACH.GAM' });
+    const metadata = readBundle(bytes).get('library.json')!;
+    expect(readLibrary(metadata.bytes)?.title).toBe(expected);
+  });
+
   it('writes the same bytes twice', async () => {
     const a = await exportPocket(peach(), { title: 'Peach', gam: 'PEACH.GAM' });
     const b = await exportPocket(peach(), { title: 'Peach', gam: 'PEACH.GAM' });
