@@ -119,7 +119,7 @@ height selects, so ten keys can fire into ten different rows.
 
 The hero moves at most **11 pixels per tick** in each direction, a little over half a block. That keeps the hero from passing through a one-block wall between two checks. The hero carries up to **10 things**.
 
-A plank only one block wide is a poor place to land. When just one of the two blocks under the hero is solid, the game nudges him sideways toward it, and a hero coming down near the plank's end can be pulled off and fall. Build such planks two blocks wide.
+A plank only one block wide is a poor place to land. If less than half the hero's width rests on the plank, the game nudges him sideways away from it, and he can fall. At exactly half there is no nudge. Build such planks two blocks wide.
 
 ---
 
