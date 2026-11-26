@@ -16,8 +16,10 @@ export function setPendingUpdate(doReload: (() => void) | undefined): void {
 }
 
 /** Calls `l` now and whenever an update starts waiting. */
-export function watchPendingUpdate(l: Listener): void {
+export function watchPendingUpdate(l: Listener, signal: AbortSignal): void {
+  if (signal.aborted) return;
   listeners.add(l);
+  signal.addEventListener('abort', () => listeners.delete(l), { once: true });
   l(reload);
 }
 
