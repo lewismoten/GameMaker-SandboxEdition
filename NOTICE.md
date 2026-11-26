@@ -100,6 +100,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex fixed and tested pinch zoom in the phone viewer.
 - OpenAI Codex fixed and tested missing-page diagnostics in the Pocket Player card host check.
 - OpenAI Codex fixed and tested conflicting Pocket Player card export options.
+- OpenAI Codex fixed and tested phone board fabrication exports and download validation.
 - OpenAI Codex fixed and tested validation before writing Level Maps metadata.
 - OpenAI Codex fixed and tested the Score Popups final coin and demo payout checks.
 - OpenAI Codex fixed and tested recovery of missing Year 2000 cryptex kit files.
