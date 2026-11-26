@@ -64,6 +64,7 @@ game folder opens in the browser unchanged.
 
 ## Credits
 
+- OpenAI Codex corrected the Starter level progress messages and tested both Show filters.
 - OpenAI Codex wrote the headless audit for built title demos and saved walkthroughs.
 - OpenAI Codex sped up the block editor history, phone recording, and phone Files button regression tests.
 - OpenAI Codex implemented and tested background catalog preparation for the development server.
