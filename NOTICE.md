@@ -106,6 +106,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex fixed and tested the storm puddle colors in Rain on the Path.
 - OpenAI Codex fixed and tested serial connection teardown and the log line limit in the Pi remote.
 - OpenAI Codex fixed and tested trailing-byte reporting in the block editor.
+- OpenAI Codex fixed and tested the cryptex head section in the assembly viewer.
 - OpenAI Codex fixed and tested the editor’s file count accessibility and shareware notice layout on phones.
 - OpenAI Codex fixed and tested walkthrough segment selection in the Pocket host checker.
 - OpenAI Codex fixed and tested the Switches title demo checker.
