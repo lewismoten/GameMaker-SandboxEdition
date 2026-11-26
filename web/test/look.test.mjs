@@ -18,6 +18,12 @@ describe('look', () => {
     expect(() => parseArgs(['1', '--width', '5'])).toThrow(/width/);
     expect(() => parseArgs(['1', '--say'])).toThrow(/unknown/);
   });
+  it('requires a filename before the next option', () => {
+    expect(() => parseArgs(['--out', '--ocr'])).toThrow('--out needs a value');
+  });
+  it.each([',,,', ' ,0,1,1', '0,,1,1', '0,0,0,1', '0,0,1,0'])('rejects invalid crop %s', (crop) => {
+    expect(() => parseArgs(['--crop', crop])).toThrow(/crop/);
+  });
   it('parses the OCR options', () => {
     expect(parseArgs([])).toMatchObject({ ocrPsm: 11, ocrScale: 1.5 });
     expect(parseArgs(['--ocr-psm', '6', '--ocr-scale', '2'])).toMatchObject({ ocrPsm: 6, ocrScale: 2 });
