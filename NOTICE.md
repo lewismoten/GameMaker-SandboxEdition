@@ -88,6 +88,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex fixed keyboard focus and toolbar navigation in the player and added the Chromium regression test.
 - OpenAI Codex fixed and tested the focused filename in the phone editor after a guided tour.
 - OpenAI Codex corrected reduced-motion and sound controls for the tour and added regression tests.
+- OpenAI Codex corrected and tested the Programmer’s Guide explanation of Escape during the exit fade.
 - OpenAI Codex checked internal publication references, updated the Programmer’s Guide chapter map and tour documentation, and extended the book-link tests.
 - OpenAI Codex sped up Scene Maker source lookups and added regression tests.
 - OpenAI Codex fixed and tested hostname wrapping in the download consent dialog.
