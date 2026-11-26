@@ -57,11 +57,18 @@ describe('Player Patching Manual', () => {
   });
 
   it('locates every extension copy at its dot with its NULL intact', () => {
-    for (const k of EXT_KINDS)
+    const table = sections.find((s) => s.title.startsWith('12.'))?.blocks.find((b) => b.tag === 'table');
+    if (table?.tag !== 'table') throw new Error('Missing extension directory');
+    const rows = table.rows.map((row) => row.map((cell) => blockText({ tag: 'p', kids: cell })));
+    const printedKinds = EXT_KINDS.filter((k) => k.offsets.length > 0);
+    expect(rows).toHaveLength(printedKinds.length);
+    for (const k of printedKinds) {
+      const row = rows.find(([kind]) => kind.split(':')[0] === k.ext);
+      expect(row, k.ext).toEqual([expect.any(String), k.offsets.map(offset).join(', '), bytes(k.offsets[0], 4)]);
       for (const o of k.offsets) {
-        expect(text).toContain(offset(o));
         expect(String.fromCharCode(...exe.slice(o, o + 5))).toBe(`.${k.ext}\0`);
       }
+    }
   });
 
   it('checks the separately printed PLAYGAME operands against that executable', () => {
