@@ -5,6 +5,7 @@ import { join, resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { ADVTYPE, parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { buildLevels as duckLevels } from '../../../games/duck/src/levels';
+import { buildLevels as sayLevels } from '../../../games/say-something/src/levels';
 import { LASTMM, MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { filterQuestions, lessonPage, levelTitle, LESSON_HEAD, questionsOf, type HowDoIEntry } from './howDoI';
 
@@ -19,6 +20,12 @@ const manualOf = (id: string): ManualFile => JSON.parse(readFileSync(join(GAMES,
 const withList = starters.filter((id) => manualOf(id).howDoI);
 
 describe('howDoI lists', () => {
+  it('centers the multi-page talk question on Moss’s outgoing link', () => {
+    const question = manualOf('say-something').howDoI!.find((entry) => entry.id === 'pages')!;
+    const moss = sayLevels().levels[question.scene - 2].talks.find((talk) => talk.who === 'moss')!;
+    expect([question.x, question.y]).toEqual(moss.at);
+  });
+
   it('centers each Kit Ducks lesson on its plaque or monster', () => {
     const { book, levels } = duckLevels();
     for (const spot of manualOf('duck').howDoI!) {
