@@ -277,10 +277,22 @@ export function showcase(nav: HomeNav, refresh: () => Promise<void>, life?: Abor
           if (dialog) actions.insertBefore(dialog, actions.querySelector('.card-more'));
         }
         return yes;
-      })().catch(() => false);
+      })().catch(() => {
+        checked = undefined;
+        return false;
+      });
       const yes = await checked;
       if (gen !== generation || !el.isConnected || life?.aborted || !yes || demo) return;
-      if (explicit || (mayStartHomeDemo() && !demosStopped())) play();
+      if (!explicit && document.hidden) scheduleDemoStart();
+      else if (explicit || (mayStartHomeDemo() && !demosStopped())) play();
+    };
+    const scheduleDemoStart = () => {
+      cancelDemoStart = deferHomeDemo(
+        screen,
+        shown,
+        () => mayStartHomeDemo() && !demosStopped() && ((!how.featured && !how.resume) || (game.entry?.bytes ?? 0) <= AUTOPLAY_BYTES),
+        () => void prepareDemo(false),
+      );
     };
     if (game.gam) {
       playBtn.hidden = false;
@@ -291,12 +303,7 @@ export function showcase(nav: HomeNav, refresh: () => Promise<void>, life?: Abor
           return;
         }
         if (gen !== generation) return;
-        cancelDemoStart = deferHomeDemo(
-          screen,
-          shown,
-          () => mayStartHomeDemo() && !demosStopped() && ((!how.featured && !how.resume) || (game.entry?.bytes ?? 0) <= AUTOPLAY_BYTES),
-          () => void prepareDemo(false),
-        );
+        scheduleDemoStart();
       })();
     }
   };
