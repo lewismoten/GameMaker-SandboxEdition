@@ -64,6 +64,8 @@ game folder opens in the browser unchanged.
 
 ## Credits
 
+- OpenAI Codex fixed and tested Windows paths in release size checks.
+- OpenAI Codex fixed and tested partial Stage Box output recovery.
 - OpenAI Codex fixed and tested validation before writing Level Maps metadata.
 - OpenAI Codex wrote the headless audit for built title demos and saved walkthroughs.
 - OpenAI Codex updated the Dig It walkthrough to demonstrate the shovel and tested its recorded controls.
