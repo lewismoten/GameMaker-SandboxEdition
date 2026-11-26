@@ -1,5 +1,5 @@
 // Kit and the Starter helpers, with appearances divided by each game's leading explorer.
-import { heroOfStarter } from '../project/starterHeroes';
+import { STARTER_HEROES } from '../project/starterHeroes';
 import type { CastGame, CastMember } from './castTypes';
 
 export const STARTERS: CastMember[] = [
@@ -195,7 +195,14 @@ const HELPERS: { id: string; name: string; role: string; hi: string; look: strin
 /** The cast with Kit's list split by who leads each Starter (starterHeroes.ts), and the helpers after him. */
 export function withHelpers(list: CastMember[]): CastMember[] {
   const kit = list.find((m) => m.id === 'kit')!;
-  const mine = (name: string) => kit.appears.filter((a) => heroOfStarter(a.game) === name);
+  const descriptions = new Map(kit.appears.map((a) => [a.game, a]));
+  const mine = (name: string) =>
+    Object.entries(STARTER_HEROES)
+      .filter(([, hero]) => hero === name)
+      .map(([id]) => {
+        const game = id as CastGame;
+        return descriptions.get(game) ?? { game, as: 'leads this Starter' };
+      });
   const helpers: CastMember[] = HELPERS.map((h) => ({
     id: h.id,
     name: h.name,
