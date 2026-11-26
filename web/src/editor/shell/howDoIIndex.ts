@@ -23,15 +23,20 @@ export function questionButtons(entry: CatalogEntry, q: Question, onGo?: () => v
           b.disabled = true;
           b.textContent = 'Opening…';
           void href(entry, q)
-            .then((to) =>
-              to
-                ? ((location.hash = to),
-                  onGo?.(),
-                  primary || unlockAchievement('learn-lesson'),
-                  toast(`${primary ? 'Starting' : 'Opened the map of'} ${entry.title}, level ${q.level}.`))
-                : toast('That level could not be opened.'),
-            )
-            .catch(() => toast('That level could not be opened.'))
+            .then((to) => {
+              if (onGo && !b.isConnected) return;
+              if (!to) {
+                toast('That level could not be opened.');
+                return;
+              }
+              location.hash = to;
+              onGo?.();
+              if (!primary) unlockAchievement('learn-lesson');
+              toast(`${primary ? 'Starting' : 'Opened the map of'} ${entry.title}, level ${q.level}.`);
+            })
+            .catch(() => {
+              if (!onGo || b.isConnected) toast('That level could not be opened.');
+            })
             .finally(() => {
               b.disabled = false;
               b.textContent = label;
@@ -46,7 +51,7 @@ export function questionButtons(entry: CatalogEntry, q: Question, onGo?: () => v
 }
 
 /** The index itself: a labelled search box, a live count and the list (every question, or the matches). */
-function indexBody(id: string, dialog: boolean, onGo?: () => void): { root: HTMLElement; search: HTMLInputElement } {
+function indexBody(id: string, dialog: boolean, onGo?: () => void): { root: HTMLElement; search: HTMLInputElement; disconnect: () => void } {
   const search = h('input', {
     type: 'search',
     id: `hdi-search-${id}`,
@@ -61,12 +66,28 @@ function indexBody(id: string, dialog: boolean, onGo?: () => void): { root: HTML
     h('div', { class: 'hdi-head' }, h('label', { id: `${search.id}-label`, for: search.id }, 'Search the questions'), search, count),
     list,
   );
+  let observer: ResizeObserver | undefined;
   void loadQuestions().then(
     ({ entries, questions }) => {
+      if (!questions.length) {
+        count.textContent = 'No Starter questions are available.';
+        return;
+      }
+      let summary = '';
+      let matches = 0;
+      const updateCount = () => {
+        const scroll = dialog && matches > 0 && list.scrollHeight > list.clientHeight;
+        const total = scroll ? `${summary}; scroll the list for more` : summary;
+        if (count.textContent !== total) count.textContent = total;
+      };
+      if (dialog && root.isConnected) {
+        observer = new ResizeObserver(updateCount);
+        observer.observe(list);
+      }
       const show = () => {
         const found = filterQuestions(questions, search.value);
-        const total = search.value.trim() ? `${found.length} of ${questions.length} questions` : `${questions.length} questions; scroll the list for more`;
-        if (count.textContent !== total) count.textContent = total;
+        matches = found.length;
+        summary = `${search.value.trim() ? `${matches} of ` : ''}${questions.length} ${questions.length === 1 ? 'question' : 'questions'}`;
         list.replaceChildren(
           ...found.map((q) => {
             const entry = entries.get(q.game)!;
@@ -82,13 +103,14 @@ function indexBody(id: string, dialog: boolean, onGo?: () => void): { root: HTML
           }),
         );
         if (!found.length) list.append(h('li', { class: 'hdi-none' }, 'No question matches. Try one word, such as “door”.'));
+        updateCount();
       };
       search.addEventListener('input', show);
       show();
     },
     () => root.replaceChildren(h('p', { class: 'hint', role: 'alert' }, 'The questions could not be loaded.')),
   );
-  return { root, search };
+  return { root, search, disconnect: () => observer?.disconnect() };
 }
 
 /** The index: `compact` is one button that opens it in a dialog (the Starters tab); otherwise the full list (the Guide). */
@@ -96,11 +118,16 @@ export function howDoIIndex(opts: { compact?: boolean } = {}): HTMLElement {
   if (!opts.compact) return indexBody('guide', false).root;
   const button = h('button', { type: 'button', class: 'hdi-open', 'aria-haspopup': 'dialog' }, 'How do I…?');
   button.addEventListener('click', () => {
+    let disconnect: (() => void) | undefined;
     void modal<void>('How do I…?', (close) => {
-      const { root, search } = indexBody('dialog', true, () => close(undefined));
+      const { root, search, disconnect: stopObserving } = indexBody('dialog', true, () => close(undefined));
+      disconnect = stopObserving;
       requestAnimationFrame(() => search.focus());
       return root;
-    }).then(() => button.focus());
+    }).then(() => {
+      disconnect?.();
+      button.focus();
+    });
   });
   return button;
 }
