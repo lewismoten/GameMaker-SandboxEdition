@@ -172,7 +172,8 @@ export async function measureCyd(files: Map<string, Uint8Array>, walk: Walkthrou
       }
       const result = await sim.tick();
       if (result === 'dead') throw new Error('Recorded route lost a life in the disk simulator');
-      if (sim.scene === walk.segments[segment + 1]?.scene) break;
+      if (result === 'link' && sim.scene === walk.segments[segment + 1]?.scene) break;
+      if (!sim.ended && clock === last + 600) throw new Error(`Recorded route timed out at segment ${segment + 1}`);
     }
     segment++;
   }
