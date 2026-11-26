@@ -74,6 +74,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex fixed and tested desk audio warmup cleanup, round-trip report defaults, and unreadable ZIP reporting.
 - OpenAI Codex fixed and tested the minimum scroll smoothing setting.
 - OpenAI Codex corrected and tested the Starter group named in the Pick It Up title artwork comment.
+- OpenAI Codex fixed and tested the performance budget verifier.
 - OpenAI Codex fixed and tested the editor’s file count accessibility and shareware notice layout on phones.
 - OpenAI Codex fixed and tested walkthrough segment selection in the Pocket host checker.
 - OpenAI Codex fixed and tested the Switches title demo checker.
