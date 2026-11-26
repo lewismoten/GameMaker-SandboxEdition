@@ -1378,7 +1378,7 @@ maker "ZORP" is invented. The shell is untested: nothing has been printed.
 
 - **Portable animation Level check:** OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, extracted the animation findings and tests into the tools package using the existing engine decoders.
 - **Web editor tour review (November 10, 2026)** (`docs/editor.md`): OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, checked the tour against the editor source and revised its descriptions of controls and flows. Existing screenshots and their artwork retain their credits.
-- **Level generator ceiling landings** (`web/packages/tools/src/kit/levelGen/platformReach.ts`): OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, matched the reach model's ceiling collision snaps to PLAYGAME and added engine comparison regressions. The original RSD code remains the behavioral reference.
+- **Level generator ceiling landings** (`web/packages/tools/src/kit/levelGen/platformReach.ts`): OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, matched the reach model's ceiling collision snaps to PLAYGAME and added engine comparison regressions. OpenAI Codex added the regression for jumps that time out at the target coordinates. The original RSD code remains the behavioral reference.
 
 - **Memory harness completion** (`web/scripts/perfMemory.ts`): OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, added explicit failure diagnostics, cleanup handling and browser-free regression tests.
 
