@@ -107,7 +107,7 @@ finger stop with an arm over the holes at 4 o'clock, hole 1 at 3 o'clock, 30 deg
   spiral spring in one piece with a frame, a clip-on finger stop, a headed center screw through a stack that prints flat, and digits printed under the holes. This
   dial differs: a ratchet clutch so that only the return counts (that dial reads both ways with an optical sensor and software), tactile switches in place of the
   optical slotted disc, a bigger plate with 13 mm holes, a separate cam wheel, a grease damper, a heat-free self-tapping screw, and every dimension is new
-  (no STL, mesh or spring parameter was copied or adapted, so NOTICE.md has no entry for it).
+  (no STL, mesh or spring parameter was copied or adapted).
 
 ### Assemble the module and the case
 
