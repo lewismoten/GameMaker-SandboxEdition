@@ -193,6 +193,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex fixed and tested retrying the Starter question index on Home.
 - OpenAI Codex implemented and tested indexed crash recovery for the private intake ledger.
 - OpenAI Codex fixed and tested validation before writing Level Maps metadata.
+- OpenAI Codex fixed and tested the Sound Board walkthrough’s sound-cutoff check.
 - OpenAI Codex fixed and tested the Score Popups final coin and demo payout checks.
 - OpenAI Codex fixed and tested recovery of missing Year 2000 cryptex kit files.
 - OpenAI Codex fixed and tested the timing of short pull-away sounds for THE CHEZ.
