@@ -212,6 +212,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex fixed and tested the Tune-Up papercraft rebuild and parts list.
 - OpenAI Codex fixed and tested the desk Machine settings preload and the Courier host test launcher.
 - OpenAI Codex fixed and tested Level check warnings for repeating score penalty sounds and healing sound priority.
+- OpenAI Codex fixed and tested retries in the example game senders and corrected the embedding and hosting guides.
 - OpenAI Codex wrote the headless audit for built title demos and saved walkthroughs.
 - OpenAI Codex fixed and tested the Around the Room title demo checker.
 - OpenAI Codex fixed and tested the Say Something title demo checker.
