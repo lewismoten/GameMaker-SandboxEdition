@@ -425,6 +425,7 @@ Run selected files with `npx vitest run scripts/<file>.test.ts`. Browser tests u
 - `dialogAccessibility.test.ts` — checks shared modal names against visible headings.
 - `dialogLayouts.test.ts` — checks the Community proposal form’s portrait-phone layout.
 - `dialogTargets.test.ts` — checks visible dialog controls’ hit targets.
+- `dialogsFitSummary.ts` formats the summary table using the selected themes and viewport sizes.
 - `dialogsFitMeasure.test.ts` — checks checkbox hit areas, collapsed details and dialog measurements.
 - `diskDiff.test.ts` — checks disk diff summaries, format changes and deterministic output.
 - `diskDiffArgs.test.ts` — checks two-path and game-at-revision command arguments.

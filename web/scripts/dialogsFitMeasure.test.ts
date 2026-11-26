@@ -1,6 +1,8 @@
 // Browser regressions for dialog names, geometry and minimum targets.
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 import type { Browser } from 'playwright-core';
+import { readFileSync } from 'node:fs';
+import { axeOn } from './dialogsFitAxe';
 import { launch } from './perfLib';
 import { measure } from './dialogsFitMeasure';
 
@@ -13,6 +15,13 @@ describe('dialog measurements', () => {
   });
   afterAll(async () => {
     await browser?.close();
+  });
+
+  it('audits the unnamed button in the top modal', async () => {
+    const page = await browser.newPage();
+    await page.setContent('<dialog aria-label="Base"><button>Close</button></dialog><dialog aria-label="Top"><button></button></dialog>');
+    await page.locator('dialog').evaluateAll((dialogs) => dialogs.forEach((dialog) => (dialog as HTMLDialogElement).showModal()));
+    expect(await axeOn(page, readFileSync('../node_modules/axe-core/axe.min.js', 'utf8'))).toContain('button-name x1');
   });
 
   it('keeps a full-size checkbox target when its separate caption is shorter', async () => {

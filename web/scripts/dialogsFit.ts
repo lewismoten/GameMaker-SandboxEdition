@@ -10,6 +10,7 @@ import { resolve } from 'node:path';
 import { webkit, type Browser, type Page } from 'playwright-core';
 import { arg, launch, target } from './perfLib';
 import { assertTheme, forceTheme } from './forceTheme';
+import { formatSummary } from './dialogsFitSummary';
 import { scenes } from './dialogsFitScenes';
 import { measure, type Measure } from './dialogsFitMeasure';
 
@@ -114,19 +115,13 @@ try {
   await browser.close();
   srv.stop();
 }
-for (const [id, r] of results)
-  console.log(
-    `${id.padEnd(22)} ${r.cells.slice(0, 4).join(' ').padEnd(24)} | ${r.cells.slice(4).join(' ').padEnd(24)}${
-      r.notes.length
-        ? '\n' +
-          r.notes
-            .slice(0, 4)
-            .map((n) => '    ' + n)
-            .join('\n')
-        : ''
-    }`,
-  );
-console.log(`\n${'dialog'.padEnd(22)} light 375 390 360 844L   | dark 375 390 360 844L`);
+console.log(
+  formatSummary(
+    themes,
+    selectedSizes.map(([size]) => size),
+    results,
+  ),
+);
 console.log(`${failures} failing cell(s) (${landscapeFails ? 'all requested sizes' : 'portrait'}), ${advisories} tight in landscape.`);
 console.log(
   JSON.stringify({
