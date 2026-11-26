@@ -64,6 +64,8 @@ game folder opens in the browser unchanged.
 
 ## Credits
 
+- OpenAI Codex fixed and tested editor autosave queuing on slow storage.
+- OpenAI Codex reproduced and fixed port collisions in the editor browser test fixture.
 - OpenAI Codex wrote the headless audit for built title demos and saved walkthroughs.
 - OpenAI Codex sped up the block editor history, phone recording, and phone Files button regression tests.
 - OpenAI Codex implemented and tested background catalog preparation for the development server.

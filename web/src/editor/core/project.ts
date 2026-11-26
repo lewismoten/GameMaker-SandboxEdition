@@ -95,8 +95,8 @@ export class Project {
     return this.revision !== this.savedRevision;
   }
 
-  private saveRequest = 0;
-  private saveQueue = Promise.resolve();
+  private writing = false;
+  private pendingSave?: { promise: Promise<void>; start: () => void };
   private persist(): void {
     if (this.readOnly) return;
     this.revision++;
@@ -110,23 +110,39 @@ export class Project {
   }, 400);
 
   private writeSave(): Promise<void> {
+    if (this.writing) {
+      if (!this.pendingSave) {
+        let start!: () => void;
+        const promise = new Promise<void>((resolve) => {
+          start = () => resolve(this.flushSave());
+        });
+        this.pendingSave = { promise, start };
+      }
+      this.tellSave('saving');
+      return this.pendingSave.promise;
+    }
+    return this.flushSave();
+  }
+
+  private async flushSave(): Promise<void> {
+    this.writing = true;
     const revision = this.revision;
-    const request = ++this.saveRequest;
-    const files = new GameFiles(this.files.entries().map(([name, bytes]) => [name, bytes.slice()]));
-    const companion = this.companion ? structuredClone(this.companion) : undefined;
-    this.tellSave('saving');
-    const write = this.saveQueue.then(() => saveProject(this.id, this.name, this.gam, files, companion));
-    this.saveQueue = write.catch(() => undefined);
-    return write.then(
-      () => {
-        this.savedRevision = revision;
-        if (revision === this.revision && request === this.saveRequest) this.tellSave('saved');
-      },
-      (e: unknown) => {
-        if (revision === this.revision && request === this.saveRequest) this.tellSave('failed', e as Error);
-        throw e;
-      },
-    );
+    try {
+      const files = new GameFiles(this.files.entries().map(([name, bytes]) => [name, bytes.slice()]));
+      const companion = this.companion ? structuredClone(this.companion) : undefined;
+      if (this.saveState?.state !== 'saving') this.tellSave('saving');
+      await saveProject(this.id, this.name, this.gam, files, companion);
+      this.savedRevision = revision;
+      if (revision === this.revision && !this.pendingSave) this.tellSave('saved');
+    } catch (e) {
+      if (revision === this.revision && !this.pendingSave) this.tellSave('failed', e as Error);
+      throw e;
+    } finally {
+      const pending = this.pendingSave;
+      this.pendingSave = undefined;
+      this.writing = false;
+      pending?.start();
+    }
   }
 
   saveNow(): Promise<void> {
