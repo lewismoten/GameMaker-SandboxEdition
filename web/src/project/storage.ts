@@ -231,20 +231,28 @@ export async function loadRecord(id: string): Promise<ProjectRecord | undefined>
   return request<ProjectRecord | undefined>(PROJECTS, 'readwrite', (s) => s.get(id), repairName);
 }
 
-/** Stores the project's checkpoints (none: removes them, and the old single one), leaving the rest of its record as it is. */
-export async function saveCheckpoints(id: string, checkpoints: StoredCheckpoint[]): Promise<void> {
+/** Updates the project's checkpoints in one transaction (none: removes them, and the old single one), leaving the rest of its record as it is. */
+export async function updateCheckpoints(id: string, update: (record: ProjectRecord) => StoredCheckpoint[]): Promise<StoredCheckpoint[]> {
   const d = await db();
-  await new Promise<void>((resolve, reject) => {
+  return new Promise<StoredCheckpoint[]>((resolve, reject) => {
     const tx = d.transaction(PROJECTS, 'readwrite');
     const store = tx.objectStore(PROJECTS);
+    let checkpoints: StoredCheckpoint[];
     const get = store.get(id);
     get.onsuccess = () => {
-      const rec = get.result as ProjectRecord | undefined;
+      const rec = repairName(get.result as ProjectRecord | undefined, store);
       if (!rec) return reject(new Error('The game is not saved yet'));
+      try {
+        checkpoints = update(rec);
+      } catch (error) {
+        reject(error);
+        tx.abort();
+        return;
+      }
       const { checkpoint: _old, checkpoints: _list, ...rest } = rec;
       store.put(checkpoints.length ? { ...rest, checkpoints } : rest);
     };
-    tx.oncomplete = () => resolve();
+    tx.oncomplete = () => resolve(checkpoints);
     tx.onerror = () => reject(tx.error);
     tx.onabort = () => reject(tx.error);
   });
