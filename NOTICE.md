@@ -162,6 +162,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex wrote the regression test for manual screenshot requests.
 - OpenAI Codex fixed and tested cleanup after editor tour screenshot encoding fails.
 - OpenAI Codex fixed and tested the player speed menu’s initial selection.
+- OpenAI Codex fixed and tested the Near and Far title demo checker’s replay timing.
 - OpenAI Codex wrote the headless audit for built title demos and saved walkthroughs.
 - OpenAI Codex fixed and tested the Around the Room title demo checker.
 - OpenAI Codex updated the Dig It walkthrough to demonstrate the shovel and tested its recorded controls.
