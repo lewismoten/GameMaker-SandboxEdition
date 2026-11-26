@@ -150,7 +150,7 @@ A code is silkscreen where a module is light and bare soldermask where it is dar
 site code on the Deluxe board (0.45 mm), which had to be a little smaller to fit. The codes scan in the rendered preview. No one has tried scanning these small modules
 with a phone camera on a real board.
 
-`tools/dex_art.py` draws Dex from his sprite. `tools/silkart.py` draws the codes using OpenCV's QR encoder (Apache-2.0).
+`tools/dex_art.py` draws Dex from his sprite. `tools/silkart.py` draws the codes, and `tools/qr_layout.py` reserves their encoded dimensions on the standard board. The codes use OpenCV's QR encoder (Apache-2.0).
 `tools/qrscan.py` decodes the rendered preview and compares each result with its URL.
 
 ## Rebuild everything
