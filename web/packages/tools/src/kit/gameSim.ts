@@ -243,13 +243,11 @@ export class GameSim {
         await moveChars(w, async () => {
           const slot = this.dropSlot;
           this.dropSlot = -1;
-          // the picker's keys as a person would press them: Right to the column, Down to the second row, Enter
-          if (slot >= 0) {
-            const keys = [...new Array(slot % 5).fill(77), ...(slot >= 5 ? [80] : []), 28];
-            for (const k of keys) {
-              this.record(k);
-              this.record(k | 0x80);
-            }
+          // Esc cancels. Otherwise move to the slot and press Enter.
+          const keys = slot < 0 ? [1] : [...new Array(slot % 5).fill(77), ...(slot >= 5 ? [80] : []), 28];
+          for (const k of keys) {
+            this.record(k);
+            this.record(k | 0x80);
           }
           return slot;
         })
