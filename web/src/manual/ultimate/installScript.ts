@@ -80,8 +80,8 @@ export const INSTALL_LESSON = String.raw`
   resources together in that directory; the game itself does not swap installation disks.</p>
   <p><b>Disk two below is only an example of multi-disk installation.</b> A game that fits on
   one disk needs only one. The two-disk lesson uses the same conventions as a DOS export’s
-  numbered disk set: flat files, <code>DISKn.ID</code> markers, a prompt for each disk, and
-  the same installer on every disk. This hand-written version adds the <code>GAMES</code>
+  numbered disk set: flat files, numbered markers, a prompt for each disk, and
+  the same installer on every disk. Exported markers include the game name, such as <code>SANDBOX.D02</code>. This hand-written version adds the <code>GAMES</code>
   choice; it is not an extra argument for an exported installer’s <code>INSTALL [drive]</code>.</p>
   <h3>Pack the disks</h3>
   <table>
