@@ -47,10 +47,12 @@ export async function oneScreen(bot: StarterBot): Promise<void> {
   expectView(bot, 0, 0, 'at the start the screen is the whole room');
   await must(bot, bot.walk(1, 'the hedge on the left'), 'to the left hedge');
   // keep walking into the hedge for a moment: he stays put, and so does the picture
+  const hedgeX = bot.px.x;
+  if (hedgeX !== 20) throw new Error(`Kit reached x=${hedgeX}, expected 20 at the hedge`);
   bot.sim.press(SCAN.left);
   await must(bot, bot.wait(LOOK), 'leaning on the hedge');
   bot.sim.release(SCAN.left);
-  if (bot.px.x > 1 * 20 + 4) throw new Error(`Kit walked through the hedge to ${bot.px.x}`);
+  if (bot.px.x !== hedgeX) throw new Error(`Kit walked through the hedge to ${bot.px.x}`);
   expectView(bot, 0, 0, 'after leaning on the hedge');
   bot.say('the hedge stopped Kit and the picture stayed');
   await must(bot, bot.walk(L1.exit - 1, 'the far side of the room'), 'across the room');
