@@ -345,8 +345,8 @@ from the slim home-page catalog. Copying a selected file still reads its origina
   malformed-file test. Starts from real CD files and archive zips (read in memory), makes truncated, bit-flipped,
   huge-header, padded and wrong-type copies, and feeds them to every engine reader, the zip readers and the archive
   importer (`unpackGames`, with one file of a game folder swapped). Each case runs in a child process with a time limit
-  and a heap cap. Prints a table per reader (ok, clear Error, bad = TypeError/RangeError from deep inside, hang, memory);
-  exits 1 on any bad, hang or memory. Same `--seed`, same cases. `--save` writes the failing inputs to a folder.
+  and a heap cap. `fuzzWorker.ts` gives each worker 30 seconds to signal readiness and fails the run on startup errors. Prints a table per reader (ok, clear Error, bad = TypeError/RangeError from deep inside, hang, memory);
+  requires a positive integer round count and exits 1 on zero cases or any bad, hang or memory. Same `--seed`, same cases. `--save` writes the failing inputs to a folder.
 
 - `pocketColorCheck.ts`: host check of the Pocket Player's level colors (`pocket-out/data/` (made by `pocketData.ts`)): the same palette and byte-order math, compared with the engine's render, written as a side-by-side PNG (`npx vite-node scripts/pocketColorCheck.ts out.png`).
 - `pocketHostCheck.ts`: the Pocket Player's play rules (the Pocket repository's `src/gmcore.h`) against the real engine, game by game: each packed game's committed walkthrough replays on the engine's headless player, the same keys replay through `host/hosttest.cpp` (built with `c++` and zlib), and position, frame, scroll, score, hit points, lives, counters and a picture hash must match on every tick, and the PC speaker effects it starts (tick, number, frequencies) must be the same; one line per game (`npx vite-node scripts/pocketHostCheck.ts [id ...]`).
