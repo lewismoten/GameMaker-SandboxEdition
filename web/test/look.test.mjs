@@ -1,10 +1,15 @@
 // Tests for scripts/look.mjs (npm run look): argument parsing, shot-name resolution and the two bridge calls, with a fake fetch.
+import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { OCR_THRESHOLDS, look, mergeWords, parseArgs, parseTsv, preprocessArgs, resolveShot, tesseractArgs, textHas } from '../../scripts/look.mjs';
 
 const shots = [{ name: 'CYD' }, null, { name: 'R-HDMI' }];
 
 describe('look', () => {
+  it('runs the documented camera command from the repository root', () => {
+    const guide = readFileSync(new URL('../../AGENTS.md', import.meta.url), 'utf8');
+    expect(guide).toMatch(/^\(cd \.\. && npm run look -- [^\n]+?\)\s+#/m);
+  });
   it('parses options', () => {
     expect(parseArgs(['R-HDMI', '--width', '640', '--crop', '0,0.5,1,0.5', '--expect', 'ok'])).toMatchObject({
       shot: 'R-HDMI',
