@@ -134,6 +134,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex added the Rain on the Path route check for splash pictures and its regression test.
 - OpenAI Codex updated and tested the magazine illustration description for THE CHEZ.
 - OpenAI Codex corrected and tested the wind-column instructions in the Slippery and Bouncy manual.
+- OpenAI Codex fixed and tested the desk CD-ROM spin-up and floppy insert duration.
 - OpenAI Codex fixed and tested validation before writing Level Maps metadata.
 - OpenAI Codex fixed and tested the Score Popups final coin and demo payout checks.
 - OpenAI Codex fixed and tested recovery of missing Year 2000 cryptex kit files.
