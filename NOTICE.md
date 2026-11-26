@@ -119,6 +119,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex fixed and tested the code wheel fallback for empty vector faces.
 - OpenAI Codex fixed and tested DOS and web recording in the fidelity scripts.
 - OpenAI Codex fixed and tested the phone board export checks.
+- OpenAI Codex fixed and tested saved task retention and Unicode title matching in the assistant’s to-do list.
 - OpenAI Codex fixed and tested validation before writing Level Maps metadata.
 - OpenAI Codex fixed and tested the Score Popups final coin and demo payout checks.
 - OpenAI Codex fixed and tested recovery of missing Year 2000 cryptex kit files.
