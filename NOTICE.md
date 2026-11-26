@@ -141,6 +141,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex added required metadata checks for every Starter in the hero deal.
 - OpenAI Codex fixed booklet diagram placement after lists and tested the Technical Reference diagrams.
 - OpenAI Codex fixed and tested retrying the Starter question index on Home.
+- OpenAI Codex implemented and tested indexed crash recovery for the private intake ledger.
 - OpenAI Codex fixed and tested validation before writing Level Maps metadata.
 - OpenAI Codex fixed and tested the Score Popups final coin and demo payout checks.
 - OpenAI Codex fixed and tested recovery of missing Year 2000 cryptex kit files.

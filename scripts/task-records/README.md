@@ -65,7 +65,11 @@ missing `attempted` defaults conservatively to `1`, and original request/policy
 columns default to `null`. Nothing invents historical text. Mapped and archived
 records work without rewriting their identifiers. Pending mappings recover via
 the existing native hashed idempotency key, including board-ID reads after a
-create-before-ledger-commit crash. Unresolved client-key reads return `pending`;
+create-before-ledger-commit crash. The adapter backfills and indexes native keys
+on the first upgraded read or create. A connection-local insert trigger stores
+the key in the reservation transaction. If an older adapter writes reservations
+after rollback, the next upgraded connection fills those missing keys too.
+Unresolved client-key reads return `pending`;
 an uncertain create remains `reconciliation_required`, not an automatic retry.
 
 Duplicate task mappings or client-key/board-ID namespace collisions return
