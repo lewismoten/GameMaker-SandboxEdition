@@ -118,7 +118,7 @@ export function adjustPalette(palette: Uint8Array, lighting: TimeOfDay | Lightin
   if (palette.length !== 768 || palette.some((v) => v > 63)) throw new RangeError('Expected a 768-byte six-bit VGA palette');
   if (preserve.some((i) => !Number.isInteger(i) || i < 0 || i > 255)) throw new RangeError('Preserved palette indexes must be 0..255');
   const keep = new Set(preserve),
-    out = palette.slice();
+    out = new Uint8Array(palette);
   for (let i = 0; i < 256; i++) {
     if (keep.has(i)) continue;
     const color: RGB = [vga8(palette[i * 3]), vga8(palette[i * 3 + 1]), vga8(palette[i * 3 + 2])];
