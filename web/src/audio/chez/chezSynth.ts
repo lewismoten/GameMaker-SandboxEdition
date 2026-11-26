@@ -88,7 +88,7 @@ interface Run {
   beds: GainNode[];
   /** When the contactor closed (context time). */
   t0: number;
-  /** Clunks still to come (the speed steps), with when they start: a stop cancels them. */
+  /** Scheduled startup and speed-step clunks, with when they start: a stop cancels them. */
   pending: [AudioScheduledSourceNode, number][];
   /** Foot off: the contactors are out and the car is rolling. */
   coasting?: boolean;
@@ -113,10 +113,8 @@ export class SynthMotor implements ChezMotor {
     this.moving = true;
     const t = this.ctx.currentTime + 0.01;
     const t0 = t + SWITCH_LEAD;
-    this.clunk(t, 0.45);
-    this.clunk(t0, 1);
     const r = this.start(t, t0, this.chain[0]);
-    r.pending = this.steps(t0, this.chain[0], 1);
+    r.pending = [...this.clunk(t, 0.45), ...this.clunk(t0, 1), ...this.steps(t0, this.chain[0], 1)];
     for (const [s, v] of CLIMB) this.at(r, t0 + s, v, s ? 'ramp' : 'set');
     this.run = r;
   }
@@ -271,14 +269,11 @@ export class SynthMotor implements ChezMotor {
 
   /** The ka-chunk of each speed step from `t0`: the tower's relay, then a second one's smaller clack. */
   private steps(t0: number, dest: AudioNode, k: number): [AudioScheduledSourceNode, number][] {
-    return STEPS.flatMap((s) => [
-      ...this.clunk(t0 + s, 1.6 * k, dest).map((n): [AudioScheduledSourceNode, number] => [n, t0 + s]),
-      ...this.clunk(t0 + s + RELAY_LAG, 0.7 * k, dest).map((n): [AudioScheduledSourceNode, number] => [n, t0 + s + RELAY_LAG]),
-    ]);
+    return STEPS.flatMap((s) => [...this.clunk(t0 + s, 1.6 * k, dest), ...this.clunk(t0 + s + RELAY_LAG, 0.7 * k, dest)]);
   }
 
   /** A contactor at `t`: a snap with a metallic ring (centered near 2 kHz, as recorded), then the armature's thump. */
-  private clunk(t: number, k: number, input: AudioNode = this.chain[0]): AudioScheduledSourceNode[] {
+  private clunk(t: number, k: number, input: AudioNode = this.chain[0]): [AudioScheduledSourceNode, number][] {
     const c = this.ctx;
     const src = c.createBufferSource();
     src.buffer = noiseBuffer(c);
@@ -312,7 +307,10 @@ export class SynthMotor implements ChezMotor {
     thump.onended = () => {
       for (const n of [src, thump, snap, ring, gs, gr, gt]) n.disconnect();
     };
-    return [src, thump];
+    return [
+      [src, t],
+      [thump, t],
+    ];
   }
 
   /** `r` stops at `end` and frees itself then. */
