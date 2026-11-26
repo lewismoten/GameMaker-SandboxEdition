@@ -174,6 +174,8 @@ game folder opens in the browser unchanged.
 - OpenAI Codex fixed and tested the Around the Room title demo checker.
 - OpenAI Codex fixed and tested the Say Something title demo checker.
 - OpenAI Codex updated the Dig It walkthrough to demonstrate the shovel and tested its recorded controls.
+- OpenAI Codex added the browser regression test for focus in the DOS page menu.
+- OpenAI Codex fixed and tested keyboard navigation in the magazine Print menu.
 - OpenAI Codex sped up the block editor history, phone recording, and phone Files button regression tests.
 - OpenAI Codex implemented and tested background catalog preparation and cancellation for the development server.
 - OpenAI Codex fixed and tested platform layout verification in the map editor.
