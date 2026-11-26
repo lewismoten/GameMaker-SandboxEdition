@@ -407,6 +407,7 @@ game folder opens in the browser unchanged.
 - **All Mine high-score achievement**: **Hermes Agent running OpenAI Codex GPT-6.1 Sol**, directed by Lewis Moten, implemented stored-table detection, player/desk integration, reset persistence and tests, and selected an existing checklist block through the badge generator. The source artwork retains its original credits; no new game artwork was drawn. OpenAI Codex fixed and tested Reset when game enumeration fails.
 - **DOS installation support**: **Hermes Agent running OpenAI Codex GPT-6.1 Sol**, directed by Lewis Moten, wrote the DOS batch installer, installation instructions, optional whole-file floppy layout script, export-only loading boundary, printable disk-label installation text and regression tests. Original game and DOS runtime files retain their existing credits.
 - **Picture review helper packaging**: **OpenAI Codex (GPT-6.1 Sol)**, directed by Lewis Moten, moved the existing DAST image helpers and regression tests into the tools package and documented their public imports. The original algorithms and artwork retain their credits.
+- **Slide and Drift title demo**: OpenAI Codex (GPT-6) corrected the recording length and added the landing check and regression test.
 - **Technical Reference review**: **OpenAI Codex (GPT-6)**, directed by Lewis Moten,
   revised the booklet and cited Programmer's Guide chapters, drew static inline SVG byte,
   bit, wrapping and fade figures, and checked worked examples against non-secret Sandbox
