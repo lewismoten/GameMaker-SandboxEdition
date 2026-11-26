@@ -5,19 +5,24 @@ import { fetchOrder, partCount, takePart, type Manifest } from './plan';
 import { progressAnnouncements } from '../editor/core/progressAnnouncements';
 
 const AT_ONCE = 4;
+const ATTEMPT_TIMEOUT_MS = 30_000;
 
 const $ = (id: string) => document.getElementById(id) as HTMLElement;
 const say = (text: string) => ($('status').textContent = text);
 
 async function fetchOne(url: string): Promise<boolean> {
   for (let tries = 0; tries < 2; tries++) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), ATTEMPT_TIMEOUT_MS);
     try {
       // 'reload': past the browser's cache, so the archive's crawler sees the request
-      const r = await fetch(url, { cache: 'reload' });
+      const r = await fetch(url, { cache: 'reload', signal: controller.signal });
       await r.arrayBuffer();
       if (r.ok) return true;
     } catch {
       /* try once more */
+    } finally {
+      clearTimeout(timer);
     }
   }
   return false;
