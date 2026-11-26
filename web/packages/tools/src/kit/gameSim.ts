@@ -138,6 +138,10 @@ export class GameSim {
 
   /** loadscene + StartSceneInits, as playScene does them. */
   private enter(scene: number, prev: number, link: number, again = false): void {
+    for (const slot of [5, 6]) {
+      const name = this.game.scenes[scene].files[slot];
+      if (name && !this.files.has(name)) throw new Error(`Scene ${scene} is missing ${name}`);
+    }
     this.scene = scene;
     this.prev = prev;
     this.link = link;
