@@ -3,7 +3,7 @@
 // entry. Works on the plain cell codes and writes no blocks. No DOM. The key-before-lock rule holds by
 // construction (a lock only goes where it cuts the entry off from the exit, and its key goes in the part
 // still reachable with that lock and every later one shut) and `proveKeys` checks it again by playing it out.
-import { KEY, LIFE, LOCK, TREASURE, closed, distances, FLOOR, type Area, type Stream } from './grid';
+import { neighbor, KEY, LIFE, LOCK, TREASURE, closed, distances, FLOOR, type Area, type Stream } from './grid';
 
 export interface LockInfo {
   /** The door's cell and its key's cell (area-local indexes), and the lock number they share. */
@@ -70,10 +70,8 @@ function walk(a: Area, from: number, to: number): number[] {
       y = (c / a.w) | 0;
     let next = -1;
     for (const [dx, dy] of SIDES) {
-      const nx = x + dx,
-        ny = y + dy;
-      if (nx < 0 || ny < 0 || nx >= a.w || ny >= a.h) continue;
-      const n = ny * a.w + nx;
+      const n = neighbor(a, x + dx, y + dy);
+      if (n < 0) continue;
       if (d[n] >= 0 && d[n] < d[c] && next < 0) next = n;
     }
     out.push(next);
@@ -197,10 +195,8 @@ export function proveKeys(a: Area, entry: number, exit: number, locks: LockInfo[
       const x = c % a.w,
         y = (c / a.w) | 0;
       for (const [dx, dy] of SIDES) {
-        const nx = x + dx,
-          ny = y + dy;
-        if (nx < 0 || ny < 0 || nx >= a.w || ny >= a.h) continue;
-        const n = ny * a.w + nx;
+        const n = neighbor(a, x + dx, y + dy);
+        if (n < 0) continue;
         const lock = byCell.get(n);
         if (reached[n] || closed(a.cells[n]) || (lock && !have.has(lock.pair))) continue;
         reached[n] = 1;
