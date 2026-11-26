@@ -115,6 +115,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex fixed and tested the flock visibility report.
 - OpenAI Codex wrote the regression test for the Settings menu’s backup button.
 - OpenAI Codex corrected the Spend It coin exercise, checked the unpaid stall attempt in its demo, validated Starter shop prices, and added regression tests.
+- OpenAI Codex fixed and tested plaque placement in the shared game builder.
 - OpenAI Codex fixed and tested the editor’s file count accessibility and shareware notice layout on phones.
 - OpenAI Codex fixed and tested walkthrough segment selection in the Pocket host checker.
 - OpenAI Codex fixed and tested the Switches title demo checker.
