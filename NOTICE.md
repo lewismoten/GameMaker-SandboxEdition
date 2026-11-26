@@ -64,6 +64,7 @@ game folder opens in the browser unchanged.
 
 ## Credits
 
+- OpenAI Codex fixed and tested navigation away from the home page while it loads.
 - OpenAI Codex corrected Kit’s placement in the Three Tokens progress shot and wrote its pixel regression test.
 - OpenAI Codex fixed and tested transparent padding in the Colors That Work shape check.
 - OpenAI Codex fixed and tested contrast sampling for the text-page ink advisory.

@@ -344,8 +344,9 @@ async function route(): Promise<void> {
   document.title = PRODUCT;
   // on the game list, the bar carries the short tagline (the page's own heading is for screen readers)
   clear(titleSlot, h('span', { class: 'topbar-tagline hide-narrow', title: FORK_NOTE }, 'Make 1994 DOS games. No programming.'));
+  const current = navigation;
   const { renderHome } = await import('./editor/shell/home');
-  if (ui !== 'modern') return;
+  if (ui !== 'modern' || current !== navigation) return;
   await renderHome(content, nav);
 }
 
