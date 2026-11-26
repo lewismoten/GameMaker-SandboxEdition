@@ -58,7 +58,7 @@ interface Section {
 export function readMarkdown(source: string, columns?: string[]): Section[] {
   const lines = source.replace(/\r\n?/g, '\n').split('\n');
   const hasPipe = (line: string) => /(?<!\\)\|/.test(line);
-  const tableStarts = (i: number) => hasPipe(lines[i]) && i + 1 < lines.length && isRule(lines[i + 1]);
+  const tableStarts = (i: number) => hasPipe(lines[i]) && i + 1 < lines.length && isRule(lines[i + 1]) && cells(lines[i]).length === cells(lines[i + 1]).length;
   const sections: Section[] = [{ title: '', level: 0, blocks: [] }];
   const add = (b: Block) => sections[sections.length - 1].blocks.push(b);
   for (let i = 0; i < lines.length;) {

@@ -39,6 +39,11 @@ describe('readMarkdown', () => {
     expect(blockText(steps[3])).toBe('raw text');
   });
 
+  it('preserves every line when the separator has fewer cells than the header', () => {
+    const lines = ['| A | B |', '| - |', '| x | y | extra |'];
+    expect(readMarkdown(lines.join('\n'))[0].blocks).toEqual(lines.map((line) => ({ tag: 'p', kids: [line] })));
+  });
+
   it('reads a table whose separator cells have fewer than three dashes (Prettier aligns a narrow column to `--:`)', () => {
     const narrow = '# T\n\n| Color | Red |\n| ----- | --: |\n| Blue  |  10 |\n';
     const table = readMarkdown(narrow)[1].blocks[0];
