@@ -117,6 +117,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex corrected and tested the comparison cards in Colors That Work.
 - OpenAI Codex fixed navigation focus and tested delayed rendering and Back in Chromium.
 - OpenAI Codex fixed and tested the code wheel fallback for empty vector faces.
+- OpenAI Codex fixed and tested DOS and web recording in the fidelity scripts.
 - OpenAI Codex fixed and tested validation before writing Level Maps metadata.
 - OpenAI Codex fixed and tested the Score Popups final coin and demo payout checks.
 - OpenAI Codex fixed and tested recovery of missing Year 2000 cryptex kit files.
