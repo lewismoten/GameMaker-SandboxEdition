@@ -100,6 +100,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex fixed and tested the import history reader for damaged entries.
 - OpenAI Codex fixed and tested DOS hardware preference restoration.
 - OpenAI Codex fixed and tested phrase matching and temporary image cleanup in the camera OCR command.
+- OpenAI Codex fixed and tested checkpoint lookup when making an optimized copy.
 - OpenAI Codex fixed and tested the editor’s file count accessibility and shareware notice layout on phones.
 - OpenAI Codex fixed and tested walkthrough segment selection in the Pocket host checker.
 - OpenAI Codex fixed and tested the Switches title demo checker.
