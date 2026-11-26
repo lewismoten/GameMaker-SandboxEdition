@@ -88,6 +88,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex fixed and tested section-link validation in the built-site SEO audit.
 - OpenAI Codex fixed and tested game lookup for the DOS transferred-game player.
 - OpenAI Codex fixed and tested the Under the Surface title-demo check.
+- OpenAI Codex fixed and tested the simulator’s handling of missing character files.
 - OpenAI Codex fixed and tested validation before writing Level Maps metadata.
 - OpenAI Codex fixed and tested the Score Popups final coin and demo payout checks.
 - OpenAI Codex fixed and tested recovery of missing Year 2000 cryptex kit files.
