@@ -424,7 +424,7 @@ Colors That Work plays both lessons with a simulated scene palette (`alike.pal`)
 - `starter/graduationHall.ts` — draws hall blocks, the stage, balcony, drapes, lectern, certificate and guests.
 - `starter/graduationPreview.ts` — writes block, hero, monster, whole-map and disk-picture PNG previews for a game’s `tools/preview.ts`.
 - `starter/graduationScreens.ts` — draws the academic title and menu, with the stage’s colors, seal and borders.
-- `starter/graduationShots.ts` — writes title, menu, sting and walkthrough PNGs: `npx vite-node ../games/kit/starter/graduationShots.ts <game id> <outDir> [prefix] [walkEvery]`.
+- `starter/graduationShots.ts` — writes title, menu, sting and walkthrough PNGs: `npx vite-node ../games/kit/starter/graduationShots.ts <game id> <outDir> [prefix] [walkEvery]`. Supply a positive safe integer for `walkEvery` to save every Nth walkthrough frame, counting from scene 2 onward. Omit it to skip walkthrough shots.
 - `starter/graduationSting.ts` — draws the silent GRADSTNG.FLI opening with curtains, gold lettering and tossed mortarboards.
 - `starter/graduationText.ts` — shared instructions, credits and lost pages; each graduation supplies its story and win pages.
 - `starter/graduationTheme.ts` — the hall theme’s optional block overrides and wall decorations.
