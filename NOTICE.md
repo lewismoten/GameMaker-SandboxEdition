@@ -70,6 +70,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex wrote the scene Escape timing regression test.
 - OpenAI Codex fixed and tested courier trip persistence and replay retention.
 - OpenAI Codex fixed and tested desk audio warmup cleanup, round-trip report defaults, and unreadable ZIP reporting.
+- OpenAI Codex fixed and tested the minimum scroll smoothing setting.
 - OpenAI Codex fixed and tested the editor’s file count accessibility and shareware notice layout on phones.
 - OpenAI Codex fixed and tested walkthrough segment selection in the Pocket host checker.
 - OpenAI Codex fixed and tested frame selection for editor screenshots.
