@@ -102,7 +102,7 @@ export async function removeImported(refresh: () => unknown, batch?: string): Pr
   });
   if (!chosen?.length) return;
   const n = chosen.length;
-  let done = 0;
+  const kept: string[] = [];
   // each goes on the Recently deleted shelf (deletedShelf.ts), where Undo takes it back from
   const removed: string[] = [];
   let job: Promise<void> | undefined;
@@ -114,7 +114,10 @@ export async function removeImported(refresh: () => unknown, batch?: string): Pr
         for (const [i, p] of chosen.entries()) {
           if (signal.aborted) return;
           tell(i, n, `Game ${i + 1} of ${n}: ${p.name}`);
-          await shelve(p.id);
+          if (!(await shelve(p.id))) {
+            kept.push(p.name);
+            continue;
+          }
           await deleteProject(p.id);
           forgetOrigin(p.id);
           setImported(p.id, false);
@@ -122,17 +125,18 @@ export async function removeImported(refresh: () => unknown, batch?: string): Pr
           forgetUsed(p.id);
           noteRemoval(p, undefined, prints.get(p.id));
           removed.push(p.id);
-          done++;
         }
       })()),
   );
   // Cancel closes the dialog at once; the game being removed then is finished first
   await job;
   await refresh();
-  const text = done === n ? `Removed ${gamesText(n)}.` : `Canceled: removed ${done} of ${gamesText(n)}.`;
+  const done = removed.length;
+  let text = done + kept.length === n ? `Removed ${gamesText(done)}.` : `Canceled: removed ${done} of ${gamesText(n)}.`;
+  if (kept.length) text += ` Kept ${kept.map((name) => `“${name}”`).join(', ')} because an Undo copy could not be saved.`;
   if (!removed.length) return toast(text);
   undoToast(
-    `${text} They stay under Recently deleted for 7 days.`,
+    `${text} Removed games stay under Recently deleted for 7 days.`,
     async () => {
       let back = 0;
       for (const id of removed) if (await bringBack(id)) back++;
