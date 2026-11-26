@@ -176,7 +176,7 @@ Making the files:
 - `starter/kitSlim.test.ts` — checks the slim poses’ proportions, crouching and recognizable far sizes.
 - `starter/locks.ts` — silver keys and counter-spending locked doors, added after the shared blocks.
 - `starter/map.ts` — `StarterMap`, levels painted as text rows, with signs and walls extended through sky.
-- `starter/mapShots.ts` — renders the maps of the six Starters in its `LOADERS` table with their surroundings: `npx vite-node ../games/kit/starter/mapShots.ts <outDir> [id ...]` (from `web/`). An id outside the table renders nothing; add a loader for a new Starter.
+- `starter/mapShots.ts` — renders the maps of the six Starters in its `LOADERS` table with their surroundings: `npx vite-node ../games/kit/starter/mapShots.ts <outDir> [id ...]` (from `web/`). Omit the IDs to render all six. An unknown ID stops the command before it creates the output directory or writes any pictures. Add a loader for a new Starter.
 - `starter/monsters.ts` — the gumdrop, buzzer and shelly monsters and their two-frame pictures.
 - `starter/palette.ts` — shared bright color ramps, `skyOf` and a palette using the chosen hero’s ramps.
 - `starter/screens.ts` — title, menu, paper, cards and ending pictures, with the title’s group style.
