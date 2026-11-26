@@ -152,6 +152,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex fixed and tested lock-number suggestions in the block editor.
 - OpenAI Codex fixed and tested merge gate conflict marker detection in the maintained source README.
 - OpenAI Codex wrote the regression test for manual screenshot requests.
+- OpenAI Codex fixed and tested cleanup after editor tour screenshot encoding fails.
 - OpenAI Codex wrote the headless audit for built title demos and saved walkthroughs.
 - OpenAI Codex fixed and tested the Around the Room title demo checker.
 - OpenAI Codex updated the Dig It walkthrough to demonstrate the shovel and tested its recorded controls.
