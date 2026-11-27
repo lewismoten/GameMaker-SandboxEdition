@@ -5,7 +5,9 @@ afterEach(() => vi.useRealTimers());
 
 describe('save indicator wording', () => {
   it('says Saved with a time', () => {
-    expect(savedText(undefined, new Date(2026, 10, 4, 15, 42))).toMatch(/^✓ Saved .*42.* in this browser$/);
+    const at = new Date(2026, 10, 4, 15, 42);
+    const time = at.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+    expect(savedText(undefined, at)).toBe(`✓ Saved ${time} in this browser`);
   });
   it('says why it failed, with what to do', () => {
     expect(savedText(new Error('storage full'), new Date())).toBe('Not saved (storage full). Download a .zip to keep your work.');

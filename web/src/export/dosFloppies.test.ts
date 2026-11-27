@@ -10,10 +10,12 @@ const base = [entry('TEST.EXE', 160598), entry('SNDBLAST.DRV', 2493), entry('CON
 
 it('packs complete files into FAT12 space and keeps the player, driver, setup and game on disk 1', () => {
   const files = [...base, ...dosInstallFiles('TEST'), entry('FIRST.VOC', 900000), entry('LAST.VOC', 900000)];
+  const expected = files.map(({ name, data }) => ({ name, data: data.slice() }));
   const disks = splitDosFiles(files, 'TEST');
   expect(disks.length).toBe(2);
   // Node compares byte views directly; Vitest's iterable equality enumerates every byte key.
-  for (const f of base) deepStrictEqual(disks[0].find((e) => e.name === f.name)?.data, f.data);
+  deepStrictEqual(files, expected);
+  for (const f of base) expect(disks[0].some((e) => e.name === f.name)).toBe(true);
   for (const [i, disk] of disks.entries()) {
     expect(disk.length).toBeLessThanOrEqual(224);
     expect(disk.reduce((sum, e) => sum + Math.ceil(e.data.length / 512) * 512, 0)).toBeLessThanOrEqual(2847 * 512);
@@ -23,7 +25,7 @@ it('packs complete files into FAT12 space and keeps the player, driver, setup an
     expect(new TextDecoder().decode(bat)).toContain('Insert disk 2 of 2');
     expect(new TextDecoder().decode(bat)).toContain('IF EXIST DISK2.ID GOTO copy2');
   }
-  for (const file of files.filter((e) => !/^INSTALL\./.test(e.name))) {
+  for (const file of expected.filter((e) => !/^INSTALL\./.test(e.name))) {
     const copies = disks.flat().filter((e) => e.name === file.name);
     expect(copies.length).toBe(1);
     deepStrictEqual(copies[0].data, file.data);

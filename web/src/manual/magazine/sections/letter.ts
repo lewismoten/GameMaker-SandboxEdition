@@ -39,7 +39,7 @@ export const LETTER: MagSection = {
             [
               art(
                 'chez',
-                'THE CHEZ, a little tomato-red car with a black roof, Doc Leo at the wheel',
+                'THE CHEZ, a little tomato-red car with a black roof, Doc Leo at the wheel and Teddy looking out the passenger window',
                 'THE CHEZ, Doc Leo’s little red car, with Doc Leo at the wheel. It stars in more than one game. [Meet the cast](go:route/cast)',
               ),
             ],

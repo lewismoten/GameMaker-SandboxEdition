@@ -62,6 +62,9 @@ export function assessTests(report, exitCode, exceptions, webRoot, completion) {
   let count = 0;
   for (const suite of report.testResults) {
     if (
+      typeof suite.name !== 'string' ||
+      !suite.name.trim() ||
+      !['passed', 'failed'].includes(suite.status) ||
       !Array.isArray(suite.assertionResults) ||
       !suite.assertionResults.length ||
       suite.message ||
@@ -70,6 +73,8 @@ export function assessTests(report, exitCode, exceptions, webRoot, completion) {
       throw new Error(`Vitest suite did not complete: ${suite.name}`);
     }
     for (const test of suite.assertionResults) {
+      if (typeof test.fullName !== 'string' || !test.fullName.trim() || !['passed', 'failed', 'skipped', 'todo'].includes(test.status))
+        throw new Error(`Incomplete Vitest assertion in ${suite.name}`);
       count++;
       if (test.status !== 'failed') continue;
       if (!Array.isArray(test.failureMessages) || !test.failureMessages.length) throw new Error('Missing failure message');

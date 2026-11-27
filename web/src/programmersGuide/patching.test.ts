@@ -41,14 +41,19 @@ describe('the patching chapter', () => {
       const listed = [...offs.matchAll(/0x([0-9a-f]+)/g)].map((m) => parseInt(m[1], 16));
       expect(listed, id).toEqual(offsetsOf(e));
       if (!exe) continue;
-      // every run of hex pairs in backticks (the first run of each is the stock bytes at the first offset)
-      const first = /`((?:[0-9A-F]{2} ?)+)`/.exec(bytes);
-      if (first && (e.kind === 'text' || e.kind === 'select' || e.kind === 'fkey')) {
-        const want = first[1]
-          .trim()
-          .split(' ')
-          .map((h) => parseInt(h, 16));
-        expect([...exe.subarray(listed[0], listed[0] + want.length)], id).toEqual(want);
+      const hex = (offset: number, size: number) =>
+        Array.from(exe.subarray(offset, offset + size), (byte) => byte.toString(16).padStart(2, '0').toUpperCase()).join(' ');
+      const literals = [...bytes.matchAll(/`([^`]+)`/g)].map((match) => match[1]);
+      if (e.kind === 'format' || e.kind === 'text') {
+        const value = e.kind === 'format' ? exe.toString('ascii', e.offset, e.offset + e.length) : hex(e.offset, e.length);
+        expect(literals, id).toEqual([value, hex(e.offset + e.length, 1)]);
+        if (e.kind === 'format') expect(bytes).toContain(`${e.length} bytes`);
+      } else if (e.kind === 'number' || e.kind === 'frame') {
+        expect(literals, id).toEqual(e.fields.map((field) => hex(field.offset, field.size)));
+      } else if (e.kind === 'rgb') {
+        expect(literals, id).toEqual([e.offsets.map((offset) => hex(offset, 1)).join(' ')]);
+      } else {
+        expect(literals[0], id).toBe(hex(listed[0], 2));
       }
     }
   });

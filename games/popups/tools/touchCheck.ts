@@ -26,11 +26,19 @@ if (sim.ci.score !== score) fail(`walking through the number changed the score (
 if (sim.ci.hitpts !== hp || sim.ci.meter[1] !== lives) fail('walking through the number cost something');
 if (alive(bot, STUCKPOP) !== 1) fail('the number went away when Kit touched it');
 const before = bot.px.x;
+let seenNumber = false;
+const tick = bot.tick.bind(bot);
+bot.tick = async () => {
+  const result = await tick();
+  seenNumber ||= alive(bot, POP100) > 0;
+  return result;
+};
 await bot.walk(34, 'the last coin');
+if (!seenNumber) throw new Error('the last number did not appear');
 let ticks = 0;
 while (alive(bot, POP100) > 0 && ticks < 400) {
-  await bot.wait(3);
-  ticks += 3;
+  await bot.wait(1);
+  ticks++;
 }
 if (alive(bot, POP100) !== 0) fail('the last number did not leave');
 console.log(`touchCheck ok: numbers are not solid and pay nothing; one rose and left in ${ticks} ticks after Kit stopped (from x ${(before / 20).toFixed(1)})`);

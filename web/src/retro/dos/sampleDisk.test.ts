@@ -55,12 +55,11 @@ describe('the Sample Disk', () => {
   });
 
   it('gives a Starter added later a name of its own that fits 8.3', () => {
-    const later = [
-      { ...entry('first-steps'), dosName: undefined, id: 'long-new-starter' },
-      { ...entry('first-steps'), dosName: undefined, id: 'long-new-starter-2' },
-    ] as CatalogEntry[];
+    const starter = entry('first-steps');
+    const later = Array.from({ length: 10 }, (_, i) => ({ ...starter, dosName: undefined, id: `newstarter${i}` }));
     const names = sampleFolders([...catalog, ...later]).map((f) => f.dir);
-    expect(new Set(names).size).toBe(catalog.length + 2);
+    expect(names.slice(-2)).toEqual(['NEWSTA~9', 'NEWST~10']);
+    expect(new Set(names).size).toBe(catalog.length + later.length);
     for (const n of names) expect(n).toMatch(/^[A-Z0-9_~]{1,8}$/);
   });
 });

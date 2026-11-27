@@ -9,17 +9,46 @@
 set -e
 cd "$(dirname "$0")/.."
 KC="${KICAD_CLI:-/Applications/KiCad/KiCad.app/Contents/MacOS/kicad-cli}"
-mkdir -p out gerbers
+mkdir -p out
 python3 tools/sexp_check.py kicad/phone.kicad_sch
 python3 tools/sexp_check.py kicad/phone.kicad_pcb
-nice -n 15 "$KC" sch erc --severity-all --exit-code-violations -o out/erc.rpt kicad/phone.kicad_sch || echo "ERC reported violations: see out/erc.rpt"
-nice -n 15 "$KC" pcb drc --severity-all --exit-code-violations -o out/drc.rpt kicad/phone.kicad_pcb || echo "DRC reported violations: see out/drc.rpt"
+checks_failed=0
+nice -n 15 "$KC" sch erc --severity-all --exit-code-violations -o out/erc.rpt kicad/phone.kicad_sch || {
+  echo "ERC failed: see out/erc.rpt" >&2
+  checks_failed=1
+}
+nice -n 15 "$KC" pcb drc --severity-all --exit-code-violations -o out/drc.rpt kicad/phone.kicad_pcb || {
+  echo "DRC failed: see out/drc.rpt" >&2
+  checks_failed=1
+}
+[ "$checks_failed" -eq 0 ] || exit 1
+mkdir -p gerbers
 nice -n 15 "$KC" sch export pdf -o out/phone-schematic.pdf kicad/phone.kicad_sch
-rm -f gerbers/*
-nice -n 15 "$KC" pcb export gerbers -o gerbers/ --layers F.Cu,B.Cu,F.Mask,B.Mask,F.SilkS,B.SilkS,Edge.Cuts kicad/phone.kicad_pcb
-nice -n 15 "$KC" pcb export drill -o gerbers/ --format excellon --excellon-units mm --generate-map --map-format gerberx2 kicad/phone.kicad_pcb
-sed -i '' -E -e 's/(CreationDate[^0-9]*)[0-9T:+-]{19,25}/\12026-01-01T00:00:00-05:00/' \
-  -e 's/(KiCad.*date )[0-9-]{10}[T ][0-9:]{8}/\12026-01-01 00:00:00/' gerbers/*
-rm -f out/phone-gerbers.zip
-(cd gerbers && zip -q -X ../out/phone-gerbers.zip *)
+stage=$(mktemp -d ./out/export.XXXXXX)
+trap 'rm -rf "$stage"' EXIT
+mkdir "$stage/gerbers"
+nice -n 15 "$KC" pcb export gerbers -o "$stage/gerbers/" --layers F.Cu,B.Cu,F.Mask,B.Mask,F.SilkS,B.SilkS,Edge.Cuts kicad/phone.kicad_pcb
+nice -n 15 "$KC" pcb export drill -o "$stage/gerbers/" --format excellon --excellon-units mm --generate-map --map-format gerberx2 kicad/phone.kicad_pcb
+while IFS= read -r file; do
+  [ -f "$stage/gerbers/$file" ] && [ -s "$stage/gerbers/$file" ] || { echo "Missing or empty fabrication file: $file" >&2; exit 1; }
+done < tools/gerber-files.txt
+for file in "$stage"/gerbers/*; do
+  sed -E -e 's/(CreationDate[^0-9]*)[0-9T:+-]{19,25}/\12026-01-01T00:00:00-05:00/' \
+    -e 's/(KiCad.*date )[0-9-]{10}[T ][0-9:]{8}/\12026-01-01 00:00:00/' "$file" > "$stage/normalized"
+  mv "$stage/normalized" "$file"
+done
+(cd "$stage/gerbers" && zip -q -X ../phone-gerbers.zip *)
+mkdir out/export.lock
+cleanup() {
+  if [ -d "$stage/previous" ] && [ ! -d gerbers ]; then
+    mv "$stage/previous" gerbers || return 1
+  fi
+  rm -rf "$stage"
+  rmdir out/export.lock
+}
+trap cleanup EXIT
+trap 'exit 1' HUP INT TERM
+if [ -d gerbers ]; then mv gerbers "$stage/previous"; fi
+mv "$stage/gerbers" gerbers
+mv "$stage/phone-gerbers.zip" out/phone-gerbers.zip
 ls -l out/phone-gerbers.zip out/phone-schematic.pdf

@@ -9,6 +9,7 @@
 // `--adopt <id>` (achievementArt.ts) is the one deliberate way to hand an unmarked entry to the generator: it
 // replaces that entry with the pick's block and marks it. It refuses ids on HAND_DRAWN and ids with no pick.
 import { renameSync, readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import { isDeepStrictEqual } from 'node:util';
 
 /** The mark the generator writes into each entry it made; nothing else may write it. */
@@ -127,7 +128,7 @@ export const formatBadgeFile = (data: BadgeFile): string => JSON.stringify(data,
 export function updateBadgeFile(path: string | URL, notice: string, made: Record<string, MadeBadge>, opts: MergeOptions = {}): MergeResult {
   const r = mergeBadges(readBadgeFile(path).badges, made, opts);
   const text = formatBadgeFile({ notice, badges: r.badges });
-  const tmp = `${path instanceof URL ? path.pathname : path}.tmp-${process.pid}`;
+  const tmp = `${path instanceof URL ? fileURLToPath(path) : path}.tmp-${process.pid}`;
   writeFileSync(tmp, text);
   renameSync(tmp, path);
   return r;

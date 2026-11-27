@@ -41,6 +41,7 @@ const cells = (line: string): string[] =>
     .map((c) => c.trim().replace(/\\\|/g, '|'));
 
 const isRule = (line: string) => /^\s*\|?\s*:?-+:?\s*(\|\s*:?-+:?\s*)*\|?\s*$/.test(line);
+const diagramLine = /^\s*\[diagram:\s*([\w-]+)\s*\]\s*$/;
 const headingLine = /^(#{1,6})\s+(.*?)\s*#*\s*$/;
 const bullet = /^(\s*)([-*]|\d+\.)\s+(.*)$/;
 
@@ -58,13 +59,13 @@ interface Section {
 export function readMarkdown(source: string, columns?: string[]): Section[] {
   const lines = source.replace(/\r\n?/g, '\n').split('\n');
   const hasPipe = (line: string) => /(?<!\\)\|/.test(line);
-  const tableStarts = (i: number) => hasPipe(lines[i]) && i + 1 < lines.length && isRule(lines[i + 1]);
+  const tableStarts = (i: number) => hasPipe(lines[i]) && i + 1 < lines.length && isRule(lines[i + 1]) && cells(lines[i]).length === cells(lines[i + 1]).length;
   const sections: Section[] = [{ title: '', level: 0, blocks: [] }];
   const add = (b: Block) => sections[sections.length - 1].blocks.push(b);
   for (let i = 0; i < lines.length;) {
     const line = lines[i];
     const heading = headingLine.exec(line);
-    const diagram = /^\s*\[diagram:\s*([\w-]+)\s*\]\s*$/.exec(line);
+    const diagram = diagramLine.exec(line);
     if (!line.trim()) i++;
     else if (diagram) {
       add({ tag: 'diagram', name: diagram[1] });
@@ -91,7 +92,7 @@ export function readMarkdown(source: string, columns?: string[]): Section[] {
     } else if (bullet.test(line)) {
       const ordered = /\d/.test(bullet.exec(line)![2]);
       const items: string[] = [];
-      for (; i < lines.length && lines[i].trim() && !tableStarts(i); i++) {
+      for (; i < lines.length && lines[i].trim() && !diagramLine.test(lines[i]) && !tableStarts(i); i++) {
         const m = bullet.exec(lines[i]);
         if (m && /\d/.test(m[2]) === ordered) items.push(m[3]);
         else if (!m || /^\s+\S/.test(lines[i])) items[items.length - 1] += ` ${lines[i].trim()}`;

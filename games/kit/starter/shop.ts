@@ -110,8 +110,14 @@ export function addSold(book: Book, pal: Pal): void {
   book.add('sold', counterPicture(pal, null), { grav: PULL.down });
 }
 
+// The card has room for one decimal digit.
+function checkPrice(price: number): void {
+  if (!Number.isInteger(price) || price < 0 || price > 9) throw new RangeError('Starter shop prices must be whole numbers from 0 to 9');
+}
+
 /** The roof for a price. */
 export function addAwning(book: Book, pal: Pal, price: number): void {
+  checkPrice(price);
   book.add(`awning${price}`, awningPicture(pal, price), { grav: PULL.down });
 }
 
@@ -121,6 +127,7 @@ export const giveName = (item: Item) => `give.${item}`;
 
 /** A stall's counter priced `price` that sells `item`, and (once per item) the passable block that hands the item over. */
 export function addStall(book: Book, pal: Pal, item: Item, price: number): void {
+  checkPrice(price);
   if (!book.has(giveName(item))) {
     const rule = item === 'heart' ? { effect: 1, eamt: 1 } : { effect: item === 'key' ? KEYS : SILVER_KEYS, eamt: 1 };
     // the same picture as the sold counter: the item is already in your hand
