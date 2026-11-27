@@ -25,8 +25,10 @@ export async function checkHighScores(saveId: string, gam: string): Promise<void
 }
 
 /** Current qualifying overlays, also used by Reset. Never combine tables or use disk fallbacks. */
-export async function allMineTables(): Promise<Record<string, string>> {
-  const [games, projects] = await Promise.all([loadCatalogList().catch(() => []), listProjects().catch(() => [])]);
+export async function allMineTables(forReset = false): Promise<Record<string, string>> {
+  const catalog = loadCatalogList();
+  const own = listProjects();
+  const [games, projects] = await Promise.all([forReset ? catalog : catalog.catch(() => []), forReset ? own : own.catch(() => [])]);
   const refs = [
     ...games.filter((g) => g.gam).map((g) => ({ id: `game:${g.id}`, gam: g.gam! })),
     ...projects.map((p) => ({ id: `project:${p.id}`, gam: p.gam })),

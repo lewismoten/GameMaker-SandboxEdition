@@ -347,3 +347,34 @@ it('stops reading loose files when Cancel is pressed during the first read', asy
     vi.unstubAllGlobals();
   }
 });
+
+it.each(['folder', 'ZIP'])('canceling a held single-game %s leaves the library alone', async (kind) => {
+  const data = serializeGame(newGame('Held'));
+  const file =
+    kind === 'ZIP' ? new File([Uint8Array.from(await createZip([{ name: 'GAME.GAM', data }]))], 'held.zip') : new File([Uint8Array.from(data)], 'GAME.GAM');
+  if (kind === 'folder') Object.defineProperty(file, 'webkitRelativePath', { value: 'held/GAME.GAM' });
+  const held = vi.spyOn(library, 'alreadyHave').mockReturnValue('held');
+  const choose = vi.spyOn(chooser, 'chooseGames').mockResolvedValue(undefined);
+  const save = vi.spyOn(Project.prototype, 'saveNow').mockResolvedValue(undefined);
+  const nav = { openProject: vi.fn() };
+  const panel = {
+    signal: new AbortController().signal,
+    step: vi.fn(),
+    fail: vi.fn(),
+    end: vi.fn(),
+    confirmGame: vi.fn(),
+    beginSave: vi.fn(),
+    stayInLibrary: false,
+  };
+  try {
+    await importPicked(nav, [file], undefined, panel);
+    expect(panel.fail).not.toHaveBeenCalled();
+    expect(choose).toHaveBeenCalledOnce();
+    expect(save).not.toHaveBeenCalled();
+    expect(nav.openProject).not.toHaveBeenCalled();
+  } finally {
+    held.mockRestore();
+    choose.mockRestore();
+    save.mockRestore();
+  }
+});

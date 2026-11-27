@@ -24,7 +24,8 @@ const LABEL = 'Pi sound';
 export function soundSwitch(): SoundSwitch {
   let on = false;
   let player: PiSound | undefined;
-  let loading: Promise<PiSound | undefined> | undefined;
+  let loading = false;
+  let pendingMusic: Extract<SoundEvent, { kind: 'music' }> | undefined;
   /** The game the Pi last started, kept while the switch is off so turning it on mid-game knows it. */
   let lastGame: SoundEvent | undefined;
 
@@ -64,20 +65,33 @@ export function soundSwitch(): SoundSwitch {
     button.setAttribute('aria-checked', String(on));
     label.textContent = `${LABEL}: ${on ? 'on' : 'off'}`;
     if (!on) {
+      pendingMusic = undefined;
       player?.stop();
       status.textContent = '';
       return;
     }
     show({ kind: 'waiting' });
-    loading ??= load().catch(() => undefined);
-    void loading.then((p) => {
-      player = p;
-      if (!p) {
-        status.textContent = 'Sound could not start in this browser.';
-        return;
-      }
-      if (on && lastGame) void p.handle(lastGame);
-    });
+    if (player) {
+      if (lastGame) void player.handle(lastGame);
+      return;
+    }
+    if (loading) return;
+    loading = true;
+    void load()
+      .catch(() => undefined)
+      .then((p) => {
+        loading = false;
+        player = p;
+        if (!on) return;
+        if (!p) {
+          pendingMusic = undefined;
+          status.textContent = 'Sound could not start in this browser.';
+          return;
+        }
+        if (lastGame) void p.handle(lastGame);
+        if (pendingMusic) void p.handle(pendingMusic);
+        pendingMusic = undefined;
+      });
   }
 
   button.addEventListener('click', () => {
@@ -94,7 +108,10 @@ export function soundSwitch(): SoundSwitch {
       if (!e) return;
       if (e.kind === 'game') lastGame = e;
       if (e.kind === 'end') lastGame = undefined;
-      if (on && player) void player.handle(e);
+      if (!on) return;
+      if (player) void player.handle(e);
+      else if (e.kind === 'music') pendingMusic = e;
+      else if (e.kind === 'game' || e.kind === 'end' || e.kind === 'musicStop' || e.kind === 'stopAll') pendingMusic = undefined;
     },
     disconnected() {
       lastGame = undefined;

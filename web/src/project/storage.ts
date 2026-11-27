@@ -83,7 +83,17 @@ function request<T>(
       new Promise<T>((resolve, reject) => {
         const tx = d.transaction(store, mode);
         const req = run(tx.objectStore(store));
-        req.onsuccess = () => resolve(read ? read(req.result, tx.objectStore(store)) : req.result);
+        let result: T;
+        req.onsuccess = () => {
+          try {
+            result = read ? read(req.result, tx.objectStore(store)) : req.result;
+          } catch (error) {
+            reject(error);
+            tx.abort();
+          }
+        };
+        tx.oncomplete = () => resolve(result);
+        tx.onabort = () => reject(tx.error ?? new DOMException('Transaction aborted', 'AbortError'));
         req.onerror = () => reject(req.error);
       }),
   );
@@ -229,6 +239,30 @@ export function withCompanion(next: ProjectRecord, stored: ProjectRecord | undef
 /** The project's stored record. */
 export async function loadRecord(id: string): Promise<ProjectRecord | undefined> {
   return request<ProjectRecord | undefined>(PROJECTS, 'readwrite', (s) => s.get(id), repairName);
+}
+
+/**
+ * Changes only the stored project's companion: `change` gets the companion stored now and returns
+ * the one to keep, read and written in one transaction, so files another tab saved meanwhile stay.
+ * Resolves to what was kept, or undefined when the project is gone.
+ */
+export async function updateCompanion(id: string, change: (stored: Companion | undefined) => Companion): Promise<Companion | undefined> {
+  const d = await db();
+  return new Promise<Companion | undefined>((resolve, reject) => {
+    const tx = d.transaction(PROJECTS, 'readwrite');
+    const store = tx.objectStore(PROJECTS);
+    const get = store.get(id);
+    let kept: Companion | undefined;
+    get.onsuccess = () => {
+      const rec = get.result as ProjectRecord | undefined;
+      if (!rec || typeof rec !== 'object') return;
+      kept = change(rec.companion);
+      store.put({ ...rec, companion: kept });
+    };
+    tx.oncomplete = () => resolve(kept);
+    tx.onerror = () => reject(tx.error);
+    tx.onabort = () => reject(tx.error);
+  });
 }
 
 /** Stores the project's checkpoints (none: removes them, and the old single one), leaving the rest of its record as it is. */

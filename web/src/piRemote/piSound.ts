@@ -119,6 +119,11 @@ export class PiSound<G extends SiteGame = SiteGame> {
     let p = this.files.get(key);
     if (!p) {
       p = game.then((g) => (g ? this.source.file(g, name) : undefined)).catch(() => undefined);
+      p = p.then((bytes) => {
+        if (bytes?.length) return bytes;
+        if (this.files.get(key) === p) this.files.delete(key);
+        return undefined;
+      });
       this.files.set(key, p);
     }
     return p;
@@ -128,13 +133,17 @@ export class PiSound<G extends SiteGame = SiteGame> {
     const key = name.toLowerCase();
     let p = this.sets.get(key);
     if (!p) {
-      p = this.fileOf(name).then((b) => {
-        if (!b) return undefined;
-        try {
-          return parseSoundSet(b);
-        } catch {
-          return undefined;
+      const file = this.fileOf(name);
+      p = file.then((b) => {
+        if (b) {
+          try {
+            return parseSoundSet(b);
+          } catch {
+            if (this.files.get(key) === file) this.files.delete(key);
+          }
         }
+        if (this.sets.get(key) === p) this.sets.delete(key);
+        return undefined;
       });
       this.sets.set(key, p);
     }

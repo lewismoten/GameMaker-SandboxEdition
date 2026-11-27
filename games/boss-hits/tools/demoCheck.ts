@@ -4,20 +4,24 @@
 //   cd web && npx vite-node ../games/boss-hits/tools/demoCheck.ts
 import { readFileSync } from 'node:fs';
 import { parseRecording } from '@lewismoten/gamemaker-sandbox-engine/formats/recording';
-import { HITS, HIT_SCORE, PLAIN, POOF, STING } from '../src/monsters';
+import { HITS, PLAIN, POOF, STING } from '../src/monsters';
 import { GameSim } from './sim';
 
 const keys = parseRecording(new Uint8Array(readFileSync(new URL('../disk/demo.rec', import.meta.url)))).slice(0, -2); // without the Esc
 const sim = new GameSim(undefined, 1);
 const stage = () => sim.w.mm.map((m) => m.monnum).find((n) => (n >= PLAIN && n < PLAIN + HITS) || n === POOF);
+const stages: number[] = [];
+const expected = [...Array.from({ length: HITS }, (_, i) => PLAIN + i), POOF];
 const hp0 = sim.ci.hitpts;
 let stings = -1;
 let stageAtSting: number | undefined;
 const step = async () => {
   await sim.tick();
+  const current = stage();
+  if (current !== undefined && current !== stages.at(-1)) stages.push(current);
   if (stings < 0 && sim.ci.hitpts < hp0) {
     stings = hp0 - sim.ci.hitpts;
-    stageAtSting = stage();
+    stageAtSting = current;
   }
 };
 for (const k of keys) {
@@ -33,5 +37,7 @@ const fail = (m: string) => {
 };
 if (stings < STING) fail('the demo should walk into the bug once and be stung');
 if (stageAtSting !== PLAIN) fail('the sting should come before any hit');
-if (sim.ci.score < HITS * HIT_SCORE) fail(`the demo should land all ${HITS} hits (score ${sim.ci.score})`);
+if (stages.length !== expected.length || expected.some((n, i) => stages[i] !== n)) {
+  fail(`expected boss stages ${expected.join(', ')}, saw ${stages.join(', ')}`);
+}
 console.log('demoCheck ok: one sting that counted for nothing, then five hits');

@@ -15,14 +15,26 @@ _sys.path.insert(0, _os.path.join(_os.environ.get('GAMEMAKER_POCKET_DIR') or _os
 
 def wait_reply(s, want, timeout=10.0):
     """Reads lines until the protocol reply `want` (GO or OK) or an ERR line; returns (reply, skipped).
-    Board log lines (SCREEN ..., PACK ..., LOG ..., anything else) are skipped and collected; reply is None on timeout."""
-    skipped, end = [], time.time() + timeout
-    while time.time() < end:
-        line = s.readline().decode("utf-8", "replace").strip()
-        if line == want or line.startswith("ERR"):
-            return line, skipped
-        if line:
-            skipped.append(line)
+    Board log lines (SCREEN ..., PACK ..., LOG ..., anything else) are skipped; only the last five are returned. The reply is None on timeout."""
+    skipped = []
+    end = time.monotonic() + timeout
+    original_timeout = s.timeout
+    try:
+        while (remaining := end - time.monotonic()) > 0:
+            read_timeout = remaining if original_timeout is None else min(original_timeout, remaining)
+            if s.timeout != read_timeout:
+                s.timeout = read_timeout
+            line = s.readline().decode("utf-8", "replace").strip()
+            if time.monotonic() >= end:
+                break
+            if line == want or line.startswith("ERR"):
+                return line, skipped
+            if line:
+                skipped.append(line)
+                del skipped[:-5]
+    finally:
+        if s.timeout != original_timeout:
+            s.timeout = original_timeout
     return None, skipped
 
 
@@ -40,12 +52,28 @@ def transfer_order(n):
 def self_check():
     names = sorted(["games.txt", "teddy.cfg", "map.bin"], key=transfer_order)
     assert names == ["map.bin", "teddy.cfg", "games.txt"], names
+    from unittest.mock import patch
+
     class Fake:
+        timeout = 5
         def __init__(self, lines): self.lines = [l.encode() + b"\n" for l in lines]
         def readline(self): return self.lines.pop(0) if self.lines else b""
     assert wait_reply(Fake(["SCREEN picker", "PACK 3", "", "GO"]), "GO", 1) == ("GO", ["SCREEN picker", "PACK 3"])
     assert wait_reply(Fake(["LOG x", "ERR full"]), "OK", 1) == ("ERR full", ["LOG x"])
     assert wait_reply(Fake(["LOG a"]), "GO", 0.3) == (None, ["LOG a"])
+    class LateReply(Fake):
+        now = 0
+        def readline(self):
+            self.read_timeout = self.timeout
+            self.now += 0.020
+            return b"OK\n"
+
+    port = LateReply([])
+    with patch.object(time, "monotonic", lambda: port.now):
+        assert wait_reply(port, "OK", 0.005) == (None, [])
+        assert port.read_timeout == 0.005 and port.timeout == 5
+    logs = [f"LOG {i}" for i in range(8)]
+    assert wait_reply(Fake(logs + ["GO"]), "GO") == ("GO", logs[-5:])
     print("self-check ok")
 
 

@@ -55,7 +55,16 @@ const games = existsSync(dir)
   : [];
 const read = (g: string, f: string) => readFileSync(join(dir, g, f), 'utf8');
 
-describe.skipIf(!games.length)('wooden nickels the build made', () => {
+function expectCompleteSeries(numbers: number[]) {
+  expect(numbers.sort((a, b) => a - b)).toEqual(Array.from({ length: 26 }, (_, i) => i + 1));
+}
+
+it('rejects a series missing nickel 13', () => {
+  const partial = Array.from({ length: 26 }, (_, i) => i + 1).filter((n) => n !== 13);
+  expect(() => expectCompleteSeries(partial)).toThrow();
+});
+
+describe.skipIf(process.env.GM_SKIP_GAME_BUILD === '1' && !games.length)('wooden nickels the build made', () => {
   for (const game of games)
     it(`${game}: colors, millimeters, cuts, series, spacing`, () => {
       const man = JSON.parse(read(game, 'manifest.json'));
@@ -97,7 +106,7 @@ describe.skipIf(!games.length)('wooden nickels the build made', () => {
     });
   it('numbers the series 1 to 26 once each, and the letters spell the message', () => {
     const all = games.map((g) => JSON.parse(read(g, 'manifest.json')).series as { no: number; letter: string; message: string });
-    expect(new Set(all.map((s) => s.no)).size).toBe(all.length);
+    expectCompleteSeries(all.map((s) => s.no));
     for (const s of all) expect(s.message[s.no - 1]).toBe(s.letter);
   });
 });

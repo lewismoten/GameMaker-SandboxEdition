@@ -23,6 +23,7 @@ const input = document.querySelector<HTMLInputElement>('#files')!;
 const canvas = document.querySelector<HTMLCanvasElement>('#screen')!;
 const play = document.querySelector<HTMLButtonElement>('#play')!;
 let files: GameFiles | undefined;
+let running = false;
 
 input.addEventListener('change', async () => {
   const entries = await Promise.all(
@@ -32,20 +33,25 @@ input.addEventListener('change', async () => {
     ]),
   );
   files = new GameFiles(entries);
-  play.disabled = !files.mainGame();
+  play.disabled = running || !files.mainGame();
 });
 
 play.addEventListener('click', async () => {
-  if (!files) return;
+  if (running || !files) return;
   const gam = files.mainGame();
   if (!gam) throw new Error('Choose a game directory containing a .GAM file');
 
-  const machine = new Machine(canvas, files);
+  running = true;
+  play.disabled = true;
+  let machine: Machine | undefined;
   try {
+    machine = new Machine(canvas, files);
     await machine.audio.resume(); // the click is a user gesture
     await runGame(machine, gam);
   } finally {
-    machine.destroy();
+    machine?.destroy();
+    running = false;
+    play.disabled = !files.mainGame();
   }
 });
 ```

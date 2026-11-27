@@ -2,7 +2,7 @@
 // byte compare. `npm run roundtrip -- [<folder|zip>...] [--type gam,map,...] [--out base]`.
 // Zips are read in memory with the archives package (never extracted, nothing run from them).
 // Types with no byte-faithful serializer (gif, voc, fli, txt, lst...) are counted as skipped.
-import { mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { dirname, extname, join } from 'node:path';
 import { forLewis, mainCheckout } from './mainCheckout';
 import { readZip, isZip } from '@lewismoten/gamemaker-sandbox-archives/project/zip';
@@ -52,13 +52,18 @@ const skipped = new Map<string, number>();
 const args = process.argv.slice(2);
 const inputs: string[] = [];
 let only: string[] | undefined;
-let outBase = join(forLewis, 'research/roundtrip/2026-11-04');
+const date = new Date().toISOString().slice(0, 10);
+let outBase = join(forLewis, 'research/roundtrip', date);
 for (let i = 0; i < args.length; i++) {
   if (args[i] === '--type') only = (args[++i] ?? '').toLowerCase().split(',');
   else if (args[i] === '--out') outBase = args[++i] ?? outBase;
   else inputs.push(args[i]);
 }
-if (!inputs.length) inputs.push(join(forLewis, 'reference/archive'), join(mainCheckout, 'cd'));
+if (!inputs.length) {
+  const archive = join(forLewis, 'reference/archive');
+  if (existsSync(archive)) inputs.push(archive);
+  inputs.push(join(mainCheckout, 'cd'));
+}
 
 function hex(b: Uint8Array, at: number): string {
   return Array.from(b.subarray(Math.max(0, at - 4), at + 12), (v) => v.toString(16).padStart(2, '0')).join(' ');
@@ -100,21 +105,30 @@ function* walk(p: string): Generator<string> {
 
 async function main(): Promise<void> {
   let zips = 0;
+  const unreadableZips: string[][] = [];
   for (const input of inputs) {
     for (const path of walk(input)) {
       const bytes = new Uint8Array(readFileSync(path));
       if (/\.zip$/i.test(path) && isZip(bytes)) {
-        zips++;
         try {
-          for (const e of await readZip(bytes)) check(`${path.split('/').slice(-2).join('/')}!${e.name}`, e.name, e.data);
+          const entries = await readZip(bytes);
+          zips++;
+          for (const e of entries) check(`${path.split('/').slice(-2).join('/')}!${e.name}`, e.name, e.data);
         } catch (e) {
-          console.error(`zip ${path}: ${(e as Error).message}`);
+          const reason = (e as Error).message;
+          unreadableZips.push([path, 'unreadable', reason]);
+          console.error(`zip ${path}: ${reason}`);
         }
       } else check(path, path, bytes);
     }
   }
   const tsv: string[] = ['type\tfile\tresult\tdetail'];
-  const md: string[] = [`# Round-trip of original files (2026-11-04)`, '', `Inputs: ${inputs.join(', ')} (${zips} zips read in memory).`, ''];
+  const md: string[] = [
+    `# Round-trip of original files (${date})`,
+    '',
+    `Inputs: ${inputs.join(', ')} (${zips} ${zips === 1 ? 'zip' : 'zips'} read in memory).`,
+    '',
+  ];
   const table = ['| type | files | identical | different | unreadable |', '|---|---|---|---|---|'];
   for (const [ext, s] of [...stats].sort()) {
     table.push(`| ${ext} | ${s.files} | ${s.same} | ${s.diff} | ${s.bad} |`);
@@ -133,6 +147,14 @@ async function main(): Promise<void> {
     if (!s.rows.length) continue;
     md.push(`## ${ext}: first ${Math.min(3, s.rows.length)} of ${s.rows.length} failures`, '');
     for (const r of s.rows.slice(0, 3)) md.push(`- ${r.join(' | ')}`);
+    md.push('');
+  }
+  if (unreadableZips.length) {
+    md.push('## Unreadable archives', '');
+    for (const row of unreadableZips) {
+      md.push(`- ${row.join(' | ')}`);
+      tsv.push(['zip', ...row].join('\t'));
+    }
     md.push('');
   }
   console.log(table.join('\n'));

@@ -40,6 +40,36 @@ describe('fetchGameZip', () => {
     expect(new Uint8Array(await res.arrayBuffer())).toEqual(zip);
   });
 
+  it.each([0, 1])('keeps the other ZIP open when caller %i cancels a pending read', async (cancelled) => {
+    vi.resetModules();
+    const { fetchGameZip: open } = await import('./sharedZip');
+    const { zip, fetch: serve } = await site();
+    let release!: () => void;
+    const pending = new Promise<void>((resolve) => {
+      release = resolve;
+    });
+    const fetch = vi.fn(async (url: string, init?: RequestInit) => {
+      if (url.endsWith('.bin')) {
+        await pending;
+        init?.signal?.throwIfAborted();
+      }
+      return serve(url);
+    });
+    vi.stubGlobal('fetch', fetch);
+    const controllers = [new AbortController(), new AbortController()];
+    const entry = { path: 'games/originals/a/', parts: 'a.zpart' };
+    const reads = controllers.map(({ signal }) => open(entry, './', { signal }));
+    await vi.waitFor(() => expect(fetch.mock.calls.some(([url]) => url.endsWith('.bin'))).toBe(true));
+    controllers[cancelled].abort();
+    await expect(reads[cancelled]).rejects.toMatchObject({ name: 'AbortError' });
+    release();
+    expect(new Uint8Array(await (await reads[1 - cancelled]).arrayBuffer())).toEqual(zip);
+    expect(fetch.mock.calls.filter(([url]) => url.endsWith('.bin'))).toHaveLength(1);
+    fetch.mockClear();
+    expect((await open(entry)).ok).toBe(true);
+    expect(fetch.mock.calls.map(([url]) => url)).toEqual(['./games/originals/a/a.zpart']);
+  });
+
   it('fetches a whole ZIP as it is', async () => {
     const { fetch } = await site();
     const res = await fetchGameZip({ path: 'games/originals/a/', pack: 'a.zip' });

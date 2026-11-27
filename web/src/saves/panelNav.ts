@@ -59,5 +59,10 @@ function heartNote(p: Panel) {
   if (!found && !heartOf(p.target.saveId.replace(/^game:/, ''))) return null;
   const when = new Date(found?.found ?? '');
   const sub = found ? (isNaN(+when) ? 'Found' : `Found ${when.toLocaleDateString('en-US', { dateStyle: 'medium' })}`) : 'Not found yet';
-  return h('div', { class: 'sv-nav-item sv-nav-note' }, h('span', { class: 'sv-nav-title' }, 'Tin heart'), h('span', { class: 'sv-nav-sub' }, sub));
+  return h(
+    'div',
+    { class: 'sv-nav-item sv-nav-note' },
+    h('span', { class: 'sv-nav-title' }, 'Tin heart', h('span', { class: 'sv-heart-status' }, found ? ' · Found' : ' · Not found yet')),
+    h('span', { class: 'sv-nav-sub' }, sub),
+  );
 }

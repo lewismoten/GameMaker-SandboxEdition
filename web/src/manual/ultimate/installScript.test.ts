@@ -12,6 +12,13 @@ describe('Chapter 18 DOS installation example', () => {
     expect(BOX.html).toContain(INSTALL_LESSON);
   });
 
+  it('keeps the final copy warning accurate for the one-disk listing', () => {
+    const parts = [...INSTALL_LESSON.matchAll(/<pre><code>([\s\S]*?)<\/code><\/pre>/g)].map((m) => m[1]);
+    const oneDisk = [parts[0], parts[1], parts[2].replace('1 of 2', '1 of 1'), parts[4]].join('\n');
+    expect(oneDisk.match(/^COPY /gm)).toHaveLength(1);
+    expect(oneDisk).not.toMatch(/neither pass|both passes|copy passes/i);
+  });
+
   it('teaches literal drive-relative A:INSTALL only after selecting the floppy root', () => {
     expect(INSTALL_LESSON).toContain('<code>A:</code>, then <code>CD \\</code>, then');
     expect(INSTALL_LESSON).toContain('<code>A:INSTALL</code> for <code>C:\\SANDBOX</code>');
