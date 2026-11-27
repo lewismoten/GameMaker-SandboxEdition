@@ -21,7 +21,11 @@ vi.mock('../core/ui', () => ({
   },
 }));
 vi.mock('./gameHealth', () => ({}));
-vi.mock('./homeDemoStart', () => ({ deferHomeDemo: vi.fn(() => vi.fn()), mayStartHomeDemo: () => true }));
+vi.mock('./homeDemoStart', async (load) => ({
+  ...(await load<typeof import('./homeDemoStart')>()),
+  deferHomeDemo: vi.fn(() => vi.fn()),
+  mayStartHomeDemo: () => true,
+}));
 vi.mock('./homeCards', () => ({ demoInPicture: vi.fn(() => ({ stop: vi.fn() })), demoDialogButton: () => null, gameActions: () => [] }));
 vi.mock('../../walkthrough/button', () => ({ walkthroughButton: () => null }));
 vi.mock('../../saves/button', () => ({ savesButton: () => null }));
