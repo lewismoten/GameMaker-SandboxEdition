@@ -8,7 +8,7 @@ import { BLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import type { Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { parseCharacter, type Character } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
-import { MLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { MLEN, type PlacedMonster } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { KINDS, MIN_SIDE, checkNeeds, kindInfo, type GenKind, type GenResult, type Rect } from '@lewismoten/gamemaker-sandbox-tools/kit/levelGen';
 import { readRoles } from '../../blocks/blockRoles';
 import { loadBrushes } from '../tools/brushStore';
@@ -16,7 +16,7 @@ import type { Terrain } from '../tools/autotile';
 import type { MapSelection } from '../tools/selection';
 import { missingRoles } from './missingRoles';
 import { makeScenes, planScenes } from './makeScenes';
-import { WHOLE, offers, usableMonsters, type Offer } from './place';
+import { WHOLE, monsterPreview, offers, usableMonsters, type Offer } from './place';
 import { NOT_CHECKED, NOT_CHECKED_SIDE } from './verifyOffer';
 import type { BotRun } from './platformBot';
 import type { RunningBot } from './platformBotClient';
@@ -35,6 +35,7 @@ interface GenerateHost {
   /** The block set's blocks (for the reach check) and the scene's monsters (for placing some). */
   blockSet: () => Block[];
   monsters: () => Monster[];
+  placedMonsters: () => PlacedMonster[];
   /** The map wraps over its edges (an overworld's land then lines up across the seam). */
   wrap?: () => boolean;
   /** The hero's character file and its blocks, and the monster blocks, as the scene names them (a side view is sized to his jump). */
@@ -109,7 +110,14 @@ export async function generateDialog(host: GenerateHost): Promise<void> {
     hero = undefined;
   }
 
-  await modal<void>('Generate a layout', (close) => {
+  let dismiss = () => {};
+  const build = (close: (value: void | undefined) => void) => {
+    const finish = () => {
+      botRun++;
+      running?.cancel();
+      close(undefined);
+    };
+    dismiss = finish;
     const rect = () => (inSelection && sel ? sel : WHOLE);
     const usesHref = `#/p/${host.project.id}/${encodeURIComponent(host.bbl)}?tab=uses`;
     const kindSel = h('select', { 'aria-label': 'Kind of layout' }, ...KINDS.map((k) => h('option', { value: k.id, selected: k.id === kind }, k.label)));
@@ -175,6 +183,7 @@ export async function generateDialog(host: GenerateHost): Promise<void> {
         bots.set(o, 'playing');
         pick();
         await new Promise((res) => setTimeout(res, 0));
+        if (token !== botRun) return;
         let run: BotRun;
         let mine: RunningBot | undefined;
         try {
@@ -186,6 +195,7 @@ export async function generateDialog(host: GenerateHost): Promise<void> {
           });
           run = await mine.done;
         } catch (e) {
+          if (token !== botRun) return;
           if ((e as Error).name === 'AbortError') {
             bots.delete(o);
             return;
@@ -194,8 +204,8 @@ export async function generateDialog(host: GenerateHost): Promise<void> {
         } finally {
           if (running === mine) running = undefined;
         }
-        bots.set(o, run);
         if (token !== botRun) return;
+        bots.set(o, run);
         const c = chipOf(o);
         const chip = chips[i];
         if (chip) {
@@ -345,7 +355,7 @@ export async function generateDialog(host: GenerateHost): Promise<void> {
           ? `Layout drawn and ${n} scene${n === 1 ? '' : 's'} made (${out.made.map((m) => m.label).join(', ')}). Undo takes back the layout, not the scenes.${left}`
           : `Layout drawn, but no scene was made.${left}`,
       );
-      close(undefined);
+      finish();
     }
     function pick(): void {
       buttons.forEach((b, i) => b.setAttribute('aria-pressed', String(i === chosen)));
@@ -365,7 +375,7 @@ export async function generateDialog(host: GenerateHost): Promise<void> {
         res.furniture.filter((f) => !f.open).length ? `${res.furniture.filter((f) => !f.open).length} pieces of furniture` : '',
         res.shopkeeper !== undefined ? `shopkeeper could stand at ${cellText(res.rect, res.shopkeeper)}` : '',
         res.locks.length ? `${res.locks.length} locked door${res.locks.length > 1 ? 's' : ''}` : '',
-        res.monsters.length ? `${res.monsters.length} monsters` : '',
+        monsterPreview(host.placedMonsters(), res),
       ].filter(Boolean);
       note.textContent = [
         `Seed ${o.seed}: hero could start at ${cellText(res.rect, res.entry)}, ${furnished ? 'door' : res.links.length ? 'far end' : 'exit'} at ${cellText(res.rect, res.exit)}; nothing is linked.${has.length ? ` ${has.join(', ')}.` : ''}${res.links.length ? ` ${res.links.length} doors and sites could link to other scenes.` : ''}`,
@@ -393,7 +403,7 @@ export async function generateDialog(host: GenerateHost): Promise<void> {
       const o = current[chosen];
       if (!o?.blocks) return;
       host.apply(o.blocks, `${kindInfo(kind).label} layout`, addMonsters && !NO_MONSTERS.has(kind) && o.outcome.ok ? o.outcome.result : undefined);
-      close(undefined);
+      finish();
     });
     const monBox = h('input', { type: 'checkbox', checked: addMonsters, 'aria-label': 'Add monsters' });
     monBox.addEventListener('change', () => ((addMonsters = monBox.checked), refresh()));
@@ -436,9 +446,9 @@ export async function generateDialog(host: GenerateHost): Promise<void> {
         grid,
         note,
         linksBox,
-        h('div', { class: 'toolbar' }, use, h('button', { type: 'button', onclick: () => close(undefined) }, 'Cancel')),
+        h('div', { class: 'toolbar' }, use, h('button', { type: 'button', onclick: finish }, 'Cancel')),
       ),
     );
-  });
-  running?.cancel();
+  };
+  await modal<void>('Generate a layout', build, () => dismiss());
 }

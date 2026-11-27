@@ -37,7 +37,12 @@ for (const [scene, gateX, openTicks] of [
   rules.push({ scene, rects: strips });
   const [sx, sy] = strips[0];
   for (let tick = 0; tick < 2 * (openTicks + SHUT_TICKS); tick++) {
-    const dark = Array.from({ length: BELLS }, (_, j) => at(5 + j, METER_ROW) === book.n(`bellOff${j}`)).filter(Boolean).length;
+    const phase = tick % (openTicks + SHUT_TICKS);
+    const dark = Math.min(BELLS, Math.floor((phase * BELLS) / openTicks));
+    for (let j = 0; j < BELLS; j++) {
+      const expected = j < dark ? `bellOff${j}` : `bellOn${j}`;
+      if (at(5 + j, METER_ROW) !== book.n(expected)) throw new Error(`${l.title}: expected ${expected} at tick ${sim.ticks}`);
+    }
     if (at(sx - ORIGIN, sy - ORIGIN) !== book.n(`bellStrip${dark}`)) throw new Error(`${l.title}: strip out of sync at tick ${sim.ticks}`);
     if ((at(gateX, 8) === book.n('gateShut')) !== (dark === BELLS)) throw new Error(`${l.title}: gate out of sync at tick ${sim.ticks}`);
     await bot.wait(1);

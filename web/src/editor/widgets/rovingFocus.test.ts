@@ -14,5 +14,6 @@ describe('typeAheadIndex', () => {
   it('returns -1 when nothing matches or nothing typed', () => {
     expect(typeAheadIndex(l, 0, 'z')).toBe(-1);
     expect(typeAheadIndex(l, 0, '')).toBe(-1);
+    expect(typeAheadIndex([], 0, 'ab')).toBe(-1);
   });
 });

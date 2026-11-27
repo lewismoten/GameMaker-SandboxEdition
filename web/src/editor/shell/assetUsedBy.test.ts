@@ -6,7 +6,7 @@ import { fileUses } from '../core/uses';
 import { assetGames } from './gameProject';
 import { newGame, serializeGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { describe, expect, it } from 'vitest';
-import { categoryScenesUsing, scenesUsing, usedByShort, usedByText } from './assetUsedBy';
+import { categorySceneCounter, scenesUsing, usedByShort, usedByText } from './assetUsedBy';
 
 describe('Overview used-by line', () => {
   const uses: Record<string, { scene: number }[]> = {
@@ -30,6 +30,26 @@ describe('Overview used-by line', () => {
   });
 });
 
+it('reads each scene slot once across Overview categories', () => {
+  const game = newGame();
+  const project = new Project('test', 'Overview', 'main.gam', new GameFiles([['main.gam', serializeGame(game)]]));
+  let reads = 0;
+  const slots = ['hero.gif', 'main.pal'];
+  project.game().scenes[0].files = [...slots];
+  for (const [index, file] of slots.entries()) {
+    Object.defineProperty(project.game().scenes[0].files, index, {
+      get() {
+        reads++;
+        return file;
+      },
+    });
+  }
+  const categoryScenesUsing = categorySceneCounter([project]);
+  expect(categoryScenesUsing(['hero.gif', 'unused.gif'])).toBe(1);
+  expect(categoryScenesUsing(['main.pal'])).toBe(1);
+  expect(reads).toBe(slots.length);
+});
+
 it('counts shared picture scenes separately in each GAM and links their actual owners', () => {
   const main = newGame('Main');
   const second = newGame('Second');
@@ -44,9 +64,11 @@ it('counts shared picture scenes separately in each GAM and links their actual o
     ['other.gif', new Uint8Array()],
   ]);
   const project = new Project('test', 'Two games', 'main.gam', files);
-  const games = assetGames(project);
-  expect(categoryScenesUsing(['other.gif'], games)).toBe(1);
-  expect(categoryScenesUsing(['shared.gif', 'other.gif'], games)).toBe(3);
+  const categoryScenesUsing = categorySceneCounter(assetGames(project));
+  expect(categoryScenesUsing([])).toBe(0);
+  expect(categoryScenesUsing(['unused.gif'])).toBe(0);
+  expect(categoryScenesUsing(['other.gif'])).toBe(1);
+  expect(categoryScenesUsing(['shared.gif', 'other.gif'])).toBe(3);
   expect(fileUses(project, 'shared.gif').map(({ file, scene }) => [file, scene])).toEqual([
     ['main.gam', 0],
     ['second.gam', 0],

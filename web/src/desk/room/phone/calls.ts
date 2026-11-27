@@ -27,8 +27,8 @@ export interface CallLine {
   wait(seconds: number): Promise<void>;
   /** Keys pressed up to #, or what was pressed when `seconds` pass with no key. */
   keysUntilPound(seconds: number): Promise<string>;
-  /** The next key pressed, or "" when `seconds` pass with none. */
-  nextKey(seconds: number): Promise<string>;
+  /** Listens immediately. The timeout starts when the optional prompt finishes. */
+  nextKey(seconds: number, prompt?: Promise<void>): Promise<string>;
   /** Shows words on the keypad's caption line without saying them (what a TTY's tones spell). */
   caption(who: string, text: string): void;
   /** Stops talking mid-sentence (a key pressed during a menu). */

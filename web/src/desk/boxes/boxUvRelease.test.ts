@@ -4,7 +4,7 @@ import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 import type { CatalogEntry } from '../../project/files';
 import type { BoxFaces } from './gameBox';
 
-vi.mock('./gameBox', () => ({ drawBoxLetters: () => Promise.resolve(undefined) }));
+vi.mock('./gameBox', () => ({ drawBoxLetters: vi.fn(() => Promise.resolve(undefined)) }));
 
 const requested: string[] = [];
 class FakeImage {
@@ -49,4 +49,39 @@ it('does not ask for a picture whose box was released before the queued job ran'
   releaseUv(f); // the shelf swaps in the whole box and lets go of this one
   await vi.advanceTimersByTimeAsync(200);
   expect(requested).not.toContain('blob:test/front');
+});
+
+it('revokes the encoded side without attaching it when release happens during encoding', async () => {
+  const { uvGame, dressUv, releaseUv } = await import('./boxUv');
+  const toBlob = vi.fn<(done: BlobCallback) => void>();
+  class Canvas {
+    width = 1;
+    height = 1;
+    toBlob = toBlob;
+    getContext() {
+      return {
+        drawImage: vi.fn(),
+        getImageData: () => ({ data: new Uint8ClampedArray(4) }),
+        putImageData: vi.fn(),
+      };
+    }
+  }
+  vi.stubGlobal('HTMLCanvasElement', Canvas);
+  vi.stubGlobal('document', { createElement: (tag: string) => (tag === 'canvas' ? new Canvas() : {}) });
+  const mask = new Canvas() as unknown as HTMLCanvasElement;
+  vi.mocked((await import('./gameBox')).drawBoxLetters).mockResolvedValueOnce({ front: mask, back: mask, left: mask, right: mask, top: mask, bottom: mask });
+  const revokeObjectURL = vi.fn();
+  vi.stubGlobal('URL', { createObjectURL: () => 'blob:test/glow', revokeObjectURL });
+  const face = { append: vi.fn(), querySelector: () => null };
+  const box = { querySelector: () => face } as unknown as HTMLElement;
+  const f = faces();
+  uvGame(f, {} as CatalogEntry);
+  dressUv(box, f, ['front']);
+  await vi.advanceTimersByTimeAsync(50);
+  expect(toBlob).toHaveBeenCalledOnce();
+  releaseUv(f);
+  toBlob.mock.calls[0][0](new Blob());
+  await vi.advanceTimersByTimeAsync(0);
+  expect(revokeObjectURL.mock.calls).toEqual([['blob:test/glow']]);
+  expect(face.append).not.toHaveBeenCalled();
 });

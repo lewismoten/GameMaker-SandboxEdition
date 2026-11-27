@@ -61,9 +61,12 @@ interface PocketPacked {
 }
 
 const hex = (b: ArrayBuffer) => [...new Uint8Array(b)].map((x) => x.toString(16).padStart(2, '0')).join('');
+const digest = async (bytes: Uint8Array) => hex(await crypto.subtle.digest('SHA-1', bytes as BufferSource));
+// Retain the source digest as long as its compressed resource is in use.
+const resourceDigests = new WeakMap<Uint8Array, string>();
 /** The first 7 hex digits of the SHA-1 of the bytes. */
 export async function shortHash(bytes: Uint8Array): Promise<string> {
-  return hex(await crypto.subtle.digest('SHA-1', bytes as BufferSource)).slice(0, 7);
+  return (await digest(bytes)).slice(0, 7);
 }
 
 /** Its length (4 bytes, little endian), then the raw deflate of it: how every packed file and card is stored. */
@@ -84,9 +87,22 @@ export async function packPocketGame(src: PocketSource, store: PocketStore, pak:
     return b;
   };
   const put = async (bytes: Uint8Array, ext: string) => {
-    const name = `${await shortHash(bytes)}.${ext}`;
-    if (!store.has(name)) store.set(name, await stored(bytes, deflate));
-    return name;
+    const hash = await digest(bytes);
+    let packed: Uint8Array | undefined;
+    for (let probe = 0; probe <= 0x100000000; probe++) {
+      const stem = probe === 0 ? hash.slice(0, 7) : ((parseInt(hash.slice(0, 8), 16) + probe - 1) >>> 0).toString(16).padStart(8, '0');
+      const name = `${stem}.${ext}`;
+      if (!store.has(name)) {
+        packed ??= await stored(bytes, deflate);
+        if (!store.has(name)) {
+          resourceDigests.set(packed, hash);
+          store.set(name, packed);
+          return name;
+        }
+      }
+      if (resourceDigests.get(store.get(name)!) === hash) return name;
+    }
+    throw new Error('No Pocket resource names available');
   };
   const inPak = async (bytes: Uint8Array, always = false) => {
     const key = await shortHash(bytes);
@@ -115,9 +131,22 @@ export async function packPocketGame(src: PocketSource, store: PocketStore, pak:
   const maps = play.map(({ s }) => parseMap(file(s.files[1])));
   // Per level: the monsters it can have (empty: none, so the board runs it without monsters).
   const monsOf = play.map(() => new Set<number>());
-  // The hero file a level plays with: its own, or (blank slot) the previous level's, as the engine keeps the hero.
-  const heroOf: string[] = [];
-  play.forEach(({ s }, n) => heroOf.push(s.files[5] || heroOf[n - 1] || ''));
+  // Carry each hero along scene links until another scene loads a hero. Track visits to handle loops.
+  const heroes = game.scenes.map(() => new Set<string>());
+  for (const { s, i } of play) {
+    const hero = s.files[5];
+    if (!hero || !s.files[6]) continue;
+    const pending = [i];
+    while (pending.length) {
+      const scene = pending.pop()!;
+      if (heroes[scene].has(hero)) continue;
+      heroes[scene].add(hero);
+      for (const { toScene } of game.scenes[scene].links) {
+        const next = game.scenes[toScene];
+        if (next?.gametype === 10 && !(next.files[5] && next.files[6])) pending.push(toScene);
+      }
+    }
+  }
   play.forEach(({ s }, n) => {
     const m = maps[n];
     const bl = parseBlocks(file(s.files[2]), 150);
@@ -125,8 +154,8 @@ export async function packPocketGame(src: PocketSource, store: PocketStore, pak:
     const mons = monsOf[n];
     if (hasMonFiles) {
       for (const p of m.monsters) if (p.monnum < LASTMON) mons.add(p.monnum);
-      for (const q of heroOf[n] ? parseCharacter(file(heroOf[n])).sequences : [])
-        for (const f of q.frames) if (f.pic2 === 100 && f.pic1 < LASTMON) mons.add(f.pic1);
+      for (const hero of heroes[play[n].i])
+        for (const q of parseCharacter(file(hero)).sequences) for (const f of q.frames) if (f.pic2 === 100 && f.pic1 < LASTMON) mons.add(f.pic1);
     }
     const need = new Set<number>(m.blocks);
     const todo = [...need];
@@ -262,12 +291,16 @@ export async function packPocketGame(src: PocketSource, store: PocketStore, pak:
     if (!name) return;
     const find = (n: string) => names.find((d) => d.toLowerCase() === n.toLowerCase());
     let cols: Uint8Array | undefined; // the palette of the last picture shown in this list (the engine's `cols`)
+    const activeLists = new Set<string>();
     const one = async (fname: string, pause: number | undefined, dflt: number): Promise<void> => {
       const real = find(fname);
       const e = fname.split('.').pop()!.toLowerCase();
       if (!real) return;
       if (e === 'lst') {
+        if (activeLists.has(real)) throw new Error(`Circular slide list: ${[...activeLists, real].join(' -> ')}`);
+        activeLists.add(real);
         for (const x of parseSlideList(file(real))) await one(x.name, x.pause ?? pause ?? 0xffff, 0xffff);
+        activeLists.delete(real);
       } else if (e === 'gif') {
         const im = decodeGif(file(real));
         if (im.width !== 320 || im.height !== 200) {

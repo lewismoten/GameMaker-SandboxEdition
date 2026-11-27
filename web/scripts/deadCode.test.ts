@@ -70,11 +70,11 @@ it('reports only the unused CSS class when JavaScript modules name the others', 
     writeFileSync(join(src, 'module.mjs'), "document.body.classList.add('module-active');");
     writeFileSync(join(src, 'typed.mts'), "document.body.classList.add('typed-active');");
     writeFileSync(join(src, 'style.css'), '.js-active {} .module-active {} .typed-active {} .unused {}');
-    const output = execFileSync(process.execPath, [require.resolve('vite-node/vite-node.mjs'), 'web/scripts/deadCode.ts', '--json'], {
+    const output = execFileSync(process.execPath, [require.resolve('vite-node/vite-node.mjs'), 'web/scripts/deadCode.ts', '--json', '--only', 'css'], {
       cwd: root,
       encoding: 'utf8',
     });
-    expect((JSON.parse(output) as { unusedClasses: unknown[] }).unusedClasses).toEqual([{ file: 'web/src/style.css', cls: 'unused' }]);
+    expect(JSON.parse(output)).toEqual({ unusedClasses: [{ file: 'web/src/style.css', cls: 'unused' }] });
   } finally {
     rmSync(root, { recursive: true, force: true });
   }

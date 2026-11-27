@@ -52,6 +52,20 @@ class AnalysisTests(unittest.TestCase):
         self.assertEqual(len(m.stop_events(cached)), 1)
 
 
+    def silent_wav(self, rate, seconds):
+        tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        path = Path(tmp.name) / 'silence.wav'
+        with wave.open(str(path), 'wb') as wav:
+            wav.setparams((1, 2, rate, 0, 'NONE', 'not compressed'))
+            wav.writeframes(bytes(2 * rate * seconds))
+        return path
+
+    def test_silence_duration_includes_last_partial_window(self):
+        result = m.wav_measure(self.silent_wav(22050, 60))
+        self.assertAlmostEqual(result['startup_seconds'], 60)
+        self.assertEqual(result['rms_window_seconds'], 220 / 22050)
+
     def test_pcm_window_read_and_absolute_gap_clock(self):
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / 'fixture.wav'
@@ -62,7 +76,7 @@ class AnalysisTests(unittest.TestCase):
             result = m.wav_measure(path, window=.1)
             self.assertAlmostEqual(result['duration_seconds'], .6)
             self.assertEqual(result['startup_seconds'], .2)
-            self.assertEqual(result['gaps'], [{'start_seconds': .30000000000000004, 'length_seconds': .2}])
+            self.assertEqual(result['gaps'], [{'start_seconds': .3, 'length_seconds': .2}])
             clipped = m.wav_measure(path, window=.1, start=.3, end=.5)
             self.assertEqual(clipped['gaps'], [{'start_seconds': .3, 'length_seconds': .2}])
 

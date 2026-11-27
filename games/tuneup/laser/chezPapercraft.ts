@@ -1,7 +1,7 @@
 // Tune-Up's paper THE CHEZ: a fold-up papercraft car for a Glowforge (cut, score, engrave on cardstock) or a home printer
 // (Letter or A4, in color, with cut and fold lines drawn). Writes web/public/laser/tuneup/papercraft-chez/ (ignored by git).
 //   cd web && npx vite-node ../games/tuneup/laser/chezPapercraft.ts [--sheet 12x12] [--out DIR] [--force]
-// Does nothing when the manifest's source key (this folder and the car's side view) is unchanged.
+// Skips a complete kit when the manifest's source key is unchanged.
 import { createHash } from 'node:crypto';
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync, copyFileSync, rmSync } from 'node:fs';
 import { dirname, join } from 'node:path';
@@ -36,8 +36,10 @@ function main() {
   const out = flag('--out') ?? join(here, '../../../web/public/laser/tuneup/papercraft-chez');
   const source = sourceKey(stock);
   const made = join(out, 'manifest.json');
-  const previous = existsSync(made) ? (JSON.parse(readFileSync(made, 'utf8')) as { source?: string; sheets?: { svg?: string; preview: string }[] }) : undefined;
-  if (!args.includes('--force') && previous?.source === source) {
+  const previous = existsSync(made)
+    ? (JSON.parse(readFileSync(made, 'utf8')) as { source?: string; outputs?: string[]; sheets?: { svg?: string; preview: string }[] })
+    : undefined;
+  if (!args.includes('--force') && previous?.source === source && previous.outputs?.length && previous.outputs.every((file) => existsSync(join(out, file)))) {
     console.log('Paper CHEZ: up to date');
     return;
   }
@@ -50,10 +52,15 @@ function main() {
     process.exit(1);
   }
   mkdirSync(out, { recursive: true });
+  const outputs: string[] = [];
+  const outputPath = (file: string) => {
+    outputs.push(file);
+    return join(out, file);
+  };
   const files = laser.sheets.map((s) => {
-    writeFileSync(join(out, `${s.file}.svg`), s.sheet.svg(`${TITLE}: ${s.title}`));
+    writeFileSync(outputPath(`${s.file}.svg`), s.sheet.svg(`${TITLE}: ${s.title}`));
     const prev = renderPreview(s.sheet, 3, 2);
-    writeFileSync(join(out, `${s.file}.png`), pngFromRgb(prev.w, prev.h, prev.rgb));
+    writeFileSync(outputPath(`${s.file}.png`), pngFromRgb(prev.w, prev.h, prev.rgb));
     return { svg: `${s.file}.svg`, preview: `${s.file}.png`, title: s.title, w: s.sheet.w, h: s.sheet.h, parts: s.placed };
   });
   const current = new Set(files.flatMap((f) => [f.svg, f.preview]));
@@ -68,16 +75,16 @@ function main() {
   ] as const) {
     const pages = layoutPages(pieces, PAPER[key]);
     printed[key] = pages.length;
-    writeFileSync(join(out, `print-${key}.pdf`), pdf(pages));
+    writeFileSync(outputPath(`print-${key}.pdf`), pdf(pages));
     downloads.push({ file: `print-${key}.pdf`, label: `Color pattern for a home printer, ${label} (PDF)` });
     pages.forEach((pg, i) => {
-      writeFileSync(join(out, `print-${key}-${i + 1}.svg`), pageSvg(pg, `${TITLE}, ${label} page ${i + 1}`));
-      writeFileSync(join(out, `print-${key}-${i + 1}.png`), pagePng(pg));
+      writeFileSync(outputPath(`print-${key}-${i + 1}.svg`), pageSvg(pg, `${TITLE}, ${label} page ${i + 1}`));
+      writeFileSync(outputPath(`print-${key}-${i + 1}.png`), pagePng(pg));
       if (key === 'letter')
         previews.push({ file: `print-letter-${i + 1}.png`, alt: `Printable page ${i + 1} of ${pages.length}, color with cut and fold lines` });
     });
   }
-  copyFileSync(join(here, 'README.md'), join(out, 'README.md'));
+  copyFileSync(join(here, 'README.md'), outputPath('README.md'));
   downloads.push({ file: 'README.md', label: 'Build notes' });
   writeFileSync(
     join(out, 'manifest.json'),
@@ -86,6 +93,7 @@ function main() {
         kind: 'kit',
         id: 'papercraft-chez',
         source,
+        outputs,
         game: 'tuneup',
         title: TITLE,
         material: { description: 'Cardstock, using Proofgrade sheet dimensions', bed: BED, stock, size: STOCK[stock], margin: STOCK_MARGIN },

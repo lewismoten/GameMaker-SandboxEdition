@@ -212,7 +212,7 @@ function gameplay(): NumberPatch[] {
       max: 100,
       stock: 40,
     },
-    // SCROLLPERMOVE: Movx.Iters, Movy.Iters (PLAYGAME.C:3963, 3967); 0 would hang BresenhamScroll
+    // SCROLLPERMOVE: Movx.Iters, Movy.Iters (PLAYGAME.C:3963, 3967); two ticks keep each draw within one tile carry
     {
       ...base,
       id: 'play.scrollSteps',
@@ -220,7 +220,7 @@ function gameplay(): NumberPatch[] {
       note: 'Timer ticks a scroll move is spread over',
       fields: imm(2, 0x12b8e, 0x12ba0),
       signed: false,
-      min: 1,
+      min: 2,
       max: 60,
       stock: 6,
     },

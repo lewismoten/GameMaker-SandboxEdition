@@ -69,6 +69,20 @@ it('keeps catalog positive controls while omitting the populated nested fixture 
   expect([...cdFiles(join(root, 'cd')).values()].some((v) => v.includes('testdisks'))).toBe(false);
 });
 
+async function expectIsolatedCatalog(response: Response) {
+  expect(response.status, response.url).toBe(200);
+  const catalog: unknown = await response.json();
+  expect(catalog, response.url).toBeInstanceOf(Array);
+  expect(JSON.stringify(catalog), response.url).not.toContain('sound-stress');
+}
+
+it.each([
+  [404, '[]'],
+  [200, 'missing'],
+])('rejects an invalid catalog response (%i, %s)', async (status, body) => {
+  await expect(expectIsolatedCatalog(new Response(body, { status }))).rejects.toThrow();
+});
+
 it('neither serves guessed test-disk URLs nor emits them into a production catalog build', async () => {
   const { createServer, build } = await import('vite');
   const server = await createServer({
@@ -86,8 +100,7 @@ it('neither serves guessed test-disk URLs nor emits them into a production catal
     if (!address || typeof address === 'string') throw new Error('No port');
     const base = `http://127.0.0.1:${address.port}/`;
     for (const path of ['games/catalog.json', 'games/index.json', 'games/extra-1.json', 'games/extra-2.json']) {
-      const text = await (await fetch(base + path)).text();
-      expect(text).not.toContain('sound-stress');
+      await expectIsolatedCatalog(await fetch(base + path));
     }
     for (const path of ['games/originals/sound-stress/soundtst.zip', 'games/kit/testdisks/sound-stress/disk/soundtst.gam', 'games/details/sound-stress.json'])
       expect((await fetch(base + path)).status).toBe(404);

@@ -5,18 +5,19 @@ import { windowUndoKeys } from './windowUndoKeys';
 
 class FakeInput {}
 type Handler = (e: unknown) => void;
-let handler: Handler | null = null;
+const handlers = new Map<string, Set<Handler>>();
 
 beforeEach(() => {
-  handler = null;
+  handlers.clear();
   vi.stubGlobal('HTMLInputElement', FakeInput);
   vi.stubGlobal('HTMLSelectElement', class {});
   vi.stubGlobal('HTMLTextAreaElement', class {});
   vi.stubGlobal('window', {
-    addEventListener: (_: string, h: Handler) => (handler = h),
-    removeEventListener: (_: string, h: Handler) => {
-      if (handler === h) handler = null;
+    addEventListener: (type: string, h: Handler) => {
+      if (!handlers.has(type)) handlers.set(type, new Set());
+      handlers.get(type)?.add(h);
     },
+    removeEventListener: (type: string, h: Handler) => handlers.get(type)?.delete(h),
   });
 });
 afterEach(() => vi.unstubAllGlobals());
@@ -27,7 +28,7 @@ const other = { isContentEditable: false, closest: () => null };
 
 function key(init: Record<string, unknown>, target: unknown = other) {
   const e = { defaultPrevented: false, altKey: false, ctrlKey: false, metaKey: false, shiftKey: false, target, preventDefault: vi.fn(), ...init };
-  handler?.(e);
+  handlers.get('keydown')?.forEach((handler) => handler(e));
   return e;
 }
 
@@ -53,8 +54,11 @@ describe('windowUndoKeys', () => {
     key({ key: 'z' });
     key({ key: 'z', ctrlKey: true }, { closest: () => ({}) });
     expect(undo).not.toHaveBeenCalled();
+    key({ key: 'z', ctrlKey: true });
+    expect(undo).toHaveBeenCalledTimes(1);
     stop();
-    expect(handler).toBeNull();
+    key({ key: 'z', ctrlKey: true });
+    expect(undo).toHaveBeenCalledTimes(1);
     expect(redo).not.toHaveBeenCalled();
   });
 });

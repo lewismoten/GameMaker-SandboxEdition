@@ -1,6 +1,6 @@
 // Browser-free timing checks: the demo's file reads share the same gate as its player.
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { deferHomeDemo, mayStartHomeDemo } from './homeDemoStart';
+import { deferHomeDemo, mayStartHomeDemo, prepareHomeDemo } from './homeDemoStart';
 
 let intersect: (entries: { isIntersecting: boolean }[]) => void;
 let idle: (() => void) | undefined;
@@ -172,4 +172,15 @@ describe('deferred home demo', () => {
     expect(start).toHaveBeenCalledOnce();
     cleanup();
   });
+});
+
+it('shares a pending Watch demo inspection and retries on the next click after a rejection', async () => {
+  const inspect = vi.fn<() => Promise<boolean>>().mockRejectedValueOnce(new Error('offline')).mockResolvedValue(true);
+  const click = prepareHomeDemo(inspect, () => true, start);
+  await Promise.all([click(true), click(true)]);
+  expect(inspect).toHaveBeenCalledTimes(1);
+  expect(start).not.toHaveBeenCalled();
+  await click(true);
+  expect(inspect).toHaveBeenCalledTimes(2);
+  expect(start).toHaveBeenCalledOnce();
 });

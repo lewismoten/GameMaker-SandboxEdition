@@ -70,11 +70,10 @@ export const editAroundChapter: Chapter = {
       say: 'In the file list, Game assets shows the whole game at once: a card for each kind of file. Press a card to browse those files as pictures.',
     },
     {
-      // still on the overview: the cards sit under six group headings (editor/shell/assetGroups.ts)
       id: 'edit-around-groups',
       action: 'point',
       target: { label: 'the first group heading', css: '.asset-grid .asset-group' },
-      say: 'The cards sit under headings: Levels, Heroes, Monsters, Pictures and movies, Sounds and music, and Words and screens.',
+      say: 'The cards sit under headings: Levels, Heroes, Monsters, Pictures and movies, Sounds and music, Words and screens, and Colors and other files.',
       optional: true,
       since: '2026-11-05',
     },

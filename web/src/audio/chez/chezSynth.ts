@@ -23,6 +23,7 @@ const CLIMB: readonly (readonly [number, number])[] = [
 const STEPS = [2.3];
 /** The second relay of a step clacks this long after the first. */
 const RELAY_LAG = 0.13;
+const CLUNK_DURATION = 0.15;
 /** Coasting (foot off): the contactors drop out and the whine fades over this long as the car rolls. */
 const COAST = 3;
 /** The speed the whine jumps back to when the contactor closes again after a coast. */
@@ -88,7 +89,7 @@ interface Run {
   beds: GainNode[];
   /** When the contactor closed (context time). */
   t0: number;
-  /** Scheduled startup and speed-step clunks, with when they start: a stop cancels them. */
+  /** Clunks still to come (the speed steps), with when they start: a stop cancels them. */
   pending: [AudioScheduledSourceNode, number][];
   /** Foot off: the contactors are out and the car is rolling. */
   coasting?: boolean;
@@ -114,7 +115,11 @@ export class SynthMotor implements ChezMotor {
     const t = this.ctx.currentTime + 0.01;
     const t0 = t + SWITCH_LEAD;
     const r = this.start(t, t0, this.chain[0]);
-    r.pending = [...this.clunk(t, 0.45), ...this.clunk(t0, 1), ...this.steps(t0, this.chain[0], 1)];
+    r.pending = [
+      ...this.clunk(t, 0.45).map((n): [AudioScheduledSourceNode, number] => [n, t]),
+      ...this.clunk(t0, 1).map((n): [AudioScheduledSourceNode, number] => [n, t0]),
+      ...this.steps(t0, this.chain[0], 1),
+    ];
     for (const [s, v] of CLIMB) this.at(r, t0 + s, v, s ? 'ramp' : 'set');
     this.run = r;
   }
@@ -187,12 +192,14 @@ export class SynthMotor implements ChezMotor {
     r.nodes.push(env);
     if (pullAway) {
       this.clunk(t, 1, env);
-      r.pending = this.steps(t, env, 1);
+      r.pending = this.steps(t, env, 1, seconds);
       for (const [s, v] of CLIMB) this.at(r, t + s, v, s ? 'ramp' : 'set');
       // normal road driving: a lift of the foot to coast, then back on the pedal
       const lift = CLIMB[CLIMB.length - 1][0] + 0.6;
-      this.coastFrom(r, t + lift, 1, env);
-      this.resumeAt(r, t + Math.min(lift + COAST * 0.9, seconds - 2), env);
+      if (lift + COAST <= seconds) {
+        this.coastFrom(r, t + lift, 1, env);
+        this.resumeAt(r, t + Math.min(lift + COAST * 0.9, seconds - 2), env);
+      }
       this.retire(r, t + seconds + 0.05);
       return;
     }
@@ -268,12 +275,15 @@ export class SynthMotor implements ChezMotor {
   }
 
   /** The ka-chunk of each speed step from `t0`: the tower's relay, then a second one's smaller clack. */
-  private steps(t0: number, dest: AudioNode, k: number): [AudioScheduledSourceNode, number][] {
-    return STEPS.flatMap((s) => [...this.clunk(t0 + s, 1.6 * k, dest), ...this.clunk(t0 + s + RELAY_LAG, 0.7 * k, dest)]);
+  private steps(t0: number, dest: AudioNode, k: number, seconds = Infinity): [AudioScheduledSourceNode, number][] {
+    return STEPS.filter((s) => s + RELAY_LAG + CLUNK_DURATION <= seconds).flatMap((s) => [
+      ...this.clunk(t0 + s, 1.6 * k, dest).map((n): [AudioScheduledSourceNode, number] => [n, t0 + s]),
+      ...this.clunk(t0 + s + RELAY_LAG, 0.7 * k, dest).map((n): [AudioScheduledSourceNode, number] => [n, t0 + s + RELAY_LAG]),
+    ]);
   }
 
   /** A contactor at `t`: a snap with a metallic ring (centered near 2 kHz, as recorded), then the armature's thump. */
-  private clunk(t: number, k: number, input: AudioNode = this.chain[0]): [AudioScheduledSourceNode, number][] {
+  private clunk(t: number, k: number, input: AudioNode = this.chain[0]): AudioScheduledSourceNode[] {
     const c = this.ctx;
     const src = c.createBufferSource();
     src.buffer = noiseBuffer(c);
@@ -303,14 +313,11 @@ export class SynthMotor implements ChezMotor {
     thump.connect(gt).connect(input);
     src.start(t, Math.random() * 0.5, 0.08);
     thump.start(t);
-    thump.stop(t + 0.15);
+    thump.stop(t + CLUNK_DURATION);
     thump.onended = () => {
       for (const n of [src, thump, snap, ring, gs, gr, gt]) n.disconnect();
     };
-    return [
-      [src, t],
-      [thump, t],
-    ];
+    return [src, thump];
   }
 
   /** `r` stops at `end` and frees itself then. */

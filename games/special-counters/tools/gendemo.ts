@@ -1,5 +1,5 @@
-// Re-records the title screen's demo into src/demo.ts: the first stretch of the bot's own run
-// through the first level (the signs, the coins and the jump over the wall), then rebuild.
+// Re-records the title screen demo in src/demo.ts. Kit takes two gold keys in the first room,
+// spends one at the gold door and keeps the spare. Rebuild to put the recording on disk.
 //   cd web && npx vite-node ../games/special-counters/tools/gendemo.ts && npx vite-node ../games/special-counters/build.ts
 import { recordDemo } from '../../kit/demoRecord';
 import { play } from './play';

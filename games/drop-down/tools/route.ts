@@ -2,8 +2,8 @@
 // would press, level by level, taking every coin on the way. Each sign's lesson is acted out,
 // the mistake included, once: in level 1 Kit first tries to hop over Plop (the mound's roof stops him),
 // then walks into the crate (nothing happens: a crate gives way only to a hit), hits it with Enter twice
-// (cracked, then rubble) and Plop drops into the dip; in level 2 he hits the two crates (four hits), stops
-// inside the tunnel and lets soft Pip drift down through him. The checks here fail if anything else happens.
+// (cracked, then rubble) and Plop drops into the dip; in level 2 he breaks the two crates with four hits
+// and walks into soft Pip’s column as it drifts down. The checks here fail if anything else happens.
 import { SCAN } from '../../kit/starter/ids';
 import type { Result, StarterBot } from '../../kit/starter/bot';
 import { ORIGIN } from '../../kit/starter/map';
@@ -65,7 +65,7 @@ async function push(bot: StarterBot, ticks: number): Promise<Result> {
   return r;
 }
 
-/** 1. In the Way: Kit tries to hop Plop and cannot, bumps the crate, and Plop drops into the dip. */
+/** 1. In the Way: The crate survives the bump. The first Enter press cracks it, and the second breaks it, dropping Plop into the dip. */
 export async function inTheWay(bot: StarterBot): Promise<void> {
   const score = bot.sim.ci.score;
   await must(bot, bot.wait(READ), 'reading the first sign');
@@ -116,7 +116,7 @@ export async function inTheWay(bot: StarterBot): Promise<void> {
   await leave(bot, bot.walk(43, 'the exit'), 'the exit');
 }
 
-/** 2. Slow and Soft: Kit walks into two crates, stands still, and soft Pip drifts down through him. */
+/** 2. Slow and Soft: Kit breaks the two crates with four hits and walks into Pip’s column as Pip drifts down. */
 export async function slowAndSoft(bot: StarterBot): Promise<void> {
   const score = bot.sim.ci.score;
   await must(bot, bot.wait(READ), 'reading the first sign');

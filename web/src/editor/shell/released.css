@@ -86,7 +86,6 @@
   }
   .released-text {
     flex: 1 1 0;
-    white-space: nowrap;
   }
   .released-bar button {
     flex: none;
@@ -104,7 +103,7 @@
   font-size: 1.2em;
 }
 
-/* Inline: on the Overview and a file's page the bar sits in the heading row (beside the title and Optimize), not as a bar of its own */
+/* Inline: on the Overview and a file's page the bar sits in the heading row, not as a bar of its own */
 .released-bar.released-inline {
   flex: 0 1 auto;
   margin: 0 0 0 auto;
@@ -122,7 +121,9 @@
   clip-path: inset(50%);
   white-space: nowrap;
 }
-.asset-heading:has(.released-inline) {
+.overview .panel-tabs-heading {
+  display: flex;
+  gap: 4px;
   flex-wrap: wrap;
   align-items: center;
 }
