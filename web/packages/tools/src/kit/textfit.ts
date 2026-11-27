@@ -401,15 +401,22 @@ export function cardOverflow(c: CardScreen): string[] {
   let [x0, x1, y0, y1] = [24, 24, 16, 16];
   while (x0 > 0 && at(x0 - 1, 16) === fill) x0--;
   while (x1 < W - 1 && at(x1 + 1, 16) === fill) x1++;
-  // the box's height is the longest run of its color down (or up) any column inside it: words that
-  // spill over the box's left edge break the run in a column near the edge, but not in every column
+  // Use the most common pair of vertical bounds so one interrupted or extended column cannot set the height.
+  const counts = new Map<number, number>();
+  let most = 0;
   for (let x = x0 + 2; x <= x1 - 2; x++) {
     if (at(x, 16) !== fill) continue;
     let [a, b] = [16, 16];
     while (a > 0 && at(x, a - 1) === fill) a--;
     while (b < H - 1 && at(x, b + 1) === fill) b++;
-    y0 = Math.min(y0, a);
-    y1 = Math.max(y1, b);
+    const bounds = a * H + b;
+    const count = (counts.get(bounds) ?? 0) + 1;
+    counts.set(bounds, count);
+    if (count > most) {
+      most = count;
+      y0 = a;
+      y1 = b;
+    }
   }
   // a Starter card's box is about 60 px tall; a taller field of that color (a blank sheet of paper) is another design
   if (x1 - x0 < 100 || y1 - y0 < 30 || y1 - y0 > 90) return [];

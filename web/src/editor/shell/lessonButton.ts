@@ -2,8 +2,9 @@
 // question (howDoIGo.ts seeHref puts …?lesson=<n> in the address): it opens that level's page
 // of the game's manual in a dialog, so the page and the map are one tap apart. The level is
 // kept from the address when the bar is made, so it stays after the reader opens other files.
+import { loadManual } from '../../manual/loadManual';
 import { h, modal } from '../core/ui';
-import { withDetails, type CatalogEntry } from '../../project/files';
+import type { CatalogEntry } from '../../project/files';
 import { lessonPage, levelTitle } from '../../project/howDoI';
 import { currentRoute } from '../../urlState';
 
@@ -15,7 +16,8 @@ export function lessonButton(entry: CatalogEntry): HTMLElement | null {
 }
 
 async function show(entry: CatalogEntry, level: number): Promise<void> {
-  const full = await withDetails(entry);
+  const full = await loadManual(entry);
+  if (!full) return;
   const page = lessonPage(full, level);
   const title = levelTitle(full, level);
   await modal<void>(`${full.title}${title ? `: ${title}` : ''}`, (close) => {

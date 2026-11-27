@@ -14,12 +14,15 @@ export class Grid {
   /** One block. */
   put(x: number, y: number, ch: string): this {
     if (x < 0 || y < 0 || x >= this.width || y >= this.height) throw new Error(`Grid: (${x}, ${y}) is outside ${this.width}x${this.height}`);
+    if (typeof ch !== 'string' || ch.length !== 1) throw new Error('Grid: a tile must contain one character');
     this.cells[y][x] = ch;
     return this;
   }
 
   /** A rectangle of `ch`, w blocks wide and h high. */
   fill(x: number, y: number, w: number, h: number, ch: string): this {
+    if (w <= 0 || h <= 0) return this;
+    if (x < 0 || y < 0 || x + w > this.width || y + h > this.height) throw new Error(`Grid: rectangle is outside ${this.width}x${this.height}`);
     for (let yy = y; yy < y + h; yy++) for (let xx = x; xx < x + w; xx++) this.put(xx, yy, ch);
     return this;
   }

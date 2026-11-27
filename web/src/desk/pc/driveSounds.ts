@@ -176,13 +176,14 @@ export function renderDriveSound(
       knock(at + 0.045, LATCH, 1.6, on('load'));
       // the motor starts; the head recalibrates: a run of steps to track 0 and the thump at the stop
       const t = at + 0.3;
-      if (on('spin')) spin(t, 1.5);
+      const motorDuration = 1.5;
+      if (on('spin')) spin(t, motorDuration);
       let u = steps(t + 0.1, 7, 0.016, on('heads'));
       knock(u + 0.02, THUMP, 3.5, on('heads'));
       // then the FAT: the head steps to the directory and reads, a few unhurried moves
       u += 0.2;
       for (const n of [3, 2, 4]) u = steps(u, n, 0.022, on('rw')) + 0.12 + rnd() * 0.1;
-      return u - at;
+      return Math.max(t + motorDuration, u) - at;
     }
     case 'floppy-read': {
       if (on('spin')) spin(at, len);

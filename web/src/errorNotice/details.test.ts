@@ -35,5 +35,6 @@ describe('error details', () => {
     expect(refusedChange(new ReadOnlyError('one.map'))).toBe(true);
     expect(refusedChange(new Error('one.map'))).toBe(false);
     expect(refusedChange('ReadOnlyError')).toBe(false);
+    expect(refusedChange(new DOMException('Read-only transaction', 'ReadOnlyError'))).toBe(false);
   });
 });

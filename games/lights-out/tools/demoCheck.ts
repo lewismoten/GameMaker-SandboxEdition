@@ -20,11 +20,10 @@ const r = await replay(
   },
   { maxMinutes: 3 },
 );
-const seen = r.scenes.slice(0, 2).join(' ');
-if (r.error) console.log(r.error);
-console.log(`demo: scenes entered ${r.scenes.join(' ')}; ${r.keysLeft} keys unplayed`);
+const seen = r.scenes.join(' ');
+if (r.error !== undefined) throw r.error;
+console.log(`demo: scenes entered ${seen}; ${r.keysLeft} keys unplayed`);
 if (seen !== '2 3' || r.keysLeft) {
-  console.error(`demoCheck: expected scenes 2 3 (level 1, then the start of level 2) with every key played; got ${seen}`);
-  process.exit(1);
+  throw new Error(`demoCheck: expected scenes 2 3 (level 1, then the start of level 2) with every key played; got ${seen}`);
 }
 console.log('demoCheck ok: walked past the three lamps and went out the door, then started level 2');

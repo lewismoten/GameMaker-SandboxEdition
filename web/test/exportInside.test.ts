@@ -109,8 +109,8 @@ describe('Inside this game', () => {
     for (const n of off.files.names()) expect(sameBytes(got!.files.get(n), off.files.get(n)), n).toBe(true);
   });
 
-  it('the JSON-LD is a valid VideoGame', async () => {
-    if (!have('sandcast')) return;
+  it.skipIf(!have('sandcast'))('the JSON-LD is a valid VideoGame', async () => {
+    expect.hasAssertions();
     const { html } = await exportOne('sandcast', ABOUT);
     const ld = JSON.parse(/<script type="application\/ld\+json">(.*?)<\/script>/s.exec(html)![1]) as {
       '@context': string;

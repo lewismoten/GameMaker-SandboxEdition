@@ -151,7 +151,6 @@ export async function runChecks(files: GameFiles, opt: CheckOptions = {}): Promi
       ...hiddenExits(game, d),
       ...noWayOut(d, game),
       ...music(d, game, files),
-      ...untitledGame(d, game),
       ...flashing(d),
       ...shadowedLinks(game, d),
       ...startsOnLink(game, d, all),
@@ -168,6 +167,7 @@ export async function runChecks(files: GameFiles, opt: CheckOptions = {}): Promi
   }
   if (opt.scene === undefined)
     findings.push(
+      ...untitledGame(game),
       ...controls(files),
       ...helpKeys(game, files),
       ...textContrast(game, files, opt.player),

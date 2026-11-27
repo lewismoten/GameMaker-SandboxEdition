@@ -9,6 +9,7 @@ describe('biosId', () => {
   it('prints zeros when the build knows no commit', () => {
     expect(biosId('')).toBe('07/21/93-AWK-486DX2-00000000-00');
     expect(biosId('not-a-hash')).toBe('07/21/93-AWK-486DX2-00000000-00');
+    expect(biosId('deadbeef-this-is-not-a-commit')).toBe('07/21/93-AWK-486DX2-00000000-00');
   });
 
   it('fits the bottom row', () => {

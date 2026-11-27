@@ -1,5 +1,5 @@
 // Kit and the Starter helpers, with appearances divided by each game's leading explorer.
-import { heroOfStarter } from '../project/starterHeroes';
+import { STARTER_HEROES } from '../project/starterHeroes';
 import type { CastGame, CastMember } from './castTypes';
 
 export const STARTERS: CastMember[] = [
@@ -101,7 +101,7 @@ export const STARTERS: CastMember[] = [
         as: 'rides the bed of a truck while the scenery slides past, then watches a little car drive a loop and waits for three laps to open the door',
       },
       { game: 'momentum', as: 'glides on after letting go, and runs up to hop wide gaps' },
-      { game: 'jump-boots', as: 'taps up a tall cliff like a jet pack, then jumps twice in boots that hold only two jumps' },
+      { game: 'jump-boots', as: 'taps up a tall cliff like a jet pack, then jumps twice in boots that start with two jumps' },
       { game: 'diagonal-wrap', as: 'follows a road down the map and out of the bottom, then round the map three times on a tilted one' },
       { game: 'shore', as: 'crosses a pier over a sea that turns itself, then walks a beach where the waves run up the sand and back' },
       { game: 'twinkle', as: 'walks a night meadow under stars that blink all at once, then under stars that twinkle in no step' },
@@ -195,7 +195,14 @@ const HELPERS: { id: string; name: string; role: string; hi: string; look: strin
 /** The cast with Kit's list split by who leads each Starter (starterHeroes.ts), and the helpers after him. */
 export function withHelpers(list: CastMember[]): CastMember[] {
   const kit = list.find((m) => m.id === 'kit')!;
-  const mine = (name: string) => kit.appears.filter((a) => heroOfStarter(a.game) === name);
+  const descriptions = new Map(kit.appears.map((a) => [a.game, a]));
+  const mine = (name: string) =>
+    Object.entries(STARTER_HEROES)
+      .filter(([, hero]) => hero === name)
+      .map(([id]) => {
+        const game = id as CastGame;
+        return descriptions.get(game) ?? { game, as: 'leads this Starter' };
+      });
   const helpers: CastMember[] = HELPERS.map((h) => ({
     id: h.id,
     name: h.name,

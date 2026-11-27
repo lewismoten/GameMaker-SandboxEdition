@@ -1,15 +1,16 @@
 // The phone kit's data and explode math: the real parts file is read and split into groups, and the stack
 // offsets are worked out from the data, so extra parts (a shell, a dial) need no code.
 import { readFileSync } from 'node:fs';
-import { describe, expect, it } from 'vitest';
-import { groupOf, parseParts, phoneSize, shows, variantBase, type PartsFile, type PhoneVariant } from './phoneData';
+import { describe, expect, it, vi } from 'vitest';
+import { groupOf, loadPhone, parseParts, phoneSize, shows, variantBase, type PartsFile, type PhoneVariant } from './phoneData';
 import { explodeStacks, moved, stackOf } from './phoneExplode';
 
 const read = (sub: string) => {
   const dir = new URL(`../../../../../games/year2000/phone/${sub}viewer/`, import.meta.url);
   const file = JSON.parse(readFileSync(new URL('parts.json', dir), 'utf8')) as PartsFile;
   const bin = readFileSync(new URL('parts.bin', dir));
-  return { file, parts: parseParts(file, bin.buffer.slice(bin.byteOffset, bin.byteOffset + bin.byteLength)) };
+  const body = bin.buffer.slice(bin.byteOffset, bin.byteOffset + bin.byteLength);
+  return { file, body, parts: parseParts(file, body) };
 };
 const builds: Record<PhoneVariant, ReturnType<typeof read>> = { cheap: read(''), deluxe: read('deluxe/') };
 const parts = builds.cheap.parts;
@@ -18,6 +19,35 @@ const box = (group: string, side: 'front' | 'back', lo: number, hi: number) => (
   group,
   side,
   bbox: [0, lo, 0, 1, hi, 1] as [number, number, number, number, number, number],
+});
+
+it('retries an empty phone download with the intact parts file', async () => {
+  const { file, body } = builds.cheap;
+  const fetch = vi
+    .fn()
+    .mockResolvedValueOnce(Response.json(file))
+    .mockResolvedValueOnce(new Response())
+    .mockResolvedValueOnce(Response.json(file))
+    .mockResolvedValueOnce(new Response(body));
+  vi.stubGlobal('fetch', fetch);
+  try {
+    await expect(loadPhone()).rejects.toThrow();
+    const set = await loadPhone();
+    expect(set.parts.map((p) => [p.positions.length, p.indices.length])).toEqual(file.parts.map((p) => [p.pos.count, p.idx.count]));
+    expect(await loadPhone()).toBe(set);
+    expect(fetch).toHaveBeenCalledTimes(4);
+  } finally {
+    vi.unstubAllGlobals();
+  }
+});
+
+it('rejects a shortened index block and out-of-range part slices', () => {
+  const { file, body } = builds.cheap;
+  expect(() => parseParts(file, body.slice(0, -4))).toThrow();
+  for (const field of ['pos', 'idx'] as const) {
+    const part = { ...file.parts[0], [field]: { offset: -1, count: 1 } };
+    expect(() => parseParts({ ...file, parts: [part] }, body)).toThrow();
+  }
 });
 
 describe('groups', () => {

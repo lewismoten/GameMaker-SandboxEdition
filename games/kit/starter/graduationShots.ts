@@ -9,8 +9,10 @@ import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { writePng } from '@lewismoten/gamemaker-sandbox-tools/kit/png';
 import { replay } from '../walkthrough';
 
-const [id, out, prefix = '', every] = process.argv.slice(2);
+const [id, out, prefix = '', interval] = process.argv.slice(2);
 if (!id || !out) throw new Error('usage: graduationShots.ts <game id> <outDir> [prefix] [walkEvery]');
+const every = interval === undefined ? undefined : Number(interval);
+if (every !== undefined && (!Number.isSafeInteger(every) || every <= 0)) throw new Error('walkEvery must be a positive safe integer');
 mkdirSync(out, { recursive: true });
 const disk = new URL(`../../${id}/disk/`, import.meta.url);
 const read = (n: string) => new Uint8Array(readFileSync(new URL(n, disk)));
@@ -48,8 +50,13 @@ if (every) {
       mx = w.mx;
     },
     onFrame: (screen, s) => {
-      if (s < 2 || ++n % Number(every)) return;
-      writePng(join(out, `${prefix}${id}-walk-s${scene}-x${String(mx).padStart(4, '0')}.png`), pic(screen.pixels, 320, 200), screen.palette, 2);
+      if (s < 2 || ++n % every) return;
+      writePng(
+        join(out, `${prefix}${id}-walk-s${scene}-f${String(n).padStart(5, '0')}-x${String(mx).padStart(4, '0')}.png`),
+        pic(screen.pixels, 320, 200),
+        screen.palette,
+        2,
+      );
     },
   });
 }

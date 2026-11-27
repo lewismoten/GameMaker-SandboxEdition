@@ -180,10 +180,12 @@ def stop_events(writes):
     return stops
 
 
-def silent_gaps(rms, window=.01, threshold=.001, minimum=.1):
+def silent_gaps(rms, window=.01, threshold=.001, minimum=.1, duration=None, rate=1):
+    if duration is None:
+        duration = len(rms) * window
     audible = np.flatnonzero(rms >= threshold)
     if not len(audible):
-        return {'startup_seconds': len(rms) * window, 'gaps': []}
+        return {'startup_seconds': duration / rate, 'gaps': []}
     start = int(audible[0])
     gaps = []
     edge = None
@@ -192,10 +194,11 @@ def silent_gaps(rms, window=.01, threshold=.001, minimum=.1):
         if silent and edge is None:
             edge = i
         if not silent and edge is not None:
-            if (i - edge) * window >= minimum:
-                gaps.append({'start_seconds': edge * window, 'length_seconds': (i - edge) * window})
+            length = (duration - edge * window if i == len(rms) else (i - edge) * window) / rate
+            if length >= minimum:
+                gaps.append({'start_seconds': edge * window / rate, 'length_seconds': length})
             edge = None
-    return {'startup_seconds': start * window, 'gaps': gaps}
+    return {'startup_seconds': start * window / rate, 'gaps': gaps}
 
 
 def wav_measure(path, window=.01, start=0.0, end=None):
@@ -208,9 +211,11 @@ def wav_measure(path, window=.01, start=0.0, end=None):
         end = min(duration, end if end is not None else duration)
         if not 0 <= start < end:
             raise ValueError('invalid WAV region')
-        wav.setpos(round(start * rate))
+        start_frame = round(start * rate)
+        wav.setpos(start_frame)
         frames = round(window * rate)
-        remaining = round((end - start) * rate)
+        region_frames = round(end * rate) - start_frame
+        remaining = region_frames
         values = []
         while remaining >= frames:
             count = min(remaining // frames, 500) * frames
@@ -219,14 +224,19 @@ def wav_measure(path, window=.01, start=0.0, end=None):
                 raise ValueError('truncated PCM')
             values.extend(np.sqrt(np.mean(data.reshape(-1, frames * channels) ** 2, axis=1)).tolist())
             remaining -= count
-    result = silent_gaps(np.array(values), window)
+        if remaining:
+            tail = np.frombuffer(wav.readframes(remaining), dtype='<i2').astype(float) / 32768
+            if len(tail) != remaining * channels:
+                raise ValueError('truncated PCM')
+            values.append(np.sqrt(np.mean(tail ** 2)))
+    result = silent_gaps(np.array(values), frames, duration=region_frames, rate=rate)
     if start > 0 and result['startup_seconds'] >= .1:
         result['gaps'].insert(0, {'start_seconds': 0, 'length_seconds': result['startup_seconds']})
         result['startup_seconds'] = 0
     for gap in result['gaps']:
-        gap['start_seconds'] += start
+        gap['start_seconds'] += start_frame / rate
     result.update(duration_seconds=duration, region_start_seconds=start, region_end_seconds=end,
-                  rms_window_seconds=window, silence_threshold=.001, minimum_gap_seconds=.1)
+                  rms_window_seconds=frames / rate, silence_threshold=.001, minimum_gap_seconds=.1)
     return result
 
 

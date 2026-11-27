@@ -736,7 +736,12 @@ registerEditor(['map'], (host, project, file) => {
     if (!viewport.wrapped && marks.any()) marks.redraw();
     noteView();
   }
-  const { noteView, flushView, restoreView, stopRestoring } = mapViewMemory({
+  const {
+    noteView,
+    dispose: disposeViewMemory,
+    restoreView,
+    stopRestoring,
+  } = mapViewMemory({
     project,
     file,
     host,
@@ -833,6 +838,7 @@ registerEditor(['map'], (host, project, file) => {
             selection: () => tools.selection,
             blockSet: () => bg,
             monsters: () => mons,
+            placedMonsters: () => map.monsters,
             wrap: () => wrapping,
             scene: set.scenes[0],
             hero: set.chr && project.files.has(set.chr) ? { chr: set.chr, cbl: set.cbl, mbl: mblName } : undefined,
@@ -1004,7 +1010,7 @@ registerEditor(['map'], (host, project, file) => {
   restoreView();
   return () => {
     hideTip();
-    flushView();
+    disposeViewMemory();
     tip.remove();
     clearTimeout(redrawTimer);
     markers.dispose();

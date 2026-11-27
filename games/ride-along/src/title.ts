@@ -24,7 +24,7 @@ export function titlePicture(pal: Pal, hero: Pixels, name: string, tagline: stri
   scaleBlit(p, hero, 40, 160 - 80, 2);
   // a level row of stars high in the sky (a trail rising from the helper's waist read as a stream)
   const star = starSprite(pal);
-  for (let i = 0; i < 4; i++) scaleBlit(p, star, 98 + i * 30, 74 + (i % 2) * 6, 1);
+  for (let i = 0; i < 4; i++) scaleBlit(p, star, 98 + i * 30, 74, 1);
   scaleBlit(p, rocket(pal, true, 1), 226, 160 - 88, 2);
   frameOf(p, pal, 'neon');
   return p;

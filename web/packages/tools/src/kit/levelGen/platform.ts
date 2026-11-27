@@ -77,7 +77,7 @@ function attempt(w: number, h: number, r: Stream, o: PlatformOptions, d: number)
   const gapFor = (rise: number) => Math.max(1, Math.floor((cap.gapAt[Math.max(0, Math.min(rise, cap.gapAt.length - 1))] ?? cap.maxGap) * d));
   // A full jump must leave the two-high hero inside the area, even on a ledge.
   const topMin = Math.ceil((o.physics.rise + BLEN) / BLEN);
-  const rowMin = Math.max(topMin + 1, Math.ceil(o.physics.rise / BLEN) + 3);
+  const rowMin = Math.ceil(o.physics.rise / BLEN) + 3;
   const rowMax = h - 4;
   const set = (x: number, y: number, c: number) => (area.cells[y * w + x] = c);
   const solidCol = (x: number, top: number) => {

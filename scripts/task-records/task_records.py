@@ -91,6 +91,24 @@ def read_path(board_path, client_key, row):
         raise Failure('board_unavailable') from None
 
 
+RECOVERY_QUERY = 'SELECT key FROM requests WHERE native_key=? LIMIT 2'
+
+
+def prepare_reservations(db):
+    """Backfill legacy keys under the adapter lock and stamp future reservations."""
+    db.create_function('native_intake_key', 1,
+                       lambda key: 'intake-' + hashlib.sha256(key.encode()).hexdigest())
+    if 'native_key' not in {row[1] for row in db.execute('PRAGMA table_info(requests)')}:
+        db.execute('ALTER TABLE requests ADD COLUMN native_key TEXT')
+    db.execute('CREATE INDEX IF NOT EXISTS requests_native ON requests(native_key)')
+    db.execute('CREATE INDEX IF NOT EXISTS requests_task ON requests(task_id)')
+    db.execute('UPDATE requests SET native_key=native_intake_key(key) WHERE native_key IS NULL')
+    db.execute('CREATE TEMP TRIGGER IF NOT EXISTS stamp_reservation AFTER INSERT ON main.requests '
+               'BEGIN UPDATE requests SET native_key=native_intake_key(NEW.key) '
+               'WHERE key=NEW.key; END')
+    db.commit()
+
+
 def resolve_request(db, key, board_path):
     """Also recover board-ID reads after create-before-ledger-commit crashes."""
     resolved = lookup_request(db, key)
@@ -104,13 +122,12 @@ def resolve_request(db, key, board_path):
         raise Failure('board_unavailable') from None
     if not found or not found[0]:
         return None
-    matches = [candidate for (candidate,) in db.execute('SELECT key FROM requests')
-               if 'intake-' + hashlib.sha256(candidate.encode()).hexdigest() == found[0]]
+    matches = db.execute(RECOVERY_QUERY, (found[0],)).fetchall()
     if len(matches) > 1:
         raise Failure('ambiguous_record')
     if not matches:
         return None
-    resolved = lookup_request(db, matches[0])
+    resolved = lookup_request(db, matches[0][0])
     if resolved is None:
         return None
     if resolved[1][1] not in (None, key):

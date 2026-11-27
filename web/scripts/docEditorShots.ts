@@ -5,7 +5,7 @@
 // inside and makes a copy through "Edit a copy". Editor shots become lossless WebP (needs cwebp), the
 // two web-*.png shots stay PNG. Without --only it retakes every shot listed below.
 import { execFileSync } from 'node:child_process';
-import { mkdirSync, rmSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, renameSync, rmSync } from 'node:fs';
 import { resolve } from 'node:path';
 import type { Page } from 'playwright-core';
 import { arg, launch } from './perfLib';
@@ -56,10 +56,16 @@ try {
     if (id.startsWith('web-')) {
       await p.screenshot({ path: `${out}/${id}.png`, clip });
     } else {
-      const png = `${out}/${id}.tmp.png`;
-      await p.screenshot({ path: png, clip });
-      execFileSync('cwebp', ['-quiet', '-lossless', '-z', '9', png, '-o', `${out}/editor/${id}.webp`]);
-      rmSync(png);
+      const stage = mkdtempSync(`${out}/editor/.${id}-`);
+      try {
+        const png = `${stage}/shot.png`;
+        const webp = `${stage}/shot.webp`;
+        await p.screenshot({ path: png, clip });
+        execFileSync('cwebp', ['-quiet', '-lossless', '-z', '9', png, '-o', webp]);
+        renameSync(webp, `${out}/editor/${id}.webp`);
+      } finally {
+        rmSync(stage, { recursive: true, force: true });
+      }
     }
     console.log('shot', id);
   };
