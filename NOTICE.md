@@ -248,6 +248,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex fixed and tested the Disk labels layout audit’s fixture and selection checks.
 - OpenAI Codex fixed and tested route validation in the Color Doors viewport checker.
 - OpenAI Codex fixed and tested threshold validation in the seam scanner for The Mountain Moved Next Door.
+- OpenAI Codex fixed and tested the quiet interval before drawing box thumbnails and the check for a completed box close.
 - OpenAI Codex fixed and tested validation before writing Level Maps metadata.
 - OpenAI Codex fixed and tested the Sound Board walkthrough’s sound-cutoff check.
 - OpenAI Codex corrected and tested the game version and Frost Lot crossing deadline for the fifteen-level edition of The Thank-You Parade.
