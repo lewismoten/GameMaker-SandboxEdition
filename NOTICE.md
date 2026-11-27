@@ -245,6 +245,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex fixed and tested validation before writing Level Maps metadata.
 - OpenAI Codex fixed and tested the Sound Board walkthrough’s sound-cutoff check.
 - OpenAI Codex corrected and tested the game version and Frost Lot crossing deadline for the fifteen-level edition of The Thank-You Parade.
+- OpenAI Codex corrected and tested the Science Fair recovery check’s description.
 - OpenAI Codex fixed and tested the Score Popups final coin and demo payout checks.
 - OpenAI Codex fixed and tested recovery of missing Year 2000 cryptex kit files.
 - OpenAI Codex fixed and tested the timing of short pull-away sounds for THE CHEZ.
