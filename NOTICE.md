@@ -137,6 +137,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex fixed and tested guest disk isolation and disposal.
 - OpenAI Codex fixed and tested clipboard verification in the error-notice check.
 - OpenAI Codex fixed and tested screen-settle timeouts in the headless desk driver.
+- OpenAI Codex updated and tested the Home Keys guide to the optional three-coin ledge.
 - OpenAI Codex fixed and tested the editor’s file count accessibility and shareware notice layout on phones.
 - OpenAI Codex fixed and tested walkthrough segment selection in the Pocket host checker.
 - OpenAI Codex fixed and tested the Switches title demo checker.
