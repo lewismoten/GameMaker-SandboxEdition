@@ -263,6 +263,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex fixed and tested level range validation in the Pass the Pie partial-run tool.
 - OpenAI Codex wrote the headless audit for built title demos and saved walkthroughs.
 - OpenAI Codex fixed and tested the Snow Trails route checks for drift growth and footprint persistence.
+- OpenAI Codex fixed and tested rocket detection in the Fireworks title demo checker.
 - OpenAI Codex fixed and tested the Around the Room title demo checker.
 - OpenAI Codex fixed and tested the Say Something title demo checker.
 - OpenAI Codex fixed and tested replay error handling in the Health and Hearts title demo checker.
