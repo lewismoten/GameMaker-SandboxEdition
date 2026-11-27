@@ -125,6 +125,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex fixed and tested tap zoom in the map editor.
 - OpenAI Codex fixed and tested keyboard scrolling during editor history restoration.
 - OpenAI Codex fixed and tested trinket loading on the box shelf.
+- OpenAI Codex fixed and tested the PLAYGAME title color in the Technical Reference memory diagram.
 - OpenAI Codex fixed and tested the editor’s file count accessibility and shareware notice layout on phones.
 - OpenAI Codex fixed and tested walkthrough segment selection in the Pocket host checker.
 - OpenAI Codex fixed and tested the Switches title demo checker.

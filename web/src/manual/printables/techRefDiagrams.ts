@@ -23,7 +23,8 @@ function figure(viewBox: string, markup: string, alt: string, caption: string): 
   return h('figure', { class: 'tr-fig' }, svg, h('figcaption', null, caption));
 }
 
-const text = (x: number, y: number, s: string, extra = '') => `<text x="${x}" y="${y}" ${FONT} font-size="10" fill="${INK}" ${extra}>${s}</text>`;
+const text = (x: number, y: number, s: string, extra = '', color = INK) =>
+  `<text x="${x}" y="${y}" ${FONT} font-size="10" fill="${color}" ${extra}>${s}</text>`;
 
 /**
  * PLAYGAME's memory, in K (1,024 bytes), from the bottom of memory up. The program: PLAYGAME.EXE's load image and minimum
@@ -104,9 +105,7 @@ function memory(): HTMLElement {
     return (
       `<rect x="${bx}" y="${a}" width="${bw}" height="${z - a}" fill="none" stroke="${c}" stroke-width="1.8"/>` +
       `<path d="M84 ${a + 1} H78 V${z - 1} H84" fill="none" stroke="${c}" stroke-width="1.4"/>` +
-      lines
-        .map((l, i) => text(72, m + 4 + (i - (lines.length - 1) / 2) * 12, l, `text-anchor="end" fill="${c}"${i === 0 ? ' font-weight="700"' : ''}`))
-        .join('')
+      lines.map((l, i) => text(72, m + 4 + (i - (lines.length - 1) / 2) * 12, l, `text-anchor="end"${i === 0 ? ' font-weight="700"' : ''}`, c)).join('')
     );
   };
   const markup = [
