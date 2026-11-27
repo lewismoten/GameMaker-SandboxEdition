@@ -5,10 +5,14 @@ import { sizeText, totalsOf, totalsText } from './collectionPreview';
 describe('collection preview', () => {
   const games = [{ fileCount: 40, bytes: 1024 * 1024 }, { fileCount: 10, bytes: 2048, missing: 3 }, { fileCount: 5 }, { fileCount: 1, bytes: 0, missing: 1 }];
   it('adds games, files, bytes and missing files', () => {
-    expect(totalsOf(games)).toEqual({ games: 4, files: 56, bytes: 1024 * 1024 + 2048, gamesMissing: 2, filesMissing: 4 });
+    expect(totalsOf(games)).toEqual({ games: 4, files: 56, bytes: undefined, gamesMissing: 2, filesMissing: 4 });
   });
   it('counts nothing for no games', () => {
     expect(totalsOf([])).toEqual({ games: 0, files: 0, bytes: 0, gamesMissing: 0, filesMissing: 0 });
+  });
+  it('omits an unknown size and shows a known zero', () => {
+    expect(totalsText(totalsOf([{ fileCount: 3 }]))).toBe('1 game, 3 files');
+    expect(totalsText(totalsOf([{ fileCount: 3, bytes: 0 }]))).toBe('1 game, 3 files, 0 bytes');
   });
   it('writes sizes for people', () => {
     expect(sizeText(512)).toBe('512 bytes');
@@ -17,7 +21,7 @@ describe('collection preview', () => {
   });
   it('words the totals, singular and plural', () => {
     expect(totalsText(totalsOf([{ fileCount: 1, bytes: 10 }]))).toBe('1 game, 1 file, 10 bytes');
-    expect(totalsText(totalsOf(games))).toBe('4 games, 56 files, 1.0 MB; 2 are missing files (4 files in all)');
+    expect(totalsText(totalsOf(games))).toBe('4 games, 56 files; 2 are missing files (4 files in all)');
     expect(totalsText(totalsOf([{ fileCount: 2, bytes: 5, missing: 1 }]))).toBe('1 game, 2 files, 5 bytes; 1 is missing files (1 file in all)');
   });
 });

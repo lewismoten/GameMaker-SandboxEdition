@@ -29,7 +29,6 @@ import { buildLevels } from './src/levels';
 import { song } from './src/song';
 import { titlePicture } from './src/title';
 import { viewPicture } from './src/views';
-import { simulatePalette } from '@lewismoten/gamemaker-sandbox-engine/gfx/colorVision';
 import { lessonPalette } from './src/colorBlocks';
 import { CREDITS, HOWTO, LOST, STORY, WON } from './src/text';
 
@@ -47,7 +46,8 @@ const door = heroPicture(book, 'doorTop', 'doorBottom').map((_x, _y, c) => (c ==
 // the game's shared data: one block set, one palette, one hero, an (empty) set of monsters, one song
 disk.put('colors.pal', serializePalette(pal.pal));
 // A DOS scene palette makes the lesson playable with the same ambiguity as the card.
-disk.put('alike.pal', serializePalette(lessonPalette(pal)));
+const gameplayPalette = lessonPalette(pal);
+disk.put('alike.pal', serializePalette(gameplayPalette));
 disk.put('colors.bbl', serializeBlocks(book.finish()));
 disk.put('colors.mbl', serializeBlocks(monsterBlocks.finish()));
 disk.put('colors.mon', serializeMonsters(buildMonsters(monsterBlocks)));
@@ -64,9 +64,9 @@ disk.put('colors.cmf', song());
 levels.forEach((l, i) => {
   disk.put(`${l.file}.map`, serializeMap(l.map.done()));
   disk.put(`${l.file}.gif`, gif(cardPicture(pal, book, hero, i + 1, levels.length, l.title, l.hint), pal));
-  // the card, then the level's row of plates as you see it, then as a player who sees red and green alike can
+  // Show the original colors first, then the palette the level uses.
   const [safe, hot] = i === 0 ? ['plateSafe', 'plateHot'] : ['plateStripe', 'spikeRed'];
-  const view = viewPicture(pal, book, safe, hot, 'THE LEVEL, AS YOU SEE IT', l.hint, 40 + i);
+  const view = viewPicture(pal, book, safe, hot, 'ORIGINAL COLORS', i === 0 ? 'THE PLATES DIFFER ONLY IN COLOR' : l.hint, 40 + i);
   const alike = viewPicture(
     pal,
     book,
@@ -77,7 +77,7 @@ levels.forEach((l, i) => {
     40 + i,
   );
   disk.put(`${l.file}view.gif`, gif(view, pal));
-  disk.put(`${l.file}alike.gif`, gif(alike, { ...pal, pal: simulatePalette(pal.pal, 'deutan') }));
+  disk.put(`${l.file}alike.gif`, gif(alike, { ...pal, pal: gameplayPalette }));
   disk.put(
     `${l.file}.lst`,
     serializeSlideList([

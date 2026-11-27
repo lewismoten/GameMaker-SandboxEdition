@@ -183,6 +183,35 @@ describe('seoBuild', () => {
     }
   });
 
+  it('links to each art course at its previewable HTML address', async () => {
+    const browser = await chromium.launch();
+    try {
+      const page = await browser.newPage();
+      const base = inject('appBase');
+      await page.goto(new URL('art-courses.html', base).href, { waitUntil: 'commit' });
+      const courses = readingPages.filter((p) => p.hash.startsWith('#/art-courses/'));
+      const links = page.locator('.ac-list a');
+      await links.first().waitFor();
+      expect(await links.evaluateAll((items) => items.map((a) => (a as HTMLAnchorElement).href))).toEqual(
+        courses.map((course) => new URL(course.file, base).href),
+      );
+      await links.nth(1).click();
+      await page.locator('.ac-pager').waitFor();
+      const reader = await browser.newPage({ javaScriptEnabled: false });
+      for (const [selector, course] of [
+        ['.ac-prev', courses[0]],
+        ['.ac-next', courses[2]],
+      ] as const) {
+        const url = await page.locator(selector).evaluate((a: HTMLAnchorElement) => a.href);
+        expect(url).toBe(new URL(course.file, base).href);
+        await reader.goto(url);
+        expect(await reader.locator('meta[property="og:description"]').getAttribute('content')).toBe(course.description);
+      }
+    } finally {
+      await browser.close();
+    }
+  }, 60_000);
+
   it('opens the next Guide chapter at its static address with and without JavaScript', async () => {
     const browser = await chromium.launch();
     try {

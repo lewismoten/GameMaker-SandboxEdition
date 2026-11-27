@@ -20,8 +20,8 @@ const r = await replay(
   },
   { maxMinutes: 4 },
 );
+if (r.error !== undefined) throw r.error;
 const seen = r.scenes.slice(0, 3).join(' ');
-if (r.error) console.log(r.error);
 console.log(`demo: scenes entered ${r.scenes.join(' ')}; ${r.keysLeft} keys unplayed`);
 if (seen !== '2 4 5' || r.keysLeft || r.scenes.includes(1)) {
   console.error(`demoCheck: expected scenes 2 4 5 with every key played and no ending; got ${seen}`);

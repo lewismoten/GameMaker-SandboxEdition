@@ -84,6 +84,7 @@ export function buildGame(levels: Level[]): Game {
   addReturnScenes(
     game,
     levels.map((_, i) => hubScene(i)),
+    levels.flatMap((level, i) => level.room.pals.map((_, k) => game.scenes[roomScene(i, k)].links[0])),
   );
 
   title.links[0] = link(2, [0, 0], levels[0].hub.enter);

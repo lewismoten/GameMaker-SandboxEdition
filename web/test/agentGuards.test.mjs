@@ -4,7 +4,7 @@ import { spawnSync } from 'node:child_process';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { runHeavy, tryAcquire } from '../../scripts/heavy.mjs';
 import { parseCall, MAIN_CHECKOUT } from '../../scripts/hooks/lib.mjs';
 import { decide as mainMerge } from '../../scripts/hooks/noMainCheckoutMerge.mjs';
@@ -25,12 +25,50 @@ describe('heavy', () => {
     expect(log).toMatch(/wait_ms=\d+\trun_ms=\d+\texit=7\t.*\tnode -e process.exit\(7\)\n$/);
   });
 
+  it('keeps an initializing slot exclusive', () => {
+    const dir = tmp();
+    const slot = path.join(dir, 'slot-0.lock');
+    const fd = fs.openSync(slot, 'wx');
+    try {
+      expect(tryAcquire(dir, 1)).toBeNull();
+      fs.writeFileSync(fd, String(process.pid));
+      expect(fs.readFileSync(slot, 'utf8')).toBe(String(process.pid));
+    } finally {
+      fs.closeSync(fd);
+    }
+  });
+
+  it.each(['0', '-1', 'NaN', 'Infinity', '1.5'])('rejects slot count %s before polling', async (slots) => {
+    const loadavg = vi.fn(() => {
+      throw new Error('polled');
+    });
+    await expect(runHeavy(['node'], { dir: tmp(), env: { HEAVY_SLOTS: slots }, loadavg })).resolves.toBe(2);
+    expect(loadavg).not.toHaveBeenCalled();
+  });
+
   it('frees a dead holder slot and respects a live one', () => {
     const dir = tmp();
     fs.writeFileSync(path.join(dir, 'slot-0.lock'), '999999999'); // not a live pid
     fs.writeFileSync(path.join(dir, 'slot-1.lock'), String(process.pid)); // live
-    expect(tryAcquire(dir, 2)).toBe(path.join(dir, 'slot-0.lock'));
+    const release = tryAcquire(dir, 2);
+    expect(release).toBeTypeOf('function');
     expect(tryAcquire(dir, 2)).toBeNull(); // both held by live pids now
+    release();
+    const next = tryAcquire(dir, 2);
+    release();
+    expect(tryAcquire(dir, 2)).toBeNull();
+    next();
+  });
+
+  it('recovers a slot with a dead owner marker', () => {
+    const dir = tmp();
+    const slot = path.join(dir, 'slot-0.lock');
+    fs.mkdirSync(slot);
+    fs.writeFileSync(path.join(slot, '999999999-abandoned'), '');
+    const release = tryAcquire(dir, 1);
+    expect(release).toBeTypeOf('function');
+    expect(tryAcquire(dir, 1)).toBeNull();
+    release();
   });
 
   it('waits while the load is over the limit', async () => {

@@ -1,7 +1,6 @@
-// The front of the PC case: a two-digit seven-segment MHz display, the hard disk's light, and two
-// 5.25" bay for the CD-ROM drive (bright white faceplate, tray, headphone jack, volume wheel, busy
-// light, eject button), a smaller 3.5" bay with the floppy drive turned on its side (slot, activity
-// light and eject push-button), the key lock and the brand badge. Sizes are mm from one factor.
+// The PC case front has a two-digit seven-segment MHz display, a hard disk light, a key lock
+// and a brand badge. Two bays sit side by side: a 5.25-inch bay for the CD-ROM drive and a
+// 3.5-inch bay for the floppy drive with its horizontal slot. Both use the same mm scale.
 import { h } from '../../editor/core/ui';
 import type { DriveSound } from './driveSounds';
 
@@ -198,8 +197,11 @@ export function cdDrive(onEject: () => void): CdDrive {
   return {
     el,
     setDisc(title) {
-      if (title) el.dataset.disk = title;
-      else delete el.dataset.disk;
+      if (title) {
+        el.dataset.disk = title;
+        this.busy(1800);
+        sound('cd-spin', 1800);
+      } else delete el.dataset.disk;
       el.title = title ? `Drive D: ${title}` : 'Drive D: CD-ROM (empty)';
     },
     busy(ms = 1400) {
@@ -239,7 +241,7 @@ export function openTray(drive: CdDrive, wait = TRAY_WAIT_MS): Promise<void> {
   return done;
 }
 
-/** Slides the tray back in (a second press of eject, or its wait running out); then a disc in it spins up. */
+/** Slides the tray back in (a second press of eject, or its wait running out). */
 export function closeTray(drive: CdDrive): void {
   const t = trayOf(drive);
   if (t.state === 'closed' || t.state === 'closing') return;
@@ -250,9 +252,5 @@ export function closeTray(drive: CdDrive): void {
   t.timer = setTimeout(() => {
     t.state = 'closed';
     t.closed.splice(0).forEach((r) => r());
-    if (drive.el.dataset.disk) {
-      drive.busy(1800);
-      sound('cd-spin', 1800);
-    }
   }, TRAY_SLIDE_MS);
 }

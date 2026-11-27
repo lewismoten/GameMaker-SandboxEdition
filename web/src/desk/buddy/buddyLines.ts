@@ -80,7 +80,7 @@ export function adoptStored(mind: Mind, known: BuddyKept, stored: BuddyKept): bo
 
 /** How the buddy takes `ev` at `now`; changes `mind`. Undefined: nothing to show. */
 export function react(mind: Mind, ev: BuddyEvent, now: number): Reaction | undefined {
-  const pick = (list: readonly string[], t = '') => list[mind.turn++ % list.length].replace('{t}', t);
+  const pick = (list: readonly string[], t = '') => list[mind.turn++ % list.length].replace('{t}', () => t);
   /** A line, unless it is quiet (or, for an ordinary line, it spoke too recently). */
   const say = (pose: Pose, line: string | undefined, big = false): Reaction => {
     if (!line || mind.quiet || (!big && now - mind.lastLine < LINE_GAP)) return { pose };

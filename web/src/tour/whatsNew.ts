@@ -1,8 +1,6 @@
-// "What's new": the tour steps added since a visitor's last visit (steps.ts `since`), and the
-// visit's day is `seenDay.ts`.
-// The day itself is in seenDay.ts. The ? menu offers these steps (tourButton.ts).
+// The Guides menu offers dated tour steps added since the browser's saved watermark.
 import { CHAPTERS } from './chapters/index';
-import { isDay } from './seenDay';
+import { isDay, parseSeen } from './seenDay';
 import type { Chapter, TourStep } from './steps';
 
 /** The most steps one "What's new" tour plays; the CHANGELOG has the rest. */
@@ -14,13 +12,16 @@ interface NewStep {
 }
 
 /**
- * The steps with a `since` after `seen`, newest first (ties keep tour order), at most `max`.
- * A `seen` that is not a day gives none, so a damaged value offers nothing.
+ * Unseen steps, newest first (ties keep tour order), at most `max`.
+ * A legacy day has no known step IDs, so its equal-day steps are offered once.
  */
 export function whatsNew(seen: string | null, chapters: readonly Chapter[] = CHAPTERS, max = MAX_NEW_STEPS): NewStep[] {
-  if (!isDay(seen ?? undefined)) return [];
+  const mark = parseSeen(seen);
+  if (!mark) return [];
   const out: NewStep[] = [];
-  for (const chapter of chapters) for (const step of chapter.steps) if (isDay(step.since) && step.since > seen!) out.push({ chapter: chapter.id, step });
+  for (const chapter of chapters)
+    for (const step of chapter.steps)
+      if (isDay(step.since) && (step.since > mark.day || (step.since === mark.day && !mark.ids.has(step.id)))) out.push({ chapter: chapter.id, step });
   return out.sort((a, b) => (a.step.since! < b.step.since! ? 1 : a.step.since! > b.step.since! ? -1 : 0)).slice(0, max);
 }
 
@@ -39,6 +40,7 @@ export function newChapters(news: readonly NewStep[], chapters: readonly Chapter
     c.steps.forEach((s, i) => {
       if (!mine.has(s.id)) return;
       keep.add(s.id);
+      if (s.newsSetup) keep.add(s.newsSetup);
       for (let j = i - 1; j >= 0; j--)
         if (c.steps[j].go) {
           keep.add(c.steps[j].id);

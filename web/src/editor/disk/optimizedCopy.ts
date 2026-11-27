@@ -4,21 +4,30 @@
 import { SCENEDESCLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { diffDisks } from '@lewismoten/gamemaker-sandbox-tools/disk-diff';
 import { menuVersionOf, getSection, setSection, emptyCompanion, type Companion } from '../../project/companion';
-import { versionAt } from '../../project/checkpoint';
+import { applyDelta } from '@lewismoten/gamemaker-sandbox-tools/delta';
 import type { GameFiles } from '../../project/files';
 import type { StoredCheckpoint } from '../../project/storage';
 
 /** What to call the version this copy was packed from: the release tag the game is at, else its menu version, else the newest tag with a "+", else the date. */
 export function packedFrom(list: readonly StoredCheckpoint[], files: GameFiles, companion: Companion | undefined, now = new Date()): string {
-  const tagged = list.map((c, i) => [c, i] as const).filter(([c]) => c.tag);
-  const here = [...tagged].reverse().find(([, i]) => {
-    const d = diffDisks(versionAt([...list], i), new Map(files.entries()));
-    return !(d.changed.length + d.added.length + d.removed.length);
-  });
-  if (here) return here[0].tag!;
+  let lastTag = list.length - 1;
+  while (lastTag >= 0 && !list[lastTag].tag) lastTag--;
+  let matchingTag: string | undefined;
+  if (lastTag >= 0) {
+    const current = new Map(files.entries());
+    let version = new Map<string, Uint8Array>();
+    for (let i = 0; i <= lastTag; i++) {
+      const checkpoint = list[i];
+      version = applyDelta(version, checkpoint.delta);
+      if (!checkpoint.tag) continue;
+      const d = diffDisks(version, current);
+      if (!(d.changed.length + d.added.length + d.removed.length)) matchingTag = checkpoint.tag;
+    }
+  }
+  if (matchingTag) return matchingTag;
   const v = menuVersionOf(companion).version;
   if (v) return /^\d/.test(v) ? `v${v}` : v;
-  if (tagged.length) return `${tagged[tagged.length - 1][0].tag}+`;
+  if (lastTag >= 0) return `${list[lastTag].tag}+`;
   return now.toLocaleDateString([], { month: 'short', day: 'numeric' });
 }
 

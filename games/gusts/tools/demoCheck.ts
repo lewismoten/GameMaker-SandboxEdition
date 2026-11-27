@@ -5,17 +5,21 @@
 import { readFileSync } from 'node:fs';
 import { parseRecording } from '@lewismoten/gamemaker-sandbox-engine/formats/recording';
 import { ORIGIN } from '../../kit/starter/map';
-import { LEDGE_ROW } from '../src/levels';
+import { LEDGE, LEDGE_ROW } from '../src/levels';
 import { GameSim } from './sim';
 
 const keys = parseRecording(new Uint8Array(readFileSync(new URL('../disk/demo.rec', import.meta.url)))).slice(0, -2); // without the Esc
 const sim = new GameSim(undefined, 1);
 let top = Infinity;
-let lowest = sim.ci.hitpts;
+const initialHp = sim.ci.hitpts;
+let lowest = initialHp;
+let landed = false;
 const step = async () => {
   await sim.tick();
   if (sim.trail.length === 1) {
-    top = Math.min(top, sim.pos.y - ORIGIN);
+    const { x, y, sy } = sim.pos;
+    top = Math.min(top, y - ORIGIN);
+    if (x - ORIGIN >= LEDGE[0] && x - ORIGIN <= LEDGE[1] && y - ORIGIN === LEDGE_ROW - 1 && sy === 0 && sim.ci.gravy === 0) landed = true;
     lowest = Math.min(lowest, sim.ci.hitpts);
   }
 };
@@ -26,7 +30,7 @@ for (const k of keys) {
 }
 for (let i = 0; i < 40; i++) await step();
 console.log(`demo: highest row ${top}, hit points ${sim.ci.hitpts}, ${sim.trail.length} scenes entered; score ${sim.ci.score}`);
-if (top > LEDGE_ROW || lowest !== sim.ci.hitpts) {
+if (!landed || lowest !== initialHp) {
   console.error('demoCheck: expected the gust to lift him to the ledge, with nothing lost');
   process.exit(1);
 }

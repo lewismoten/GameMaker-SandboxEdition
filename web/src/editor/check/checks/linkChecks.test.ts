@@ -3,6 +3,7 @@
 // to the won scene, missing .VOC files and level files, numbers past a set, moves over the cap,
 // and the fixes, opposites and key-name repairs the archive's games asked for.
 import { describe, expect, it } from 'vitest';
+import { doBlockTouchChar } from '@lewismoten/gamemaker-sandbox-engine/engine/touch';
 import { BACKBL, CHARBL, parseBlocks, serializeBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { IDLESEQ, newCharacter, serializeCharacter } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 import { ADVTYPE, emptyScene, NOSCENE, serializeGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
@@ -200,6 +201,36 @@ describe('the missing-part checks', () => {
     expect(f[0].severity).toBe('info');
     expect(f[0].detail).toContain('estimated');
     expect(f[0].detail).toContain("can't see");
+  });
+
+  it.each([
+    [1, 5],
+    [-1, 6],
+  ])('warns for the matching sound when a persistent block changes score by %i', (scorePts, slot) => {
+    const t = testGame(ROWS);
+    const d = sceneOf(t);
+    d.names.snd = 'test.snd';
+    d.sounds = newSoundSet();
+    d.sounds.digital[5] = 'GAIN';
+    d.sounds.digital[6] = 'LOSS';
+    for (const name of ['gain', 'loss']) t.files.set(`${name}.voc`, new Uint8Array(3000));
+    Object.assign(d.bbl[0], { scorePts, touchBl: 0, chHitPt: 0 });
+    expect(stutterVocs(d, t)).toMatchObject([{ title: expect.stringContaining('score block'), where: { sound: { n: slot } } }]);
+  });
+
+  it.each([1, -1])('warns for the healing sound a persistent healing and score block plays (%i point)', (scorePts) => {
+    const t = testGame(ROWS);
+    const d = sceneOf(t);
+    d.names.snd = 'test.snd';
+    d.sounds = newSoundSet();
+    d.sounds.digital[0] = 'HEAL';
+    d.sounds.digital[scorePts > 0 ? 5 : 6] = 'SCORE';
+    for (const name of ['heal', 'score']) t.files.set(`${name}.voc`, new Uint8Array(3000));
+    const block = Object.assign(d.bbl[0], { scorePts, touchBl: 0, chHitPt: 1 });
+    const sim = new SceneSim(t.game, 2, t, { x: 1, y: 2 });
+    doBlockTouchChar(sim.w, block);
+    expect(sim.sounds).toEqual([0]);
+    expect(stutterVocs(d, t).map((f) => f.where.sound?.n)).toEqual(sim.sounds);
   });
 
   it('finds files a level needs that aren’t there', () => {

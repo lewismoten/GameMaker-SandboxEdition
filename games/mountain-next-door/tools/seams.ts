@@ -8,6 +8,10 @@ import { OPEN } from '../src/level';
 import { buildLevels } from '../src/levels';
 
 const min = Number(process.argv[2] ?? 3);
+if (!Number.isInteger(min) || min < 1 || min > 20) {
+  console.error('Usage: vite-node ../games/mountain-next-door/tools/seams.ts [whole number from 1 to 20]');
+  process.exit(1);
+}
 const { pal, levels } = buildLevels();
 const sky = pal.c('sky', 3);
 let total = 0;

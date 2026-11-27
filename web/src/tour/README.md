@@ -198,4 +198,4 @@ Sandbox games' own. Check what each control really does before describing it, an
 today's web needs the ? button in its own header (the desk's and the DOS page's have it), and a
 `pageHere` for its address; one outside `index.html` names its `file`.
 
-- `whatsNew.ts`: the steps with a `since` day (steps.ts) newer than the visitor's last visit (localStorage `gm-tour-seen`, this browser only), at most 8, newest first. Data only; no menu entry yet (design: .for-lewis/research/tour/2026-11-05-whats-new.md).
+- `whatsNew.ts` offers up to eight dated steps in the Guides menu, newest first. When adding dated steps, update the latest publication day and its step IDs in `seenDay.ts`. The browser saves this watermark in `gm-tour-seen` on first visit and when the visitor answers the offer.
