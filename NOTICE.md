@@ -66,6 +66,7 @@ game folder opens in the browser unchanged.
 
 - OpenAI Codex fixed and tested cancellation of the synthesized startup clunk for THE CHEZ.
 - OpenAI Codex added and tested keyboard panning in the phone model viewer.
+- OpenAI Codex fixed and tested retries for stalled archive file requests.
 - OpenAI Codex added dialog audit coverage for the Sounds editor’s PC speaker option.
 - OpenAI Codex fixed and tested tables following lists in printed instruction books.
 - OpenAI Codex fixed and tested the read-only notice across Overview tabs.
