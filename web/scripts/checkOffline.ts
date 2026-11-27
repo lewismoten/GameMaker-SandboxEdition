@@ -11,6 +11,7 @@ import { resolve } from 'node:path';
 import { target, launch, arg } from './perfLib';
 import { forceTheme } from './forceTheme';
 import { measure } from './dialogsFitMeasure';
+import { observePlayback } from './offlinePlayback';
 
 interface Row {
   name: string;
@@ -35,9 +36,9 @@ const base = srv.base.replace(/\/?$/, '/');
 const browser = await launch();
 let phase = 'online';
 const failed: string[] = [];
-const clips: string[] = [];
 try {
   const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 }, serviceWorkers: 'allow' });
+  const clips = await observePlayback(ctx);
   // vite preview sends a .gz copy with Content-Encoding (the browser unpacks it); GitHub Pages sends
   // it as application/gzip bytes, which the manifest hashes. Serve them the Pages way.
   const dist = arg('dist');
@@ -108,8 +109,7 @@ try {
   ctx.on('response', (r) => {
     if (phase !== 'offline') return;
     const url = r.url().replace(base, '');
-    if (/\.ogg$/.test(url) && r.status() === 200) clips.push(url);
-    else if (r.status() >= 400) failed.push(`offline ${r.status()} ${url}`);
+    if (r.status() >= 400) failed.push(`offline ${r.status()} ${url}`);
   });
 
   // 1. the offline copy
@@ -235,18 +235,19 @@ try {
       await page.keyboard.press(k);
       await page.waitForTimeout(150);
     }
-    // Grandma rings a while, then talks: wait for her first clips
-    for (let i = 0; i < 20 && clips.slice(mark).filter((c) => c.includes('phone/voice/')).length < 3; i++) await page.waitForTimeout(5000);
-    const phoneClips = clips.slice(mark).filter((c) => c.includes('phone/voice/')).length;
+    const expected = [1, 2, 3].map((n) => new URL(`phone/voice/grandma/grandma-1-${n}.ogg`, base).href);
+    const countPhone = () => expected.filter((url) => clips.slice(mark).includes(url)).length;
+    for (let i = 0; i < 20 && countPhone() < expected.length; i++) await page.waitForTimeout(5000);
+    const phoneClips = countPhone();
     await page.keyboard.press('Escape');
-    check('the phone plays recorded clips', phoneClips >= 3, `${phoneClips} clips`);
+    check('the phone plays recorded clips', phoneClips === expected.length, `${phoneClips} expected clips played`);
     check('the phone does not use the browser’s voice', (await spoken()) === before, `${(await spoken()) - before} speech calls`);
 
     // 5. the tour
+    const tourMark = clips.length;
     await page.goto(`${base}#/?tour=home`);
     await page.waitForTimeout(12000);
-    const tourClips = clips.filter((c) => c.includes('tour/voice/')).length;
-    check('the tour plays its voice clips', tourClips >= 1, `${tourClips} clips`);
+    check('the tour plays its opening voice clip', clips.slice(tourMark).includes(new URL('tour/voice/home/home-hello.ogg', base).href));
     check('nothing used the browser’s voice', (await spoken()) === 0, `${await spoken()} speech calls in all`);
 
     // 6. no request failed once offline

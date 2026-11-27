@@ -6,6 +6,8 @@ import { join } from 'node:path';
 import { clock, decodeKeys, encodeKeys, youtubeChapters, youtubeText, type Walkthrough } from '../src/walkthrough/format';
 import { SegmentRecorder, seeded } from '../src/walkthrough/runtime';
 
+import { nextHostSegment } from '../scripts/pocketHostSegment';
+
 const gamesDir = join(__dirname, '../../games');
 const walkthroughs = readdirSync(gamesDir)
   .filter((id) => existsSync(join(gamesDir, id, 'walkthrough.json')))
@@ -53,6 +55,20 @@ describe('walkthrough keys', () => {
     r.enterScene(4);
     expect(ticks(3)).toEqual([[], [], [57]]);
     expect(r.keysLeft).toBe(0);
+  });
+
+  it('keeps Pocket host keys in player order when a later scene is visited early', () => {
+    const segments = [1, 2, 3].map((scene) => ({ scene, keys: encodeKeys([{ delta: 1, key: 70 + scene }]) }));
+    const player = new SegmentRecorder({ segments } as Walkthrough);
+    player.begin();
+    let current = -1;
+    for (const scene of [1, 3, 2, 3]) {
+      player.enterScene(scene);
+      const next = nextHostSegment(segments, current, scene);
+      const hostKeys = next < 0 ? [] : decodeKeys(segments[next].keys).map(({ key }) => key);
+      expect(hostKeys).toEqual(player.doPlayback());
+      if (next >= 0) current = next;
+    }
   });
 
   it('seed monsters as the simulators do (games/kit/pixels.ts rng)', () => {

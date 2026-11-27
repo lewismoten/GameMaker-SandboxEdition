@@ -2,7 +2,7 @@
 // `npm run verify` stays the full check. Usage: npm run verify:changed [-- --base <ref>]
 import { execFileSync, spawnSync } from 'node:child_process';
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
-import { basename, dirname, join, relative, resolve } from 'node:path';
+import { basename, dirname, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -21,10 +21,9 @@ try {
 }
 // Committed on the branch, plus staged/unstaged edits and new untracked files.
 const changed = [
-  ...new Set([...lines(git('diff', '--name-only', '--diff-filter=ACMR', mergeBase)), ...lines(git('ls-files', '--others', '--exclude-standard'))]),
-]
-  .filter((f) => existsSync(resolve(root, f)))
-  .sort();
+  ...new Set([...lines(git('diff', '--name-only', '--diff-filter=ACDMR', mergeBase)), ...lines(git('ls-files', '--others', '--exclude-standard'))]),
+].sort();
+const existing = changed.filter((f) => existsSync(resolve(root, f)));
 
 const rows = [];
 let failed = false;
@@ -40,11 +39,11 @@ const skip = (name, note) => rows.push([name, 'skip', '-', note]);
 
 console.log(`verify:changed: base ${base} (${mergeBase.slice(0, 9)}), ${changed.length} changed file(s)`);
 
-const fmt = changed.filter((f) => /\.(ts|tsx|js|jsx|mjs|cjs|json|md|css|html|yml|yaml)$/.test(f));
+const fmt = existing.filter((f) => /\.(ts|tsx|js|jsx|mjs|cjs|json|md|css|html|yml|yaml)$/.test(f));
 if (fmt.length) step('prettier', root, 'npx', ['prettier', '--check', '--ignore-unknown', ...fmt], `${fmt.length} files`);
 else skip('prettier', 'no changed files');
 
-const lint = changed.filter((f) => f.startsWith('web/') && /\.(ts|tsx|js|mjs|cjs)$/.test(f)).map((f) => relative('web', f));
+const lint = existing.filter((f) => f.startsWith('web/') && /\.(ts|tsx|js|mjs|cjs)$/.test(f)).map((f) => relative('web', f));
 if (lint.length) step('eslint', resolve(root, 'web'), 'npx', ['eslint', '--no-warn-ignored', ...lint], `${lint.length} files`);
 else skip('eslint', 'no changed web scripts');
 
@@ -70,14 +69,21 @@ function testFiles(dir, out = []) {
   }
   return out;
 }
-const dataNames = [...new Set(changed.filter((f) => /\.(json|md|txt)$/.test(f)).map((f) => basename(f)))].filter(
-  (n) => n !== 'README.md' && n !== 'package.json' && n !== 'CHANGELOG.md',
-);
-if (dataNames.length) {
+const dataFiles = changed.filter((f) => /\.(json|md|txt)$/.test(f));
+const commonNames = new Set(['README.md', 'package.json', 'CHANGELOG.md']);
+if (dataFiles.length) {
   const all = [...testFiles(resolve(root, 'web/src')), ...testFiles(resolve(root, 'web/test'))];
   const reads = all.filter((f) => {
     const text = readFileSync(f, 'utf8');
-    return dataNames.some((n) => text.includes(n));
+    return dataFiles.some((path) => {
+      const name = basename(path);
+      if (!commonNames.has(name)) return text.includes(name);
+      const target = resolve(root, path);
+      return [root, resolve(root, 'web'), dirname(f)].some((dir) => {
+        const rel = relative(dir, target).split(sep).join('/');
+        return [rel, './' + rel].some((p) => ["'", '"', '`'].some((quote) => text.includes(quote + p + quote)));
+      });
+    });
   });
   if (reads.length)
     step(
@@ -85,7 +91,7 @@ if (dataNames.length) {
       resolve(root, 'web'),
       'npx',
       ['vitest', 'run', '--maxWorkers=2', ...reads.map((f) => relative(resolve(root, 'web'), f))],
-      `${reads.length} tests naming ${dataNames.join(', ')}`.slice(0, 80),
+      `${reads.length} tests naming ${dataFiles.join(', ')}`.slice(0, 80),
     );
 }
 

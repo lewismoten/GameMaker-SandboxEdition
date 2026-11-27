@@ -7,6 +7,7 @@ import { join } from 'node:path';
 
 const saves: Record<string, Record<string, Uint8Array>> = {};
 const writes: { id: string; quiet?: boolean }[] = [];
+vi.mock('./highScores', () => ({ allMineTables: async () => ({}) }));
 vi.mock('../project/storage', () => ({
   loadSaveData: async (id: string) => ({ ...(saves[id] ?? {}) }),
   writeSaveFile: async (id: string, name: string, bytes: Uint8Array, o: { quiet?: boolean } = {}) => {

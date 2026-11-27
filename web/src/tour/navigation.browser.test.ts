@@ -13,6 +13,15 @@ beforeAll(async () => {
     stdin: {
       contents: `import { Tour } from './tourEngine';
         import { bbsChapter } from './chapters/bbs';
+        export async function promptLine(outcome) {
+          const tour = new Tour([bbsChapter]);
+          const step = bbsChapter.steps.find(step => step.id === 'bbs-login');
+          tour.live = () => true;
+          window.addEventListener('gm-tour-act', event => event.detail.ready(outcome), { once: true });
+          let spoken = false;
+          await tour.act(bbsChapter, step, undefined, 0, () => { spoken = true; });
+          return spoken;
+        }
         export function start(previous) {
           const intro = { ...bbsChapter, id: 'intro', steps: [
             { id: 'one', action: 'say', say: 'First stop.' },
@@ -44,6 +53,7 @@ async function start(page: Page, owned: boolean, previous = false) {
   await page.goto('http://localhost/#/desk');
   if (owned) await page.locator('.desk').evaluate((el) => el.setAttribute('data-tour-bbs', 'on'));
   await page.addScriptTag({ content: script });
+  await page.evaluate(() => window.addEventListener('gm-tour-act', (event) => (event as CustomEvent<import('./pageAct').ActDetail>).detail.ready?.('shown')));
   await page.evaluate(`fixture.start(${previous})`);
   await page.locator('.tour-pause').click();
 }
@@ -118,6 +128,20 @@ it('skips the busy warning in both directions between Dial and Login on an owned
     await page.locator('.crt').evaluate((el) => el.remove());
     await page.locator('.tour-back').click();
     await bbs(page, 'bbs-dial');
+  } finally {
+    await page.close();
+  }
+});
+
+it('speaks a held line only when the prompt was shown', async () => {
+  const page = await browser.newPage();
+  try {
+    await page.route('http://localhost/**', (route) => route.fulfill({ contentType: 'text/html', body: '<main></main>' }));
+    await page.goto('http://localhost/');
+    await page.addScriptTag({ content: script });
+    for (const outcome of ['lost', 'timed-out', 'shown']) {
+      expect(await page.evaluate(`fixture.promptLine('${outcome}')`)).toBe(outcome === 'shown');
+    }
   } finally {
     await page.close();
   }

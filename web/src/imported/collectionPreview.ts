@@ -11,7 +11,7 @@ interface PreviewGame {
 interface Totals {
   games: number;
   files: number;
-  bytes: number;
+  bytes: number | undefined;
   /** Games with files missing, and how many files in all. */
   gamesMissing: number;
   filesMissing: number;
@@ -22,7 +22,7 @@ export function totalsOf(games: PreviewGame[]): Totals {
   const t: Totals = { games: games.length, files: 0, bytes: 0, gamesMissing: 0, filesMissing: 0 };
   for (const g of games) {
     t.files += g.fileCount;
-    t.bytes += g.bytes ?? 0;
+    t.bytes = t.bytes === undefined || g.bytes === undefined ? undefined : t.bytes + g.bytes;
     if (g.missing) {
       t.gamesMissing++;
       t.filesMissing += g.missing;
@@ -42,6 +42,7 @@ const plural = (n: number, one: string, many = `${one}s`) => `${n} ${n === 1 ? o
 
 /** "12 games, 480 files, 6.2 MB; 2 are missing files". */
 export function totalsText(t: Totals): string {
-  const base = `${plural(t.games, 'game')}, ${plural(t.files, 'file')}, ${sizeText(t.bytes)}`;
+  const size = t.bytes === undefined ? '' : `, ${sizeText(t.bytes)}`;
+  const base = `${plural(t.games, 'game')}, ${plural(t.files, 'file')}${size}`;
   return t.gamesMissing ? `${base}; ${t.gamesMissing} ${t.gamesMissing === 1 ? 'is' : 'are'} missing files (${plural(t.filesMissing, 'file')} in all)` : base;
 }

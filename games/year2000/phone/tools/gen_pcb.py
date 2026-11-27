@@ -19,6 +19,7 @@ from footprints import FP  # noqa: E402
 from router import Router  # noqa: E402
 import models3d  # noqa: E402
 import silkart  # noqa: E402
+from qr_layout import PARTS_URL, SITE_URL, QR_PARTS, QR_SITE, QR_KEEP
 import dex_art  # noqa: E402
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -214,8 +215,7 @@ for ref, pl in placed.items():             # small pin marks (silkscreen) of the
         rx, ry = rot(tx, ty, pl.a)
         rt.blockers.append((pl.x + (-rx if pl.side == "B" else rx), pl.y + ry, 0.9))
 rt.fzones += [(DIAL[0], DIAL[1], DIAL_KEEP_F), (SPK[0], SPK[1], SPK_KEEP_F)]
-_QR0, _QR1 = (27.5, 44.0, 18.1), (65.0, 47.0, 16.6)      # the two silkscreen QR codes on the back (QR_PARTS, QR_SITE below): a via under a module clips it
-rt.vrects += [(x - 1.6, y - 1.6, x + s + 1.6, y + s + 1.6) for x, y, s in (_QR0, _QR1)]
+rt.vrects += [(left - 1.6, top - 1.6, right + 1.6, bottom + 1.6) for left, top, right, bottom in QR_KEEP.values()]
 widths = {nid[GND]: WIDE, nid[V5]: WIDE}
 base = [nid[GND], nid[V5]]
 rest = [nid[n] for n in netnames if n not in (GND, V5)]
@@ -242,15 +242,10 @@ padpts = [(pl.x + rx, pl.y + ry, pad.d / 2 * (1.42 if pad.square else 1)) for pl
 padpts += [(mx, my, 2.0) for mx, my in MOUNT]
 TAKEN = []          # text boxes already used (board coordinates)
 # Back-side advertising, in the three blank spots of the back (found from the back preview): QR codes and Dex.
-PARTS_URL = "https://github.com/lewismoten/GameMaker-SandboxEdition/tree/develop/games/year2000/phone"
-SITE_URL = "https://lewismoten.github.io/GameMaker-SandboxEdition/"
 URL_LINES = {      # what is printed beside each QR code (1.0 mm letters); together each is the address the QR code holds, without https://
     SITE_URL: ["lewismoten.github.io/", "GameMaker-SandboxEdition"],
     PARTS_URL: ["github.com/lewismoten/", "GameMaker-SandboxEdition/", "tree/develop/games/", "year2000/phone"],
 }
-QR_PARTS = (27.5, 44.0, 0.44)      # x, y (top-left, board coordinates), module mm: 41 modules = 18.0 mm
-QR_SITE = (65.0, 47.0, 0.5)        # 33 modules = 16.5 mm
-QR_KEEP = [(QR_PARTS[0], QR_PARTS[1], QR_PARTS[0] + 18.1, QR_PARTS[1] + 18.1), (QR_SITE[0], QR_SITE[1], QR_SITE[0] + 16.6, QR_SITE[1] + 16.6)]
 
 
 def dex_spot(limit, margin=0.45, max_loss=0.08, px_min=0.8, px_max=2.0):
@@ -275,7 +270,7 @@ def dex_spot(limit, margin=0.45, max_loss=0.08, px_min=0.8, px_max=2.0):
     for v in vias.values():
         for x, y in v:
             paint(soft, x - 0.4 - margin, y - 0.4 - margin, x + 0.4 + margin, y + 0.4 + margin, (x, y, 0.4 + margin))
-    for q in QR_KEEP:
+    for q in QR_KEEP.values():
         paint(hard, q[0] - 3.3, q[1] - 3.3, q[2] + 3.3, q[3] + 3.3)
     paint(hard, 0, 0, W, 1.0)
     paint(hard, 0, H - 1.0, W, H)
@@ -343,7 +338,7 @@ DEX_AT, DEX_SKIP = _dex[:3], _dex[3]
 DEX_W, DEX_H = 16 * DEX_AT[2], 18 * DEX_AT[2]
 print("Dex: pixel %.2f mm, %.1f x %.1f mm at (%.1f, %.1f)" % (DEX_AT[2], DEX_W, DEX_H, DEX_AT[0], DEX_AT[1]))
 TAKEN.append((DEX_AT[0] - 0.3, DEX_AT[1] - 0.3, DEX_AT[0] + DEX_W + 0.3, DEX_AT[1] + DEX_H + 0.3))   # reference and value text keep out of it
-TAKEN += [(q[0] - 0.3, q[1] - 0.3, q[2] + 0.3, q[3] + 0.3) for q in QR_KEEP]   # and the QR codes (their labels are placed later)
+TAKEN += [(q[0] - 0.3, q[1] - 0.3, q[2] + 0.3, q[3] + 0.3) for q in QR_KEEP.values()]   # and the QR codes (their labels are placed later)
 for _dk in range(1, 11):       # the dial's big digits are placed later, but reference and value text keep out of their spots
     _a = math.radians((120 - 30 * (_dk + 1)) % 360)
     _x, _y = DIAL[0] + RING_R * math.sin(_a), DIAL[1] - RING_R * math.cos(_a)
@@ -388,9 +383,8 @@ def _place_urls():
     """Each QR code's address in 1.0 mm letters, reserved before any reference or value text so it sits right beside its code:
     a stack of lines below it, above it, or to its right or left, shifted along the code until clear of pads and other text."""
     spots = {}
-    for qr, qtext in ((QR_PARTS, PARTS_URL), (QR_SITE, SITE_URL)):
-        qx, qy, qm = qr
-        qs = 18.1 if qr is QR_PARTS else 16.6
+    for qtext, (qx, qy, right, _) in QR_KEEP.items():
+        qs = right - qx
         lines = URL_LINES[qtext]
         n = len(lines)
         wmax = max(len(ln) for ln in lines) * 0.85 + 0.3
@@ -594,9 +588,6 @@ def eline(x1, y1, x2, y2):
 items += [eline(r, 0, W - r, 0), eline(W, r, W, H - r), eline(W - r, H, r, H), eline(0, H - r, 0, r),
           arc(r, r, 180, 270), arc(W - r, r, 270, 360), arc(W - r, H - r, 0, 90), arc(r, H - r, 90, 180)]
 
-TAKEN += [(QR_PARTS[0] - 0.3, QR_PARTS[1] - 0.3, QR_PARTS[0] + 18.3, QR_PARTS[1] + 18.3),
-          (QR_SITE[0] - 0.3, QR_SITE[1] - 0.3, QR_SITE[0] + 18.3, QR_SITE[1] + 18.3),
-          (DEX_AT[0] - 0.3, DEX_AT[1] - 0.3, DEX_AT[0] + DEX_W + 0.3, DEX_AT[1] + DEX_H + 0.3)]   # kept clear of silk text (after the reference text is placed: the back is blank here)
 # ---- silkscreen: lettering, number ring, retro-future art (clipped away from pads) -----------------------
 def clear(x, y, margin=0.55):
     if x < 1.0 or y < 1.0 or x > W - 1.0 or y > H - 1.0:
@@ -719,6 +710,8 @@ silk.append(label("B.SilkS", "THE POCKET TELEPHONE", CX, 7.0, 1.1, True))
 QR_INFO = {}
 for (qx, qy, qm), qtext, lab in ((QR_PARTS, PARTS_URL, "PARTS + HOW TO"), (QR_SITE, SITE_URL, "PLAY THE GAME")):
     items_, size_, n_ = silkart.qr_plate("B.SilkS", qx, qy, qm, qtext, uid, f)
+    keep = QR_KEEP[qtext]
+    assert keep[0] <= qx and keep[1] <= qy and qx + size_ <= keep[2] and qy + size_ <= keep[3], qtext
     QR_INFO["parts" if qtext == PARTS_URL else "site"] = dict(x=qx, y=qy, size=round(size_, 2), modules=n_, module_mm=qm, url=qtext)
     silk += items_
     silk.append(near_label("B.SilkS", lab, qx, qy, size_, size_))

@@ -22,6 +22,8 @@ import { GameSim, readDisk } from '@lewismoten/gamemaker-sandbox-tools/kit/gameS
 import { LASTSND } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
 import { decodeKeys, type Walkthrough } from './../src/walkthrough/format';
 
+import { nextHostSegment } from './pocketHostSegment';
+
 const args = process.argv.slice(2);
 const opt = (n: string) => (args.includes(n) ? args[args.indexOf(n) + 1] : undefined);
 const limit = Number(opt('--ticks') ?? 1e9);
@@ -171,7 +173,7 @@ async function checkGame(id: string): Promise<string> {
     // SegmentRecorder.enterScene): a scene with no segment of its own, such as a pass-through drive between two
     // levels, leaves the current one in place instead of using up the next level's keys.
     if (r === 'link') {
-      const next = walk.segments.findIndex((s, k) => k > seg && s.scene === sim.scene);
+      const next = nextHostSegment(walk.segments, seg, sim.scene);
       if (next >= 0) {
         seg = next;
         ki = 0;

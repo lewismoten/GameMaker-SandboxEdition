@@ -5,10 +5,32 @@ import { expect, inject, it } from 'vitest';
 import { launch } from './perfLib';
 import { assertTheme, forceTheme } from './forceTheme';
 
+// Injected into the page before the accessibility scans.
+declare const axe: typeof import('axe-core');
+
 it('opens by keyboard, applies and remembers hardware, preserves TURBO, and fits both themes', async () => {
   let browser: Browser | undefined;
   try {
     browser = await launch();
+    const freshDesk = await browser.newPage();
+    await freshDesk.goto(`${inject('appBase')}/#/desk`, { waitUntil: 'commit' });
+    await freshDesk.getByRole('button', { name: /^Machine settings, 66 MHz/ }).waitFor();
+    // Capture the BIOS header as it is printed to the VGA canvas.
+    await freshDesk.addScriptTag({
+      type: 'module',
+      content: `import { TextScreen } from '/src/retro/text/textScreen.ts';
+        const print = TextScreen.prototype.print;
+        TextScreen.prototype.print = function (text, attr) {
+          if (text.startsWith('AwkWard Modular BIOS')) console.info(text);
+          print.call(this, text, attr);
+        };`,
+    });
+    const [post] = await Promise.all([
+      freshDesk.waitForEvent('console', { predicate: (line) => line.text().startsWith('AwkWard Modular BIOS') }),
+      freshDesk.getByRole('button', { name: 'Power', exact: true }).click(),
+    ]);
+    expect(post.text().split('\n')[1]).toBe('486DX2-66 Turbo');
+    await freshDesk.close();
     for (const theme of ['light', 'dark'] as const) {
       const context = await browser.newContext({ viewport: { width: 1440, height: 900 }, colorScheme: theme });
       await forceTheme(context, theme);
@@ -47,16 +69,23 @@ it('opens by keyboard, applies and remembers hardware, preserves TURBO, and fits
         const rect = await button.boundingBox();
         expect(rect!.width).toBeGreaterThanOrEqual(24);
         expect(rect!.height).toBeGreaterThanOrEqual(24);
+        await page.addScriptTag({ content: readFileSync('../node_modules/axe-core/axe.min.js', 'utf8') });
+        const scan = await button.evaluate(async (element) => {
+          const result = await axe.run(element, { elementRef: true });
+          return {
+            violations: result.violations.map((rule) => rule.id),
+            openerNamed: result.passes.some((rule) => rule.id === 'button-name' && rule.nodes.some((node) => node.element === element)),
+          };
+        });
+        expect(scan.violations).toEqual([]);
+        expect(scan.openerNamed).toBe(true);
         await button.click();
         expect(await dialog.getByLabel('CPU', { exact: true }).inputValue()).toBe('ps1');
         expect(await dialog.getByLabel('Hard drive timing').inputValue()).toBe('286');
         expect(await dialog.getByLabel('CD-ROM heads sounds').isChecked()).toBe(false);
         expect(await dialog.getByLabel('Hard drive read/write sounds').isChecked()).toBe(true);
-        await page.addScriptTag({ content: readFileSync('../node_modules/axe-core/axe.min.js', 'utf8') });
-        const violations = await page.evaluate(async () => {
-          // @ts-expect-error axe is injected above
-          const result = await axe.run(document.querySelector('dialog[open]'));
-          return result.violations.map((v: { id: string }) => v.id);
+        const violations = await dialog.evaluate(async (element) => {
+          return (await axe.run(element)).violations.map((rule) => rule.id);
         });
         expect(violations).toEqual([]);
         await dialog.getByLabel('CPU', { exact: true }).selectOption('486');

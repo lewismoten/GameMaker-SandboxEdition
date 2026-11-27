@@ -31,6 +31,21 @@ const blockAt = (bot: StarterBot, x: number, y: number): number => bot.sim.w.blk
 /** Whether the block at a level cell is solid. */
 const solidAt = (bot: StarterBot, x: number, y: number): boolean => bot.sim.w.bg[blockAt(bot, x, y)].solid !== 0;
 
+/**
+ * How far a strip's block at (x + 1, y) is ahead of the one at (x, y) in pixels of its tile: the steps along the ring
+ * (each block's next block) from one to the other, times the strip's shift; -1 if the two are not on one ring.
+ */
+export function phase(bot: StarterBot, s: { shift: number }, x: number, y: number): number {
+  const n = TILE / s.shift;
+  const to = blockAt(bot, x + 1, y);
+  let b = blockAt(bot, x, y);
+  for (let step = 0; step < n; step++) {
+    if (b === to) return (step * s.shift) % TILE;
+    b = bot.sim.w.bg[b].nextBl;
+  }
+  return -1;
+}
+
 /** The car now: its place in level pixels and the way its picture is turned (0 to 3), or nothing before it is born. */
 export function car(bot: StarterBot): { x: number; y: number; orient: number } | undefined {
   const i = bot.sim.w.mm.findIndex((m) => m.monnum === CAR);
@@ -49,7 +64,9 @@ export async function roadGoesBy(bot: StarterBot): Promise<void> {
   const changes = new Map<string, number>();
   const seen = new Map<string, Set<number>>(strips.map((t) => [t.name, new Set<number>()]));
   const last = new Map<string, number>();
-  let apart = 0;
+  // neighbors in a row start half a tile apart, so the window of one is always TILE / 2 pixels on from the other's
+  const off = new Map<string, number>();
+  let looks = 0;
   const look = () => {
     for (const t of strips) {
       const b = blockAt(bot, t.cell[0], t.cell[1]);
@@ -57,8 +74,12 @@ export async function roadGoesBy(bot: StarterBot): Promise<void> {
       last.set(t.name, b);
       seen.get(t.name)!.add(b);
     }
-    // neighbors in a column start half a tile apart: columns 3 and 4 of the trees are different blocks
-    if (blockAt(bot, 3, TREES.rows[0]) !== blockAt(bot, 4, TREES.rows[0])) apart++;
+    for (const t of strips)
+      for (const row of t.s.rows) {
+        const p = phase(bot, t.s, t.cell[0], row);
+        if (p !== TILE / 2) off.set(`${t.name} row ${row}`, p);
+      }
+    looks++;
   };
   const watch = async (ticks: number) => {
     for (let i = 0; i < ticks; i++) {
@@ -83,7 +104,12 @@ export async function roadGoesBy(bot: StarterBot): Promise<void> {
     throw new Error(
       `level 1: nearer strips should slide farther: hills ${px('hills', HILLS.shift)}, trees ${px('trees', TREES.shift)}, rail ${px('rail', RAIL.shift)} pixels`,
     );
-  if (apart < 200) throw new Error('level 1: neighbors should be half a tile apart');
+  if (!looks) throw new Error('level 1: the strips were never looked at');
+  const [bad] = off;
+  if (bad)
+    throw new Error(
+      `level 1: the ${bad[0]} neighbors should be ${TILE / 2} pixels (half a tile) apart; once they were ${bad[1] < 0 ? 'not on one ring' : `${bad[1]} pixels`}`,
+    );
   bot.say(`in 340 ticks the hills slid ${px('hills', HILLS.shift)} pixels, the trees ${px('trees', TREES.shift)} and the rail ${px('rail', RAIL.shift)}`);
   await leave(bot, bot.walk(DOOR_COL, 'the exit'), 'the exit');
 }

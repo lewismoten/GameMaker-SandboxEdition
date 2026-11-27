@@ -1,5 +1,6 @@
 // Game packs (.gmpak): written and read back, and handed out file by file as they arrive.
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import formatSource from '../packages/archives/src/project/gamePack.ts?raw';
 import { gzipSync } from 'node:zlib';
 import { PackReader, decodePack, encodePack } from '@lewismoten/gamemaker-sandbox-archives/pack';
 import { fetchGameFile, loadHostedGame } from '../src/project/files';
@@ -12,6 +13,10 @@ const files: [string, Uint8Array][] = [
 ];
 
 describe('gamePack', () => {
+  it('documents that the writer supplies the file order', () => {
+    expect(formatSource.split('const MAGIC')[0]).toMatch(/order supplied by the writer/i);
+  });
+
   it('reads back what it wrote', () => {
     expect(decodePack(encodePack(files))).toEqual(files);
   });

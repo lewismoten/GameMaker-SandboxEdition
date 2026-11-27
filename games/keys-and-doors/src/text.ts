@@ -22,7 +22,7 @@ export const HOWTO = wrap(`
 
 Walk into a key and it is yours: the key counter goes up by one.
 
-Walk into a locked door while you carry its key. The door opens and the counter goes down by one. A door with two key holes needs two keys.
+Walk into a locked door with enough matching keys. It takes one per keyhole and opens. A two-key door takes both keys.
 
 Coins add to your score. The door at the end of the level takes you on.
 
@@ -51,7 +51,7 @@ export const WON = wrap(`
 
 Three levels, four locked doors, and every key put to use.
 
-A key is only a counter that goes up. A locked door only asks that the counter is high enough, and then takes one away.
+Each key adds one to its counter. When you have enough keys, the door opens and spends the number it needs. A two-key door takes both keys.
 
 Open the game in Game-Maker and find the key and the door in the blocks. Change what a door costs, then play your change.
 `);

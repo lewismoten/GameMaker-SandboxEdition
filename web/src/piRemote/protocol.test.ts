@@ -61,6 +61,15 @@ describe('Pi remote protocol', () => {
     expect(s.push(bytes('wn\nINFO 2 a=1\n'))).toEqual(['OK key 108 down', 'INFO 2 a=1']);
   });
 
+  it.each([true, false])('caps a long line and resumes after its delimiter (split: %s)', (split) => {
+    const splitter = new LineSplitter();
+    const prefix = 'x'.repeat(65536);
+    const chunks = split ? [prefix, 'extra', 'tail', '\r\nOK\n'] : [prefix + 'extratail\r\nOK\n'];
+    const lines = chunks.flatMap((chunk) => splitter.push(bytes(chunk)));
+    expect(lines.map((line) => line.length)).toEqual([65536, 2]);
+    expect(lines).toEqual([prefix, 'OK']);
+  });
+
   it('sorts replies', () => {
     const info = classify('INFO 2 zero-w armv6 ABI=1.0 active=1 confirmed=12 pending=0');
     expect(info).toMatchObject({ kind: 'info', fields: { ABI: '1.0', confirmed: '12' } });

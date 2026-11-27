@@ -151,7 +151,11 @@ export const ITEMS: readonly FlagItem[] = [
       return `Badge ${id} taken back.`;
     },
     async reset() {
-      await resetAchievements();
+      try {
+        await resetAchievements();
+      } catch (cause) {
+        throw new FlagError('Could not reset achievements. Please try again.', { cause });
+      }
       return 'All badges cleared, as the web page Reset does (eggs, hearts and scores held before count as before).';
     },
   },

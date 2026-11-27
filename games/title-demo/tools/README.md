@@ -2,7 +2,7 @@
 
 - `check.ts`: the bot plays both levels. Each hall has three signs to read and a door at the end; the first door leads to level 2 and the second ends the game, with no life lost.
 - `walkthrough.ts`, `gendemo.ts`: re-record the walkthrough and the title demo (level 1: walk the hall to the third sign, without the door).
-- `demoCheck.ts`: plays the built `demo.rec` on the real engine, checks the hero walks to the third sign and stays in the first hall, and that the file holds no more than the 1,000 key changes a recording can (`RECLEN` in `code/GM/PLAYGAME.C`).
+- `demoCheck.ts`: plays the built `demo.rec` on the real engine, checks the hero walks to the third sign and stays in the first hall, and that the file holds no more than the 1,000 key changes a recording can (`RECLEN` in `code/GM/PLAYGAME.C`), judged on the raw bytes (whole 3-byte records, at most 1,000) and on `src/demo.ts`, since the parser stops at 1,000 records as PLAYGAME does; the file must hold every key the source makes and end with Esc.
 - `templateCheck.ts`: the templates on the disk (TMENU, TSCORES, TLOAD, TSAVE, from `src/templateBoxes.ts`) against the real engine: its own menu, high score and save and load drawing writes the longest words each screen can hold over a blank screen, and every pixel must land in a box, every box must get some, and no label may cover a box. `--out <dir>` writes PNGs of each template, its plain version and the template with words on it.
 - `preview.ts`: PNGs of the blocks, the hero, each map and every picture. `shots.ts`: pictures of both halls for the progress shots.
 
