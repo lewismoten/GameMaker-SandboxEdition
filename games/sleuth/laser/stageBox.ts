@@ -39,7 +39,7 @@ function main() {
   const source = sourceKey(kerf, stock);
   const made = join(out, 'manifest.json');
   const force = args.includes('--force');
-  let previous: { source?: string; sheets?: { svg: string; preview: string }[] } | undefined;
+  let previous: { source?: string; assembly?: string; readme?: string; sheets?: { svg: string; preview: string }[] } | undefined;
   if (existsSync(made)) {
     try {
       previous = JSON.parse(readFileSync(made, 'utf8')) as typeof previous;
@@ -47,7 +47,12 @@ function main() {
       if (!force || !(error instanceof SyntaxError)) throw error;
     }
   }
-  if (!force && previous?.source === source) {
+  if (
+    !force &&
+    previous?.source === source &&
+    previous.sheets &&
+    [previous.assembly, previous.readme, ...previous.sheets.flatMap((s) => [s.svg, s.preview])].every((file) => file && existsSync(join(out, file)))
+  ) {
     console.log('Stage Box: up to date');
     return;
   }

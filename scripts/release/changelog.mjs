@@ -49,6 +49,14 @@ export function cutRelease(text, { version, date, prefix }) {
   const body = extractSection(text, 'Unreleased');
   if (hasNoChanges(body)) throw new Error('Unreleased lists no changes to release.');
   const previous = latestVersion(text);
+  if (previous) {
+    const requested = version.split('.').map(BigInt);
+    const released = previous.split('.').map(BigInt);
+    const firstDifference = requested.findIndex((part, i) => part !== released[i]);
+    if (firstDifference < 0 || requested[firstDifference] < released[firstDifference]) {
+      throw new Error(`Release version ${version} must be newer than ${previous}.`);
+    }
+  }
   const lines = text.split('\n');
   const at = lines.findIndex((l) => HEADING.exec(l)?.[1] === 'Unreleased');
   lines.splice(at + 1, 0, '', `## [${version}] - ${date}`);

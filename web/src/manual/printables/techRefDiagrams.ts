@@ -33,7 +33,7 @@ const text = (x: number, y: number, s: string, extra = '') => `<text x="${x}" y=
  * patches of 400 bytes) and the Sound Blaster voice driver it reads from SNDBLAST.DRV (2,493 bytes, SOUNDC.C). A scene adds
  * its song, sound list, scene list and the buffer for the largest digitized sound it plays.
  */
-const MEMORY: { k: number; name: string; size: string; kind: 'out' | 'prog' | 'scene'; side: 'left' | 'right'; one?: boolean }[] = [
+export const MEMORY: { k: number; name: string; size: string; kind: 'out' | 'prog' | 'scene'; side: 'left' | 'right'; one?: boolean }[] = [
   { k: 20, name: 'DOS (DOS=HIGH)', size: 'about 20K', kind: 'out', side: 'right', one: true },
   { k: 20, name: 'Mouse driver', size: '15K to 25K', kind: 'out', side: 'right', one: true },
   { k: 181, name: 'PLAYGAME program', size: '181K, with the map', kind: 'prog', side: 'right' },

@@ -9,7 +9,7 @@ import { patchProblem, readPatch } from '@lewismoten/gamemaker-sandbox-engine/pl
 import { playerLook, playTuning, STOCK_LOOK } from '@lewismoten/gamemaker-sandbox-engine/engine/playerLook';
 import { createWorld, STOCK_TUNING, type World } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
 import { moveCharGrav } from '@lewismoten/gamemaker-sandbox-engine/engine/character';
-import { changeScroll, initScroll } from '@lewismoten/gamemaker-sandbox-engine/engine/scroll';
+import { changeScroll, drawScroll, initScroll } from '@lewismoten/gamemaker-sandbox-engine/engine/scroll';
 import { loadScene } from '@lewismoten/gamemaker-sandbox-engine/engine/scene';
 import { newCharacter, serializeCharacter } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 import type { Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
@@ -165,6 +165,26 @@ describe('the web engine with gameplay patches', () => {
     expect([stock.bx.iters, slow.bx.iters]).toEqual([6, 12]);
     expect(slow.totalx).not.toBe(0);
     expect(Math.abs(slow.totalx)).toBeLessThan(Math.abs(stock.totalx));
+  });
+
+  it.each([-1, 1])('keeps offsets inside a tile at maximum scroll speed in direction %i', (direction) => {
+    const patch = PLAY.find((e) => e.id === 'play.scrollSteps')!;
+    const w = world({ 'play.scrollSteps': patch.min });
+    initScroll(w, { up: 0xff, down: 0xff, left: 0xff, right: 0xff });
+    w.scroll.nx = w.scroll.ny = direction > 0 ? 16 : 0;
+    for (let move = 0; move < 3; move++) {
+      w.ci.nextx = w.ci.nexty = direction > 0 ? 320 : 0;
+      changeScroll(w);
+      expect([w.scroll.totalx, w.scroll.totaly]).toEqual([28 * direction, 28 * direction]);
+      for (let tick = 0; tick < patch.min; tick++) {
+        drawScroll(w);
+        for (const offset of [w.scroll.nx, w.scroll.ny]) {
+          expect(offset).toBeGreaterThanOrEqual(0);
+          expect(offset).toBeLessThan(20);
+        }
+      }
+    }
+    expect(patch.min).toBe(2);
   });
 
   it('sets a scene’s tuning from the session’s player look', () => {

@@ -52,6 +52,16 @@ def append_report(path, text):
     atomic_text(path, existing + ('\n---\n\n' if existing else '') + text)
 
 
+def log_excerpt(path):
+    byte_limit = 8192
+    with Path(path).open('rb') as stream:
+        start = max(0, stream.seek(0, os.SEEK_END) - byte_limit)
+        stream.seek(start)
+        lines = stream.read(byte_limit).decode('utf-8', errors='replace').splitlines()
+    marker = '[log truncated]\n' if start or len(lines) > 40 else ''
+    return marker + '\n'.join(lines[-40:])
+
+
 def clean_environment():
     # Do not inherit build skips, writable output/cache overrides, fast-test or CI selection.
     env = {k: v for k, v in os.environ.items() if not k.startswith(('GM_', 'GAME_', 'DEPTH_', 'SANDLOGO_', 'VITEST_', 'TEXT_BOUNDS', 'CI'))}
@@ -134,7 +144,7 @@ class Validation:
             if step.get('reason') or step.get('error'):
                 lines.append(step.get('reason', step.get('error', '')))
             if step['status'] == 'FAIL' and step.get('log') and Path(step['log']).exists():
-                lines += ['```text', '\n'.join(Path(step['log']).read_text(errors='replace').splitlines()[-40:]), '```']
+                lines += ['```text', log_excerpt(step['log']), '```']
         lines += ['', '## Artifact comparison evidence', 'Rule: every disk file must be compared as raw bytes; no normalization or exclusions.',
                   'Full filename/size/SHA256 manifests and first differing byte offsets are in result.json.']
         for game, result in self.comparisons.items():
@@ -310,10 +320,11 @@ def main(argv=None, execute=None):
         finally:
             run.environment['finished'] = dt.datetime.now(dt.timezone.utc).isoformat()
             run.save()
-            atomic_text(root / 'report.md', run.report())
+            report_text = run.report()
+            atomic_text(root / 'report.md', report_text)
             # A coalesced request returns inside try; it must not overwrite the original completion state.
             if completed or any(s['status'] in ('FAIL', 'UNAVAILABLE') for s in run.steps):
-                append_report(report, run.report())
+                append_report(report, report_text)
                 if completed:
                     result = json.dumps({'revision': run.revision, 'baseline': run.baseline,
                         'validator': validator, 'status': run.status(), 'diagnostics': str(root)}, indent=2) + '\n'

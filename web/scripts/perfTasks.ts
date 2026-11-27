@@ -63,7 +63,10 @@ async function measure(page: Page, step: string, action: () => Promise<unknown>)
   });
   await cdp.send('Profiler.start');
   const t0 = Date.now();
-  await action().catch((e: Error) => console.log(`  ! ${step}: ${e.message.split('\n')[0].slice(0, 90)}`));
+  await action().catch((e: Error) => {
+    if (budget) throw new Error(`${step}: ${e.message}`, { cause: e });
+    console.log(`  ! ${step}: ${e.message.split('\n')[0].slice(0, 90)}`);
+  });
   await page.evaluate(
     () =>
       new Promise<void>((done) => {

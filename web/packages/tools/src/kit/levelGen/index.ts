@@ -68,6 +68,8 @@ export interface GenParams {
   monsters?: number[];
   /** The map wraps over its edges (overworld land then lines up across the seam). */
   wrap?: boolean;
+  /** A selection inside the map has bounded edges even on a wrapping map. */
+  selection?: boolean;
   /** The hero's character file: a platform layout is sized to his real jump (the other kinds ignore it). */
   hero?: Character;
   /** Platform: how much of the hero's most the layout asks of him, in percent (10 to 100; 80 when left out). */
@@ -90,6 +92,8 @@ export const MIN_SIDE = 10;
 export type TerrainRole = 'wall' | 'tree' | 'path' | 'water';
 
 export interface GenResult {
+  /** Opposite edges of this generated area are adjacent. */
+  wrap?: boolean;
   rect: Rect;
   /** A block number per cell of the rectangle, in reading order. */
   blocks: Uint8Array;
@@ -188,7 +192,7 @@ export function generate(roles: RoleMap, params: GenParams): GenOutcome {
     const t = town(w, h, r, { tree: has('tree'), decor: has('decoration') });
     ({ area, entry, exit, links } = t);
   } else if (params.kind === 'overworld') {
-    const o = overworld(w, h, r, { tree: has('tree'), rock: has('rock'), decor: has('decoration'), wrap: !!params.wrap });
+    const o = overworld(w, h, r, { tree: has('tree'), rock: has('rock'), decor: has('decoration'), wrap: !!params.wrap, selection: params.selection });
     ({ area, entry, exit, links } = o);
   } else if (params.kind === 'home' || params.kind === 'shop') {
     const avail: Avail = {};
@@ -279,6 +283,7 @@ export function generate(roles: RoleMap, params: GenParams): GenOutcome {
       rect,
       blocks,
       kinds: area.cells,
+      wrap: area.wrap,
       terrainCells,
       entry,
       exit,
@@ -297,7 +302,7 @@ export function generate(roles: RoleMap, params: GenParams): GenOutcome {
 
 /** Whether every open cell of a result can be reached from its entry (a check the generators should always pass). */
 export function verifyReach(result: GenResult): { ok: boolean; open: number; reached: number } {
-  const a: Area = { w: result.rect.w, h: result.rect.h, cells: result.kinds };
+  const a: Area = { w: result.rect.w, h: result.rect.h, cells: result.kinds, wrap: result.wrap };
   const d = distances(a, result.entry);
   let open = 0,
     reached = 0;
@@ -325,7 +330,7 @@ export interface Proof {
 /** The furniture part of the proof (plain cell codes only). */
 function proveFurniture(result: GenResult): boolean {
   if (!result.furniture.length) return true;
-  const a: Area = { w: result.rect.w, h: result.rect.h, cells: result.kinds };
+  const a: Area = { w: result.rect.w, h: result.rect.h, cells: result.kinds, wrap: result.wrap };
   const d = distances(a, result.entry);
   const tables = new Set(result.furniture.filter((f) => f.role === 'table').map((f) => f.cell));
   return result.furniture.every((f) => {
@@ -347,14 +352,14 @@ function proveFurniture(result: GenResult): boolean {
 /** Every proposed link's door or site can be reached from the entry. */
 function proveLinks(result: GenResult): boolean {
   if (!result.links.length) return true;
-  const a: Area = { w: result.rect.w, h: result.rect.h, cells: result.kinds };
+  const a: Area = { w: result.rect.w, h: result.rect.h, cells: result.kinds, wrap: result.wrap };
   const d = distances(a, result.entry);
   return result.links.every((l) => d[l.cell] >= 0);
 }
 
 /** The generator's own proof for a result: reach, key-before-lock and that everything can be collected. */
 export function proveResult(result: GenResult): Proof {
-  const a: Area = { w: result.rect.w, h: result.rect.h, cells: result.kinds };
+  const a: Area = { w: result.rect.w, h: result.rect.h, cells: result.kinds, wrap: result.wrap };
   const pickups = [...result.treasure, ...(result.life === undefined ? [] : [result.life])];
   if (result.platform) {
     const p = result.platform.proof;

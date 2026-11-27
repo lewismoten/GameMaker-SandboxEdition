@@ -65,21 +65,204 @@ game folder opens in the browser unchanged.
 ## Credits
 
 - OpenAI Codex fixed and tested forced Stage Box rebuilds after an interrupted manifest write.
+- OpenAI Codex (GPT-6) corrected the 150 Blocks Starter's block limit wording.
+- OpenAI Codex fixed and tested argument validation for the Ghost Jack snapshot command.
+- OpenAI Codex corrected Kit’s placement in the Three Tokens progress shot and wrote its pixel regression test.
+- OpenAI Codex fixed and tested transparent padding in the Colors That Work shape check.
+- OpenAI Codex fixed and tested contrast sampling for the text-page ink advisory.
+- OpenAI Codex wrote the scene Escape timing regression test.
+- OpenAI Codex fixed and tested courier trip persistence and replay retention.
+- OpenAI Codex fixed and tested desk audio warmup cleanup, round-trip report defaults, and unreadable ZIP reporting.
+- OpenAI Codex fixed and tested the minimum scroll smoothing setting.
+- OpenAI Codex corrected and tested the Starter group named in the Pick It Up title artwork comment.
+- OpenAI Codex fixed and tested the performance budget verifier.
+- OpenAI Codex fixed and tested Starter Grid validation.
+- OpenAI Codex fixed and tested badge generation in checkout paths containing spaces.
+- OpenAI Codex fixed and tested Starter card overflow detection.
+- OpenAI Codex fixed, tested, and documented walkthrough screenshot sampling.
+- OpenAI Codex clarified the Face Dial color test and fixed and tested fill clipping on code wheels.
+- OpenAI Codex fixed and tested the link preview audit for builds with no preview pictures.
+- OpenAI Codex fixed and tested land connectivity in wrapped overworlds.
+- OpenAI Codex strengthened the DOS floppy export test for in-place changes to file bytes.
+- OpenAI Codex fixed and tested file and header size validation in the historical player inventory.
+- OpenAI Codex fixed and tested decoration spacing validation in the graduation hall builder.
+- OpenAI Codex corrected and tested the public guide to handing off uncommitted edits.
+- OpenAI Codex fixed and tested pitch handling in the pronunciation word report.
+- OpenAI Codex fixed and tested the Hint Giant’s silence timeout.
+- OpenAI Codex fixed and tested same-family track colors in the music editor.
+- OpenAI Codex fixed and tested interrupted local backup restores.
+- OpenAI Codex wrote the regression test for the Sandbox BBS menu and prompt colors.
+- OpenAI Codex fixed and tested cleanup when the editor replaces a paused Undo notice.
+- OpenAI Codex corrected the Noodle Observatory scene guide and tested its scene count and palette-specific invisible-wall check.
+- OpenAI Codex fixed and tested Home and End on the active monster path tab.
+- OpenAI Codex fixed and tested the home smoke check for sideways scrolling on phones.
+- OpenAI Codex corrected and tested the camera command in the contributor instructions.
+- OpenAI Codex corrected and tested the editor guide’s First steps checklist instructions.
+- OpenAI Codex fixed and tested the import history reader for damaged entries.
+- OpenAI Codex fixed and tested DOS hardware preference restoration.
+- OpenAI Codex fixed and tested phrase matching and temporary image cleanup in the camera OCR command.
+- OpenAI Codex fixed and tested checkpoint lookup when making an optimized copy.
+- OpenAI Codex fixed and tested disk size formatting in the Maximus magazine listing.
+- OpenAI Codex fixed and tested transaction handling for imported title repairs.
+- OpenAI Codex fixed and tested the storm puddle colors in Rain on the Path.
+- OpenAI Codex fixed and tested serial connection teardown and the log line limit in the Pi remote.
+- OpenAI Codex fixed and tested trailing-byte reporting in the block editor.
+- OpenAI Codex fixed and tested the cryptex head section in the assembly viewer.
+- OpenAI Codex fixed and tested the native packaging commands’ message for games unavailable for download.
+- OpenAI Codex fixed and tested the packaging of Pocket Player firmware notices.
+- OpenAI Codex fixed and tested reporting of read-only storage errors.
+- OpenAI Codex fixed and tested reachability in generated castle keeps.
+- OpenAI Codex fixed and tested exclusion of the Pocket Player installer and firmware from offline downloads.
+- OpenAI Codex fixed and tested the flock visibility report.
+- OpenAI Codex wrote the regression test for the Settings menu’s backup button.
+- OpenAI Codex corrected the Spend It coin exercise, checked the unpaid stall attempt in its demo, validated Starter shop prices, and added regression tests.
+- OpenAI Codex fixed and tested plaque placement in the shared game builder.
+- OpenAI Codex corrected the BBS patching guide and tested its menu example and the Programmer's Guide stock bytes.
+- OpenAI Codex fixed and tested FLAGS PLAYED command validation.
+- OpenAI Codex fixed and tested the Who Wins? lesson check for a star hitting the big one.
+- OpenAI Codex fixed and tested replay error handling in the Who Do You Want to Be? title demo checker.
+- OpenAI Codex fixed and tested update notifications in Settings and the update notice.
+- OpenAI Codex corrected and tested the joystick help in Take the Wheel.
 - OpenAI Codex fixed and tested the editor’s file count accessibility and shareware notice layout on phones.
+- OpenAI Codex fixed and tested walkthrough segment selection in the Pocket host checker.
+- OpenAI Codex fixed and tested the Switches title demo checker.
+- OpenAI Codex fixed and tested how the SDK README examples run from standard input.
+- OpenAI Codex fixed and tested Markdown table separator handling in printable instruction books.
+- OpenAI Codex fixed and tested Guide navigation while a level is opening.
+- OpenAI Codex fixed and tested playback cleanup in the paper die fold viewer.
+- OpenAI Codex fixed and tested filename allocation for animation clips.
+- OpenAI Codex fixed and tested black-light image cleanup when a game box is released.
+- OpenAI Codex fixed and tested drop cancellation in walkthrough recordings.
+- OpenAI Codex bounded nightly failure log excerpts and tested truncation.
+- OpenAI Codex fixed and tested the More menu’s accessible name.
+- OpenAI Codex fixed and tested toolkit palette lighting for Node.js buffers and text rendering for large numbers of empty lines.
+- OpenAI Codex fixed and tested touch selection for adjacent map exits.
+- OpenAI Codex aligned the four stars on the Ride Along title screen and tested their rendered positions.
+- OpenAI Codex updated and tested the Room to Room victory caption.
 - OpenAI Codex fixed and tested frame selection for editor screenshots.
+- OpenAI Codex fixed and tested the full-cycle check in the Roll the Dice walkthrough bot.
+- OpenAI Codex fixed and tested the disk box divider controls during search.
+- OpenAI Codex corrected the Junior Lab phone dial simulation report and tested the dial and case floor geometry.
+- OpenAI Codex fixed and tested fallback folder names on the Sample CD.
+- OpenAI Codex corrected the Course 1 figure output path in the script guide and wrote its regression test.
+- OpenAI Codex fixed and tested circular slide list handling in Pocket Player exports.
+- OpenAI Codex fixed and tested Color help subscription cleanup and course poster PNG encoding.
+- OpenAI Codex fixed and tested viewport clipping for desk screenshots.
+- OpenAI Codex fixed and tested saved map view geometry validation and cleanup when switching maps.
+- OpenAI Codex fixed and tested section-link validation in the built-site SEO audit.
+- OpenAI Codex fixed and tested game lookup for the DOS transferred-game player.
+- OpenAI Codex fixed and tested the Under the Surface title-demo check.
+- OpenAI Codex fixed and tested the simulator’s handling of missing character files.
+- OpenAI Codex fixed and tested demo inspection retries on the home showcase.
+- OpenAI Codex fixed and tested the shore Starter’s demo replay verdict and timed-block preview.
+- OpenAI Codex corrected and tested the Maps Within Maps title demo check.
+- OpenAI Codex corrected and tested the south gate editing exercise in the Maps Within Maps manual.
+- OpenAI Codex fixed and tested how Scoot displays game titles and refreshes the open card.
+- OpenAI Codex fixed and tested pair selection in the color cues audit.
+- OpenAI Codex fixed and tested the offline check for recorded phone and tour playback.
+- OpenAI Codex corrected the Keys and Doors lessons on key costs and tested both text pages.
+- OpenAI Codex fixed and tested pinch zoom in the phone viewer.
+- OpenAI Codex fixed and tested missing-page diagnostics in the Pocket Player card host check.
+- OpenAI Codex fixed and tested conflicting Pocket Player card export options.
+- OpenAI Codex fixed and tested phone board fabrication exports and download validation.
+- OpenAI Codex corrected and tested the multi-page talk question in Say Something.
+- OpenAI Codex added the browser test for code sheet keyboard selection and puzzle answers.
+- OpenAI Codex corrected and tested the Stick Man Stars joystick jump, star counter description, and demo recording instructions.
+- OpenAI Codex corrected and tested the starting jump count in Boots and Jet Pack.
+- OpenAI Codex fixed and tested candidate reporting in walkthrough key searches.
+- OpenAI Codex added the row-dithering regression check for gradient shading.
+- OpenAI Codex repaired and tested the hat-tip animation in Final Curtain.
+- OpenAI Codex fixed and tested Windows paths in release size checks.
+- OpenAI Codex fixed and tested partial Stage Box output recovery.
+- OpenAI Codex corrected and tested the one-disk installer wording in the guide.
+- OpenAI Codex fixed and tested the left hedge and title demo checks in Scroll or Stay.
+- OpenAI Codex fixed and tested waterfall screenshot selection in the developer tools.
+- OpenAI Codex fixed and tested temporary file cleanup in the Pocket Player controls check.
+- OpenAI Codex corrected and tested the comparison cards in Colors That Work.
+- OpenAI Codex fixed navigation focus and tested delayed rendering and Back in Chromium.
+- OpenAI Codex fixed and tested the code wheel fallback for empty vector faces.
+- OpenAI Codex fixed and tested DOS and web recording in the fidelity scripts.
+- OpenAI Codex fixed and tested the phone board export checks.
+- OpenAI Codex fixed and tested saved task retention and Unicode title matching in the assistant’s to-do list.
+- OpenAI Codex corrected the Kit's Shop win caption and tested its title demo.
+- OpenAI Codex fixed and tested missing capture reporting in the light-shot tool.
+- OpenAI Codex corrected the speed setting name in the Slow Computers manual and tested the five affected pages.
+- OpenAI Codex fixed and tested screen navigation and case selection in the theme recheck.
+- OpenAI Codex fixed silent syllables and tested linear syllable lookup in the mumble synthesizer.
+- OpenAI Codex fixed and tested worker startup and empty runs in the malformed-file checks.
+- OpenAI Codex fixed and tested slow-PC music timing after system-exclusive records.
+- OpenAI Codex fixed and tested reset cancellation when leaving the desk.
+- OpenAI Codex fixed and tested anchor scoring and frame validation in the fidelity scripts.
+- OpenAI Codex fixed and tested the tin heart status in short Saves & scores windows.
+- OpenAI Codex fixed and tested QR keep-out sizing for the standard phone board.
+- OpenAI Codex added the Rain on the Path route check for splash pictures and its regression test.
+- OpenAI Codex updated and tested the magazine illustration description for THE CHEZ.
+- OpenAI Codex corrected and tested the wind-column instructions in the Slippery and Bouncy manual.
+- OpenAI Codex fixed and tested the desk CD-ROM spin-up and floppy insert duration.
+- OpenAI Codex fixed and tested the saved filename shown after a file picker import.
+- OpenAI Codex corrected and tested the reproduction commands in the file fuzzing case study.
+- OpenAI Codex fixed and tested triangle-to-body clearance measurements for the phone kit.
+- OpenAI Codex added required metadata checks for every Starter in the hero deal.
+- OpenAI Codex fixed booklet diagram placement after lists and tested the Technical Reference diagrams.
+- OpenAI Codex fixed and tested retrying the Starter question index on Home.
+- OpenAI Codex implemented and tested indexed crash recovery for the private intake ledger.
 - OpenAI Codex fixed and tested validation before writing Level Maps metadata.
+- OpenAI Codex fixed and tested the Sound Board walkthrough’s sound-cutoff check.
+- OpenAI Codex corrected and tested the game version and Frost Lot crossing deadline for the fifteen-level edition of The Thank-You Parade.
 - OpenAI Codex fixed and tested the Score Popups final coin and demo payout checks.
+- OpenAI Codex fixed and tested recovery of missing Year 2000 cryptex kit files.
+- OpenAI Codex fixed and tested the timing of short pull-away sounds for THE CHEZ.
+- OpenAI Codex tested the published ZIP links in development and production builds.
+- OpenAI Codex fixed and tested the Score Popups frame capture tool.
+- OpenAI Codex fixed and tested shelf updates in the Library TV.
+- OpenAI Codex fixed and tested the development web player page metadata.
+- OpenAI Codex corrected the game pack file order documentation and wrote its regression test.
+- OpenAI Codex fixed and tested lock-number suggestions in the block editor.
+- OpenAI Codex fixed and tested merge gate conflict marker detection in the maintained source README.
+- OpenAI Codex wrote the regression test for manual screenshot requests.
+- OpenAI Codex fixed and tested cleanup after editor tour screenshot encoding fails.
+- OpenAI Codex fixed and tested the player speed menu’s initial selection.
+- OpenAI Codex fixed and tested the Near and Far title demo checker’s replay timing.
+- OpenAI Codex fixed and tested the Smash It title demo’s stuck coin check.
+- OpenAI Codex fixed and tested the Tune-Up papercraft rebuild and parts list.
+- OpenAI Codex fixed and tested the desk Machine settings preload and the Courier host test launcher.
+- OpenAI Codex fixed and tested Level check warnings for repeating score penalty sounds and healing sound priority.
+- OpenAI Codex fixed and tested retries in the example game senders and corrected the embedding and hosting guides.
+- OpenAI Codex corrected the Starter level progress messages and tested both Show filters.
+- OpenAI Codex fixed and tested declaration preflight rebuild failures.
+- OpenAI Codex removed and tested a duplicate Starter check in the Sofa file library.
+- OpenAI Codex fixed and tested reply deadlines in the Pocket Player SD card writer.
+- OpenAI Codex corrected the Home Keys demo check and recorder instructions and added regression tests.
+- OpenAI Codex fixed and tested the walkthrough view checker’s starting coordinates for moving monsters.
 - OpenAI Codex wrote the headless audit for built title demos and saved walkthroughs.
+- OpenAI Codex fixed and tested the Snow Trails route checks for drift growth and footprint persistence.
 - OpenAI Codex fixed and tested the Around the Room title demo checker.
+- OpenAI Codex fixed and tested the Say Something title demo checker.
+- OpenAI Codex fixed and tested replay error handling in the Health and Hearts title demo checker.
+- OpenAI Codex fixed and tested the Teach, Test, Twist title demo checker.
+- OpenAI Codex fixed and tested the Walking Very Far title demo checker.
+- OpenAI Codex updated the Block Brains title demo and tested its gate and playback checks.
+- OpenAI Codex fixed and tested the Slippery and Bouncy title demo checker.
+- OpenAI Codex fixed and tested the Heat Waves evening hill check.
 - OpenAI Codex updated the Dig It walkthrough to demonstrate the shovel and tested its recorded controls.
+- OpenAI Codex added the browser regression test for focus in the DOS page menu.
+- OpenAI Codex fixed and tested keyboard navigation in the magazine Print menu.
 - OpenAI Codex sped up the block editor history, phone recording, and phone Files button regression tests.
+- OpenAI Codex implemented and tested background catalog preparation and cancellation for the development server.
 - OpenAI Codex implemented and tested background catalog preparation for the development server.
+- OpenAI Codex fixed generated dungeon map filenames and tested DOS filename collisions.
+- OpenAI Codex updated the platform bot regression to require generation for its three named seeds.
+- OpenAI Codex fixed and tested thumbnail scheduling for paper feelies in the desk.
 - OpenAI Codex fixed and tested platform layout verification in the map editor.
+- OpenAI Codex revised and tested the home tour cue for the Games link and Game-Maker logo.
 - OpenAI Codex added the regression test for stale tour narration.
+- OpenAI Codex fixed and tested tour narration when a BBS prompt fails to appear.
 - OpenAI Codex fixed and tested backward navigation in the guided tour.
 - OpenAI Codex fixed and tested the magazine toolbar layout on phones.
+- OpenAI Codex fixed and tested keyboard save retries after project snapshot failures.
 - OpenAI Codex fixed the hosted player’s save export status and added browser regression tests.
 - OpenAI Codex corrected the WebKit appearance of the player setup dropdowns.
+- OpenAI Codex fixed and tested collection size totals in the import chooser.
 - OpenAI Codex fixed and tested large loose-file imports and the editor’s guidance for DOS name collisions.
 - OpenAI Codex added and tested the editor confirmation for imports over unsaved edits.
 - OpenAI Codex fixed and tested damaged-copy recovery after repeated Keep clicks.
@@ -115,6 +298,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex reviewed wrapping map views and corrected keyboard movement of link markers and Level check seam and link findings with regression tests.
 - OpenAI Codex preserved emphasized instructions in the phone kit booklet filter and added its regression test.
 - OpenAI Codex revised the phone booklet’s firmware simulation summary and added its regression test.
+- OpenAI Codex fixed and tested upper-page program loading in both phone firmware simulators.
 - OpenAI Codex fixed phone booklet filtering and Markdown table boundaries and added regression tests.
 - OpenAI Codex generated and tested the static Art courses and Programmer’s Guide pages.
 - OpenAI Codex revised Starter page labels, game preview descriptions, offline instructions and page links during the November 22, 2026 SEO review.
@@ -250,7 +434,7 @@ game folder opens in the browser unchanged.
 
 - **Source area documentation (November 10, 2026)**: OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, documented the Graphics Image Reader layers and completed the source README index.
 
-- **Keyboard walkthrough report** (`games/kit/keyAccess.ts`): OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, clarified press percentages, keypad-diagonal counts and recording limits, with regression tests. Game content and recordings are unchanged.
+- **Keyboard walkthrough report** (`games/kit/keyAccess.ts`): OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, clarified press percentages, keypad-diagonal counts and recording limits, with regression tests. OpenAI Codex also fixed and tested reporting for missing recordings and recordings without key-down events.
 - **Performance map measurement** (`web/scripts/perfTrace*.ts`): OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, added map-content readiness, cold-load cache isolation and regression tests. No third-party code or game assets were added.
 
 - **Walkthrough bot planning**: **OpenAI Codex (GPT-6)**, directed by Lewis Moten, revised gate dependency planning, jump discovery, search states, and regression tests.
@@ -291,9 +475,10 @@ game folder opens in the browser unchanged.
   signs and bot). Notes kept for Lewis stay out of the repository.
 - **Hermes OpenAI Codex GPT-6.1 Sol** (OpenAI), directed by Lewis, revised Slow Computers' crowd layout and cutaway cave pixels, its lesson notes and its gameplay regression checks (`games/slow-computers/`). The original game credits remain.
 - **First-load boundaries and regression checks**: **Hermes Agent running OpenAI Codex GPT-6.1 Sol**, directed by Lewis Moten, separated editor routes from the home page. No game content, patch values or export formats changed.
-- **All Mine high-score achievement**: **Hermes Agent running OpenAI Codex GPT-6.1 Sol**, directed by Lewis Moten, implemented stored-table detection, player/desk integration, reset persistence and tests, and selected an existing checklist block through the badge generator. The source artwork retains its original credits; no new game artwork was drawn.
+- **All Mine high-score achievement**: **Hermes Agent running OpenAI Codex GPT-6.1 Sol**, directed by Lewis Moten, implemented stored-table detection, player/desk integration, reset persistence and tests, and selected an existing checklist block through the badge generator. The source artwork retains its original credits; no new game artwork was drawn. OpenAI Codex fixed and tested Reset when game enumeration fails.
 - **DOS installation support**: **Hermes Agent running OpenAI Codex GPT-6.1 Sol**, directed by Lewis Moten, wrote the DOS batch installer, installation instructions, optional whole-file floppy layout script, export-only loading boundary, printable disk-label installation text and regression tests. Original game and DOS runtime files retain their existing credits.
 - **Picture review helper packaging**: **OpenAI Codex (GPT-6.1 Sol)**, directed by Lewis Moten, moved the existing DAST image helpers and regression tests into the tools package and documented their public imports. The original algorithms and artwork retain their credits.
+- **Slide and Drift title demo**: OpenAI Codex (GPT-6) corrected the recording length and added the landing check and regression test.
 - **Technical Reference review**: **OpenAI Codex (GPT-6)**, directed by Lewis Moten,
   revised the booklet and cited Programmer's Guide chapters, drew static inline SVG byte,
   bit, wrapping and fade figures, and checked worked examples against non-secret Sandbox
@@ -386,7 +571,7 @@ game folder opens in the browser unchanged.
 
   The four voice clips in Out Loud (`games/voice/src/voices.ts`) are not recordings and used no text-to-speech model: a small formant synthesizer written for the game (two resonant filters per vowel) hums a few syllables of nonsense, in code, with no third-party code or data. Claude Sonnet 5.5 (Anthropic) wrote it, directed by Lewis Moten.
 
-- **FLAGS.EXE** (`web/src/retro/hacks/flags*.ts`): the debugging utility that lists, sets, clears, resets, backs up and restores the desk PC's remembered browser state, its BBS Warez listing and tests, written with **Claude Sonnet 5.5** (Anthropic), directed by Lewis Moten.
+- **FLAGS.EXE** (`web/src/retro/hacks/flags*.ts`): the debugging utility that lists, sets, clears, resets, backs up and restores the desk PC's remembered browser state, its BBS Warez listing and tests, written with **Claude Sonnet 5.5** (Anthropic), directed by Lewis Moten. OpenAI Codex fixed and tested how FLAGS echoes unknown names.
 - **DOS clock shortcuts** (`web/src/retro/dos/`): named room times, command help, and clock regression checks implemented with **OpenAI Codex (GPT-6)**, directed by Lewis Moten.
 - **Website game ZIP distributions** (`web/scripts/gameArchive.ts`, `web/src/project/hostedZip.ts`): the reproducible DOS distribution builder, shared browser ZIP loading, permanent links and Vite serving were implemented and verified with **OpenAI Codex**, directed by Lewis Moten. Original game data stays intact; DOS runtime and game notices travel in each archive.
 - **The npm archive utilities** (`web/packages/archives/`): the fork's ZIP codec and portable game import discovery, consolidated and verified with **OpenAI Codex (GPT-6/6.1)** under Lewis Moten's direction. The underlying code was written with **Anthropic Claude Opus 5.5**. Compression uses platform streams; no third-party archive library is included. The package carries its own license and notices.
@@ -706,7 +891,7 @@ game folder opens in the browser unchanged.
   leaves them alone. The CD's tools are kept as it held them, each its author's: LHarc 1.13
   (`cd/backup/lharc.exe`, "(c)Yoshi, 1988-89") and LHA 2.13 with its
   documentation (`cd/sharware/tools`, Haruyasu Yoshizaki), and Alchemy Mindworks' Graphic
-  Workshop shareware for DOS and Windows (`cd/sharware/tools/gwsdos.zip`, `GWSWIN.ZIP`).
+  Workshop shareware for DOS and Windows (`cd/sharware/tools/gwsdos.zip`, `gwswin.zip`).
   None of them are on the website.
 
 ## The Bard of Bizarre recordings: personal, non-commercial only
@@ -1352,6 +1537,8 @@ The 3D-printed shell, dial, button caps and battery box (`tools/shell.ts`, `shel
 by this repository's trinket tools, designed by Claude Sonnet 5.5 (Anthropic) under Lewis Moten's direction. The AAA cells'
 maker "ZORP" is invented. The shell is untested: nothing has been printed.
 
+The dial draws on dAcid's [Rotary Dial mechanism](https://www.thingiverse.com/thing:3153349) ([CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)) for its one-piece spring and frame, clip-on finger stop, center screw through flat-printed parts, and digits beneath the finger holes. The phone kit uses its own geometry and spring parameters. OpenAI Codex documented this credit and added its regression test.
+
 - **Embroidery generator and Maximus's patch** (`web/packages/tools/src/embroidery/`, `games/maximus/patch/`, `web/src/desk/boxes/patchModel.ts`): the stitch generator, the DST, EXP and PES writers, the single-line lettering, the stitch simulation and the patch design were written by **Claude Sonnet 5.5** (Anthropic), directed by Lewis Moten. The file layouts follow the public descriptions of the Tajima DST, Melco EXP and Brother PES/PEC formats kept by the open embroidery projects (Embroidermodder's libembroidery, MIT, and pyembroidery, MIT); no code or data was copied, and the PES thread-chart indices are approximate. The patch uses only the game's own colors and words. Nothing has been sewn on a real machine.
 
 ## Native SDL host prototype
@@ -1364,7 +1551,7 @@ maker "ZORP" is invented. The shell is untested: nothing has been printed.
 
 - **Livestream game follow-up (November 2026):** OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, implemented Colors That Work’s playable palette lesson, removed unused Beat the Clock monster templates, drew the paper cube’s intermediate folding diagram, revised the Stage Box assembly and lock diagrams, and added the phone BOM’s numeric cost export and regressions. Existing game art, music, source data, and color-vision algorithm credits remain.
 
-- **Desk machine settings** (`web/src/desk/pc/machine*.ts`): OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, implemented the hardware dialog, remembered CPU and disk timing, accessibility checks and regression tests using the existing engine estimates. No new third-party assets or game content were added.
+- **Desk machine settings** (`web/src/desk/pc/machine*.ts`): OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, implemented the hardware dialog, remembered CPU and disk timing, accessibility checks and regression tests using the existing engine estimates. No new third-party assets or game content were added. OpenAI Codex restored the default BIOS processor label and tested the startup text.
 - **Livestream Desk, Editor, Site and Library follow-up**: OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, implemented navigation, asset filtering, scene-panel layout, creation labels, download discoverability, cached-search scheduling, and regression checks. Existing game data and artwork retain their credits.
 
 - **Full-window player snapshots**: OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, implemented the camera control, DOS crop metadata, PNG regressions and documentation using this project’s existing PNG encoder. Original game artwork retains its existing credits.
@@ -1381,7 +1568,7 @@ maker "ZORP" is invented. The shell is untested: nothing has been printed.
 
 - **Portable animation Level check:** OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, extracted the animation findings and tests into the tools package using the existing engine decoders.
 - **Web editor tour review (November 10, 2026)** (`docs/editor.md`): OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, checked the tour against the editor source and revised its descriptions of controls and flows. Existing screenshots and their artwork retain their credits.
-- **Level generator ceiling landings** (`web/packages/tools/src/kit/levelGen/platformReach.ts`): OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, matched the reach model's ceiling collision snaps to PLAYGAME and added engine comparison regressions. The original RSD code remains the behavioral reference.
+- **Level generator ceiling landings** (`web/packages/tools/src/kit/levelGen/platformReach.ts`): OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, matched the reach model's ceiling collision snaps to PLAYGAME and added engine comparison regressions. OpenAI Codex added the regression for jumps that time out at the target coordinates. The original RSD code remains the behavioral reference.
 
 - **Memory harness completion** (`web/scripts/perfMemory.ts`): OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, added explicit failure diagnostics, cleanup handling and browser-free regression tests.
 
@@ -1525,3 +1712,13 @@ maker "ZORP" is invented. The shell is untested: nothing has been printed.
 
 - **Printable cut guides (November 24, 2026)**: OpenAI Codex corrected the printed cut line around small sheets.
 - **Honors dialog (November 24, 2026)**: OpenAI Codex fixed the earned diploma layout on phones.
+- **Meet the Monsters ending (November 25, 2026)**: OpenAI Codex corrected the monster count and tested it against the level maps.
+- **Throw It demo check (November 25, 2026)**: OpenAI Codex updated the title demo validator and wrote its missing-projectile regression test.
+
+- **Getting started dialog (November 25, 2026)**: OpenAI Codex fixed the touch target sizes and wrote the browser regression test.
+
+- **Beat the Clock disk license (November 26, 2026)**: OpenAI Codex corrected the game title and wrote the regression test.
+
+- OpenAI Codex documented The Thank-You Parade's contributor tools and tested the command list.
+
+- **Release version checks (November 26, 2026)**: OpenAI Codex fixed the release cutter's version ordering and wrote its downgrade regression test.

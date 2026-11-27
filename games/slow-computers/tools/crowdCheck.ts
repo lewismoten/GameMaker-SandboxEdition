@@ -52,7 +52,9 @@ const check = () => {
   const w = sim.w;
   renderWorld(screen, w);
   const slots = w.mm.map((m, i) => ({ m, i })).filter(({ m }) => m.monnum <= MON.shelly);
-  assert.equal(slots.length, 36);
+  assert.equal(slots.filter(({ m }) => m.monnum === MON.shelly).length, 8, 'snails in the cave');
+  assert.equal(slots.filter(({ m }) => m.monnum === MON.gumdrop).length, 10, 'gumdrops on the ground');
+  assert.equal(slots.filter(({ m }) => m.monnum === MON.buzzer).length, 18, 'bees in the air');
   assert.equal(sim.ci.hitpts, hp);
   assert.equal(sim.deaths, 0);
   if (bot.px.y !== 180) return;

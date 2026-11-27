@@ -43,8 +43,15 @@ export async function pilesUp(bot: StarterBot): Promise<void> {
   await must(bot.wait(54), 'watch the drift deepen');
   if (bot.sim.w.blkmap[drift] !== book.n('drift1.2')) throw new Error('drift did not reach its deepest picture');
   await must(bot.walk(19), 'make boot marks');
+  const trail = at(17, 9);
+  const footprints = book.n('footprints');
+  if (bot.sim.w.map[trail] !== footprints) throw new Error('the outward walk did not stamp the trail');
   await must(bot.walk(14), 'look back at the trail');
   await must(bot.wait(30), 'read the sign');
+  for (let col = 0; col < 3; col++) {
+    if (bot.sim.w.blkmap[book.n(`drift${col}.0`)] !== book.n(`drift${col}.2`)) throw new Error(`drift column ${col} did not stay deep`);
+  }
+  if (bot.sim.w.map[trail] !== footprints) throw new Error('footprints disappeared on the return walk');
   const r = await bot.walk(25, 'the last door');
   if (r !== 'link') throw new Error(`second door: ${r}`);
   bot.say('drift grew and stopped; footprints stayed; second door linked to the open field');

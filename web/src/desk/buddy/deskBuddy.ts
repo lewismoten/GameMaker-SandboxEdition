@@ -165,8 +165,11 @@ export function deskBuddy(place: (el: HTMLElement) => void): () => void {
     sections.el,
     close,
   );
+  let summaryGeneration = 0;
   const fillCard = async () => {
+    const generation = ++summaryGeneration;
     const s = await buddySummary(playing, pose);
+    if (generation !== summaryGeneration) return;
     facts.replaceChildren(
       h('dt', null, 'Games played'),
       h('dd', null, String(s.played)),
