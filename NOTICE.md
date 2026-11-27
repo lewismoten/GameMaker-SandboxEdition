@@ -145,6 +145,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex corrected the Round and Round title layout and tested all four car silhouettes.
 - OpenAI Codex fixed and tested same-day updates and Imported tab selection in the What’s new tour.
 - OpenAI Codex fixed and tested inherited hero projectiles in Pocket Player exports.
+- OpenAI Codex added the regression test for the keys in the Blaster walkthrough.
 - OpenAI Codex fixed and tested the editor’s file count accessibility and shareware notice layout on phones.
 - OpenAI Codex fixed and tested walkthrough segment selection in the Pocket host checker.
 - OpenAI Codex fixed and tested the Switches title demo checker.
