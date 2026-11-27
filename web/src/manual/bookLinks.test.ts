@@ -376,7 +376,9 @@ describe.skipIf(!existsSync(join(pub, 'laser')))('the files the Feelies offer (b
           }
     }
   });
+});
 
+describe.skipIf(!existsSync(join(pub, 'laser')) && !existsSync(join(pub, 'trinkets/phone')))('the phone kit downloads', () => {
   it('exist for the phone kit, and its ZIPs hold both builds’ printer parts and board projects', () => {
     // the printer-parts ZIP is made in the browser from its pack (phoneData.ts phonePrinterZip)
     for (const a of phoneAttachments()) if (!a.link) expect(existsSync(join(pub, a.href.replace(/^\.\//, ''))), a.href).toBe(true);
