@@ -22,17 +22,15 @@ export function directionalGravity(w: World): boolean {
 
 /** A held unlimited sequence can climb continuously rather than ending in a jump arc. */
 export function continuousFlight(w: World): boolean {
-  return w.chr.sequences.some(
-    (s, q) =>
-      q >= 5 &&
-      !!s.key &&
-      w.ci.seqon[q] &&
-      w.ci.meter[q] === INF_REPEAT &&
-      !s.norepeat &&
-      !s.ground &&
-      !s.frames.some((f) => f.pic2 === CHARBL + 1) &&
-      s.frames.reduce((dy, f) => dy + (f.pic2 === MONBL ? 0 : f.y), 0) < 0,
-  );
+  return w.chr.sequences.some((s, q) => {
+    if (q < 5 || !s.key || !w.ci.seqon[q] || w.ci.meter[q] !== INF_REPEAT || s.norepeat || s.ground) return false;
+    let dy = 0;
+    for (const f of s.frames) {
+      if (f.pic2 === CHARBL + 1) break;
+      if (f.pic2 !== MONBL) dy += f.y;
+    }
+    return dy < 0;
+  });
 }
 
 /** Relaxed jump/fall routes, optionally spending one finite jump; the engine verifies actual moves. */
