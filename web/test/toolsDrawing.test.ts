@@ -41,6 +41,10 @@ describe('toolkit fonts and indexed text', () => {
     expect(renderText('').pixels.length).toBe(0);
   });
 
+  it('returns an empty image for many empty lines', () => {
+    expect(renderText('\n'.repeat(160_000))).toEqual(renderText(''));
+  });
+
   it('renders the original micro letters and an explicit unknown glyph', () => {
     const a = renderText('a', { font: 'micro', color: 7 });
     expect([a.width, a.height]).toEqual([3, 5]);
@@ -72,6 +76,16 @@ describe('toolkit fonts and indexed text', () => {
 });
 
 describe('toolkit ramps and palette lighting', () => {
+  it('returns a palette independent of the source Buffer', () => {
+    const source = Buffer.alloc(768, 16);
+    const night = adjustPalette(source, 'night');
+    expect(source[3]).toBe(16);
+    source[3] = 0;
+    expect(night[3]).toBe(9);
+    night[0] = 0;
+    expect(source[0]).toBe(16);
+  });
+
   it('interpolates endpoints and a middle stop before VGA quantization', () => {
     expect(colorRamp(3, [0, 0, 0], [255, 255, 255], [80, 120, 160])).toEqual([
       [0, 0, 0],

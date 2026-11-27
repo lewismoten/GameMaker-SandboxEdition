@@ -3,6 +3,7 @@ import { assertNoInvisibleWalls } from '../../kit/starter/invisibleWalls';
 import { buildLevels } from '../src/levels';
 import { buildGame } from '../src/game';
 import { finishBlocks } from '../src/rain';
+import { assertDarkerPuddle } from './puddlePalette';
 import { play } from './play';
 const { pal, storm, levels } = buildLevels();
 for (const l of levels) assertNoInvisibleWalls({ book: l.book, pal, levels: [l] });
@@ -10,7 +11,7 @@ const game = buildGame(levels);
 const [mild, dark] = game.scenes.slice(3);
 if (mild.files[1] !== dark.files[1] || mild.files[2] !== dark.files[2] || mild.files[0] === dark.files[0])
   throw new Error('the palette comparison must load the same map and blocks with two palettes');
-if (pal.pal.every((v, i) => v === storm[i])) throw new Error('storm palette is unchanged');
+assertDarkerPuddle(pal.pal, storm, levels[1].book.pics.get('pool1.0')!.get(10, 7));
 const blocks = finishBlocks(levels[1]);
 for (const t of levels[1].timed) {
   const b = blocks[levels[1].book.n(t.name)];

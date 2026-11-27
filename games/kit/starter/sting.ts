@@ -27,7 +27,7 @@ const WORD_X = 16;
 const ROWS = 9;
 const COLS = 6;
 const SIGN_AT = 15;
-/** Blocks start dropping in fives per frame and fall for FALL frames. */
+/** Each frame, the next PER_FRAME blocks start a drop lasting FALL frames. */
 const PER_FRAME = 16;
 const FALL = 3;
 const HOP_AT = 18;

@@ -58,9 +58,13 @@ export function bindMapPointer(editor: Context) {
     true,
   );
 
+  let zoomPointer: number | undefined;
   editor.canvas.addEventListener('pointerdown', (e) => {
     if (editor.mode === 'pan') return;
-    if (editor.mode === 'zoom') return;
+    if (editor.mode === 'zoom') {
+      if (e.isPrimary && e.button === 0) zoomPointer = e.pointerId;
+      return;
+    }
     const p = editor.cell(e);
     if (isTool(editor.mode)) {
       editor.canvas.setPointerCapture(e.pointerId);
@@ -91,7 +95,9 @@ export function bindMapPointer(editor: Context) {
   });
   // the Zoom tool zooms when a finger lifts, so a pinch (whose fingers the gesture code swallows) never also taps
   editor.canvas.addEventListener('pointerup', (e) => {
-    if (editor.mode !== 'zoom') return;
+    if (zoomPointer !== e.pointerId) return;
+    zoomPointer = undefined;
+    if (editor.mode !== 'zoom' || e.button !== 0) return;
     const r = editor.scroller.getBoundingClientRect();
     editor.setZoom(editor.zoom * (e.shiftKey ? 1 / 1.5 : 1.5), {
       x: e.clientX - r.left - editor.scroller.clientLeft,
@@ -139,5 +145,12 @@ export function bindMapPointer(editor: Context) {
       editor.revealTool('select');
     }
   });
-  editor.canvas.addEventListener('pointerleave', () => editor.tools.leave());
+  const cancelZoom = (e: PointerEvent) => {
+    if (zoomPointer === e.pointerId) zoomPointer = undefined;
+  };
+  editor.canvas.addEventListener('pointercancel', cancelZoom);
+  editor.canvas.addEventListener('pointerleave', (e) => {
+    cancelZoom(e);
+    editor.tools.leave();
+  });
 }

@@ -49,7 +49,7 @@ Outputs are numbered `sheet-1.svg`, `sheet-2.svg`, and so on, with matching PNG 
 | Underside strip      | 1      | The nose bottom, the wheel-well steps, the black rocker, the rear with its back window (cut out).             |
 | Driver side panel    | 1      | The profile: the door window (cut out), the racing stripes stepping up in an S behind the door, markers.      |
 | Passenger side panel | 1      | The mirror picture, facing left, with the charge port at the rear.                                            |
-| Tire, Wheel          | 4 each | Black tire disc; a white wheel disc with a chrome cap glues on its middle.                                    |
+| Wheel                | 4      | Each wheel is one piece with a black tire, a white face and a chrome cap.                                     |
 | Bumper               | 2      | A plain square black box as wide as the car.                                                                  |
 
 ## How it goes together

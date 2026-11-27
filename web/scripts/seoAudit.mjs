@@ -30,6 +30,27 @@ const secrets = readdirSync(gamesRoot).flatMap((id) => {
 const titles = new Map(),
   descs = new Map();
 const attr = (h, re) => (h.match(re) || [])[1];
+const idsByPage = new Map();
+function* attributeValues(markup, tags, name) {
+  for (const tag of markup.matchAll(tags)) {
+    for (const attribute of tag[1].matchAll(/([^\s=/>]+)(?:\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+)))?/g)) {
+      if (attribute[1].toLowerCase() === name) yield attribute[2] ?? attribute[3] ?? attribute[4] ?? '';
+    }
+  }
+}
+function hasSection(target, fragment) {
+  if (!idsByPage.has(target)) {
+    const markup = readFileSync(target, 'utf8').replace(/<!--[\s\S]*?-->|<script\b[^>]*>[\s\S]*?<\/script>/gi, '');
+    const ids = attributeValues(markup, /<[a-z][\w:-]*\s+((?:[^>"']|"[^"]*"|'[^']*')*)>/gi, 'id');
+    idsByPage.set(target, new Set(Array.from(ids, decode)));
+  }
+  try {
+    fragment = decodeURIComponent(fragment);
+  } catch {
+    // A literal percent sign can be part of an ID.
+  }
+  return idsByPage.get(target).has(fragment);
+}
 for (const p of pages) {
   const h = readFileSync(p, 'utf8');
   const head = h.split('</head>')[0].replace(/<script\b[^>]*>[\s\S]*?<\/script>/g, '');
@@ -87,14 +108,17 @@ for (const p of pages) {
   }
   if (!noindex && !/<h1[ >]/.test(markup)) problems.push(`${n}: no h1`);
   // internal links
-  for (const m of markup.matchAll(/<a\s[^>]*href="([^"#?][^"]*)"/g)) {
-    let href = m[1].replace(/&amp;/g, '&');
+  for (const link of attributeValues(markup, /<a\s+((?:[^>"']|"[^"]*"|'[^']*')*)>/gi, 'href')) {
+    let href = decode(link);
     if (/^(https?:|mailto:|tel:|data:|javascript:)/.test(href) && !href.startsWith(BASE)) continue;
     const absolute = href.startsWith(BASE);
     href = absolute ? href.slice(BASE.length) : href;
-    const file = href.split(/[?#]/)[0] || 'index.html';
-    const target = join(absolute || file.startsWith('/') ? dist : dirname(p), file.startsWith('/') ? file.slice(1) : file);
-    if (!existsSync(target) || (statSync(target).isDirectory() && !existsSync(join(target, 'index.html')))) problems.push(`${n}: broken link ${m[1]}`);
+    const file = href.split(/[?#]/)[0];
+    let target = file ? join(absolute || file.startsWith('/') ? dist : dirname(p), file) : absolute ? join(dist, 'index.html') : p;
+    if (existsSync(target) && statSync(target).isDirectory()) target = join(target, 'index.html');
+    const fragment = href.includes('#') ? href.slice(href.indexOf('#') + 1) : '';
+    if (!existsSync(target) || (target.endsWith('.html') && fragment && !fragment.startsWith('/') && !hasSection(target, fragment)))
+      problems.push(`${n}: broken link ${link}`);
   }
   for (const m of markup.matchAll(/<img\s[^>]*>/g)) if (!/\balt=/.test(m[0])) problems.push(`${n}: img without alt`);
 }

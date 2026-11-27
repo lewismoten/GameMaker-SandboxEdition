@@ -6,7 +6,7 @@ import { centerSpread, spreadAt, stepSpread, bookletSheets } from './imposition'
 import { PAGE_H, PAGE_W, pageElement, type BookPage } from './manualPages';
 import type { Sheet } from './kit';
 import { RedFilm, RedLens, flushRedCode } from './redFilm';
-import { spyglassElement } from './spyglass';
+import { spyglassFilm } from './spyglass';
 import { decorateBbsName } from '../../retro/bbs/bbsName';
 import { crispShots, enlarge, isShot, zoomOpen } from './crisp';
 import { chapterPicker, chapterStops, findStop, linkContents, stopAt, type ChapterStop } from './chapterJump';
@@ -151,12 +151,14 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[], opti
       {
         class: 'gmb-film-btn',
         onclick: () => film.toggle(),
-        title: hasGlass ? 'The spyglass: its red lens to drag over the page' : 'A whole sheet of red film to drag over the page (or just point at an answer)',
+        title: hasGlass
+          ? 'Drag the spyglass over the page, or use the arrow keys to compare fingerprint cards'
+          : 'A whole sheet of red film to drag over the page (or just point at an answer)',
       },
       hasGlass ? '🔎 Spyglass' : '🟥 Red film',
     );
     // a box with its own spyglass drags that over a page instead of the plain sheet of film
-    const film = new RedFilm(hasGlass ? spyglassElement() : undefined);
+    const film = hasGlass ? spyglassFilm(stage) : new RedFilm();
     const epub = epubControl();
     // over a page with hidden answers the pointer carries a circle of red film
     const lens = new RedLens();

@@ -1,12 +1,14 @@
 // Exercise the keyboard report with synthetic recordings, without changing game fixtures.
+import { basename, dirname } from 'node:path';
 import { afterEach, expect, it, vi } from 'vitest';
 import { encodeKeys } from '../src/walkthrough/format';
 
 const fixture = vi.hoisted(() => ({ keys: '' }));
 vi.mock('node:fs', () => ({
-  existsSync: () => true,
+  existsSync: (path: string) => basename(dirname(path)) !== 'missing',
   readdirSync: () => ['example'],
-  readFileSync: (path: string) => (path.endsWith('about.json') ? '{}' : JSON.stringify({ segments: [{ keys: fixture.keys }] })),
+  readFileSync: (path: string) =>
+    path.endsWith('about.json') ? '{}' : JSON.stringify({ segments: [{ keys: basename(dirname(path)) === 'silent' ? '' : fixture.keys }] }),
 }));
 
 const argv = process.argv;
@@ -16,9 +18,9 @@ afterEach(() => {
   vi.resetModules();
 });
 
-async function report(keys: number[]): Promise<string> {
+async function report(keys: number[], ...ids: string[]): Promise<string> {
   fixture.keys = encodeKeys(keys.map((key) => ({ key, delta: 1 })));
-  process.argv = ['node', 'keyAccess.ts'];
+  process.argv = ['node', 'keyAccess.ts', ...ids];
   const log = vi.spyOn(console, 'log').mockImplementation(() => {});
   await import('../../games/kit/keyAccess');
   return log.mock.calls.map((args) => args.join(' ')).join('\n');
@@ -36,7 +38,7 @@ it('distinguishes the suggestion threshold from rounded percentages', async () =
   const output = await report([...Array<number>(197).fill(0x4d), ...Array<number>(51).fill(0x12)]);
   expect(output).toMatch(/example\s+248\s+79\.4%\s+0\s+E 51/);
   expect(output).toContain('20.6% of its walkthrough');
-  expect(output).not.toContain('Every reported walkthrough');
+  expect(output).not.toContain('at least 80%');
 });
 
 it('retains an exact 100% for a recording using only basic keys', async () => {
@@ -45,4 +47,23 @@ it('retains an exact 100% for a recording using only basic keys', async () => {
 
 it('never rounds a mixed recording up to 100%', async () => {
   expect(await report([...Array<number>(9999).fill(0x4d), 0x12])).toMatch(/example\s+10000\s+99\.9%\s+0\s+E 1/);
+});
+
+it('reports an unmatched request without claiming success', async () => {
+  const output = await report([], 'missing');
+  expect(output).toContain('No matching walkthrough recordings');
+  expect(output).not.toContain('at least 80%');
+});
+
+it('reports a release-only recording without claiming success', async () => {
+  const output = await report([0xc8]);
+  expect(output).toContain('example: no key-down events');
+  expect(output).not.toContain('at least 80%');
+});
+
+it('limits the success summary to measured recordings in a mixed report', async () => {
+  const output = await report([0x48], 'silent', 'example');
+  expect(output).toContain('silent: no key-down events');
+  expect(output).toMatch(/example\s+1\s+100%/);
+  expect(output).toContain('Every measured walkthrough has at least 80%');
 });

@@ -32,6 +32,10 @@ function load(storage: Pick<Storage, 'getItem'>): Saved {
     const raw = JSON.parse(storage.getItem(MAP_VIEWS_KEY) ?? 'null') as Saved | null;
     if (!raw || !Array.isArray(raw.views)) return { views: [] };
     const views = raw.views.filter((e) => Array.isArray(e) && typeof e[0] === 'string' && e[1] && num(e[1].z) && e[1].z > 0 && num(e[1].x) && num(e[1].y));
+    for (const entry of views) {
+      const { z, x, y, sx, sy, w, h } = entry[1];
+      if (!(num(sx) && num(sy) && num(w) && num(h))) entry[1] = { z, x, y };
+    }
     return { last: num(raw.last) && raw.last > 0 ? raw.last : undefined, views: views.slice(-MAX_MAP_VIEWS) };
   } catch {
     return { views: [] };

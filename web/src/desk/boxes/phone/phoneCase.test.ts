@@ -3,12 +3,35 @@
 // below the board, the case has six screws, and the dial module's part counts are what the BOM and README say.
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import type { PartsFile } from './phoneData';
+import { parseParts, type Part, type PartsFile } from './phoneData';
 
 const dir = new URL('../../../../../games/year2000/phone/', import.meta.url);
 const read = (p: string) => JSON.parse(readFileSync(new URL(p, dir), 'utf8'));
 const file = read('viewer/parts.json') as PartsFile;
 const bbox = (id: string) => file.parts.filter((p) => p.id === id).pop()!.bbox; // the last row of an id: the shell's BT1 box comes after the board's leads
+
+// Cast a vertical ray from below. The first hit is the outside of the case.
+function backHeight({ positions, indices }: Part, x: number, z: number): number {
+  let lowest = Infinity;
+  for (let i = 0; i < indices.length; i += 3) {
+    const a = indices[i] * 3;
+    const b = indices[i + 1] * 3;
+    const c = indices[i + 2] * 3;
+    const ax = positions[a],
+      az = positions[a + 2];
+    const bx = positions[b] - ax,
+      bz = positions[b + 2] - az;
+    const cx = positions[c] - ax,
+      cz = positions[c + 2] - az;
+    const area = bx * cz - bz * cx;
+    if (area === 0) continue;
+    const u = ((x - ax) * cz - (z - az) * cx) / area;
+    const v = (bx * (z - az) - bz * (x - ax)) / area;
+    if (u >= 0 && v >= 0 && u + v <= 1)
+      lowest = Math.min(lowest, positions[a + 1] + u * (positions[b + 1] - positions[a + 1]) + v * (positions[c + 1] - positions[a + 1]));
+  }
+  return lowest;
+}
 
 describe('the Junior Lab case', () => {
   it('is one full-width body from the pod to the chin', () => {
@@ -34,11 +57,19 @@ describe('the Junior Lab case', () => {
     expect(holder[2]).toBeGreaterThan(99);
   });
   it('has a flat closed back and six screws, and no other screw bosses', () => {
-    const dial = read('viewer/dial.json') as { screws: number[][] };
+    const dial = read('viewer/dial.json') as { screws: number[][]; levels: { fb2: number } };
     expect(dial.screws).toHaveLength(6);
     expect(file.parts.filter((p) => p.id.startsWith('dial-')).length).toBeGreaterThanOrEqual(7);
-    const tray = bbox('back-tray');
-    expect(tray[1]).toBeLessThan(-18); // one deep floor, not a stepped one
+    const bin = readFileSync(new URL('viewer/parts.bin', dir));
+    const tray = parseParts(file, bin.buffer.slice(bin.byteOffset, bin.byteOffset + bin.byteLength)).find((part) => part.id === 'back-tray')!;
+    expect(tray.bbox[1]).toBeLessThan(-18);
+    // Allow half a 0.6 mm mesh cell at each sample. Sample the pod, board, strips beside the battery door, and chin, clear of the screw holes.
+    for (const z of [-24, -10, 12, 36, 60, 84, 110, 132, 154, 172, 194]) {
+      const xs = z < 0 ? [40, 50, 60] : z >= 110 && z <= 154 ? [10, 90] : [10, 30, 50, 70, 90];
+      for (const x of xs) {
+        expect(Math.abs(backHeight(tray, x, z) - dial.levels.fb2), `floor at (${x}, ${z}) mm`).toBeLessThan(0.3);
+      }
+    }
   });
   it('has the dial module as six printed parts plus the bought switches and screw', () => {
     const ids = file.parts.map((p) => p.id);

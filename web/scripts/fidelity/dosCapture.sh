@@ -15,7 +15,8 @@ KIND=$1 ID=$2 KEYS=$(cd "$(dirname "$3")" && pwd)/$(basename "$3") OUT=$4 BEFORE
 HERE=$(cd "$(dirname "$0")" && pwd)
 ROOT=$(cd "$HERE/../../.." && pwd)
 mkdir -p "$OUT/c/$ID" "$OUT/cap"
-OUT=$(cd "$OUT" && pwd)
+OUT=$(cd "$OUT" && pwd) || exit 1
+CAP=$(mktemp -d "$OUT/cap/run.XXXXXX") || exit 1
 UP=$(echo "$ID" | tr a-z A-Z)
 for f in "$ROOT/cd/$KIND/$ID"/*; do cp "$f" "$OUT/c/$ID/$(basename "$f" | tr a-z A-Z)"; done
 cp "$ROOT/cd/gm/xferplay.exe" "$OUT/c/$ID/$UP.EXE"; cp "$ROOT/cd/gm/sndblast.drv" "$OUT/c/$ID/SNDBLAST.DRV"
@@ -32,7 +33,7 @@ cycles=${CYCLES:-fixed 12000}
 [sblaster]
 sbtype=sb16
 [dosbox]
-captures=$OUT/cap
+captures=$CAP
 [autoexec]
 mount c $OUT/c
 c:
@@ -60,9 +61,12 @@ sleep "$BEFORE"
 "$OUT/keyseq" "$PID" < "$KEYS"
 sleep "$AFTER"
 osascript -e "$STOP"
-ls -la "$OUT/cap"
-if ! ls "$OUT"/cap/*.avi >/dev/null 2>&1; then
-  echo "FAILED: no capture AVI in $OUT/cap. DOSBox got no keys (locked or asleep screen, no Accessibility permission, or the game did not start); see $OUT/dosbox.log" >&2
-  exit 3
-fi
-echo "decode a level's AVI: ffmpeg -i $OUT/cap/${ID}_001.avi -an -f rawvideo -pix_fmt rgb24 -fps_mode passthrough $OUT/dos.rgb (size: ffprobe)"
+ls -la "$CAP"
+for avi in "$CAP"/*.avi; do
+  if [[ -f "$avi" && -s "$avi" ]]; then
+    printf "decode a level's AVI: ffmpeg -i %q -an -f rawvideo -pix_fmt rgb24 -fps_mode passthrough %q (size: ffprobe)\n" "$avi" "$OUT/dos.rgb"
+    exit 0
+  fi
+done
+echo "FAILED: no nonempty capture AVI in $CAP. DOSBox got no keys (locked or asleep screen, no Accessibility permission, or the game did not start); see $OUT/dosbox.log" >&2
+exit 3
