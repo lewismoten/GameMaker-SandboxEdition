@@ -78,6 +78,12 @@ describe('the tour’s data', () => {
     for (const c of CHAPTERS) pageText(c.page);
   });
 
+  it('names both header controls that can bring a player back to Games', () => {
+    const cue = steps.find(({ s }) => s.id === 'home-games')?.s.say;
+    expect(cue).toMatch(/\bGames\b/);
+    expect(cue).toMatch(/\blogo\b/i);
+  });
+
   it('has a page list in step with its chapters', () => {
     expect([...new Set(CHAPTERS.map((c) => c.page))].sort()).toEqual([...CHAPTER_PAGES].sort());
   });

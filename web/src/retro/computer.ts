@@ -4,6 +4,7 @@
 // This file is the power switch and running programs (DOS commands, Game-Maker's designers,
 // games); the drives and game folders are in computer/drives.ts and computer/folders.ts.
 import { attr, COLS, ROWS } from './text/textScreen';
+import type { ProgramLocation } from './dos/shell';
 import { biosId } from './biosId';
 import { type ProgramRef } from './dos/vfs';
 import { hasOkMsg, MENU_REFUSAL } from './dos/okMsg';
@@ -34,6 +35,13 @@ import { playSaves } from '../achievements/playSaves';
 const POST_HOLD_MS = 2500;
 
 export class Computer extends ComputerFolders {
+  private readonly resetLifetime = new AbortController();
+
+  override dispose(): void {
+    this.resetLifetime.abort();
+    super.dispose();
+  }
+
   async powerOn(): Promise<void> {
     if (this.powered) return;
     this.powered = true;
@@ -146,6 +154,7 @@ export class Computer extends ComputerFolders {
     if (!this.powered) return;
     this.powerOff();
     await sleep(300);
+    if (this.resetLifetime.signal.aborted) return;
     this.keys.resume();
     this.shell.reset();
     await this.powerOn();
@@ -196,7 +205,7 @@ export class Computer extends ComputerFolders {
 
   // ---- drives -------------------------------------------------------------------------
 
-  async run(ref: ProgramRef, _args: string[]): Promise<void> {
+  async run(ref: ProgramRef, _args: string[], at: ProgramLocation): Promise<void> {
     this.busy = true;
     this.program = ref.kind;
     this.opts.onProgram?.({ kind: ref.kind, drive: this.shell.drive });
@@ -252,7 +261,7 @@ export class Computer extends ComputerFolders {
           await (await import('./gm')).runUtility(this, _args);
           break;
         case 'xferplay':
-          await (await import('./gm')).xferplay(this);
+          await (await import('./gm')).xferplay(this, at);
           break;
         case 'terminal':
           await (await import('./bbs/bbs')).runTerminal(this, _args);

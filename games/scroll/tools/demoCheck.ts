@@ -20,11 +20,10 @@ const r = await replay(
   },
   { maxMinutes: 4 },
 );
-const seen = r.scenes.slice(0, 2).join(' ');
-if (r.error) console.log(r.error);
-console.log(`demo: scenes entered ${r.scenes.join(' ')}; ${r.keysLeft} keys unplayed`);
-if (seen !== '2 3' || r.keysLeft || r.scenes.includes(1)) {
-  console.error(`demoCheck: expected scenes 2 3 with every key played and no ending; got ${seen}`);
-  process.exit(1);
+const seen = r.scenes.join(' ');
+console.log(`demo: scenes entered ${seen}; ${r.keysLeft} keys unplayed`);
+if (r.error !== undefined) throw new Error(`demoCheck: replay failed: ${String(r.error)}`);
+if (seen !== '2 3' || r.keysLeft !== 0) {
+  throw new Error(`demoCheck: expected scenes 2 3 with every key played; got ${seen} with ${r.keysLeft} keys unplayed`);
 }
 console.log('demoCheck ok: the room stayed, the view followed, no game over');

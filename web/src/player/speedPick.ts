@@ -21,8 +21,16 @@ export function speedPick(corner: HTMLElement, speed: SpeedSetting): HTMLSelectE
   label.title = 'Slow the game the way an old PC would: the picture, walking, monsters, and the pauses while a sound or a level loads from disk (estimates)';
   const select = document.createElement('select');
   for (const c of SPEED_CHOICES) select.append(Object.assign(document.createElement('option'), { value: c, textContent: LABELS[c] }));
+  const initial = speed.slowPc;
+  const preset = SPEED_CHOICES.find((choice) => {
+    const costs = costsFor(choice);
+    if (!costs || !initial) return costs === initial;
+    return (Object.keys({ ...costs, ...initial }) as (keyof typeof costs)[]).every((key) => costs[key] === initial[key]);
+  });
+  if (!preset) select.append(new Option('Custom speed', 'custom'));
+  select.value = preset ?? 'custom';
   select.addEventListener('change', () => {
-    speed.slowPc = costsFor(select.value as SpeedChoice);
+    speed.slowPc = select.value === 'custom' ? initial : costsFor(select.value as SpeedChoice);
   });
   label.append('Run like a ', select);
   corner.prepend(label);

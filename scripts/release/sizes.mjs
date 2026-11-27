@@ -3,7 +3,7 @@
 // (offline.json), each npm tarball, and the native downloads. Prints a table with the biggest items; exits 1 over a budget.
 import { execFileSync } from 'node:child_process';
 import { readdirSync, readFileSync, statSync } from 'node:fs';
-import { dirname, join, relative, resolve } from 'node:path';
+import { dirname, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
@@ -26,7 +26,7 @@ function walk(top, dir = top, out = []) {
   for (const e of readdirSync(dir, { withFileTypes: true })) {
     const p = join(dir, e.name);
     if (e.isDirectory()) walk(top, p, out);
-    else if (e.isFile()) out.push([relative(top, p), statSync(p).size]);
+    else if (e.isFile()) out.push([relative(top, p).split(sep).join('/'), statSync(p).size]);
   }
   return out;
 }

@@ -58,7 +58,8 @@ Choose _+ New game_, give it a title, then choose _▶ Ready to play_. It starts
 level containing scenery, monsters, a hero and sounds from the CD library, ready to change.
 
 1. Press _▶ Play Game_ to see the starter. Escape or _Stop_ returns to the editor.
-2. Open _🎓 First steps_ beside _Play Game_. Its ten small jobs take you through changing a
+2. The _First steps_ checklist opens automatically the first time. If you close it, reopen it
+   with the 🎓 progress counter beside _Play Game_. Its ten small jobs take you through changing a
    color, drawing a block, building the level, changing the hero and a monster, adding a sound,
    making a way to win and a Game won screen, then running the Level check. Each job ticks itself
    when it is done and opens the file where you do it.

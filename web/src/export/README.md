@@ -69,10 +69,10 @@ npx vite-node scripts/dosFloppies.ts game.zip NEW-OUTPUT-DIRECTORY
 `dosFloppies.ts` reserves FAT12 cluster space and directory entries for support
 files, puts the player, driver, setup and main game on disk 1, and refuses any
 file that cannot fit whole. Copy each `DISKn/` folder's **contents** to a separate
-formatted disk. Every disk carries identical batch text (COMMAND.COM rereads it
-after swaps), instructions and `DISKn.ID`. The installer prompts for disk N of
-the set and retries a wrong number before copying. Markers check numbers, not
-content or release identity; do not mix sets. No UI option, formatter, boot sector
+formatted disk. Each carries the same installer and a marker such as `TEST.D02`.
+The installer runs its hard-disk copy before prompting for swaps, so COMMAND.COM
+keeps reading the original batch file. It retries a wrong game name or disk
+number before copying. Keep releases of the same game separate. No UI option, formatter, boot sector
 or image writer is added. For manually divided files, put the ordinary installer
 on each disk and run it again for each disk, or use the manual COPY instructions.
 

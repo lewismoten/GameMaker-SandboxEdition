@@ -97,7 +97,7 @@ function storyFli(): Uint8Array {
 }
 
 /** Edgar's memory: a man in evening dress with a dripping umbrella, past the lobby bar. */
-function umbrellaManFli(): Uint8Array {
+export function umbrellaManFli(): Uint8Array {
   const frames: Pixels[] = [];
   const base = new Pixels(W, H);
   // the lobby: marble, the auditorium doors, the bar in front
@@ -130,8 +130,17 @@ function umbrellaManFli(): Uint8Array {
     p.rect(hx - 4 - (lift ? 2 : 0), hy, 26 + (lift ? 2 : 0), 3, c('black', 0));
     if (lift > 3) {
       // the arm bends up from the shoulder to the brim
-      for (let k = 0; k <= 12; k++)
-        p.rect(x + 10 - Math.round(Math.sin((k / 12) * Math.PI) * 6), 110 - Math.round(k * ((110 - hy - 2) / 12)), 3, 3, c('black', 1));
+      let prevX = x + 10;
+      let prevY = 110;
+      const sleeve = c('black', 1);
+      p.rect(prevX, prevY, 3, 3, sleeve);
+      for (let k = 1; k <= 12; k++) {
+        const armX = x + 10 - Math.round(Math.sin((k / 12) * Math.PI) * 6);
+        const armY = 110 - Math.round(k * ((110 - hy - 2) / 12));
+        for (let dx = 0; dx < 3; dx++) p.line(prevX + dx, prevY, armX + dx, armY, sleeve);
+        prevX = armX;
+        prevY = armY;
+      }
       p.rect(hx - 6, hy - 1, 4, 4, c('paper', 5));
     }
     // the umbrella, furled, dripping

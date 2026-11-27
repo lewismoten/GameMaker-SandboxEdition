@@ -1,21 +1,27 @@
-// Check Pocket card mode validation at the CLI before it creates the destination.
-import { spawnSync } from 'node:child_process';
-import { existsSync, mkdtempSync, rmSync } from 'node:fs';
-import { tmpdir } from 'node:os';
-import { join } from 'node:path';
-import { expect, it } from 'vitest';
+// Conflicting card formats must fail before the exporter touches either card.
+import { expect, it, vi } from 'vitest';
+import { existsSync, mkdirSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 
-it('rejects a both-player card without DOS files before creating the card directory', () => {
-  const root = mkdtempSync(join(tmpdir(), 'pocket-data-'));
+vi.mock('node:fs', async (load) => ({
+  ...(await load<typeof import('node:fs')>()),
+  existsSync: vi.fn(() => true),
+  readdirSync: vi.fn((path: string) => (path === 'gmp/pocket/' ? ['notes.txt'] : [])),
+  mkdirSync: vi.fn(),
+  rmSync: vi.fn(),
+  writeFileSync: vi.fn(),
+}));
+
+it('rejects --out and --gmp together before accessing either card', async () => {
+  const argv = process.argv;
+  process.argv = ['node', 'pocketData', '--out', 'loose', '--gmp', 'gmp'];
   try {
-    const card = join(root, 'card');
-    const result = spawnSync(process.execPath, [require.resolve('vite-node/vite-node.mjs'), 'scripts/pocketData.ts', '--gmp', card, '--gmos', '--no-dos'], {
-      encoding: 'utf8',
-    });
-    expect(existsSync(card)).toBe(false);
-    expect(result.status).toBe(1);
-    expect(result.stderr).toContain('--gmos requires DOS files and cannot be used with --no-dos');
+    await expect(import('./pocketData')).rejects.toThrow(/--out and --gmp/);
+    expect(rmSync).not.toHaveBeenCalled();
+    expect(mkdirSync).not.toHaveBeenCalled();
+    expect(writeFileSync).not.toHaveBeenCalled();
+    expect(existsSync).not.toHaveBeenCalled();
+    expect(readdirSync).not.toHaveBeenCalled();
   } finally {
-    rmSync(root, { recursive: true, force: true });
+    process.argv = argv;
   }
 });

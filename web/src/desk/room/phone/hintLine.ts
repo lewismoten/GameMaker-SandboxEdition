@@ -26,17 +26,12 @@ const recordBill = (cents: number) => {
   return cents;
 };
 const dollars = (cents: number) => `$${(cents / 100).toFixed(2)}`;
-/**
- * The Giant waits this long without a key after he finishes a prompt before he hangs up. He talks slowly
- * (about half a second a word), so the wait is counted from the end of what he says.
- */
 const SILENCE_SECONDS = 45;
-const speakingSeconds = (text: string): number => Math.ceil(text.split(/\s+/).length * 0.55);
 
-/** Listen for a menu key while speaking; there is exactly one awaited key reader per prompt. */
+/** Listen through the prompt and for 45 seconds after speech finishes. */
 async function ask(line: CallLine, text: string, afterStart?: () => void): Promise<string> {
-  const key = line.nextKey(SILENCE_SECONDS + speakingSeconds(text));
-  const speech = line.say(giant, text).then(() => undefined);
+  const speech = line.say(giant, text);
+  const key = line.nextKey(SILENCE_SECONDS, speech);
   afterStart?.(); // say() puts "Connected" on the LCD; the bill goes back on it
   const first = await Promise.race([key, speech]);
   if (first !== undefined) {

@@ -1,11 +1,10 @@
-// DAST shots of the 1994 desk (housekeeping 15b): the whole room at 1440x900 and 390x844 with everything the
-// desk can show unlocked the way EGG.EXE does it (localStorage overrides, never a save): every felt egg, every
-// tin heart (and the clock's), and gaudy score trophies. The desk is one stage scaled to fit, so one shot is the
-// whole room. Close-ups of the shelf, eggs, trophies and door when they are on screen.
+// Capture the scaled desk at two sizes, with hearts and trophies on display.
+// The populated egg perch is rendered alone in a separate browser context.
 // Usage: npm run desk:dast -- --base http://localhost:5191 --out <dir> [--theme dark|light]
 // Needs a server you started (never port 5173). Headless Playwright Chromium, closed in a finally.
 import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
+import { deskShotClip } from './deskShotClip';
 import { arg, launch } from './perfLib';
 import { assertTheme, forceTheme } from './forceTheme';
 
@@ -43,40 +42,56 @@ try {
   console.log(`${heartIds.length} hearts in the hunt`);
 
   for (const [name, w, h] of [['wide', 1440, 900] as const, ['phone', 390, 844] as const]) {
-    const ctx = await browser.newContext({ viewport: { width: w, height: h }, deviceScaleFactor: name === 'wide' ? 2 : 1 });
+    const options = { viewport: { width: w, height: h }, deviceScaleFactor: name === 'wide' ? 2 : 1 };
+    const ctx = await browser.newContext(options);
     await forceTheme(ctx, theme);
-    await ctx.addInitScript(
-      ([eggs, hearts]) => {
-        try {
-          localStorage.setItem('gm-eggs', JSON.stringify(Object.fromEntries(eggs.map((g: string) => [g, 'added']))));
-          localStorage.setItem('gm-tin-hearts', JSON.stringify(Object.fromEntries(hearts.map((g: string) => [g, 'added']))));
-          localStorage.setItem('gm-clock-heart', JSON.stringify({ found: new Date().toISOString() }));
-          localStorage.setItem('gm-score-trophies', JSON.stringify({ best: 5, total: 5 }));
-        } catch {
-          /* storage blocked */
-        }
-      },
-      [EGG_GAMES, heartIds] as [string[], string[]],
-    );
+    await ctx.addInitScript((hearts) => {
+      try {
+        localStorage.setItem('gm-tin-hearts', JSON.stringify(Object.fromEntries(hearts.map((g: string) => [g, 'added']))));
+        localStorage.setItem('gm-clock-heart', JSON.stringify({ found: new Date().toISOString() }));
+        localStorage.setItem('gm-score-trophies', JSON.stringify({ best: 5, total: 5 }));
+      } catch {
+        /* storage blocked */
+      }
+    }, heartIds);
     const page = await ctx.newPage();
     await page.goto(`${base}/`, { waitUntil: 'load' });
     await page.waitForSelector('.desk-scene', { timeout: 60000 });
     await page.waitForTimeout(5000);
     await assertTheme(page, theme);
     await page.screenshot({ path: join(out, `room-${theme}-${name}.png`) });
-    for (const sel of ['.game-shelf', '.egg-perch', '.heart-trophy', '.score-trophy-best', '.score-trophy-total', '.room-door', '.wall-clock']) {
+    for (const sel of ['.game-shelf', '.heart-trophy', '.score-trophy-best', '.score-trophy-total', '.room-door', '.wall-clock']) {
       const el = page.locator(sel).first();
-      if ((await el.count()) && (await el.boundingBox())?.width) {
-        const box = (await el.boundingBox())!;
-        const x = Math.max(0, box.x - 20);
-        const y = Math.max(0, box.y - 20);
-        const clip = { x, y, width: Math.min(w - x, box.width + 40), height: Math.min(h - y, box.height + 40) };
-        if (clip.width <= 0 || clip.height <= 0) continue; // off the window (the phone layout hides some)
+      const box = (await el.count()) ? await el.boundingBox() : null;
+      if (box?.width) {
+        const clip = deskShotClip(box, w, h);
+        if (!clip) continue;
         await page.screenshot({ path: join(out, `close-${theme}-${name}-${sel.replace(/\W/g, '')}.png`), clip });
         console.log(`${name} ${sel} ${Math.round(box.width)}x${Math.round(box.height)}`);
       }
     }
     await ctx.close();
+
+    const fixture = await browser.newContext(options);
+    await forceTheme(fixture, theme);
+    await fixture.addInitScript((eggs) => {
+      localStorage.setItem('gm-eggs', JSON.stringify(Object.fromEntries(eggs.map((id) => [id, 'added']))));
+    }, EGG_GAMES);
+    const eggPage = await fixture.newPage();
+    const fixtureUrl = new URL('/egg-perch-fixture', base).href;
+    await eggPage.route(fixtureUrl, (route) =>
+      route.fulfill({
+        contentType: 'text/html',
+        body: '<!doctype html><meta name="viewport" content="width=device-width"><body style="display:grid;place-items:center;min-height:95vh">',
+      }),
+    );
+    await eggPage.goto(fixtureUrl);
+    await eggPage.evaluate(`(async () => {
+      const { eggDisplay } = await import('/src/eggs/eggDisplay.ts');
+      eggDisplay(el => document.body.append(el));
+    })()`);
+    await eggPage.locator('.egg-perch').screenshot({ path: join(out, `close-${theme}-${name}-eggperch.png`) });
+    await fixture.close();
   }
 } finally {
   await browser.close();
