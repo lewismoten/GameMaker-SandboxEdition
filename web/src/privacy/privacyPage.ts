@@ -44,7 +44,11 @@ export function renderPrivacy(el: HTMLElement): void {
       h(
         'ul',
         null,
-        h('li', null, 'Settings, then Back up / restore, saves everything to a file you keep, in case you want it back later.'),
+        h(
+          'li',
+          null,
+          'In Settings, use Back up / restore to save the sections you choose, including My games for games you made or copied. The backup leaves out imported games and player page saves. Keep the original files for imported games and export your saves separately from the player page.',
+        ),
         h(
           'li',
           null,

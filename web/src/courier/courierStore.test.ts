@@ -41,6 +41,27 @@ describe('courier mail store', () => {
     expect(hasNewMail()).toBe(false);
   });
 
+  it('keeps delivery, read status and deletion for the visit when storage is full', () => {
+    const write = vi.spyOn(localStorage, 'setItem').mockImplementation(() => {
+      throw new DOMException('Storage is full', 'QuotaExceededError');
+    });
+    const id = 'bbs-sofa';
+    const day = '1994-11-07';
+    expect(deliver(id, day)).toBe(true);
+    expect(loadCourier().mail).toEqual([{ id, day, read: false }]);
+    markRead(id);
+    expect(loadCourier().mail).toEqual([{ id, day, read: true }]);
+    deleteLetter(id);
+    expect(loadCourier().mail).toEqual([]);
+    expect(deliver(id, day)).toBe(false);
+
+    write.mockRestore();
+    expect(deliver('bbs-sandbox', day)).toBe(true);
+    expect(loadCourier().got).toEqual([id, 'bbs-sandbox']);
+    stored.clear();
+    expect(loadCourier().got).toEqual([]);
+  });
+
   it('never brings a deleted letter back', () => {
     deliver('bbs-sofa', '1994-11-07');
     deleteLetter('bbs-sofa');

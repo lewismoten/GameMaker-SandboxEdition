@@ -29,10 +29,11 @@ const done = () =>
   );
 const pending = () => uncheckedUrls(readFileSync(list, 'utf8')).filter((u) => !done().has(u));
 
+const attempted = new Set<string>();
 let refusals = 0;
 let count = 0;
 for (;;) {
-  const next = pending()[0];
+  const next = pending().find((url) => !attempted.has(url));
   if (!next || count >= limit) break;
   let res = await savePage(next, fetch);
   if (res.status.startsWith('refused')) {
@@ -40,6 +41,7 @@ for (;;) {
     await sleep(300_000);
     res = await savePage(next, fetch);
   }
+  attempted.add(next);
   refusals = res.status.startsWith('refused') ? refusals + 1 : 0;
   appendFileSync(log, `${new Date().toISOString()}\t${next}\t${res.status}\t${res.snapshot ?? ''}\n`);
   console.log(`${++count}. ${res.status} ${next}`);

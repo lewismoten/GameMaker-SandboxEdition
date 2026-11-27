@@ -7,3 +7,8 @@ it('enforces the board reply deadline and retains the last five log lines', () =
   const writer = fileURLToPath(new URL('./pocketSdWrite.py', import.meta.url));
   expect(execFileSync('python3', [writer, '--self-check'], { encoding: 'utf8' }).trim()).toBe('self-check ok');
 });
+
+it('sends assets and configurations before the game list', () => {
+  const sender = fileURLToPath(new URL('./pocketSdWrite.py', import.meta.url));
+  expect(execFileSync('python3', [sender, '--self-check'], { encoding: 'utf8' }).trim()).toBe('self-check ok');
+});

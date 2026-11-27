@@ -1,4 +1,4 @@
-// Audits indexable HTML metadata, social tags, language, headings, JSON-LD, crawler files,
+// Audits indexable HTML metadata, source body text, social tags, language, headings, JSON-LD, crawler files,
 // secret-game leaks and internal links. Utility pages marked noindex need no search tags.
 // Also checks the downloads page against the Starters. Usage: node web/scripts/seoAudit.mjs <dist> [starterIdsFile]
 import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
@@ -30,6 +30,7 @@ const secrets = readdirSync(gamesRoot).flatMap((id) => {
 const titles = new Map(),
   descs = new Map();
 const attr = (h, re) => (h.match(re) || [])[1];
+const stripCommentsAndScripts = (h) => h.replace(/<!--[\s\S]*?-->|<script\b[^>]*>[\s\S]*?<\/script>/gi, '');
 const idsByPage = new Map();
 function* attributeValues(markup, tags, name) {
   for (const tag of markup.matchAll(tags)) {
@@ -40,7 +41,7 @@ function* attributeValues(markup, tags, name) {
 }
 function hasSection(target, fragment) {
   if (!idsByPage.has(target)) {
-    const markup = readFileSync(target, 'utf8').replace(/<!--[\s\S]*?-->|<script\b[^>]*>[\s\S]*?<\/script>/gi, '');
+    const markup = stripCommentsAndScripts(readFileSync(target, 'utf8'));
     const ids = attributeValues(markup, /<[a-z][\w:-]*\s+((?:[^>"']|"[^"]*"|'[^']*')*)>/gi, 'id');
     idsByPage.set(target, new Set(Array.from(ids, decode)));
   }
@@ -97,6 +98,17 @@ for (const p of pages) {
       if (!attr(head, new RegExp(`<meta (?:name|property)="${key}" content="([^"]+)"`))) problems.push(`${n}: missing ${key}`);
     if ((head.match(/<link rel="canonical"/g) || []).length !== 1) problems.push(`${n}: expected one canonical`);
     if ((markup.match(/<h1[ >]/g) || []).length !== 1) problems.push(`${n}: expected one h1`);
+    // Count readable source body text, not headings, metadata, code, styles or comments.
+    const body = (h.match(/<body\b[^>]*>([\s\S]*?)<\/body>/i) || [])[1] || '';
+    const bodyText = decode(
+      stripCommentsAndScripts(body)
+        .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, '')
+        .replace(/<h[1-6]\b[^>]*>[\s\S]*?<\/h[1-6]>/gi, '')
+        .replace(/<[^>]*>/g, ' '),
+    )
+      .replace(/\s+/g, ' ')
+      .trim();
+    if (bodyText.length < 150) problems.push(`${n}: source body text too short (${bodyText.length} characters; minimum 150)`);
   }
   for (const m of h.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)) {
     try {
@@ -108,7 +120,7 @@ for (const p of pages) {
   }
   if (!noindex && !/<h1[ >]/.test(markup)) problems.push(`${n}: no h1`);
   // internal links
-  for (const link of attributeValues(markup, /<a\s+((?:[^>"']|"[^"]*"|'[^']*')*)>/gi, 'href')) {
+  for (const link of attributeValues(stripCommentsAndScripts(h), /<a\s+((?:[^>"']|"[^"]*"|'[^']*')*)>/gi, 'href')) {
     let href = decode(link);
     if (/^(https?:|mailto:|tel:|data:|javascript:)/.test(href) && !href.startsWith(BASE)) continue;
     const absolute = href.startsWith(BASE);

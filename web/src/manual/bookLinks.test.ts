@@ -44,11 +44,17 @@ function expectSampleFolders(pointer: string, names: Set<string>) {
   // A pointer can also mention a file extension such as .VOC.
   const codes = [...pointer.matchAll(/<code>([^<]*)<\/code>/g)].filter(([, path]) => !/^\.[A-Z0-9]{1,3}$/i.test(path));
   expect(codes.length, pointer).toBeGreaterThan(0);
-  for (const [, path] of codes) expect(names, path).toContain(path.split('\\').at(-1));
+  for (const [, raw] of codes) {
+    // Source templates escape backslashes; rendered chapter HTML has single backslashes.
+    const path = raw.replace(/\\\\/g, '\\');
+    expect(path, raw).toMatch(/^(?:D:\\SAMPLES\\)?[A-Z0-9_]{1,8}$/);
+    expect(names, path).toContain(path.split('\\').at(-1));
+  }
 }
 
 it.each([
   ['D:\\SAMPLES\\TYPO', 'TYPO'],
+  ['D:\\TYPO\\DAYNIGHT', 'TYPO'],
   ['LUCKYCAT', 'LUCKYCAT'],
 ])('rejects the Sample CD reference %s', (reference, folder) => {
   const pointer = `<code>DAYNIGHT</code> and <code>${reference}</code>`;
@@ -269,6 +275,13 @@ describe('the Owner’s Guide', () => {
   const pages = files.flatMap((s) =>
     [...s.matchAll(/(cover: true,)|\bpage\(\s*'([^']+)',\s*`([\s\S]*?)`/g)].map((m) => ({ head: m[2] ?? '', body: m[3] ?? '' })),
   );
+
+  it('uses each sample title as its row header', () => {
+    const section = pages.find((p) => p.body.includes('<h3>Small sample games</h3>'))!.body.split('<h3>Small sample games</h3>')[1];
+    const rows = [...section.matchAll(/<tr>(.*?)<\/tr>/g)];
+    expect(rows.length).toBeGreaterThan(0);
+    for (const [, cells] of rows) expect(cells).toMatch(/^<th scope="row">[^<]+<\/th>/);
+  });
 
   it('lists each chapter, and each section it names, at the page it opens on', () => {
     const contents = pages.find((p) => p.head === 'Contents')!.body;

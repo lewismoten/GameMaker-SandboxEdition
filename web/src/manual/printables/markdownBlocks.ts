@@ -92,7 +92,7 @@ export function readMarkdown(source: string, columns?: string[]): Section[] {
     } else if (bullet.test(line)) {
       const ordered = /\d/.test(bullet.exec(line)![2]);
       const items: string[] = [];
-      for (; i < lines.length && lines[i].trim() && !diagramLine.test(lines[i]); i++) {
+      for (; i < lines.length && lines[i].trim() && !diagramLine.test(lines[i]) && !tableStarts(i); i++) {
         const m = bullet.exec(lines[i]);
         if (m && /\d/.test(m[2]) === ordered) items.push(m[3]);
         else if (!m || /^\s+\S/.test(lines[i])) items[items.length - 1] += ` ${lines[i].trim()}`;

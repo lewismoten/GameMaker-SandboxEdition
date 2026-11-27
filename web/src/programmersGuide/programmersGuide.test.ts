@@ -39,8 +39,23 @@ describe('the chapters', () => {
   });
 
   it('carry no drafting notes, names of agents, buyers or secret games', () => {
-    const bad = /\[verify\]|\(draft|Kaylee|\.for-lewis|ask Lewis|owner name|serial number:|HEART OF TIN|BAKER'S DOZEN/i;
+    const bad = /\[verify\]|\(draft|Kaylee|\.for-lewis|2026-11-05-ignored-fields\.md|ask Lewis|owner name|serial number:|HEART OF TIN|BAKER'S DOZEN/i;
     for (const c of CHAPTERS) expect(md(c.id).match(bad)?.[0], c.id).toBeUndefined();
+  });
+
+  it.each(['chapters/architecture.md', 'booklet1994.md'])('shows no selection letter for quit or MENU in %s', (file) => {
+    const text = readFileSync(join(here, file), 'utf8');
+    expect.soft(text.match(/^\|\s*0\s*\|\s*(\S+)\s*\|\s*\(quit\)\s*\|/m)?.[1]).toBe('—');
+    expect.soft(text.match(/^\|\s*11\s*\|\s*(\S+)\s*\|\s*MENU\s*\|/m)?.[1]).toBe('—');
+  });
+
+  it.each([
+    ['booklet', readFileSync(join(here, 'booklet1994.md'), 'utf8')],
+    ['quirks', md('quirks')],
+  ])('explains the one-block plank snap in the %s', (_, text) => {
+    const plank = text.split('\n').find((line) => line.includes('plank') && line.includes('two blocks wide'));
+    expect(plank).toMatch(/less than half.*away from/i);
+    expect(plank).toMatch(/exactly half.*no (snap|nudge)/i);
   });
 
   it('explains the two Escape checks and which key state each player reads after the fade', () => {

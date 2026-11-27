@@ -34,19 +34,17 @@ function mark(it: CodeSheetItem, name: string): Node {
 /** One grid as a table: column headings across the top, row headings down the side. */
 function table(it: CodeSheetItem, gi: number): HTMLTableElement {
   const g = it.grids[gi];
+  const rowHead = h('th', { class: 'cs-corner', scope: 'col', rowSpan: g.colHead ? 2 : undefined }, g.rowHead ?? '');
   return h(
     'table',
     { class: 'cs-grid', dataset: { grid: String(gi) } },
     h('caption', null, g.title),
+    g.colHead ? [h('colgroup'), h('colgroup', { span: g.cols.length })] : null,
     h(
       'thead',
       null,
-      h(
-        'tr',
-        null,
-        h('th', { class: 'cs-corner', scope: 'col' }, g.rowHead ?? ''),
-        ...g.cols.map((c, ci) => h('th', { scope: 'col', dataset: { col: String(ci) } }, mark(it, c))),
-      ),
+      g.colHead ? h('tr', null, rowHead, h('th', { scope: 'colgroup', colSpan: g.cols.length }, g.colHead)) : null,
+      h('tr', null, g.colHead ? null : rowHead, ...g.cols.map((c, ci) => h('th', { scope: 'col', dataset: { col: String(ci) } }, mark(it, c)))),
     ),
     h(
       'tbody',

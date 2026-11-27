@@ -8,14 +8,15 @@ import { secretsRevealed } from '../../project/secretGames';
 import { isImported, originId, rememberOrigin, setImported } from './homeOrigin';
 import { batchOf, markBatch } from './importBatch';
 
-/** Keeps the game on the shelf; call before deleting it. Never throws: the game is then deleted as before. */
-export async function shelve(id: string): Promise<void> {
+/** Returns whether the game's record was saved on the shelf. */
+export async function shelve(id: string): Promise<boolean> {
   try {
     const record = await loadRecord(id);
-    if (!record) return;
+    if (!record) return false;
     await keepDeleted(browserShelf, { id, record, imported: isImported(id), origin: originId(id), batch: batchOf(id) });
+    return true;
   } catch {
-    /* no room, or no storage: deleted without a week's grace */
+    return false;
   }
 }
 

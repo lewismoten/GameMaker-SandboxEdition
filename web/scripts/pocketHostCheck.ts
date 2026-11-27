@@ -23,6 +23,7 @@ import { LASTSND } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
 import { decodeKeys, type Walkthrough } from './../src/walkthrough/format';
 import { decodePicker } from './pocketPicker';
 
+import { meterDifference, meterField } from './pocketHostMeters';
 import { nextHostSegment } from './pocketHostSegment';
 
 const args = process.argv.slice(2);
@@ -131,7 +132,7 @@ async function checkGame(id: string): Promise<string> {
     const code = r === 'link' ? 'L' : r === 'dead' ? 'D' : r === 'end' ? 'W' : '-';
     const c = w.chr;
     const s = w.scroll;
-    const meters = w.ci.meter.slice(0, 30).reduce((a, b) => (a + b) | 0, 0);
+    const meters = meterField(w.ci.meter);
     expected.push(
       [
         'S',
@@ -192,8 +193,10 @@ async function checkGame(id: string): Promise<string> {
     if (got[i] !== expected[i]) {
       const a = expected[i].split(' '),
         b = (got[i] ?? '').split(' ');
-      const diffs = names.map((n, k) => (a[k] !== b[k] ? `${n}: engine ${a[k]}, board ${b[k]}` : '')).filter(Boolean);
-      return `FAIL  ${id}: tick ${i + 1} of ${total}: ${diffs.slice(0, 4).join('; ')}`;
+      const metersIndex = names.indexOf('meters');
+      const inventory = a[metersIndex] !== b[metersIndex] ? [meterDifference(a[metersIndex], b[metersIndex])] : [];
+      const diffs = names.map((n, k) => (k !== metersIndex && a[k] !== b[k] ? `${n}: engine ${a[k]}, board ${b[k]}` : '')).filter(Boolean);
+      return `FAIL  ${id}: tick ${i + 1} of ${total}: ${[...inventory, ...diffs].slice(0, 4).join('; ')}`;
     }
   }
   if (gotQ !== sounds.join('\n')) {

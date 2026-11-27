@@ -81,7 +81,8 @@ def main():
         # code/GM/JSTICK.H: 10 x int16 joystick values, VGA, sound, IRQ, port,
         # then a 41-byte driver path and 431 reserved bytes (Borland 16-bit layout).
         struct.pack_into('<4H', config, 20, 0, 1, 7, 0x220)
-        config[28:40] = b'SNDBLAST.DRV\0'
+        driver_name = b'SNDBLAST.DRV\0'
+        config[28:28 + len(driver_name)] = driver_name
         (staged / 'CONFIG.DAT').write_bytes(config)
         captures = output / 'raw'
         captures.mkdir()
@@ -140,8 +141,12 @@ def main():
         dros = list(captures.glob('*.dro'))
         if len(dros) == 1:
             dros[0].rename(output / 'capture.dro')
-        metadata.update(wall_seconds=time.monotonic() - started, exit_code=process.returncode,
-                        wav_sha256=hashlib.sha256((output / 'capture.wav').read_bytes()).hexdigest())
+        wall_seconds = time.monotonic() - started
+        wav_hash = hashlib.sha256()
+        with (output / 'capture.wav').open('rb') as wav:
+            while chunk := wav.read(64 * 1024):
+                wav_hash.update(chunk)
+        metadata.update(wall_seconds=wall_seconds, exit_code=process.returncode, wav_sha256=wav_hash.hexdigest())
         (output / 'run.json').write_text(json.dumps(metadata, indent=2) + '\n')
         print(json.dumps({'wav': str(output / 'capture.wav'), 'duration_seconds': stats['duration_seconds'],
                           'rms': stats['rms'], 'cycles': int(cycles)}))

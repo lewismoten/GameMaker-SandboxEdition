@@ -1,7 +1,7 @@
 // What the desk says when its address asks for a disk the disk box doesn't hold (#/desk?disk=cd:<id>, which the
 // Desk | DOS | Web switch makes from whatever game was in front of you). The PC may well be off, so it says
 // where the game really is and what to do, rather than a bare "not in the disk box": a Starter or graduation
-// comes on the Game-Maker Sample Disk or the CD's SAMPLES folder, a game made in another browser isn't here.
+// comes on the Game-Maker Sample Disk or the CD's SAMPLES folder.
 // Only Starters are named (never a secret game).
 import type { CatalogEntry } from '../project/files';
 import { isStarterGame } from '../project/starter';
@@ -10,7 +10,7 @@ import { SAMPLE_DISK_TITLE } from '../retro/dos/disks';
 
 /** The toast for a wanted disk id that isn't in the disk box. */
 export function missingDiskNote(id: string, catalog: readonly CatalogEntry[]): string {
-  if (id.startsWith('project:')) return 'That disk holds a game made in another browser, so it isn’t in this disk box.';
+  if (id.startsWith('project:')) return 'That project disk is unavailable in this browser.';
   const game = id.startsWith('cd:') ? catalog.find((g) => g.id === id.slice(3)) : undefined;
   if (game && isStarterGame(game)) {
     const onFloppy = floppyFolders(catalog).find((f) => f.entry.id === game.id);

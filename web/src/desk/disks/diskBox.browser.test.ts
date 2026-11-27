@@ -16,15 +16,23 @@ async function fixture() {
 it('explains why the expanded divider cannot fold during search and restores its saved state', async () => {
   const { page, open, close } = await fixture();
   try {
+    await page.setViewportSize({ width: 390, height: 844 });
     await open();
     const fold = page.locator('.divider-tab');
     await fold.click();
     const search = page.getByRole('searchbox');
-    await search.fill('blank');
+    const explanation = page.getByText('Clear the search to fold a group.');
+    expect(await explanation.isVisible()).toBe(false);
+    await search.focus();
+    await page.keyboard.type('blank');
+    expect(await explanation.isVisible()).toBe(true);
+    expect(await search.getAttribute('aria-describedby')).toBe(await explanation.getAttribute('id'));
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
     expect(await fold.getAttribute('aria-expanded')).toBe('true');
     expect(await fold.isDisabled()).toBe(true);
     expect(await fold.getAttribute('title')).toMatch(/clear.*search.*fold/i);
     await search.fill('');
+    expect(await explanation.isVisible()).toBe(false);
     expect(await fold.isEnabled()).toBe(true);
     expect(await fold.getAttribute('aria-expanded')).toBe('false');
     expect(await fold.getAttribute('title')).toMatch(/^Open /);
