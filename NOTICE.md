@@ -1840,6 +1840,7 @@ The dial draws on dAcid's [Rotary Dial mechanism](https://www.thingiverse.com/th
 - **Honors dialog (November 24, 2026)**: OpenAI Codex fixed the earned diploma layout on phones.
 
 - **Under the Hood**: OpenAI Codex wrote Lian’s story introduction and its regression test.
+- **Final Curtain evidence sheet (November 26, 2026)**: OpenAI Codex added keyboard card selection and tested the spyglass lens placement.
 - **Meet the Monsters ending (November 25, 2026)**: OpenAI Codex corrected the monster count and tested it against the level maps.
 - **Throw It demo check (November 25, 2026)**: OpenAI Codex updated the title demo validator and wrote its missing-projectile regression test.
 
