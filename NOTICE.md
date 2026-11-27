@@ -72,6 +72,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex fixed and tested forced Stage Box rebuilds after an interrupted manifest write.
 - OpenAI Codex fixed and tested checkpoint handling for editor notes.
 - OpenAI Codex fixed checkpoint writes across tabs and tested concurrent stamps.
+- OpenAI Codex fixed column headings on code sheets and tested their printed and interactive cards.
 - OpenAI Codex (GPT-6) corrected the 150 Blocks Starter's block limit wording.
 - OpenAI Codex fixed and tested argument validation for the Ghost Jack snapshot command.
 - OpenAI Codex removed a private research filename from the Programmer’s Guide and updated its public-copy test.
