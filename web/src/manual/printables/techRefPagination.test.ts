@@ -1,5 +1,6 @@
 // Booklet folios must include measured contents and continuation pages; physical layout needs a browser.
 import { afterEach, expect, it, vi } from 'vitest';
+import type { Block, Diagrams } from './markdownBlocks';
 import { techRefItem } from './techRef';
 
 const layout = vi.hoisted(() => ({ contentsPages: 1, removed: vi.fn() }));
@@ -13,10 +14,21 @@ vi.mock('../../editor/core/ui', () => ({
 }));
 vi.mock('./manualPages', () => ({ measurer: () => () => ({}) }));
 vi.mock('./kit', () => ({ sheet: vi.fn() }));
-vi.mock('./techRefDiagrams', () => ({ TECHREF_DIAGRAMS: {} }));
+vi.mock('../../programmersGuide/booklet1994.md?raw', async (original) => ({
+  default: (await original<{ default: string }>()).default + '\n[diagram: architecture]\n',
+}));
+vi.mock('./techRefDiagrams', () => ({
+  TECHREF_DIAGRAMS: {
+    architecture: () => {
+      const caption = { textContent: 'Architecture' };
+      return { tagName: 'FIGURE', querySelector: () => caption };
+    },
+  },
+}));
 vi.mock('./markdownBlocks', async (original) => ({
   ...(await original<typeof import('./markdownBlocks')>()),
-  elementWith: () => () => ({ tagName: 'P', children: [], textContent: '' }),
+  elementWith: (diagrams: Diagrams) => (b: Block) =>
+    b.tag === 'diagram' && diagrams[b.name] ? diagrams[b.name]() : { tagName: 'P', children: [], textContent: '' },
 }));
 vi.mock('./paginate', () => ({
   paginate: (blocks: HTMLElement[]) => {
@@ -44,4 +56,11 @@ it.each([1, 2])('matches every contents folio after %s measured contents pages',
     expect(pages[Number(folio)].body[0].textContent).toBe(title);
   }
   expect(layout.removed).toHaveBeenCalledOnce();
+});
+
+it('numbers both appearances of the same drawing in reading order', async () => {
+  vi.stubGlobal('document', { body: { append: vi.fn() } });
+  const pages = await techRefItem().pages!();
+  const captions = pages.flatMap((p) => p.body.filter((el) => el.tagName === 'FIGURE').map((el) => el.querySelector('figcaption')?.textContent));
+  expect(captions).toEqual(['Figure 1. Architecture', 'Figure 2. Architecture']);
 });

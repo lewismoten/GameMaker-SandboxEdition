@@ -19,7 +19,6 @@
 import { deflateRawSync } from 'node:zlib';
 import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { forLewis } from './mainCheckout';
 import { FONT8X8 } from '@lewismoten/gamemaker-sandbox-engine/gfx/font8x8';
 import { GameFiles } from '@lewismoten/gamemaker-sandbox-engine/core/gameFiles';
 import { newCards, packPocketGame, shortHash, type PocketStore } from '../src/export/pocketPack';
@@ -29,6 +28,7 @@ import { pocketOutDir } from './pocketRepo';
 import { gmpName, readBundle, writeBundle, writeGmp, writeOsGmp } from '../src/export/pocketFile';
 
 const args = process.argv.slice(2);
+if (args.includes('--out') && args.includes('--gmp')) throw new Error('--out and --gmp cannot be used together.');
 const opt = (n: string) => (args.includes(n) ? (args[args.indexOf(n) + 1] ?? '').split(',').filter(Boolean) : []);
 const only = opt('--only');
 const forced = new Set(opt('--force'));
@@ -37,6 +37,10 @@ const cardRoot = opt('--out')[0];
 const gmpDir = opt('--gmp')[0];
 const withDos = !args.includes('--no-dos');
 const gmos = !!gmpDir && args.includes('--gmos');
+if (gmos && !withDos) {
+  console.error('--gmos requires DOS files and cannot be used with --no-dos');
+  process.exit(1);
+}
 const series = opt('--series')[0] ?? (cardRoot || gmpDir ? 'any' : 'starter');
 const outDir = gmpDir ? `${gmpDir}/pocket/` : cardRoot ? `${cardRoot}/pocket/` : pocketOutDir + 'data/';
 /** Games the card leaves out (id: reason): their host check differs from the engine (the same with the old fixed level table, so not the streaming). */
@@ -106,6 +110,7 @@ if (gmpDir && existsSync(outDir))
   }
 
 // A checkout-independent optional research input; --scores overrides the local maintainer path.
+const { forLewis } = await import('./mainCheckout');
 const scoresFile = opt('--scores')[0] ?? join(forLewis, 'research/pocket/cyd-friendly.json');
 const scores = new Map<string, number>(
   existsSync(scoresFile)

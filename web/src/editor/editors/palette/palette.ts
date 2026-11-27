@@ -298,6 +298,7 @@ registerEditor(['pal'], (host, project, file) => {
     ),
   );
   let gifChoice = gifs[0] ?? '';
+  const colorHelp = colorHelpControl();
   const editPane = h(
     'div',
     { class: 'stack', id: 'pal-pane-edit', role: 'tabpanel', 'aria-labelledby': 'pal-tab-edit' },
@@ -305,7 +306,7 @@ registerEditor(['pal'], (host, project, file) => {
     seenRow,
     alikeNote,
     colorBox.el,
-    colorHelpControl(),
+    colorHelp.el,
     ...sliders.map((s) => s.row),
     h(
       'div',
@@ -494,6 +495,7 @@ registerEditor(['pal'], (host, project, file) => {
   const stopHelp = onColorHelp(refresh);
   return () => {
     stopHelp();
+    colorHelp.dispose();
     disposed = true;
     window.removeEventListener('keydown', onKey);
     tools.dispose();

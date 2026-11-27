@@ -1,10 +1,15 @@
 // Tests for scripts/look.mjs (npm run look): argument parsing, shot-name resolution and the two bridge calls, with a fake fetch.
+import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { OCR_THRESHOLDS, look, mergeWords, parseArgs, parseTsv, preprocessArgs, resolveShot, tesseractArgs, textHas } from '../../scripts/look.mjs';
 
 const shots = [{ name: 'CYD' }, null, { name: 'R-HDMI' }];
 
 describe('look', () => {
+  it('runs the documented camera command from the repository root', () => {
+    const guide = readFileSync(new URL('../../AGENTS.md', import.meta.url), 'utf8');
+    expect(guide).toMatch(/^\(cd \.\. && npm run look -- [^\n]+?\)\s+#/m);
+  });
   it('parses options', () => {
     expect(parseArgs(['R-HDMI', '--width', '640', '--crop', '0,0.5,1,0.5', '--expect', 'ok'])).toMatchObject({
       shot: 'R-HDMI',
@@ -17,6 +22,12 @@ describe('look', () => {
     expect(() => parseArgs(['1', '--crop', '1,2'])).toThrow(/crop/);
     expect(() => parseArgs(['1', '--width', '5'])).toThrow(/width/);
     expect(() => parseArgs(['1', '--say'])).toThrow(/unknown/);
+  });
+  it('requires a filename before the next option', () => {
+    expect(() => parseArgs(['--out', '--ocr'])).toThrow('--out needs a value');
+  });
+  it.each([',,,', ' ,0,1,1', '0,,1,1', '0,0,0,1', '0,0,1,0'])('rejects invalid crop %s', (crop) => {
+    expect(() => parseArgs(['--crop', crop])).toThrow(/crop/);
   });
   it('parses the OCR options', () => {
     expect(parseArgs([])).toMatchObject({ ocrPsm: 11, ocrScale: 1.5 });
@@ -37,7 +48,7 @@ describe('look', () => {
     const row = (conf, w) => ['5', '1', '1', '1', '1', '1', '0', '0', '9', '9', conf, w].join('\t');
     const tsv = ['level\tpage', row(90, 'BOOT'), row(30, 'xq'), row(75, '15'), row(80, 'HOST'), row(10, '')].join('\n');
     expect(parseTsv(tsv)).toEqual({ all: 'BOOT xq 15 HOST', text: 'BOOT HOST' });
-    expect(mergeWords({ all: 'a Boot', text: 'Boot' }, { all: 'boot Host', text: 'boot Host' })).toEqual({ all: 'a Boot Host', text: 'Boot Host' });
+    expect(mergeWords({ all: ['a Boot'], text: 'Boot' }, { all: 'boot Host', text: 'boot Host' })).toEqual({ all: ['a Boot', 'boot Host'], text: 'Boot Host' });
   });
   it('resolves a slot, a name and a prefix', () => {
     expect(resolveShot(shots, '3')).toBe(3);
@@ -47,8 +58,15 @@ describe('look', () => {
     expect(() => resolveShot(shots, 'nope')).toThrow(/saved: 1 CYD, 3 R-HDMI/);
   });
   it('matches expected text loosely', () => {
-    expect(textHas('Hello\n  World', 'hello world')).toBe(true);
-    expect(textHas('abc', 'xyz')).toBe(false);
+    expect(textHas(['Hello\n  World'], 'hello world')).toBe(true);
+    expect(textHas(['abc'], 'xyz')).toBe(false);
+  });
+  it.each([
+    [['GO GO', ''], 'GO GO', true],
+    [['START', 'OVER'], 'START OVER', false],
+  ])('checks a phrase within each complete read', (reads, phrase, expected) => {
+    const words = reads.reduce((words, all) => mergeWords(words, { all, text: '' }), { all: [], text: '' });
+    expect(textHas(words.all, phrase)).toBe(expected);
   });
   it('lists shots then goes once', async () => {
     const calls = [];

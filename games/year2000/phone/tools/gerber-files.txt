@@ -1,0 +1,10 @@
+phone-B_Cu.gbl
+phone-B_Mask.gbs
+phone-B_Silkscreen.gbo
+phone-Edge_Cuts.gm1
+phone-F_Cu.gtl
+phone-F_Mask.gts
+phone-F_Silkscreen.gto
+phone-drl_map.gbr
+phone-job.gbrjob
+phone.drl

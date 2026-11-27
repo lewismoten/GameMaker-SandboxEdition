@@ -18,6 +18,7 @@ const web = readFileSync(`${prefix}.rgb`);
 const dos = readFileSync(dosFile);
 const ticks = web.length / (W * 200 * 3);
 const nDos = dos.length / (w * h * 3);
+if (!ticks || !nDos) throw new Error('Both captures need at least one frame.');
 const diffCount = (t, f) => {
   let d = 0;
   for (let y = 0; y < h; y++) {
@@ -32,6 +33,7 @@ const diffCount = (t, f) => {
   return d;
 };
 const T0 = Number(anchor);
+if (!Number.isInteger(T0) || T0 < 0 || T0 >= ticks) throw new Error('Anchor must identify a web frame.');
 let prev = -1;
 let bestD = Infinity;
 for (let f = 0; f < nDos; f++) {
@@ -56,7 +58,7 @@ const sub = (t, f) => {
   }
   return d;
 };
-const n = Math.min(ticks - T0, Math.floor((nDos - 1 - prev) / Number(per)));
+const n = Math.min(ticks - T0, 1 + Math.floor((nDos - 1 - prev) / Number(per)));
 const guess = (k) => prev + (clocks[T0 + k] - clocks[T0]) * Number(per);
 const lo = (k) => Math.max(0, Math.round(guess(k)) - BAND);
 const cost = [];

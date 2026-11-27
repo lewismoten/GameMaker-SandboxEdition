@@ -119,7 +119,7 @@ height selects, so ten keys can fire into ten different rows.
 
 The hero moves at most **11 pixels per tick** in each direction, a little over half a block. That keeps the hero from passing through a one-block wall between two checks. The hero carries up to **10 things**.
 
-A plank only one block wide is a poor place to land. When just one of the two blocks under the hero is solid, the game nudges him sideways toward it, and a hero coming down near the plank's end can be pulled off and fall. Build such planks two blocks wide.
+A plank only one block wide is a poor place to land. If less than half the hero's width rests on the plank, the game nudges him sideways away from it, and he can fall. At exactly half there is no nudge. Build such planks two blocks wide.
 
 ---
 
@@ -225,7 +225,7 @@ Game-Maker is a family of separate DOS programs. Only the small GM launcher stay
 | Number | Letter | Program  | Job and files                                            |
 | -----: | :----: | -------- | -------------------------------------------------------- |
 |      — |   —    | GM       | Launch programs and choose the next one                  |
-|      0 |   A    | (quit)   | Leave Game-Maker and return to DOS                       |
+|      0 |   —    | (quit)   | Leave Game-Maker and return to DOS                       |
 |      1 |   B    | UTILITY  | Copy a game's files and its transfer player              |
 |      2 |   C    | PALCHOS  | Read and write PAL colors                                |
 |      3 |   D    | BLOCEDIT | Read and write BBL, MBL and CBL blocks                   |
@@ -236,11 +236,11 @@ Game-Maker is a family of separate DOS programs. Only the small GM launcher stay
 |      8 |   I    | SNDEDIT  | Read and write SND effects; convert CMF timing           |
 |      9 |   J    | GRATOR   | Read and write GAM scenes and file-name references       |
 |     10 |   K    | PLAYGAME | Read the game; write recordings, scores and saves        |
-|     11 |   L    | MENU     | Show the menus and return the number of the next program |
+|     11 |   —    | MENU     | Show the menus and return the number of the next program |
 
 [diagram: architecture]
 
-The command tail carries the exact, case-sensitive word `cOoL`, then a letter identifying the preceding selection. GM builds a seven-byte tail: the four letters, a space, the selection letter and a carriage return. MENU uses the selection to reopen the appropriate menu. The number column is GM's program table; the letter is A plus that number, so PLAYGAME (10) is K.
+GM builds a seven-byte command tail from the case-sensitive word `cOoL`, a space, a selection letter and a carriage return. The letter starts at K for PLAYGAME. When a utility numbered 1 through 10 returns and dispatch continues, GM sets the letter to A plus that utility’s number. MENU uses the letter to reopen the appropriate menu. When MENU returns, GM keeps the preceding utility’s letter. A zero return code ends the session before GM writes another letter.
 
 A utility checks `cOoL` to recognize a launch under Game-Maker. Without it, the utility requests restoration of the DOS text display when it ends. Returning 11 hands control back to GM, which launches MENU; returning zero ends the launcher. The token preserves the managed display transition; the exit code supplies the next destination. A utility started directly at the DOS prompt has no waiting GM launcher to interpret its return code.
 

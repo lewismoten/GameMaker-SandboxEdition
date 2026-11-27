@@ -6,6 +6,7 @@
 import { diffDisks, formatDiff } from '@lewismoten/gamemaker-sandbox-tools/disk-diff';
 import { deltaSize } from '@lewismoten/gamemaker-sandbox-tools/delta';
 import { deleteCheckpoint, getCheckpoints, makeCheckpoint, restoreChanges, tagCheckpoint, versionAt } from '../../project/checkpoint';
+import { emptyCompanion } from '../../project/companion';
 import type { StoredCheckpoint } from '../../project/storage';
 import { confirmDialog, h, promptText, toast } from '../core/ui';
 import type { Project } from '../core/project';
@@ -27,8 +28,10 @@ export function checkpointPanel(project: Project, before: (...names: string[]) =
   const el = h('section', { class: 'disk-checkpoint', 'aria-label': 'Checkpoints' });
   let list: StoredCheckpoint[] = [];
 
+  const notesChanged = (cp: StoredCheckpoint) => JSON.stringify(cp.companion ?? emptyCompanion()) !== JSON.stringify(project.companion ?? emptyCompanion());
+
   const sameAsLatest = () => {
-    if (!list.length) return false;
+    if (!list.length || notesChanged(list[list.length - 1])) return false;
     const d = diffDisks(versionAt(list, list.length - 1), new Map(project.files.entries()));
     return !(d.changed.length + d.added.length + d.removed.length);
   };
@@ -60,7 +63,7 @@ export function checkpointPanel(project: Project, before: (...names: string[]) =
       if (b) project.files.set(n, b);
       else project.files.delete(n);
     }
-    if (cp.companion) project.companion = structuredClone(cp.companion);
+    project.companion = structuredClone(cp.companion ?? emptyCompanion());
     project.forgetParsed();
     void project.saveNow();
     toast(`Restored ${changes.size} file${changes.size === 1 ? '' : 's'}.`);
@@ -70,6 +73,7 @@ export function checkpointPanel(project: Project, before: (...names: string[]) =
   const row = (cp: StoredCheckpoint, i: number) => {
     const diff = diffDisks(versionAt(list, i), new Map(project.files.entries()));
     const n = diff.changed.length + diff.added.length + diff.removed.length;
+    const notes = notesChanged(cp);
     const act = async (fn: () => Promise<unknown>) => {
       try {
         await fn();
@@ -86,7 +90,7 @@ export function checkpointPanel(project: Project, before: (...names: string[]) =
         { role: 'status' },
         h('strong', null, cp.name),
         cp.tag ? h('span', { class: 'disk-tag' }, ` release ${cp.tag}`) : null,
-        ` ${when(cp.made)}, ${kb(deltaSize(cp.delta))} stored. ${n ? `Since then: ${formatDiff(diff).split('\n')[0]}.` : 'Nothing has changed since.'}`,
+        ` ${when(cp.made)}, ${kb(deltaSize(cp.delta))} stored. ${n ? `Since then: ${formatDiff(diff).split('\n')[0]}.` : notes ? 'Editor notes have changed since.' : 'Nothing has changed since.'}`,
       ),
       h(
         'div',
@@ -109,7 +113,7 @@ export function checkpointPanel(project: Project, before: (...names: string[]) =
           },
           'Play…',
         ),
-        h('button', { type: 'button', 'aria-label': `Restore ${cp.name}`, disabled: !n, onclick: () => void act(() => restore(i)) }, 'Restore'),
+        h('button', { type: 'button', 'aria-label': `Restore ${cp.name}`, disabled: !n && !notes, onclick: () => void act(() => restore(i)) }, 'Restore'),
         h(
           'button',
           {

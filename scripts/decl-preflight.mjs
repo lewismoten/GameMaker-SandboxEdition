@@ -54,7 +54,10 @@ function main() {
     for (const { name } of stale) {
       console.error(`decl-preflight: rebuilding ${name}`);
       const r = spawnSync('npm', ['run', 'build', '-w', `@lewismoten/gamemaker-sandbox-${name}`], { cwd: root, stdio: 'inherit' });
-      if (r.status) return r.status;
+      if (r.error || r.signal || r.status !== 0) {
+        if (r.error || r.signal) console.error(`decl-preflight: ${r.error?.message ?? r.signal}`);
+        return r.status || 1;
+      }
     }
     return 0;
   }
