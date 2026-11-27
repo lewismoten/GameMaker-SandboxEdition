@@ -428,7 +428,7 @@ Run selected files with `npx vitest run scripts/<file>.test.ts`. Browser tests u
 - `cydScore.test.ts` — checks the CYD scoring penalties, missing inputs and provisional results.
 - `deskTargetSizes.test.ts` — measures the desk controls’ rendered hit targets.
 - `dialogAccessibility.test.ts` — checks shared modal names against visible headings.
-- `dialogLayouts.test.ts` — checks the Community proposal form’s portrait-phone layout.
+- `dialogLayouts.test.ts` — checks the Community proposal form and the speaker-enabled sound effect footer on narrow phones.
 - `dialogTargets.test.ts` — checks visible dialog controls’ hit targets.
 - `dialogsFitMeasure.test.ts` — checks checkbox hit areas, collapsed details and dialog measurements.
 - `diskDiff.test.ts` — checks disk diff summaries, format changes and deterministic output.
