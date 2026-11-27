@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { execFileSync } from 'node:child_process';
 import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
-import { deflateRawSync } from 'node:zlib';
+import { deflateRawSync, inflateRawSync } from 'node:zlib';
 import { GameFiles } from '@lewismoten/gamemaker-sandbox-engine/core/gameFiles';
 import { serializeGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { testGame } from '../editor/check/testGame';
@@ -32,6 +32,25 @@ function playableGame(levels: number, links = 1) {
 }
 const pack = (files: GameFiles) => packPocketGame({ title: 'Pocket limits', files }, new Map(), newCards(), deflate, false);
 const levelLines = (lines: string[]) => lines.filter((line) => line.startsWith('level '));
+
+it('keeps colliding short resource names distinct across games and reuses each payload', async () => {
+  const store = new Map<string, Uint8Array>();
+  const names: string[] = [];
+  for (const value of [12516, 22648, 22648, 12516]) {
+    const files = playableGame(1);
+    const bytes = Buffer.alloc(4);
+    bytes.writeUInt32LE(value);
+    files.set('test.pal', bytes);
+    const packed = await packPocketGame({ title: 'Name collision', files }, store, newCards(), deflate, false);
+    const name = levelLines(packed.lines)[0].split(' ')[5];
+    expect(name).toMatch(/^[0-9a-f]{1,8}\.p$/);
+    expect(inflateRawSync(store.get(name)!.subarray(4))).toEqual(bytes);
+    names.push(name);
+  }
+  expect(names[0]).toBe('506cd4d.p');
+  expect(names[1]).not.toBe(names[0]);
+  expect(names.slice(2)).toEqual([names[1], names[0]]);
+});
 
 describe('Pocket playable-scene and DOS link limits', () => {
   it('packs exactly 128 playable scenes without counting the menu or ending', async () => {

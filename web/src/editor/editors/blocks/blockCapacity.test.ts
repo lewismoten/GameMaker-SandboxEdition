@@ -3,6 +3,16 @@ import { BLOCK_COUNTS, BLOCK_SIZE, emptyBlock, parseBlocks, serializeBlocks } fr
 import { blockCapacityText } from './blockCapacity';
 
 describe('DOS block-set capacity explanation', () => {
+  it('reports one trailing byte separately from complete background blocks', () => {
+    const count = BLOCK_COUNTS.bbl;
+    const bytes = new Uint8Array(count * BLOCK_SIZE + 1);
+    const parsed = parseBlocks(bytes, Math.ceil(bytes.length / BLOCK_SIZE));
+    const text = blockCapacityText('bbl', bytes.length);
+    expect(text).toContain(`${count} complete blocks and 1 trailing byte.`);
+    expect(text).not.toContain('extra records');
+    expect(serializeBlocks(parsed)).toHaveLength((count + 1) * BLOCK_SIZE);
+  });
+
   for (const [kind, name] of [
     ['bbl', 'background'],
     ['mbl', 'monster'],
@@ -19,7 +29,7 @@ describe('DOS block-set capacity explanation', () => {
         const bytes = serializeBlocks(blocks);
         const parsed = parseBlocks(bytes, Math.max(max, Math.ceil(bytes.length / BLOCK_SIZE)));
         const before = serializeBlocks(parsed);
-        const text = blockCapacityText(kind, parsed.length);
+        const text = blockCapacityText(kind, bytes.length);
         const after = serializeBlocks(parsed);
         expect(text).toContain(`DOS ${name} sets hold ${max} blocks`);
         expect(text).toContain('one 64K piece of memory');

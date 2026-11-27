@@ -56,6 +56,7 @@ function chunks(b, type) {
   }
   return out;
 }
-console.log(`${n} pictures, ${(total / 1048576).toFixed(2)} MB, average ${(total / n / 1024).toFixed(0)} KB`);
+if (n === 0) findings.push('No preview pictures found in og/');
+else console.log(`${n} pictures, ${(total / 1048576).toFixed(2)} MB, average ${(total / n / 1024).toFixed(0)} KB`);
 console.log(findings.length ? findings.join('\n') : 'no findings');
 process.exit(findings.length ? 1 : 0);

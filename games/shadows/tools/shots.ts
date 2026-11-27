@@ -2,7 +2,7 @@
 //   compare.png   a pip standing on sand, grass and soil: a solid shadow on the top row, a dithered one on the bottom
 //   hop.png       the hop's six pictures for each of the three pips, on grass
 //   hover.png     the bee's four pictures over its shadow block: right under it, and three blocks up
-//   plus views of every room (what preview.ts writes as view-*.png)
+//   For room views (view-*.png), run separately: cd web && npx vite-node ../games/shadows/tools/preview.ts <outDir>
 //   cd web && npx vite-node ../games/shadows/tools/shots.ts <outDir>
 import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';

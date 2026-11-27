@@ -193,12 +193,16 @@ export async function withFiles<T extends { id: string; files?: string[]; sizes?
 }
 
 /** An entry with its shareware notice, manual and printables (games/details/<id>.json), for one from loadCatalogList. */
-export async function withDetails(entry: CatalogEntry, base = './games/'): Promise<CatalogEntry> {
+export async function withDetails(entry: CatalogEntry, base = './games/', { requireManual = false } = {}): Promise<CatalogEntry> {
   if (!entry.details) return entry; // nothing left out, or a full entry
   const details = await fetchJson<Pick<CatalogEntry, 'notice' | 'original' | 'blurb' | 'controls' | 'player'>>(`${base}details/${entry.id}.json`).catch(
     () => undefined,
   );
-  if (!details) return (await loadCatalog(base)).find((g) => g.id === entry.id) ?? entry;
+  if (!details) {
+    const fallback = (await loadCatalog(base)).find((g) => g.id === entry.id) ?? entry;
+    if (requireManual && fallback.details && !fallback.original?.manual?.pages.length) throw new Error('Could not load the manual pages.');
+    return fallback;
+  }
   const { original, ...more } = details; // a Starter's blurb, controls, player look, label and box art too (scripts/cdGames.ts pageCatalog)
   return { ...entry, ...more, original: entry.original || original ? { ...entry.original, ...original } : undefined };
 }

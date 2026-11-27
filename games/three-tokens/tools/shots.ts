@@ -24,11 +24,11 @@ const hero = buildHeroBlocks(pal);
 
 type Sprite = { pixels: Uint8Array; x: number; y: number };
 /** Kit standing in column `col` (in the level) in `pose`, as two sprites for renderRegion. */
-const kit = (pose: [string, string], col: number): Sprite[] => {
+const kit = (pose: [string, string], col: number, feetRow = GROUND - 1): Sprite[] => {
   const h = heroPicture(hero, pose[0], pose[1]);
   return [
-    { pixels: Uint8Array.from(h.px.subarray(0, 400)), x: ORIGIN + col, y: ORIGIN + GROUND - 2 },
-    { pixels: Uint8Array.from(h.px.subarray(400)), x: ORIGIN + col, y: ORIGIN + GROUND - 1 },
+    { pixels: Uint8Array.from(h.px.subarray(0, 400)), x: ORIGIN + col, y: ORIGIN + feetRow - 1 },
+    { pixels: Uint8Array.from(h.px.subarray(400)), x: ORIGIN + col, y: ORIGIN + feetRow },
   ];
 };
 const region = (level: number, col: number, row: number, w: number, extra: Sprite[]) =>
@@ -36,5 +36,5 @@ const region = (level: number, col: number, row: number, w: number, extra: Sprit
 const save = (name: string, pic: ReturnType<typeof region>) => writePng(join(out, name), pic, pal.pal, 3);
 
 save('1-two-tokens-shut.png', region(0, 8, 4, 22, kit(['stand.top', 'stand'], 26)));
-save('2-third-token.png', region(0, 14, 0, 16, kit(['cheer.top', 'jump'], 22)));
+save('2-third-token.png', region(0, 14, 0, 16, kit(['cheer.top', 'jump'], 22, 2)));
 save('3-five-slot-exit.png', region(1, 26, 4, 18, kit(['stand.top', 'stand'], 38)));

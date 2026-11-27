@@ -39,6 +39,8 @@ Held-rise jump and bot timing by OpenAI Codex (GPT-6.1 Sol).
 
 Raised entrances and fixed views by OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten.
 
+Win caption by OpenAI Codex.
+
 Micro plaques by Hermes Agent using OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten.
 
 Made with GAME-MAKER 3.0 from Recreational Software Designs.

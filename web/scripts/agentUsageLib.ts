@@ -43,7 +43,7 @@ export function readUsage(jsonl: string): Usage {
   return u;
 }
 
-export const csvCell = (v: string | number) => (/[",\n]/.test(String(v)) ? `"${String(v).replace(/"/g, '""')}"` : String(v));
+export const csvCell = (v: string | number) => (/[",\r\n]/.test(String(v)) ? `"${String(v).replace(/"/g, '""')}"` : String(v));
 
 // Plain-words title of one sub-agent task: its description with whitespace runs (newlines, tabs) folded to single
 // spaces; with no description, "<agent type> task (<agent id>)"; with neither, "Untitled task (<agent id>)". Never empty.

@@ -50,7 +50,7 @@ function headTags(page: keyof typeof PAGES): string {
   return `<title>${escapeHtml(p.title)}</title>\n${meta}`;
 }
 
-async function buildHostedPlayer(page: keyof typeof PAGES = 'download', bundled?: ReturnType<typeof bundleOnePage>): Promise<string> {
+async function buildHostedPlayer(page: keyof typeof PAGES, bundled?: ReturnType<typeof bundleOnePage>): Promise<string> {
   const { script, style } = await (bundled ?? bundleOnePage(ENTRY));
   return `<!doctype html>
 <html lang="en">
@@ -58,7 +58,7 @@ async function buildHostedPlayer(page: keyof typeof PAGES = 'download', bundled?
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="color-scheme" content="light dark" />
-${headTags(page)}
+${page === 'try' ? '<meta name="robots" content="noindex" />\n' : ''}${headTags(page)}
 <style>${style}</style>
 </head>
 <body class="wp-body">
@@ -89,7 +89,7 @@ function siteGameList(catalog: CdCatalogEntry[]): string {
 }
 
 export function hostedPlayer(): Plugin {
-  let cached: Promise<string> | undefined;
+  let cached: Partial<Record<keyof typeof PAGES, Promise<string>>> = {};
   let command: 'build' | 'serve' = 'serve';
   return {
     name: 'gamemaker-hosted-player',
@@ -108,7 +108,7 @@ export function hostedPlayer(): Plugin {
         this.emitFile({
           type: 'asset',
           fileName: 'player/index.html',
-          source: (await buildHostedPlayer('try', bundled)).replace('<title>', '<meta name="robots" content="noindex" />\n<title>'),
+          source: await buildHostedPlayer('try', bundled),
         });
         const index = bundle['games/index.json'];
         const catalog = index?.type === 'asset' ? (JSON.parse(String(index.source)) as CdCatalogEntry[]) : [];
@@ -117,18 +117,18 @@ export function hostedPlayer(): Plugin {
     },
     configureServer(server) {
       server.watcher.on('all', (_event, file) => {
-        if (file.startsWith(resolve(root, 'src'))) cached = undefined;
+        if (file.startsWith(resolve(root, 'src'))) cached = {};
       });
-      const send = (res: import('node:http').ServerResponse) => {
-        cached ??= buildHostedPlayer();
-        cached.then(
+      const send = (page: keyof typeof PAGES, res: import('node:http').ServerResponse) => {
+        const pending = (cached[page] ??= buildHostedPlayer(page));
+        pending.then(
           (html) => {
             res.setHeader('Content-Type', 'text/html; charset=utf-8');
             res.setHeader('Cache-Control', 'no-store');
             res.end(html);
           },
           (e: Error) => {
-            cached = undefined;
+            if (cached[page] === pending) delete cached[page];
             res.statusCode = 500;
             res.end(`Could not build the web player: ${e.message}`);
           },
@@ -136,7 +136,8 @@ export function hostedPlayer(): Plugin {
       };
       server.middlewares.use((req, res, next) => {
         const path = (req.url ?? '').split('?')[0];
-        if (path === '/web-player.html' || path === '/player/' || path === '/player/index.html') return send(res);
+        if (path === '/web-player.html') return send('download', res);
+        if (path === '/player/' || path === '/player/index.html') return send('try', res);
         next();
       });
     },

@@ -16,10 +16,13 @@ describe('whatsNew', () => {
   it('offers only steps after the last visit, newest first', () => {
     expect(whatsNew('2026-10-15', chapters).map((n) => n.step.id)).toEqual(['a3', 'b1', 'a2']);
   });
-  it('offers nothing on the day itself, with no date, or with a damaged one', () => {
-    expect(whatsNew('2026-11-05', chapters)).toEqual([]);
+  it('offers equal-day steps once for legacy dates and ignores missing or damaged dates', () => {
+    expect(whatsNew('2026-11-05', chapters).map((n) => n.step.id)).toEqual(['a3', 'b1']);
     expect(whatsNew(null, chapters)).toEqual([]);
     expect(whatsNew('yesterday', chapters)).toEqual([]);
+  });
+  it('offers the afternoon addition after a morning build on the same UTC day', () => {
+    expect(whatsNew('2026-11-05|a3', chapters).map((n) => n.step.id)).toEqual(['b1']);
   });
   it('stops at the cap', () => {
     const many = [
@@ -83,9 +86,22 @@ describe('the stored date', () => {
     localStorage.setItem(SEEN_KEY, '2026-13-45');
     expect(readSeen()).toBeNull();
   });
-  it('sets today on the first visit and keeps the date after', () => {
+  it('records all published steps on first visit and keeps the watermark after', () => {
     expect(seenOnFirstVisit()).toBeNull();
-    expect(readSeen()).not.toBeNull();
+    const dated = CHAPTERS.flatMap((c) => c.steps).filter((s) => isDay(s.since));
+    const day = dated
+      .map((s) => s.since!)
+      .sort()
+      .at(-1);
+    const [storedDay, ids] = readSeen()!.split('|');
+    expect(storedDay).toBe(day);
+    expect(ids.split(',').sort()).toEqual(
+      dated
+        .filter((s) => s.since === day)
+        .map((s) => s.id)
+        .sort(),
+    );
+    expect(whatsNew(readSeen())).toEqual([]);
     writeSeen('2026-11-02');
     expect(seenOnFirstVisit()).toBe('2026-11-02');
     expect(readSeen()).toBe('2026-11-02');

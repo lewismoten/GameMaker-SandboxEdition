@@ -21,6 +21,9 @@ import { Screen } from '@lewismoten/gamemaker-sandbox-engine/gfx/screen';
 import { GameSim, readDisk } from '@lewismoten/gamemaker-sandbox-tools/kit/gameSim';
 import { LASTSND } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
 import { decodeKeys, type Walkthrough } from './../src/walkthrough/format';
+import { decodePicker } from './pocketPicker';
+
+import { nextHostSegment } from './pocketHostSegment';
 
 const args = process.argv.slice(2);
 const opt = (n: string) => (args.includes(n) ? args[args.indexOf(n) + 1] : undefined);
@@ -98,20 +101,11 @@ async function checkGame(id: string): Promise<string> {
       }
       lastKeyTick = tickNo + 1;
       if (key === dropKey) {
-        // The walkthrough holds the drop picker's keys (Right per column, Down for row two, Enter) after D.
-        // The engine here has no picker window: read the slot from them, hand it over, and leave them out.
-        let col = 0,
-          row = 0,
-          j = ki + 1;
-        for (; j < segs[seg].length && segs[seg][j].key !== 28; j++) {
-          if (segs[seg][j].key === 77) col++;
-          if (segs[seg][j].key === 80) row = 1;
-        }
-        if (j < segs[seg].length) {
-          const slot = row * 5 + col;
+        const { slot, consumed } = decodePicker(segs[seg], ki);
+        for (const index of consumed) skip.add(seg * 1e6 + index);
+        if (slot >= 0) {
           sim.dropSlot = slot;
           script.push(`K ${tickNo + 1} ${256 + slot}`);
-          for (let q = ki + 1; q <= j + 1 && q < segs[seg].length; q++) skip.add(seg * 1e6 + q);
         }
       }
       script.push(`K ${tickNo + 1} ${key}`);
@@ -171,7 +165,7 @@ async function checkGame(id: string): Promise<string> {
     // SegmentRecorder.enterScene): a scene with no segment of its own, such as a pass-through drive between two
     // levels, leaves the current one in place instead of using up the next level's keys.
     if (r === 'link') {
-      const next = walk.segments.findIndex((s, k) => k > seg && s.scene === sim.scene);
+      const next = nextHostSegment(walk.segments, seg, sim.scene);
       if (next >= 0) {
         seg = next;
         ki = 0;

@@ -28,8 +28,6 @@ interface FetchKeysRoundDiagnostic {
   kind: 'key' | 'exit';
   /** The candidate source closest to the best state this key search reached, or null when there are no candidates. */
   source: FetchKeysSource | null;
-  /** Every source this key search was allowed to reach; an exit search has none. */
-  candidates: FetchKeysSource[];
   /** Whether the explorer exhausted its states; a successful stop at a source is not complete. */
   complete: boolean;
   /** Work allocated to this exploration, in milliseconds. */
@@ -48,6 +46,8 @@ interface FetchKeysRoundDiagnostic {
 }
 
 export interface FetchKeysDiagnostics {
+  /** Candidate sources at scene entry. Later rounds may target a moving or dropped source. */
+  candidates: FetchKeysSource[];
   rounds: FetchKeysRoundDiagnostic[];
   /** The terminal cutoff, or null when the key strategy replayed a wanted exit. */
   cutoff: FetchKeysCutoff | null;
@@ -163,7 +163,6 @@ function roundDiagnostic(
   return {
     kind,
     source: kind === 'key' ? sourceAt(ex, sources, distance) : null,
-    candidates: kind === 'key' ? sources.slice() : [],
     complete: ex.complete,
     budgetMs,
     ms: ex.ms,
@@ -176,13 +175,12 @@ function roundDiagnostic(
   };
 }
 
-function budgetDiagnostic(kind: FetchKeysRoundDiagnostic['kind'], sources: FetchKeysSource[], distance: Uint16Array, entry: Entry): FetchKeysRoundDiagnostic {
+function budgetDiagnostic(kind: FetchKeysRoundDiagnostic['kind'], distance: Uint16Array, entry: Entry): FetchKeysRoundDiagnostic {
   const cell = entry.start.y * MLEN + entry.start.x;
   const nearest = distance[cell];
   return {
     kind,
     source: null,
-    candidates: kind === 'key' ? sources.slice() : [],
     complete: false,
     budgetMs: 0,
     ms: 0,
@@ -205,10 +203,11 @@ export async function fetchKeys(
   o: FetchOptions,
 ): Promise<FetchKeysResult> {
   const rounds: FetchKeysRoundDiagnostic[] = [];
-  if (!locks.wanted.size) return { diagnostics: { rounds, cutoff: 'no-reachable-state' } };
+  if (!locks.wanted.size) return { diagnostics: { candidates: [], rounds, cutoff: 'no-reachable-state' } };
   const owed = locks.owed;
   const paid = (meter: ArrayLike<number>) => [...locks.wanted].every((c) => meter[c] === INF_REPEAT || meter[c] > (owed.get(c) ?? 0));
-  let sources = locks.sources.filter((source) => locks.wanted.has(source.counter)).map(({ counter, cell }) => ({ counter, cell }));
+  const candidates = locks.sources.filter((source) => locks.wanted.has(source.counter)).map(({ counter, cell }) => ({ counter, cell }));
+  let sources = candidates;
   let sourceDistance = distancesTo(sources.map((source) => source.cell));
   const now = o.now ?? (() => performance.now());
   const seed = o.seed ?? 1;
@@ -226,7 +225,7 @@ export async function fetchKeys(
   const checkpoint = (w: World) => JSON.stringify([w.chr.x[0], w.chr.y[0], w.ci.hitpts, w.ci.meter, w.ci.inv, w.ci.seqon]);
   const refresh = () => {
     if (!r1) {
-      sources = locks.sources.filter((source) => locks.wanted.has(source.counter)).map(({ counter, cell }) => ({ counter, cell }));
+      sources = candidates;
     } else {
       // Follow moving/dropped supplies and ignore collected or already paid targets.
       const w = r1.world;
@@ -240,7 +239,7 @@ export async function fetchKeys(
   for (let round = 0; round < maxTrips && !paid(meter); round++) {
     const left = deadline - now();
     if (left <= 0) {
-      rounds.push(budgetDiagnostic('key', sources, sourceDistance, entry));
+      rounds.push(budgetDiagnostic('key', sourceDistance, entry));
       cutoff = 'budget';
       break;
     }
@@ -283,7 +282,7 @@ export async function fetchKeys(
         o.paths,
       );
       if (r && o.wanted.has(r.link) && paid(r.ci.meter))
-        return { replay: r1 ? { ...r, events: [...r1.events, ...r.events] } : r, diagnostics: { rounds, cutoff: null } };
+        return { replay: r1 ? { ...r, events: [...r1.events, ...r.events] } : r, diagnostics: { candidates, rounds, cutoff: null } };
     }
     const at = ex1.reached === undefined ? undefined : ex1.places[ex1.reached]?.via;
     if (!at) {
@@ -316,7 +315,7 @@ export async function fetchKeys(
     cutoff ??= 'round-limit';
     if (cutoff === 'round-limit' && rounds.length) rounds[rounds.length - 1].cutoff = cutoff;
     for (const c of locks.wanted) if (!(meter[c] === INF_REPEAT || meter[c] > (owed.get(c) ?? 0))) o.unreached?.add(c);
-    return { diagnostics: { rounds, cutoff } };
+    return { diagnostics: { candidates, rounds, cutoff } };
   }
   const exitDistance = distancesTo(o.goal);
   const ex2 = await explore(game, scene, files, entry, {
@@ -338,9 +337,9 @@ export async function fetchKeys(
   const exits = ex2.exits.filter((exit) => o.wanted.has(exit.link)).sort((a, b) => a.tick - b.tick);
   for (const exit of exits) {
     const r2 = await replayPath(game, files, scene, entry, ex2.moves, pathTo(ex2, exit.via), seed, { snap: r1.snap, ticks: r1.ticks }, o.paths);
-    if (r2 && o.wanted.has(r2.link)) return { replay: { ...r2, events: [...r1.events, ...r2.events] }, diagnostics: { rounds, cutoff: null } };
+    if (r2 && o.wanted.has(r2.link)) return { replay: { ...r2, events: [...r1.events, ...r2.events] }, diagnostics: { candidates, rounds, cutoff: null } };
   }
   cutoff = exits.length ? 'replay-failure' : ex2.complete ? 'no-reachable-state' : 'budget';
   exitDiagnostic.cutoff = cutoff;
-  return { diagnostics: { rounds, cutoff } };
+  return { diagnostics: { candidates, rounds, cutoff } };
 }
