@@ -130,7 +130,7 @@ export async function excuseMe(bot: StarterBot): Promise<void> {
 
 /**
  * 15. The Ford: five reaches, each crossed by waiting on the bank for the swell to come up leaning the right way and
- * stepping in; the islands' posts and acorns taken between. Then the ladder up to the upper ford, and four more
+ * stepping in; the islands' posts and acorns taken between. Then the ladder up to the upper ford, and five more
  * reaches crossed leftward (a quick wave, one that leans right first, one in between), its posts and acorns taken, to the door.
  */
 export async function theFord(bot: StarterBot): Promise<void> {
@@ -139,6 +139,7 @@ export async function theFord(bot: StarterBot): Promise<void> {
   const U = A.upper;
   const at = A.signs;
   const book = blocks('ford');
+  if (shownAt(bot, U.pie, GU - 1) !== book.n('pie')) throw new Error('The upper ford pie is missing');
   /** Crosses reach `x0` of ring `ring`: right (`dir` 1) from the bank before it, or left (-1) from the bank after it. */
   const wave = async (x0: number, ring: number, dir: 1 | -1, row: number, what: string) => {
     const x1 = x0 + A.width - 1;
@@ -173,7 +174,13 @@ export async function theFord(bot: StarterBot): Promise<void> {
     [at.upper, () => readAt(bot, at.upper + 1, 'the upper ford sign')],
     [at.almost, () => readAt(bot, at.almost + 1, 'the last sign')],
     ...[...U.posts, ...U.acorns].map(walkTo),
-    [U.pie, () => must(bot, bot.walk(U.pie, 'the pie'), 'to the pie')],
+    [
+      U.pie,
+      async () => {
+        await must(bot, bot.walk(U.pie, 'the pie'), 'to the pie');
+        if (shownAt(bot, U.pie, GU - 1) !== book.n('sky')) throw new Error('Tess missed the upper ford pie');
+      },
+    ],
     ...U.reaches.map((x0, k): Stop => [x0 + A.width + 0.5, () => wave(x0, U.rings[k], -1, GU, `upper reach ${k + 1}`)]),
   ];
   upper.sort((a, b) => b[0] - a[0]);

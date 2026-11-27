@@ -61,7 +61,7 @@ it('stays inside a short-line DOS 3.3 batch grammar with resolvable labels', () 
     for (const line of lines) {
       expect(line.length).toBeLessThan(127);
       expect(line).toMatch(
-        /^(?:@ECHO OFF|REM .+|ECHO(?: .*)?|PAUSE|SET GMIDRV=.*|:[a-z0-9]{1,8}|GOTO [a-z0-9]{1,8}|MD %GMIDRV%\\TEST|COPY \/B \*\.\* %GMIDRV%\\TEST \/V|IF (?:NOT )?(?:"[^"]*"=="[^"]*"|EXIST \S+) GOTO [a-z0-9]{1,8}|FOR %%F IN \(\*\.\*\) DO IF NOT EXIST %GMIDRV%\\TEST\\%%F GOTO failed)$/,
+        /^(?:@ECHO OFF|REM .+|ECHO(?: .*)?|PAUSE|COPY \/B INSTALL\.BAT %GMIDRV%\\TEST\\INSTALL\.BAT \/V|%GMIDRV%\\TEST\\INSTALL\.BAT NEXT|SET GMIDRV=.*|:[a-z0-9]{1,8}|GOTO [a-z0-9]{1,8}|MD %GMIDRV%\\TEST|COPY \/B \*\.\* %GMIDRV%\\TEST \/V|IF (?:NOT )?(?:"[^"]*"=="[^"]*"|EXIST \S+) GOTO [a-z0-9]{1,8}|FOR %%F IN \(\*\.\*\) DO IF NOT EXIST %GMIDRV%\\TEST\\%%F GOTO failed)$/,
       );
       const target = /(?:^| )GOTO ([a-z0-9]+)$/.exec(line)?.[1];
       if (target) expect(labels.has(target), target).toBe(true);

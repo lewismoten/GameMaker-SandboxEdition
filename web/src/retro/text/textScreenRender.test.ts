@@ -46,8 +46,12 @@ function script(): string[] {
   snap();
   s.cursorVisible = false;
   snap();
+  s.write(0, 0, attr(7, 1), ' ');
+  snap();
+  expect(Array.from(state.data.subarray(0, 4))).toEqual([0, 0, 170, 255]);
   s.setColor(1, 63, 0, 0);
   snap();
+  expect(Array.from(state.data.subarray(0, 4))).toEqual([255, 0, 0, 255]);
   s.defineGlyphs(new Map([[65, Array.from({ length: 16 }, (_, i) => i * 7)]]));
   s.write(0, 0, 7, 'AAA');
   snap();

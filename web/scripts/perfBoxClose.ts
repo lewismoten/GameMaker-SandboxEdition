@@ -78,7 +78,9 @@ try {
     const box = await page.locator('[aria-label="The 1994 desk"] [aria-label="Virus Blaster box"]').first().boundingBox();
     if (!box) throw new Error('no box');
     await page.mouse.click(box.x + box.width / 2, box.y + box.height / 2);
+    const viewer = page.locator('.box-viewer[role="dialog"]');
     await page.waitForTimeout(hold);
+    await viewer.waitFor({ state: 'visible' });
     await page.evaluate(() => {
       const m = (window as unknown as { __perf: PerfState }).__perf;
       m.events.clear();
@@ -100,6 +102,7 @@ try {
       await cdp.send('Tracing.end');
       await done;
     }
+    if (await viewer.isVisible()) throw new Error('Box viewer still visible after Escape');
     const r = await page.evaluate(() => {
       const m = (window as unknown as { __perf: PerfState }).__perf;
       return { inp: Math.round(Math.max(0, ...m.events.values())), longest: Math.round(Math.max(0, ...m.long)) };

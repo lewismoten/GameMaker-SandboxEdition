@@ -135,6 +135,7 @@ function uvSide(faces: BoxFaces, side: Side): Promise<Glow | undefined> | undefi
 export function dressUv(model: HTMLElement, faces: BoxFaces, sides: readonly Side[]): void {
   for (const side of sides) {
     void uvSide(faces, side)?.then((src) => {
+      if (!games.has(faces)) return;
       const face = model.querySelector(`.bface.${side}`);
       if (!src || !face || face.querySelector('.buv')) return;
       face.append(

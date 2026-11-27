@@ -2,7 +2,7 @@
 
 - `check.ts`: the bot plays both levels and must win without losing a life. `route.ts` asserts what each sign teaches. Level 1: two coins and a bump at the stall (nothing happens, no coins taken), the ladder for two more, then three paid, one coin left and one gold key, the gold door. Level 2: the coin left over is still in the pocket, five more are taken, the stall takes five.
 - `walkthrough.ts`, `gendemo.ts`: re-record the walkthrough and the title demo (level 1 up to the payment).
-- `demoCheck.ts`: plays the built `demo.rec` on the real engine and checks money peaks at four and ends at one.
+- `demoCheck.ts`: plays the built `demo.rec` on the real engine and checks that a rightward step is blocked at the unpaid stall (`stallBump.ts`) and that money peaks at four and ends at one.
 - `preview.ts`: PNGs of the blocks, the hero, each level and every picture.
 
 ## What the engine does here

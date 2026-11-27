@@ -66,6 +66,13 @@ for (const [kind, builder, instructions] of [
 describe('cryptex sub-assemblies', () => {
   const m = assemblyModel('cryptex');
   const at = (name: string) => m.parts.find((p) => p.name === name)!;
+  it('selects the head section for both H assembly steps', () => {
+    const sections = [...m.sections].reverse();
+    const selected = m.steps.flatMap((step, i) =>
+      step.group === 'H' && (step.kind === 'part' || step.kind === 'done') ? [sections.find((s) => s.step <= i + 1)?.title] : [],
+    );
+    expect(selected).toEqual(['H: the head: built apart', 'H: the head: built apart']);
+  });
   it('seats the base layers, rings and head at the heights of the lock', () => {
     // Heights are whole layers of the cryptex stock (T mm each).
     const layers = (z: number) => Math.round((z / T) * 1000) / 1000;

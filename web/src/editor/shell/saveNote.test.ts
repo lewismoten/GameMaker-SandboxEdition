@@ -147,3 +147,33 @@ it('announces failures and recovery immediately, keeps explicit saves to one voi
     await fixture.close();
   }
 }, 90_000);
+
+it('announces a snapshot failure and accepts the next Ctrl+S without remounting', async () => {
+  const fixture = await editorBrowser();
+  try {
+    const messages = await fixture.page.evaluate<string[]>(`(async () => {
+      const { Project } = await import('/src/editor/core/project.ts');
+      const { GameFiles } = await import('/src/project/files.ts');
+      const { saveNote } = await import('/src/editor/shell/saveNote.ts');
+      const p = new Project('shortcut-retry', 'Save retry', 'a.gam', new GameFiles());
+      const note = saveNote(p);
+      document.querySelector('#host').append(note.el);
+      const region = document.querySelector('p.sr-only[role=status]');
+      const save = async () => {
+        document.dispatchEvent(new KeyboardEvent('keydown', { key: 's', ctrlKey: true }));
+        await p.saving.catch(() => {});
+        return region.textContent;
+      };
+      try {
+        p.companion = { invalid: () => {} };
+        const failed = await save();
+        p.companion = undefined;
+        return [failed, await save()];
+      } finally { note.dispose(); }
+    })()`);
+    expect(messages[0]).toContain('Not saved');
+    expect(messages[1]).toContain('Saved in this browser');
+  } finally {
+    await fixture.close();
+  }
+});

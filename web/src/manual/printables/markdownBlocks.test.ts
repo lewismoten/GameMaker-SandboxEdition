@@ -39,11 +39,21 @@ describe('readMarkdown', () => {
     expect(blockText(steps[3])).toBe('raw text');
   });
 
+  it('preserves every line when the separator has fewer cells than the header', () => {
+    const lines = ['| A | B |', '| - |', '| x | y | extra |'];
+    expect(readMarkdown(lines.join('\n'))[0].blocks).toEqual(lines.map((line) => ({ tag: 'p', kids: [line] })));
+  });
+
   it('reads a table whose separator cells have fewer than three dashes (Prettier aligns a narrow column to `--:`)', () => {
     const narrow = '# T\n\n| Color | Red |\n| ----- | --: |\n| Blue  |  10 |\n';
     const table = readMarkdown(narrow)[1].blocks[0];
     expect(table).toMatchObject({ tag: 'table', head: [['Color'], ['Red']] });
     expect(blockText(table)).toBe('Color Red Blue 10');
+  });
+
+  it('ends a list when a table follows without a blank line', () => {
+    const blocks = readMarkdown('1. One\n| A |\n|---|\n| B |')[0].blocks;
+    expect(blocks.map((b) => b.tag)).toEqual(['ol', 'table']);
   });
 
   it('ends a borderless table at a heading containing a pipe', () => {
@@ -68,7 +78,11 @@ describe('readMarkdown', () => {
 describe('a numbered list a table splits in two', () => {
   it('keeps the number its second half starts at, so “step 6” still names the sixth step', () => {
     const blocks = readMarkdown('# T\n\n1. One\n2. Two\n\n| a | b |\n|---|---|\n| 1 | 2 |\n\n4. Four\n5. Five\n')[1].blocks;
-    expect(blocks.filter((b) => b.tag === 'ol').map((b) => (b as { start?: number }).start)).toEqual([undefined, 4]);
+    expect(blocks).toEqual([
+      { tag: 'ol', items: [['One'], ['Two']] },
+      { tag: 'table', head: [['a'], ['b']], rows: [[['1'], ['2']]] },
+      { tag: 'ol', start: 4, items: [['Four'], ['Five']] },
+    ]);
   });
 });
 
@@ -99,4 +113,11 @@ describe('underscores and diagrams', () => {
     ]);
     expect(blockText(blocks[1])).toBe('');
   });
+});
+
+it('ends a list before a standalone diagram', () => {
+  expect(readMarkdown('- one\n[diagram: memory]')[0].blocks).toEqual([
+    { tag: 'ul', items: [['one']] },
+    { tag: 'diagram', name: 'memory' },
+  ]);
 });

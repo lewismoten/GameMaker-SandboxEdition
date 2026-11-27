@@ -4,9 +4,29 @@ import { titlePixels } from '../gfx/titlePicture';
 import { firstLevels, levelPixels } from '../gfx/levelPicture';
 import type { PocketSource } from './pocketPack';
 
+const rgb565 = ([r, g, b]: number[]) => ((r >> 3) << 11) | ((g >> 2) << 5) | (b >> 3);
+
+function exactPalette(rgb: number[][]) {
+  const slots = new Map<number, number>();
+  const colors = new Array<number>(256).fill(0);
+  const indices = new Uint8Array(rgb.length);
+  for (let i = 0; i < rgb.length; i++) {
+    const color = rgb565(rgb[i]);
+    let slot = slots.get(color);
+    if (slot === undefined) {
+      if (slots.size === colors.length) return;
+      slot = slots.size;
+      slots.set(color, slot);
+      colors[slot] = color;
+    }
+    indices[i] = slot;
+  }
+  return { colors, indices };
+}
+
 /**
  * The picture's 320x200 pixels (or any size) boxed down to 96x60: each output pixel is the average of the source pixels it covers
- * (so a title's lettering stays readable instead of dropping every other pixel), then cut to 256 RGB565 colors (median cut).
+ * (so a title's lettering stays readable), using median cut only when the result exceeds 256 RGB565 colors.
  */
 function shrink(pic: { width: number; height: number; pixels: Uint8Array; palette: Uint8Array }) {
   const v8 = (c: number) => ((c & 63) << 2) | ((c & 63) >> 4);
@@ -23,6 +43,8 @@ function shrink(pic: { width: number; height: number; pixels: Uint8Array; palett
       const n = (x1 - x0) * (y1 - y0);
       rgb.push(sum.map((v) => Math.round(v / n)));
     }
+  const exact = exactPalette(rgb);
+  if (exact) return exact;
   // median cut: split the box with the widest channel range at its median until there are 256
   const boxes: number[][] = [rgb.map((_, i) => i)];
   const range = (b: number[], k: number) => {
@@ -47,7 +69,7 @@ function shrink(pic: { width: number; height: number; pixels: Uint8Array; palett
     indices = new Uint8Array(96 * 60);
   boxes.forEach((b, bi) => {
     const m = [0, 1, 2].map((k) => Math.round(b.reduce((a, i) => a + rgb[i][k], 0) / b.length));
-    colors[bi] = ((m[0] >> 3) << 11) | ((m[1] >> 2) << 5) | (m[2] >> 3);
+    colors[bi] = rgb565(m);
     for (const i of b) indices[i] = bi;
   });
   return { colors, indices };

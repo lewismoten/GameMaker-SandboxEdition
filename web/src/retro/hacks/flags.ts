@@ -17,6 +17,8 @@ type FlagsCmd =
   | { kind: 'do'; verb: 'SET' | 'CLEAR' | 'RESET'; what: string; words: string[] }
   | { kind: 'error'; message: string };
 
+const unknownName = (name: string) => `Don't know "${name}" - FLAGS /? lists the names`;
+
 export function parseFlags(args: string[]): FlagsCmd {
   const words = args.flatMap((a) => a.split(/(?=\/)/)).filter(Boolean);
   const up = words.map((w) => w.toUpperCase());
@@ -33,9 +35,9 @@ export function parseFlags(args: string[]): FlagsCmd {
   if (verb !== 'SET' && verb !== 'CLEAR' && verb !== 'RESET') return { kind: 'error', message: `Don't know "${words[0]}" - SET, CLEAR or RESET` };
   const what = up[1];
   if (!what) return { kind: 'error', message: `${verb} what? Names are in FLAGS /?` };
-  if (what !== 'ALL' && !ITEMS.some((i) => i.id === what)) return { kind: 'error', message: `Don't know "${words[1]}" - FLAGS /? lists the names` };
+  if (what !== 'ALL' && !ITEMS.some((i) => i.id === what)) return { kind: 'error', message: unknownName(words[1]) };
   if (what === 'ALL' && verb !== 'RESET') return { kind: 'error', message: `${verb} ALL isn't offered; only RESET ALL` };
-  return { kind: 'do', verb, what, words: words.slice(2) };
+  return { kind: 'do', verb, what: words[1], words: words.slice(2) };
 }
 
 const pad = (s: string, n: number) => s.padEnd(n);
@@ -45,7 +47,8 @@ export async function runFlags(h: RetroHost, args: string[]): Promise<void> {
   const cmd = parseFlags(args);
   out(FLAGS_TITLE);
   out();
-  if (cmd.kind === 'error') return out(`${cmd.message}. Type FLAGS /? for help.`);
+  const error = (message: string) => out(`${message}. Type FLAGS /? for help.`);
+  if (cmd.kind === 'error') return error(cmd.message);
   const list = async () => {
     for (const i of ITEMS) {
       const v = await i.show();
@@ -74,11 +77,12 @@ export async function runFlags(h: RetroHost, args: string[]): Promise<void> {
     return out(`Restored from ${BAK_NAME} (${new Date(bak.at).toLocaleString('en-US')}).`);
   }
   // a change: keep a backup first when there is none
-  const targets = cmd.what === 'ALL' ? ITEMS.filter((i) => i.reset) : ITEMS.filter((i) => i.id === cmd.what);
+  const what = cmd.what.toUpperCase();
+  const targets = what === 'ALL' ? ITEMS.filter((i) => i.reset) : ITEMS.filter((i) => i.id === what);
   const act = (i: (typeof ITEMS)[number]) => (cmd.verb === 'SET' ? i.set : cmd.verb === 'CLEAR' ? i.clear : i.reset);
   const none = targets.find((i) => !act(i));
   // Bonus games stay unnamed until one is open: before then BONUS answers like any unknown name.
-  if (none?.id === 'BONUS' && (await none.show()) === undefined) return out(`Don't know "${none.id}" - FLAGS /? lists the names. Type FLAGS /? for help.`);
+  if (none?.id === 'BONUS' && (await none.show()) === undefined) return error(unknownName(cmd.what));
   if (none) return out(`${none.id} can't be ${cmd.verb === 'SET' ? 'set' : cmd.verb === 'CLEAR' ? 'cleared' : 'reset'} here. ${none.elsewhere ?? ''}`.trim());
   if (!parseBak(await readBak())) {
     await writeBak(await makeBak());

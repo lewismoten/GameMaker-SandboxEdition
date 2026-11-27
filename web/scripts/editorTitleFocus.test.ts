@@ -12,9 +12,7 @@ it('reveals the phone file heading during route focus and clips it again on Tab'
     await page.setContent('<main class="editor"><div class="file-head"><h1 class="file-title">mygame.map</h1><button>File actions</button></div></main>');
     await page.addStyleTag({ content: ':root { --focus: orange; }' + readFileSync('src/editor/shell/editorHead.css', 'utf8') });
     await page.addScriptTag({ content: bundle.outputFiles[0].text });
-    await page.evaluate('routeFocus.trackPersonInput()');
-    await page.keyboard.press('Enter');
-    await page.evaluate("routeFocus.focusNewView(document.querySelector('main'), '#/p/look:logic/kitchen.map', '#/p/mine/mygame.map')");
+    await page.evaluate("routeFocus.focusNewView(document.querySelector('main'), true)");
     const title = page.locator('h1:focus');
     expect(await title.evaluate((el) => [getComputedStyle(el).clipPath, getComputedStyle(el).outlineStyle])).toEqual(['none', 'solid']);
     expect((await title.boundingBox())?.height).toBeGreaterThan(1);
@@ -67,16 +65,59 @@ it.each(['Escape', 'automatic completion', 'Close tour'])(
         await page.locator('main').evaluate((el) => {
           el.outerHTML = '<div id="content"><main aria-label="Editor"><button>Controls</button></main></div>';
         });
-        await page.evaluate(`fixture.focusNewView(document.querySelector('#content'), '${sample}', location.hash, fixture.takeFilenameFocus(location.hash))`);
+        await page.evaluate(`fixture.focusNewView(document.querySelector('#content'), false, fixture.takeFilenameFocus(location.hash))`);
         const landmark = page.getByRole('main', { name: 'Editor' });
         expect(await landmark.isVisible()).toBe(true);
         expect(await landmark.evaluate((el) => el === document.activeElement)).toBe(true);
         return;
       }
       await page.locator('main').evaluate((el) => (el.innerHTML = '<div class="file-head"><h1 class="file-title">mygame.map</h1></div>'));
-      await page.evaluate(`fixture.focusNewView(document.querySelector('main'), '${sample}', location.hash, fixture.takeFilenameFocus(location.hash))`);
+      await page.evaluate(`fixture.focusNewView(document.querySelector('main'), false, fixture.takeFilenameFocus(location.hash))`);
       expect(await page.locator(':focus').textContent()).toBe('mygame.map');
       expect(await page.evaluate('fixture.takeFilenameFocus(location.hash)')).toBe(false);
+    } finally {
+      await browser.close();
+    }
+  },
+  30000,
+);
+
+it.each([
+  { control: 'link', delay: 0 },
+  { control: 'link', delay: 5000 },
+  { control: 'button', delay: 5000 },
+] as const)(
+  'claims one $control activation across a $delay ms render',
+  async ({ control, delay }) => {
+    const bundle = await build({ entryPoints: ['src/routeFocus.ts'], bundle: true, write: false, format: 'iife', globalName: 'routeFocus' });
+    const browser = await launch();
+    try {
+      const page = await browser.newPage();
+      await page.route('http://fixture.test/**', (route) =>
+        route.fulfill({
+          contentType: 'text/html',
+          body: '<a href="#/help">Help</a><button onclick="location.hash=this.dataset.to" data-to="#/help">Open help</button><main><h1>Page</h1></main>',
+        }),
+      );
+      await page.goto('http://fixture.test/#/');
+      await page.addScriptTag({ content: bundle.outputFiles[0].text });
+      await page.clock.setFixedTime(10000);
+      await page.evaluate(`routeFocus.trackPersonInput();
+      window.addEventListener('hashchange', e => {
+        const focus = routeFocus.takeNavigationFocus(e);
+        window.finishRender = () => routeFocus.focusNewView(document.querySelector('main'), focus);
+      })`);
+      if (control === 'button') await page.getByRole(control).press('Enter');
+      else await page.getByRole(control).click();
+      await page.waitForFunction('window.finishRender !== undefined');
+      await page.clock.setFixedTime(10000 + delay);
+      await page.evaluate('window.finishRender(); delete window.finishRender');
+      expect(await page.locator('h1:focus').count()).toBe(1);
+      await page.locator('a').focus();
+      await page.goBack();
+      await page.waitForFunction('window.finishRender !== undefined');
+      await page.evaluate('window.finishRender()');
+      expect(await page.locator('a:focus').count()).toBe(1);
     } finally {
       await browser.close();
     }

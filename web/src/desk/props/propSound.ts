@@ -111,7 +111,10 @@ function clip(ctx: AudioContext, name: string): Promise<AudioBuffer | undefined>
     p = fetch(barkUrl(name))
       .then((r) => (r.ok ? r.arrayBuffer() : Promise.reject(new Error('no clip'))))
       .then((b) => ctx.decodeAudioData(b))
-      .catch(() => undefined);
+      .catch(() => {
+        barkClips.delete(name);
+        return undefined;
+      });
     barkClips.set(name, p);
   }
   return p;
@@ -259,34 +262,38 @@ export const roomSound = {
   },
   /**
    * Real barks, one per dog named, 0.7 s apart ('teddy' is the corgi, 'gwinn' is the chocolate-brown girl). Nothing
-   * if sound is not unlocked yet or one was heard in the last BARK_GAP_MS (then it returns false). Where a clip can't be
-   * had, a synthesized woof.
+   * during the quiet period. Callers can supply a fallback when audio is unavailable.
+   * A missing clip plays as a synthesized woof.
    */
-  bark(...dogs: ('teddy' | 'gwinn')[]): boolean {
-    if (!soundUnlocked()) return false;
+  bark(...dogs: ('teddy' | 'gwinn')[]): 'accepted' | 'cooldown' | 'unavailable' {
     const now = performance.now();
-    if (now - lastBark < BARK_GAP_MS) return false;
+    if (now - lastBark < BARK_GAP_MS) return 'cooldown';
+    if (!soundUnlocked()) return 'unavailable';
     const o = open();
-    if (!o) return false;
+    if (!o) return 'unavailable';
     lastBark = now;
-    dogs.forEach((dog, i) => {
+    const clips = dogs.map((dog) => {
       const names: readonly string[] = CLIPS[dog];
       const name = names[Math.floor(Math.random() * names.length)];
-      void clip(o.ctx, name).then((buf) => {
-        if (!buf) return roomSound.woof(1);
+      return clip(o.ctx, name);
+    });
+    void Promise.all(clips).then((buffers) => {
+      const start = o.ctx.currentTime;
+      buffers.forEach((buf, i) => {
+        const at = start + i * 0.7;
+        if (!buf) return roomSound.woof(1, { ...o, t: at });
         const src = o.ctx.createBufferSource();
         src.buffer = buf;
         const g = o.ctx.createGain();
         g.gain.value = 0.8;
         src.connect(g).connect(o.out);
-        src.start(o.ctx.currentTime + i * 0.7);
+        src.start(at);
       });
     });
-    return true;
+    return 'accepted';
   },
   /** Dogs barking: a couple of woofs and a yip. */
-  woof(times = 2): void {
-    const o = open();
+  woof(times = 2, o = open()): void {
     if (!o) return;
     for (let i = 0; i < times; i++) {
       const hi = i % 2 ? 1.4 : 1;

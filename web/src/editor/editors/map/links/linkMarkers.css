@@ -156,4 +156,23 @@
     min-height: 44px;
     margin: min(0px, calc((var(--lk-size, 44px) - 44px) / 2)) 0 0 min(0px, calc((var(--lk-size, 44px) - 44px) / 2));
   }
+
+  /* Each block sits above the neighboring buttons' expanded touch areas. */
+  .lk-layer {
+    isolation: isolate;
+  }
+
+  .lk-mark::after {
+    content: '';
+    position: absolute;
+    z-index: 1;
+    place-self: center;
+    width: var(--lk-block);
+    height: var(--lk-block);
+  }
+
+  /* Opacity would trap the block inside its own stacking context. */
+  .lk-mark.lk-hidden {
+    opacity: 1;
+  }
 }

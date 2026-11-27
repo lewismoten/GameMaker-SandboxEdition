@@ -23,7 +23,8 @@ function figure(viewBox: string, markup: string, alt: string, caption: string): 
   return h('figure', { class: 'tr-fig' }, svg, h('figcaption', null, caption));
 }
 
-const text = (x: number, y: number, s: string, extra = '') => `<text x="${x}" y="${y}" ${FONT} font-size="10" fill="${INK}" ${extra}>${s}</text>`;
+const text = (x: number, y: number, s: string, extra = '', color = INK) =>
+  `<text x="${x}" y="${y}" ${FONT} font-size="10" fill="${color}" ${extra}>${s}</text>`;
 
 /**
  * PLAYGAME's memory, in K (1,024 bytes), from the bottom of memory up. The program: PLAYGAME.EXE's load image and minimum
@@ -33,7 +34,7 @@ const text = (x: number, y: number, s: string, extra = '') => `<text x="${x}" y=
  * patches of 400 bytes) and the Sound Blaster voice driver it reads from SNDBLAST.DRV (2,493 bytes, SOUNDC.C). A scene adds
  * its song, sound list, scene list and the buffer for the largest digitized sound it plays.
  */
-const MEMORY: { k: number; name: string; size: string; kind: 'out' | 'prog' | 'scene'; side: 'left' | 'right'; one?: boolean }[] = [
+export const MEMORY: { k: number; name: string; size: string; kind: 'out' | 'prog' | 'scene'; side: 'left' | 'right'; one?: boolean }[] = [
   { k: 20, name: 'DOS (DOS=HIGH)', size: 'about 20K', kind: 'out', side: 'right', one: true },
   { k: 20, name: 'Mouse driver', size: '15K to 25K', kind: 'out', side: 'right', one: true },
   { k: 181, name: 'PLAYGAME program', size: '181K, with the map', kind: 'prog', side: 'right' },
@@ -104,9 +105,7 @@ function memory(): HTMLElement {
     return (
       `<rect x="${bx}" y="${a}" width="${bw}" height="${z - a}" fill="none" stroke="${c}" stroke-width="1.8"/>` +
       `<path d="M84 ${a + 1} H78 V${z - 1} H84" fill="none" stroke="${c}" stroke-width="1.4"/>` +
-      lines
-        .map((l, i) => text(72, m + 4 + (i - (lines.length - 1) / 2) * 12, l, `text-anchor="end" fill="${c}"${i === 0 ? ' font-weight="700"' : ''}`))
-        .join('')
+      lines.map((l, i) => text(72, m + 4 + (i - (lines.length - 1) / 2) * 12, l, `text-anchor="end"${i === 0 ? ' font-weight="700"' : ''}`, c)).join('')
     );
   };
   const markup = [

@@ -4,6 +4,7 @@
 // picture is only sky colors (or fully transparent) and that is solid, when it sits next to a
 // block the hero can move through. It is a suggestion for the author: it sees pictures, not
 // whether a player would read them as a wall.
+import { paletteToRGBA } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 import type { GameMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import type { Book } from './book';
@@ -11,9 +12,10 @@ import type { Pal } from './palette';
 
 /** Descriptions of the invisible walls in `maps` (empty when there are none). `blocks` is `book.finish()`. */
 export function invisibleWalls(book: Book, blocks: Block[], pal: Pal, maps: { name: string; map: GameMap }[]): string[] {
-  const sky = new Set<number>([255, ...Array.from({ length: 6 }, (_, i) => pal.c('sky', i))]);
+  const colors = paletteToRGBA(pal.pal);
+  const sky = new Set(pal.r('sky').map((index) => colors[index]));
   const invisible = new Set<number>();
-  for (let n = 0; n < book.index.size; n++) if (blocks[n].solid && [...blocks[n].pixels].every((v) => sky.has(v))) invisible.add(n);
+  for (let n = 0; n < book.index.size; n++) if (blocks[n].solid && blocks[n].pixels.every((v) => v === 255 || sky.has(colors[v]))) invisible.add(n);
   const out: string[] = [];
   for (const { name, map } of maps) {
     const at = (x: number, y: number) => (x < 0 || y < 0 || x >= 100 || y >= 100 ? -1 : map.blocks[y * 100 + x]);

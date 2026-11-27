@@ -1,7 +1,5 @@
-// Plays the built title demo (disk/demo.rec) on the real engine and checks it shows each lesson once:
-// level 1, level 2 entered, level 2 entered again (the one life lost to the pool), then level 3 (so the
-// second try got across) and no game over. The recording's keys play as one unbroken list, as the demo
-// recorder counts game ticks across scene changes.
+// Plays the title demo through level 1 and into level 2, where the player falls into the pool.
+// The recording ends on the second try in level 2, before the exit.
 //   cd web && npx vite-node ../games/switches/tools/demoCheck.ts
 import { readFileSync } from 'node:fs';
 import { parseRecording } from '@lewismoten/gamemaker-sandbox-engine/formats/recording';
@@ -21,10 +19,10 @@ const r = await replay(
   },
   { maxMinutes: 4 },
 );
-const seen = r.scenes.slice(0, 3).join(' ');
-if (r.error) console.log(r.error);
-console.log(`demo: scenes entered ${r.scenes.join(' ')}; ${r.keysLeft} keys unplayed`);
-if (seen !== '2 3 3' || r.keysLeft || r.scenes.includes(1)) {
+const seen = r.scenes.join(' ');
+if (r.error !== undefined) console.error(r.error);
+console.log(`demo: scenes entered ${seen}; ${r.keysLeft} keys unplayed`);
+if (seen !== '2 3 3' || r.keysLeft || r.error !== undefined) {
   console.error(`demoCheck: expected scenes 2 3 3 with every key played and no ending; got ${seen}`);
   process.exit(1);
 }
