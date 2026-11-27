@@ -1,6 +1,6 @@
 // "Already done?" before a brief: `npm run already -- <words...>` prints the best 10 matches, with dates, among
 //   commits   subjects and bodies on origin/develop (git log -i --grep, one search per word)
-//   code      tracked files (git grep -i -c), the most distinct words first
+//   code      tracked files (git grep -i -n; a line with several words counts once), the most distinct words first
 //   notes     .for-lewis/research/**/*.md, by path, title and headings (the folder is git-ignored, so it is
 //             looked for here and in the main checkout)
 // A hit that matches more of your words ranks higher; ties go to the newer one. No dependencies.
@@ -27,18 +27,21 @@ export function rankCommits(hits) {
   return [...by.values()].sort((a, b) => b.words.length - a.words.length || (a.date < b.date ? 1 : a.date > b.date ? -1 : 0));
 }
 
-/** Files hit by any word, best first: `counts` maps a word to { file: lines }. */
-export function rankFiles(counts) {
+/** Files hit by any word, best first: `hits` maps a word to { file: [line numbers] }. A line that matches
+ *  several words counts once. */
+export function rankFiles(hits) {
   const by = new Map();
-  for (const [word, files] of Object.entries(counts)) {
-    for (const [file, n] of Object.entries(files)) {
-      const e = by.get(file) ?? { file, words: [], lines: 0 };
+  for (const [word, files] of Object.entries(hits)) {
+    for (const [file, nums] of Object.entries(files)) {
+      const e = by.get(file) ?? { file, words: [], seen: new Set() };
       e.words.push(word);
-      e.lines += n;
+      for (const n of nums) e.seen.add(n);
       by.set(file, e);
     }
   }
-  return [...by.values()].sort((a, b) => b.words.length - a.words.length || b.lines - a.lines || (a.file < b.file ? -1 : 1));
+  return [...by.values()]
+    .map(({ seen, ...e }) => ({ ...e, lines: seen.size }))
+    .sort((a, b) => b.words.length - a.words.length || b.lines - a.lines || (a.file < b.file ? -1 : 1));
 }
 
 /** How well a note matches: a word in its path or title counts 3, in another heading 1, and each distinct word 10. */
@@ -74,19 +77,19 @@ function commitHits(words, cwd) {
   return hits;
 }
 
-function fileCounts(words, cwd) {
+function fileHits(words, cwd) {
   const counts = {};
   for (const w of words) {
     counts[w] = {};
     let out = '';
     try {
-      out = git(['grep', '-i', '-I', '-F', '-c', '-e', w, '--', '.', ':!package-lock.json', ':!*.json', ':!*.lock', ':!code', ':!cd', ':!runtime'], cwd);
+      out = git(['grep', '-i', '-I', '-F', '-n', '-e', w, '--', '.', ':!package-lock.json', ':!*.json', ':!*.lock', ':!code', ':!cd', ':!runtime'], cwd);
     } catch {
       continue; // no match: git grep exits 1
     }
     for (const l of out.split('\n').filter(Boolean)) {
-      const i = l.lastIndexOf(':');
-      counts[w][l.slice(0, i)] = Number(l.slice(i + 1));
+      const m = /^(.*?):(\d+):/.exec(l); // path:line:text
+      if (m) (counts[w][m[1]] ??= []).push(Number(m[2]));
     }
   }
   return counts;
@@ -136,10 +139,10 @@ function main() {
   if (!commits.length) console.log('  none');
 
   console.log('\nCode (tracked files):');
-  const files = rankFiles(fileCounts(words, cwd)).slice(0, 10);
+  const files = rankFiles(fileHits(words, cwd)).slice(0, 10);
   for (const f of files) {
     const date = git(['log', '-1', '--date=short', '--format=%ad', '--', f.file], cwd).trim();
-    console.log(`  ${date} ${f.file} [${f.words.length}/${words.length}, ${f.lines} word-line ${f.lines === 1 ? 'match' : 'matches'}]`);
+    console.log(`  ${date} ${f.file} [${f.words.length}/${words.length}, ${f.lines} ${f.lines === 1 ? 'line' : 'lines'}]`);
   }
   if (!files.length) console.log('  none');
 
