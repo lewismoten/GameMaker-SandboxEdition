@@ -133,6 +133,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex fixed and tested the Flicker and Flow animation placement and title demo checks.
 - OpenAI Codex fixed and tested duplicate game import confirmation.
 - OpenAI Codex fixed and tested archive part validation.
+- OpenAI Codex fixed and tested the Level check for a game menu that still uses the default title.
 - OpenAI Codex fixed and tested the editor’s file count accessibility and shareware notice layout on phones.
 - OpenAI Codex fixed and tested walkthrough segment selection in the Pocket host checker.
 - OpenAI Codex fixed and tested the Switches title demo checker.
