@@ -214,6 +214,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex fixed booklet diagram placement after lists and tested the Technical Reference diagrams.
 - OpenAI Codex fixed and tested retrying the Starter question index on Home.
 - OpenAI Codex implemented and tested indexed crash recovery for the private intake ledger.
+- OpenAI Codex fixed the Day and Night palette checker and wrote its dusk regression tests.
 - OpenAI Codex fixed and tested validation before writing Level Maps metadata.
 - OpenAI Codex fixed and tested the Sound Board walkthrough’s sound-cutoff check.
 - OpenAI Codex corrected and tested the game version and Frost Lot crossing deadline for the fifteen-level edition of The Thank-You Parade.
