@@ -167,6 +167,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex fixed and tested silence timing in the DOSBox WAV analyzer.
 - OpenAI Codex fixed and tested the sample table row headers in the Owner’s Guide.
 - OpenAI Codex fixed and tested the Wayback save queue and lookup error reporting.
+- OpenAI Codex corrected the Privacy page’s backup instructions and tested the clearing guidance.
 - OpenAI Codex fixed and tested the editor’s file count accessibility and shareware notice layout on phones.
 - OpenAI Codex fixed and tested walkthrough segment selection in the Pocket host checker.
 - OpenAI Codex fixed and tested the Switches title demo checker.
