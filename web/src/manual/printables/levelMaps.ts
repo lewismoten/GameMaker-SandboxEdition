@@ -97,7 +97,7 @@ function painter(game: Game, files: GameFiles, mint: Mint): Painter {
 /** Draws a course's panels (once) and gives the URL of each, in order. */
 export type CoursePainter = (l: Level) => Promise<string[]>;
 
-function coursePainter(game: Game, files: GameFiles, mint: Mint): CoursePainter {
+function coursePainter(game: Game, files: GameFiles, mint?: Mint): CoursePainter {
   const done = new Map<Level, Promise<string[]>>();
   return (l) => {
     let p = done.get(l);
@@ -171,7 +171,7 @@ export function levelMaps(ctx: PrintContext):
         seen,
         every,
         paint: painter(x.game, x.files, minter(keep)),
-        paintCourse: coursePainter(x.game, x.files, minter(keep)),
+        paintCourse: coursePainter(x.game, x.files, keep && minter(keep)),
         crop: cropper(),
         full: pageCounts(ctx.entry.id, x.game, seen).full <= MOST_PAGES,
         all: false,

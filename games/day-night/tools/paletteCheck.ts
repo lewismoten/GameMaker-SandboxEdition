@@ -8,6 +8,7 @@
 import { readFileSync } from 'node:fs';
 import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { buildLevels } from '../src/levels';
+import { checkPaletteFiles } from './paletteFiles';
 
 const disk = new URL('../disk/', import.meta.url);
 const read = (f: string) => new Uint8Array(readFileSync(new URL(f, disk)));
@@ -33,11 +34,7 @@ for (const l of levels) {
 console.log(`${scene - 2} stages checked: each level's stages share one map and one block file`);
 
 const files = { day: read('day.pal'), dusk: read('dusk.pal'), night: read('night.pal') };
-for (const k of ['day', 'dusk', 'night'] as const) if (files[k].length !== 768) fail(`${k}.pal is ${files[k].length} bytes`);
-if (Buffer.compare(files.day, files.dusk) === 0 || Buffer.compare(files.day, files.night) === 0) fail('two palettes are the same');
-for (let i = 0; i < 9 * 3; i++) if (files.day[i] !== files.night[i] || files.day[i] !== files.dusk[i]) fail(`a designer color changed at byte ${i}`);
-for (const name of ['menublue', 'plum', 'hot'])
-  for (const id of pal.r(name)) for (let k = 0; k < 3; k++) if (files.day[id * 3 + k] !== files.night[id * 3 + k]) fail(`text color ${name} changed`);
+checkPaletteFiles({ ...files, pal }, fail);
 
 const rgb = (p: Uint8Array, id: number) => [p[id * 3] * 4, p[id * 3 + 1] * 4, p[id * 3 + 2] * 4];
 const lum = (c: number[]) => 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2];

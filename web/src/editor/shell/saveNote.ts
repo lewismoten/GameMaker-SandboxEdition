@@ -66,24 +66,21 @@ export function saveNote(project: Project): { el: HTMLElement; dispose: () => vo
       failure = reason;
     }
   });
-  const onKey = (e: KeyboardEvent) => {
+  const onKey = async (e: KeyboardEvent) => {
     if (!(e.ctrlKey || e.metaKey) || e.altKey || e.shiftKey || e.key.toLowerCase() !== 's') return;
     if (!el.isConnected || document.querySelector('dialog[open]')) return;
     e.preventDefault();
     if (explicit) return;
     explicit = true;
     announce.cancel();
-    void project
-      .saveNow()
-      .then(
-        () => {
-          if (latestState === 'saved') say('Saved in this browser. Download keeps a copy on your computer.');
-        },
-        (err: unknown) => {
-          if (latestState === 'failed') say(`Not saved: ${(err as Error).message}. Download a .zip to keep your work.`);
-        },
-      )
-      .finally(() => (explicit = false));
+    try {
+      await project.saveNow();
+      if (latestState === 'saved') say('Saved in this browser. Download keeps a copy on your computer.');
+    } catch (err) {
+      if (latestState === 'failed') say(`Not saved: ${(err as Error).message}. Download a .zip to keep your work.`);
+    } finally {
+      explicit = false;
+    }
   };
   document.addEventListener('keydown', onKey);
   return {

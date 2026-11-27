@@ -18,6 +18,8 @@ let lastScene = -1;
 let sceneStart = 0;
 const marks: Record<number, number> = {};
 const wanted = [0, 10, 20, 30, 45, 70];
+const shotName = (level: number, offset: number) => `L${level}-drop+${String(offset).padStart(3, '0')}.png`;
+const missing = new Set([1, 2].flatMap((n) => wanted.map((offset) => shotName(n, offset))));
 const want = new Map<number, string>();
 await replay('and-gate', walk, {
   onWorld: (w, scene, f) => {
@@ -31,7 +33,7 @@ await replay('and-gate', walk, {
     const lit = f - sceneStart < 30 ? 0 : w.mm.filter((m) => m.monnum === FALLING).length;
     if (lit > 0 && marks[level] === undefined) {
       marks[level] = f;
-      for (const d of wanted) want.set(f + d, `L${level}-drop${d < 0 ? '-' : '+'}${String(Math.abs(d)).padStart(3, '0')}`);
+      for (const d of wanted) want.set(f + d, shotName(level, d));
     }
   },
   onFrame: (screen) => {
@@ -39,8 +41,10 @@ await replay('and-gate', walk, {
     if (!name) return;
     const px = new Pixels(320, 200);
     px.px.set(screen.pixels);
-    writePng(join(out, `${name}.png`), px, screen.palette, 3);
+    writePng(join(out, name), px, screen.palette, 3);
+    missing.delete(name);
   },
 });
+if (missing.size) throw new Error(`Missing captures: ${[...missing].join(', ')}`);
 console.log('marks', marks);
 process.exit(0);

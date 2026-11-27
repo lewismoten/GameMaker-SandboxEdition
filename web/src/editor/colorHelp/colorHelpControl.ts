@@ -13,28 +13,8 @@ function select<T extends string>(label: string, options: [T, string][], get: ()
   return h('label', { class: 'field' }, h('span', null, label), sel);
 }
 
-/**
- * Keeps the three inputs showing the saved choices until the control leaves the page. It is its own function holding
- * only weak references: the listener lives in a module-level set, and a closure sharing the control's scope would keep
- * the whole editor the control sat in (thousands of elements) alive after the editor closed.
- */
-function keepInStep(el: HTMLElement, names: HTMLInputElement, warn: HTMLSelectElement, preview: HTMLSelectElement): void {
-  const refs = [el, names, warn, preview].map((x) => new WeakRef(x));
-  const sync = () => {
-    const [e, n, w, p] = refs.map((r) => r.deref());
-    if (!e || (e.dataset.seen && !e.isConnected)) return off(); // gone from the page
-    if (e.isConnected) e.dataset.seen = '1';
-    const c = getColorHelp();
-    if (n) (n as HTMLInputElement).checked = c.names;
-    if (w) (w as HTMLSelectElement).value = c.warn;
-    if (p) (p as HTMLSelectElement).value = c.preview;
-  };
-  const off = onColorHelp(sync);
-  sync();
-}
-
 /** The control, kept in step with the saved choices for as long as it is on the page. */
-export function colorHelpControl(): HTMLElement {
+export function colorHelpControl(): { el: HTMLElement; dispose(): void } {
   const names = h('input', { type: 'checkbox' });
   names.addEventListener('change', () => setColorHelp({ names: names.checked }));
   const warn = select<Warn>(
@@ -81,6 +61,14 @@ export function colorHelpControl(): HTMLElement {
       h('p', { class: 'color-help-note' }, 'These are preferences. They are kept only in this browser and are never sent anywhere.'),
     ),
   );
-  keepInStep(el, names, warn.querySelector('select')!, preview.querySelector('select')!);
-  return el;
+  const warnSelect = warn.querySelector('select')!;
+  const previewSelect = preview.querySelector('select')!;
+  function sync(): void {
+    const c = getColorHelp();
+    names.checked = c.names;
+    warnSelect.value = c.warn;
+    previewSelect.value = c.preview;
+  }
+  sync();
+  return { el, dispose: onColorHelp(sync) };
 }

@@ -31,7 +31,7 @@ The editor and importer read files people bring from elsewhere. When a file is d
 
 ## After the fixes
 
-Two seeds, four rounds each: 0 bad, 0 hang, 0 memory in both. With seed 1 and 236 cases per reader, the game, map, character, monster, sound, palette, slide list and recording readers returned something every time. The FLI readers returned 176 times and gave a clear error 60 times; the VOC reader 167 and 69; the GIF reader 137 and 99; the CMF reader 192 and 44. The ZIP readers gave a clear error for 89 to 135 of 180 cases.
+Seeds 1 and 2, four rounds each: 0 bad, 0 hang, 0 memory in both. With seed 1 and 236 cases per reader, the game, map, character, monster, sound, palette, slide list and recording readers returned something every time. The FLI readers returned 176 times and gave a clear error 60 times; the VOC reader 167 and 69; the GIF reader 137 and 99; the CMF reader 192 and 44. The ZIP readers gave a clear error for 89 to 135 of 180 cases.
 
 ## What this cannot show
 
@@ -45,6 +45,7 @@ Two seeds, four rounds each: 0 bad, 0 hang, 0 memory in both. With seed 1 and 23
 
 ```sh
 cd web
-npm run fuzz:files
+npm run fuzz:files -- --seed 1 --rounds 4
+npm run fuzz:files -- --seed 2 --rounds 4
 npx vitest run test/malformedFiles.test.ts
 ```

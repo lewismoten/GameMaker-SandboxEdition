@@ -4,13 +4,18 @@ import { GameFiles } from '@lewismoten/gamemaker-sandbox-engine/core/gameFiles';
 /** Caller supplies a complete pristine disk, never the owner's overlaid GameFiles. */
 export function createGuestState(pristine: GameFiles, presentation: Readonly<Record<string, string>> = {}) {
   // GameFiles.copy() shares byte arrays and streams. Deep-copy here, with no streaming hooks.
-  const files = new GameFiles(pristine.entries().map(([name, bytes]) => [name, bytes.slice()]));
+  const files = new GameFiles(pristine.entries().map(([name, bytes]) => [name, new Uint8Array(bytes)]));
   const settings = new Map(Object.entries(presentation));
   let closed = false;
   const requireOpen = () => {
     if (closed) throw new Error('Guest run is closed.');
   };
   files.guard = requireOpen;
+  const put = files.put.bind(files);
+  files.put = (name, bytes) => {
+    requireOpen();
+    put(name, bytes);
+  };
   return {
     files,
     persistent: false as const,

@@ -35,7 +35,7 @@ const hueOf = (group: string): number => {
 /** The group's strong color (track names, notes on the roll). */
 export const groupColor = (group: string, shade = 0): string => `hsl(${hueOf(group)} 65% ${SHADES[shade % SHADES.length]}%)`;
 /** Lightness steps for tracks that share a family, so they stay apart. */
-const SHADES = [50, 36, 62, 28];
+const SHADES = [50, 36, 62, 28, 74, 44, 68, 20, 56, 32, 78, 40, 60, 24, 70, 48];
 /** The group's pale tile color (behind a picture). */
 const groupTile = (group: string): string => `hsl(${hueOf(group)} 70% 84%)`;
 const NEUTRAL_TILE = '#e4e4ea';

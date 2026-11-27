@@ -64,3 +64,15 @@ export function deferHomeDemo(el: Element, picture: Promise<unknown>, allowed: (
     });
   return cleanup;
 }
+
+/** Share the showcase file inspection between automatic starts and Watch demo clicks. */
+export function prepareHomeDemo(inspect: () => Promise<boolean>, allowed: (explicit: boolean) => boolean, play: () => void) {
+  let checked: Promise<boolean> | undefined;
+  return async (explicit: boolean) => {
+    checked ??= inspect().catch(() => {
+      checked = undefined;
+      return false;
+    });
+    if ((await checked) && allowed(explicit)) play();
+  };
+}

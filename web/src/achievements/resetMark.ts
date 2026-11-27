@@ -55,7 +55,7 @@ export const scoresAfter = (sums: { best: number; total: number }, mark?: ResetM
   total: Math.max(0, sums.total - (mark?.total ?? 0)),
 });
 
-/** What the saves hold now (read when Reset is confirmed). Whatever can't be read counts as nothing. */
+/** What the saves hold now (read when Reset is confirmed). An incomplete high-score listing aborts Reset. */
 export async function snapshotSaves(at = Date.now()): Promise<ResetMark> {
   const [{ huntStates }, { eggStates }, { loadScores, bestSum }, { allMineTables }] = await Promise.all([
     import('../tinHearts/tinHearts'),
@@ -66,6 +66,6 @@ export async function snapshotSaves(at = Date.now()): Promise<ResetMark> {
   const hearts = (await huntStates().catch(() => [])).filter((s) => s.inSave).map((s) => s.id);
   const eggs = (await eggStates().catch(() => [])).filter((s) => s.inSave).map((s) => s.egg.game);
   const scores: ScoreRecord = await loadScores().catch(() => ({ best: {}, total: 0, plays: 0 }));
-  const highScores = await allMineTables().catch(() => ({}));
+  const highScores = await allMineTables(true);
   return { at, hearts, eggs, best: bestSum(scores), total: scores.total, highScores };
 }

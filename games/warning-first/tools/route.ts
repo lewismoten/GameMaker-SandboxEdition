@@ -6,9 +6,11 @@
 //   level 2: read the signs, stand on the first bridge while it flickers and fall to the mat,
 //            hop out, then cross each bridge while it is solid
 // Every tick is checked: each vent and plank changes on the tick its block says, in order.
+import { mapBlock, shownBlock } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
+import { ORIGIN } from '../../kit/starter/map';
 import type { Result, StarterBot } from '../../kit/starter/bot';
 import { BRIDGE_W, BRIDGE_X, GROUND, PIT_ROWS, VENT_X, buildLevels, ventBlock, type Level } from '../src/levels';
-import { FLICKER, GONE, PLANK_FIRST, PUFF, REST, RUMBLE, SOLID, VENT_FIRST } from '../src/timing';
+import { FLICKER, FLICKER_STEPS, GONE, PLANK_FIRST, PUFF, REST, RUMBLE, SHAKE_STEPS, SOLID, VENT_FIRST } from '../src/timing';
 
 /** Runs an order; anything but carrying on (a scene change, getting stuck) is an error. */
 async function must(bot: StarterBot, r: Promise<Result>, what: string): Promise<void> {
@@ -50,6 +52,29 @@ function watch(bot: StarterBot, look: () => string): [string, number][] {
   return seen;
 }
 
+/** Check the pictures drawn at the map cell throughout each completed warning. */
+function warningObserver(bot: StarterBot, x: number, steps: number[], what: string): (active: boolean) => void {
+  const world = bot.sim.w;
+  const pictures: string[] = [];
+  let nextChange = 0;
+  return (active) => {
+    if (bot.sim.w !== world) return;
+    if (!active) {
+      if (pictures.length && pictures.length !== steps.length) throw new Error(`${what}: saw ${pictures.length} warning pictures, wanted ${steps.length}`);
+      pictures.length = 0;
+      return;
+    }
+    const cell = mapBlock(world, ORIGIN + x, ORIGIN + GROUND);
+    const pixels = shownBlock(world, cell).pixels.join(',');
+    const index = pictures.length;
+    if (pixels === pictures[index - 1]) return;
+    if (index >= steps.length || (index > 0 && bot.sim.ticks !== nextChange) || (index >= 2 && pixels !== pictures[index % 2]))
+      throw new Error(`${what}: warning pictures did not alternate at tick ${bot.sim.ticks}`);
+    pictures.push(pixels);
+    nextChange = bot.sim.ticks + steps[index];
+  };
+}
+
 /** The moods seen must come in `cycle` order, each as long as its block says (give or take 2 ticks); `first` is the opening length. */
 function inOrder(seen: [string, number][], cycle: [string, number][], first: number, what: string): void {
   const names = cycle.map(([n]) => n);
@@ -78,7 +103,14 @@ export async function rumbleThenPuff(bot: StarterBot): Promise<void> {
   const l = levels[0];
   const score = bot.sim.ci.score;
   const mood = (k: number) => moodOf(bot, l, ventBlock(k, 'a', 'start'));
-  const seen = VENT_X.map((_, k) => watch(bot, () => mood(k)));
+  const seen = VENT_X.map((x, k) => {
+    const observe = warningObserver(bot, x, SHAKE_STEPS, `vent ${k + 1}`);
+    return watch(bot, () => {
+      const current = mood(k);
+      observe(current === 'rumble');
+      return current;
+    });
+  });
   const cycle: [string, number][] = [
     ['rumble', RUMBLE],
     ['puff', PUFF],
@@ -123,7 +155,14 @@ export async function flickerThenGone(bot: StarterBot): Promise<void> {
   const score = bot.sim.ci.score;
   const deaths = bot.sim.deaths;
   const mood = (k: number) => moodOf(bot, l, `p${k}.start`);
-  const seen = BRIDGE_X.map((_, k) => watch(bot, () => mood(k)));
+  const seen = BRIDGE_X.map((x, k) => {
+    const observe = warningObserver(bot, x, FLICKER_STEPS, `bridge ${k + 1}`);
+    return watch(bot, () => {
+      const current = mood(k);
+      observe(current === 'flicker');
+      return current;
+    });
+  });
   const cycle: [string, number][] = [
     ['flicker', FLICKER],
     ['gone', GONE],

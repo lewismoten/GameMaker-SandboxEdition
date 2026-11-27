@@ -141,6 +141,39 @@ describe('PiSound', () => {
     expect(asked).toEqual(['NONE.VOC', 'DICE.SND']);
   });
 
+  it.each([
+    ['SND voc DICE/JUMP.VOC', 'jump.voc', 'voc 7', () => Promise.reject(new Error('offline'))],
+    ['SND voc DICE/JUMP.VOC', 'jump.voc', 'voc 7', () => Promise.resolve(new Uint8Array())],
+    ['SND beep DICE/DICE.SND 9', 'dice.snd', 'speaker 440,880', () => Promise.resolve(undefined)],
+  ] as const)('retries %s in the same game (case %#)', async (line, name, played, firstRead) => {
+    let reads = 0;
+    const out = fakeOut();
+    const player = new PiSound(out, { ...source, file: () => (++reads === 1 ? firstRead() : Promise.resolve(files[name])) });
+    await player.handle(parseSoundLine('SND game DICE DICE.GAM')!);
+    for (let i = 0; i < 3; i++) await player.handle(parseSoundLine(line)!);
+    expect(reads).toBe(2);
+    expect(out.calls).toEqual(['stopAll', played, played]);
+  });
+
+  it('keeps a newer game’s cached tune when the previous read fails late', async () => {
+    const out = fakeOut();
+    let finish!: (value: undefined) => void;
+    const oldRead = new Promise<undefined>((resolve) => (finish = resolve));
+    let reads = 0;
+    const player = new PiSound(out, { ...source, file: () => (++reads === 1 ? oldRead : Promise.resolve(files['dice.snd'])) });
+    const start = parseSoundLine('SND game DICE DICE.GAM')!;
+    const beep = parseSoundLine('SND beep DICE/DICE.SND 9')!;
+    await player.handle(start);
+    const late = player.handle(beep);
+    await player.handle(start);
+    await player.handle(beep);
+    finish(undefined);
+    await late;
+    await player.handle(beep);
+    expect(reads).toBe(2);
+    expect(out.calls).toEqual(['stopAll', 'stopAll', 'speaker 440,880', 'speaker 440,880']);
+  });
+
   it('drops a song that is still loading when a stop comes', async () => {
     const out = fakeOut();
     const p = new PiSound(out, source);

@@ -21,14 +21,14 @@ describe('askPage', () => {
 
   it('a held act waits for the page to call ready', async () => {
     vi.useFakeTimers();
-    let ready: (() => void) | undefined;
+    let ready: ActDetail['ready'];
     const on = (e: Event) => (ready = (e as CustomEvent<ActDetail>).detail.ready);
     window.addEventListener('gm-tour-act', on);
     let done = false;
     void askPage({ do: 'bbs-type', wait: 'Enter your handle', hold: true }).then(() => (done = true));
     await vi.advanceTimersByTimeAsync(20_000);
     expect(done).toBe(false);
-    ready?.();
+    ready?.('shown');
     await vi.advanceTimersByTimeAsync(0);
     expect(done).toBe(true);
     window.removeEventListener('gm-tour-act', on);
@@ -37,10 +37,13 @@ describe('askPage', () => {
   it('a held act gives up after the timeout so the tour cannot hang', async () => {
     vi.useFakeTimers();
     let done = false;
-    void askPage({ do: 'bbs-type', hold: true }).then(() => (done = true));
+    const outcome = askPage({ do: 'bbs-type', hold: true }).then((result) => {
+      done = true;
+      return result;
+    });
     await vi.advanceTimersByTimeAsync(HOLD_MS - 1);
     expect(done).toBe(false);
     await vi.advanceTimersByTimeAsync(2);
-    expect(done).toBe(true);
+    expect(await outcome).toBe('timed-out');
   });
 });
