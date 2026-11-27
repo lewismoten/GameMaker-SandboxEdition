@@ -138,6 +138,10 @@ export class GameSim {
 
   /** loadscene + StartSceneInits, as playScene does them. */
   private enter(scene: number, prev: number, link: number, again = false): void {
+    for (const slot of [5, 6]) {
+      const name = this.game.scenes[scene].files[slot];
+      if (name && !this.files.has(name)) throw new Error(`Scene ${scene} is missing ${name}`);
+    }
     this.scene = scene;
     this.prev = prev;
     this.link = link;
@@ -239,13 +243,11 @@ export class GameSim {
         await moveChars(w, async () => {
           const slot = this.dropSlot;
           this.dropSlot = -1;
-          // the picker's keys as a person would press them: Right to the column, Down to the second row, Enter
-          if (slot >= 0) {
-            const keys = [...new Array(slot % 5).fill(77), ...(slot >= 5 ? [80] : []), 28];
-            for (const k of keys) {
-              this.record(k);
-              this.record(k | 0x80);
-            }
+          // Esc cancels. Otherwise move to the slot and press Enter.
+          const keys = slot < 0 ? [1] : [...new Array(slot % 5).fill(77), ...(slot >= 5 ? [80] : []), 28];
+          for (const k of keys) {
+            this.record(k);
+            this.record(k | 0x80);
           }
           return slot;
         })

@@ -10,7 +10,8 @@ import { assertTheme, forceTheme } from './forceTheme';
 interface Screen {
   name: string;
   route: string;
-  /** Playwright selectors clicked in order (a missing one is reported, not fatal). */
+  destination: string;
+  /** Playwright selectors clicked in order. */
   clicks?: string[];
   /** Widths this screen is checked at (default all). */
   widths?: number[];
@@ -20,30 +21,46 @@ interface Screen {
 
 const P = '/#/p/look:blaster';
 const screens: Screen[] = [
-  { name: 'privacy', route: '/#/privacy' },
-  { name: 'programmers-guide', route: '/#/programmers-guide' },
-  { name: 'programmers-guide-chapter', route: '/#/programmers-guide/memory' },
-  { name: 'map-breadcrumb', route: `${P}/bus3.map`, clicks: ['.crumb-back, .crumbs'] },
-  { name: 'scene-uses', route: `${P}/blaster.gam?scene=3` },
-  { name: 'recording-keys', route: `${P}/demo.rec`, clicks: ['.rec-raw summary'] },
-  { name: 'integrator-lists', route: `${P}/blaster.gam` },
+  { name: 'privacy', destination: '.privacy-page', route: '/#/privacy' },
+  { name: 'programmers-guide', destination: '.pg-toc', route: '/#/programmers-guide' },
+  { name: 'programmers-guide-chapter', destination: '.pg-page h1:has-text("The memory model")', route: '/#/programmers-guide/memory' },
+  { name: 'map-breadcrumb', destination: '.crumb-here:has-text("bus3.map")', route: `${P}/bus3.map` },
+  { name: 'scene-uses', destination: '.grator-panel :text-is("Level scene #3")', route: `${P}/blaster.gam?scene=3` },
+  { name: 'recording-keys', destination: '.rec-raw[open] > div', route: `${P}/demo.rec`, clicks: ['.rec-raw summary'] },
+  {
+    name: 'integrator-lists',
+    setup: async (page) => {
+      const open = page.locator('.grator-side-open');
+      if (await open.isVisible()) await open.click();
+      await page.locator('#grator-tab-screens').click();
+    },
+    destination: '#grator-side-body[aria-labelledby="grator-tab-screens"]',
+    route: `${P}/blaster.gam`,
+  },
   {
     name: 'box-feelies',
+    destination: '#feelies-about',
     route: '/#/desk',
     clicks: ['.shelf-box[aria-label="Final Curtain box"]', '.fl-about'],
   },
   {
     name: 'update-notice',
+    destination: '.gm-update',
     route: '/#/',
     setup: async (page) => {
       await page.evaluate("import('/src/offline.ts').then((m) => m.offerUpdate(undefined))");
-      await page.waitForSelector('.gm-update', { timeout: 5000 });
     },
   },
-  { name: 'settings-update', route: '/#/', setup: openSettingsWithUpdate },
-  { name: 'starters-tab', route: '/#/', clicks: ['.lib-cat:has-text("Starters")'] },
-  { name: 'map-zoom', route: `${P}/bus3.map`, clicks: ['.mt-zoom-row select, .mt-zoom-row button'] },
-  { name: 'assets-compact', route: `${P}/blaster.gam`, widths: [375], clicks: ['.files-toggle', '.asset-home', '.asset-search-toggle'] },
+  { name: 'settings-update', destination: '.update-item:visible', route: '/#/', setup: openSettingsWithUpdate },
+  { name: 'starters-tab', destination: '#lib-tab-starter[aria-selected="true"]', route: '/#/', clicks: ['.lib-cat:has-text("Starters")'] },
+  { name: 'map-zoom', destination: '.mt-zoom-row select', route: `${P}/bus3.map`, clicks: ['.mt-zoom-row select, .mt-zoom-row button'] },
+  {
+    name: 'assets-compact',
+    destination: '#asset-search',
+    route: `${P}/blaster.gam`,
+    widths: [375],
+    clicks: ['.files-toggle', '.asset-home', '.asset-search-toggle'],
+  },
 ];
 
 async function openSettingsWithUpdate(page: Page): Promise<void> {
@@ -55,9 +72,15 @@ async function openSettingsWithUpdate(page: Page): Promise<void> {
 }
 
 const out = resolve(arg('out') ?? '../.for-lewis/research/theme-recheck');
-const only = arg('only')?.split(',');
+const filter = arg('only') ?? (process.argv.includes('--only') ? '' : undefined);
+const only = filter?.split(',').map((name) => name.trim());
+const unknown = only?.filter((name) => !screens.some((screen) => screen.name === name));
+if (unknown?.length) throw new Error('Unknown screen in --only: ' + unknown.map((name) => name || '(empty)').join(', '));
+const selected = screens.filter((screen) => !only || only.includes(screen.name));
 const themes = (arg('themes') ?? 'light,dark').split(',') as ('light' | 'dark')[];
 const widths = (arg('widths') ?? '1440,390,375').split(',').map(Number);
+if (!widths.some((width) => selected.some((screen) => !screen.widths || screen.widths.includes(width))))
+  throw new Error('No theme audit cases match the selected screens and widths.');
 mkdirSync(out, { recursive: true });
 const axeSrc = readFileSync(resolve('../node_modules/axe-core/axe.min.js'), 'utf8');
 
@@ -70,30 +93,22 @@ try {
       const ctx = await browser.newContext({ viewport: { width, height: width < 600 ? 812 : 900 }, colorScheme: theme });
       await ctx.addInitScript(() => localStorage.setItem('gm-ui', 'web'));
       await forceTheme(ctx, theme);
-      for (const s of screens) {
-        if (only && !only.includes(s.name)) continue;
+      for (const s of selected) {
         if (s.widths && !s.widths.includes(width)) continue;
         const page = await ctx.newPage();
-        const notes: string[] = [];
         try {
           await page.goto(srv.base + s.route);
           await page.waitForLoadState('networkidle').catch(() => undefined);
           await page.waitForTimeout(3500);
           await assertTheme(page, theme);
           for (const sel of s.clicks ?? []) {
-            await page.click(sel, { timeout: 6000 }).catch(async () => {
-              // off-screen or still drawing (the desk's shelf draws box by box): wait for it, then click it in the page
-              await page
-                .locator(sel)
-                .first()
-                .evaluate((el) => (el as HTMLElement).click(), undefined, { timeout: 20000 })
-                .catch(() => notes.push(`no click: ${sel}`));
-            });
+            await page.click(sel, { timeout: 20000 });
             await page.waitForTimeout(800);
           }
           await s.setup?.(page);
           await page.waitForTimeout(500);
           await assertTheme(page, theme);
+          await page.waitForSelector(s.destination, { state: 'visible', timeout: 8000 });
           const overflow = await page.evaluate((w) => document.documentElement.scrollWidth - w, width);
           await page.addScriptTag({ content: axeSrc });
           const found: { id: string; impact: string; nodes: string[]; count: number }[] = await page.evaluate(async () => {
@@ -110,7 +125,7 @@ try {
           const bad = found.length > 0 || overflow > 0;
           if (bad) failed++;
           console.log(
-            `${bad ? 'FAIL' : 'ok  '} ${s.name} ${width} ${theme}: overflow=${overflow}, axe=${found.map((f) => `${f.id}x${f.count}`).join(', ') || 'none'}${notes.length ? ' [' + notes.join('; ') + ']' : ''}`,
+            `${bad ? 'FAIL' : 'ok  '} ${s.name} ${width} ${theme}: overflow=${overflow}, axe=${found.map((f) => `${f.id}x${f.count}`).join(', ') || 'none'}`,
           );
           for (const f of found) for (const n of f.nodes) console.log(`      ${f.id}: ${n}`);
         } catch (e) {

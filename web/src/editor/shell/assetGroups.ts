@@ -1,4 +1,4 @@
-// Overview's six groups of asset categories, named for what the things are rather than their DOS
+// Overview's groups of asset categories, named for what the things are rather than their DOS
 // extensions (design: research/editor-modern/2026-11-05-organize.md). Presentation only: each
 // category card keeps its page and route.
 import type { FileKind } from '../core/project';

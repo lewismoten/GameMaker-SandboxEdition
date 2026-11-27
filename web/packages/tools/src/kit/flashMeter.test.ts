@@ -80,6 +80,18 @@ describe('LocalFlashMeter', () => {
     expect(m.worst.x).toBeGreaterThanOrEqual(90);
     expect(m.worst.x).toBeLessThanOrEqual(110);
   });
+  it.each([1, 2])('counts swings starting from an intermediate gray with endpoint %i first', (first) => {
+    const palette = new Uint8Array(768);
+    for (const [index, gray] of [31, 36, 26].entries()) palette.fill(gray, index * 3, index * 3 + 3);
+    const meter = new LocalFlashMeter();
+    for (let i = 0; i < 17; i++) {
+      const pixels = new Uint8Array(64000);
+      const color = i === 0 ? 0 : i % 2 ? first : 3 - first;
+      for (let y = 0; y < 20; y++) pixels.fill(color, y * 320, y * 320 + 20);
+      meter.push(pixels, palette);
+    }
+    expect(meter.worst).toMatchObject({ flashes: 7, x: 0, y: 0 });
+  });
   it('lets a patch blinking twice a second through', () => {
     expect(patch((i) => Math.floor(i / 15) % 2, 3).worst.flashes).toBeLessThanOrEqual(2);
   });

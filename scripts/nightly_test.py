@@ -36,6 +36,23 @@ class ComparisonTests(unittest.TestCase):
 
 
 class OrchestrationTests(unittest.TestCase):
+    def test_failed_log_excerpt_keeps_a_bounded_tail(self):
+        module = load_module()
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            log = root / 'failure.log'
+            validation = module.Validation(root, 'tested', 'base')
+            validation.steps.append({'name': 'fixture', 'status': 'FAIL', 'log': str(log)})
+            for content, expected in [
+                (b'x' * (4 * 1024 * 1024) + b'END', 'x' * (8192 - 3) + 'END'),
+                (b'first\n' + b'last\n' * 40, '\n'.join(['last'] * 40)),
+            ]:
+                log.write_bytes(content)
+                excerpt = validation.report().split('```text\n')[1].split('\n```')[0]
+                self.assertEqual(len(excerpt), len('[log truncated]\n') + len(expected))
+                self.assertEqual(excerpt, '[log truncated]\n' + expected)
+                self.assertEqual(log.read_bytes(), content)
+
     def test_partial_success_never_reports_overall_pass(self):
         module = load_module()
         with tempfile.TemporaryDirectory() as tmp:

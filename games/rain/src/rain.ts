@@ -30,8 +30,8 @@ export function rainPalette(): Pal {
 /** A second palette for the SAME map and block pictures, not a new drawing or live palette cycle. */
 export function stormPalette(pal: Pal): Uint8Array {
   const out = pal.pal.slice();
-  for (const name of ['sky', 'grass', 'dirt', 'stone', 'brick'])
-    for (const at of pal.r(name)) for (let k = 0; k < 3; k++) out[at * 3 + k] = Math.round(out[at * 3 + k] * (k === 2 ? 0.72 : 0.52));
+  const scenery = ['sky', 'grass', 'dirt', 'stone', 'brick'].flatMap((name) => Array.from(pal.r(name)));
+  for (const at of [...scenery, pal.c('blue', 0)]) for (let k = 0; k < 3; k++) out[at * 3 + k] = Math.round(out[at * 3 + k] * (k === 2 ? 0.72 : 0.52));
   return out;
 }
 

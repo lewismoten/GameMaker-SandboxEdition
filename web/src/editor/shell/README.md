@@ -7,6 +7,7 @@ Builds Home and the project workspace, including asset browsing, import/save act
 ## Main files
 
 - [`home.ts`](home.ts): Renders the featured game, collection tabs, library tiles, filters, imports, and focus-triggered deeper search.
+- [`homeQuestions.ts`](homeQuestions.ts) loads the Starter question index and provides a retry button if loading fails.
 - [`homeGames.ts`](homeGames.ts): Defines Home game models and adapts catalog entries and browser projects, retaining on-demand file and preview loading.
 - [`homeFilters.ts`](homeFilters.ts): Owns Home filter controls, collection/filter state, focus-triggered deeper search, tile filtering, and home address helpers; Home supplies rendering and lifetime callbacks.
 - [`homeDemoStart.ts`](homeDemoStart.ts): Gates demo inspection, notes and playback behind a painted title picture, viewport visibility and an idle callback (with a timeout). Pointer or keyboard interest can start sooner; Save-Data and reduced-data visitors use Watch demo. Replacing the game or leaving Home cancels pending work.

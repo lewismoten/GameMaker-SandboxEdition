@@ -63,7 +63,7 @@ npm run check:gestures -- [--route r] [--out dir]  # map editor touch gestures (
 npm run check:audio-unlock -- [--engines webkit,chromium] [--page desk,home]  # desk makes its AudioContext outside input handlers and it runs after the first tap; headless WebKit is not iOS proof
 npm run replay:log -- <log.jsonl> [--session id] [--out dir]  # replay a game the dev interaction log (the 🐵 switch) recorded, headless; checks each snapshot; PNG frames with --out; exits 1 on divergence
 npm run verify:perf                            # performance budgets (bytes, requests, INP at 4x) on a scratch production build, about 70 s; --update rewrites web/scripts/perfBudgets.json on purpose
-npm run look -- [<shot>] [--out f.jpg] [--ocr] [--expect "text"]  # a snapshot or saved shot of a screen through the Ghost Jack camera bridge (127.0.0.1:8787); --ocr prints the text tesseract reads, --expect exits 1 unless it is there
+(cd .. && npm run look -- [<shot>] [--out f.jpg] [--ocr] [--expect "text"])  # a snapshot or saved shot of a screen through the Ghost Jack camera bridge (127.0.0.1:8787); --ocr prints the text tesseract reads, --expect exits 1 unless it is there
 npm run badges:similar                             # advisory: achievement badges that look alike in gray or to color-blind eyes; HTML report in .for-lewis/research/badges-similar/
 npm run release:sbom -- <pages|engine|archives|tools> [version] [--out file]  # write a CycloneDX release attachment; relative output paths start where the command was run
 npm run release:draft -- <pages|engine|archives|tools>  # pending fragments and legacy Unreleased notes, plus commit suggestions (prints; never writes)
@@ -258,9 +258,10 @@ preserve what was there.
   - The maintainer's reference photos are reference only, unless they're asked for. The person
     in game art is always Doc Leo, never Lewis: green tie, purple shirt, dark blue corduroy
     jacket, tattered fedora.
-- **Starters** (`"series": "starter"`) live only on the desk's Sample CD: no retail box,
-  manual, Level Maps or goodies, and not on downloads lists. Per-level notes go in the project
-  sidecar.
+- **Starters** (`"series": "starter"`) appear on the desk only on its Sample CD. The web Guide can
+  link directly to a playable level or open its map in the editor. The editor's Starters tab
+  also provides access for learning. Keep Starters off downloads lists and omit retail boxes,
+  manuals, Level Maps and goodies. Per-level notes go in the project sidecar.
 - **Game bar:** a Sandbox game aims for a 15+ minute walkthrough and a "wow" (story, wit,
   sound, animated transitions, palette-swapped variety); collecting alone isn't fun. A level
   that ends on a timer shows an on-screen countdown or meter.

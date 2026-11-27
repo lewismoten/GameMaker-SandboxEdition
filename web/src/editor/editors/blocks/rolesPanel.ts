@@ -39,9 +39,9 @@ export function rolesPanel(o: { project: Project; file: string; blocks: Block[];
     else delete map[n];
     save();
   };
-  const toggle = (n: number, role: Role) => {
+  const toggle = (n: number, role: Role, pair?: number) => {
     const e = entry(n);
-    set(n, { ...e, roles: e.roles.includes(role) ? e.roles.filter((r) => r !== role) : [...e.roles, role] });
+    set(n, { ...e, pair: e.pair ?? pair, roles: e.roles.includes(role) ? e.roles.filter((r) => r !== role) : [...e.roles, role] });
   };
   function render(): void {
     const n = o.current();
@@ -63,7 +63,7 @@ export function rolesPanel(o: { project: Project; file: string; blocks: Block[];
         role.label,
         s ? h('span', { class: 'sr-only' }, `, suggested: ${s.why}`) : null,
       );
-      btn.addEventListener('click', () => toggle(n, role.id));
+      btn.addEventListener('click', () => toggle(n, role.id, s?.pair));
       return btn;
     };
     const accept = h('button', { type: 'button', class: 'secondary' }, `Accept all ${sug.length} suggestion${sug.length === 1 ? '' : 's'}`);
