@@ -208,7 +208,7 @@ const chickenItem: FlagItem = {
 const tourItem: FlagItem = {
   id: 'TOUR',
   label: 'Last visit for "What\'s new"',
-  show: async () => readSeen() ?? 'no visit recorded',
+  show: async () => readSeen()?.slice(0, 10) ?? 'no visit recorded',
   async set(words) {
     const day = words[0] ?? '';
     if (!isDay(day)) throw new FlagError('SET TOUR needs a day written YYYY-MM-DD, such as 2026-10-01');

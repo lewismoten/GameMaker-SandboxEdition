@@ -19,7 +19,7 @@ export function startTour(which: string | undefined, opts: { record?: boolean; p
   if (which === 'new') {
     const chapters = newChapters(whatsNew(readSeen())).map((c) => ({ ...c, steps: c.steps.filter((st) => !st.pageOnly) }));
     if (!chapters.length) return;
-    // finished or closed, the offer is answered: it comes back only for steps added after today
+    // finished or closed, the offer is answered: later builds can offer newly published steps
     void new Tour(chapters, {
       onEnd: () => {
         writeSeen();
