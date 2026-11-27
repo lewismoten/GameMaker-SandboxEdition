@@ -23,15 +23,8 @@ type Colors = Record<'start' | 'exit' | 'end' | 'join', string>;
 
 /** Makes a picture's URL from its PNG (null when the browser couldn't encode it). */
 export type Mint = (b: Blob | null, canvas: HTMLCanvasElement) => string;
-/**
- * A data URL, for a picture nobody gets to release: a blob URL lives until it is revoked, and the poster's
- * (levelCoursePoster.ts) were kept for the life of the page, 4.7 MB for every time the box was opened.
- */
-export const dataUrl: Mint = (_b, canvas) => canvas.toDataURL();
-const blobUrl: Mint = (b, canvas) => (b ? URL.createObjectURL(b) : canvas.toDataURL());
-
-/** Each panel's picture as a URL, in order (a blob URL unless `mint` makes them). */
-export async function coursePanelUrls(game: Game, files: GameFiles, l: Level, mint: Mint = blobUrl): Promise<string[]> {
+/** Each panel's picture as a data URL, or a managed blob URL when a minter is supplied. */
+export async function coursePanelUrls(game: Game, files: GameFiles, l: Level, mint?: Mint): Promise<string[]> {
   const course = l.course!;
   const src = scenePixels(files, game.scenes[l.scene], 0, 0, 100, 100, l.cells);
   if (!src) return course.panels.map(() => '');
@@ -47,7 +40,7 @@ export async function coursePanelUrls(game: Game, files: GameFiles, l: Level, mi
     const out = new Uint32Array(img.data.buffer);
     for (let i = 0; i < r.pixels.length; i++) out[i] = r.pixels[i] > 255 ? 0 : lut[r.pixels[i]];
     ctx.putImageData(img, 0, 0);
-    urls.push(await new Promise<string>((resolve) => canvas.toBlob((b) => resolve(mint(b, canvas)))));
+    urls.push(mint ? await new Promise<string>((resolve) => canvas.toBlob((b) => resolve(mint(b, canvas)))) : canvas.toDataURL());
   }
   return urls;
 }

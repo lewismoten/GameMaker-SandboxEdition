@@ -18,6 +18,7 @@ import { loadLetters } from './letters';
 import { clipPath, type Line } from './lineIndex';
 import { LEXICON } from './pronounce';
 import { DEFAULT_MODEL, transcribe } from './whisper';
+import { testLines, type Voiced } from './wordLines';
 
 const TOOLS = fileURLToPath(new URL('../../../.narrate', import.meta.url));
 const WEB = fileURLToPath(new URL('../..', import.meta.url));
@@ -25,41 +26,11 @@ const WORKSPACE = join(homedir(), 'Documents/rivers-of-memory-workspace');
 const ENGINE = process.env.POCKET_TTS_ENGINE ?? join(WORKSPACE, 'engines/Pocket-TTS');
 const WAV2VEC2 = process.env.WAV2VEC2_MODEL ?? join(WORKSPACE, 'models/Wav2Vec2-Base-960h-Q8');
 
-type Voiced = Line & { speaker?: string };
-
 async function allLines(): Promise<Voiced[]> {
   const path = fileURLToPath(new URL('../../src/tour/lines', import.meta.url));
   const { tourLines } = (await import(/* @vite-ignore */ path)) as { tourLines: () => Voiced[] };
   const phone = (await import('./phoneLines')).phoneLines().map((l) => ({ ...l, speaker: 'phone' }));
   return [...tourLines(), ...phone];
-}
-
-const slug = (s: string) =>
-  s
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-|-$/g, '');
-
-/**
- * The sentence a word is tested in. A word alone is too short for both engines (Pocket TTS mumbles
- * it, and Whisper makes up words for a clip under a second), so it sits in the same short frame.
- */
-const carrier = (word: string) => `This is ${word}, again.`;
-
-/** A test line per lexicon word and voice that says it: the word in its frame, in that voice. */
-function testLines(lines: Voiced[], words: string[]): (Line & { word: string; speakers: string[] })[] {
-  const out = new Map<string, Line & { word: string; speakers: string[] }>();
-  for (const word of words) {
-    const re = new RegExp(`(?<![\\p{L}\\p{N}])${word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?![\\p{L}\\p{N}])`, 'iu');
-    for (const l of lines.filter((l) => re.test(l.spoken ?? l.text))) {
-      const v = l.voice ?? { sample: 'lewis', semitones: 0, tempo: 1 };
-      const id = slug(`${word} ${v.sample} ${v.semitones} ${v.tempo}`);
-      const t = out.get(id) ?? { id, chapter: 'words', where: '', text: carrier(word), voice: v, word, speakers: [] };
-      if (!t.speakers.includes(l.speaker ?? '')) t.speakers.push(l.speaker ?? '');
-      out.set(id, t);
-    }
-  }
-  return [...out.values()];
 }
 
 /** Records the test lines with narrate.ts into `dir` (only new or changed ones), lexicon on or off. */

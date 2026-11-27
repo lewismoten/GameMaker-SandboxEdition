@@ -44,3 +44,39 @@ it('gives standalone Overview links a 24px target without phone overflow', async
   expect(result.height).toBeGreaterThanOrEqual(24);
   expect(result.overflow).toBeLessThanOrEqual(0);
 });
+
+it('exposes the Overview file count and total size at 375px', async () => {
+  const page = await browser.newPage({ viewport: { width: 375, height: 812 } });
+  try {
+    await page.goto(inject('appBase') + '/#/p/look:orb');
+    const heading = page.locator('.asset-heading');
+    await heading.waitFor();
+    expect(await heading.ariaSnapshot()).toMatch(/status: [\d,]+ files · [\d.,]+ (?:bytes|KB|MB)/);
+  } finally {
+    await page.close();
+  }
+});
+
+it('keeps the shareware text clear of Notice on narrow phones', async () => {
+  const page = await browser.newPage({ viewport: { width: 320, height: 740 } });
+  try {
+    await page.goto(inject('appBase') + '/#/p/look:orb');
+    const bar = page.getByRole('region', { name: 'Read-only' });
+    const notice = bar.getByRole('button', { name: 'Notice' });
+    await notice.waitFor();
+    for (const viewport of [
+      { width: 320, height: 740 },
+      { width: 375, height: 812 },
+    ]) {
+      await page.setViewportSize(viewport);
+      const textRight = await bar.locator('.released-text').evaluate((el) => {
+        const range = document.createRange();
+        range.selectNodeContents(el);
+        return range.getBoundingClientRect().right;
+      });
+      expect.soft(textRight, `at ${viewport.width}px`).toBeLessThanOrEqual((await notice.boundingBox())!.x);
+    }
+  } finally {
+    await page.close();
+  }
+});

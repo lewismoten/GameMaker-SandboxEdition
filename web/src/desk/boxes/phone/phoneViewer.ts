@@ -205,7 +205,7 @@ export function createPhoneViewer(): PhoneViewer {
 
   // drag to turn; shift-drag, middle button or a second finger to pan; wheel or pinch to zoom
   const pointers = new Map<number, { x: number; y: number }>();
-  const span = () => {
+  const pinchDistance = () => {
     const [a, b] = [...pointers.values()];
     return Math.hypot(a.x - b.x, a.y - b.y);
   };
@@ -214,7 +214,7 @@ export function createPhoneViewer(): PhoneViewer {
     e.preventDefault();
     canvas.setPointerCapture(e.pointerId);
     pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
-    if (pointers.size === 2) pinch = span();
+    if (pointers.size === 2) pinch = pinchDistance();
     canvas.classList.add('turning');
     canvas.focus({ preventScroll: true });
   });
@@ -226,7 +226,7 @@ export function createPhoneViewer(): PhoneViewer {
     pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
     stopSpin();
     if (pointers.size === 2) {
-      const dist = span();
+      const dist = pinchDistance();
       if (pinch) view.zoom = Math.max(0.4, Math.min(4, view.zoom * (dist / pinch)));
       pinch = dist;
       view.panX += dx / 2;
@@ -240,7 +240,7 @@ export function createPhoneViewer(): PhoneViewer {
   });
   const release = (e: PointerEvent) => {
     pointers.delete(e.pointerId);
-    pinch = pointers.size === 2 ? span() : 0;
+    if (pointers.size < 2) pinch = 0;
     if (!pointers.size) canvas.classList.remove('turning');
   };
   canvas.addEventListener('pointerup', release);

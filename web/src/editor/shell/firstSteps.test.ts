@@ -1,5 +1,6 @@
 // First steps: each step ticks when the game changes the way it asks, the state stays in the
 // companion file (never the game's files), and every step's guide link names a real section.
+import guide from '../../../../docs/editor.md?raw';
 import { describe, expect, it } from 'vitest';
 import { GameFiles } from '../../project/files';
 import { Project } from '../core/project';
@@ -28,6 +29,12 @@ const doneIds = (p: Project) => {
 };
 
 describe('First steps', () => {
+  it('explains the open checklist and how to reopen it in the first-level guide', () => {
+    const section = guide.split('## Make a first level')[1].split('\n## ')[0].replace(/\s+/g, ' ');
+    expect(section).toMatch(/checklist opens automatically/i);
+    expect(section).toMatch(/reopen it.*?🎓.*?progress counter.*?Play Game/i);
+  });
+
   it('starts with nothing done, kept only in the companion file', () => {
     const p = starter();
     expect(doneIds(p)).toEqual([]);

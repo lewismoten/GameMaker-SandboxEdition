@@ -55,10 +55,15 @@ export class SerialLink {
   }
 
   /** Opens `granted`, or asks for the Pi's port (a gesture needed). Rejects when the person cancels or it is busy. */
-  async connect(serial: SerialLike, granted?: SerialPortLike): Promise<void> {
+  async connect(serial: SerialLike, granted?: SerialPortLike, signal?: AbortSignal): Promise<void> {
     const port = granted ?? (await serial.requestPort({ filters: [PI_USB_FILTER] }));
+    if (signal?.aborted) return;
     // A USB CDC port ignores the rate; usb_kernel.py leaves it as the system sets it.
     await port.open({ baudRate: 115200 });
+    if (signal?.aborted) {
+      await port.close();
+      return;
+    }
     if (!port.readable || !port.writable) throw new Error('The port opened without streams.');
     this.port = port;
     this.current = port;

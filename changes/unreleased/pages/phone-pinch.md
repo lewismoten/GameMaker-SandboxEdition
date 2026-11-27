@@ -1,3 +1,3 @@
 ### Fixed
 
-- Pinching the phone model zooms it from the first movement.
+- The Phone of the Future viewer zooms as soon as two fingers move apart or together.

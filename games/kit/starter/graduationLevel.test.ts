@@ -45,6 +45,10 @@ const halls = [
   { id: 'graduation-diploma', build: diploma },
 ];
 
+it.each([-1, 0.5, NaN, Infinity, 0])('rejects invalid decorEvery %s', (decorEvery) => {
+  expect(() => buildLevels({ ...moving, theme: { ...moving.theme, decorEvery } })).toThrow('decorEvery must be a positive integer');
+});
+
 describe('graduation hall framing', () => {
   it.each(halls)(
     '$id keeps every guest simultaneously inside the final ceremony camera',

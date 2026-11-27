@@ -138,3 +138,33 @@ describe('fliClips', () => {
     expect(new DataView(kept.buffer).getUint32(0, true)).toBe(kept.length);
   });
 });
+
+function tinyFli(count: number, color: number): Uint8Array {
+  const frames = Array.from({ length: count }, () => new Uint8Array(16).fill(color));
+  return encodeFli(frames, new Uint8Array(768), { width: 4, height: 4, speed: 70 });
+}
+
+it('reserves disk names and clips generated for other animations', () => {
+  const separate = tinyFli(1, 22);
+  const files = new Map<string, Uint8Array>([
+    ['opening1.fli', tinyFli(3, 11)],
+    ['opening2.fli', separate],
+    ['openingx.fli', tinyFli(2, 33)],
+    ['intro.lst', serializeSlideList(['opening1.fli', 'opening2.fli', 'openingx.fli'].map((name) => ({ name })))],
+  ]);
+  clipLists(files, ['intro.lst'], 1);
+  expect(files.get('opening2.fli')).toEqual(separate);
+  expect(parseSlideList(files.get('intro.lst')!).map((entry) => entry.name)).toEqual([
+    'opening1.fli',
+    'opening3.fli',
+    'opening4.fli',
+    'opening2.fli',
+    'openingx.fli',
+    'opening5.fli',
+  ]);
+});
+
+it('fits clip numbers 9 and 10 in DOS filenames', () => {
+  const names = Object.keys(fliClips('cartoon.fli', tinyFli(10, 11), 1));
+  expect(names.slice(8)).toEqual(['cartoon9.fli', 'cartoo10.fli']);
+});

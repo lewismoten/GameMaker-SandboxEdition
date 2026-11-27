@@ -85,7 +85,8 @@ export function renderText(text: string | Uint8Array, options: TextOptions = {})
     dy = shadow?.dy ?? 2;
   if (!Number.isSafeInteger(dx) || !Number.isSafeInteger(dy)) throw new RangeError('Shadow offsets must be integers');
   const lines = typeof text === 'string' ? text.replaceAll('\r\n', '\n').split('\n').map(encodeText) : [text];
-  const columns = Math.max(...lines.map((line) => line.length));
+  let columns = 0;
+  for (const line of lines) columns = Math.max(columns, line.length);
   if (!columns) return { width: 0, height: 0, pixels: new Uint8Array(), originX: 0, originY: 0 };
   const glyphW = font === 'cp437' ? 8 : 3,
     glyphH = font === 'cp437' ? 8 : 5;

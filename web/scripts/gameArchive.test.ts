@@ -9,6 +9,8 @@ import { readZip } from '@lewismoten/gamemaker-sandbox-archives/zip';
 import { dosNameProblems } from '../src/export/exportDos';
 import { playerRecord } from '../src/dosPlayer/playerRecord';
 import { readHostedZip } from '../src/project/hostedZip';
+import * as workers from './archiveWorker';
+import { scan } from './cdGamesScan';
 import * as queues from './archiveQueue';
 import { gameArchive } from './gameArchive';
 import { cdGames, type CdCatalogEntry } from './cdGames';
@@ -71,6 +73,69 @@ describe('catalog DOS distribution', () => {
   it('packages resource-only CD folders without pretending they are playable games', async () => {
     const files = await readZip(await gameArchive({ ...entry, gam: null }, paths));
     expect(files.map((e) => e.name)).toEqual(['FIXTURE.GAM', 'README.TXT']);
+  });
+  it('serves and emits the published ZIP links with their canonical archive bytes', async () => {
+    const { build, createServer } = await import('vite');
+    const root = join(temp, 'published');
+    const source = join(root, 'cd');
+    mkdirSync(join(source, 'gm'), { recursive: true });
+    for (const name of ['xferplay.exe', 'sndblast.drv', 'config.hlp']) copyFileSync(join(cd, name), join(source, 'gm', name));
+    const links = [
+      ['reckoning', 'reckon.zip', 'reckonin.zip'],
+      ['snowbound', 'snowbnd.zip', 'snowboun.zip'],
+    ] as const;
+    for (const [id] of links) {
+      const game = join(root, 'games', id);
+      mkdirSync(join(game, 'disk'), { recursive: true });
+      copyFileSync(resolve(import.meta.dirname, '../../games', id, 'about.json'), join(game, 'about.json'));
+      writeFileSync(join(game, 'disk/fixture.gam'), serializeGame(newGame(id)));
+    }
+    writeFileSync(join(root, 'index.html'), '<title>Fixture</title>');
+    const config = { root, configFile: false, publicDir: false, logLevel: 'silent' } as const;
+    await build({ ...config, plugins: [cdGames(source)] });
+    const fixture = scan(source);
+    const worker = vi.spyOn(workers, 'archiveWorker').mockReturnValue(
+      Object.assign(
+        async (key: string) => {
+          const game = fixture.catalog.find((item) => item.path + item.pack === key);
+          if (!game) throw new Error(`Unknown fixture archive ${key}`);
+          return gameArchive(game, fixture.files);
+        },
+        { restart: () => {} },
+      ),
+    );
+    const queue = vi.spyOn(queues, 'createArchiveQueue');
+    const server = await createServer({
+      ...config,
+      plugins: [cdGames(source)],
+      optimizeDeps: { noDiscovery: true },
+      server: { host: '127.0.0.1', port: 0, hmr: false, watch: null },
+    });
+    try {
+      await server.listen();
+      const address = server.httpServer!.address();
+      if (!address || typeof address === 'string') throw new Error('No test server port');
+      for (const [id, canonical, legacy] of links) {
+        const path = `games/originals/${id}/`;
+        const base = `http://127.0.0.1:${address.port}/${path}`;
+        await fetch(base + canonical, { method: 'HEAD' });
+        const created = queue.mock.results[0];
+        if (created?.type !== 'return') throw new Error('The archive queue did not start');
+        await created.value.idle();
+        const expected = readFileSync(join(root, 'dist', path, canonical));
+        expect((await readHostedZip(expected)).get('fixture.gam')).toEqual(serializeGame(newGame(id)));
+        for (const name of [canonical, legacy]) {
+          const response = await fetch(base + name);
+          expect(response.status, name).toBe(200);
+          expect(Buffer.from(await response.arrayBuffer()).equals(expected), name).toBe(true);
+          expect(readFileSync(join(root, 'dist', path, name)).equals(expected), name).toBe(true);
+        }
+      }
+    } finally {
+      worker.mockRestore();
+      queue.mockRestore();
+      await server.close();
+    }
   });
   it('Vite serves permanent ZIPs, rejects loose game files and refreshes changed sources', async () => {
     const { createServer } = await import('vite');

@@ -10,8 +10,10 @@ import { finishMonsterPictures, monsterPictures, monsterSet } from '../src/monst
 
 const [out, ...only] = process.argv.slice(2);
 if (!out) throw new Error('usage: levelShots.ts <outDir> [file ...]');
-mkdirSync(out, { recursive: true });
 const { pal, levels } = buildLevels();
+const unknown = only.filter((key) => !levels.some((level) => level.file === key));
+if (unknown.length) throw new Error(`Unknown level selectors: ${unknown.join(', ')}`);
+mkdirSync(out, { recursive: true });
 const mb = monsterPictures(pal);
 const mbl = finishMonsterPictures(mb);
 const set = monsterSet(mb);
