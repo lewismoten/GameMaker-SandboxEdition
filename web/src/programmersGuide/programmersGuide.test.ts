@@ -49,6 +49,15 @@ describe('the chapters', () => {
     expect.soft(text.match(/^\|\s*11\s*\|\s*(\S+)\s*\|\s*MENU\s*\|/m)?.[1]).toBe('—');
   });
 
+  it.each([
+    ['booklet', readFileSync(join(here, 'booklet1994.md'), 'utf8')],
+    ['quirks', md('quirks')],
+  ])('explains the one-block plank snap in the %s', (_, text) => {
+    const plank = text.split('\n').find((line) => line.includes('plank') && line.includes('two blocks wide'));
+    expect(plank).toMatch(/less than half.*away from/i);
+    expect(plank).toMatch(/exactly half.*no (snap|nudge)/i);
+  });
+
   it('explains the two Escape checks and which key state each player reads after the fade', () => {
     const keys = md('timing').split('## 12.3 Keys')[1].split('## 12.4')[0];
     expect(keys).toContain('hold Escape until the screen goes black');

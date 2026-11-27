@@ -323,6 +323,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex fixed and tested the heavy-job scheduler.
 - OpenAI Codex updated and tested the art course links used for sharing.
 - OpenAI Codex fixed and tested how the error notice handles canceled operations.
+- OpenAI Codex corrected and tested the Programmer’s Guide explanation of one-block plank landings.
 - OpenAI Codex fixed and tested validation before writing Level Maps metadata.
 - OpenAI Codex fixed and tested the Sound Board walkthrough’s sound-cutoff check.
 - OpenAI Codex corrected and tested the game version and Frost Lot crossing deadline for the fifteen-level edition of The Thank-You Parade.
