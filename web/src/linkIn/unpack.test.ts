@@ -10,7 +10,7 @@ import { LinkError } from './protocol';
 import { unpackGame } from './unpack';
 
 const DISK = join(__dirname, '../../../games/teddy/disk');
-// The built disk is git-ignored output (npm ci builds it); without it these tests are skipped.
+// The built disk is git-ignored output (npm ci builds it); only the import tests need it.
 const hasDisk = existsSync(DISK);
 const files: [string, Uint8Array][] = (hasDisk ? readdirSync(DISK) : []).map((n) => [n, new Uint8Array(readFileSync(join(DISK, n)))]);
 
@@ -22,14 +22,14 @@ const reasonOf = (p: Promise<unknown>) =>
     (e: unknown) => (e instanceof LinkError ? e.reason : `crash: ${String(e)}`),
   );
 
-describe.skipIf(!hasDisk)('unpackGame', () => {
-  it('reads the folder’s files as they are', async () => {
+describe('unpackGame', () => {
+  it.skipIf(!hasDisk)('reads the folder’s files as they are', async () => {
     const g = await unpackGame(files);
     expect(g.gam).toBe('teddy.gam');
     expect(g.files.size).toBe(files.length);
     expect(g.title.length).toBeGreaterThan(0);
   });
-  it('reads a .zip, a pack and a gzipped pack the same, and drops DOS programs', async () => {
+  it.skipIf(!hasDisk)('reads a .zip, a pack and a gzipped pack the same, and drops DOS programs', async () => {
     const zip = await createZip([
       ...files.map(([name, data]) => ({ name: `TEDDY/${name.toUpperCase()}`, data })),
       { name: 'TEDDY/RUN.EXE', data: new Uint8Array([0x4d, 0x5a]) },
@@ -45,7 +45,7 @@ describe.skipIf(!hasDisk)('unpackGame', () => {
       expect(g.title).toBe('Teddy');
     }
   });
-  it('reads a page made by “Export as one web page”', async () => {
+  it.skipIf(!hasDisk)('reads a page made by “Export as one web page”', async () => {
     const game = await encodeGame({ id: 'teddy', title: 'Teddy’s Little Big Adventure', gam: 'teddy.gam' }, files);
     const html = `<!doctype html><title>x</title><script type="application/json" id="gm-game">${scriptJson(game)}</script>`;
     const g = await unpackGame([['teddy.html', new TextEncoder().encode(html)]]);
