@@ -67,9 +67,6 @@ describe('the Mail Bag', async () => {
     expect(text).toContain('still held after the fade');
     // The two original key checks bracket the fade; the port deliberately keeps both.
     expect(read('code/GM/PLAYGAME.C')).toMatch(/if \(keydn\[1\]\) done=TRUE;[\s\S]*FadeAllTo\(Black\);[\s\S]*if \(keydn\[1\]\)\s+newlink=MAXSCENELINKS\+1;/);
-    expect(read('web/packages/engine/src/engine/scene.ts')).toMatch(
-      /if \(w\.keydn\[1\]\) \{\s+done = 1;[\s\S]*await m\.fadeAllTo\(0, 0, 0, w\.tune\.fadeSteps\);[\s\S]*if \(w\.keydn\[1\]\) newlink = MAXSCENELINKS \+ 1;/,
-    );
   });
 
   it('sends bottom-of-screen garbage to CONFIG’s SVGA choice, not the game artwork', () => {

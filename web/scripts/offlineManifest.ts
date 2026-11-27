@@ -22,6 +22,7 @@ export function offlineInventory(
   // Canonical split packs supersede their legacy ZIP aliases.
   const split = new Set(paths.filter((p) => p.endsWith('.zpart')).map((p) => p.slice(0, -6)));
   for (const path of [...new Set(paths)].sort()) {
+    if (path.startsWith('pocket/')) continue;
     if (/^(og\/|og-image\.|robots\.txt$|sitemap\.xml$|llms\.txt$|sw\.js$|offline\.|archive\.|web-player\.html$|player\/|games\/extra-\d+\.json$)/.test(path))
       continue;
     // A secret game's walkthrough descriptor names it; the page fetches it only once the game is revealed.

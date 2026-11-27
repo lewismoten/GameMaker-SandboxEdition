@@ -135,11 +135,27 @@ export function foldViewer(item: BalloonCubeItem): HTMLElement {
     zoomOut: () => (zoomCam(cam, 0.8), render()),
     reset: () => (resetCam(cam, home), render()),
   });
+  // Both the tray and the printable sheets can remove the stage during playback.
+  const stageTag = 'gm-balloon-fold-stage';
+  if (!customElements.get(stageTag)) {
+    customElements.define(
+      stageTag,
+      class extends HTMLElement {
+        disconnectedCallback(): void {
+          this.dispatchEvent(new Event('fold-disconnect'));
+        }
+      },
+    );
+  }
+  const holder = document.createElement(stageTag);
+  holder.className = 'bcf-stage';
+  holder.append(svg);
+  holder.addEventListener('fold-disconnect', stop);
   render();
   return h(
     'section',
     { class: 'bcf', 'aria-label': 'Watch the die fold, step by step' },
-    h('div', { class: 'bcf-stage' }, svg as unknown as Node),
+    holder,
     h('label', { class: 'bcf-label', for: `${id}-slider` }, 'Fold step'),
     h('div', { class: 'bcf-bar' }, back, slider, next),
     h('div', { class: 'bcf-bar bcf-bar2' }, count, play),

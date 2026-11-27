@@ -52,7 +52,14 @@ export function castle(w: number, h: number, r: Stream, o: { path: boolean; deco
     ky = 3;
   const d = dungeon(kw, kh, r, o.decorate);
   for (let y = 0; y < kh; y++) for (let x = 0; x < kw; x++) area.cells[at(kx + x, ky + y)] = d.area.cells[y * kw + x];
-  const doorX = kx + (kw >> 1) + r.int(-2, 2);
+  // Aim for the nearest column containing dungeon floor so the passage always joins a room or corridor.
+  const preferred = (kw >> 1) + r.int(-2, 2);
+  let column = d.entry % kw;
+  for (let i = 0; i < d.area.cells.length; i++) {
+    const x = i % kw;
+    if (d.area.cells[i] === FLOOR && Math.abs(x - preferred) < Math.abs(column - preferred)) column = x;
+  }
+  const doorX = kx + column;
   const doorY = ky + kh - 1;
   area.cells[at(doorX, doorY)] = DOORC;
   // a short passage from the door up to the first open cell of the keep
@@ -71,6 +78,10 @@ export function castle(w: number, h: number, r: Stream, o: { path: boolean; deco
     }
   // the exit is the far end of the keep
   const dist = distances(area, entry);
+  for (let i = 0; i < kw * kh; i++) {
+    const cell = at(kx + (i % kw), ky + Math.floor(i / kw));
+    if (area.cells[cell] !== WALL && dist[cell] < 0) throw new Error('Castle keep is unreachable from the gate');
+  }
   let exit = at(doorX, doorY);
   for (let y = ky; y < ky + kh; y++) for (let x = kx; x < kx + kw; x++) if (dist[at(x, y)] > dist[exit]) exit = at(x, y);
   return { area, entry, exit };

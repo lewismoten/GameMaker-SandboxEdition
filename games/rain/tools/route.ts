@@ -1,6 +1,8 @@
 // The bot stops beside each visible effect; it checks the real engine's remapped block pictures.
 import type { Result, StarterBot } from '../../kit/starter/bot';
-import { buildLevels } from '../src/levels';
+import { mapBlock, shownBlock } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
+import { ORIGIN } from '../../kit/starter/map';
+import { buildLevels, GROUND, PUDDLES } from '../src/levels';
 const { levels } = buildLevels();
 async function must(r: Promise<Result>, label: string) {
   const result = await r;
@@ -36,9 +38,24 @@ export async function falling(bot: StarterBot) {
   await leave(bot, 34);
 }
 /** Walks through a puddle and checks the real engine swapped in splash blocks: one point per column stepped in. */
-async function splashThrough(bot: StarterBot, x: number, label: string) {
+async function splashThrough(bot: StarterBot, x: number, start: number, label: string) {
   const before = bot.sim.ci.score;
-  await must(bot.walk(x, label), label);
+  const { w } = bot.sim;
+  const { book } = levels[1];
+  const rain = new Set(Array.from({ length: 4 }, (_, i) => w.bg[book.n(`rain.${i}`)].pixels.toString()));
+  const frames = Array.from({ length: 3 }, () => new Set<string>());
+  const picture = (column: number) => shownBlock(w, mapBlock(w, ORIGIN + start + column, ORIGIN + GROUND - 1)).pixels.toString();
+  const afterWalkTick = () => {
+    for (const [column, seen] of frames.entries()) {
+      const pixels = picture(column);
+      if (!rain.has(pixels)) seen.add(pixels);
+    }
+  };
+  await must(bot.walk(x, label, undefined, { afterWalkTick }), label);
+  for (const [column, seen] of frames.entries()) {
+    if (seen.size !== 3) throw new Error(`${label} column ${start + column}: saw ${seen.size} splash frames instead of three`);
+    if (!rain.has(picture(column))) throw new Error(`${label} column ${start + column}: rain did not return after departure`);
+  }
   const splashes = bot.sim.ci.score - before;
   if (splashes !== 3) throw new Error(`${label}: ${splashes} splashes instead of one for each of the three cells`);
   bot.say(`${label}: three splashes`);
@@ -46,20 +63,20 @@ async function splashThrough(bot: StarterBot, x: number, label: string) {
 export async function puddles(bot: StarterBot) {
   await must(bot.walk(7, 'splashes'), 'first sign');
   await watch(bot, 3, 'splash.0');
-  await splashThrough(bot, 12, 'first puddle');
+  await splashThrough(bot, 12, PUDDLES[0][0], 'first puddle');
   await watch(bot, 3, 'pool1.0');
   await must(bot.walk(15, 'the house'), 'house');
   await watch(bot, 3, 'house.10.0');
   await watch(bot, 3, 'house.52.0');
   await must(bot.wait(24), 'watch the spout');
-  await splashThrough(bot, 25, 'second puddle');
+  await splashThrough(bot, 25, PUDDLES[1][0], 'second puddle');
   await must(bot.wait(48), 'read the splash sign');
-  await splashThrough(bot, 34, 'third puddle');
+  await splashThrough(bot, 34, PUDDLES[2][0], 'third puddle');
   await must(bot.wait(48), 'read the palette sign');
   await leave(bot, 38);
 }
 export async function storm(bot: StarterBot) {
-  await splashThrough(bot, 12, 'storm puddle');
+  await splashThrough(bot, 12, PUDDLES[0][0], 'storm puddle');
   await watch(bot, 4, 'pool1.0');
   await must(bot.walk(15, 'the house in the storm'), 'storm house');
   await must(bot.wait(48), 'compare the colors');

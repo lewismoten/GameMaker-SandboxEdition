@@ -26,6 +26,9 @@ export function mapViewMemory(editor: Context) {
   /** True while the opening spot may still be put back; no view is saved until the reader acts or it ends. */
   let restoring = true;
   let stopRestoring = () => {};
+  const listeners = new AbortController();
+  let cleanupOpening = () => {};
+  let frame: number;
   let rememberTimer: ReturnType<typeof setTimeout> | undefined;
   let latest: MapView | undefined;
   /** Notes the view now (zoom and the block at the middle); it is saved once things settle. */
@@ -54,7 +57,7 @@ export function mapViewMemory(editor: Context) {
 
   function restoreView(): void {
     // Open where the address says, else where the action is: where the character starts, else the first placed monster.
-    requestAnimationFrame(() => {
+    frame = requestAnimationFrame(() => {
       if (!editor.host.isConnected) return;
       editor.viewport.setWrapped(editor.wrapping);
       const urlX = editor.view.num('x');
@@ -95,22 +98,37 @@ export function mapViewMemory(editor: Context) {
         keepSpot.disconnect();
         noteView();
       };
+      const openingTimer = setTimeout(stopKeeping, 800);
       for (const e of ['wheel', 'pointerdown', 'keydown', 'touchstart'] as const)
-        editor.scroller.addEventListener(e, stopKeeping, { passive: true, once: true });
-      setTimeout(stopKeeping, 800);
+        editor.scroller.addEventListener(e, stopKeeping, { passive: true, once: true, signal: listeners.signal });
       stopRestoring = stopKeeping;
       // from now on, scrolling updates the address (once it settles)
       let settle: ReturnType<typeof setTimeout> | undefined;
-      editor.scroller.addEventListener('scroll', () => {
+      editor.scroller.addEventListener(
+        'scroll',
+        () => {
+          clearTimeout(settle);
+          settle = setTimeout(() => {
+            const at = editor.viewport.at();
+            const center = editor.wrapping ? nativeCell({ x: Math.round(at.x), y: Math.round(at.y) }) : { x: Math.round(at.x), y: Math.round(at.y) };
+            editor.view.set({ x: center.x, y: center.y });
+          }, 300);
+          noteView();
+        },
+        { signal: listeners.signal },
+      );
+      cleanupOpening = () => {
+        clearTimeout(openingTimer);
         clearTimeout(settle);
-        settle = setTimeout(() => {
-          const at = editor.viewport.at();
-          const center = editor.wrapping ? nativeCell({ x: Math.round(at.x), y: Math.round(at.y) }) : { x: Math.round(at.x), y: Math.round(at.y) };
-          editor.view.set({ x: center.x, y: center.y });
-        }, 300);
-        noteView();
-      });
+        keepSpot.disconnect();
+      };
     });
   }
-  return { noteView, flushView, restoreView, stopRestoring: () => stopRestoring() };
+  function dispose(): void {
+    cancelAnimationFrame(frame);
+    listeners.abort();
+    cleanupOpening();
+    flushView();
+  }
+  return { noteView, dispose, restoreView, stopRestoring: () => stopRestoring() };
 }

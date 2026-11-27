@@ -20,11 +20,11 @@ const r = await replay(
   },
   { maxMinutes: 3 },
 );
-const seen = r.scenes.slice(0, 4).join(' ');
+const seen = r.scenes.join(' ');
 if (r.error) console.log(r.error);
-console.log(`demo: scenes entered ${r.scenes.join(' ')}; ${r.keysLeft} keys unplayed`);
-if (seen !== '2 3 4 1' || r.keysLeft) {
+console.log(`demo: scenes entered ${seen}; ${r.keysLeft} keys unplayed`);
+if (r.error || seen !== '2 3 4 1' || r.keysLeft) {
   console.error(`demoCheck: expected scenes 2 3 4 1 (three levels, then the ending) with every key played; got ${seen}`);
   process.exit(1);
 }
-console.log('demoCheck ok: slid into a spike, was carried into another, bounced, was blown up and reached the ending');
+console.log('demoCheck ok: entered the three levels and the ending in order with every key played');

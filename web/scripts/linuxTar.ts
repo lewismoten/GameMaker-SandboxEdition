@@ -10,6 +10,7 @@
 //   ... --out <dir>                                        instead of ../dist/linux
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
+import { checkNamedDownload } from './namedDownload';
 import { cdCatalog, cdFiles } from './cdGames';
 import { buildSinglePageTemplate } from './singlePageBuild';
 import { encodeGame, fillPage } from '../src/export/singlePage';
@@ -59,7 +60,7 @@ async function main(): Promise<void> {
         throw new Error(`No game "${id}" in the catalog.`);
       })(),
   );
-  for (const e of named) if (!catalogDownloadable(e)) throw new Error(`"${e.id}" is another author's game; it is offered play-only, without downloads.`);
+  named.forEach(checkNamedDownload);
   // the same games the web app's Download button offers
   const picked = process.argv.includes('--all') ? catalog.filter(catalogDownloadable) : named;
   if (!picked.length) throw new Error('Name the games (catalog ids), --all, or --html <file>.');
