@@ -5,7 +5,8 @@ Part of the [source map](../README.md).
 The Owner's Guide for the desk (`dosManual.ts`, its chapters in `dosManualFront.ts`,
 `dosManualDesign.ts` and `dosManualBack.ts` with `dosManualKit.ts`, its pages `booklet.ts`, its
 screens `figures.ts`, its registration record `regRecord.ts`), the web Guide (`webManual.ts`), and
-each original game's printed manual (`gameManual.ts`). `fonts/` holds the handwriting font
+each original game's printed manual (`gameManual.ts`). Manuals and Starter lessons share
+the retry dialog in `loadManual.ts` when their pages cannot load. `fonts/` holds the handwriting font
 (Caveat, with its OFL). `readView.ts` is how every document is read, Pages (a page at a time)
 or Scroll (every page in one column; a phone's default), with the bar's Pages | Scroll pair
 and the choice kept per browser; `scrollPages.ts` is the Scroll column, drawing pages as they
