@@ -131,9 +131,22 @@ export async function packPocketGame(src: PocketSource, store: PocketStore, pak:
   const maps = play.map(({ s }) => parseMap(file(s.files[1])));
   // Per level: the monsters it can have (empty: none, so the board runs it without monsters).
   const monsOf = play.map(() => new Set<number>());
-  // The hero file a level plays with: its own, or (blank slot) the previous level's, as the engine keeps the hero.
-  const heroOf: string[] = [];
-  play.forEach(({ s }, n) => heroOf.push(s.files[5] || heroOf[n - 1] || ''));
+  // Carry each hero along scene links until another scene loads a hero. Track visits to handle loops.
+  const heroes = game.scenes.map(() => new Set<string>());
+  for (const { s, i } of play) {
+    const hero = s.files[5];
+    if (!hero || !s.files[6]) continue;
+    const pending = [i];
+    while (pending.length) {
+      const scene = pending.pop()!;
+      if (heroes[scene].has(hero)) continue;
+      heroes[scene].add(hero);
+      for (const { toScene } of game.scenes[scene].links) {
+        const next = game.scenes[toScene];
+        if (next?.gametype === 10 && !(next.files[5] && next.files[6])) pending.push(toScene);
+      }
+    }
+  }
   play.forEach(({ s }, n) => {
     const m = maps[n];
     const bl = parseBlocks(file(s.files[2]), 150);
@@ -141,8 +154,8 @@ export async function packPocketGame(src: PocketSource, store: PocketStore, pak:
     const mons = monsOf[n];
     if (hasMonFiles) {
       for (const p of m.monsters) if (p.monnum < LASTMON) mons.add(p.monnum);
-      for (const q of heroOf[n] ? parseCharacter(file(heroOf[n])).sequences : [])
-        for (const f of q.frames) if (f.pic2 === 100 && f.pic1 < LASTMON) mons.add(f.pic1);
+      for (const hero of heroes[play[n].i])
+        for (const q of parseCharacter(file(hero)).sequences) for (const f of q.frames) if (f.pic2 === 100 && f.pic1 < LASTMON) mons.add(f.pic1);
     }
     const need = new Set<number>(m.blocks);
     const todo = [...need];
