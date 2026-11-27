@@ -26,12 +26,14 @@ export function readExp(bytes: Uint8Array): { stitches: Stitch[]; colorChanges: 
   let x = 0;
   let y = 0;
   for (let i = 0; i < bytes.length;) {
-    if (bytes[i] === 0x80 && i + 1 < bytes.length) {
+    const command = bytes[i] === 0x80;
+    if (i + (command ? 4 : 2) > bytes.length) throw new Error(`Truncated EXP ${command ? 'command' : 'move'} at byte ${i}`);
+    if (command) {
       const c = bytes[i + 1];
       if (c === 0x01) {
         colorChanges++;
         stitches.push({ x: x / 10, y: y / 10, cmd: 'color' });
-      } else if (c === 0x04 && i + 3 < bytes.length) {
+      } else if (c === 0x04) {
         x += signed(bytes[i + 2]);
         y += signed(bytes[i + 3]);
         stitches.push({ x: x / 10, y: y / 10, cmd: 'jump' });

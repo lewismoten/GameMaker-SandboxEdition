@@ -89,10 +89,10 @@ function colorFills(it: CodeWheelItem, g: SVGElement, name: string, rows: string
   const fill = it.fills?.[name];
   if (!fill || !it.fillColors) return cover;
   const byColor = new Map<string, string>();
-  fill.forEach((row, ry) => {
+  fill.slice(0, rows.length).forEach((row, ry) => {
     const y = top(ry);
     if (y === null) return;
-    for (let rx = 0; rx < row.length; rx++) {
+    for (let rx = 0; rx < Math.min(row.length, rows[ry].length); rx++) {
       const ch = row[rx];
       const color = it.fillColors?.[ch.toLowerCase()];
       if (ch === '.' || !color) continue;
@@ -115,7 +115,7 @@ let clipSeq = 0;
  */
 function faceArt(it: CodeWheelItem, name: string, x: number, y: number, deg: number, k: number, part: 'whole' | 'top' | 'bottom'): SVGElement | null {
   const shapes = it.faceArt?.[name];
-  if (!shapes) return null;
+  if (!shapes?.length) return null;
   const g = el('g', { class: part === 'whole' ? 'cw-sym' : 'cw-sym cw-half', transform: `translate(${x.toFixed(2)} ${y.toFixed(2)}) rotate(${deg})` });
   const inner = el('g', {
     transform: `translate(${(-24 * k).toFixed(3)} ${(-24 * k).toFixed(3)}) scale(${k.toFixed(4)})`,

@@ -89,6 +89,16 @@ describe('windows', () => {
     expect(isOpen(late, at(2026, 10, 15, 12))).toBe(false);
   });
 
+  it('anchors an overnight window to its first and last opening nights', () => {
+    const late: Window = { day: { on: 'date', month: 11, day: 11 }, from: 22, to: 2 };
+    expect.soft(isOpen(late, at(2026, 11, 11, 1))).toBe(false);
+    expect.soft(isOpen(late, at(2026, 11, 11, 21, 59))).toBe(false);
+    expect.soft(isOpen(late, at(2026, 11, 11, 22))).toBe(true);
+    expect.soft(isOpen(late, at(2026, 11, 12, 1))).toBe(true);
+    expect.soft(openSpan(late, at(2026, 11, 12, 1))?.end).toEqual(at(2026, 11, 12, 2));
+    expect.soft(isOpen(late, at(2026, 11, 12, 2))).toBe(false);
+  });
+
   it('lingers extra days (a BBS file) and ignores the hours then', () => {
     const fri13: Window = { day: { on: 'weekday-date', weekday: 5, day: 13 } };
     expect(isOpen(fri13, at(2026, 11, 15))).toBe(false);

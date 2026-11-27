@@ -35,7 +35,6 @@ export function overview(host: OverviewHost): { el: HTMLElement; dispose(): void
   const browser = assetBrowser({
     project: host.project,
     kind: host.kind,
-    bar: host.bar,
     all: () => host.all(),
     category: (k) => host.category(k),
     open: (f) => host.open(f),
@@ -92,6 +91,7 @@ export function overview(host: OverviewHost): { el: HTMLElement; dispose(): void
         host.tabChanged(tab);
         if (tab !== 'files') void lazy(tab);
       },
+      host.bar,
     ),
   );
   return { el, dispose: () => disposers.forEach((d) => d()) };

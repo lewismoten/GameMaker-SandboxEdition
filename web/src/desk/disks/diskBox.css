@@ -350,6 +350,15 @@
   border-radius: 4px;
 }
 
+.disk-fold-help {
+  max-width: min(26rem, calc(100vw - 32px));
+  margin: 0;
+  color: #f4ead2;
+  font:
+    14px system-ui,
+    sans-serif;
+}
+
 /* ---- index-card dividers (desk/disks/diskDividers.ts) ---- */
 
 /* the tabs above a case: the dividers' tops seen over the disks, each going to its group */

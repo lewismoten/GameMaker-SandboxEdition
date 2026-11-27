@@ -24,3 +24,19 @@ it('writes independent canonical files and removes entries no longer listed', ()
   writeMetadata(dir, { apple: data.apple });
   expect(readdirSync(dir)).toEqual(['apple.json']);
 });
+
+it.each([
+  { label: 'invalid game ID', replacement: { apple: 2, 'z invalid': 3 }, error: /Invalid game id/ },
+  { label: 'serialization error', replacement: { apple: 2, zebra: 3n }, error: /BigInt/i },
+  { label: 'missing JSON value', replacement: { apple: 2, zebra: undefined }, error: /Invalid JSON metadata/ },
+])('leaves the filesystem untouched on $label', ({ replacement, error }) => {
+  const root = mkdtempSync(join(tmpdir(), 'level-metadata-'));
+  roots.push(root);
+  const original = { apple: 1, retired: 1 };
+  writeMetadata(root, original);
+  expect(() => writeMetadata<unknown>(root, replacement)).toThrow(error);
+  expect(readMetadata(root)).toEqual(original);
+  const missing = join(root, 'missing');
+  expect(() => writeMetadata<unknown>(missing, replacement)).toThrow(error);
+  expect(readdirSync(root).sort()).toEqual(['apple.json', 'retired.json']);
+});

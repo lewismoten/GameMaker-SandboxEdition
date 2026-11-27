@@ -91,9 +91,10 @@ export const drawable = (font: FontName, s: string) =>
 
 /** The width of `s` in pixels (the last letter's trailing gap left out). */
 export const textPixels = (font: FontName, s: string) => {
-  if (!s.length) return 0;
-  const last = s[s.length - 1];
-  return starts(font, s)[s.length - 1] + glyphWidth(font, last);
+  const t = drawable(font, s);
+  if (!t.length) return 0;
+  const last = t[t.length - 1];
+  return starts(font, t)[t.length - 1] + glyphWidth(font, last);
 };
 
 /** One line of text, centered on (cx, cy), each pixel `px` mm. Returns the text's width and height in mm. */

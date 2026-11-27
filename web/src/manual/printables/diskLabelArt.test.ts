@@ -18,7 +18,7 @@ it('prints the install command and full disk number on single and multiple disk 
       { get: (target, key) => target[key as keyof typeof target] ?? (() => undefined) },
     ) as unknown as CanvasRenderingContext2D;
     paintDiskLabel(g, { title: 'Test Game' } as CatalogEntry, {}, disk, of, 0);
-    expect(text).toContain('To install: insert disk 1, type A:INSTALL');
+    expect(text).toContain('To install: insert disk 1, type A: then CD \\ then INSTALL');
     expect(text).toContain(`Disk ${disk} of ${of}`);
     expect(text.join('\n')).not.toContain('A:\\INSTALL');
   }

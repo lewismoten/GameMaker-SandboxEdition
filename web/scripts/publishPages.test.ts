@@ -43,3 +43,8 @@ it('rejects an older release when the remote changes during its build', () => {
   expect(calls.findIndex((c) => c[1] === 'ls-remote')).toBeLessThan(calls.findIndex((c) => c[1] === 'worktree' && c[2] === 'add'));
   expect(calls.find((c) => c[1] === 'push')).toContain(`--force-with-lease=refs/heads/gh-pages:${before}`);
 });
+
+it('documents how to retain a previous deployment', () => {
+  const runbook = readFileSync(new URL('../../docs/package-releases.md', import.meta.url), 'utf8');
+  expect(runbook.match(/[^.\n]*previous deployment[^.\n]*/gi) ?? []).toEqual(expect.arrayContaining([expect.stringMatching(/branch or tag/i)]));
+});

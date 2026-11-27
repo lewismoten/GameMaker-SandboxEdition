@@ -4,7 +4,7 @@
 // nearest surface point, so the bodies fit together to make exactly the solid.
 import type { Mesh, Vec3 } from './mesh';
 import { decimate } from './decimate';
-import { tetraMesh } from './tetraMesh';
+import { SurfaceLeavesBoxError, tetraMesh } from './tetraMesh';
 
 export type Rgb = [number, number, number];
 /** A point equally near two colors goes to the lower-numbered one (a tiny bias, in the field's units), so no point is left without a body. */
@@ -143,8 +143,12 @@ function colorDistances(mesh: Mesh, palette: Rgb[], o: BodiesOptions): (x: numbe
     }
     return d;
   });
+  // If all seeds are outside the grid, all colors tie. Use a finite distance so the palette tie-break still works.
+  const unseeded = fields.every((d) => d[0] === Infinity) ? 0 : Infinity;
   return (x, y, zz, c) => {
     const d = fields[c];
+    // With no seed the entire distance grid is infinite. Interpolating it would multiply infinity by zero.
+    if (d[0] === Infinity) return unseeded;
     // trilinear between the grid points round the point (clamped to the grid)
     const gx = Math.min(nx - 1.001, Math.max(0, (x - o.min[0]) / cell + 1));
     const gy = Math.min(ny - 1.001, Math.max(0, (y - o.min[1]) / cell + 1));
@@ -198,21 +202,15 @@ export function colorBodies(mesh: Mesh, palette: Rgb[], field: (x: number, y: nu
   const make = (grow: number) => {
     const out: { color: Rgb; mesh: Mesh }[] = [];
     palette.forEach((color, index) => {
-      try {
-        const body = tetraMesh((x, y, z) => {
-          const f = field(x, y, z) - grow;
-          if (f > 8 * o.cell) return f;
-          let other = Infinity;
-          for (let k = 0; k < palette.length; k++) if (k !== index) other = Math.min(other, distance(x, y, z, k) + k * TIE);
-          // inside, the color whose surface is nearest owns the point: this one where its distance is the smaller
-          return Math.max(f, distance(x, y, z, index) + index * TIE - other);
-        }, o);
-        if (body.indices.length) out.push({ color, mesh: body });
-      } catch (e) {
-        // only an empty color is left out; any other failure (an allocation under memory pressure, say) must stop the build,
-        // or the color vanishes silently and the grow-to-volume step below inflates the rest out of the box
-        if (!/surface leaves the box/.test(String(e))) throw e;
-      }
+      const body = tetraMesh((x, y, z) => {
+        const f = field(x, y, z) - grow;
+        if (f > 8 * o.cell) return f;
+        let other = Infinity;
+        for (let k = 0; k < palette.length; k++) if (k !== index) other = Math.min(other, distance(x, y, z, k) + k * TIE);
+        // inside, the color whose surface is nearest owns the point: this one where its distance is the smaller
+        return Math.max(f, distance(x, y, z, index) + index * TIE - other);
+      }, o);
+      if (body.indices.length) out.push({ color, mesh: body });
     });
     return out;
   };
@@ -221,9 +219,13 @@ export function colorBodies(mesh: Mesh, palette: Rgb[], field: (x: number, y: nu
     // marching tetrahedra on a coarse grid cut a little off the surface: grow every body by what the surface area makes up the volume
     const have = bodies.reduce((n, b) => n + triangleVolume(b.mesh), 0);
     if (Math.abs(have / o.volume - 1) > 0.004) {
-      const grown = make((o.volume - have) / triangleArea(mesh));
-      // a growth that loses a color (a body pushed out of the box) is worse than a hair too thin
-      if (grown.length >= bodies.length) bodies = grown;
+      try {
+        const grown = make((o.volume - have) / triangleArea(mesh));
+        if (bodies.every((body) => grown.some((trial) => trial.color === body.color))) bodies = grown;
+      } catch (e) {
+        // If the trial crosses the sampling boundary, keep all the closed base meshes.
+        if (!(e instanceof SurfaceLeavesBoxError)) throw e;
+      }
     }
   }
   return o.simplify ? bodies.map((b) => ({ color: b.color, mesh: decimate(b.mesh, { maxError: o.simplify! }) })) : bodies;

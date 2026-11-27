@@ -115,6 +115,7 @@ export async function takeYourTurn(bot: StarterBot): Promise<void> {
   await must(bot, bot.walk(16, 'the second sign'), 'to the second sign');
   await must(bot, bot.wait(45), 'reading the sign');
   // the mistake, on purpose: try gate 1 while it is shut
+  await until(bot, gates[0], true, 'watching gate 1 open');
   await until(bot, gates[0], false, 'gate 1 to shut');
   await bump(bot, GATES_ONE[0], 'first gate', gates[0]);
   // then go through each in its turn

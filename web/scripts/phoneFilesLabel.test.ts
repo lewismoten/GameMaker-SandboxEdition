@@ -109,7 +109,28 @@ it.each(fixtures)(
       const button = page.getByRole('button', { name: /^Files \(/ });
       await button.waitFor({ timeout: 60_000 });
 
-      await button.click();
+      if (filename === 'mygame.txt') {
+        // First steps redraws the sidebar once its panel has loaded. Open the settled drawer.
+        await page.locator('.sidebar .fs-toggle').waitFor({ state: 'attached' });
+        await page.locator('.save-note').filter({ hasText: '✓ Saved' }).waitFor({ state: 'attached' });
+        await button.press('Enter');
+        const file = page.locator('.file-row .file:visible').first();
+        await file.waitFor();
+        await expect.poll(() => file.getAttribute('tabindex')).toBe('0');
+        const tabStops = await page.locator('.sidebar button, .sidebar input, .sidebar a').count();
+        for (let i = 0; i < tabStops && !(await file.evaluate((el) => el === document.activeElement)); i++) {
+          await page.keyboard.press('Tab');
+        }
+        expect(await file.evaluate((el) => el === document.activeElement)).toBe(true);
+        await page.keyboard.press('Escape');
+        await page.setViewportSize({ width: 1440, height: 844 });
+        await file.waitFor();
+        await expect.poll(() => file.getAttribute('tabindex')).toBe('0');
+        await page.setViewportSize({ width, height: 844 });
+        await button.press('Enter');
+      } else {
+        await button.click();
+      }
       await page.locator(`.file-row[data-name="${filename}"] button.file`).click();
       const selected = page.locator(`.file-row.active[data-name="${filename}"]`);
       await selected.locator('button.file').waitFor({ state: 'attached' });

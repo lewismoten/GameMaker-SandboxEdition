@@ -5,7 +5,7 @@ Game-Maker is a family of separate DOS programs. Only the small GM launcher stay
 | Number | Letter | Program  | Job and files                                            |
 | -----: | :----: | -------- | -------------------------------------------------------- |
 |      — |   —    | GM       | Launch programs and choose the next one                  |
-|      0 |   A    | (quit)   | Leave Game-Maker and return to DOS                       |
+|      0 |   —    | (quit)   | Leave Game-Maker and return to DOS                       |
 |      1 |   B    | UTILITY  | Copy a game's files and its transfer player              |
 |      2 |   C    | PALCHOS  | Read and write PAL colors                                |
 |      3 |   D    | BLOCEDIT | Read and write BBL, MBL and CBL blocks                   |
@@ -16,13 +16,13 @@ Game-Maker is a family of separate DOS programs. Only the small GM launcher stay
 |      8 |   I    | SNDEDIT  | Read and write SND effects; convert CMF timing           |
 |      9 |   J    | GRATOR   | Read and write GAM scenes and file-name references       |
 |     10 |   K    | PLAYGAME | Read the game; write recordings, scores and saves        |
-|     11 |   L    | MENU     | Show the menus and return the number of the next program |
+|     11 |   —    | MENU     | Show the menus and return the number of the next program |
 
-Numbers come from GM's program table, 16 bytes per name (`code/GM/GM.ASM:26-37`); the selection letter is `'A'` plus the number (`code/GM/GM.ASM:41`, defaulting to `'A'+10`, PLAYGAME).
+GM’s program table reserves 16 bytes per name (`code/GM/GM.ASM:26-37`). The launcher sets the initial letter at `code/GM/GM.ASM:41` and updates it in the dispatch loop at `code/GM/GM.ASM:97-114`.
 
 GM → MENU → utility → GM → MENU, until a zero exit code returns to DOS.
 
-The command tail carries the exact, case-sensitive word `cOoL`, then a letter identifying the preceding selection. GM builds a seven-byte tail: the four letters, a space, the selection letter and a carriage return. MENU uses the selection to reopen the appropriate menu. The program table assigns 1 to UTILITY, 2 to PALCHOS, through 9 to GRATOR, 10 to PLAYGAME and 11 to MENU. Zero means quit.
+GM builds a seven-byte command tail from the case-sensitive word `cOoL`, a space, a selection letter and a carriage return. The letter starts at K for PLAYGAME. When a utility numbered 1 through 10 returns and dispatch continues, GM sets the letter to A plus that utility’s number. MENU uses the letter to reopen the appropriate menu. When MENU returns, GM keeps the preceding utility’s letter. A zero return code ends the session before GM writes another letter.
 
 A utility checks `cOoL` to recognize a launch under Game-Maker. Without it, the utility requests restoration of the DOS text display when it ends. Returning 11 hands control back to GM, which launches MENU; returning zero ends the launcher. The token preserves the managed display transition; the exit code supplies the next destination. A utility started directly at the DOS prompt has no waiting GM launcher to interpret its return code.
 

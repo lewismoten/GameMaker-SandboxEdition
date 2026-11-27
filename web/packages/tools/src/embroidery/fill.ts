@@ -1,5 +1,6 @@
 // Tatami fill: parallel rows of stitches `spacing` mm apart, needle holes staggered in a brick pattern so they don't line up
 // into a visible seam. A shape with notches (a star) breaks into several chains, each sewn from row to row.
+import { MAX_ROWS, checkStitches } from './limits';
 import { rotate } from './geom';
 import type { Poly, Pt } from './types';
 
@@ -17,8 +18,12 @@ function rows(polys: Poly[], angle: number, spacing: number): Span[][] {
   const ys = turned.flat().map((q) => q[1]);
   const lo = Math.min(...ys);
   const hi = Math.max(...ys);
+  if (!(spacing > 0 && Number.isFinite(spacing))) throw new RangeError('fillSpacing must be finite and positive');
+  if ((hi - lo) / spacing > MAX_ROWS) throw new RangeError('Embroidery row limit exceeded');
+  let spansTotal = 0;
   const out: Span[][] = [];
   for (let y = lo + spacing / 2; y < hi; y += spacing) {
+    if (y + spacing <= y || out.length >= MAX_ROWS) throw new RangeError('Embroidery row limit exceeded');
     const xs: number[] = [];
     for (const p of turned) {
       for (let i = 0, j = p.length - 1; i < p.length; j = i++) {
@@ -30,6 +35,8 @@ function rows(polys: Poly[], angle: number, spacing: number): Span[][] {
     xs.sort((m, n) => m - n);
     const spans: Span[] = [];
     for (let i = 0; i + 1 < xs.length; i += 2) if (xs[i + 1] - xs[i] > 0.3) spans.push({ x0: xs[i], x1: xs[i + 1], y, done: false });
+    spansTotal += spans.length;
+    checkStitches(2 * spansTotal);
     out.push(spans);
   }
   return out;
@@ -37,8 +44,13 @@ function rows(polys: Poly[], angle: number, spacing: number): Span[][] {
 
 /** The needle points along one span, going right or left, with holes at multiples of `len` shifted by the row's phase. */
 function along(s: Span, right: boolean, len: number, phase: number): Pt[] {
+  if (!(len > 0 && Number.isFinite(len))) throw new RangeError('fillLength must be finite and positive');
+  checkStitches((s.x1 - s.x0) / len);
   const xs = [s.x0];
-  for (let x = (Math.floor(s.x0 / len - phase) + 1 + phase) * len; x < s.x1; x += len) if (x - s.x0 > 0.7 && s.x1 - x > 0.7) xs.push(x);
+  for (let x = (Math.floor(s.x0 / len - phase) + 1 + phase) * len; x < s.x1; x += len) {
+    if (x + len <= x) throw new RangeError('Embroidery stitch limit exceeded');
+    if (x - s.x0 > 0.7 && s.x1 - x > 0.7) xs.push(x);
+  }
   xs.push(s.x1);
   if (!right) xs.reverse();
   return xs.map((x) => [x, s.y] as Pt);
@@ -51,6 +63,7 @@ function along(s: Span, right: boolean, len: number, phase: number): Pt[] {
 export function tatami(polys: Poly[], angle: number, spacing: number, len: number): Pt[][] {
   const grid = rows(polys, angle, spacing);
   const back = (angle * Math.PI) / 180;
+  let points = 0;
   const chains: Pt[][] = [];
   for (let r = 0; r < grid.length; r++) {
     for (const first of grid[r]) {
@@ -60,7 +73,10 @@ export function tatami(polys: Poly[], angle: number, spacing: number, len: numbe
       let span = first;
       let right = true;
       for (let k = r; ; k++) {
-        chain.push(...along(span, right, len, (k % 3) / 3));
+        const segment = along(span, right, len, (k % 3) / 3);
+        points += segment.length;
+        checkStitches(points);
+        for (const point of segment) chain.push(point);
         const end = chain[chain.length - 1][0];
         // the next row's span whose entering end is nearest to where this row ended
         let best: Span | undefined;

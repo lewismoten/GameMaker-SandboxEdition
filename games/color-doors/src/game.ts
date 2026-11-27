@@ -70,7 +70,11 @@ export function buildGame(hall: Level, gallery: Level): Game {
   });
 
   // the way back comes to the hall's copy without its card (kit/starter/returnScenes.ts), so the card shows once
-  addReturnScenes(game, [SCENE.hall]);
+  addReturnScenes(
+    game,
+    [SCENE.hall],
+    VIEWS.map((v) => game.scenes[v.scene].links[0]),
+  );
 
   const first = hall.map.start;
   title.links[0] = { toScene: SCENE.hall, from: { x: 0, y: 0 }, to: { x: first[0], y: first[1] } };

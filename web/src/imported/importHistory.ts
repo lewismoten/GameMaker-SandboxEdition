@@ -26,12 +26,26 @@ export function withRecord(list: ImportRecord[], record: ImportRecord): ImportRe
   return [record, ...list].slice(0, KEEP);
 }
 
-const store = localJson<ImportRecord[]>('gm-import-history', () => []);
+function isImportRecord(value: unknown): value is ImportRecord {
+  if (!value || typeof value !== 'object') return false;
+  const r = value as Partial<ImportRecord>;
+  return (
+    Number.isFinite(r.at) &&
+    typeof r.source === 'string' &&
+    Number.isSafeInteger(r.added) &&
+    Number.isSafeInteger(r.skipped) &&
+    Array.isArray(r.failed) &&
+    r.failed.every((reason) => typeof reason === 'string') &&
+    (r.canceled === undefined || typeof r.canceled === 'boolean')
+  );
+}
+
+const store = localJson<unknown>('gm-import-history', () => []);
 
 /** The kept imports, newest first. */
 export function importHistory(): ImportRecord[] {
   const list = store.read();
-  return Array.isArray(list) ? list : [];
+  return Array.isArray(list) ? list.filter(isImportRecord) : [];
 }
 
 /** Adds one import to the history. */

@@ -118,7 +118,7 @@ export function createPhoneViewer(): PhoneViewer {
     say.textContent = `${m.label}: ${m.what}. ${parts.length} parts in ${groups} groups.`;
     canvas.setAttribute(
       'aria-label',
-      `The Phone of the Future kit, a 3D model. ${m.label}: ${m.what}. Drag to turn, scroll to zoom, shift-drag to pan, arrow keys to turn, Home to put it back.`,
+      `The Phone of the Future kit, a 3D model. ${m.label}: ${m.what}. Drag to turn, scroll to zoom, Shift-drag or Shift+arrow keys to pan, arrow keys to turn, Home to put it back.`,
     );
   }
   function chooseBuild(next: PhoneVariant) {
@@ -190,11 +190,16 @@ export function createPhoneViewer(): PhoneViewer {
   };
 
   canvas.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowLeft') turn(-TURN, 0);
-    else if (e.key === 'ArrowRight') turn(TURN, 0);
-    else if (e.key === 'ArrowUp') turn(0, -0.2);
-    else if (e.key === 'ArrowDown') turn(0, 0.2);
-    else if (e.key === 'Home') {
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowRight' || e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+      const dx = Number(e.key === 'ArrowRight') - Number(e.key === 'ArrowLeft');
+      const dy = Number(e.key === 'ArrowDown') - Number(e.key === 'ArrowUp');
+      if (e.shiftKey && view) {
+        stopSpin();
+        view.panX += dx * 20;
+        view.panY += dy * 20;
+        wake();
+      } else turn(dx * TURN, dy * 0.2);
+    } else if (e.key === 'Home') {
       stopSpin();
       reset();
     } else if (e.key === '+' || e.key === '=') zoomBy(1.2);
@@ -205,11 +210,16 @@ export function createPhoneViewer(): PhoneViewer {
 
   // drag to turn; shift-drag, middle button or a second finger to pan; wheel or pinch to zoom
   const pointers = new Map<number, { x: number; y: number }>();
+  const pinchDistance = () => {
+    const [a, b] = [...pointers.values()];
+    return Math.hypot(a.x - b.x, a.y - b.y);
+  };
   let pinch = 0;
   canvas.addEventListener('pointerdown', (e) => {
     e.preventDefault();
     canvas.setPointerCapture(e.pointerId);
     pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    if (pointers.size === 2) pinch = pinchDistance();
     canvas.classList.add('turning');
     canvas.focus({ preventScroll: true });
   });
@@ -221,8 +231,7 @@ export function createPhoneViewer(): PhoneViewer {
     pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
     stopSpin();
     if (pointers.size === 2) {
-      const [a, b] = [...pointers.values()];
-      const dist = Math.hypot(a.x - b.x, a.y - b.y);
+      const dist = pinchDistance();
       if (pinch) view.zoom = Math.max(0.4, Math.min(4, view.zoom * (dist / pinch)));
       pinch = dist;
       view.panX += dx / 2;

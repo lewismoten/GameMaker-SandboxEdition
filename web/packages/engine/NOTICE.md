@@ -17,6 +17,7 @@ site editor, DOS executables, or native player shells.
   was written with Claude Opus 5.5 (Anthropic), directed and reviewed by Lewis.
   This npm package was extracted and documented with OpenAI Codex (GPT-6) in
   Visual Studio Code, directed by Lewis.
+  OpenAI Codex also fixed and tested decoding of the CP437 house glyph in DOS text files.
 
 ## Data, formats, and hardware
 

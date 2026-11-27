@@ -92,9 +92,13 @@ describe('the bot on generated platform layouts', () => {
       ['x.cbl', serializeBlocks(newBlockSet('cbl'))],
     ]);
     // 255374 landed 24 px past the model (the nudge off an edge); 255377 and 2 slid on down a ladder (its fade, and steering on)
-    for (const seed of [255374, 255377, 2, 255375, 255376, 1, 17, 99, 4242, 77777, 101, 102, 103, 104, 105, 106]) {
+    const regressionSeeds = [255374, 255377, 2];
+    for (const seed of [...regressionSeeds, 255375, 255376, 1, 17, 99, 4242, 77777, 101, 102, 103, 104, 105, 106]) {
       const o = generatePlatform({ roles, hero, seed, rect: { x: 4, y: 60, w: 90, h: 24 } });
-      if (!o.ok) continue;
+      if (!o.ok) {
+        if (regressionSeeds.includes(seed)) throw new Error(`Seed ${seed}: ${o.message}`);
+        continue;
+      }
       const { blocks } = place(new Uint8Array(MLEN * MWID).fill(0), o.result, roles, []);
       const run = await botPlays({
         files: { get: (n) => files.get(n.toLowerCase()) },

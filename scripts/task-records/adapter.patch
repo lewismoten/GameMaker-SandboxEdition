@@ -2,7 +2,7 @@
 +++ b/intake.py
 @@ -4,0 +5,2 @@
 +from contextlib import closing, ExitStack
-+from task_records import Failure, resolve_request, bind_task, read_path
++from task_records import Failure, prepare_reservations, resolve_request, bind_task, read_path
 @@ -27 +29 @@
 -        with sqlite3.connect(path.as_uri() + '?mode=ro', uri=True) as board:
 +        with closing(sqlite3.connect(path.as_uri() + '?mode=ro', uri=True)) as board:
@@ -16,17 +16,18 @@
 @@ -65 +64 @@
 -        db = sqlite3.connect(HOME / 'intake.sqlite3')
 +        db = stack.enter_context(closing(sqlite3.connect(HOME / 'intake.sqlite3')))
-@@ -77 +76,5 @@
+@@ -77 +76,6 @@
 -        row = db.execute('SELECT digest,task_id,attempted,original_title,original_body,instructions FROM requests WHERE key=?', (key,)).fetchone()
++        prepare_reservations(db)
 +        resolved = resolve_request(db, key, board_db())
 +        if resolved:
 +            key, row = resolved
 +        else:
 +            row = None
-@@ -118 +121 @@
+@@ -118 +122 @@
 -            db.execute('UPDATE requests SET task_id=? WHERE key=?', (task_id, key))
 +            bind_task(db, key, task_id)
-@@ -120,8 +123 @@
+@@ -120,8 +124 @@
 -        detail = cli('show', task_id, '--json')
 -        result = detail['task']
 -        if result.get('id') != task_id:

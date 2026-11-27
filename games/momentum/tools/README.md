@@ -2,7 +2,7 @@
 
 - `check.ts`: the bot plays both levels. `route.ts` asserts what each sign teaches: in level 1 a tap of Right leaves a glide, a long hold leaves one at least twice as long, and Left turns Kit around; in level 2 a hop with Space alone goes nowhere and a hop with Right held crosses three gaps, 5, 8 and 10 blocks wide. Every coin is taken and no life is lost.
 - `walkthrough.ts`, `gendemo.ts`: re-record the walkthrough and the title demo. The demo is both levels as one unbroken list of keys (the demo recorder counts game ticks across scene changes), stopped before the last door.
-- `demoCheck.ts`: plays the built `demo.rec` on the real engine and checks it enters scenes 2 and 3 with every coin of level 1 taken and no game over.
+- `demoCheck.ts`: plays the built `demo.rec` on the real engine and checks it enters scenes 2 and 3 with every coin of level 1 taken and no game over. `checkRecording.ts` checks that Yana lands beyond the last gap before the recorded Escape.
 - `preview.ts`: PNGs of the blocks, the hero, each level and every picture. `shots.ts`: pictures of the lessons for the progress shots.
 
 ## What the engine does here, and what it does not

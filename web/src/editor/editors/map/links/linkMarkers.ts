@@ -77,7 +77,9 @@ export function linkMarkers(host: MarkersHost) {
   };
 
   const place = (el: HTMLElement, at: Point, stack: number) => {
-    const b = markerBox(host.point?.(at) ?? at, host.block(), stack);
+    const block = host.block();
+    const b = markerBox(host.point?.(at) ?? at, block, stack);
+    el.style.setProperty('--lk-block', `${block}px`);
     Object.assign(el.style, { left: `${b.left}px`, top: `${b.top}px`, width: `${b.size}px`, height: `${b.size}px` });
     el.style.setProperty('--lk-size', `${b.size}px`);
   };

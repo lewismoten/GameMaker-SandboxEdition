@@ -40,6 +40,7 @@ async function flash(bot: StarterBot, level: number, what: string): Promise<void
   for (let now = litNow(bot, level); now.some(Boolean); now = litNow(bot, level)) {
     if (!now.every(Boolean)) throw new Error(`${what}: only ${now.filter(Boolean).length} of ${now.length} blocks are lit in the flash`);
     lit++;
+    if (lit > LIT) throw new Error(`${what}: the flash lasted ${lit} ticks and is still lit`);
     await must(bot, bot.tick(), what);
   }
   if (lit !== LIT) throw new Error(`${what}: the flash lasted ${lit} ticks, not ${LIT}`);

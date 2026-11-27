@@ -4,6 +4,10 @@ import { describe, expect, it } from 'vitest';
 import { costsFor, musicHoldMs, SPEED_PRESETS, TURBO_OFF, vocStallMs } from '@lewismoten/gamemaker-sandbox-engine/engine/slowPc';
 import { INTERRUPT_MS, songIsrMs, songLoad, songPeakIsrMs } from '@lewismoten/gamemaker-sandbox-engine/engine/slowPcMusic';
 
+import { CmfPlayer } from '@lewismoten/gamemaker-sandbox-engine/audio/cmfPlayer';
+import { Opl2 } from '@lewismoten/gamemaker-sandbox-engine/audio/opl';
+import { encodeCmf, parseCmf } from '@lewismoten/gamemaker-sandbox-engine/formats/cmf';
+
 // Glubada Pond, from the CD: its level songs, from the sparse one to the busy ones
 const glub = (name: string) => new Uint8Array(readFileSync(new URL(`../../../cd/gameware/glub/${name}.cmf`, import.meta.url)));
 const SONGS = ['gmopenin', 'gmsong1', 'gmsong2', 'gmsong4', 'gmsong5', 'gmsong6'];
@@ -28,6 +32,27 @@ describe('a slow PC keeps the music timer running while it reads the disk', () =
 });
 
 describe('what a song costs the timer interrupt', () => {
+  it.each([
+    [0xf0, 0],
+    [0xf7, 2, 0xff, 0xff],
+  ])('charges the note after system-exclusive record %j', (...record) => {
+    const cmf = encodeCmf({
+      instruments: [],
+      events: [
+        { tick: 0, data: record },
+        { tick: 0, data: [0x90, 60, 90] },
+        { tick: 12, data: [0xff, 0x2f, 0] },
+      ],
+    });
+    const opl = new Opl2(22050);
+    const player = new CmfPlayer(opl);
+    player.load(parseCmf(cmf).music, []);
+    player.tick();
+    // Channel 0 keys on middle C (note 60).
+    expect([opl.read(0xa0), opl.read(0xb0)]).toEqual([0xb2, 0x2e]);
+    expect(songLoad(cmf)).toEqual({ interrupts: 12, events: 1, writes: 4, peakEvents: 1, peakWrites: 4 });
+  });
+
   it("walks a song as PlayIt does: one pass of Glubada Pond's first level is a minute of notes", () => {
     const l = songLoad(glub('gmsong1'))!;
     expect(l.interrupts / (1000 / INTERRUPT_MS)).toBeCloseTo(60.3, 0);

@@ -70,7 +70,10 @@ function load(ctx: AudioContext, clip: string) {
       .then((r) => (r.ok ? r.arrayBuffer() : Promise.reject(new Error(String(r.status)))))
       .then((bytes) => ctx.decodeAudioData(bytes))
       .then((buffer) => ({ buffer, seconds: Math.min(buffer.duration, soundEnd(buffer.getChannelData(0), buffer.sampleRate) + TAIL) }))
-      .catch(() => undefined);
+      .catch(() => {
+        decoded.delete(clip);
+        return undefined;
+      });
     decoded.set(clip, p);
   }
   return p;
@@ -78,9 +81,10 @@ function load(ctx: AudioContext, clip: string) {
 
 /** Plays the clips in order; false when they can't (so the caller speaks instead), true when done or hung up. */
 async function playClips(groups: string[][], pause: number, signal: AbortSignal): Promise<boolean> {
+  const clips = groups.flat();
+  if (!clips.length) return true;
   const ctx = audioContext();
   if (!ctx || channelGain('voice') <= 0) return false;
-  const clips = groups.flat();
   // the pause after each clip: a breath at the end of a sentence, a short gap inside a splice
   const after = groups.flatMap((g) => g.map((_, i) => (i === g.length - 1 ? pause : GAP)));
   const loaded = await Promise.all(clips.map((c) => load(ctx, c)));

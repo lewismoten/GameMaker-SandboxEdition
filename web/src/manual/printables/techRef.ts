@@ -54,14 +54,12 @@ export function techRefChapters(markdown: string): { head: string; blocks: Block
 }
 
 /** The booklet's diagrams with consecutive figure numbers, in the order the Markdown places them. */
-function numberedDiagrams(markdown: string): Diagrams {
+function numberedDiagrams(): Diagrams {
   const out: Diagrams = {};
   let n = 0;
-  for (const m of markdown.matchAll(/^\[diagram: (\w+)\]\s*$/gm)) {
-    const draw = TECHREF_DIAGRAMS[m[1]];
-    if (!draw) continue;
-    const num = ++n;
-    out[m[1]] = () => {
+  for (const [name, draw] of Object.entries(TECHREF_DIAGRAMS)) {
+    out[name] = () => {
+      const num = ++n;
       const el = draw();
       const cap = el.querySelector('figcaption');
       if (cap) cap.textContent = `Figure ${num}. ${cap.textContent}`;
@@ -80,7 +78,7 @@ async function techRefPages(): Promise<BookPage[]> {
     const next = measurer(host);
     const chapters: BookPage[] = [];
     const starts: { title: string; page: number }[] = [];
-    const diagrams = numberedDiagrams(markdown);
+    const diagrams = numberedDiagrams();
     for (const c of techRefChapters(markdown)) {
       starts.push({ title: c.head, page: chapters.length + 1 });
       for (const body of paginate([h('h2', null, c.head), ...c.blocks.map(elementWith(diagrams))], next))

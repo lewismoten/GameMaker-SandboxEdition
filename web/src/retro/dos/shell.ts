@@ -11,12 +11,18 @@ import { unlockAchievement } from '../../achievements';
 import { runBatch, type BatchHost } from './batch';
 import { isBreak } from '../text/textInput';
 
+export interface ProgramLocation {
+  drive: string;
+  parts: string[];
+  name: string;
+}
+
 interface ShellHost {
   screen: TextScreen;
   keys: TextKeys;
   fs: FileSystem;
   /** Runs a program; the shell waits until it returns. */
-  run(ref: ProgramRef, args: string[], at: { drive: string; parts: string[] }): Promise<void>;
+  run(ref: ProgramRef, args: string[], at: ProgramLocation): Promise<void>;
   /** MD: returns an error message, or undefined when the folder was made. */
   makeDir?(drive: string, parts: string[]): Promise<string | undefined>;
 }
@@ -136,7 +142,7 @@ export class Shell {
     // EGG.EXE answers from anywhere, though no folder lists it and HELP never mentions it
     if (/^(?:[a-z]:)?\\?egg(?:\.exe)?$/i.test(trimmed.split(/\s+/)[0])) {
       this.screen.cursorVisible = false;
-      await this.host.run({ kind: 'egg' }, args, { drive: this.drive, parts: this.cwdOf(this.drive) });
+      await this.host.run({ kind: 'egg' }, args, { drive: this.drive, parts: this.cwdOf(this.drive), name: 'EGG.EXE' });
       this.screen.cursorVisible = true;
       return;
     }
@@ -153,7 +159,7 @@ export class Shell {
     }
     if (prog.node.run?.kind === 'batch') return this.runBat(prog.node, trimmed.split(/\s+/)[0], args);
     this.screen.cursorVisible = false;
-    await this.host.run(prog.node.run!, args, prog.at);
+    await this.host.run(prog.node.run!, args, { ...prog.at, name: prog.node.name });
     this.screen.cursorVisible = true;
   }
 
