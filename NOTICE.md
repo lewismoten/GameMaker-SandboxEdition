@@ -383,6 +383,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex fixed and tested offline home navigation from nested pages.
 - OpenAI Codex corrected the mobile editor's asset reference count.
 - OpenAI Codex fixed and tested scene usage counts and file references for projects containing multiple games.
+- OpenAI Codex indexed scene references for the editor Overview and tested slot reads across categories.
 - OpenAI Codex enlarged and tested touch targets for modal controls and achievement notice dismissal.
 - OpenAI Codex adjusted touch target sizes on the Achievements page (November 22, 2026).
 - OpenAI Codex clarified the contributor instructions for pre-merge checks and walkthrough timing.
