@@ -90,3 +90,12 @@ it('still shows the box when a part fails without the load-failure event (the de
   await settle();
   expect(showError).toHaveBeenCalledOnce();
 });
+
+it('ignores a canceled operation reported as an error or a rejection', async () => {
+  await start();
+  const error = new DOMException('The operation was aborted.', 'AbortError');
+  win.dispatchEvent(Object.assign(new Event('error'), { error, message: error.message }));
+  win.dispatchEvent(Object.assign(new Event('unhandledrejection'), { reason: error }));
+  await vi.dynamicImportSettled();
+  expect(showError).not.toHaveBeenCalled();
+});
