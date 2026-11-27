@@ -72,8 +72,14 @@ const diskLabels: Scene = {
       const { openPrintShop } = await import('/src/manual/printables/printShop.ts');
       const list = await loadCatalogList();
       const entry = list.find((e) => e.kind === 'shareware' && !e.secret) ?? list[0];
+      if (!entry) throw new Error('Disk labels fixture unavailable: the catalog is empty');
       void openPrintShop('disklabels', entry);
     })()`);
+    const selected = await page.waitForSelector('.gmb[role="dialog"] .gmb-tray-list li[data-id] button[aria-current="true"]', {
+      state: 'attached',
+      timeout: 4000,
+    });
+    if ((await selected.evaluate((button) => button.closest('li')?.dataset.id)) !== 'disklabels') throw new Error('Disk labels is not selected');
   },
   settle: 1500,
   themeFirst: true,
