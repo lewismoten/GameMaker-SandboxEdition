@@ -135,8 +135,10 @@
       const log = document.getElementById('log');
       site.value = new URLSearchParams(location.search).get('site') || DEFAULT_SITE;
 
+      let active;
       form.addEventListener('submit', (e) => {
         e.preventDefault();
+        active?.();
         const picked = [...picker.files];
         if (!picked.length) {
           log.textContent = 'Choose the game’s files first.';
@@ -160,8 +162,6 @@
         }
         log.textContent = 'Waiting for Game-Maker…';
 
-        // Read the files while Game-Maker loads.
-        const payload = Promise.all(picked.map(async (f) => [f.webkitRelativePath || f.name, await f.arrayBuffer()]));
         let sent = false;
 
         async function onMessage(event) {
@@ -170,7 +170,17 @@
           const msg = event.data || {};
           if (msg.type === 'gm-ready' && !sent) {
             sent = true;
-            const entries = await payload;
+            let entries;
+            try {
+              entries = await Promise.all(picked.map(async (f) => [f.webkitRelativePath || f.name, await f.arrayBuffer()]));
+            } catch {
+              if (active === stop) {
+                log.textContent = 'Could not read the selected files. Try again.';
+                stop();
+              }
+              return;
+            }
+            if (active !== stop) return;
             const files = Object.fromEntries(entries);
             const name = picked.length === 1 ? picked[0].name.replace(/\.[^.]*$/, '') : undefined;
             // The ArrayBuffers are transferred, not copied.
@@ -178,12 +188,22 @@
             log.textContent = 'Sent. Game-Maker is asking whether to open it.';
           } else if (msg.type === 'gm-received') {
             log.textContent = `Game-Maker opened “${msg.name}” (${msg.files} files).`;
-            removeEventListener('message', onMessage);
+            stop();
           } else if (msg.type === 'gm-error') {
             log.textContent = `Game-Maker did not open it: ${msg.message}`;
-            removeEventListener('message', onMessage);
+            stop();
           }
         }
+        function stop() {
+          clearTimeout(timer);
+          removeEventListener('message', onMessage);
+          active = undefined;
+        }
+        const timer = setTimeout(() => {
+          stop();
+          log.textContent = 'Game-Maker timed out. Try again.';
+        }, 60000);
+        active = stop;
         addEventListener('message', onMessage);
       });
     </script>

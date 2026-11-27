@@ -34,6 +34,13 @@ describe('guest storage capability', () => {
     expect(touchOwner).not.toHaveBeenCalled();
   });
 
+  it('copies Buffer-backed disk bytes for each guest', () => {
+    const pristine = new GameFiles([['game.gam', Buffer.from([1])]]);
+    const guest = createGuestState(pristine);
+    guest.files.get('game.gam')![0] = 9;
+    expect(pristine.get('game.gam')![0]).toBe(1);
+  });
+
   it('drops the turn, rejects late writes and starts the next turn clean', () => {
     const pristine = new GameFiles([['game.gam', new Uint8Array([1])]]);
     const a = createGuestState(pristine);
@@ -43,6 +50,8 @@ describe('guest storage capability', () => {
     a.close();
     expect(a.files.names()).toEqual([]);
     expect(() => a.files.set('slot0.sav', new Uint8Array([3]))).toThrow('Guest run is closed');
+    expect(() => a.files.put('late.sav', new Uint8Array([4]))).toThrow('Guest run is closed');
+    expect(a.files.names()).toEqual([]);
     expect(() => a.setSetting('motion', 'full')).toThrow();
     expect(() => a.setting('motion')).toThrow();
     const next = createGuestState(pristine);

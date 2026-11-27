@@ -59,7 +59,9 @@ describe.skipIf(!hasDisks)('composeBadge', () => {
       }
     expect(seen).toBeGreaterThan(1000);
   });
+});
 
+describe('cropCenterX', () => {
   it('keeps the medallion inside the title screen', () => {
     expect(cropCenterX(320, teddy.centerX)).toBe(teddy.centerX);
   });

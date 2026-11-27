@@ -8,7 +8,7 @@ import { TOWER_X } from '../src/levels';
 import { TOWER } from '../src/pictures';
 import { GameSim } from './sim';
 
-const keys = parseRecording(new Uint8Array(readFileSync(new URL('../disk/demo.rec', import.meta.url)))).slice(0, -2); // without the Esc
+const keys = parseRecording(new Uint8Array(readFileSync(new URL('../disk/demo.rec', import.meta.url))));
 const sim = new GameSim(undefined, 1);
 const kitX = () => (sim.pos.x - ORIGIN) * 20 + sim.pos.sx;
 const kitY = () => (sim.pos.y - ORIGIN) * 20 + sim.pos.sy;
@@ -20,17 +20,22 @@ const step = async () => {
   if (kitX() > (TOWER_X + 1) * 20 && kitX() < (TOWER_X + TOWER.w - 1) * 20) inside++;
   if (kitY() < floor) lifted = true;
 };
+let exited = false;
 for (const k of keys) {
   for (let i = 0; i < k.delta; i++) await step();
+  if (k.key === 1) {
+    exited = true; // the recorded Esc: the demo's real end
+    break;
+  }
   if (k.key & 0x80) sim.release(k.key & 0x7f);
   else sim.press(k.key & 0x7f);
 }
-for (let i = 0; i < 30; i++) await step();
 console.log(`demo: ${inside} ticks inside the tower; ends at column ${(kitX() / 20).toFixed(1)}; jumped ${lifted}`);
 const fail = (m: string) => {
   console.error(`demoCheck: ${m}`);
   process.exit(1);
 };
+if (!exited) fail('the demo should exit with Esc');
 if (inside < 20) fail('the demo should walk into the tower');
 if (kitX() < (TOWER_X + TOWER.w) * 20) fail('the demo should come out of the tower on its far side');
 if (lifted) fail('he should walk through the tower, not jump over it');

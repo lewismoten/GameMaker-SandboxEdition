@@ -1066,9 +1066,9 @@
   "edit-around-groups": {
     "chapter": "edit-around",
     "where": "Editor: Watt points at the first group heading",
-    "text": "The cards sit under headings: Levels, Heroes, Monsters, Pictures and movies, Sounds and music, and Words and screens.",
-    "seconds": 8.45,
-    "hash": "b21fbe901422",
+    "text": "The cards sit under headings: Levels, Heroes, Monsters, Pictures and movies, Sounds and music, Words and screens, and Colors and other files.",
+    "seconds": 9.76,
+    "hash": "15faeca222ad",
     "voice": "131d8cb8ad55"
   },
   "edit-around-guide": {
@@ -2562,9 +2562,9 @@
   "home-games": {
     "chapter": "home",
     "where": "Home: Teddy points at Games in the header",
-    "text": "Games, up in the bar, always brings you back here.",
-    "seconds": 3.97,
-    "hash": "56cb7e7e3b77",
+    "text": "Choose Games or the Game-Maker logo to come back here.",
+    "seconds": 4.22,
+    "hash": "8b8bc2250997",
     "voice": "a50c8e805452"
   },
   "home-guide": {

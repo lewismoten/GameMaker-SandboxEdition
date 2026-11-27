@@ -52,12 +52,17 @@ export function restoreScroll(main: HTMLElement, at: Pos): void {
     if (reached()) stop();
   });
   const timer = setTimeout(() => stop(), 3000);
+  const onKey = (event: KeyboardEvent) => {
+    if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Home', 'End', 'PageUp', 'PageDown', ' '].includes(event.key)) stop();
+  };
   const stop = () => {
+    window.removeEventListener('keydown', onKey);
     clearTimeout(timer);
     watch.disconnect();
     main.removeEventListener('wheel', stop);
     main.removeEventListener('touchstart', stop);
   };
+  window.addEventListener('keydown', onKey);
   for (const e of main.children) watch.observe(e);
   watch.observe(main);
   main.addEventListener('wheel', stop, { passive: true, once: true });

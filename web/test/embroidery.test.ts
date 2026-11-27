@@ -44,6 +44,22 @@ const readBack = (s: { x: number; y: number; cmd: string }[]) =>
   s.filter((q) => q.cmd === 'stitch').map((q) => [Math.round(q.x * 10) + 0, Math.round(q.y * 10) + 0]);
 
 describe('stitch generation', () => {
+  it.each([0, -1, NaN, Infinity])('rejects fill spacing %s before processing blocks', (fillSpacing) => {
+    expect(() => compile({ ...small, blocks: [] }, { fillSpacing })).toThrow(/fillSpacing/);
+  });
+
+  it('rejects zero spacing on a filled shape', () => {
+    expect(() => compile(small, { fillSpacing: 0 })).toThrow(/fillSpacing/);
+  });
+
+  it('rejects a fill that exceeds the row budget', () => {
+    expect(() => compile(small, { fillSpacing: 0.00009 })).toThrow(/row limit/i);
+  });
+
+  it('rejects a run that exceeds the stitch budget', () => {
+    expect(() => compile(small, { maxStitch: 0.0003 })).toThrow(/stitch limit/i);
+  });
+
   it('caps every stitch at 7 mm', () => {
     let at = [0, 0];
     for (const s of pattern.stitches) {

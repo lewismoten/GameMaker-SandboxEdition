@@ -24,7 +24,14 @@ export function tilePacker(tiles: HTMLElement) {
       const groups = heads.map((head) => ({ head, items: [...tiles.querySelectorAll<HTMLElement>(`:scope > .card[data-group="${head.dataset.group}"]`)] }));
       const order: HTMLElement[] = [];
       const sizes = groups.map((g) => g.items.length);
-      for (const p of byMaker ? packGroups(sizes, cols) : packCollections(sizes, cols)) {
+      for (const p of byMaker
+        ? packGroups(
+            sizes,
+            cols,
+            1,
+            groups.map((g) => g.head.dataset.kind ?? ''),
+          )
+        : packCollections(sizes, cols)) {
         const { head, items } = groups[p.index];
         head.style.gridArea = `${p.head.row} / ${p.head.col} / auto / span ${p.head.span}`;
         items.forEach((el, i) => (el.style.gridArea = `${p.tiles[i].row} / ${p.tiles[i].col}`));

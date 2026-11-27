@@ -41,6 +41,10 @@ describe('changelog', () => {
     expect(out).toContain(`[Unreleased]: ${REPO}/compare/pkg-v1.1.0...HEAD\n[1.1.0]: ${REPO}/compare/pkg-v1.0.0...pkg-v1.1.0\n[1.0.0]:`);
     expect(out.match(/^\[Unreleased\]/gm)).toHaveLength(1);
   });
+  it('refuses a major-version downgrade', () => {
+    const released = text.replaceAll('1.0.0', '3.1.0');
+    expect(() => cutRelease(released, { version: '2.0.0', date: 'd', prefix: 'pkg' })).toThrow(/newer/);
+  });
   it('refuses an empty Unreleased, a repeat and a bad version', () => {
     const empty = text.replace('- New thing.', '');
     expect(() => cutRelease(empty, { version: '1.1.0', date: 'd', prefix: 'pkg' })).toThrow(/no changes/);

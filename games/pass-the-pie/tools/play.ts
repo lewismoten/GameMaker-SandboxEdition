@@ -11,6 +11,9 @@ import { GameSim } from './sim';
 export const SEED = 1;
 
 export async function play(seed = SEED, upTo = LEVELS.length, from = 0): Promise<{ sim: GameSim; bot: StarterBot }> {
+  if (!Number.isInteger(from) || !Number.isInteger(upTo) || from < 0 || from >= upTo || upTo > LEVELS.length) {
+    throw new RangeError(`FROM and UPTO must be integers with 0 <= FROM < UPTO <= ${LEVELS.length}`);
+  }
   let files: Map<string, Uint8Array> | undefined;
   if (from > 0) {
     files = readDisk(fileURLToPath(new URL('../disk', import.meta.url)));
