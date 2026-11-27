@@ -10,7 +10,7 @@ const script = join(__dirname, 'seoAudit.mjs');
 const title = 'A public game page';
 const description = 'Play a sample DOS game in your browser with a keyboard, game controller or touch controls.';
 const page = () =>
-  `<!doctype html><html lang="en"><head><title>${title}</title>${metaTags({ title, description, url: SITE_URL, image: OG_IMAGE, imageAlt: 'A game title screen' })}</head><body><h1>Sample game</h1></body></html>`;
+  `<!doctype html><html lang="en"><head><title>${title}</title>${metaTags({ title, description, url: SITE_URL, image: OG_IMAGE, imageAlt: 'A game title screen' })}</head><body><h1>Sample game</h1><p>Play this sample game in your browser with a keyboard or touch controls. Explore the levels, collect items, and discover what is waiting at the end of the game.</p></body></html>`;
 
 function fixture(run: (dir: string) => void): void {
   const dir = mkdtempSync(join(tmpdir(), 'gm-seo-audit-'));
@@ -27,6 +27,19 @@ function fixture(run: (dir: string) => void): void {
 }
 
 describe('built-site SEO audit', () => {
+  it('rejects a thin source body even when hidden code and headings are long', () => {
+    fixture((dir) => {
+      const html = page().replace(
+        /<p>.*?<\/p>/,
+        `<p>Turn on JavaScript to play.</p><!-- ${'comment '.repeat(30)} --><style>${'style '.repeat(30)}</style><script>${'script '.repeat(30)}</script><h2>${'heading '.repeat(30)}</h2>`,
+      );
+      writeFileSync(join(dir, 'index.html'), html);
+      const result = spawnSync(process.execPath, [script, dir], { encoding: 'utf8' });
+      expect(result.status).toBe(1);
+      expect(result.stdout).toContain('index.html: source body text too short');
+    });
+  });
+
   it('accepts complete metadata and intentionally unindexed utility pages', () => {
     fixture((dir) => {
       writeFileSync(
