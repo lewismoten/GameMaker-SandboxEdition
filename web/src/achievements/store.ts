@@ -256,15 +256,15 @@ export function countOccurrence(key: string, limit: number): Promise<void> {
 
 /** Forgets everything (the achievements page's Reset). */
 export async function resetAchievements(): Promise<void> {
+  await loadAchievements();
+  // what the saves hold now is "before": hearts, eggs and scores read from them must not unlock again
+  const reset = await snapshotSaves();
   clearGrades();
   clearHonorDates();
-  await loadAchievements();
   held = [];
-  // what the saves hold now is "before": hearts, eggs and scores read from them must not unlock again
-  const reset = await snapshotSaves().catch(() => undefined);
   epoch++;
   record = emptyRecord();
-  if (reset) record.reset = reset;
+  record.reset = reset;
   if (typeof window !== 'undefined') window.dispatchEvent(new Event(ACHIEVEMENTS_CHANGED));
   writing = writing
     .then(() => writeSaveFile(SAVE_ID, FILE, new TextEncoder().encode(JSON.stringify(record)), { quiet: true }))

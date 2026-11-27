@@ -6,7 +6,7 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { tooClose } from '@lewismoten/gamemaker-sandbox-tools/kit/laserClearance';
-import { arcText, lineText, mergeRuns } from '@lewismoten/gamemaker-sandbox-tools/kit/laserPixels';
+import { arcText, lineText, mergeRuns, textPixels } from '@lewismoten/gamemaker-sandbox-tools/kit/laserPixels';
 import { CUT, ENGRAVE, LaserSheet, SCORE } from '@lewismoten/gamemaker-sandbox-tools/kit/laserSvg';
 
 describe('laser SVG builder', () => {
@@ -22,6 +22,12 @@ describe('laser SVG builder', () => {
   });
   it('merges runs of pixels into few rectangles', () => {
     expect(mergeRuns({ w: 4, h: 3, on: () => true })).toEqual([[0, 0, 4, 3]]);
+  });
+  it.each([
+    ['A😀', 3],
+    ['😀', 0],
+  ] as const)('measures only drawable glyphs in %s', (input, width) => {
+    expect(textPixels('micro', input)).toBe(width);
   });
   it('sets text from pixels, 2.5 mm tall letters, and round an arc', () => {
     const s = new LaserSheet(40, 40);
@@ -55,7 +61,16 @@ const games = existsSync(dir)
   : [];
 const read = (g: string, f: string) => readFileSync(join(dir, g, f), 'utf8');
 
-describe.skipIf(!games.length)('wooden nickels the build made', () => {
+function expectCompleteSeries(numbers: number[]) {
+  expect(numbers.sort((a, b) => a - b)).toEqual(Array.from({ length: 26 }, (_, i) => i + 1));
+}
+
+it('rejects a series missing nickel 13', () => {
+  const partial = Array.from({ length: 26 }, (_, i) => i + 1).filter((n) => n !== 13);
+  expect(() => expectCompleteSeries(partial)).toThrow();
+});
+
+describe.skipIf(process.env.GM_SKIP_GAME_BUILD === '1' && !games.length)('wooden nickels the build made', () => {
   for (const game of games)
     it(`${game}: colors, millimeters, cuts, series, spacing`, () => {
       const man = JSON.parse(read(game, 'manifest.json'));
@@ -97,7 +112,7 @@ describe.skipIf(!games.length)('wooden nickels the build made', () => {
     });
   it('numbers the series 1 to 26 once each, and the letters spell the message', () => {
     const all = games.map((g) => JSON.parse(read(g, 'manifest.json')).series as { no: number; letter: string; message: string });
-    expect(new Set(all.map((s) => s.no)).size).toBe(all.length);
+    expectCompleteSeries(all.map((s) => s.no));
     for (const s of all) expect(s.message[s.no - 1]).toBe(s.letter);
   });
 });

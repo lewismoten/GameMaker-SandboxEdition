@@ -46,7 +46,7 @@ records every clip again.
 | [home-shareware-notice.ogg](home/home-shareware-notice.ogg) | They’re other people’s games, so most just play here, exactly as released. Each keeps its author’s notice. | Home: Teddy points at the shareware games | 6.97 |
 | [home-search.ogg](home/home-search.ogg) | Looking for one game? Type part of its name here. | Home: Teddy points at the Find a game box | 3.82 |
 | [home-new.ogg](home/home-new.ogg) | New game starts one of your own: ready to play, empty, or described in words for your own AI to build. | Home: Teddy presses the New game button | 7.32 |
-| [home-games.ogg](home/home-games.ogg) | Games, up in the bar, always brings you back here. | Home: Teddy points at Games in the header | 3.97 |
+| [home-games.ogg](home/home-games.ogg) | Choose Games or the Game-Maker logo to come back here. | Home: Teddy points at Games in the header | 4.22 |
 | [home-guide.ogg](home/home-guide.ogg) | The Guide explains making games, one part at a time. | Home: Teddy points at Guide in the header | 4.27 |
 | [home-library.ogg](home/home-library.ogg) | The Library has things to read and print: manuals, maps, sticker sheets and a magazine. | Home: Teddy points at Library in the header | 6.27 |
 | [home-achievements.ogg](home/home-achievements.ogg) | Achievements keeps track of what you’ve done, here and on the 1994 desk. | Home: Teddy points at Achievements in the header | 5.77 |
@@ -176,7 +176,7 @@ records every clip again.
 | [edit-around-find.ogg](edit-around/edit-around-find.ogg) | Type part of a name here and the list narrows to match. Handy in a game with a hundred files. | Editor: Watt points at the Find a file box | 5.78 |
 | [edit-around-quick.ogg](edit-around/edit-around-quick.ogg) | The magnifier opens any file by its name. Ctrl+P does the same, from anywhere in the editor. | Editor: Watt points at the Open a file by name button | 6.47 |
 | [edit-around-assets.ogg](edit-around/edit-around-assets.ogg) | In the file list, Game assets shows the whole game at once: a card for each kind of file. Press a card to browse those files as pictures. | Editor: Watt points at the Game assets button | 9.29 |
-| [edit-around-groups.ogg](edit-around/edit-around-groups.ogg) | The cards sit under headings: Levels, Heroes, Monsters, Pictures and movies, Sounds and music, and Words and screens. | Editor: Watt points at the first group heading | 8.45 |
+| [edit-around-groups.ogg](edit-around/edit-around-groups.ogg) | The cards sit under headings: Levels, Heroes, Monsters, Pictures and movies, Sounds and music, Words and screens, and Colors and other files. | Editor: Watt points at the first group heading | 9.76 |
 | [edit-around-card-used.ogg](edit-around/edit-around-card-used.ogg) | A card also says how many scenes use its files, so you can see what matters before you open it. | Editor: Watt points at a card’s used-by line | 5.40 |
 | [edit-around-assets-back.ogg](edit-around/edit-around-assets-back.ogg) | Back in a file, Assets jumps to that kind’s gallery, so you can try another map or block set. | Editor: Watt points at the Assets button | 6.24 |
 | [edit-around-used.ogg](edit-around/edit-around-used.ogg) | Here is every scene that uses this file. Press one to open it in the game’s own scene list. | Editor: Watt points at the Used by links | 6.39 |

@@ -30,19 +30,17 @@ export async function measure(page: Page): Promise<Measure> {
     if (b.top < -1 || b.left < -1 || b.bottom > vh + 1 || b.right > vw + 1)
       problems.push(`box ${over(b.width)}x${over(b.height)} at ${over(b.left)},${over(b.top)} leaves ${over(vw)}x${over(vh)}`);
     // internal scroll: the dialog itself, then any descendant that scrolls
-    const scrolls = (el: HTMLElement) => {
+    const checkScroll = (el: HTMLElement, name: string, allowVertical: boolean) => {
       const cs = getComputedStyle(el);
-      const y = /(auto|scroll)/.test(cs.overflowY) && el.scrollHeight > el.clientHeight + 1;
-      const x = /(auto|scroll)/.test(cs.overflowX) && el.scrollWidth > el.clientWidth + 1;
-      return y || x;
+      if (/(auto|scroll)/.test(cs.overflowX) && el.scrollWidth > el.clientWidth + 1)
+        problems.push(`${name} scrolls sideways (${el.scrollWidth} in ${el.clientWidth})`);
+      if (/(auto|scroll)/.test(cs.overflowY) && el.scrollHeight > el.clientHeight + 1)
+        problems.push(`${name} scrolls vertically (${el.scrollHeight} in ${el.clientHeight})${allowVertical ? ' [allowed list]' : ''}`);
     };
     const name = (el: HTMLElement) => `${el.tagName.toLowerCase()}${el.className && typeof el.className === 'string' ? '.' + el.className.split(' ')[0] : ''}`;
-    if (scrolls(dlg)) problems.push(`dialog scrolls (${dlg.scrollHeight}x${dlg.scrollWidth} in ${dlg.clientHeight}x${dlg.clientWidth})`);
+    checkScroll(dlg, 'dialog', false);
     for (const el of dlg.querySelectorAll<HTMLElement>('*'))
-      if (el.offsetWidth > 0 && scrolls(el) && el.tagName !== 'TEXTAREA' && el.tagName !== 'PRE')
-        problems.push(
-          `${name(el)} scrolls (${el.scrollHeight}x${el.scrollWidth} in ${el.clientHeight}x${el.clientWidth})${el.dataset.listArea !== undefined ? ' [allowed list]' : ''}`,
-        );
+      if (el.offsetWidth > 0 && el.tagName !== 'TEXTAREA' && el.tagName !== 'PRE') checkScroll(el, name(el), el.dataset.listArea !== undefined);
     const de = document.documentElement;
     if (de.scrollWidth > vw + 1) problems.push(`page scrolls sideways (${de.scrollWidth} in ${Math.round(vw)})`);
     // the close and primary buttons are visible and not covered

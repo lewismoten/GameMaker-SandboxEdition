@@ -23,6 +23,7 @@ const GMOS = 'GMOS.ELF';
 /** The page into `el`; the returned function puts it away (keys up, port closed). */
 export function renderPiRemote(el: HTMLElement): () => void {
   const serial = webSerial();
+  const route = new AbortController();
   const held = new HeldKeys();
   let forwarding = false;
   let infoWaiter: ((reply: Reply) => void) | undefined;
@@ -323,8 +324,9 @@ export function renderPiRemote(el: HTMLElement): () => void {
     connectBtn.disabled = true;
     say(granted && !chooser ? 'Opening the remembered port…' : 'Choose “Zero W M0 recovery” in the browser’s list…');
     link
-      .connect(serial, chooser ? undefined : granted)
+      .connect(serial, chooser ? undefined : granted, route.signal)
       .then(async () => {
+        if (route.signal.aborted) return;
         wantOpen = true;
         granted = link.current;
         paintConnect();
@@ -334,6 +336,7 @@ export function renderPiRemote(el: HTMLElement): () => void {
         if (!(await handshake())) say('The port is open but the Pi did not answer INFO. Is the kernel running?');
       })
       .catch((e: unknown) => {
+        if (route.signal.aborted) return;
         paintConnect();
         say(explain(e));
       });
@@ -439,6 +442,7 @@ export function renderPiRemote(el: HTMLElement): () => void {
   );
 
   return () => {
+    route.abort();
     setForwarding(false);
     sound.dispose();
     window.removeEventListener('keydown', onKeyDown, true);

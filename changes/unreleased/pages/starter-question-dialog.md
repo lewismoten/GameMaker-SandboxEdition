@@ -1,3 +1,3 @@
 ### Fixed
 
-- Closing the Starter question dialog cancels pending navigation and messages. The question list announces an empty catalog and suggests scrolling only when results overflow.
+- The Starter question list says when no questions are available, and suggests scrolling only when the results overflow.

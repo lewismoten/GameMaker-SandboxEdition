@@ -27,7 +27,7 @@ export function titlePicture(pal: Pal, mb: Book, hero: Pixels, name: string, tag
     const [dx, dy, orient] = i < 0 ? [0, 0, 0] : LOOP[i];
     p.blit(turned(car, orient), (CAR_AT[0] + dx) * 20, (CAR_AT[1] + dy) * 20, 255);
   }
-  outlined(p, Math.round((W - textWidth(name, 2)) / 2), 146, name, pal.c('gold', 4), pal.c('ink', 0), 2, pal.c('ink', 1));
+  outlined(p, Math.round((W - textWidth(name, 2)) / 2), 2, name, pal.c('gold', 4), pal.c('ink', 0), 2, pal.c('ink', 1));
   const ribbon = textWidth(tagline) + 20;
   const rx = Math.round((W - ribbon) / 2);
   bevel(p, rx, 168, ribbon, 14, pal.r('parch'), 3, 2);

@@ -1,5 +1,6 @@
 // First-run hardware policy is per game, backup-aware and usable without persistent storage.
 import { describe, expect, it } from 'vitest';
+import { fromHardware } from './dosConfig/model';
 import { HardwarePrefs } from './hardwarePrefs';
 
 function fixture() {
@@ -46,6 +47,18 @@ describe('first-run hardware preferences', () => {
     replace(null);
     expect(prefs.game('good')).toBeUndefined();
     expect(prefs.show()).toBe(true);
+  });
+  it('defaults malformed DOS fields independently when restoring a game', () => {
+    const { prefs, replace } = fixture();
+    replace('{"games":{"game":{"sound":"speaker","video":"vga","dos":{"driver":3,"irq":"5","port":560,"vga":4}}}}');
+    expect(fromHardware(prefs.game('game'))).toEqual({
+      sound: 0,
+      vga: 4,
+      irq: 7,
+      port: 560,
+      driverName: 'sndblast.drv',
+      driverPath: '.\\',
+    });
   });
   it('retains choices for this visit when storage access or writes fail', () => {
     const blocked = new HardwarePrefs(() => {

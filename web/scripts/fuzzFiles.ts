@@ -5,6 +5,7 @@
 // allocation is caught and the run goes on. Seeded: the same --seed gives the same cases.
 // Verdicts: clear (threw a plain Error), ok (returned), bad (TypeError/RangeError or a native message from deep inside),
 // hang (over the limit), memory (heap cap or large allocation). Exit 1 if anything is bad, hang or memory.
+import { waitForReady } from './fuzzWorker';
 import { spawn } from 'node:child_process';
 import { mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { basename, extname, join, resolve } from 'node:path';
@@ -297,6 +298,7 @@ function arg(name: string, def?: string) {
 async function parent() {
   const seed = Number(arg('seed', '1'));
   const rounds = Number(arg('rounds', '1'));
+  if (!Number.isSafeInteger(rounds) || rounds < 1) throw new Error('--rounds must be a positive integer');
   const limit = Number(arg('limit', '8000'));
   const typeArg = arg('type');
   const want = new Set(typeArg ? typeArg.split(',') : [...TYPES, 'folder']);
@@ -309,19 +311,20 @@ async function parent() {
 
   let proc: ReturnType<typeof spawn> | undefined;
   let waiting: ((m: Record<string, unknown>) => void) | undefined;
-  const start = () =>
-    new Promise<void>((ok) => {
-      proc = spawn(
-        resolve(REPO, 'node_modules/.bin/vite-node'),
-        [fileURLToPath(import.meta.url), '--', '--child', '--seed', String(seed), ...(typeArg ? ['--type', typeArg] : [])],
-        {
-          stdio: ['inherit', 'inherit', 'inherit', 'ipc'],
-          env: { ...process.env, NODE_OPTIONS: '--max-old-space-size=1536' },
-        },
-      );
-      proc.on('message', (m: Record<string, unknown>) => (m.ready ? ok() : waiting?.(m)));
-      proc.on('exit', (code, sig) => waiting?.({ died: `${sig ?? code}` }));
-    });
+  const start = async () => {
+    waiting = undefined;
+    proc = spawn(
+      resolve(REPO, 'node_modules/.bin/vite-node'),
+      [fileURLToPath(import.meta.url), '--', '--child', '--seed', String(seed), ...(typeArg ? ['--type', typeArg] : [])],
+      {
+        stdio: ['inherit', 'inherit', 'inherit', 'ipc'],
+        env: { ...process.env, NODE_OPTIONS: '--max-old-space-size=1536' },
+      },
+    );
+    await waitForReady(proc, 30_000);
+    proc.on('message', (m: Record<string, unknown>) => waiting?.(m));
+    proc.on('exit', (code, sig) => waiting?.({ died: `${sig ?? code}` }));
+  };
   await start();
 
   interface Row {
@@ -379,6 +382,7 @@ async function parent() {
     }
   }
   proc?.send('bye');
+  if (!rows.length) throw new Error('No cases ran for the selected types and source files.');
 
   const per = new Map<string, Record<string, number>>();
   for (const r of rows) {
@@ -403,4 +407,8 @@ async function parent() {
 }
 
 if (process.argv.includes('--child')) child(Number(arg('seed', '1')), new Set(arg('type') ? arg('type')!.split(',') : [...TYPES, 'folder']));
-else void parent();
+else
+  void parent().catch((error: Error) => {
+    console.error(error.message);
+    process.exitCode = 1;
+  });

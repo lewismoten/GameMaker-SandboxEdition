@@ -305,8 +305,16 @@ export function renderLibrary(el: HTMLElement): void {
     return dialog('toybox', 'Toy box: 3D-printable trinkets', [makeToyBox()], fromRoom('toybox'), 'lib-toy');
   };
   // the TV: the site's videos, then every listed game's walkthroughs (by length) and walkthrough videos, the same cards as the shelves
-  const showTv = () => {
-    const items = (shelf?.items ?? []).filter((i) => i.type === 'video' || i.type === 'walkthrough');
+  let tv: HTMLElement | undefined;
+  let shelfError: string | undefined;
+  const updateTv = () => {
+    if (!tv) return;
+    forgetThumbs(tv.querySelectorAll('.lib-thumb'));
+    if (!shelf) {
+      tv.replaceChildren(h('p', { class: 'lead', role: 'status' }, shelfError ?? 'Loading videos and walkthroughs…'));
+      return;
+    }
+    const items = shelf.items.filter((i) => i.type === 'video' || i.type === 'walkthrough');
     const section = (heading: string, of: ShelfItem[]) =>
       of.length
         ? h(
@@ -318,13 +326,16 @@ export function renderLibrary(el: HTMLElement): void {
         : null;
     const groups = groupShelf(items, 'type');
     const parts = groups.flatMap((g) => g.parts.map((p) => section(p.heading ?? g.heading, p.items)));
-    return dialog(
-      'tv',
-      'TV: videos and walkthroughs',
-      [h('div', { class: 'lib-shelf' }, ...(parts.some(Boolean) ? parts : [h('p', { class: 'lead' }, 'Nothing is on the TV yet.')]))],
-      fromRoom('tv'),
-      'lib-stacks lib-tv',
-    );
+    const sections = parts.filter((part) => part !== null);
+    tv.replaceChildren(...(sections.length ? sections : [h('p', { class: 'lead' }, 'Nothing is on the TV yet.')]));
+  };
+  const showTv = async () => {
+    if (busy) return;
+    tv = h('div', { class: 'lib-shelf' });
+    updateTv();
+    await dialog('tv', 'TV: videos and walkthroughs', [tv], fromRoom('tv'), 'lib-stacks lib-tv');
+    forgetThumbs(tv.querySelectorAll('.lib-thumb'));
+    tv = undefined;
   };
   const dialogs: Record<string, () => unknown> = { stacks: showStacks, catalog: showCatalog, copier: showCopier, toybox: showToyBox, tv: showTv };
   const room = makeRoom({
@@ -458,6 +469,7 @@ export function renderLibrary(el: HTMLElement): void {
     .then((s) => {
       shelf = s;
       if (!root.isConnected) return;
+      updateTv();
       // no sort in the address, just after showing one game with paper here: start on its shelf, as if picked
       const start = isShelfOrder(asked) ? undefined : libraryStartGame((id) => groupShelf(s.items, 'game').some((g) => pickOf(g) === id), originId);
       if (start) {
@@ -472,7 +484,11 @@ export function renderLibrary(el: HTMLElement): void {
       if (want && dialogs[want]) void dialogs[want]();
       else if (want) room.open(want);
     })
-    .catch(() => list.replaceChildren(h('p', { class: 'lib-loading' }, 'The shelves could not be loaded. Try reloading the page.')));
+    .catch(() => {
+      shelfError = 'The shelves could not be loaded. Try reloading the page.';
+      list.replaceChildren(h('p', { class: 'lib-loading' }, shelfError));
+      updateTv();
+    });
   // a secret game revealed or hidden again (the felt eggs, the tin hearts, EGG.EXE): its pieces join or leave without a reload
   unwatchShelf?.();
   const unwatch = (unwatchShelf = onCatalogChanged(() => {
@@ -481,6 +497,7 @@ export function renderLibrary(el: HTMLElement): void {
       .then((s) => {
         if (!root.isConnected) return;
         shelf = s;
+        updateTv();
         show();
       })
       .catch(() => undefined); // the shelf as it was

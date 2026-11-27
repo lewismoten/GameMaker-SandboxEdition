@@ -6,6 +6,7 @@ import { describe, expect, it } from 'vitest';
 import { cdCatalog, cdSecretCatalog } from '../../scripts/cdGames';
 import { isBizarreGame } from '../project/bizarre';
 import { isStarterGame } from '../project/starter';
+import { STARTER_HEROES } from '../project/starterHeroes';
 import { CAST, CAST_GAMES } from './castData';
 import CAMEOS from './cameos.json';
 import HIDDEN_JSON from './hidden.json';
@@ -21,6 +22,18 @@ describe('the cast page', () => {
       expect(g, id).toBeDefined();
       expect(plain(title), id).toBe(plain(g!.title));
       expect(family, id).toBe(isBizarreGame(g!) ? 'bizarre' : isStarterGame(g!) ? 'starter' : 'sandbox');
+    }
+  });
+
+  it('lists every Starter under its assigned lead', () => {
+    for (const [game, hero] of Object.entries(STARTER_HEROES)) {
+      const lead = CAST.find((member) => member.name.toUpperCase() === hero);
+      expect
+        .soft(
+          lead?.appears.some((appearance) => appearance.game === game),
+          `${hero} in ${game}`,
+        )
+        .toBe(true);
     }
   });
 

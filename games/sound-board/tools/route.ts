@@ -40,6 +40,16 @@ async function hears(bot: StarterBot, want: number[], what: string, go: () => Pr
   bot.say(`${what}: sound ${want.join(', ')}`);
 }
 
+/** Ticks from the first fanfare to the ping that interrupts it. */
+export function cutoffGap(got: Heard[]): number {
+  const longIndex = got.findIndex((g) => g.slot === SLOT.fanfare);
+  const long = got[longIndex];
+  const short = got.slice(longIndex + 1).find((g) => g.slot === SLOT.ping);
+  if (!long || !short || got.some((g) => !([SLOT.fanfare, SLOT.ping, SLOT.jump] as number[]).includes(g.slot)))
+    throw new Error(`the jump: heard ${got.map((g) => `${g.slot}@${g.tick}`).join(', ')}`);
+  return short.tick - long.tick;
+}
+
 /** 1. The Board: the four pads along the row, the replay door, then the jump. */
 export async function theBoard(bot: StarterBot): Promise<void> {
   const [chime, coin, blip, quiet] = BOARD.units.map(([, x0]) => x0 + 1);
@@ -61,11 +71,7 @@ export async function theBoard(bot: StarterBot): Promise<void> {
   await must(bot, bot.wait(LOOK), 'listening to the jump');
   // the hero is wider than one block, so he may touch both pad blocks of a row at once: count each sound's first play
   const got = h.slice(mark);
-  const long = got.find((g) => g.slot === SLOT.fanfare);
-  const short = got.find((g) => g.slot === SLOT.ping && long && g.tick >= long.tick);
-  if (!long || !short || got.some((g) => !([SLOT.fanfare, SLOT.ping, SLOT.jump] as number[]).includes(g.slot)))
-    throw new Error(`the jump: heard ${got.map((g) => `${g.slot}@${g.tick}`).join(', ')}`);
-  const gap = short.tick - long.tick;
+  const gap = cutoffGap(got);
   const ticksLong = (lengthOf(SLOT.fanfare) / 145.6) * 18.2;
   if (gap >= ticksLong) throw new Error(`the short sound came ${gap} ticks after the long one, which lasts ${ticksLong.toFixed(1)}: nothing was cut off`);
   bot.say(`the jump: the long sound (4) is cut off ${gap} ticks in by the short one (5); it would last ${ticksLong.toFixed(1)}`);

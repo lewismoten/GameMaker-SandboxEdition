@@ -4,7 +4,10 @@
 import { SCAN } from './ids';
 import type { StarterBot } from './bot';
 import { ARRIVE_FLOOR, arrivalLayout, type Placed } from './graduationArrive';
-import { COUNT_TICKS } from './graduationNods';
+import { SOLLEF } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { ORIGIN } from './map';
+import { bigDigit } from './graduationArriveArt';
+import { COUNT_FROM, COUNT_TICKS } from './nods/rules';
 
 type Route = (bot: StarterBot) => Promise<void>;
 type Step = (bot: StarterBot, f: number) => Promise<void>;
@@ -111,13 +114,22 @@ const STEPS: Record<string, Step> = {
   },
   async countdown(bot, f) {
     await go(bot, f + 3, 'to the countdown');
-    // the gate opens when the number reaches 0; wait for it if it has not
-    for (let i = 0; i < 12 && col(bot) < f + 6; i++) {
-      bot.say(`waiting for zero (${i})`);
-      await must(bot, bot.wait(COUNT_TICKS), 'watching the number');
-      await must(bot, bot.walk(f + 6, 'under the gate'), 'under the gate');
+    const x = ORIGIN + f + 4;
+    const digits = Array.from({ length: COUNT_FROM + 1 }, (_, n) => bigDigit(String(n), 0, 1).px);
+    for (let tick = 0; tick <= COUNT_FROM * COUNT_TICKS; tick++) {
+      const pixels = bot.sim.shown(x, ORIGIN + 6).pixels;
+      const digit = digits.findIndex((glyph) => glyph.every((ink, i) => Boolean(ink) === (pixels[i] !== pixels[0])));
+      const closed = Boolean(bot.sim.shown(x, ORIGIN + 9).solid & SOLLEF);
+      const positive = digit > 0;
+      if (digit < 0 || (tick === 0 && !positive) || closed !== positive)
+        throw new Error(`countdown tick ${tick}: digit ${digit}, gate ${closed ? 'closed' : 'open'}`);
+      if (digit === 0) {
+        await go(bot, f + 6, 'through the countdown gate');
+        return;
+      }
+      if (tick < COUNT_FROM * COUNT_TICKS) await must(bot, bot.wait(1), 'watching the number');
     }
-    past(bot, f + 6, 'through the countdown gate');
+    throw new Error('countdown never reached zero');
   },
   async lever(bot, f) {
     await go(bot, f + 1, 'to the lever');

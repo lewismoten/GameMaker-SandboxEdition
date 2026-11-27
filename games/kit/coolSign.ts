@@ -9,7 +9,7 @@
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { text } from '@lewismoten/gamemaker-sandbox-tools/kit/pcText';
 import { emptyBlock, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
-import { MLEN, type GameMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { MLEN, MWID, type GameMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 
 export const COOL_WORD = 'cOoL';
 
@@ -53,6 +53,8 @@ export function coolSignBlocks(pal: Uint8Array, under: [Pixels, Pixels], use: nu
  * left block). Throws if the cells are not plain background.
  */
 export function putCoolSign(bbl: Block[], map: GameMap, pal: Uint8Array, x: number, y: number, use?: number[]): Block[] {
+  if (!Number.isInteger(x) || !Number.isInteger(y) || x < 0 || x + 1 >= MLEN || y < 0 || y >= MWID)
+    throw new Error(`The cOoL plaque would extend outside the map at ${x},${y}`);
   const at = (dx: number) => y * MLEN + x + dx;
   for (const dx of [0, 1]) {
     const b = bbl[map.blocks[at(dx)]];
@@ -76,8 +78,7 @@ export function putCoolSign(bbl: Block[], map: GameMap, pal: Uint8Array, x: numb
   const halves = coolSignBlocks(pal, [pic(0), pic(1)], use);
   const out: Block[] = bbl.map((b) => ({ ...b, pixels: Uint8Array.from(b.pixels), xtra: Uint8Array.from(b.xtra) }));
   halves.forEach((p, k) => {
-    // keeps its gravity bits: the editor's checks read which blocks a set has with gravity
-    out[nums[k]] = { ...emptyBlock(nums[k]), grav: bbl[nums[k]].grav, pixels: Uint8Array.from(p.px) };
+    out[nums[k]] = { ...emptyBlock(nums[k]), grav: bbl[map.blocks[at(k)]].grav, pixels: Uint8Array.from(p.px) };
     map.blocks[at(k)] = nums[k];
   });
   return out;

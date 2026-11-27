@@ -28,8 +28,9 @@ my-site/
 ```
 
 1. Copy each game's folder to the host as it is: its `.GAM` file and every file it uses (maps,
-   blocks, characters, monsters, palettes, sounds, music, pictures, text screens). Use all lower case or all
-   upper case file names: arbitrary mixed case is not found on case-sensitive hosts.
+   blocks, characters, monsters, palettes, sounds, music, pictures, text screens). Automatic discovery tries lower and upper case. On a
+   case-sensitive host, use the exact spelling in `games.json` for mixed-case names. Set
+   `gam` for the game file and list extra files under `files`.
 2. Put the web player beside the folders.
 3. Add `games.json` beside it to show a list of games to choose from.
 

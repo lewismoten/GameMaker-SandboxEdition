@@ -11,6 +11,20 @@ import { MODULATOR_OFFSET, Opl2 } from './opl';
  */
 export const TICK_RATE = 1193180 / Math.floor(65535 / 8);
 
+// PlayIt's offset += getpaws() uses the offset at the start of the length field.
+// Its final offset++ accounts for one length byte even for a multi-byte length.
+export function systemExclusiveEnd(music: Uint8Array, offset: number): number | undefined {
+  if (music[offset] !== 0xf0 && music[offset] !== 0xf7) return undefined;
+  const lengthStart = offset + 1;
+  let length = 0;
+  let byte: number;
+  do {
+    byte = music[++offset] ?? 0xff;
+    length = ((length << 7) | (byte & 0x7f)) >>> 0;
+  } while (byte & 0x80 && offset < music.length);
+  return lengthStart + length + 1;
+}
+
 // Rhythm mode: MIDI channels 11..15 drive the percussion section. The values are the
 // key bits of OPL register 0xBD: bass drum, snare, tom-tom, cymbal, hi-hat.
 const RHYTHM_BITS: Record<number, number> = { 11: 0x10, 12: 0x08, 13: 0x04, 14: 0x02, 15: 0x01 };
@@ -169,18 +183,17 @@ export class CmfPlayer {
           case 0xe0:
             this.offset += 3;
             break;
-          case 0xf0:
-            if (a === 0xf7 || a === 0xf0) {
-              // System exclusive: skip a length-prefixed block.
-              this.offset++;
-              this.offset += this.getPaws();
-              this.offset++;
+          case 0xf0: {
+            const end = systemExclusiveEnd(this.music, this.offset);
+            if (end !== undefined) {
+              this.offset = end;
             } else {
               // FF 2F end of track (or anything else): start the song over.
               this.allNotesOff();
               this.offset = 0;
             }
             break;
+          }
           default:
             this.allNotesOff();
             this.offset = 0;

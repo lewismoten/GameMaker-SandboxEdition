@@ -1,7 +1,7 @@
 // THE CHEZ's shared sound: the lifecycle of both voices with a fake audio context (what starts,
 // what stops, what is freed). How it sounds is checked by ear from offline renders.
 import { describe, expect, it } from 'vitest';
-import { CHEZ_SOUND, chezMotor, chezPassBy } from './chezSound';
+import { chezMotor, chezPassBy } from './chezSound';
 import { climbSpeed } from './chezSynth';
 
 class FakeParam {
@@ -96,12 +96,6 @@ function fakeContext() {
   return { ctx, nodes, sources, until, as: ctx as unknown as BaseAudioContext, out: ctx.destination as unknown as AudioNode };
 }
 
-describe('CHEZ_SOUND', () => {
-  it('is the made-up voice until Lewis picks', () => {
-    expect(CHEZ_SOUND).toBe('synth');
-  });
-});
-
 describe('the climb', () => {
   it('starts slow, climbs through its steps past cruise, then settles at cruise', () => {
     expect(climbSpeed(0)).toBeLessThan(0.5); // about 110 Hz as the contactor closes
@@ -129,6 +123,15 @@ describe('the made-up voice', () => {
     expect(f.sources().filter((s) => s.kind === 'osc').length).toBeGreaterThan(2); // the whine, its wobble, the clunks' thumps
     m.go();
     expect(f.sources()).toHaveLength(n);
+  });
+
+  it('cancels pending clunks when movement stops after 100 ms', () => {
+    const f = fakeContext();
+    const m = chezMotor(f.as, f.out, {});
+    m.go();
+    f.until(0.1);
+    m.stop();
+    expect(f.sources().filter((s) => s.started! > 0.11 && (s.stopped ?? Infinity) > s.started!)).toHaveLength(0);
   });
 
   it('stop() winds down and frees the run; go() again starts a new one', () => {
@@ -198,11 +201,24 @@ describe('the made-up voice', () => {
     expect(m.moving).toBe(true);
   });
 
-  it('a pull-away pass-by clunks through its steps, then drives off and frees itself', () => {
+  it('a one-second pull-away only sounds its initial contactor', () => {
     const f = fakeContext();
-    chezPassBy(f.as, f.out, 10, { outside: true, pullAway: true });
-    expect(f.sources().filter((s) => s.kind === 'osc').length).toBeGreaterThan(7);
-    f.until(11);
+    chezPassBy(f.as, f.out, 1, { pullAway: true });
+    const snaps = f.sources().filter((s) => s.kind === 'source' && !s.loop);
+    expect(snaps.map((s) => s.started)).toEqual([0.01]);
+    f.until(1.1);
+    expect(f.sources().every((n) => n.freed)).toBe(true);
+  });
+
+  it.each([
+    [10, 8.01],
+    [11, 8.31],
+  ])('a %i-second pull-away clunks through its steps, coasts, resumes and frees itself', (seconds, resume) => {
+    const f = fakeContext();
+    chezPassBy(f.as, f.out, seconds, { outside: true, pullAway: true });
+    const snaps = f.sources().filter((s) => s.kind === 'source' && !s.loop);
+    expect(snaps.map((s) => s.started)).toEqual([0.01, 2.31, 2.44, 5.61, resume, resume + 0.13].map((t) => expect.closeTo(t, 6)));
+    f.until(seconds + 1);
     expect(f.sources().every((n) => n.freed)).toBe(true);
   });
 

@@ -15,9 +15,12 @@ export function tileArrowKeys(tiles: HTMLElement, collection: () => string = () 
     const games = all.filter((el) => el.classList.contains('tile-select'));
     if (!roving || !all.includes(roving)) roving = all.find((el) => el.getAttribute('aria-current') === 'true') ?? all[0];
     const where = collection();
+    let position = 0;
     for (const el of all) {
       el.tabIndex = el === roving ? 0 : -1;
       if (!el.classList.contains('tile-select')) continue;
+      const more = el.parentElement?.querySelector<HTMLButtonElement>('.tile-more');
+      if (more) more.tabIndex = el.getAttribute('aria-current') === 'true' ? 0 : -1;
       // said after the tile's own words, so its name still starts with what is on screen
       let pos = el.querySelector<HTMLElement>('.tile-pos');
       if (!pos) {
@@ -25,7 +28,7 @@ export function tileArrowKeys(tiles: HTMLElement, collection: () => string = () 
         pos.className = 'vh tile-pos';
         el.append(pos);
       }
-      const text = `, ${[where, `${games.indexOf(el) + 1} of ${games.length}`].filter(Boolean).join(', ')}`;
+      const text = `, ${[where, `${++position} of ${games.length}`].filter(Boolean).join(', ')}`;
       if (pos.textContent !== text) pos.textContent = text;
     }
   };
@@ -42,8 +45,9 @@ export function tileArrowKeys(tiles: HTMLElement, collection: () => string = () 
   tiles.addEventListener('focusin', (e) => {
     const t = (e.target as HTMLElement).closest<HTMLElement>('.tile-select, .lib-drop-pick');
     if (t && t !== roving) {
+      if (roving) roving.tabIndex = -1;
+      t.tabIndex = 0;
       roving = t;
-      sync();
     }
   });
   later();

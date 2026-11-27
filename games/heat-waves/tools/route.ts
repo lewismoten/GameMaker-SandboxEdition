@@ -128,9 +128,15 @@ export async function coolEvening(bot: StarterBot): Promise<void> {
   await must(bot, bot.land(), 'standing on the road');
   const at = () => HAZE_ROWS.map((y) => blockAt(bot, RIGHT_COL, y)).join();
   const start = at();
-  await must(bot, bot.wait(READ), 'reading the left sign');
+  const checkStill = () => {
+    if (at() !== start) throw new Error('level 3: the hills blocks should not change in the evening');
+  };
+  for (let i = 0; i < READ; i++) {
+    await must(bot, bot.wait(1), 'reading the left sign');
+    checkStill();
+  }
   await must(bot, bot.walk(10, 'the right sign'), 'to the right sign');
   await must(bot, bot.wait(READ), 'reading the right sign');
-  if (at() !== start) throw new Error('level 3: the hills blocks should not change in the evening');
+  checkStill();
   await leave(bot, bot.walk(DOOR_COL, 'the exit'), 'the exit');
 }

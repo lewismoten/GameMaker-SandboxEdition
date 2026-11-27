@@ -15,6 +15,12 @@ const TETS: [number, number, number, number][] = [
   [0, 5, 1, 7],
 ];
 
+export class SurfaceLeavesBoxError extends Error {
+  constructor() {
+    super('tetraMesh: the surface leaves the box');
+  }
+}
+
 /** The closed surface of `field` = 0 over the box (the grid starts a fixed cell outside it). */
 export function tetraMesh(field: (x: number, y: number, z: number) => number, o: Pick<NetsOptions, 'min' | 'max' | 'cell'>): Mesh {
   const { cell } = o;
@@ -29,7 +35,7 @@ export function tetraMesh(field: (x: number, y: number, z: number) => number, o:
     for (let j = 0; j < ny; j++)
       for (let i = 0; i < nx; i++) {
         let v = field(x0 + i * cell, y0 + j * cell, z0 + k * cell);
-        if (v < 0 && (i <= 1 || j <= 1 || k <= 1 || i >= nx - 2 || j >= ny - 2 || k >= nz - 2)) throw new Error('tetraMesh: the surface leaves the box');
+        if (v < 0 && (i <= 1 || j <= 1 || k <= 1 || i >= nx - 2 || j >= ny - 2 || k >= nz - 2)) throw new SurfaceLeavesBoxError();
         if (i === 0 || j === 0 || k === 0 || i === nx - 1 || j === ny - 1 || k === nz - 1) v = Math.max(v, 1e-6);
         vals[i + nx * (j + ny * k)] = v === 0 || Math.abs(v) < 1e-9 ? (v < 0 ? -1e-9 : 1e-9) : v;
       }

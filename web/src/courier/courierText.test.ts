@@ -7,6 +7,7 @@ import { letterDate, mailDay, stampRows } from './courierText';
 import { addStamp, deliver } from './courierStore';
 import { STAMP_WORDS } from './tables';
 import { runScootExe } from './scootExe';
+import * as stamps from './stamps';
 import type { Ui } from '../retro/text/textUi';
 
 const stored = new Map<string, string>();
@@ -17,7 +18,7 @@ beforeEach(() => {
 afterEach(() => vi.unstubAllGlobals());
 
 /** SCOOT.EXE's screen as text, after the keys given (then Esc). */
-async function exeText(keys: string[]): Promise<string> {
+async function exeText(keys: string[], beforeExit?: () => Promise<void>): Promise<string> {
   const rows: string[] = [];
   const screen = {
     cursorVisible: true,
@@ -36,6 +37,10 @@ async function exeText(keys: string[]): Promise<string> {
       next: async () => {
         shown += rows.join('\n') + '\n';
         rows.length = 0;
+        if (queue.length === 1 && beforeExit) {
+          await beforeExit();
+          shown += rows.join('\n');
+        }
         return { key: queue.shift() ?? 'Escape' };
       },
     },
@@ -74,6 +79,25 @@ describe('stamps in SCOOT.EXE', () => {
     expect(rows[1].trim()).toBe(STAMP_WORDS.mystery);
     for (const r of rows) expect(r.length).toBeLessThanOrEqual(72);
     expect(stampRows(p, () => undefined, 72)[0]).toContain('A game');
+  });
+
+  it('updates the idle Postcards screen when catalog titles arrive', async () => {
+    addStamp({ kind: 'game', game: 'snow' });
+    let finish!: (title: (id: string) => string | undefined) => void;
+    const pending = new Promise<(id: string) => string | undefined>((resolve) => {
+      finish = resolve;
+    });
+    const lookup = vi.spyOn(stamps, 'catalogTitles').mockReturnValue(pending);
+    try {
+      const shown = await exeText(['ArrowRight'], async () => {
+        finish(() => 'Snow Day');
+        await pending;
+      });
+      expect(shown).toContain('A game');
+      expect(shown).toContain('Snow Day');
+    } finally {
+      lookup.mockRestore();
+    }
   });
 
   it('the Postcards section lists them, and a long rack scrolls with the arrows', async () => {

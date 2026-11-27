@@ -9,7 +9,7 @@ import { AT3 } from '../src/level3';
 import { AT_BAKERY } from '../src/bakery';
 import { AT_CREEK } from '../src/creek';
 import { AT_HALL } from '../src/hall';
-import { AT_THAW } from '../src/thaw';
+import { AT_THAW, LAST_DROP } from '../src/thaw';
 import { AT_CLOCK } from '../src/clock';
 import { AT_RUSH } from '../src/rush';
 import { phaseAt } from '../src/traffic';
@@ -384,7 +384,7 @@ export async function frostLot(bot: StarterBot): Promise<void> {
   const t0 = bot.sim.ticks;
   await must(bot, bot.walk(A.pond[1] + 1, 'across the ice'), 'across the ice');
   bot.say(`across the ice at tick ${bot.sim.ticks} (the first section cracks at ${A.first})`);
-  if (bot.sim.ticks > A.first + 5 * A.gap) throw new Error(`the bot is too slow for the ice: tick ${bot.sim.ticks} (${t0} at the edge)`);
+  if (bot.sim.ticks > LAST_DROP) throw new Error(`the bot is too slow for the ice: tick ${bot.sim.ticks} (${t0} at the edge)`);
   await must(bot, bot.wait(READ / 2), 'reading the pond placard');
   await must(bot, bot.walk(A.exit - 6, 'the tent'), 'to the tent');
   await must(bot, bot.wait(READ), 'reading the tent placard');

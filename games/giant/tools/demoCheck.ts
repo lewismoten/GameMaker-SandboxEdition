@@ -5,6 +5,7 @@
 import { readFileSync } from 'node:fs';
 import { parseRecording } from '@lewismoten/gamemaker-sandbox-engine/formats/recording';
 import { HIT_SCORE, ROCKY } from '../src/monsters';
+import { throwCountError } from './demoThrows';
 import { GameSim } from './sim';
 
 const keys = parseRecording(new Uint8Array(readFileSync(new URL('../disk/demo.rec', import.meta.url)))).slice(0, -2); // without the Esc
@@ -22,8 +23,8 @@ const fail = (m: string) => {
   console.error(`demoCheck: ${m}`);
   process.exit(1);
 };
-const throws = keys.filter((k) => k.key === 28).length;
-if (throws < 3) fail(`the demo should throw three stars (two pops and the one under the head), not ${throws}`);
+const countError = throwCountError(keys);
+if (countError) fail(countError);
 if (alive(ROCKY + 2) || alive(ROCKY + 3)) fail('the demo should pop both bottom parts');
 if (!alive(ROCKY) || !alive(ROCKY + 1)) fail('the demo should leave the head: a star from the ground flies under it');
 if (sim.ci.score < 2 * HIT_SCORE) fail(`the demo should land two hits (score ${sim.ci.score})`);
