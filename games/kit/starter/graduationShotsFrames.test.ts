@@ -32,3 +32,17 @@ afterEach(() => {
   vi.clearAllMocks();
   vi.resetModules();
 });
+
+it('keeps both sampled frames in the same camera column', async () => {
+  process.argv = ['node', 'shots', 'graduation-basics', 'out', '', '2'];
+  vi.spyOn(process, 'exit').mockImplementation(() => {
+    throw new Error('finished');
+  });
+  await expect(import('./graduationShots')).rejects.toThrow('finished');
+  const paths = vi
+    .mocked(writePng)
+    .mock.calls.map(([path]) => path)
+    .filter((path) => path.includes('-walk-'));
+  expect(paths).toHaveLength(2);
+  expect(new Set(paths).size).toBe(2);
+});
