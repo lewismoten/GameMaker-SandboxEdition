@@ -68,6 +68,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex fixed and tested argument validation for the Ghost Jack snapshot command.
 - OpenAI Codex removed a private research filename from the Programmer’s Guide and updated its public-copy test.
 - OpenAI Codex added the level 3 locked-door ground jump to the Your First Game bot check.
+- OpenAI Codex corrected the editor save indicator test for localized times.
 - OpenAI Codex corrected Kit’s placement in the Three Tokens progress shot and wrote its pixel regression test.
 - OpenAI Codex fixed and tested transparent padding in the Colors That Work shape check.
 - OpenAI Codex fixed and tested contrast sampling for the text-page ink advisory.
