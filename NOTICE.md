@@ -70,6 +70,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex fixed and tested project download preview preferences.
 - OpenAI Codex fixed and tested editor autosave queuing on slow storage.
 - OpenAI Codex reproduced and fixed port collisions in the editor browser test fixture.
+- OpenAI Codex fixed and tested indexed inventory comparisons in the Pocket host replay check.
 - OpenAI Codex added dialog audit coverage for the Sounds editor’s PC speaker option.
 - OpenAI Codex fixed and tested tables following lists in printed instruction books.
 - OpenAI Codex fixed and tested the read-only notice across Overview tabs.
