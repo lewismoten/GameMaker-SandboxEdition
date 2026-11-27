@@ -313,7 +313,7 @@ function trimPeekedZips(): void {
  * fetches the play page's 118 kB chunk when it is not the CD's own, hostedZip.ts): enough for
  * the home page to tell from the .gam whether a game has a demo. Falls back to fetchGameFile
  * when the zip has no such file (a game that renames its extensions, found only after reading
- * its player) or is not a zip.
+ * its player), the requested name is ambiguous, or the pack is not a zip.
  */
 export async function peekGameFile(entry: FiledEntry, name: string, base = './'): Promise<Uint8Array | undefined> {
   const url = packUrl(entry, base);

@@ -103,6 +103,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex fixed and tested navigation away from the home page while it loads.
 - OpenAI Codex fixed and tested the silver key pickup and door payment checks in the Stronger Keys title demo.
 - OpenAI Codex fixed the missing monsters in the Meet the Monsters map preview and tested its pixels against the DOS disk. Codex also fixed and tested unknown ID handling in the Starter map preview command.
+- OpenAI Codex fixed and tested hosted ZIP lookups for files that share a DOS name.
 - OpenAI Codex corrected Kit’s placement in the Three Tokens progress shot and wrote its pixel regression test.
 - OpenAI Codex corrected the Countdown title demo timing check and wrote its regression test.
 - OpenAI Codex fixed and tested transparent padding in the Colors That Work shape check.
