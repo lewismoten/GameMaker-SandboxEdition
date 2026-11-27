@@ -39,7 +39,8 @@ describe('dialog measurements', () => {
       const { problems } = await measure(page);
       expect(problems.filter((problem) => !problem.includes('[allowed list]'))).toHaveLength(hard);
       expect(problems.filter((problem) => problem.includes('[allowed list]'))).toHaveLength(allowed);
-    }));
+    }),
+  );
 
   it('keeps a full-size checkbox target when its separate caption is shorter', () =>
     withPage({}, async (page) => {
