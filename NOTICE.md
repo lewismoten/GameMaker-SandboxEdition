@@ -1827,3 +1827,5 @@ The dial draws on dAcid's [Rotary Dial mechanism](https://www.thingiverse.com/th
 
 - **Release version checks (November 26, 2026)**: OpenAI Codex fixed the release cutter's version ordering and wrote its downgrade regression test.
 - **Color Doors gallery cards**: OpenAI Codex revised the blue-yellow hint and tested the copy limit for all five gallery cards.
+
+- **Specials calendar (November 26, 2026)**: OpenAI Codex fixed overnight availability and wrote the boundary tests.
