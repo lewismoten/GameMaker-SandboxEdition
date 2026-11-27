@@ -35,9 +35,10 @@ describe('third-party notices', () => {
     for (const s of ['Copyright (c) 2026 Lewis Moten', 'Copyright (c) Zig contributors', 'GNU C Library', 'WebKitGTK']) expect(linux).toContain(s);
     expect(linux).not.toContain('mingw');
     expect(thirdPartyNotices('mac')).toContain('Copyright (c) 2026 Lewis Moten');
-  }, 60_000);
+  });
 
-  it('travel in every download', async () => {
+  it('travel in every download', async ({ task }) => {
+    expect(task.timeout).toBe(60_000);
     const exe = await winExe({ title: 'T', id: 't', html, player: pub('win/GameMakerPlayer-x64.exe') });
     expect(dec.decode(readResources(exe).find((r) => r.type === RT.RCDATA && r.name === 'NOTICES')!.data)).toBe(thirdPartyNotices('windows'));
     const winZip = await readZip(await winExeZip({ title: 'T', id: 't', html, player: pub('win/GameMakerPlayer-x64.exe') }));
@@ -51,5 +52,5 @@ describe('third-party notices', () => {
     expect(dec.decode(files.find((f) => f.path === 'T/THIRD-PARTY-NOTICES.txt')!.data)).toBe(thirdPartyNotices('linux'));
     const macZip = await readZip(await macAppZip({ title: 'T', id: 't', html, player: pub('mac/GameMakerPlayer') }));
     expect(dec.decode(macZip.find((e) => e.name === NOTICES_FILE)!.data)).toBe(thirdPartyNotices('mac'));
-  });
+  }, 60_000);
 });

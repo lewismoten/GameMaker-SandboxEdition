@@ -10,7 +10,7 @@ interface PanelTab {
   panel: HTMLElement;
 }
 
-export function panelTabs(label: string, tabs: PanelTab[], initial?: string, changed?: (id: string) => void): HTMLElement {
+export function panelTabs(label: string, tabs: PanelTab[], initial?: string, changed?: (id: string) => void, headingAction?: HTMLElement | null): HTMLElement {
   const prefix = `editor-panel-${++sequence}`;
   const bar = h('div', { class: 'panel-tabs-list', role: 'tablist', 'aria-label': label });
   const buttons: HTMLButtonElement[] = [];
@@ -51,5 +51,6 @@ export function panelTabs(label: string, tabs: PanelTab[], initial?: string, cha
   });
   const selected = tabs.findIndex((tab) => tab.id === initial);
   show(selected < 0 ? 0 : selected);
-  return h('div', { class: 'panel-tabs' }, bar, ...tabs.map((tab) => tab.panel));
+  const heading = headingAction ? h('header', { class: 'panel-tabs-heading' }, bar, headingAction) : bar;
+  return h('div', { class: 'panel-tabs' }, heading, ...tabs.map((tab) => tab.panel));
 }

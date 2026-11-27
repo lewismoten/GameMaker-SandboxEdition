@@ -12,6 +12,14 @@ const md = (id: string) => readFileSync(join(here, 'chapters', `${id}.md`), 'utf
 const gm = resolve(here, '../../../code/GM');
 
 describe('the chapters', () => {
+  it('distinguishes the VOC allocation expression from the read count', () => {
+    const rows = md('sound').split('\n');
+    const allocation = rows.find((row) => row.startsWith('| Voice buffer '));
+    expect(allocation).toContain('new char[vocfilesize]');
+    expect(allocation).not.toContain('uint');
+    expect(rows.find((row) => row.startsWith('| VOC size hazard '))).toMatch(/cast to `uint` for `read`/);
+  });
+
   it('have one file each, and every file is in the contents', () => {
     const files = readdirSync(join(here, 'chapters'))
       .map((f) => f.replace(/\.md$/, ''))
@@ -31,19 +39,29 @@ describe('the chapters', () => {
   });
 
   it('carry no drafting notes, names of agents, buyers or secret games', () => {
-    const bad = /\[verify\]|\(draft|Kaylee|\.for-lewis|ask Lewis|owner name|serial number:|HEART OF TIN|BAKER'S DOZEN/i;
+    const bad = /\[verify\]|\(draft|Kaylee|\.for-lewis|2026-11-05-ignored-fields\.md|ask Lewis|owner name|serial number:|HEART OF TIN|BAKER'S DOZEN/i;
     for (const c of CHAPTERS) expect(md(c.id).match(bad)?.[0], c.id).toBeUndefined();
   });
 
-  it('explains the two Escape checks and the matching web fade sequence', () => {
+  it('explains the two Escape checks and which key state each player reads after the fade', () => {
     const keys = md('timing').split('## 12.3 Keys')[1].split('## 12.4')[0];
     expect(keys).toContain('hold Escape until the screen goes black');
     expect(keys).toContain('release it during the fade');
-    for (const source of ['PLAYGAME.C:1424', 'PLAYGAME.C:1533', 'PLAYGAME.C:1547', 'engine/engine/scene.ts:668-671', 'engine/engine/scene.ts:715-721']) {
+    expect(keys).toContain('keyboard interrupt clears the held key on release');
+    expect(keys).toContain('release during the fade stays queued');
+    expect(keys).toContain('last gameplay tick still has Escape held, so the scene takes the quit link');
+    for (const source of [
+      'PLAYGAME.C:1424',
+      'PLAYGAME.C:1533',
+      'PLAYGAME.C:1547',
+      'PLAYGAME.C:4485',
+      'engine/engine/scene.ts:545-550',
+      'engine/engine/scene.ts:671-674',
+      'engine/engine/scene.ts:720-727',
+    ]) {
       expect(keys).toContain(`\`${source}\``);
       expect(citationHref(source), source).toBeDefined();
     }
-    expect(keys).toContain('DOS fidelity');
     expect(keys).toContain('[not yet checked in DOSBox]');
   });
 

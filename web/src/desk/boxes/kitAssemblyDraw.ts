@@ -7,7 +7,21 @@ import { poseAt, type AssemblyModel, type V3 } from './kitAssemblyModel';
 
 export function assemblyView(canvas: HTMLCanvasElement, model: AssemblyModel): TrinketView & { step: number } {
   const ctx = canvas.getContext('2d')!;
-  const view = { yaw: 0.6, pitch: 0.6, zoom: 1, step: model.steps.length, fixed: undefined as number | undefined, dispose() {}, draw };
+  let pitch = 0.6;
+  const view = {
+    yaw: 0.6,
+    get pitch() {
+      return pitch;
+    },
+    set pitch(value: number) {
+      pitch = Math.max(0.15, value);
+    },
+    zoom: 1,
+    step: model.steps.length,
+    fixed: undefined as number | undefined,
+    dispose() {},
+    draw,
+  };
   const doneAt = new Map(model.steps.map((s, i) => [s.kind === 'done' ? s.group : '', i]));
   function draw() {
     const width = view.fixed ?? Math.max(1, canvas.clientWidth);
@@ -20,7 +34,6 @@ export function assemblyView(canvas: HTMLCanvasElement, model: AssemblyModel): T
     const project = ([x, y, z]: V3): V3 => {
       const a = x * Math.cos(view.yaw) - y * Math.sin(view.yaw);
       const b = x * Math.sin(view.yaw) + y * Math.cos(view.yaw);
-      const pitch = Math.max(0.15, view.pitch);
       return [a, b * Math.sin(pitch) - z * Math.cos(pitch), b * Math.cos(pitch) + z * Math.sin(pitch)];
     };
     const now = model.steps[Math.min(model.steps.length, Math.ceil(view.step)) - 1];

@@ -21,6 +21,7 @@ import { chooseCopy } from './homeCopies';
 import { plainError } from '../core/plainError';
 import { isBizarreGame } from '../../project/bizarre';
 import { isSpecialGame } from '../../project/special';
+import { hasRetailBox } from '../../project/starter';
 import { keepSpecial } from '../../specials/state';
 import { lookId } from './lookId';
 
@@ -133,7 +134,7 @@ function openKeys(game: HomeGame): void {
 
 /** The manual, for games that have one printed. */
 function hasManual(game: HomeGame): boolean {
-  return !!game.entry?.original?.manual;
+  return !!game.entry?.original?.manual && hasRetailBox(game.entry);
 }
 
 /** Maps without a box: the Bard of Bizarre's song-games have no manual, but they have a World Map and Level Maps. */

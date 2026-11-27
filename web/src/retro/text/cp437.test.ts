@@ -1,10 +1,15 @@
 // toCp437 and fromCp437 cover the whole code page.
+import overview from '../README.md?raw';
 import { describe, expect, it } from 'vitest';
 import { fromCp437, toCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 
 const ALL = Array.from({ length: 256 }, (_, c) => String.fromCharCode(c)).join('');
 
 describe('CP437 text', () => {
+  it('documents the CP437 import path in the retro overview', () => {
+    expect(overview).toContain('`@lewismoten/gamemaker-sandbox-engine/text/cp437`');
+  });
+
   it('round-trips every code 0-255', () => {
     const shown = fromCp437(ALL);
     expect([...shown]).toHaveLength(256);

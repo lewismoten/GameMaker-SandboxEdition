@@ -4,6 +4,7 @@
 // level 3 from the top of the low wall and from the ground by its door; and to leap over the side hedges.
 // Crossing a door's column overhead (above its arch, row 8) fails the check.
 //   cd web && npx vite-node ../games/your-first-game/tools/wallCheck.ts   (check.ts runs it too)
+import { KEYS } from '../../kit/starter/blocks';
 import { StarterBot } from '../../kit/starter/bot';
 import { SCAN } from '../../kit/starter/ids';
 import { ORIGIN } from '../../kit/starter/map';
@@ -59,6 +60,16 @@ async function level3(): Promise<void> {
   await level2Route(bot);
   await bot.walk(AT.three.wall - 1);
   expectStopped('level 3, leaping from the low wall', await leaps(bot, 'right', AT.three.door, 1));
+  // The low-wall leap collects the key on landing. Empty the key counter before approaching the door.
+  bot.sim.ci.meter[KEYS] = 1;
+  const start = AT.three.door - 1;
+  const result = await bot.walk(start);
+  if (result) throw new Error(`level 3: walking to the locked door: ${result}`);
+  if (bot.sim.ci.meter[KEYS] !== 1) throw new Error('level 3: the hero picked up the key before the ground jump');
+  if (Math.floor(bot.px.x / 20) !== start || bot.px.y !== (GROUND - 1) * 20) {
+    throw new Error(`level 3: expected ground jump at column ${start}, got (${bot.px.x}, ${bot.px.y}) pixels`);
+  }
+  expectStopped('level 3, leaping from the ground at the locked door', await leaps(bot, 'right', AT.three.door));
   await bot.walk(1);
   expectStopped('level 3, leaping at the left hedge', await leaps(bot, 'left', 0));
 }

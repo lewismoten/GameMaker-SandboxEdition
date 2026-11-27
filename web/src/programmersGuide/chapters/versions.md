@@ -146,7 +146,7 @@ A literal scan of the linked sources against both CD binaries finds 197 literals
   - The published source is the **CRIPPLEWARE** demo configuration (`GMGEN.H:37`; `StdCrippleMsg` "only allows Maps to be saved"), while the CD binaries were built without it and with CHKREG on, although the 2014 source comments CHKREG out.
   - None of the `code/GM/*.MAP` files matches a shipped binary; `XFERPLAY.MAP` matches the 2.04 layout.
 - **Unused or unfinished fields:**
-  - The monster record's `fly` ("Whether or not gravity has an effect on a monster"), `jump` and `stick` ("Not currently used") are serialized (`MON.H:23-26`), but no editor writes them and no player reads them. They are zero in all 52,066 archive monster records (see `2026-11-05-ignored-fields.md`).
+  - The monster record's `fly` ("Whether or not gravity has an effect on a monster"), `jump` and `stick` ("Not currently used") are serialized (`MON.H:23-26`), but no editor writes them and no player reads them. They are zero in all 52,066 archive monster records.
   - `fly` is described as a gravity switch and `jump`/`stick` as "Not currently used" (`MON.H:21-26`); the checked-in movement path uses marches, wall checks and contact instead (`PG:2970-3122`). That does not establish a development plan. Monster gravity was planned but never built in any release remains [inference].
   - The `.gam` 3.0 header's 250-byte "RSD" fill and the 11-byte `extra[]` in the old scene record are reserved space.
 - **Third-party edits:** several players in the collection have length-preserving hex edits of text (About screens, re-branded extensions `.gam→.z0g`, renamed HUD labels). They explain "no version string" players and are not Game-Maker versions.

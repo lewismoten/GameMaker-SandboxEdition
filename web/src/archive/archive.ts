@@ -3,30 +3,12 @@
 // shows counts only: never a file's or a game's name.
 import { fetchOrder, partCount, takePart, type Manifest } from './plan';
 import { progressAnnouncements } from '../editor/core/progressAnnouncements';
+import { fetchOne } from './fetchOne';
 
 const AT_ONCE = 4;
-const ATTEMPT_TIMEOUT_MS = 30_000;
 
 const $ = (id: string) => document.getElementById(id) as HTMLElement;
 const say = (text: string) => ($('status').textContent = text);
-
-async function fetchOne(url: string): Promise<boolean> {
-  for (let tries = 0; tries < 2; tries++) {
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), ATTEMPT_TIMEOUT_MS);
-    try {
-      // 'reload': past the browser's cache, so the archive's crawler sees the request
-      const r = await fetch(url, { cache: 'reload', signal: controller.signal });
-      await r.arrayBuffer();
-      if (r.ok) return true;
-    } catch {
-      /* try once more */
-    } finally {
-      clearTimeout(timer);
-    }
-  }
-  return false;
-}
 
 async function run(): Promise<void> {
   const q = new URLSearchParams(location.search);
@@ -44,12 +26,22 @@ async function run(): Promise<void> {
     return;
   }
   const order = fetchOrder(manifest, q.get('games') === '1');
-  const part = Math.max(0, Number(q.get('part')) || 0);
+  const requested = q.get('part');
+  const part = Number(requested);
+  if (requested !== null) {
+    const count = partCount(order);
+    if (!Number.isInteger(part) || part < 1 || part > count) {
+      const message = count === 1 ? 'Only archive part 1 is available.' : `Choose an archive part from 1 to ${count}.`;
+      $('counts').textContent = message;
+      say(message);
+      return;
+    }
+    $('part').textContent = `Part ${part} of ${count}.`;
+  }
   const list = takePart(order, part);
   const base = new URL('./', location.href);
   const bar = $('bar') as HTMLProgressElement;
   bar.max = Math.max(1, list.length);
-  if (part) $('part').textContent = `Part ${part} of ${partCount(order)}.`;
   let done = 0;
   let failed = 0;
   let next = 0;

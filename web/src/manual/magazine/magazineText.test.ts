@@ -52,6 +52,10 @@ function drawnStrings(v: unknown, key: string, out: string[]): void {
 }
 
 describe('the magazine as plain text', () => {
+  it('omits mug image descriptions from the plain text', () => {
+    expect(pageText({ kind: 'ad', tone: 'white', blocks: [{ t: 'mugs', mugs: [{ design: 'dots', name: 'A mug with seven blue dots' }] }] })).toEqual([]);
+  });
+
   for (const n of [1, 2] as const) {
     it(`No. ${n}: every sentence a page's blocks hold is in its text, word for word`, async () => {
       const issue = await buildIssue(magContext(games, ISSUES[n]));

@@ -8,7 +8,7 @@
 import './trinketShelf.css';
 import { h } from '../../editor/core/ui';
 import { trinketTurntable } from './trinketTurntable';
-import { loadFeelies, type Feelie } from './feelies';
+import { loadFeelieGroups, type Feelie } from './feelies';
 import { viewMaker } from './feelieModels';
 import { thumbnail } from './feelieThumbs';
 import type { PhoneViewer } from './phone/phoneViewer';
@@ -21,22 +21,37 @@ import type { BoxItem } from '../../manual/printables/viewer';
  */
 export function trinketShelf(id: string, paper: Promise<BoxItem[]> = Promise.resolve([]), open: () => void = () => {}): HTMLElement {
   const shelf = h('section', { class: 'bc-trinkets', hidden: '', 'aria-label': 'Feelies' });
-  void Promise.all([loadFeelies(id), paper.catch((): BoxItem[] => [])]).then(([list, sheets]) => {
-    if (!list.length && !sheets.length) return;
-    shelf.append(...strip(list, sheets, open), h('button', { type: 'button', onclick: open }, 'Build instructions & downloads…'));
-    shelf.hidden = false;
-  });
+  const [trinkets, kitsAndPhone] = loadFeelieGroups(id);
+  const sheets = paper.catch((): BoxItem[] => []);
+  void (async () => {
+    let content: ReturnType<typeof strip> | undefined;
+    function reveal() {
+      if (!content) {
+        content = strip(open);
+        shelf.append(...content.elements, h('button', { type: 'button', onclick: open }, 'Build instructions & downloads…'));
+        shelf.hidden = false;
+      }
+      return content;
+    }
+    for (const group of [trinkets, kitsAndPhone]) {
+      const list = await group;
+      if (list.length) reveal().addFeelies(list);
+    }
+    const items = await sheets;
+    if (items.length) reveal().addPaper(items);
+  })();
   return shelf;
 }
 
 const ABOUT =
   'Feelies are physical extras packed in a game box. Infocom began the habit in the 1980s, and the name stuck. Some were copy protection, like a code wheel that had to be turned to answer the game. Others set a box apart from its shelf neighbors, helped during play, made the story feel real, or carried it beyond the screen.';
 
-function strip(list: Feelie[], sheets: BoxItem[], open: () => void): HTMLElement[] {
+function strip(open: () => void) {
+  const list: Feelie[] = [];
+  const thumbs: HTMLButtonElement[] = [];
   let at = -1; // -1: the box is showing
   let pv: PhoneViewer | undefined;
   let assembly: { close(): void } | undefined;
-  const total = list.length;
   let foldTile: HTMLElement | undefined;
   /** The die's fold view takes the box's place above the shelf, as a kit's assembly does; choosing it again brings the box back. */
   async function showFold(item: BoxItem, tile: HTMLElement) {
@@ -56,7 +71,6 @@ function strip(list: Feelie[], sheets: BoxItem[], open: () => void): HTMLElement
     float.replaceChildren(el);
     el.querySelector<HTMLElement>('.bcf-svg')?.focus({ preventScroll: true });
   }
-  const paperTiles = paperFeelieTiles(sheets, open, (item, tile) => void showFold(item, tile));
 
   // PageUp and PageDown change feelie; the turntable has the rest of the keys
   const table = trinketTurntable(
@@ -71,26 +85,31 @@ function strip(list: Feelie[], sheets: BoxItem[], open: () => void): HTMLElement
   const hint = h('p', { class: 'fl-hint' }, 'Drag to turn · scroll or pinch to zoom · Esc for the box');
   const float = h('div', { class: 'trk-float', hidden: '' }, canvas, status, hint);
 
-  const thumbs = list.map((f, i) => {
-    const img = h('img', { class: 'fl-img', alt: '', draggable: false, hidden: '' });
-    const name = h('span', { class: 'fl-name' }, f.title);
-    const button = h(
-      'button',
-      { class: 'feelie', type: 'button', 'aria-pressed': 'false', 'aria-label': f.title, title: f.title, onclick: () => void choose(at === i ? -1 : i) },
-      img,
-      name,
-    );
-    // the render comes in when drawn; until then (or with no WebGL) the tile shows its name
-    void thumbnail(f).then((src) => {
-      if (!src) return;
-      img.src = src;
-      img.hidden = false;
-      name.hidden = true;
-    });
-    return button;
-  });
+  function addFeelies(group: Feelie[]) {
+    for (const f of group) {
+      const i = list.length;
+      list.push(f);
+      const img = h('img', { class: 'fl-img', alt: '', draggable: false, hidden: '' });
+      const name = h('span', { class: 'fl-name' }, f.title);
+      const button = h(
+        'button',
+        { class: 'feelie', type: 'button', 'aria-pressed': 'false', 'aria-label': f.title, title: f.title, onclick: () => void choose(at === i ? -1 : i) },
+        img,
+        name,
+      );
+      // the render comes in when drawn; until then (or with no WebGL) the tile shows its name
+      void thumbnail(f).then((src) => {
+        if (!src) return;
+        img.src = src;
+        img.hidden = false;
+        name.hidden = true;
+      });
+      thumbs.push(button);
+      row.append(button);
+    }
+  }
   const label = h('span', { class: 'fl-label', id: 'feelies-label' }, 'Feelies');
-  const row = h('div', { class: 'fl-row', role: 'group', 'aria-labelledby': 'feelies-label' }, ...thumbs, ...paperTiles);
+  const row = h('div', { class: 'fl-row', role: 'group', 'aria-labelledby': 'feelies-label' });
   // a button and its note side by side (a <details> would hold the note in a box of its own that clips it)
   const note = h('p', { class: 'fl-note', id: 'feelies-about', hidden: '' }, ABOUT);
   const ask = h('button', { class: 'fl-about', type: 'button', 'aria-expanded': 'false', 'aria-controls': 'feelies-about' }, 'What are feelies?');
@@ -158,7 +177,11 @@ function strip(list: Feelie[], sheets: BoxItem[], open: () => void): HTMLElement
     await table.showModel(() => viewMaker(f), { spin: true, fresh: true });
     if (was < 0) canvas.focus({ preventScroll: true });
   }
-  const step = (dir: 1 | -1) => total > 0 && void choose((at + dir + total) % total);
+  const step = (dir: 1 | -1) => list.length > 0 && void choose((at + dir + list.length) % list.length);
 
-  return [h('div', { class: 'fl-bar' }, label, row, about), float];
+  return {
+    elements: [h('div', { class: 'fl-bar' }, label, row, about), float],
+    addFeelies,
+    addPaper: (items: BoxItem[]) => row.append(...paperFeelieTiles(items, open, (item, tile) => void showFold(item, tile))),
+  };
 }

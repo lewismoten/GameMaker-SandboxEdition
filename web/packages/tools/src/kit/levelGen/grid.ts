@@ -50,6 +50,7 @@ export const PLAT = 17;
 export const closed = (c: number) => c === WALL || c === TREE || c === ROCK || c === FURN || c === WATER || c === ROOF;
 
 export interface Area {
+  wrap?: boolean;
   w: number;
   h: number;
   cells: Uint8Array;
@@ -64,6 +65,13 @@ const SIDES: readonly [number, number][] = [
   [0, -1],
 ];
 
+/** Cell at an adjacent coordinate, or -1 beyond a bounded area. */
+export function neighbor(a: Area, x: number, y: number): number {
+  if (x >= 0 && x < a.w && y >= 0 && y < a.h) return y * a.w + x;
+  if (!a.wrap) return -1;
+  return ((y + a.h) % a.h) * a.w + ((x + a.w) % a.w);
+}
+
 /** Steps from `from` to every open cell (-1 where it cannot be reached), moving along the four sides. */
 export function distances(a: Area, from: number): Int32Array {
   const dist = new Int32Array(a.cells.length).fill(-1);
@@ -75,10 +83,8 @@ export function distances(a: Area, from: number): Int32Array {
     const x = c % a.w,
       y = (c / a.w) | 0;
     for (const [dx, dy] of SIDES) {
-      const nx = x + dx,
-        ny = y + dy;
-      if (nx < 0 || ny < 0 || nx >= a.w || ny >= a.h) continue;
-      const n = ny * a.w + nx;
+      const n = neighbor(a, x + dx, y + dy);
+      if (n < 0) continue;
       if (dist[n] < 0 && !closed(a.cells[n])) {
         dist[n] = dist[c] + 1;
         queue.push(n);

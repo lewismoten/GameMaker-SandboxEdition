@@ -51,7 +51,7 @@ Sign font and packing by OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten.
 export const WON = wrap(`
 |HELLO, MONSTERS!
 
-Two levels, five monsters, and every one said hi.
+Two levels, 7 monsters, and every one said hi.
 
 A monster is a picture, a path and a power. Walk it back and forth, make it hurt a little, or make it pop when you land on it.
 

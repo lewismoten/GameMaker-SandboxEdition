@@ -21,7 +21,7 @@ export const VIEWS: View[] = [
   { file: 'as.pal', name: 'As you see it', line: 'The colors as drawn.', scene: 3, kind: 'normal' },
   { file: 'red1.pal', name: 'Red-green, one kind', line: 'Reds go dark; red, green blur.', scene: 4, kind: 'protan' },
   { file: 'red2.pal', name: 'Red-green, the other', line: 'Red and green blur together.', scene: 5, kind: 'deutan' },
-  { file: 'blue.pal', name: 'Blue-yellow', line: 'Blue looks green. Yellow, pink.', scene: 6, kind: 'tritan' },
+  { file: 'blue.pal', name: 'Blue-yellow', line: 'Blue to green. Yellow to pink.', scene: 6, kind: 'tritan' },
   { file: 'gray.pal', name: 'No color', line: 'Only light and dark.', scene: 7, kind: 'gray' },
 ];
 

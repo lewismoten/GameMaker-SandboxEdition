@@ -95,6 +95,30 @@ describe('the reach model at the top of a generated side view', () => {
   }, 300000);
 });
 
+async function checkLanding(
+  sim: { tick(): Promise<unknown>; hold(keys: readonly number[]): void; w: { chr: { x: ArrayLike<number>; y: ArrayLike<number> }; ci: { gravy: number } } },
+  st: Pick<Step, 'dir' | 'steerTicks' | 'to'>,
+  key: number,
+) {
+  let settled = false;
+  let ticks = 0;
+  while (ticks < 90) {
+    ticks++;
+    await sim.tick();
+    sim.hold(st.dir && ticks <= st.steerTicks ? [key] : []);
+    settled = ticks >= 5 && sim.w.chr.y[0] === st.to.row && sim.w.chr.y[1] === 0 && sim.w.ci.gravy === 0;
+    if (settled) break;
+  }
+  const landed = { X: sim.w.chr.x[0] * BLEN + sim.w.chr.x[1], Y: sim.w.chr.y[0] * BLEN + sim.w.chr.y[1] };
+  if (!settled || landed.X !== st.to.X || landed.Y !== st.to.row * BLEN) return { landed, gravy: sim.w.ci.gravy, ticks };
+}
+
+it('reports a timeout when the hero is still moving vertically at the target', async () => {
+  const sim = { tick: () => Promise.resolve(), hold: () => {}, w: { chr: { x: [2, 0], y: [3, 0] }, ci: { gravy: 1 } } };
+  const failure = await checkLanding(sim, { dir: 0, steerTicks: 0, to: { X: 2 * BLEN, row: 3 } }, 0);
+  expect(failure).toEqual({ landed: { X: 2 * BLEN, Y: 3 * BLEN }, gravy: 1, ticks: 90 });
+});
+
 // Compare a planned jump with the engine, including the horizontal snap at a ceiling edge.
 it.each([1, -1])('matches exact landings below a ceiling edge when steering %i', async (dir) => {
   const hero = tallHero();
@@ -136,13 +160,8 @@ it.each([1, -1])('matches exact landings below a ceiling edge when steering %i',
     for (let t = 0; t < 6; t++) await sim.tick();
     const key = st.dir === 1 ? hp.physics.keys.right : hp.physics.keys.left!;
     sim.hold(st.dir ? [key, hp.physics.keys.jump] : [hp.physics.keys.jump]);
-    for (let t = 0; t < 90; t++) {
-      await sim.tick();
-      sim.hold(st.dir && t + 1 <= st.steerTicks ? [key] : []);
-      if (t > 3 && sim.w.chr.y[0] === st.to.row && sim.w.chr.y[1] === 0 && sim.w.ci.gravy === 0) break;
-    }
-    const landed = { X: sim.w.chr.x[0] * BLEN + sim.w.chr.x[1], Y: sim.w.chr.y[0] * BLEN + sim.w.chr.y[1] };
-    if (landed.X !== st.to.X || landed.Y !== st.to.row * BLEN) failures.push({ dir, st, landed });
+    const failure = await checkLanding(sim, st, key);
+    if (failure) failures.push({ dir, st, ...failure });
   }
   expect(jumps).toBeGreaterThan(0);
   expect(failures).toEqual([]);

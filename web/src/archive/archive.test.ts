@@ -1,37 +1,22 @@
-// Exercise archive.html's entry point with a manifest and a count-only display.
+// Exercise the archive page with a one-part manifest and a stale or invalid link.
 import { afterEach, expect, it, vi } from 'vitest';
 
-function page(search = '') {
-  const elements = Object.fromEntries(['status', 'part', 'bar', 'counts', 'done'].map((id) => [id, { textContent: '', hidden: true }]));
-  vi.stubGlobal('document', { getElementById: (id: string) => elements[id] });
-  vi.stubGlobal('location', { search, href: 'https://example.org/archive.html' });
-  return elements;
-}
-
 afterEach(() => {
-  vi.useRealTimers();
   vi.unstubAllGlobals();
   vi.resetModules();
 });
 
-it('retries stalled headers and bodies, drains the queue and reports exhausted attempts', async () => {
-  vi.useFakeTimers();
-  const elements = page();
-  const calls: string[] = [];
-  const shell = ['a', 'b', 'c', 'd', 'e'];
-  vi.stubGlobal('fetch', (url: string, options: RequestInit) => {
-    if (url === './archive.json') return Response.json({ shell, files: [] });
-    const path = new URL(url).pathname;
-    calls.push(path);
-    const stall = () => new Promise((_resolve, reject) => options.signal?.addEventListener('abort', () => reject(new Error('timeout'))));
-    if (path === '/a') return stall();
-    if (['/b', '/c', '/d'].includes(path)) return { ok: true, arrayBuffer: stall };
-    return new Response();
-  });
+it.each(['2', '1.5', '0', '-1', '', 'abc'])('shows the available parts before fetching files for ?part=%s', async (part) => {
+  const nodes = new Map(['status', 'counts', 'bar', 'done', 'part'].map((id) => [id, { textContent: '' }]));
+  vi.stubGlobal('document', { getElementById: (id: string) => nodes.get(id) });
+  vi.stubGlobal('location', new URL('https://localhost/archive.html?part=' + part));
+  const fetch = vi.fn(() => Promise.resolve(Response.json({ shell: [], files: [] })));
+  vi.stubGlobal('fetch', fetch);
+
   await import('./archive');
-  await vi.runAllTimersAsync();
-  expect(calls.filter((p) => p === '/a')).toHaveLength(2);
-  expect(calls.filter((p) => p === '/b')).toHaveLength(2);
-  expect(calls).toContain('/e');
-  expect(elements.done.textContent).toBe('Done. 4 of 8 files could not be fetched.');
+  await vi.dynamicImportSettled();
+
+  expect(nodes.get('counts')?.textContent).toBe('Only archive part 1 is available.');
+  expect(nodes.get('status')?.textContent).toBe(nodes.get('counts')?.textContent);
+  expect(fetch).toHaveBeenCalledTimes(1);
 });
