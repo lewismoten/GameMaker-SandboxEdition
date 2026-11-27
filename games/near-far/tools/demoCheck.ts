@@ -6,14 +6,14 @@ import { parseRecording } from '@lewismoten/gamemaker-sandbox-engine/formats/rec
 import { FLOOR, LAND_X } from '../src/levels';
 import { GameSim } from './sim';
 
-const keys = parseRecording(new Uint8Array(readFileSync(new URL('../disk/demo.rec', import.meta.url)))).slice(0, -2); // without the Esc
+const keys = parseRecording(new Uint8Array(readFileSync(new URL('../disk/demo.rec', import.meta.url))));
 const sim = new GameSim(undefined, 1);
 for (const k of keys) {
   for (let i = 0; i < k.delta; i++) await sim.tick();
+  if (k.key === 1) break; // Check the landing at the Escape press.
   if (k.key & 0x80) sim.release(k.key & 0x7f);
   else sim.press(k.key & 0x7f);
 }
-for (let i = 0; i < 40; i++) await sim.tick();
 const at = sim.trail[sim.trail.length - 1];
 const p = sim.pos;
 console.log(`demo: scenes ${sim.trail.join(' ')}; score ${sim.ci.score}; ends at ${p.x},${p.y}`);

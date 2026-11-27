@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { fullText, upTo } from './limitNote';
+import { normalize } from '../../project/files';
+import { importedNameNote, fullText, upTo } from './limitNote';
 
 describe('limit notes', () => {
   it('words a full list in plain terms', () => {
@@ -7,6 +8,17 @@ describe('limit notes', () => {
   });
   it('words a length cap', () => {
     expect(upTo(19)).toBe('up to 19 letters in DOS');
+  });
+});
+
+describe('importedNameNote', () => {
+  it('names the saved DOS file when importing a multi-dot filename', () => {
+    const name = 'a.longversion.gif';
+    const saved = normalize(name);
+    const said: string[] = [];
+    importedNameNote(name, saved, (message) => said.push(message));
+    expect(saved).toBe('a.lon');
+    expect(said).toEqual(['A.LONGVERSION.GIF is saved as A.LON.']);
   });
 });
 

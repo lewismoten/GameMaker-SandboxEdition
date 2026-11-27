@@ -9,23 +9,22 @@ import { replay } from '../../kit/walkthrough';
 const out = process.argv[2];
 if (!out) throw new Error('usage: fallShots.ts <outDir> [every]');
 const every = Number(process.argv[3] ?? 25);
+if (!Number.isSafeInteger(every) || every <= 0) throw new Error('every must be a positive integer');
 mkdirSync(out, { recursive: true });
 const walk = JSON.parse(readFileSync(new URL('../walkthrough.json', import.meta.url), 'utf8'));
 let mx = 0;
 let my = 0;
-let sc = -1;
 let n = 0;
 await replay('flicker', walk, {
-  onWorld: (w, scene) => {
+  onWorld: (w) => {
     mx = w.mx;
     my = w.my;
-    sc = scene;
   },
-  onFrame: (screen) => {
-    if (++n % every) return;
+  onFrame: (screen, scene) => {
+    if (++n % every || scene !== 3) return; // The Falls is scene 3.
     const px = new Pixels(320, 200);
     px.px.set(screen.pixels);
-    writePng(join(out, `s${sc}-f${String(n).padStart(5, '0')}-mx${mx}-my${my}.png`), px, screen.palette, 2);
+    writePng(join(out, `s${scene}-f${String(n).padStart(5, '0')}-mx${mx}-my${my}.png`), px, screen.palette, 2);
   },
 });
 process.exit(0);

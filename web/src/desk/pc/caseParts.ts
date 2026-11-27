@@ -198,8 +198,11 @@ export function cdDrive(onEject: () => void): CdDrive {
   return {
     el,
     setDisc(title) {
-      if (title) el.dataset.disk = title;
-      else delete el.dataset.disk;
+      if (title) {
+        el.dataset.disk = title;
+        this.busy(1800);
+        sound('cd-spin', 1800);
+      } else delete el.dataset.disk;
       el.title = title ? `Drive D: ${title}` : 'Drive D: CD-ROM (empty)';
     },
     busy(ms = 1400) {
@@ -239,7 +242,7 @@ export function openTray(drive: CdDrive, wait = TRAY_WAIT_MS): Promise<void> {
   return done;
 }
 
-/** Slides the tray back in (a second press of eject, or its wait running out); then a disc in it spins up. */
+/** Slides the tray back in (a second press of eject, or its wait running out). */
 export function closeTray(drive: CdDrive): void {
   const t = trayOf(drive);
   if (t.state === 'closed' || t.state === 'closing') return;
@@ -250,9 +253,5 @@ export function closeTray(drive: CdDrive): void {
   t.timer = setTimeout(() => {
     t.state = 'closed';
     t.closed.splice(0).forEach((r) => r());
-    if (drive.el.dataset.disk) {
-      drive.busy(1800);
-      sound('cd-spin', 1800);
-    }
   }, TRAY_SLIDE_MS);
 }

@@ -7,7 +7,8 @@ import { ADDED_LATER, STARTER_ORDER } from './starter';
 import { heroOfStarter, STARTER_HEROES } from './starterHeroes';
 
 const games = join(__dirname, '../../../games');
-const starters = readdirSync(games).flatMap((id) => {
+const ungroupedStarters = readdirSync(games).flatMap((id) => {
+  if (STARTER_ORDER.includes(id)) return [];
   try {
     const about = JSON.parse(readFileSync(join(games, id, 'about.json'), 'utf8')) as { series?: string; hero?: string };
     return about.series === 'starter' ? [{ id, hero: about.hero }] : [];
@@ -21,7 +22,16 @@ describe('Starter heroes', () => {
     expect(STORY.split('\n\n')[1]).toMatch(/\bI'm Lian\b/);
   });
 
-  it.each(starters)('$id metadata agrees with the shared hero table', ({ id, hero }) => {
+  it.each(STARTER_ORDER)('%s metadata agrees with the shared hero table', (id) => {
+    const { series, hero } = JSON.parse(readFileSync(join(games, id, 'about.json'), 'utf8')) as {
+      series?: string;
+      hero?: string;
+    };
+    expect(series).toBe('starter');
+    expect(hero).toBe(heroOfStarter(id));
+  });
+
+  it.each(ungroupedStarters)('$id metadata agrees with the shared hero table', ({ id, hero }) => {
     expect(hero).toBe(heroOfStarter(id));
   });
 
