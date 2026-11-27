@@ -21,10 +21,10 @@ const r = await replay(
   },
   { maxMinutes: 4 },
 );
-const seen = r.scenes.slice(0, 4).join(' ');
+const seen = r.scenes.join(' ');
 if (r.error) console.log(r.error);
-console.log(`demo: scenes entered ${r.scenes.join(' ')}; ${r.keysLeft} keys unplayed`);
-if (seen !== '2 2 3 3' || r.keysLeft || r.scenes.includes(1)) {
+console.log(`demo: scenes entered ${seen}; ${r.keysLeft} keys unplayed`);
+if (seen !== '2 2 3 3' || r.keysLeft) {
   console.error(`demoCheck: expected scenes 2 2 3 3 with every key played and no ending; got ${seen}`);
   process.exit(1);
 }

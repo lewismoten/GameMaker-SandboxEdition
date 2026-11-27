@@ -49,6 +49,8 @@ def parse(raw: bytes) -> MZ:
     )
     file_size = (cp - 1) * 512 + (cblp if cblp else 512) if cp else 0
     hdr = cparhdr * 16
+    if not 28 <= hdr <= file_size <= len(raw):
+        raise NotMZ("inconsistent MZ header or file size")
     image = raw[hdr:file_size]
     overlay = raw[file_size:]
     relocs = []

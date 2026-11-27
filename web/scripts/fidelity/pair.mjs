@@ -10,6 +10,13 @@ const W = 320,
   f = Number(ff);
 const web = readFileSync(`${prefix}.rgb`),
   dos = readFileSync(dosFile);
+if (!Number.isInteger(w) || !Number.isInteger(h) || w < 1 || w > W || h < 1 || h > 200)
+  throw new Error('Crop dimensions must be whole pixels within the 320x200 web frame.');
+const webStride = W * 200 * 3;
+const dosStride = w * h * 3;
+if (web.length % webStride || dos.length % dosStride) throw new Error('Captures must contain complete RGB frames.');
+if (!tt?.trim() || !Number.isInteger(t) || t < 0 || t >= web.length / webStride) throw new Error('Invalid web tick.');
+if (!ff?.trim() || !Number.isInteger(f) || f < 0 || f >= dos.length / dosStride) throw new Error('Invalid DOS frame.');
 const side = Buffer.alloc(w * 9 * h);
 let d = 0;
 for (let y = 0; y < h; y++)

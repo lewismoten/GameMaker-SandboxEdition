@@ -19,7 +19,8 @@
 import { join } from 'node:path';
 import { decodeGif, isGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
 import { applyFliFrame, isFli, newFliCanvas, parseFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
-import { parseBackdrop, parseSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
+import { parseBackdrop, parseSlideList, textLines } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
+import { FONT_CP437 } from '@lewismoten/gamemaker-sandbox-engine/gfx/cp437Glyphs';
 import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { parsePalette, vga8 } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 import { playerLook } from '@lewismoten/gamemaker-sandbox-engine/engine/playerLook';
@@ -30,9 +31,6 @@ import { readPlayer } from './player';
 type RGB = [number, number, number];
 const W = 320;
 const H = 200;
-/** Display_File's text area: lines at x 40, rows 5..20 of 8 pixels. */
-const AREA = { x0: 40, y0: 40, x1: 288, y1: 168 };
-
 export interface TextPurpleFinding {
   /** The .txt page and where it shows (e.g. "menu 0:4 story.lst > page1.txt"). */
   where: string;
@@ -46,7 +44,7 @@ export interface TextPurpleFinding {
   want: RGB;
   /** Euclidean distance in 6-bit levels between shown and want. */
   distance: number;
-  /** The page's background (the most common color under the text area), 6-bit levels. */
+  /** The lowest-contrast background under a drawn glyph, in 6-bit levels. */
   paper: RGB;
   /** True when nothing of the game's is known to be behind the page (palette entry 0 assumed). */
   paperGuessed: boolean;
@@ -99,12 +97,30 @@ interface Screen {
   unknown: boolean;
 }
 
-function paperOf(s: Screen): RGB {
-  if (s.unknown) return rgbAt(s.dac, 0);
-  const n = new Map<number, number>();
-  for (let y = AREA.y0; y < AREA.y1; y++) for (let x = AREA.x0; x < AREA.x1; x++) n.set(s.pixels[y * W + x], (n.get(s.pixels[y * W + x]) ?? 0) + 1);
-  const top = [...n.entries()].sort((a, b) => b[1] - a[1])[0][0];
-  return rgbAt(s.dac, top);
+/** Display_File restores the backdrop every 16 lines. GPutChar paints only the set font bits. */
+function lowestContrast(s: Screen, bytes: Uint8Array, ink: RGB) {
+  const seen = new Set<number>();
+  let worst: { paper: RGB; contrast: number; line: number } | undefined;
+  for (const [i, text] of textLines(bytes).entries()) {
+    const y = 40 + (i % 16) * 8;
+    for (let c = 0; c < text.length; c++) {
+      const code = text.charCodeAt(c);
+      if (code >= 128) continue;
+      for (let row = 0; row < 8; row++) {
+        const bits = FONT_CP437[code * 8 + row];
+        for (let bit = 0; bit < 8; bit++) {
+          if (!(bits & (1 << bit))) continue;
+          const index = s.unknown ? 0 : s.pixels[(y + row) * W + 40 + c * 8 + bit];
+          if (seen.has(index)) continue;
+          seen.add(index);
+          const paper = rgbAt(s.dac, index);
+          const contrast = contrastOf(ink, paper);
+          if (!worst || contrast < worst.contrast) worst = { paper, contrast, line: i + 1 };
+        }
+      }
+    }
+  }
+  return worst;
 }
 
 function drawImage(s: Screen, px: Uint8Array, w: number, h: number, x0: number, y0: number): void {
@@ -155,18 +171,19 @@ function walk(k: Walk, file: string, s: Screen, colors: Uint8Array, where: strin
     const pal = cols ?? colors;
     const index = matchIn(pal, k.want);
     const shown = rgbAt(s.dac, index);
-    const paper = paperOf(s);
+    const sample = lowestContrast(s, bytes, shown);
+    if (!sample) return;
     k.out.push({
-      where: `${where}${file}`,
+      where: `${where}${file} (line ${sample.line})`,
       file: file.toLowerCase(),
       palette: s.from,
       index,
       shown,
       want: k.want,
       distance: Math.hypot(shown[0] - k.want[0], shown[1] - k.want[1], shown[2] - k.want[2]),
-      paper,
+      paper: sample.paper,
       paperGuessed: s.unknown,
-      contrast: contrastOf(shown, paper),
+      contrast: sample.contrast,
       chosen: k.chosen,
     });
   } else if (e === '.lst') {

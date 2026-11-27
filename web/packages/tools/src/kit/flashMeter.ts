@@ -148,7 +148,8 @@ export interface LocalWorst {
 export class LocalFlashMeter {
   worst: LocalWorst = { flashes: 0, at: 0, x: 0, y: 0 };
   frames = 0;
-  private ext = new Float32Array(CELLS_X * CELLS_Y);
+  private low = new Float32Array(CELLS_X * CELLS_Y);
+  private high = new Float32Array(CELLS_X * CELLS_Y);
   private dir = new Int8Array(CELLS_X * CELLS_Y);
   private legs: number[][] = Array.from({ length: CELLS_X * CELLS_Y }, () => []);
   private started = false;
@@ -175,7 +176,7 @@ export class LocalFlashMeter {
         const c = cy * CELLS_X + cx;
         const v = sum / (CELL * CELL);
         if (start) {
-          this.ext[c] = v;
+          this.low[c] = this.high[c] = v;
           this.dir[c] = 0;
           this.legs[c].length = 0;
         } else this.step(c, v, cx, cy);
@@ -184,17 +185,20 @@ export class LocalFlashMeter {
   }
 
   private step(c: number, v: number, cx: number, cy: number): void {
-    const ext = this.ext[c];
     const dir = this.dir[c];
-    const swing = (to: number) => Math.abs(v - ext) >= LUMA_STEP && Math.min(v, ext) < DARK_LIMIT && (to > 0 ? v > ext : v < ext);
-    if (dir <= 0 && swing(1)) this.leg(c, 1, v, cx, cy);
-    else if (dir >= 0 && swing(-1)) this.leg(c, -1, v, cx, cy);
-    else if ((dir === 1 && v > ext) || (dir === -1 && v < ext)) this.ext[c] = v;
+    const low = this.low[c];
+    const high = this.high[c];
+    if (dir <= 0 && v - low >= LUMA_STEP && low < DARK_LIMIT) this.leg(c, 1, v, cx, cy);
+    else if (dir >= 0 && high - v >= LUMA_STEP && v < DARK_LIMIT) this.leg(c, -1, v, cx, cy);
+    else {
+      if (dir <= 0 && v < low) this.low[c] = v;
+      if (dir >= 0 && v > high) this.high[c] = v;
+    }
   }
 
   private leg(c: number, dir: number, v: number, cx: number, cy: number): void {
     this.dir[c] = dir;
-    this.ext[c] = v;
+    this.low[c] = this.high[c] = v;
     const legs = this.legs[c];
     legs.push(this.frames);
     while (legs[0] <= this.frames - this.fps) legs.shift();

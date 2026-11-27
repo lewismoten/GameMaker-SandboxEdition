@@ -1,5 +1,5 @@
-// How many scenes use the files of one Overview category, from the same references as a file's
-// "Used by" chips (project.usesOf), counted once per scene however many of its slots point there.
+// Scene usage shared by all category cards in one Overview render.
+import { normalize } from '../../project/files';
 import type { Project } from '../core/project';
 
 export function scenesUsing(files: readonly string[], usesOf: (file: string) => readonly { scene: number }[]): number {
@@ -8,9 +8,27 @@ export function scenesUsing(files: readonly string[], usesOf: (file: string) => 
   return scenes.size;
 }
 
-/** Scene numbers are local to a GAM, so deduplicate within each game before adding its count. */
-export function categoryScenesUsing(files: readonly string[], games: readonly Project[]): number {
-  return games.reduce((count, game) => count + scenesUsing(files, (file) => game.usesOf(file)), 0);
+export function categorySceneCounter(games: readonly Project[]): (files: readonly string[]) => number {
+  const byFile = new Map<string, Set<number>>();
+  // Assign each scene a distinct index across all GAMs.
+  let index = 0;
+  for (const project of games) {
+    for (const scene of project.game().scenes) {
+      for (const file of scene.files) {
+        if (!file) continue;
+        const name = normalize(file);
+        let scenes = byFile.get(name);
+        if (!scenes) byFile.set(name, (scenes = new Set()));
+        scenes.add(index);
+      }
+      index++;
+    }
+  }
+  return (files) => {
+    const scenes = new Set<number>();
+    for (const file of files) for (const scene of byFile.get(normalize(file)) ?? []) scenes.add(scene);
+    return scenes.size;
+  };
 }
 
 /** The card's line ("used by 3 scenes"), or '' when no scene uses the category (it says nothing rather than guess). */

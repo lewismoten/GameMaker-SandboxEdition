@@ -24,8 +24,7 @@ export const CTR = {
   /** Pages of the science report Sparky chewed up. */
   pages: 20,
   /**
-   * Grandpa's key ring (Dome Sweet Dome): worth two, one for the garage gate's clicker and one
-   * for the CitiCar's door, so either can be opened first.
+   * Grandpa's key ring carries three units, one each for the garage gate, lane gate and car door.
    */
   keys: 21,
   /** Employees Only keycard (Mega Mall 2000). */

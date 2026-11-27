@@ -11,6 +11,7 @@ import { createHash } from 'node:crypto';
 import { resolve } from 'node:path';
 import { chromium, devices, firefox, webkit, type Browser, type BrowserContext, type Locator, type Page } from 'playwright-core';
 import { arg, launch, target } from './perfLib';
+import { homeOverflow } from './smokeOverflow';
 
 const engines = (arg('engines') ?? 'webkit,firefox,chromium').split(',');
 const profiles = (arg('profiles') ?? 'desktop,iphone,ipad').split(',');
@@ -27,6 +28,7 @@ type Checks = Map<string, string>; // check name -> 'ok' | 'FAIL: why'
 interface Run {
   p: Page;
   base: string;
+  viewportWidth: number;
   touch: boolean;
   tag: string;
   set: (name: string, ok: boolean, why?: string) => void;
@@ -38,14 +40,14 @@ interface Run {
 const pixels = async (cv: Locator) => hash(Buffer.from(await cv.evaluate((c) => (c as HTMLCanvasElement).toDataURL())));
 
 const flows: Record<string, (r: Run) => Promise<void>> = {
-  async home({ p, base, set, shot }) {
+  async home({ p, base, set, shot, viewportWidth }) {
     await p.goto(base + '/');
     await p.waitForTimeout(2500);
     await shot('home-desk');
     await p.goto(base + '/#/');
     await p.waitForTimeout(3000);
     await shot('home-web');
-    const ov = await p.evaluate(() => document.documentElement.scrollWidth - innerWidth);
+    const ov = await p.evaluate(homeOverflow, viewportWidth);
     set('home: no sideways scroll', ov <= 0, `overflow ${ov}px`);
   },
   async editor({ p, base, set, tap, shot }) {
@@ -207,6 +209,7 @@ async function runProfile(browser: Browser, eng: string, prof: string, base: str
         p,
         base,
         tag,
+        viewportWidth: opts.viewport.width,
         touch: prof !== 'desktop',
         set: (n, ok, why = '') => void checks.set(n, ok ? 'ok' : `FAIL${why ? ': ' + why : ''}`),
         tap: (l) => (prof === 'desktop' ? l.click({ timeout: 8000 }) : l.tap({ timeout: 8000 })),

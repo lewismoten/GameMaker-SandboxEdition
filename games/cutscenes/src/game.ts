@@ -4,7 +4,7 @@
 // monster blocks, character, character blocks, sounds, song, a list shown before it) and
 // carries its links: touch the From block and you are in the To scene, standing on the To block.
 // Last comes the menu room again without its card, for the tales to come back to.
-import { ADVTYPE, MAXSCENELINKS, NOSCENE, emptyScene, newGame, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { ADVTYPE, MAXSCENELINKS, NOSCENE, emptyScene, newGame, type Game, type Link } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { addReturnScenes } from '../../kit/starter/returnScenes';
 import type { Scene } from './levels';
 
@@ -40,6 +40,7 @@ export function buildGame(scenes: Scene[]): Game {
   end.desc = 'The End';
   end.files = ['won.lst', 'cuts.cmf', 'lost.lst', 'cuts.cmf', ...new Array(16).fill('')];
 
+  const taleExits: Link[] = [];
   scenes.forEach((s, i) => {
     const scene = emptyScene(ADVTYPE);
     // Only the menu fits one screen; the stages drop ten rows to their exit mats.
@@ -65,12 +66,13 @@ export function buildGame(scenes: Scene[]): Game {
       const target = l.to === 'end' ? undefined : scenes[sceneOf(scenes, l.to) - 2];
       const [tx, ty] = target ? target.map.start : [0, 0];
       scene.links[k] = { toScene: sceneOf(scenes, l.to), from: { x: l.from[0], y: l.from[1] }, to: { x: tx, y: ty } };
+      if (!s.level && l.to === 'hall') taleExits.push(scene.links[k]);
     });
     game.scenes.push(scene);
   });
 
   // a tale comes back to the menu room's copy without its card (kit/starter/returnScenes.ts), so the card shows once
-  addReturnScenes(game, [sceneOf(scenes, 'hall')]);
+  addReturnScenes(game, [sceneOf(scenes, 'hall')], taleExits);
 
   const first = scenes[0].map.start;
   title.links[0] = { toScene: 2, from: { x: 0, y: 0 }, to: { x: first[0], y: first[1] } };

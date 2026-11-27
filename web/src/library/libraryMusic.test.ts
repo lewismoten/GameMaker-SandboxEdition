@@ -4,7 +4,6 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 const engine = vi.hoisted(() => ({
   pauses: [] as boolean[],
-  playing: false,
   sound: 'blaster',
   started: (): void => undefined,
   dispose: vi.fn(),
@@ -17,7 +16,6 @@ vi.mock('@lewismoten/gamemaker-sandbox-engine/audio/engine', () => ({
       return Promise.resolve();
     }
     playSong() {
-      engine.playing = true;
       engine.started();
       return Promise.resolve();
     }
@@ -64,7 +62,6 @@ afterEach(() => {
   classes.clear();
   engine.pauses = [];
   engine.dispose.mockClear();
-  engine.playing = false;
   engine.sound = 'blaster';
 });
 
@@ -119,13 +116,18 @@ describe('library music and the tour', () => {
   it('does not start music for someone who turned it off', async () => {
     engine.sound = 'none';
     const room = { isConnected: true } as HTMLElement;
-    startLibraryMusic(room);
+    const loadEngine = vi.fn(() => import('@lewismoten/gamemaker-sandbox-engine/audio/engine'));
+    startLibraryMusic(room, loadEngine);
     win.dispatchEvent(new Event('keydown'));
     let close = () => {};
     const closed = whileWatching(new Promise<void>((r) => (close = r)));
     close();
     await closed;
-    await new Promise((r) => setTimeout(r, 20));
-    expect(engine.playing).toBe(false);
+    expect(loadEngine).not.toHaveBeenCalled();
+
+    engine.sound = 'blaster';
+    win.dispatchEvent(new Event('keydown'));
+    expect(loadEngine).toHaveBeenCalledOnce();
+    await started;
   });
 });

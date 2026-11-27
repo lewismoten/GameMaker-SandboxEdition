@@ -105,7 +105,7 @@ export function tourButton(look = 'topbar-gear'): HTMLElement {
     const seen = readSeen();
     const count = seen ? (await import('./whatsNew')).whatsNew(seen).length : 0;
     news.hidden = notNow.hidden = !count;
-    news.textContent = `What’s new since ${seen} (${count})`;
+    news.textContent = `What’s new since ${seen?.slice(0, 10)} (${count})`;
   };
   const open = (at: number) => {
     showWait();

@@ -19,10 +19,11 @@ async function hexSha256(bytes: Uint8Array): Promise<string | undefined> {
 }
 
 function fetchBlob(url: string, name: string, signal?: AbortSignal | null): Promise<Uint8Array> {
+  signal?.throwIfAborted();
   let got = blobs.get(url);
   if (!got) {
     got = (async () => {
-      const res = await fetch(url, { signal });
+      const res = await fetch(url);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const bytes = new Uint8Array(await res.arrayBuffer());
       const sum = await hexSha256(bytes);
@@ -32,7 +33,14 @@ function fetchBlob(url: string, name: string, signal?: AbortSignal | null): Prom
     blobs.set(url, got);
     got.catch(() => blobs.delete(url));
   }
-  return got;
+  if (!signal) return got;
+  // The cache owns the download. Each open can stop waiting for it independently.
+  const download = got;
+  return new Promise((resolve, reject) => {
+    const abort = () => reject(signal.reason);
+    signal.addEventListener('abort', abort, { once: true });
+    void download.then(resolve, reject).finally(() => signal.removeEventListener('abort', abort));
+  });
 }
 
 /**

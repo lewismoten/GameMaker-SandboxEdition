@@ -29,9 +29,19 @@ const game = (h: number) => byHash.get(h);
 const stored = () => on.get(COURIER_KEY);
 
 describe('trips', () => {
+  it('withholds the first departure when storage is full', () => {
+    const write = vi.spyOn(localStorage, 'setItem').mockImplementationOnce(() => {
+      throw new DOMException('Full', 'QuotaExceededError');
+    });
+    expect(sendScoot()).toBeUndefined();
+    expect(stored()).toBeUndefined();
+    write.mockRestore();
+    expect(decodeCapsule(sendScoot()!, game).home).toBe(loadCourier().home!.id);
+  });
+
   it('goes A to B and home, bringing a postcard from B’s world with what was played there', () => {
     addStamp({ kind: 'game', game: 'snowbound' });
-    const out = sendScoot();
+    const out = sendScoot()!;
     const a = loadCourier();
     expect(isCourierId(a.out)).toBe(true);
     expect(isCourierId(a.home!.id)).toBe(true);
@@ -57,7 +67,7 @@ describe('trips', () => {
   });
 
   it('refuses a capsule this screen wrote, politely, writing nothing', () => {
-    const out = sendScoot();
+    const out = sendScoot()!;
     const before = stored();
     expect(receive(out, game)).toEqual({ kind: 'refused', why: 'mine' });
     expect(stored()).toBe(before);
@@ -67,8 +77,29 @@ describe('trips', () => {
     expect(receive(leaving, game)).toEqual({ kind: 'refused', why: 'mine' });
   });
 
+  it('keeps the latest 64 homecomings and visits on disk', () => {
+    const trips = [];
+    for (let i = 0; i < 65; i++) {
+      const out = sendScoot()!;
+      at('B');
+      expect(receive(out, game).kind).toBe('visitor');
+      const back = sendVisitorHome()!;
+      at('A');
+      expect(receive(back, game).kind).toBe('home');
+      trips.push({ id: decodeCapsule(out, game).trip, out, back });
+    }
+    const retained = trips.slice(1).map((t) => t.id);
+    expect(JSON.parse(stored()!) as unknown).toMatchObject({ welcomed: retained });
+    expect(receive(trips[1].back, game)).toEqual({ kind: 'refused', why: 'replay' });
+    expect(receive(trips[0].back, game).kind).toBe('home');
+    at('B');
+    expect(JSON.parse(stored()!) as unknown).toMatchObject({ hosted: retained });
+    expect(receive(trips[1].out, game)).toEqual({ kind: 'refused', why: 'replay' });
+    expect(receive(trips[0].out, game).kind).toBe('visitor');
+  });
+
   it('counts a trip once: no second visit and no second homecoming', () => {
-    const out = sendScoot();
+    const out = sendScoot()!;
     at('B');
     receive(out, game);
     expect(receive(out, game)).toEqual({ kind: 'refused', why: 'replay' });
@@ -85,16 +116,16 @@ describe('trips', () => {
   });
 
   it('hosts one visitor at a time', () => {
-    const fromA = sendScoot();
+    const fromA = sendScoot()!;
     at('C');
-    const fromC = sendScoot();
+    const fromC = sendScoot()!;
     at('B');
     receive(fromA, game);
     expect(receive(fromC, game)).toEqual({ kind: 'refused', why: 'busy' });
   });
 
   it('refuses a damaged capsule with nothing written', () => {
-    const out = sendScoot();
+    const out = sendScoot()!;
     at('B');
     addStamp({ kind: 'mystery' });
     const before = stored();
@@ -106,7 +137,7 @@ describe('trips', () => {
   });
 
   it('never brings a postcard from home back home, even in a forged capsule', () => {
-    const out = sendScoot();
+    const out = sendScoot()!;
     const me = loadCourier().home!;
     const forged = decodeCapsule(out, game);
     at('B');
@@ -119,7 +150,7 @@ describe('trips', () => {
   });
 
   it('a late capsule after Call Scoot home still brings its postcards, once', () => {
-    const out = sendScoot();
+    const out = sendScoot()!;
     callHome();
     expect(loadCourier().out).toBeUndefined();
     at('B');
@@ -137,7 +168,7 @@ describe('trips', () => {
       return existsSync(f) && (JSON.parse(readFileSync(f, 'utf8')) as { secret?: boolean }).secret === true;
     });
     expect(secrets.length).toBeGreaterThan(0);
-    const out = sendScoot();
+    const out = sendScoot()!;
     at('B');
     receive(out, game);
     for (const id of secrets) addStamp({ kind: 'game', game: id });

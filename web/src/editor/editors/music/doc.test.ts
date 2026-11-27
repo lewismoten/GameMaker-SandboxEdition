@@ -2,6 +2,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { song, INSTRUMENTS } from '@lewismoten/gamemaker-sandbox-tools/music/compose';
 import { writeSong } from '@lewismoten/gamemaker-sandbox-engine/formats/cmfSong';
+import { OPL_PRESETS } from '../../../audio/oplPresets';
 import { MusicDoc } from './doc';
 import type { Project } from '../../core/project';
 
@@ -16,6 +17,13 @@ function document(): MusicDoc {
   } as unknown as Project;
   return new MusicDoc(project, 'song.cmf');
 }
+
+it.each([5, 16])('gives %i tracks sharing one preset distinct colors', (count) => {
+  const doc = document();
+  doc.song.instruments[0] = Uint8Array.from(OPL_PRESETS[0].patch);
+  for (let ch = 1; ch < count; ch++) doc.extra.add(ch);
+  expect(new Set(doc.tracks().map((ch) => doc.trackColor(ch))).size).toBe(count);
+});
 
 describe('MusicDoc history', () => {
   it('restores added and removed empty tracks through undo and redo', () => {

@@ -4,10 +4,11 @@
 import { invisibleWalls } from '../../kit/starter/invisibleWalls';
 import { finishBlocks } from '../src/level';
 import { buildLevels } from '../src/levels';
+import { lookOf } from '../src/palette';
 import { LEVEL_TICKS, play } from './play';
 
 const { pal, levels } = buildLevels();
-const problems = levels.flatMap((l) => invisibleWalls(l.book, finishBlocks(l), pal, [{ name: l.file, map: l.map.done() }]));
+const problems = levels.flatMap((l) => invisibleWalls(l.book, finishBlocks(l), { ...pal, pal: lookOf(pal, l.look) }, [{ name: l.file, map: l.map.done() }]));
 if (problems.length) throw new Error(`Invisible walls:\n${problems.join('\n')}`);
 const { sim } = await play();
 const ticks = LEVEL_TICKS;

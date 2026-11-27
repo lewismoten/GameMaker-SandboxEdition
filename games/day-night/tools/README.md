@@ -1,6 +1,7 @@
 # Day and Night: tools
 
 - `check.ts`: the bot plays all five scenes: level 1 by day (three signs, four coins, the door), the same room at night (four coins, the door), then level 2 by day (the first gate), at dusk (three coins; once back through the first gate, which does nothing, then the second gate) and by night (the cottage door). `route.ts` checks that each scene loads the palette file for its hour and that file holds the palette. The run wins with no life lost; the score is 120.
+- `paletteFiles.ts` compares every pair of palette files and checks the fixed designer and text colors.
 - `paletteCheck.ts`: the three palettes and how the scenes use them: one map and one block file for each level's stages, the star slot the sky's own color by day, lamps lit and the moon bright by night, the designer and text colors the same everywhere, and Kit and the sign letters readable at night (contrast ratios, as suggestions).
 - `walkthrough.ts`, `gendemo.ts`: re-record the walkthrough and the title demo (level 1 by day to its door, which loads the same room at night).
 - `demoCheck.ts`: plays the built `demo.rec` on the real engine and checks the hero goes in the door and arrives in a scene with the same map and blocks and the night palette.

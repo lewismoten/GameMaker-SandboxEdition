@@ -5,48 +5,48 @@
       "id": "start",
       "q": "How do I let the player start a level over?",
       "scene": 2,
-      "x": 26,
-      "y": 13,
+      "x": 36,
+      "y": 23,
       "level": 1
     },
     {
       "id": "pit",
       "q": "How do I make a pit too deep to climb out of?",
       "scene": 2,
-      "x": 24,
-      "y": 12,
+      "x": 34,
+      "y": 22,
       "level": 1
     },
     {
       "id": "ladder",
       "q": "How do I give the player a ladder out of a pit?",
       "scene": 3,
-      "x": 17,
-      "y": 12,
+      "x": 27,
+      "y": 22,
       "level": 2
     },
     {
       "id": "planks",
       "q": "How do I make steps the player can jump up through?",
       "scene": 3,
-      "x": 29,
-      "y": 12,
+      "x": 39,
+      "y": 22,
       "level": 2
     },
     {
       "id": "blocks",
       "q": "How do I make steps out of solid blocks?",
       "scene": 3,
-      "x": 41,
-      "y": 12,
+      "x": 51,
+      "y": 22,
       "level": 2
     },
     {
       "id": "back",
       "q": "How do I put the player back at the way in?",
       "scene": 2,
-      "x": 26,
-      "y": 13,
+      "x": 36,
+      "y": 23,
       "level": 1
     }
   ],

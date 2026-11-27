@@ -3,7 +3,7 @@ import { SPEED_PRESETS, TURBO_OFF, type PcCosts } from '@lewismoten/gamemaker-sa
 import { allDriveSounds, normalizeSwitches, switchAllows, type Drive, type DriveSwitches, type SoundPart } from './driveSwitches';
 
 export const CPU_CHOICES = [
-  { id: 'fast', name: 'Fast (66 MHz display)', mhz: 66 },
+  { id: 'fast', name: 'Fast (66 MHz display)', postName: '486DX2-66', mhz: 66 },
   { id: 'ps1', name: 'PS/1 · 286 at 10 MHz', mhz: 10 },
   { id: '286', name: '286 · 12 MHz', mhz: 12 },
   { id: '386', name: '386DX · 33 MHz', mhz: 33 },

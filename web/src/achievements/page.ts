@@ -4,7 +4,7 @@
 // bottom (behind a closed "Start over…") forgets them all, after asking for the word RESET.
 import './page.css';
 import { badgeIcon } from './badgeArt';
-import { h, clear, modal } from '../editor/core/ui';
+import { h, clear, modal, toast } from '../editor/core/ui';
 import { ACHIEVEMENTS, CATEGORIES, achievementById, progressOf, shownText, type Achievement } from './catalog';
 import { openDetails } from './details';
 import { refreshGoals } from './goals';
@@ -153,7 +153,13 @@ function startOver(r: AchievementRecord, isOpen: () => boolean, setOpen: (v: boo
       class: 'danger',
       onclick: async () => {
         if (!(await confirmReset())) return trigger.focus();
-        await resetAchievements();
+        try {
+          await resetAchievements();
+        } catch {
+          toast('Could not reset achievements. Please try again.', 'error');
+          trigger.focus();
+          return;
+        }
         void refreshGoals();
       },
     },

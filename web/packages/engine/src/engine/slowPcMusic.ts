@@ -13,7 +13,7 @@
  * never makes the timer lose one; it only takes its share of the CPU from the game.
  */
 import { loadSong } from '../audio/cmfLoad';
-import { TICK_RATE } from '../audio/cmfPlayer';
+import { systemExclusiveEnd, TICK_RATE } from '../audio/cmfPlayer';
 import type { PcCosts } from './slowPc';
 
 const WRITES = { on: 4, off: 1, program: 11 };
@@ -53,15 +53,20 @@ export function songLoad(cmf: Uint8Array | undefined): SongLoad | undefined {
     events = writes = 0;
   };
   while (o < music.length) {
-    if (music[o] & 0x80) status = music[o++];
-    const hi = status & 0xf0;
+    const event = music[o] & 0x80 ? music[o++] : status;
+    const hi = event & 0xf0;
+    if (hi !== 0xf0) status = event;
     let w = 0;
     if (hi === 0x90) w = music[o + 1] ? WRITES.on : WRITES.off;
     else if (hi === 0x80) w = WRITES.off;
     else if (hi === 0xc0) w = WRITES.program;
     if (hi === 0x80 || hi === 0x90 || hi === 0xa0 || hi === 0xb0 || hi === 0xe0) o += 2;
     else if (hi === 0xc0 || hi === 0xd0) o += 1;
-    else break; // FF 2F (or anything else): PlayIt starts the song over
+    else {
+      const end = systemExclusiveEnd(music, o - 1);
+      if (end === undefined) break; // PlayIt starts the song over
+      o = end;
+    }
     if (w) {
       events++;
       writes += w;

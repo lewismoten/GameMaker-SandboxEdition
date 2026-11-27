@@ -2,6 +2,7 @@
 // jumps and trims between separate pieces, lock stitches where the thread is cut, a color stop between blocks, and no
 // stitch longer than the cap (long runs are cut into pieces).
 import { area, dist, evenly, inset, inside } from './geom';
+import { checkStitches } from './limits';
 import { tatami } from './fill';
 import { satin, satinUnderlay } from './satin';
 import { DEFAULTS, type Design, type FillItem, type Item, type Params, type Pattern, type Pt, type Stitch } from './types';
@@ -21,6 +22,7 @@ class Needle {
     const from = this.at;
     if (!from) throw new Error('stitchTo before moveTo');
     const n = Math.ceil(dist(from, to) / this.p.maxStitch);
+    checkStitches(this.out.length + n);
     for (let k = 1; k <= n; k++) this.out.push({ x: from[0] + ((to[0] - from[0]) * k) / n, y: from[1] + ((to[1] - from[1]) * k) / n, cmd: 'stitch' });
     this.before = from;
     this.at = to;
@@ -35,8 +37,10 @@ class Needle {
     }
     if (from) {
       this.lock();
+      checkStitches(this.out.length + 1);
       this.out.push({ x: from[0], y: from[1], cmd: 'trim' });
     }
+    checkStitches(this.out.length + 1);
     this.out.push({ x: to[0], y: to[1], cmd: 'jump' });
     this.at = to;
     this.before = undefined;
@@ -53,6 +57,7 @@ class Needle {
     const l = Math.min(0.6, dist(a, b) / 2);
     if (l < 0.1) return;
     const e: Pt = [a[0] + ((b[0] - a[0]) / dist(a, b)) * l, a[1] + ((b[1] - a[1]) / dist(a, b)) * l];
+    checkStitches(this.out.length + 4);
     for (const q of [e, a, e, a]) this.out.push({ x: q[0], y: q[1], cmd: 'stitch' });
   }
 
@@ -60,6 +65,7 @@ class Needle {
     const a = this.at;
     if (a) {
       this.lock();
+      checkStitches(this.out.length + 2);
       this.out.push({ x: a[0], y: a[1], cmd: 'trim' }, { x: a[0], y: a[1], cmd: 'color' });
     }
     this.at = undefined;
@@ -69,6 +75,7 @@ class Needle {
     const a = this.at;
     if (a) {
       this.lock();
+      checkStitches(this.out.length + 2);
       this.out.push({ x: a[0], y: a[1], cmd: 'trim' }, { x: a[0], y: a[1], cmd: 'end' });
     }
   }
@@ -110,6 +117,9 @@ function item(n: Needle, it: Item, p: Params): void {
 /** Compiles the design to stitches, ending with an 'end' command; the threads are the blocks' threads in order. */
 export function compile(design: Design, params: Partial<Params> = {}): Pattern {
   const p = { ...DEFAULTS, ...params };
+  for (const key of ['fillSpacing', 'fillLength', 'satinDensity', 'underlayRun', 'maxStitch', 'maxSatin'] as const) {
+    if (!Number.isFinite(p[key]) || p[key] <= 0) throw new RangeError(key + ' must be finite and positive');
+  }
   const n = new Needle(p);
   design.blocks.forEach((b, i) => {
     if (i) n.colorChange();

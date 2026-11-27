@@ -126,7 +126,7 @@ export function libraryCards(
         ? shownSections.flatMap((sec, n) => [
             h(
               'h3',
-              { class: `lib-sub${sec.games.length === 1 ? ' lib-sub-one' : ''}`, id: `lib-sub-${n}`, dataset: { group: String(n) } },
+              { class: `lib-sub${sec.games.length === 1 ? ' lib-sub-one' : ''}`, id: `lib-sub-${n}`, dataset: { group: String(n), kind: sec.tag ?? '' } },
               sec.name,
               (c === 'starter' || c === 'cd') && sec.tag ? h('span', { class: 'lib-sub-tag' }, ` · ${sec.tag}`) : null,
               c === 'starter' && sec.doneText ? h('span', { class: 'lib-sub-count' }, ` · ${sec.doneText}`) : null,
@@ -152,8 +152,8 @@ export function libraryCards(
             level && starters.filter === 'all'
               ? 'Nothing is in this Level yet. Pick All levels to see every Starter.'
               : starters.filter === 'done'
-                ? 'No Starter is done yet. Pick All Starters under Show to see them all.'
-                : 'Every Starter is done. Pick All Starters under Show to see them all.',
+                ? `No Starter${level ? ' in this level' : ''} is done yet. Pick All Starters under Show to see them all.`
+                : `Every Starter${level ? ' in this level' : ''} is done. Pick All Starters under Show to see them all.`,
           )
         : emptyCollection(lib, c, ratingFilter, on),
     ];

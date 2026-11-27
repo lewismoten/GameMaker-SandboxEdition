@@ -60,6 +60,8 @@ export interface DosHardware {
   driver: string;
 }
 
+export const defaultDosHardware: Readonly<DosHardware> = { vga: 0, port: DEFAULT_PORT, irq: DEFAULT_IRQ, driver: DEFAULT_DRIVER };
+
 /** SndDrvr split at its last backslash into name and path, as AskConfigData does (path keeps its backslash). */
 export function splitDriver(driver: string): { name: string; path: string } {
   const at = driver.lastIndexOf('\\');

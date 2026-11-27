@@ -39,8 +39,8 @@
   },
   "joystick": {
     "1": {
-      "short": "Jump",
-      "long": "Jump."
+      "short": "Jump or honk",
+      "long": "On foot: jump, and steer with Left and Right in the air. In the kart: honk, which sends a ripple ahead that pops a bird."
     }
   },
   "sounds": {

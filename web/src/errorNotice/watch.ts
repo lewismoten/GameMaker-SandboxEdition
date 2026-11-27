@@ -7,6 +7,7 @@
 // the very error Vite handed to "vite:preloadError" (the event that notice answers), when it comes
 // back as an unhandled rejection. Anything else, a TypeError after the failed import included,
 // still shows the box.
+import { ReadOnlyError } from '../project/readOnlyError';
 import { messageOf, type ErrorInfo } from './details';
 
 /** Errors that are not the player's trouble (a resize loop, a cancelled fetch). */
@@ -16,10 +17,10 @@ export function ignorable(message: string): boolean {
 
 /**
  * A look-only game refusing a change (editor/core/readOnly.ts): its own dialog already says what
- * happened. Matched by name, so this tiny listener imports nothing from the editor.
+ * happened.
  */
 export function refusedChange(reason: unknown): boolean {
-  return reason instanceof Error && reason.name === 'ReadOnlyError';
+  return reason instanceof ReadOnlyError;
 }
 
 /** The errors Vite reported in "vite:preloadError", which the load-failure notice already shows. */
@@ -36,6 +37,10 @@ function shownAsLoadFailure(reason: unknown): boolean {
   return typeof reason === 'object' && reason !== null && loadFailures.has(reason);
 }
 
+function aborted(reason: unknown): boolean {
+  return reason instanceof Error && reason.name === 'AbortError';
+}
+
 function report(info: ErrorInfo): void {
   if (ignorable(info.message)) return;
   void import('./notice').then((m) => m.showError(info));
@@ -48,12 +53,12 @@ export function watchErrors(): void {
   started = true;
   addEventListener('vite:preloadError', noteLoadFailure);
   addEventListener('error', (e) => {
-    if (refusedChange(e.error)) return;
+    if (aborted(e.error) || refusedChange(e.error)) return;
     const file = e.filename ? e.filename.split('/').pop() : '';
     report({ message: e.message || messageOf(e.error), at: file ? `${file}:${e.lineno}:${e.colno}` : undefined });
   });
   addEventListener('unhandledrejection', (e) => {
-    if (refusedChange(e.reason) || shownAsLoadFailure(e.reason)) return;
+    if (aborted(e.reason) || refusedChange(e.reason) || shownAsLoadFailure(e.reason)) return;
     report({ message: messageOf(e.reason) });
   });
 }

@@ -1,5 +1,6 @@
 // Exercise platform verification through the Generate dialog's area and dismissal controls.
 import { afterEach, expect, it, vi } from 'vitest';
+import { newMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { FakeDoc } from '../../../../../test/fakeDom';
 import type { Project } from '../../../core/project';
 import { generateDialog } from './generateDialog';
@@ -15,11 +16,26 @@ vi.mock('./place', async (original) => ({
       blocks,
       seed: seed + i,
       check: { verified: true },
-      outcome: { ok: true, result: { rect, entry: 0, exit: 1, locks: [], links: [], furniture: [], monsters: [], notes: [] } },
+      outcome: {
+        ok: true,
+        result: {
+          rect,
+          entry: 0,
+          exit: 1,
+          locks: [],
+          links: [],
+          furniture: [],
+          monsters: [
+            { cell: 0, monnum: 1 },
+            { cell: 1, monnum: 1 },
+          ],
+          notes: [],
+        },
+      },
     })),
 }));
 
-function openPlatformDialog() {
+function openPlatformDialog(map = newMap()) {
   vi.useFakeTimers();
   vi.spyOn(Math, 'random').mockReturnValue(0.000017);
   vi.mocked(startPlatformBot).mockReturnValue({ done: Promise.resolve({ won: true, why: '', ticks: 1 }), cancel: vi.fn() });
@@ -45,6 +61,7 @@ function openPlatformDialog() {
     selection: () => ({ x: 0, y: 0, w: 40, h: 20 }),
     blockSet: () => [],
     monsters: () => [],
+    placedMonsters: () => map.monsters,
     hero: { chr: 'HERO.CHR' },
     apply: vi.fn(),
   });
@@ -69,6 +86,76 @@ it('plays fresh offers after switching from a top-left selection to the whole ma
   await vi.dynamicImportSettled();
   await vi.runAllTimersAsync();
   expect(widths().slice(4)).toEqual([100, 100, 100, 100]);
+  elements.find((el) => el.tag === 'dialog')!.fire('cancel');
+  await done;
+});
+
+it.each([
+  [0, '0 monsters fit, 2 omitted'],
+  [1, '1 monster fits, 1 omitted'],
+])('previews a full table with %i replaceable slots', async (inside, expected) => {
+  const map = newMap();
+  for (const m of map.monsters) Object.assign(m, { monnum: 1, curx: 40, cury: 0 });
+  if (inside) map.monsters[0].curx = 39;
+  const { done, elements } = openPlatformDialog(map);
+  await vi.dynamicImportSettled();
+  await vi.runAllTimersAsync();
+  const note = elements.find((el) => el.textContent.startsWith('Seed '));
+  expect(note?.textContent).toContain(expected);
+  elements.find((el) => el.tag === 'dialog')!.fire('cancel');
+  await done;
+});
+
+it('ignores a worker result after the dialog is dismissed', async () => {
+  const { done, elements } = openPlatformDialog();
+  let resolve!: (result: { won: boolean; why: string; ticks: number }) => void;
+  const cancel = vi.fn();
+  vi.mocked(startPlatformBot).mockReturnValue({ done: new Promise((res) => (resolve = res)), cancel });
+  await vi.dynamicImportSettled();
+  await vi.runAllTimersAsync();
+  expect(startPlatformBot).toHaveBeenCalledTimes(1);
+  const chip = elements.find((el) => el.className.includes('gen-chip'))!;
+  const text = chip.textContent;
+  elements.find((el) => el.tag === 'dialog')!.fire('cancel');
+  await done;
+  expect(cancel).toHaveBeenCalledOnce();
+  resolve({ won: true, why: '', ticks: 1 });
+  await vi.runAllTimersAsync();
+  expect(chip.textContent).toBe(text);
+  expect(startPlatformBot).toHaveBeenCalledTimes(1);
+});
+
+it('does not launch a queued worker after the dialog is dismissed', async () => {
+  const { done, elements } = openPlatformDialog();
+  await vi.dynamicImportSettled();
+  elements.find((el) => el.tag === 'dialog')!.fire('cancel');
+  await done;
+  await vi.runAllTimersAsync();
+  expect(startPlatformBot).not.toHaveBeenCalled();
+});
+
+it('never applies a late result from the old area to the new area', async () => {
+  const { done, elements } = openPlatformDialog();
+  let resolveOld!: (result: { won: boolean; why: string; ticks: number }) => void;
+  vi.mocked(startPlatformBot).mockReturnValueOnce({ done: new Promise((res) => (resolveOld = res)), cancel: vi.fn() });
+  vi.mocked(startPlatformBot).mockReturnValue({ done: Promise.resolve({ won: false, why: 'stuck', ticks: 1 }), cancel: vi.fn() });
+  await vi.dynamicImportSettled();
+  await vi.runAllTimersAsync();
+  expect(startPlatformBot).toHaveBeenCalledTimes(1);
+  const where = elements.find((el) => el.attrs['aria-label'] === 'Where to draw')!;
+  Object.assign(where, { value: 'whole' }).fire('change');
+  await vi.dynamicImportSettled();
+  await vi.runAllTimersAsync();
+  resolveOld({ won: true, why: '', ticks: 1 });
+  await vi.runAllTimersAsync();
+  expect(
+    vi
+      .mocked(startPlatformBot)
+      .mock.calls.slice(1)
+      .map(([job]) => job.result.rect.w),
+  ).toEqual([100, 100, 100, 100]);
+  const chips = elements.filter((el) => el.className.includes('gen-chip')).map((el) => el.textContent);
+  expect(chips.slice(-4)).toEqual(['Not proven', 'Not proven', 'Not proven', 'Not proven']);
   elements.find((el) => el.tag === 'dialog')!.fire('cancel');
   await done;
 });

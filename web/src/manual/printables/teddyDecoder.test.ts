@@ -57,7 +57,7 @@ describe("Teddy's Little Biggest Adventure: the Face Dial matches the game", () 
     for (const shapes of Object.values(FACE_ART)) expect(shapes.length).toBeGreaterThan(8);
   });
 
-  it('colors every face on both discs the same as the game, over the same 12 by 12 picture', () => {
+  it('matches the printable fill rows and palette to the face color data', () => {
     expect(it0.fills).toEqual(FACE_FILLS);
     expect(it0.fillColors).toEqual(FILL_COLORS);
     expect(it0.emblem).toBe('nose');
