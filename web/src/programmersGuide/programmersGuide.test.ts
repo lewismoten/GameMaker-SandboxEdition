@@ -39,7 +39,7 @@ describe('the chapters', () => {
   });
 
   it('carry no drafting notes, names of agents, buyers or secret games', () => {
-    const bad = /\[verify\]|\(draft|Kaylee|\.for-lewis|ask Lewis|owner name|serial number:|HEART OF TIN|BAKER'S DOZEN/i;
+    const bad = /\[verify\]|\(draft|Kaylee|\.for-lewis|2026-11-05-ignored-fields\.md|ask Lewis|owner name|serial number:|HEART OF TIN|BAKER'S DOZEN/i;
     for (const c of CHAPTERS) expect(md(c.id).match(bad)?.[0], c.id).toBeUndefined();
   });
 
