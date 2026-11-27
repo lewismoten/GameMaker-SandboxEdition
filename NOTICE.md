@@ -237,6 +237,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex fixed and tested reply deadlines in the Pocket Player SD card writer.
 - OpenAI Codex corrected the Home Keys demo check and recorder instructions and added regression tests.
 - OpenAI Codex fixed and tested the walkthrough view checker’s starting coordinates for moving monsters.
+- OpenAI Codex fixed and tested level range validation in the Pass the Pie partial-run tool.
 - OpenAI Codex wrote the headless audit for built title demos and saved walkthroughs.
 - OpenAI Codex fixed and tested the Snow Trails route checks for drift growth and footprint persistence.
 - OpenAI Codex fixed and tested the Around the Room title demo checker.
