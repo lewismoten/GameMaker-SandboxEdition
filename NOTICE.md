@@ -74,6 +74,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex wrote the walkthrough player close regression test.
 - OpenAI Codex fixed and tested keyboard focus updates in home tile collections.
 - OpenAI Codex corrected Kit’s placement in the Three Tokens progress shot and wrote its pixel regression test.
+- OpenAI Codex corrected the Countdown title demo timing check and wrote its regression test.
 - OpenAI Codex fixed and tested transparent padding in the Colors That Work shape check.
 - OpenAI Codex fixed and tested contrast sampling for the text-page ink advisory.
 - OpenAI Codex wrote the scene Escape timing regression test.
