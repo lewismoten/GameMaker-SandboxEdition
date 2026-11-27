@@ -1,4 +1,4 @@
-// Audits indexable HTML metadata, social tags, language, headings, JSON-LD, crawler files,
+// Audits indexable HTML metadata, source body text, social tags, language, headings, JSON-LD, crawler files,
 // secret-game leaks and internal links. Utility pages marked noindex need no search tags.
 // Also checks the downloads page against the Starters. Usage: node web/scripts/seoAudit.mjs <dist> [starterIdsFile]
 import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
@@ -98,6 +98,17 @@ for (const p of pages) {
       if (!attr(head, new RegExp(`<meta (?:name|property)="${key}" content="([^"]+)"`))) problems.push(`${n}: missing ${key}`);
     if ((head.match(/<link rel="canonical"/g) || []).length !== 1) problems.push(`${n}: expected one canonical`);
     if ((markup.match(/<h1[ >]/g) || []).length !== 1) problems.push(`${n}: expected one h1`);
+    // Count readable source body text, not headings, metadata, code, styles or comments.
+    const body = (h.match(/<body\b[^>]*>([\s\S]*?)<\/body>/i) || [])[1] || '';
+    const bodyText = decode(
+      stripCommentsAndScripts(body)
+        .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, '')
+        .replace(/<h[1-6]\b[^>]*>[\s\S]*?<\/h[1-6]>/gi, '')
+        .replace(/<[^>]*>/g, ' '),
+    )
+      .replace(/\s+/g, ' ')
+      .trim();
+    if (bodyText.length < 150) problems.push(`${n}: source body text too short (${bodyText.length} characters; minimum 150)`);
   }
   for (const m of h.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)) {
     try {
