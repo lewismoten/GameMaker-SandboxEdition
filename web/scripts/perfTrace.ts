@@ -61,13 +61,16 @@ function topSelf(name: string, profile: CpuProfile) {
 }
 
 async function trace(page: Page, cdp: CDPSession, name: string, url: string, ready?: string, traceDir?: string, profileDir?: string): Promise<Row> {
-  const reqs = new Map<string, { url: string; type: string; bytes: number }>();
+  const reqs = new Map<string, { url: string; type: string; bytes: number; complete: boolean }>();
   cdp.on('Network.requestWillBeSent', (e: { requestId: string; request: { url: string }; type?: string }) =>
-    reqs.set(e.requestId, { url: e.request.url, type: e.type ?? '', bytes: 0 }),
+    reqs.set(e.requestId, { url: e.request.url, type: e.type ?? '', bytes: 0, complete: false }),
   );
   cdp.on('Network.loadingFinished', (e: { requestId: string; encodedDataLength: number }) => {
     const r = reqs.get(e.requestId);
-    if (r) r.bytes = e.encodedDataLength;
+    if (r) {
+      r.bytes = e.encodedDataLength;
+      r.complete = true;
+    }
   });
   await cdp.send('Network.enable');
   // Count cold transfers, including the game ZIP, rather than HTTP-cache hits.
@@ -137,6 +140,8 @@ async function trace(page: Page, cdp: CDPSession, name: string, url: string, rea
   }
   const m = await metric(cdp);
   const all = [...reqs.values()];
+  const incomplete = all.filter((r) => !r.complete && /^https?:\/\//i.test(r.url));
+  if (incomplete.length) throw new Error(`${name}: incomplete HTTP transfers: ${incomplete.map((r) => r.url).join(', ')}`);
   const sum = (f: (r: (typeof all)[number]) => boolean) => all.filter(f).reduce((s, r) => s + r.bytes, 0) / 1024;
   const big = [...all].sort((a, b) => b.bytes - a.bytes)[0];
   return {
