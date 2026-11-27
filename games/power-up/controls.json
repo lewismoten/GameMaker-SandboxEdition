@@ -1,7 +1,7 @@
 {
   "keys": {
     "17": {
-      "short": "Climb up",
+      "short": "Up",
       "long": "Same as the Up arrow."
     },
     "30": {
@@ -9,7 +9,7 @@
       "long": "Same as the Left arrow."
     },
     "31": {
-      "short": "Climb down",
+      "short": "Down",
       "long": "Same as the Down arrow."
     },
     "32": {
@@ -18,11 +18,11 @@
     },
     "57": {
       "short": "Jump",
-      "long": "Jump. With a star it is a high jump (4 per star). Steer with Left and Right in the air."
+      "long": "Jump up the dirt steps on the left to get out of the canyon. A star gives you four high jumps. Steer with Left and Right in the air."
     },
     "72": {
-      "short": "Climb up",
-      "long": "Climb up a ladder."
+      "short": "Up",
+      "long": "You can finish both levels without this key."
     },
     "75": {
       "short": "Walk left",
@@ -33,14 +33,14 @@
       "long": "Walk right. With the sneakers on, twice as fast."
     },
     "80": {
-      "short": "Climb down",
-      "long": "Climb down a ladder."
+      "short": "Down",
+      "long": "You can finish both levels without this key."
     }
   },
   "joystick": {
     "1": {
       "short": "Jump",
-      "long": "Jump."
+      "long": "Jump up the dirt steps on the left to get out of the canyon."
     }
   },
   "sounds": {

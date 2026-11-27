@@ -9,7 +9,7 @@
 import { applyDelta, diffVersions } from '@lewismoten/gamemaker-sandbox-tools/delta';
 import type { GameFiles } from './files';
 import type { Companion } from './companion';
-import { loadRecord, saveCheckpoints, type LegacyCheckpoint, type ProjectRecord, type StoredCheckpoint } from './storage';
+import { loadRecord, updateCheckpoints, type LegacyCheckpoint, type ProjectRecord, type StoredCheckpoint } from './storage';
 
 type Version = Map<string, Uint8Array>;
 
@@ -92,21 +92,17 @@ export async function getCheckpoints(id: string): Promise<StoredCheckpoint[]> {
 
 /** Stamps the game as it is now, after the checkpoints already there. */
 export async function makeCheckpoint(id: string, name: string, files: GameFiles, companion?: Companion, tag?: string): Promise<StoredCheckpoint[]> {
-  const list = withStamp(await getCheckpoints(id), { id: newStampId(), name, made: Date.now(), ...(tag ? { tag } : {}) }, files, companion);
-  await saveCheckpoints(id, list);
-  return list;
+  return updateCheckpoints(id, (record) =>
+    withStamp(checkpointList(record), { id: newStampId(), name, made: Date.now(), ...(tag ? { tag } : {}) }, files, companion),
+  );
 }
 
 export async function deleteCheckpoint(id: string, stamp: string): Promise<StoredCheckpoint[]> {
-  const list = withoutStamp(await getCheckpoints(id), stamp);
-  await saveCheckpoints(id, list);
-  return list;
+  return updateCheckpoints(id, (record) => withoutStamp(checkpointList(record), stamp));
 }
 
 export async function tagCheckpoint(id: string, stamp: string, tag: string): Promise<StoredCheckpoint[]> {
-  const list = withTag(await getCheckpoints(id), stamp, tag);
-  await saveCheckpoints(id, list);
-  return list;
+  return updateCheckpoints(id, (record) => withTag(checkpointList(record), stamp, tag));
 }
 
 /** What restoring changes: new bytes per file, null where the file did not exist at the checkpoint. Untouched files are left out. */

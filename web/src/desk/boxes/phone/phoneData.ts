@@ -36,6 +36,7 @@ interface VariantMeta {
 export interface PartsFile {
   format: string;
   floats?: number;
+  indices?: number;
   /** The site serves parts.bin packed under this name (games/kit/trinketPacks.ts). */
   packed?: string;
   variant?: VariantMeta;
@@ -82,10 +83,32 @@ export function shows(filter: ViewFilter, g: string): boolean {
 
 /** Splits the file's two blocks (float32 vertices, then uint32 indices) into parts. */
 export function parseParts(file: PartsFile, bin: ArrayBuffer): Part[] {
-  const floats = Math.min(file.floats ?? bin.byteLength / 4, bin.byteLength / 4);
+  const words = bin.byteLength / 4;
+  const floats = file.floats ?? words;
+  if (
+    !Number.isInteger(words) ||
+    !Number.isSafeInteger(floats) ||
+    floats < 0 ||
+    floats > words ||
+    (file.indices !== undefined && file.indices !== words - floats)
+  )
+    throw new Error('Invalid phone mesh block lengths');
   const vertices = new Float32Array(bin, 0, floats);
   const indexBlock = new Uint32Array(bin, floats * 4, (bin.byteLength - floats * 4) / 4);
   return file.parts.map((p) => {
+    for (const [range, length] of [
+      [p.pos, vertices.length],
+      [p.idx, indexBlock.length],
+    ] as const) {
+      if (
+        !Number.isSafeInteger(range.offset) ||
+        !Number.isSafeInteger(range.count) ||
+        range.offset < 0 ||
+        range.count < 0 ||
+        range.offset + range.count > length
+      )
+        throw new Error('Invalid phone part range');
+    }
     const y = (p.bbox[1] + p.bbox[4]) / 2;
     return {
       id: p.id,

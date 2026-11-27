@@ -51,6 +51,7 @@ export async function lookup(url: string, fetchFn: FetchFn, sleep: (ms: number) 
         await sleep(retryMs);
         continue;
       }
+      if (!r.ok) return { snapshot: null, error: 'HTTP ' + r.status };
       const j = (await r.json()) as { archived_snapshots?: { closest?: { available?: boolean; url?: string } } };
       const c = j.archived_snapshots?.closest;
       return { snapshot: c?.available && c.url ? c.url : null, error: null };

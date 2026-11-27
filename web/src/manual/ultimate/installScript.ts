@@ -50,7 +50,7 @@ COPY /B *.* %GMIDIR% /V
 FOR %%F IN (*.*) DO IF NOT EXIST %GMIDIR%\%%F GOTO failed
 ECHO Any COPY error? Ctrl+C, then Y. Otherwise press a key.
 PAUSE`,
-  String.raw`ECHO Copy passes ended. Check that NEITHER pass had errors.
+  String.raw`ECHO Check all COPY messages for errors before continuing.
 ECHO Only then type these commands:
 ECHO C:
 ECHO CD %GMIDIR%
@@ -80,8 +80,8 @@ export const INSTALL_LESSON = String.raw`
   resources together in that directory; the game itself does not swap installation disks.</p>
   <p><b>Disk two below is only an example of multi-disk installation.</b> A game that fits on
   one disk needs only one. The two-disk lesson uses the same conventions as a DOS export’s
-  numbered disk set: flat files, <code>DISKn.ID</code> markers, a prompt for each disk, and
-  the same installer on every disk. This hand-written version adds the <code>GAMES</code>
+  numbered disk set: flat files, numbered markers, a prompt for each disk, and
+  the same installer on every disk. Exported markers include the game name, such as <code>SANDBOX.D02</code>. This hand-written version adds the <code>GAMES</code>
   choice; it is not an extra argument for an exported installer’s <code>INSTALL [drive]</code>.</p>
   <h3>Pack the disks</h3>
   <table>
@@ -145,7 +145,7 @@ export const INSTALL_LESSON = String.raw`
   ${listing(3)}
   <h3>5. Explain what to do next</h3>
   <p>The script only prints the launch commands; it does not run the game after an unchecked
-  copy. After both passes have copied without errors, change to C: and the chosen directory,
+  copy. If DOS reported no copy errors, change to C: and the chosen directory,
   run <code>CONFIG</code> once for sound and video, then <code>SANDBOX.EXE</code>. Remove the
   installation disk and test that the whole game plays from the hard disk.</p>
   ${listing(4)}

@@ -14,6 +14,7 @@ describe('desk buddy reactions', () => {
   it('names the game that starts, and cheers its finish', () => {
     const m = newMind({ met: true });
     expect(react(m, { kind: 'game', title: 'Snowbound' }, 0)?.line).toBe("Snowbound! I'll watch from here.");
+    expect(react(newMind(), { kind: 'game', title: 'A$&B' }, 0)?.line).toBe("A$&B! I'll watch from here.");
     const won = react(m, { kind: 'won', title: 'Snowbound' }, 1000);
     expect(won?.pose).toBe('cheer');
     expect(won?.line).toContain('Snowbound');

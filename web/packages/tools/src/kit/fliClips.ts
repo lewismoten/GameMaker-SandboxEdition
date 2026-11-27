@@ -144,18 +144,15 @@ function cheapestCuts(total: number, most: number, count: number, cost: (i: numb
   return out;
 }
 
-/** The clip names: the first keeps `name`, the rest add 2, 3… to its first 7 letters (DOS 8.3). */
-function clipName(name: string, k: number): string {
-  if (k === 0) return name;
-  const dot = name.lastIndexOf('.');
-  return `${name.slice(0, dot).slice(0, 7)}${k + 1}${name.slice(dot)}`;
-}
-
 /**
  * The FLI as clips of at most `seconds` each, by file name in play order. One that plays no
  * longer than a quarter more than `seconds` stays whole, under its own name.
  */
 export function fliClips(name: string, source: Uint8Array, seconds = 4, opts: ClipOptions = {}): Record<string, Uint8Array> {
+  return splitClips(name, source, seconds, opts, new Set([name.toLowerCase()]));
+}
+
+function splitClips(name: string, source: Uint8Array, seconds: number, opts: ClipOptions, reserved: Set<string>): Record<string, Uint8Array> {
   let fli = source;
   let sparsePalettes: boolean | undefined;
   const steps = opts.shrink?.length ? shrinkFrames(decodeFli(source), opts.shrink) : [];
@@ -172,10 +169,20 @@ export function fliClips(name: string, source: Uint8Array, seconds = 4, opts: Cl
   const chosen = opts.cheapCuts ? cheapestCuts(frames.length, most, even.length + 1, byteCosts(fli, frames, palettes, w, h)) : even;
   const starts = [0, ...chosen, frames.length];
   const out: Record<string, Uint8Array> = {};
+  const dot = name.lastIndexOf('.');
+  let suffix = 2;
   for (let k = 0; k + 1 < starts.length; k++) {
     const fs = frames.slice(starts[k], starts[k + 1]);
     const ps = palettes.slice(starts[k], starts[k + 1]);
-    out[clipName(name, k)] = encodeFli(fs, ps[0], {
+    let clip = name;
+    if (k > 0) {
+      do {
+        const digits = String(suffix++);
+        clip = `${name.slice(0, dot).slice(0, 8 - digits.length)}${digits}${name.slice(dot)}`;
+      } while (reserved.has(clip.toLowerCase()));
+      reserved.add(clip.toLowerCase());
+    }
+    out[clip] = encodeFli(fs, ps[0], {
       width: w,
       height: h,
       speed,
@@ -202,12 +209,13 @@ export function clipEntries(clips: Record<string, Uint8Array>, pause?: number): 
  */
 export function clipLists(files: Map<string, Uint8Array>, lists: string[], seconds = 4, opts: ClipOptions = {}): void {
   const cut = new Map<string, Record<string, Uint8Array>>();
+  const reserved = new Set(files.keys());
   for (const l of lists) {
     for (const e of parseSlideList(files.get(l) ?? new Uint8Array())) {
       const name = e.name.toLowerCase();
       const fli = files.get(name);
       if (!name.endsWith('.fli') || !fli || cut.has(name)) continue;
-      const clips = fliClips(name, fli, seconds, opts);
+      const clips = splitClips(name, fli, seconds, opts, reserved);
       if (Object.keys(clips).length > 1) cut.set(name, clips);
     }
   }

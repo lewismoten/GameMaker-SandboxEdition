@@ -4,12 +4,12 @@
 // only releases the drawer when the dagger, the front curtain and the rear curtain are worked in that order.
 import { describe, expect, it } from 'vitest';
 import { notchSpans, offsetPoly, outlineFromRects } from '@lewismoten/gamemaker-sandbox-tools/kit/laserJoints';
-import { STOCK, type StockSize } from '@lewismoten/gamemaker-sandbox-tools/kit/laserLayout';
+import { Part, STOCK, type StockSize } from '@lewismoten/gamemaker-sandbox-tools/kit/laserLayout';
 import { stockProblems } from '@lewismoten/gamemaker-sandbox-tools/kit/laserStock';
 import { checkStockCuts } from './laserStockAssertions';
 import { CUT, ENGRAVE } from '@lewismoten/gamemaker-sandbox-tools/kit/laserSvg';
 import { checkMechanism, dims } from '../../games/sleuth/laser/stageBoxDims';
-import { buildStageBox, fittingTable } from '../../games/sleuth/laser/stageBoxBuild';
+import { buildStageBox, engravingProblems, fittingTable } from '../../games/sleuth/laser/stageBoxBuild';
 
 describe('laser joint helpers', () => {
   it('traces the outline of rectangles with a notch', () => {
@@ -69,6 +69,30 @@ describe('Stage Box sheets', () => {
       for (const p of cut.matchAll(/<path d="([^"]*)"/g)) expect(p[1].trim().endsWith('Z')).toBe(true);
       expect(s.sheet.items.every((i) => (i.op === 'cut' ? true : i.op === 'engrave'))).toBe(true);
     }
+  });
+  it('checks engraving against the cut circle of a round part', () => {
+    const part = new Part('disc', 2, 2, 0);
+    part.outlineRound(0, 0, 1);
+    part.engraveRound('inside', 0.3, 0.4, 0.4);
+    expect(engravingProblems(part)).toEqual([]);
+
+    part.engrave('outside', [
+      [
+        [9, 9],
+        [10, 9],
+        [10, 10],
+      ],
+    ]);
+    // The circle and ring cross the outline diagonally, between their cardinal points.
+    part.engraveRound('crossing', 0.5, 0.5, 0.35);
+    const circle = part.sheet.items[3];
+    if (circle.k !== 'circle') throw new Error('Expected a round engraving');
+    part.sheet.add({ op: 'engrave', k: 'ring', cx: circle.cx, cy: circle.cy, r0: 0.1, r1: circle.r });
+    expect(engravingProblems(part)).toEqual([
+      'disc: engraving 2 leaves the outline',
+      'disc: engraving 3 leaves the outline',
+      'disc: engraving 4 leaves the outline',
+    ]);
   });
   it('puts every cut outside all engraving, and no two elements too close', () => {
     expect(stage.problems).toEqual([]);

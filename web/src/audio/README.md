@@ -69,7 +69,6 @@ ka-chunks: into 24 V, then into 48 V, the whine jumping up and creeping at each.
 off) drops the contactors out with a clunk and the whine fades as the car rolls; `resume()` ka-chunks
 back in. Road rumble and tire noise grow with speed. `chezPassBy` with `pullAway` starts from rest in front of the window (the desk's car).
 
-- `chezSound.ts`: `chezMotor` (go, stop, dispose) and `chezPassBy`; `CHEZ_SOUND`
-  names the voice (synthesized; no recorded clips ship).
+- `chezSound.ts`: `chezMotor` (go, stop, dispose) and `chezPassBy`.
 - `chezSynth.ts`: the voice made in Web Audio, no files.
 - `chezTypes.ts`: the shared controls, numbers, noise and output chain.

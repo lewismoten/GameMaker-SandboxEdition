@@ -27,16 +27,39 @@ import { blockText } from './printables/markdownBlocks';
 const here = import.meta.dirname;
 const src = (f: string) => readFileSync(join(here, f), 'utf8');
 const pub = resolve(here, '../../public');
-/** The DOS folder name of every game that has one. */
+/** The DOS folder name of each Starter on the Sample CD. */
 function sampleNames(): Set<string> {
   const games = resolve(here, '../../../games');
   return new Set(
     readdirSync(games).flatMap((g) => {
       const f = join(games, g, 'about.json');
-      return existsSync(f) ? [String(JSON.parse(readFileSync(f, 'utf8')).dosName ?? '')] : [];
+      if (!existsSync(f)) return [];
+      const { series, dosName } = JSON.parse(readFileSync(f, 'utf8')) as { series?: string; dosName?: string };
+      return series === 'starter' && dosName ? [dosName] : [];
     }),
   );
 }
+
+function expectSampleFolders(pointer: string, names: Set<string>) {
+  // A pointer can also mention a file extension such as .VOC.
+  const codes = [...pointer.matchAll(/<code>([^<]*)<\/code>/g)].filter(([, path]) => !/^\.[A-Z0-9]{1,3}$/i.test(path));
+  expect(codes.length, pointer).toBeGreaterThan(0);
+  for (const [, raw] of codes) {
+    // Source templates escape backslashes; rendered chapter HTML has single backslashes.
+    const path = raw.replace(/\\\\/g, '\\');
+    expect(path, raw).toMatch(/^(?:D:\\SAMPLES\\)?[A-Z0-9_]{1,8}$/);
+    expect(names, path).toContain(path.split('\\').at(-1));
+  }
+}
+
+it.each([
+  ['D:\\SAMPLES\\TYPO', 'TYPO'],
+  ['D:\\TYPO\\DAYNIGHT', 'TYPO'],
+  ['LUCKYCAT', 'LUCKYCAT'],
+])('rejects the Sample CD reference %s', (reference, folder) => {
+  const pointer = `<code>DAYNIGHT</code> and <code>${reference}</code>`;
+  expect(() => expectSampleFolders(pointer, sampleNames())).toThrow(folder);
+});
 
 describe('the Guide’s links', () => {
   it('point at a Guide section or a page of the site', () => {
@@ -76,7 +99,7 @@ describe('the Guide’s links', () => {
   it('points the Owner’s Guide at Sample CD folders that are games on the CD', () => {
     const names = sampleNames();
     for (const m of src('dosManualDesign.ts').matchAll(/<i>On the Sample CD[\s\S]*?<\/p>/g)) {
-      for (const c of m[0].matchAll(/<code>([A-Z0-9]+)<\/code>/g)) expect(names.has(c[1]), `SAMPLES\\${c[1]}`).toBe(true);
+      expectSampleFolders(m[0], names);
     }
   });
 
@@ -86,9 +109,7 @@ describe('the Guide’s links', () => {
     for (const c of CHAPTERS) {
       for (const m of c.html.matchAll(/<i>On the Sample CD:<\/i>[\s\S]*?<\/p>/g)) {
         lines++;
-        const codes = [...m[0].matchAll(/<code>([A-Z0-9]+)<\/code>/g)];
-        expect(codes.length, `${c.id}: a pointer names a folder`).toBeGreaterThan(0);
-        for (const k of codes) expect(names.has(k[1]), `${c.id}: SAMPLES\\${k[1]}`).toBe(true);
+        expectSampleFolders(m[0], names);
       }
     }
     expect(lines).toBeGreaterThan(20);
@@ -254,6 +275,13 @@ describe('the Owner’s Guide', () => {
   const pages = files.flatMap((s) =>
     [...s.matchAll(/(cover: true,)|\bpage\(\s*'([^']+)',\s*`([\s\S]*?)`/g)].map((m) => ({ head: m[2] ?? '', body: m[3] ?? '' })),
   );
+
+  it('uses each sample title as its row header', () => {
+    const section = pages.find((p) => p.body.includes('<h3>Small sample games</h3>'))!.body.split('<h3>Small sample games</h3>')[1];
+    const rows = [...section.matchAll(/<tr>(.*?)<\/tr>/g)];
+    expect(rows.length).toBeGreaterThan(0);
+    for (const [, cells] of rows) expect(cells).toMatch(/^<th scope="row">[^<]+<\/th>/);
+  });
 
   it('lists each chapter, and each section it names, at the page it opens on', () => {
     const contents = pages.find((p) => p.head === 'Contents')!.body;

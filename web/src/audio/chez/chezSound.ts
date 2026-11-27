@@ -1,13 +1,10 @@
 // THE CHEZ's sound, everywhere it drives (the cast stage, the desk window): one place, so they
 // all match. One voice, made on the spot (chezSynth.ts) and tuned to Lewis's own recording of the
-// car (a 1976½ CitiCar); no recorded clips ship. CHEZ_SOUND names it.
+// car (a 1976½ CitiCar); no recorded clips ship.
 import { SynthMotor } from './chezSynth';
 import type { ChezMotor, ChezOptions } from './chezTypes';
 
 export type { ChezMotor } from './chezTypes';
-
-/** The voice THE CHEZ uses everywhere: synthesized in Web Audio, no files. */
-export const CHEZ_SOUND = 'synth' as const;
 
 /**
  * THE CHEZ's motor into `out`: go() closes the contactor (24 V, a ka-chunk) and the motor climbs, then a second

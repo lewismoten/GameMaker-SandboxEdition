@@ -112,6 +112,8 @@ function aisle(
   _guests: number,
   startLedge?: 2 | 3,
 ): StarterMap {
+  const decorEvery = theme.decorEvery ?? 5;
+  if (!Number.isInteger(decorEvery) || decorEvery <= 0) throw new RangeError('decorEvery must be a positive integer');
   const g = new Grid(W, H);
   const rise = startLedge ?? 0;
   g.put(2, 8 - rise, 's').put(2, 9 - rise, 'S');
@@ -141,7 +143,7 @@ function aisle(
   hall.cameos.slice(0, 8).forEach((parts, i) => parts.forEach((name, k) => m.set(36 + i, BALCONY_RAIL + 2 - parts.length + k, name)));
   // the stage's own wall pieces, hung in view, a row above the signs
   const order = theme.decorOrder ?? [];
-  if (order.length) for (let x = 3, i = 0; x < STAGE_FROM - 1; x += theme.decorEvery ?? 5, i++) m.set(x, VIEW_TOP + 2, `decor.${order[i % order.length]}`);
+  if (order.length) for (let x = 3, i = 0; x < STAGE_FROM - 1; x += decorEvery, i++) m.set(x, VIEW_TOP + 2, `decor.${order[i % order.length]}`);
   // the stage: drapes at each side, a banner, the lectern with the certificate, Doc Leo
   for (let y = 2; y < FLOOR; y++) for (const x of [STAGE_FROM, STAGE_FROM + 1, W - 3, W - 2]) m.set(x, y, 'drape');
   stamp(m, signs.banner, STAGE_FROM - 4, VIEW_TOP, false);

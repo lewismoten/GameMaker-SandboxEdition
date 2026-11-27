@@ -104,6 +104,9 @@ dialog.modal.sv-dialog[open] {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+.sv-heart-status {
+  display: none;
+}
 .sv-dot {
   margin-left: 6px;
   color: var(--accent);
@@ -482,6 +485,12 @@ dialog.modal .sv-inf {
     padding-block: 4px;
   }
 
+  .sv-nav-note .sv-nav-title {
+    white-space: normal;
+  }
+  .sv-heart-status {
+    display: inline;
+  }
   .sv-nav-sub {
     display: none;
   }

@@ -53,10 +53,10 @@ describe('integrator layout', () => {
 
   it.each(
     [
-      { name: 'a menu with two returning tales', edges: [[2], [], [3], [1, 4, 5], [3], [3]], levels: [3] },
-      { name: 'two levels with returning talks', edges: [[2], [], [3, 4], [1, 5, 6], [2], [3], [3]], levels: [2, 3] },
+      { name: 'a menu with two returning tales', edges: [[2], [], [3], [1, 4, 5], [3], [3]], returns: [4, 5], levels: [3] },
+      { name: 'two levels with returning talks', edges: [[2], [], [3, 4], [1, 5, 6], [2], [3], [3]], returns: [4, 5, 6], levels: [2, 3] },
     ].flatMap((motif) => [false, true].map((reorder) => ({ ...motif, reorder }))),
-  )('arranges $name (reordered: $reorder) without crossing or hiding return links', ({ edges, levels, reorder }) => {
+  )('arranges $name (reordered: $reorder) without crossing or hiding return links', ({ edges, levels, returns, reorder }) => {
     const g = newGame('Returns');
     for (let i = 2; i < edges.length; i++) g.scenes.push(emptyScene(ADVTYPE));
     edges.forEach((targets, i) => {
@@ -69,7 +69,11 @@ describe('integrator layout', () => {
       g.scenes[level].files[9] = `card${level}.lst`;
     }
     const originals = structuredClone(g);
-    const copies = addReturnScenes(g, levels);
+    const copies = addReturnScenes(
+      g,
+      levels,
+      returns.map((room) => g.scenes[room].links[0]),
+    );
     expect(g.scenes).toHaveLength(edges.length + levels.length);
     for (const [level, copy] of copies) {
       expect(g.scenes[level].files[9]).toBe(`card${level}.lst`);
@@ -97,13 +101,43 @@ describe('integrator layout', () => {
     expect(serializeGame(g)).toEqual(bytes);
   });
 
+  it('shows each connected hub card on onward travel and skips it on room returns', () => {
+    const g = chain(4);
+    g.scenes[2].files[9] = 'first.lst';
+    g.scenes[3].files[9] = 'second.lst';
+    g.scenes[3].links[0].toScene = 2;
+    g.scenes[2].links[1].toScene = 4;
+    g.scenes[3].links[1].toScene = 5;
+    g.scenes[4].links[0].toScene = 2;
+    g.scenes[5].links[0].toScene = 3;
+    const copies = addReturnScenes(
+      g,
+      [2, 3],
+      [4, 5].map((room) => g.scenes[room].links[0]),
+    );
+    for (const [hub, room, next] of [
+      [2, 4, 3],
+      [3, 5, 2],
+    ]) {
+      expect(g.scenes[hub].links[0].toScene).toBe(next);
+      const back = g.scenes[room].links[0].toScene;
+      expect(back).toBe(copies.get(hub));
+      expect(g.scenes[back].files[9]).toBe('');
+      expect(g.scenes[back].links[0].toScene).toBe(next);
+    }
+  });
+
   it('clears a returning hub ending without adding arrows under its five side scenes', () => {
     const g = newGame('Hub');
     for (let i = 2; i < 8; i++) g.scenes.push(emptyScene(ADVTYPE));
     g.scenes[0].links[0].toScene = 2;
     [3, 4, 5, 6, 7, 1].forEach((s, k) => (g.scenes[2].links[k].toScene = s));
     for (let i = 3; i < 8; i++) g.scenes[i].links[0].toScene = 2;
-    addReturnScenes(g, [2]);
+    addReturnScenes(
+      g,
+      [2],
+      [3, 4, 5, 6, 7].map((room) => g.scenes[room].links[0]),
+    );
     const pos = autoArrange(g);
     checkNoOverlap(g, pos);
     const pairs = g.scenes.flatMap((s, i) => s.links.filter((l) => l.toScene !== NOSCENE).map((l): [number, number] => [i, l.toScene]));
@@ -120,7 +154,11 @@ describe('integrator layout', () => {
     g.scenes[3].links[3].toScene = 6;
     g.scenes[4].links[0].toScene = 3;
     g.scenes[5].links[0].toScene = 3;
-    addReturnScenes(g, [3]);
+    addReturnScenes(
+      g,
+      [3],
+      [4, 5].map((room) => g.scenes[room].links[0]),
+    );
     const before = structuredClone(g);
     const list = arrangements(g);
     for (const option of list) checkNoOverlap(g, option.positions);

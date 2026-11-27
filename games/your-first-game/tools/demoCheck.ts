@@ -14,8 +14,8 @@ for (const k of keys) {
 }
 for (let i = 0; i < 40; i++) await sim.tick();
 console.log(`demo: ${sim.trail.length} scenes entered; score ${sim.ci.score}`);
-if (sim.ci.score !== 130 || sim.trail.length < 2) {
-  console.error('demoCheck: expected 8 coins and a popped gumdrop (130 points), then the exit door');
+if (sim.ci.score !== 130 || sim.trail.length !== 2 || sim.trail[0] !== 2 || sim.trail[1] !== 3) {
+  console.error('demoCheck: expected 8 coins and a popped gumdrop (130 points), then the exit to level 2');
   process.exit(1);
 }
 console.log('demoCheck ok: the demo plays level 1 through');

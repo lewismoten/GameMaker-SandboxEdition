@@ -13,16 +13,9 @@ import { DOOR_KEY } from '../retro/bbs/ticTacToe';
 import type { deskPc } from './deskPc';
 import { COURIER_CHANGED, COURIER_KEY } from '../courier/courierStore';
 
-type DeskPc = ReturnType<typeof deskPc>;
-interface Act {
-  do: string;
-  text?: string;
-  wait?: string;
-  hold?: boolean;
-  /** Called once the awaited prompt is up (or never will be): the step's line may start. */
-  ready?: () => void;
-}
+import type { ActDetail as Act } from '../tour/pageAct';
 
+type DeskPc = ReturnType<typeof deskPc>;
 /** How long the prompt shows before a held step's script answers it, so the line is heard over it. */
 const SHOW_MS = 1500;
 
@@ -137,16 +130,19 @@ export function deskTour(desk: HTMLElement, pc: DeskPc): () => void {
   };
 
   const run = async (act: Act, g: number) => {
-    if (act.do === 'bbs-call') return call();
-    if (!found || desk.dataset.tourBbs !== 'on') return act.ready?.();
+    if (act.do === 'bbs-call') {
+      await call();
+      return act.ready?.(found ? 'shown' : 'lost');
+    }
+    if (!found || desk.dataset.tourBbs !== 'on') return act.ready?.('lost');
     if (act.wait && !(await waitFor(act.wait, g))) {
       // the board isn't where the script thought: nothing more is typed, and the steps about it are left out
       if (g === gen) desk.dataset.tourBbs = 'lost';
-      act.ready?.();
+      act.ready?.('lost');
       return;
     }
     // the prompt is up: a held step's line starts now, and the answer follows a moment later
-    act.ready?.();
+    act.ready?.('shown');
     if (act.hold) await sleep(SHOW_MS);
     if (g !== gen) return;
     if (act.do === 'bbs-type' && act.text) type(act.text);
@@ -201,11 +197,13 @@ export function deskTour(desk: HTMLElement, pc: DeskPc): () => void {
     if (act.do === 'bbs-end') gen++;
     const g = gen;
     // a held line must never wait on a script that gave up
-    if (act.do === 'bbs-end') act.ready?.();
+    if (act.do === 'bbs-end') act.ready?.('shown');
     queue = queue
       .then(() => (act.do === 'bbs-end' ? tidy() : run(act, g)))
-      .catch((err: unknown) => console.warn('Tour BBS:', err))
-      .finally(() => act.ready?.());
+      .catch((err: unknown) => {
+        act.ready?.('lost');
+        console.warn('Tour BBS:', err);
+      });
   };
   window.addEventListener('gm-tour-act', onAct);
   return () => {

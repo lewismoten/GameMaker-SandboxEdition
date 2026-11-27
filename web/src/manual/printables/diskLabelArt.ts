@@ -266,7 +266,7 @@ export function paintDiskLabel(g: CanvasRenderingContext2D, entry: CatalogEntry,
   g.fillText(`Shareware${entry.price ? ` · ${entry.price} Registration` : ''}`, PAD, LH - 36, printW);
   g.fillText(`© ${entry.year ?? 1995} ${entry.company ?? 'Sandbox Software'}`, PAD, LH - 20, printW);
   g.font = ARIAL(10, 400);
-  g.fillText('To install: insert disk 1, type A:INSTALL', PAD, LH - 54, printW);
+  g.fillText('To install: insert disk 1, type A: then CD \\ then INSTALL', PAD, LH - 54, printW);
 
   // the back strip, upside down so it reads once folded over the top edge
   g.save();

@@ -22,7 +22,7 @@ const DOWN = `Ghost Jack bridge not reachable at 127.0.0.1:8787 — start it wit
 export function parseArgs(argv) {
   const o = { shot: null, out: null, width: 1280, crop: null, ocr: false, expect: null, ocrPsm: 11, ocrScale: 1.5, widthSet: false };
   const need = (i, name) => {
-    if (i + 1 >= argv.length) throw new Error(`${name} needs a value`);
+    if (i + 1 >= argv.length || argv[i + 1].startsWith('--')) throw new Error(`${name} needs a value`);
     return argv[i + 1];
   };
   for (let i = 0; i < argv.length; i++) {
@@ -33,8 +33,10 @@ export function parseArgs(argv) {
       o.widthSet = true;
       if (!Number.isInteger(o.width) || o.width < 64 || o.width > 1920) throw new Error('--width is 64 to 1920');
     } else if (a === '--crop') {
-      const p = need(i++, a).split(',').map(Number);
-      if (p.length !== 4 || p.some((n) => !Number.isFinite(n) || n < 0 || n > 1)) throw new Error('--crop is x,y,w,h as fractions 0 to 1');
+      const fields = need(i++, a).split(',');
+      const p = fields.map(Number);
+      if (p.length !== 4 || fields.some((field) => !field.trim()) || p.some((n) => !Number.isFinite(n) || n < 0 || n > 1) || p[2] === 0 || p[3] === 0)
+        throw new Error('--crop needs four fractions from 0 to 1 with positive width and height');
       o.crop = p;
     } else if (a === '--ocr-psm') {
       o.ocrPsm = Number(need(i++, a));
@@ -97,7 +99,7 @@ export function parseTsv(tsv, minConf = 60) {
   return { all: all.join(' '), text: good.join(' ') };
 }
 
-/** Two parse results as one, keeping each word once (case-insensitive) in the order first seen. */
+/** Keep full reads separate for phrase matching and merge confident words for display. */
 export function mergeWords(a, b) {
   const one = (x, y) => {
     const seen = new Set(
@@ -109,13 +111,14 @@ export function mergeWords(a, b) {
     const add = y.split(' ').filter((w) => w && !seen.has(w.toLowerCase()) && seen.add(w.toLowerCase()));
     return [...x.split(' ').filter(Boolean), ...add].join(' ');
   };
-  return { all: one(a.all, b.all), text: one(a.text, b.text) };
+  return { all: [...a.all, b.all], text: one(a.text, b.text) };
 }
 
 /** Whether the OCR text holds `want`, ignoring case and runs of white space. */
-export function textHas(text, want) {
+export function textHas(reads, want) {
   const n = (s) => s.toLowerCase().replace(/\s+/g, ' ').trim();
-  return n(text).includes(n(want));
+  const phrase = n(want);
+  return reads.some((text) => n(text).includes(phrase));
 }
 
 /** Fetch a bridge route; a refused connection becomes the "start it" message. */
@@ -159,7 +162,7 @@ function defaultOut(shot) {
 
 /** Reads the words in a picture file: preprocess with ffmpeg at each threshold, tesseract on each, merged. */
 export function ocrFile(out, opts) {
-  let words = { all: '', text: '' };
+  let words = { all: [], text: '' };
   let tmp = null;
   try {
     tmp = mkdtempSync(join(tmpdir(), 'look-ocr-'));
@@ -174,9 +177,6 @@ export function ocrFile(out, opts) {
       const tsv = execFileSync('tesseract', tesseractArgs(img, opts.ocrPsm), { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] });
       words = mergeWords(words, parseTsv(tsv));
     }
-  } catch {
-    console.error('tesseract is not installed (or failed); --ocr skipped. Install it yourself, e.g. `brew install tesseract`.');
-    process.exit(opts.expect ? 1 : 0);
   } finally {
     if (tmp) rmSync(tmp, { recursive: true, force: true });
   }
@@ -198,7 +198,14 @@ async function main() {
   writeFileSync(out, jpeg);
   console.log(`${slot == null ? 'current view' : `shot ${slot}`}${settled === '0' ? ' (did not settle; look again)' : ''}: ${out}`);
   if (!o.ocr) return;
-  const words = ocrFile(out, o);
+  let words;
+  try {
+    words = ocrFile(out, o);
+  } catch {
+    console.error('tesseract is not installed (or failed); --ocr skipped. Install it yourself, e.g. `brew install tesseract`.');
+    if (o.expect) process.exitCode = 1;
+    return;
+  }
   console.log(words.text);
   const text = words.all;
   if (o.expect && !textHas(text, o.expect)) {

@@ -23,9 +23,16 @@ export function engravingProblems(part: Part): string[] {
     return it.k === 'poly' ? it.pts : undefined;
   };
   const holes = part.elements.filter((e) => e.name.startsWith('hole')).map((e) => ({ pts: poly(e.from), it: items[e.from] }));
-  const shell = poly(outline.from);
+  const shell = items[outline.from];
   items.forEach((it, i) => {
     if (it.op !== 'engrave') return;
+    if (shell.k === 'circle') {
+      const outside =
+        it.k === 'poly'
+          ? it.pts.some(([x, y]) => Math.hypot(x - shell.cx, y - shell.cy) > shell.r)
+          : Math.hypot(it.cx - shell.cx, it.cy - shell.cy) + (it.k === 'ring' ? it.r1 : it.r) > shell.r;
+      if (outside) out.push(`${part.name}: engraving ${i} leaves the outline`);
+    }
     const pts: Pt[] =
       it.k === 'poly'
         ? it.pts
@@ -38,7 +45,7 @@ export function engravingProblems(part: Part): string[] {
             ]
           : [];
     for (const p of pts) {
-      if (shell && !inside(p, shell)) out.push(`${part.name}: engraving ${i} leaves the outline`);
+      if (shell.k === 'poly' && !inside(p, shell.pts)) out.push(`${part.name}: engraving ${i} leaves the outline`);
       for (const h of holes) {
         if (h.pts && inside(p, h.pts)) out.push(`${part.name}: engraving ${i} lands in a hole`);
         if (h.it.k === 'circle' && Math.hypot(p[0] - h.it.cx, p[1] - h.it.cy) < h.it.r) out.push(`${part.name}: engraving ${i} lands in a round hole`);

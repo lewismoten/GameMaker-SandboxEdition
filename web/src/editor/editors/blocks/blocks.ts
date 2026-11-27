@@ -823,7 +823,7 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
         { class: 'hint' },
         sprites ? 'Color 255 is transparent. ' : '',
         'Pick a block, paint it, then set how it behaves. Shift- or Ctrl-click blocks to group them. ',
-        h('span', { class: 'limit-note', role: 'note' }, blockCapacityText(kind, blocks.length)),
+        h('span', { class: 'limit-note', role: 'note' }, blockCapacityText(kind, raw.length)),
       ),
       names.el,
       chooser.el,

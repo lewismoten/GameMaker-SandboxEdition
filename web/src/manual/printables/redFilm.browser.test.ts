@@ -112,3 +112,45 @@ it('locates the Cold Cellar false wall even when only its cell moves', async () 
     await browser.close();
   }
 });
+
+it('steps the spyglass lens through all six labeled fingerprint cards', async () => {
+  const script = await build({
+    stdin: {
+      contents: `
+        import { openBox } from './viewer';
+        import { printsSheets } from './sleuthPrints';
+        import box from '../../../../games/sleuth/printables.json';
+        const prints = box.items.find(item => item.kind === 'prints');
+        openBox('Test box', [], [{id:'prints',title:'Evidence',icon:'',glass:true, render:() => printsSheets(prints)}]);
+      `,
+      resolveDir: 'src/manual/printables',
+    },
+    bundle: true,
+    write: false,
+    format: 'iife',
+    define: { 'import.meta.env': '{}' },
+    loader: { '.css': 'empty' },
+  });
+  const browser = await chromium.launch();
+  try {
+    const page = await browser.newPage();
+    for (const name of ['paper', 'sleuthPrints']) await page.addStyleTag({ path: 'src/manual/printables/' + name + '.css' });
+    // Keep both picture elements and their layout while skipping the procedural ink.
+    await page.addScriptTag({ content: 'HTMLCanvasElement.prototype.getContext = () => null' });
+    await page.addScriptTag({ content: script.outputFiles[0].text });
+    await page.getByRole('button', { name: /Spyglass/ }).press('Enter');
+    const glass = page.locator('.sg-glass');
+    const labels = await page.locator('.sgp-cell figcaption b').allTextContents();
+    expect(labels).toHaveLength(6);
+    for (const label of labels) {
+      expect(await glass.getAttribute('aria-valuetext')).toBe(label);
+      const card = await page.locator('.sgp-cell').filter({ hasText: label }).locator('.rf-picture').boundingBox();
+      const lens = await glass.locator('.sg-lens').boundingBox();
+      expect(Math.abs(lens!.y + lens!.height / 2 - card!.y - card!.height / 2)).toBeLessThan(2);
+      expect(Math.abs(lens!.x + lens!.width / 2 - card!.x - card!.width / 2)).toBeLessThan(2);
+      await page.keyboard.press('ArrowRight');
+    }
+  } finally {
+    await browser.close();
+  }
+});

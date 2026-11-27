@@ -42,7 +42,7 @@ function updateItem(attrs: Record<string, string>): HTMLElement {
   watchPendingUpdate((r) => {
     reload = r;
     item.hidden = !r;
-  });
+  }, pageLife());
   return item;
 }
 

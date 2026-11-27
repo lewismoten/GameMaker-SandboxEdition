@@ -7,7 +7,7 @@ import { gameCardPng } from './ogImage';
 import { readScoopDates, scoopRss } from './scoopFeed';
 import { GUIDE_SECTIONS } from '../src/manual/guideSections';
 import { readingPages } from './seoReadings';
-import { staticPages, type StaticPage } from './seoStaticPages';
+import { staticPages } from './seoStaticPages';
 import { gameImagePath, gamePage } from '../src/seo/site';
 import { playable } from './seoCatalog';
 import { downloadsPageHtml } from './seoDownloads';
@@ -34,11 +34,7 @@ export { gamePageHtml, guidePageHtml, staticPageHtml } from './seoTemplates';
 const HEAD_MARK = '<!--SEO:HEAD-->';
 const BODY_MARK = '<!--SEO:BODY-->';
 
-/** The static page whose file this is, if any. */
-function pageStatic(catalog: CdCatalogEntry[], path: string): StaticPage | undefined {
-  const file = path.split('?')[0].replace(/^.*\//, '');
-  return readingPages.find((p) => p.file === file) ?? staticPages(catalog).find((p) => p.file === file);
-}
+const STATIC_PAGE_FILE = /^(cast|library|magazine)\.html$/;
 
 /** The Guide section whose page this is (help-<id>.html), if any. */
 function pageSection(path: string): GuideSection | undefined {
@@ -81,7 +77,7 @@ export function seoPages(cdRoot: string): Plugin {
       const files = generated(cdRoot);
       server.middlewares.use((req, res, next) => {
         if (req.method !== 'GET' && req.method !== 'HEAD') return next();
-        const path = (req.url ?? '').split('?')[0].replace(/^\/+/, '');
+        const path = (req.url ?? '').split('?')[0].replace(/^\//, '');
         const file = files[path];
         if (file) {
           res.setHeader('Content-Type', file.type);
@@ -90,7 +86,7 @@ export function seoPages(cdRoot: string): Plugin {
         }
         // A game's page: play.html as the dev server serves it, then made the game's own.
         const image = /^og\/([^/]+)\.png$/.exec(path);
-        const catalog = image || /^(play-[^/]+|cast|library)\.html$/.test(path) ? cdCatalog(cdRoot) : [];
+        const catalog = image || /^play-[^/]+\.html$/.test(path) ? cdCatalog(cdRoot) : [];
         const imageGame = image && playable(catalog).find((g) => g.id === decodeURIComponent(image[1]));
         if (imageGame) {
           res.setHeader('Content-Type', 'image/png');
@@ -100,7 +96,7 @@ export function seoPages(cdRoot: string): Plugin {
         const g = pageGame(catalog, path);
         // a Guide section's page: index.html as the dev server serves it, then made the section's own
         const section = !g && pageSection(path);
-        const fixed = !g && !section && pageStatic(catalog, path);
+        const fixed = !g && !section && (STATIC_PAGE_FILE.test(path) || readingPages.some((p) => p.file === path));
         if (!g && !section && !fixed) return next();
         server
           .transformIndexHtml(`/${path}`, readFileSync(join(server.config.root, section || fixed ? 'index.html' : 'play.html'), 'utf8'), req.originalUrl)
@@ -121,7 +117,8 @@ export function seoPages(cdRoot: string): Plugin {
       if (g) return gamePageHtml(out, g);
       const section = !play && pageSection(ctx.path);
       if (section) return guidePageHtml(out, section, catalog);
-      const fixed = !play && pageStatic(catalog, ctx.path);
+      const file = ctx.path.split('?')[0].replace(/^\//, '');
+      const fixed = !play && (STATIC_PAGE_FILE.test(file) ? staticPages(catalog) : readingPages).find((p) => p.file === file);
       return fixed ? staticPageHtml(out, fixed) : out;
     },
     generateBundle: {
