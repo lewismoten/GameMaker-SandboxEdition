@@ -12,6 +12,14 @@ const md = (id: string) => readFileSync(join(here, 'chapters', `${id}.md`), 'utf
 const gm = resolve(here, '../../../code/GM');
 
 describe('the chapters', () => {
+  it('distinguishes the VOC allocation expression from the read count', () => {
+    const rows = md('sound').split('\n');
+    const allocation = rows.find((row) => row.startsWith('| Voice buffer '));
+    expect(allocation).toContain('new char[vocfilesize]');
+    expect(allocation).not.toContain('uint');
+    expect(rows.find((row) => row.startsWith('| VOC size hazard '))).toMatch(/cast to `uint` for `read`/);
+  });
+
   it('have one file each, and every file is in the contents', () => {
     const files = readdirSync(join(here, 'chapters'))
       .map((f) => f.replace(/\.md$/, ''))
