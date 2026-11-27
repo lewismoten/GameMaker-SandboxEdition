@@ -24,6 +24,8 @@ function watchInput(): void {
 export async function whenQuiet(ms = 1200): Promise<void> {
   if (!watching) lastInput = performance.now();
   watchInput();
-  for (let wait = ms - (performance.now() - lastInput); wait > 0; wait = ms - (performance.now() - lastInput)) await new Promise((r) => setTimeout(r, wait));
-  await new Promise<void>((r) => (typeof requestIdleCallback === 'function' ? requestIdleCallback(() => r(), { timeout: 1000 }) : setTimeout(r, 0)));
+  do {
+    for (let wait = ms - (performance.now() - lastInput); wait > 0; wait = ms - (performance.now() - lastInput)) await new Promise((r) => setTimeout(r, wait));
+    await new Promise<void>((r) => (typeof requestIdleCallback === 'function' ? requestIdleCallback(() => r(), { timeout: 1000 }) : setTimeout(r, 0)));
+  } while (performance.now() - lastInput < ms);
 }

@@ -12,8 +12,9 @@ Entry point: `archive.html` loads `archive.ts`.
   registers no service worker and writes no storage.
 - `fetchOne.ts`: fetches a file, waiting up to five retries when a server says it is still preparing.
 - `plan.ts`: what to fetch and in what order. The default selection leaves out game packs,
-  phone files and the large kit files; `?games=1` includes those groups. The shell comes
-  first, followed by startup code and data, the remaining files, then the optional groups.
+  phone files and the large kit files; `?games=1` includes those groups. Both selections exclude
+  the numbered gate lists (such as `games/extra-0.json`). The shell comes first, followed
+  by startup code and data, the remaining files, then the optional groups.
   `?part=N` selects a numbered slice starting at 1; without it, the whole selection is used.
   Slices target 12,000,000 wire bytes, but do not split a file, so one can exceed that size.
 

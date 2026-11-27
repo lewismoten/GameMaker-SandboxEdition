@@ -1,8 +1,8 @@
-// Pinching the phone scales it from the spacing at the second contact.
+// Pinching the phone scales it from the spacing at the second contact; Shift+arrows pan it without turning it.
 import { afterEach, expect, it, vi } from 'vitest';
 import { createPhoneViewer } from './phoneViewer';
 
-const view = vi.hoisted(() => ({ zoom: 1, panX: 0, panY: 0 }));
+const view = vi.hoisted(() => ({ zoom: 1, yaw: 0, pitch: 0, panX: 0, panY: 0 }));
 vi.mock('./phoneGl', () => ({ createPhoneView: () => view }));
 vi.mock('./phoneData', () => ({ VARIANTS: ['cheap', 'deluxe'], loadPhone: () => ({ parts: [] }) }));
 vi.mock('../../../editor/core/ui', () => ({
@@ -17,7 +17,7 @@ vi.mock('../../../editor/core/ui', () => ({
 
 afterEach(() => vi.unstubAllGlobals());
 
-it('zooms on the first pinch move and keeps scaling on the next move', async () => {
+function stubBrowser() {
   vi.stubGlobal(
     'IntersectionObserver',
     class {
@@ -25,6 +25,22 @@ it('zooms on the first pinch move and keeps scaling on the next move', async () 
     },
   );
   vi.stubGlobal('requestAnimationFrame', () => 1);
+}
+
+it('pans right and up with Shift+arrows and leaves rotation alone', async () => {
+  stubBrowser();
+  const viewer = createPhoneViewer();
+  await viewer.open();
+  for (const key of ['ArrowRight', 'ArrowUp']) {
+    viewer.canvas.dispatchEvent(Object.assign(new Event('keydown', { cancelable: true }), { key, shiftKey: true }));
+  }
+  expect(view.panX).toBeGreaterThan(0);
+  expect(view.panY).toBeLessThan(0);
+  expect([view.yaw, view.pitch]).toEqual([0, 0]);
+});
+
+it('zooms on the first pinch move and keeps scaling on the next move', async () => {
+  stubBrowser();
   const viewer = createPhoneViewer();
   await viewer.open();
   const pointer = (type: string, pointerId: number, clientX: number) =>

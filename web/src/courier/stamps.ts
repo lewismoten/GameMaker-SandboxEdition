@@ -19,10 +19,17 @@ export interface Known {
   original?: unknown;
 }
 
+/** Only these IDs need a catalog lookup to classify their stamp. */
+function catalogId(saveId: string | undefined): string | undefined {
+  if (saveId?.startsWith('project:')) return undefined;
+  const id = saveId?.replace(/^game:/, '');
+  return id && !isOldSecret(id) ? id : undefined;
+}
+
 /** The stamp a game earns on `event`, or none. `saveId` is the player's ('game:<id>', 'project:<id>' or a bare id). */
 export function stampFor(saveId: string | undefined, event: StampEvent, catalog: readonly Known[]): Stamp | undefined {
-  const id = saveId?.startsWith('project:') ? undefined : saveId?.replace(/^game:/, '');
-  const g = id && !isOldSecret(id) ? catalog.find((x) => x.id === id) : undefined;
+  const id = catalogId(saveId);
+  const g = id ? catalog.find((x) => x.id === id) : undefined;
   if (!g) return { kind: 'mystery' };
   if (event !== 'won') return undefined;
   if (isCeremony(g.id)) return { kind: 'graduation' };
@@ -39,9 +46,10 @@ export async function publicCatalog(): Promise<Known[]> {
 
 /** Stamps this device's postcard for a game played here (achievements/index.ts calls it). */
 export async function earnStamp(saveId: string | undefined, event: StampEvent): Promise<boolean> {
+  if (!catalogId(saveId)) return addStamp({ kind: 'mystery' });
   const catalog = await publicCatalog();
   // with no catalog (offline, a failed fetch) a catalog game can't be told from an unknown one: no stamp yet
-  if (!catalog.length && saveId && !saveId.startsWith('project:')) return false;
+  if (!catalog.length) return false;
   const s = stampFor(saveId, event, catalog);
   return s ? addStamp(s) : false;
 }

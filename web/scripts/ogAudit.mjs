@@ -12,7 +12,13 @@ const dir = join(dist, 'og');
 const findings = [];
 let n = 0;
 let total = 0;
-for (const f of readdirSync(dir).filter((x) => x.endsWith('.png'))) {
+let names = [];
+try {
+  names = readdirSync(dir).filter((x) => x.endsWith('.png'));
+} catch {
+  // a build with no og/ folder is the same finding as an empty one (reported below)
+}
+for (const f of names) {
   const buf = readFileSync(join(dir, f));
   n++;
   total += buf.length;

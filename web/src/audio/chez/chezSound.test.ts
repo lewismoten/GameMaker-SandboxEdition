@@ -125,6 +125,15 @@ describe('the made-up voice', () => {
     expect(f.sources()).toHaveLength(n);
   });
 
+  it('cancels pending clunks when movement stops after 100 ms', () => {
+    const f = fakeContext();
+    const m = chezMotor(f.as, f.out, {});
+    m.go();
+    f.until(0.1);
+    m.stop();
+    expect(f.sources().filter((s) => s.started! > 0.11 && (s.stopped ?? Infinity) > s.started!)).toHaveLength(0);
+  });
+
   it('stop() winds down and frees the run; go() again starts a new one', () => {
     const f = fakeContext();
     const m = chezMotor(f.as, f.out, {});

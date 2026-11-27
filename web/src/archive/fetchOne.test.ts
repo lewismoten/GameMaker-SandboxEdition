@@ -30,4 +30,23 @@ describe('fetchOne', () => {
     expect(await result).toBe(false);
     expect(fetch).toHaveBeenCalledTimes(6);
   });
+
+  it('retries a stalled header and a stalled body, then reports failure', async () => {
+    vi.useFakeTimers();
+    const stall = (options: RequestInit) =>
+      new Promise<never>((_resolve, reject) => options.signal?.addEventListener('abort', () => reject(new Error('timeout'))));
+    const fetch = vi.fn().mockImplementation((_url: string, options: RequestInit) => stall(options));
+    vi.stubGlobal('fetch', fetch);
+    const result = fetchOne('/file');
+    await vi.runAllTimersAsync();
+    expect(await result).toBe(false);
+    expect(fetch).toHaveBeenCalledTimes(2);
+
+    const body = vi.fn().mockImplementation((_url: string, options: RequestInit) => ({ ok: true, status: 200, arrayBuffer: () => stall(options) }));
+    vi.stubGlobal('fetch', body);
+    const second = fetchOne('/file');
+    await vi.runAllTimersAsync();
+    expect(await second).toBe(false);
+    expect(body).toHaveBeenCalledTimes(2);
+  });
 });

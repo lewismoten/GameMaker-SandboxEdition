@@ -197,6 +197,8 @@
   }
   .snd-item .snd-col {
     min-width: 44px;
+  }
+  .snd-item button.snd-col {
     min-height: 44px;
   }
   .snd-top {

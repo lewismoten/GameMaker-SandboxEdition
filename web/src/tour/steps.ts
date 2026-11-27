@@ -226,6 +226,8 @@ export interface TourStep {
   when?: string;
   /** The day (YYYY-MM-DD) this step was added: "What's new" offers the steps newer than a visitor's last visit (whatsNew.ts). Left off, the step is old. */
   since?: string;
+  /** Earlier step to keep in What's new so this step's control is visible. */
+  newsSetup?: string;
   /** Starts or stops the page's game preview as the action lands (previews are held still during a tour otherwise). */
   demo?: 'play' | 'stop';
   /** Something from a game that wanders through: across the screen, or over to the target. */

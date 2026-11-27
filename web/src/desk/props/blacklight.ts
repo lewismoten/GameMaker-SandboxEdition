@@ -117,7 +117,7 @@ export function blackLight(desk: HTMLElement): () => void {
   );
   tube.setAttribute('role', 'switch'); // (pressable makes it a button first)
   const glow = eggGlow(desk);
-  // now and then he glances aside and smiles (not with reduced motion, nor in a hidden tab)
+  // now and then he glances aside and smiles (with a stationary cue for reduced motion, only in a visible tab)
   let glanceTimer = 0;
   let glancing = false;
   let glancedAt = -Infinity; // when the last glance ended
@@ -141,14 +141,18 @@ export function blackLight(desk: HTMLElement): () => void {
     const wait = (lo + Math.random() * (hi - lo)) * 1000;
     preloadTimer = window.setTimeout(() => preload(side), wait - PRELOAD_AHEAD_MS);
     glanceTimer = window.setTimeout(() => {
-      if (!stillMotion() && document.visibilityState === 'visible') {
-        preload(side); // (already loaded, unless the timers ran late)
-        look(side);
+      if (document.visibilityState === 'visible' && poster.getClientRects().length) {
+        const stationary = stillMotion();
+        if (stationary) say(poster, 'Doc Leo glances to one side and smiles.');
+        else {
+          preload(side); // (already loaded, unless the timers ran late)
+          look(side);
+        }
         glancing = true;
         glanceTimer = window.setTimeout(() => {
           glancing = false;
           glancedAt = performance.now();
-          look('');
+          if (!stationary) look('');
           nextGlance();
         }, GLANCE_MS);
       } else nextGlance();

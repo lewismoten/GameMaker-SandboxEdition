@@ -126,7 +126,7 @@ export function libraryCards(
         ? shownSections.flatMap((sec, n) => [
             h(
               'h3',
-              { class: `lib-sub${sec.games.length === 1 ? ' lib-sub-one' : ''}`, id: `lib-sub-${n}`, dataset: { group: String(n) } },
+              { class: `lib-sub${sec.games.length === 1 ? ' lib-sub-one' : ''}`, id: `lib-sub-${n}`, dataset: { group: String(n), kind: sec.tag ?? '' } },
               sec.name,
               (c === 'starter' || c === 'cd') && sec.tag ? h('span', { class: 'lib-sub-tag' }, ` · ${sec.tag}`) : null,
               c === 'starter' && sec.doneText ? h('span', { class: 'lib-sub-count' }, ` · ${sec.doneText}`) : null,

@@ -6,7 +6,7 @@ Run with PlatformIO's Python (it has pyserial), with the board on its game list 
   ~/.platformio/penv/bin/python web/scripts/pocketSdWrite.py /dev/cu.usbserial-XXXX /tmp/pocketcard/pocket
 Sends every file of the folder to /pocket/ on the card (256 bytes at a time, about 10 KB/s: 2 MB takes several minutes), the list
 last, then resets the board so it reads the new list. A file already on the card is replaced. Lines the board logs before a reply (SCREEN, PACK, LOG...) are skipped; a reply that never comes within 10 s fails and shows the last skipped lines.
-Exits 1 on any error. `--self-check` tests that reader with a fake port.
+Exits 1 on any error. `--self-check` tests transfer order and the reply reader with a fake port.
 """
 import sys, os, time, argparse
 import os as _os, sys as _sys
@@ -45,7 +45,13 @@ def fail(n, line, skipped):
     sys.exit(1)
 
 
+def transfer_order(n):
+    return (n == "games.txt", n.endswith(".cfg"), n)
+
+
 def self_check():
+    names = sorted(["games.txt", "teddy.cfg", "map.bin"], key=transfer_order)
+    assert names == ["map.bin", "teddy.cfg", "games.txt"], names
     from unittest.mock import patch
 
     class Fake:
@@ -74,7 +80,7 @@ def self_check():
 ap = argparse.ArgumentParser()
 ap.add_argument("port", nargs="?")
 ap.add_argument("folder", nargs="?")
-ap.add_argument("--self-check", action="store_true", help="test the reply reader with a fake serial port and exit")
+ap.add_argument("--self-check", action="store_true", help="test transfer order and the reply reader with a fake serial port and exit")
 a = ap.parse_args()
 if a.self_check:
     self_check(); sys.exit(0)
@@ -87,7 +93,7 @@ time.sleep(0.3)
 s.reset_input_buffer()
 show(s, "Writing games to SD")
 try:
-    names = sorted(os.listdir(a.folder), key=lambda n: (n.endswith(".cfg") or n == "games.txt", n))
+    names = sorted(os.listdir(a.folder), key=transfer_order)
     total = sum(os.path.getsize(os.path.join(a.folder, n)) for n in names)
     sent, t0 = 0, time.time()
     for i, n in enumerate(names):

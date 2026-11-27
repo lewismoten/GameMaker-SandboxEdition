@@ -60,8 +60,8 @@ export function noWayOut(d: SceneData, game: Game): Finding[] {
  * on its menu, GameMenu in PLAYGAME.C); the other scenes' names appear only in the editor, so they
  * are not flagged. (DOS's own Clear() writes "UnTitled" and then blanks it, so a new scene is blank.)
  */
-export function untitledGame(d: SceneData, game: Game): Finding[] {
-  if (d.scene !== 0 || !/^untitled\s*\d*$/i.test(gameTitle(game))) return [];
+export function untitledGame(game: Game): Finding[] {
+  if (!/^untitled\s*\d*$/i.test(gameTitle(game))) return [];
   return [
     {
       check: 'untitled',

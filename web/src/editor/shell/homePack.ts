@@ -67,7 +67,7 @@ function flow(sizes: readonly number[], order: readonly number[], cols: number):
  * order that breaks the fewest groups across rows, then leaves the fewest single tiles cut off
  * from their group, then stays nearest the order given.
  */
-export function packGroups(sizes: readonly number[], cols: number, fixed = 1): Placed[] {
+export function packGroups(sizes: readonly number[], cols: number, fixed = 1, kinds?: readonly string[]): Placed[] {
   cols = Math.max(1, Math.floor(cols));
   const all = sizes.flatMap((n, i) => (n > 0 ? [i] : []));
   const first = all.slice(0, fixed);
@@ -75,6 +75,8 @@ export function packGroups(sizes: readonly number[], cols: number, fixed = 1): P
   const candidates = rest.length <= 7 ? orders(rest) : [rest];
   let best: { placed: Placed[]; score: number[] } | undefined;
   for (const order of candidates) {
+    // A maker can move within its kind, but never across a kind boundary.
+    if (kinds && order.some((index, i) => kinds[index] !== kinds[rest[i]])) continue;
     const placed = flow(sizes, [...first, ...order], cols);
     let breaks = 0;
     let lone = 0;

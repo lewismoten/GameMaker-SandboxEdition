@@ -15,7 +15,14 @@ export interface LocalWalk {
 
 const NOTE =
   'This walkthrough is a local file from your .for-lewis folder (the dev server only); it is not saved with the game. Redo keeps a new one in the usual place.';
-const FOLDER = '.for-lewis/research/archive-walks';
+
+function archiveUrl(root: string, ...files: string[]): string {
+  const dirs = root.split(root.startsWith('/') ? '/' : /[\\/]/).filter(Boolean);
+  const parts = [...dirs, '.for-lewis', 'research', 'archive-walks', ...files];
+  // Vite uses decodeURI, so keep path punctuation such as the drive colon and literal plus.
+  return '/@fs/' + parts.map((part) => encodeURI(part).replace(/[/?#]/g, encodeURIComponent)).join('/');
+}
+
 /** The repository root, which vite.config.ts defines for the dev server. */
 function repoRoot(): Promise<string | undefined> {
   return Promise.resolve((import.meta.env.VITE_REPO_ROOT as string | undefined) || undefined);
@@ -28,8 +35,7 @@ export async function localWalk(gam: string, sceneCount: number, name = ''): Pro
   try {
     const root = await repoRoot();
     if (!root) return undefined;
-    const base = `/@fs${root}/${FOLDER}`;
-    const index = await fetch(`${base}/index.tsv`);
+    const index = await fetch(archiveUrl(root, 'index.tsv'));
     if (!index.ok) return undefined;
     const rows = (await index.text())
       .split('\n')
@@ -39,7 +45,7 @@ export async function localWalk(gam: string, sceneCount: number, name = ''): Pro
     const mine = slug(name);
     rows.sort((a, b) => Number(mine.includes(slug(b[0].replace(/^game-maker_/, '')))) - Number(mine.includes(slug(a[0].replace(/^game-maker_/, '')))));
     for (const [zip, file] of rows) {
-      const r = await fetch(`${base}/${zip}/${file}.walkthrough.json`);
+      const r = await fetch(archiveUrl(root, zip, `${file}.walkthrough.json`));
       if (!r.ok) continue;
       const checked = checkWalkFile(await r.text(), gam, sceneCount);
       if (checked.ok) return { walk: checked.walk, note: NOTE };
@@ -57,7 +63,7 @@ export async function localSummary(gam: string, name = ''): Promise<{ won: numbe
   rowsCache ??= (async () => {
     const root = await repoRoot();
     if (!root) return [];
-    const r = await fetch(`/@fs${root}/${FOLDER}/index.tsv`);
+    const r = await fetch(archiveUrl(root, 'index.tsv'));
     return r.ok
       ? (await r.text())
           .split('\n')

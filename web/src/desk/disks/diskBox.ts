@@ -189,12 +189,15 @@ export function openDiskBox(disks: Disk[], startId: string | undefined, onPick: 
     };
 
     const noMatch = h('p', null, 'No matching disks. Try another title or author.');
+    const foldHelp = h('p', { class: 'disk-fold-help', id: 'disk-fold-help', hidden: true }, 'Clear the search to fold a group.');
     const search = h('input', {
       type: 'search',
       'aria-label': 'Find a disk',
+      'aria-describedby': 'disk-fold-help',
       placeholder: 'Find a disk by title or author',
       oninput: () => {
         query = search.value.trim().toLocaleLowerCase();
+        foldHelp.hidden = !query;
         items.forEach((item, i) => {
           item.hidden = !`${disks[i].title} ${disks[i].catalog?.author ?? ''} ${disks[i].catalog?.company ?? ''}`.toLocaleLowerCase().includes(query);
         });
@@ -305,6 +308,7 @@ export function openDiskBox(disks: Disk[], startId: string | undefined, onPick: 
       { class: 'desk-overlay', role: 'dialog', 'aria-label': 'Disk box', tabindex: -1 },
       h('button', { class: 'close', onclick: close }, 'Close (Esc)'),
       search,
+      foldHelp,
       h(
         'div',
         { class: 'disk-cases' },
