@@ -20,6 +20,10 @@ describe('PATCHING.TXT', () => {
     for (const l of PATCHING_DIZ) expect(l.length, l).toBeLessThanOrEqual(DIZ_WIDTH);
   });
 
+  it('shows where five letters over Play leave the menu terminator', () => {
+    expect(all).toContain('ABCDERead Instructions');
+  });
+
   it('names HEXEDIT and PLAYHACK, which exist on the desk', () => {
     expect(all).toContain('HEXEDIT.EXE');
     expect(all).toContain('PLAYHACK.EXE');

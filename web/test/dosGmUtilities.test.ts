@@ -9,6 +9,9 @@ import { key, TextKeys } from '../src/retro/text/textInput';
 import type { TextScreen } from '../src/retro/text/textScreen';
 import type { RetroHost } from '../src/retro/host';
 
+import { GameFiles } from '../src/project/files';
+import { newGame, serializeGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+
 const designerRuns: string[] = [];
 vi.mock('../src/vga/blocedit', () => ({ program: { exe: 'BLOCEDIT.EXE', run: async () => void designerRuns.push('BLOCEDIT.EXE') } }));
 
@@ -87,6 +90,7 @@ function fakeHost(log: string[], keys: string[]): RetroHost {
     screen: fakeScreen(log),
     keys: k,
     designer: undefined,
+    gameIn: async () => undefined,
     disk: () => undefined,
     workDir: () => ({ drive: 'C', parts: ['GM'] }),
   } as unknown as RetroHost;
@@ -115,10 +119,26 @@ describe('quitting a GM program run by hand', () => {
     expect(chained).not.toContain('resetPalette');
   });
 
+  it('plays the GAM named for the executable resolved on another drive', async () => {
+    const { xferplay } = await import('../src/retro/gm');
+    const host = fakeHost([], ['Enter']);
+    const files = new GameFiles([['sample.gam', serializeGame(newGame('Sample'))]]);
+    const gameIn = vi.fn(async () => ({ files, title: 'Sample', where: 'A:\\', kind: 'disk' as const }));
+    const playGame = vi.fn();
+    host.gameIn = gameIn;
+    host.playGame = playGame;
+    const fs = new FileSystem();
+    fs.addDrive({ letter: 'A', label: '', free: 0, root: async () => [file('SAMPLE.EXE', 1, { run: { kind: 'xferplay' } })] });
+    const shell = new Shell({ screen: host.screen, keys: host.keys, fs, run: async (_ref, _args, at) => xferplay(host, at) });
+    await shell.execute('a:sample');
+    expect(gameIn).toHaveBeenCalledWith('A', []);
+    expect(playGame).toHaveBeenCalledWith(files, 'sample.gam', 'Sample', undefined);
+  });
+
   it('XFERPLAY in C:\\GM says its .GAM is missing and quits on a key', async () => {
     const { xferplay } = await import('../src/retro/gm');
     const log: string[] = [];
-    await xferplay(fakeHost(log, ['Enter']));
+    await xferplay(fakeHost(log, ['Enter']), { drive: 'C', parts: ['GM'], name: 'XFERPLAY.EXE' });
     expect(log).toContain("print You are missing XFERPLAY.gam!  I can't do anything without it!");
     expect(log.slice(-2)).toEqual(['resetPalette', 'clear']);
   });

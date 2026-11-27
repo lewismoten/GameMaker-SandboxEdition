@@ -43,6 +43,15 @@ describe('gif size cap', () => {
     const image = [0x2c, 0, 0, 0, 0, 0xff, 0xff, 0xff, 0xff, 0x00, 8];
     const blocks = Array.from({ length: 200 }, () => [255, ...new Array(255).fill(1)]).flat();
     const bytes = Uint8Array.from([...head, ...screen, ...image, ...blocks, 0, 0x3b]);
-    expect(() => decodeGif(bytes)).toThrow(/too large/);
+    const payloadStart = head.length + screen.length + image.length;
+    let payloadReads = 0;
+    const observed = new Proxy(bytes, {
+      get(target, key) {
+        if (typeof key === 'string' && Number(key) >= payloadStart) payloadReads++;
+        return Reflect.get(target, key, target) as unknown;
+      },
+    });
+    expect(() => decodeGif(observed)).toThrow(/too large/);
+    expect(payloadReads).toBe(0);
   });
 });

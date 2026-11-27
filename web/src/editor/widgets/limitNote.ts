@@ -22,6 +22,11 @@ export function upTo(max: number, unit = 'letters'): string {
   return `up to ${max} ${unit} in DOS`;
 }
 
+/** Tell the author which project file to look for after importing a name that changed. */
+export function importedNameNote(original: string, saved: string, tell: (message: string) => void): void {
+  if (original.toLowerCase() !== saved) tell(`${original.toUpperCase()} is saved as ${saved.toUpperCase()}.`);
+}
+
 /** A short DOS file stem: the first 8 letters. Says so (toast) when that cuts the name, so the author sees the DOS name. */
 export function dosStem(name: string, tell: (msg: string) => void): string {
   const stem = name.replace(/\.[^.]*$/, '');

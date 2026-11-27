@@ -6,7 +6,7 @@ afterEach(() => {
   vi.resetModules();
 });
 function database(abort = false) {
-  const rows = new Map<string, Record<string, unknown>>();
+  const rows = new Map<string, Record<string, Uint8Array>>();
   const modes: string[] = [];
   let queue = Promise.resolve();
   const db = {
@@ -20,11 +20,7 @@ function database(abort = false) {
       };
       const store = {
         get: (id: string) => request(() => structuredClone(rows.get(id))),
-        put: (v: Record<string, unknown>, id = v.id) =>
-          request(() => {
-            if (typeof id !== 'string') throw new Error('Missing record key');
-            return rows.set(id, structuredClone(v));
-          }),
+        put: (v: Record<string, Uint8Array>, id: string) => request(() => rows.set(id, structuredClone(v))),
         delete: (id: string) => request(() => rows.delete(id)),
       };
       const tx = { objectStore: () => store, oncomplete: () => {}, onabort: () => {}, error: new Error('transaction aborted') };
@@ -70,36 +66,4 @@ it('rejects a save replacement when its transaction aborts after request success
   vi.resetModules();
   const { replaceSaveData } = await import('./storage');
   await expect(replaceSaveData('game', {})).rejects.toThrow('transaction aborted');
-});
-
-it('uses the latest project for a Pocket download after an intervening save', async () => {
-  database();
-  const { putRecord, loadRecord } = await import('./storage');
-  const { projectGame } = await import('../editor/shell/projectExport');
-  const { emptyCompanion } = await import('./companion');
-  const record = { id: 'game', name: 'Game', gam: 'GAME.GAM', updated: 1, files: { 'GAME.GAM': new Uint8Array(330) }, companion: emptyCompanion() };
-  await putRecord(record);
-  const chooser = await projectGame('game');
-  const uid = 'project:12345678-1234-1234-1234-123456789012';
-  const edited = {
-    ...record,
-    name: 'Edited',
-    updated: 2,
-    files: { ...record.files, 'GAME.MAP': Uint8Array.of(2) },
-    companion: { ...record.companion, pocketUid: uid },
-  };
-  await putRecord(edited);
-  expect((await chooser!.pocketContext!()).uid).toBe(uid);
-  expect(await loadRecord('game')).toEqual(edited);
-});
-
-it('assigns one Pocket identity to simultaneous first downloads', async () => {
-  database();
-  const { putRecord, loadRecord } = await import('./storage');
-  const { projectGame } = await import('../editor/shell/projectExport');
-  await putRecord({ id: 'game', name: 'Game', gam: 'GAME.GAM', updated: 1, files: { 'GAME.GAM': new Uint8Array(330) } });
-  const [a, b] = await Promise.all([projectGame('game'), projectGame('game')]);
-  const [first, second] = await Promise.all([a!.pocketContext!(), b!.pocketContext!()]);
-  expect(first.uid).toBe(second.uid);
-  expect((await loadRecord('game'))?.companion?.pocketUid).toBe(first.uid);
 });

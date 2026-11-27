@@ -2,7 +2,7 @@
 import { expect, it, vi } from 'vitest';
 import { newGame, serializeGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 
-it('stores a guarded title repair once, including the Library listing path', async () => {
+it.each(['commit', 'abort', 'throw'])('handles a Library title repair when the write outcome is %s', async (outcome) => {
   vi.resetModules();
   const game = newGame();
   game.scenes[0].desc = '\xb3 JET DRIVER \xb3';
@@ -20,16 +20,28 @@ it('stores a guarded title repair once, including the Library listing path', asy
   const store = {
     get: (id: string) => request(() => rows.get(id)),
     getAll: () => request(() => [...rows.values()]),
-    put: (v: typeof raw) =>
-      request(() => {
+    put: (v: typeof raw) => {
+      if (outcome === 'throw') throw new Error('put failed');
+      return request(() => {
         puts++;
-        rows.set(v.id, v);
+        if (outcome === 'commit') rows.set(v.id, v);
         return v.id;
-      }),
+      });
+    },
   };
-  vi.stubGlobal('indexedDB', { open: () => request(() => ({ transaction: () => ({ objectStore: () => store }) })) });
+  const transaction = () => {
+    const tx = { objectStore: () => store, oncomplete: () => {}, onabort: () => {}, abort: vi.fn(), error: new Error('write aborted') };
+    setTimeout(() => (outcome === 'abort' || tx.abort.mock.calls.length ? tx.onabort() : tx.oncomplete()), 0);
+    return tx;
+  };
+  vi.stubGlobal('indexedDB', { open: () => request(() => ({ transaction })) });
   try {
     const { listProjects, loadProject, loadRecord } = await import('./storage');
+    if (outcome !== 'commit') {
+      await expect(listProjects()).rejects.toThrow(outcome === 'abort' ? 'write aborted' : 'put failed');
+      expect(rows.get('a')).toEqual(raw);
+      return;
+    }
     expect((await listProjects())[0].name).toBe('JET DRIVER');
     expect((await loadProject('a'))?.record.name).toBe('JET DRIVER');
     expect((await loadRecord('a'))?.name).toBe('JET DRIVER');

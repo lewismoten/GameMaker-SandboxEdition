@@ -13,11 +13,48 @@ describe('mumble', () => {
     expect(a).toEqual(mumble(LINE));
     expect(a.length).toBe(Math.round(mumbleSeconds(LINE) * 11025));
   });
+  it('keeps a zero-duration syllable silent and voices the next one', () => {
+    const samples = mumble([
+      ['a', 220, 220, 0, 0.01],
+      ['e', 220, 220, 0.02],
+    ]);
+    expect(samples.every(Number.isFinite)).toBe(true);
+    expect(samples.slice(0, 111).every((v) => v === 0)).toBe(true);
+    expect(samples.slice(111).some((v) => Math.abs(v) > 0.1)).toBe(true);
+  });
   it('is audible and never clips', () => {
     const a = mumble(LINE, { gain: 5 });
     const peak = a.reduce((m, v) => Math.max(m, Math.abs(v)), 0);
     expect(peak).toBeGreaterThan(0.3);
     expect(peak).toBeLessThanOrEqual(1);
+  });
+  it('advances through a long line with linear syllable reads', () => {
+    function readsFor(count: number) {
+      let reads = 0;
+      const syllables = Array.from({ length: count }, (): Syllable => ['a', 220, 220, 0.01]);
+      const line = new Proxy(syllables, {
+        get(target, key, receiver) {
+          if (typeof key === 'string' && /^\d+$/.test(key)) reads++;
+          return Reflect.get(target, key, receiver);
+        },
+      });
+      mumble(line, { rate: 1000 });
+      return reads;
+    }
+    expect(readsFor(100)).toBeLessThanOrEqual(2 * readsFor(50) + 1);
+  });
+  it('preserves every sample across a pitch glide, rest, and vowel change', () => {
+    const samples = mumble(
+      [
+        ['e', 210, 260, 0.005, 0.002],
+        ['o', 300, 230, 0.005],
+      ],
+      { rate: 1000, gain: 0.15 },
+    );
+    expect([...samples]).toEqual([
+      -0, 0.2314930111169815, -0.21449042856693268, 0.08155672997236252, -0.08286377787590027, 2.972455614980163e-12, 0, -0, -0.009045562706887722,
+      0.2069433033466339, 0.0337638296186924, -0.040238749235868454,
+    ]);
   });
   it('makes a valid .VOC', () => {
     const voc = mumbleVoc(LINE);

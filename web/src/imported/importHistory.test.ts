@@ -38,6 +38,13 @@ describe('import history', () => {
     expect(importHistory()).toEqual([]);
   });
 
+  it('keeps readable records when an entry is damaged', () => {
+    const valid = rec(1);
+    store.set('gm-import-history', JSON.stringify([{}, valid, null, { ...valid, failed: [42] }]));
+    expect(importHistory().map(recordText)).toEqual(['Imported 1 game']);
+    expect(importHistory()).toEqual([valid]);
+  });
+
   it('words a record', () => {
     expect(recordText(rec(1))).toBe('Imported 1 game');
     expect(recordText(rec(3, { skipped: 2, failed: ['a'] }))).toBe('Imported 3 games, 2 already held and left out, 1 failed');

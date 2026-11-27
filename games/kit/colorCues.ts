@@ -52,6 +52,7 @@ export interface Pair {
   pattern: Record<string, number>;
   /** The cue that tells them apart ("light", "shape", "pattern") per vision, or '' for none. */
   cue: Record<string, string>;
+  identicalArtwork: boolean;
   hueOnly: boolean;
   lookAlike: string[];
 }
@@ -130,10 +131,9 @@ function measure(game: string, d: SceneData, kind: string, na: string, a: Block,
   }
   // hue alone: no cue other than color even for normal eyes (or a cue that fails for some kind of vision)
   const hueOnly = KINDS.some((v) => !cue[kindName(v)]);
-  return { game, scene: d.scene, kind, a: na, b: nb, light, delta, shape, pattern, cue, hueOnly, lookAlike };
+  const identicalArtwork = a.pixels.every((pixel, i) => pixel === b.pixels[i]);
+  return { identicalArtwork, game, scene: d.scene, kind, a: na, b: nb, light, delta, shape, pattern, cue, hueOnly, lookAlike };
 }
-
-const sig = (b: Block) => b.pixels.join(',');
 
 /** The pairs of one scene a player must tell apart. */
 export function pairsOf(game: string, d: SceneData): Pair[] {
@@ -146,13 +146,12 @@ export function pairsOf(game: string, d: SceneData): Pair[] {
   const out: Pair[] = [];
   const seenPair = new Set<string>();
   const add = (kind: string, na: string, a: Block, nb: string, b: Block) => {
-    if (sig(a) === sig(b)) return;
     const key = `${kind}|${[na, nb].sort().join('|')}`;
     if (seenPair.has(key)) return;
     seenPair.add(key);
     out.push(measure(game, d, kind, na, a, nb, b, bg));
   };
-  const used = [...use.keys()].filter((n) => n < d.bbl.length && n !== top);
+  const used = [...use.keys()].filter((n) => n < d.bbl.length);
   const bl = (n: number) => d.bbl[n];
   const name = (n: number) => `b${n}`;
   const keys = used.filter((n) => bl(n).effect >= 20 && bl(n).eamt > 0);

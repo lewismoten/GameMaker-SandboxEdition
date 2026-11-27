@@ -1,7 +1,7 @@
 Game-Maker: Sandbox Edition Pocket Player firmware notices
 ===========================================================
 
-This file accompanies the binaries in this directory: bootloader.bin,
+Each board's firmware directory includes this notice with bootloader.bin,
 partitions.bin, firmware.bin, and littlefs.bin. It records the third-party
 components confirmed as compiled into the Pocket Player firmware image set.
 The source and license URLs below are pinned to the versions used to prepare

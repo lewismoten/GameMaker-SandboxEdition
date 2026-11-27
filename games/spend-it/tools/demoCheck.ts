@@ -5,6 +5,8 @@
 import { readFileSync } from 'node:fs';
 import { parseRecording } from '@lewismoten/gamemaker-sandbox-engine/formats/recording';
 import { GameSim } from './sim';
+import { SCAN } from '../../kit/starter/ids';
+import { unpaidStallBump } from './stallBump';
 
 const keys = parseRecording(new Uint8Array(readFileSync(new URL('../disk/demo.rec', import.meta.url)))).slice(0, -1); // the Esc itself is not pressed
 const sim = new GameSim(undefined, 1);
@@ -14,11 +16,12 @@ let peak = 0;
 let bumped = false;
 for (const k of keys) {
   for (let i = 0; i < k.delta; i++) {
+    const before = sim.pos;
     await sim.tick();
     ticks++;
     money = sim.ci.meter[3] - 1;
     peak = Math.max(peak, money);
-    if (money === 2 && sim.ci.meter[20] === 1) bumped = true;
+    if (unpaidStallBump(before, sim.pos, sim.isHeld(SCAN.right), money, sim.ci.meter[20])) bumped = true;
   }
   const scan = k.key & 0x7f;
   if (k.key & 0x80) sim.release(scan);

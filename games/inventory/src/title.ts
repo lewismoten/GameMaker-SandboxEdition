@@ -1,4 +1,4 @@
-// PICK IT UP's own title picture, in Game Feel's sunset look: the hero with a crate, a star and a flame on their stands
+// PICK IT UP's own title picture, in Moving and Pushing's sunset look: the hero with a crate, a star and a flame on their stands
 // in a row, the frosty grump they are for, a sparkle and the door beyond.
 import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { scaleBlit } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';

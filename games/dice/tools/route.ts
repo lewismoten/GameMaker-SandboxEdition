@@ -54,13 +54,23 @@ export async function rollTheDice(bot: StarterBot): Promise<void> {
   const l = levels[0];
   const score = bot.sim.ci.score;
   // follow the ring: every change of face must be the next one, FACE ticks after the last
-  const seen: [number, number][] = [[shown(bot), bot.sim.ticks]];
+  let face = shown(bot);
+  if (!face) throw new Error('the die should start on a rolling face');
+  let since = bot.sim.ticks;
+  let transitions = 0;
   const sim = bot.sim as unknown as { tick: () => Promise<unknown> };
   const orig = sim.tick.bind(sim);
   sim.tick = async () => {
     const r = await orig();
     const v = shown(bot);
-    if (v && seen[seen.length - 1][0] !== v) seen.push([v, bot.sim.ticks]);
+    if (v && face !== v) {
+      if (v !== (face % 6) + 1) throw new Error(`face ${face} was followed by ${v}`);
+      const duration = bot.sim.ticks - since;
+      if (Math.abs(duration - FACE) > 2) throw new Error(`face ${face} showed ${duration} ticks, wanted ${FACE}`);
+      face = v;
+      since = bot.sim.ticks;
+      transitions++;
+    }
     return r;
   };
   await must(bot, bot.walk(6, 'the first sign'), 'to the first sign');
@@ -70,6 +80,7 @@ export async function rollTheDice(bot: StarterBot): Promise<void> {
   // the lesson: walk into the rolling die; it stops on the face it shows
   await must(bot, bot.walk(DIE_X - 2, 'the die'), 'up to the die');
   await must(bot, bot.wait(LOOK + 10), 'watching it roll');
+  if (transitions < FACES.length) throw new Error('the die did not roll through a complete cycle before touch');
   await must(bot, bot.walk(DIE_X, 'into the die'), 'into the die');
   await must(bot, bot.wait(LOOK), 'looking at what came up');
   const cell = bot.sim.blockAt(ORIGIN + DIE_X, ORIGIN + GROUND - 1);
@@ -98,13 +109,6 @@ export async function rollTheDice(bot: StarterBot): Promise<void> {
     await bump(bot, WALL_X, 'gold door');
     await silverDoor();
   }
-  // the ring turned face by face, each FACE ticks, in order
-  seen.forEach(([f, t], i) => {
-    if (i === 0) return;
-    const [pf, pt] = seen[i - 1];
-    if (f !== (pf % 6) + 1) throw new Error(`face ${pf} was followed by ${f}`);
-    if (Math.abs(t - pt - FACE) > 2) throw new Error(`face ${pf} showed ${t - pt} ticks, wanted ${FACE}`);
-  });
   await must(bot, bot.walk(WALL_X + 6, 'the coins'), 'to the coins');
   if (bot.sim.ci.score - score !== 4 * COIN) throw new Error(`the level should give 4 coins, not ${(bot.sim.ci.score - score) / COIN}`);
   await leave(bot, bot.walk(WIDTH - 3, 'the exit'), 'the exit');

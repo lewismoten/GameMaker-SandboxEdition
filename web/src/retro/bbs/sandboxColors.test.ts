@@ -1,26 +1,35 @@
-// The Sandbox BBS's menu banner draws each letter of SANDBOX in its own color.
-import { describe, expect, it } from 'vitest';
-import { sandBanner, SANDBOX_ANSI, SANDBOX_WORD_ANSI } from './ansiArt';
+// Read the foreground attributes displayed when a guest reaches the Sandbox BBS menu.
+import { expect, it, vi } from 'vitest';
+import type { RetroHost } from '../host';
+import { key, TextKeys } from '../text/textInput';
+import { COLS, ROWS, TextScreen } from '../text/textScreen';
 import { SANDBOX_COLORS } from './bbsName';
-import type { TextScreen } from '../text/textScreen';
+import { runSandbox } from './sandbox';
+import { Term } from './term';
 
-describe('Sandbox BBS name colors', () => {
-  it('the menu banner letters carry the seven letter colors', () => {
-    const cells = new Map<number, number>();
-    const s = { put: (x: number, y: number, ch: number, a: number) => y === 0 && cells.set(x, (ch << 8) | a) } as unknown as TextScreen;
-    sandBanner(s, `THE ${SANDBOX_ANSI} |14BBS`);
-    const row = [...cells.entries()].sort((x, y) => x[0] - y[0]).map(([, v]) => v);
-    const letters = row.filter((v) => /[SANDOX]/.test(String.fromCharCode(v >> 8)));
-    // S A N D (B) O X: colors in order; B is the one before O in the name
-    const colorOf = (ch: string) => letters.filter((v) => String.fromCharCode(v >> 8) === ch).map((v) => v & 15);
-    expect(colorOf('S')).toContain(SANDBOX_COLORS[0]);
-    expect(colorOf('A')).toContain(SANDBOX_COLORS[1]);
-    expect(colorOf('N')).toContain(SANDBOX_COLORS[2]);
-    expect(colorOf('D')).toContain(SANDBOX_COLORS[3]);
-    expect(colorOf('O')).toContain(SANDBOX_COLORS[5]);
-    expect(colorOf('X')).toContain(SANDBOX_COLORS[6]);
+it('renders all seven name colors in the menu banner and command prompt', async () => {
+  // Use the text-mode cell buffer without starting a canvas or cursor animation.
+  const screen = Object.assign(Object.create(TextScreen.prototype) as TextScreen, {
+    chars: new Uint8Array(COLS * ROWS),
+    attrs: new Uint8Array(COLS * ROWS),
+    cursorX: 0,
+    cursorY: 0,
   });
-  it('the prompt word is colored per letter', () => {
-    expect(SANDBOX_WORD_ANSI.replace(/\|\d\d/g, '')).toBe('Sandbox');
-  });
+  const keys = new TextKeys();
+  keys.push(key('Enter')); // Guest login
+  const host = { screen, keys, catalog: () => [], downloads: { list: () => [] } } as unknown as RetroHost;
+  const term = new Term(host);
+  const atPrompt = new Error('waiting for a menu command');
+  vi.spyOn(term, 'key').mockResolvedValueOnce('Enter').mockRejectedValue(atPrompt);
+  await expect(runSandbox(term, host)).rejects.toBe(atPrompt);
+
+  function nameColors(y: number, name: string) {
+    const row = y * COLS;
+    const text = String.fromCharCode(...screen.chars.subarray(row, row + COLS));
+    expect(text).toContain(name);
+    const start = row + text.indexOf(name);
+    return Array.from(name).flatMap((ch, i) => (ch === ' ' ? [] : [screen.attrs[start + i] & 15]));
+  }
+  expect.soft(nameColors(0, 'S A N D B O X')).toEqual(SANDBOX_COLORS);
+  expect(nameColors(screen.cursorY, 'Sandbox')).toEqual(SANDBOX_COLORS);
 });

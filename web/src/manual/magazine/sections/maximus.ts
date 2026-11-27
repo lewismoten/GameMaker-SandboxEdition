@@ -97,7 +97,7 @@ const NUMBERS: ListingRow[] = [
     blurb: 'The title scene fills all 12 that PLAYGAME reads. The other 8 it never opens.',
   },
   { title: 'Text screen width', price: `${COUNTS.textWidth} / ${TEXT_READ}`, blurb: 'Thirty is the real limit. See “Thirty-one means thirty”.' },
-  { title: 'The disk', price: `${COUNTS.files} files`, blurb: `${COUNTS.megabytes} MB, with ${COUNTS.songs} songs and 23 animated films.` },
+  { title: 'The disk', price: `${COUNTS.files} files`, blurb: `${COUNTS.megabytes.toFixed(1)} MB, with ${COUNTS.songs} songs and 23 animated films.` },
 ];
 
 /** A finding from the ceiling: what happened, and what to do about it. */

@@ -1,6 +1,8 @@
 // Game-Maker 3.00 as it looked in DOS: GM.EXE/MENU.EXE's text-mode menu bars
 // (code/GM/MENU.C), help screens, the PLAYGAME menu, UTILITY.EXE's menu, and file
 // pickers that open the graphic designers on a game folder (C:\GM\<GAME>, or a disk).
+import type { ProgramLocation } from './dos/shell';
+import { splitName } from './dos/vfs';
 import type { RetroHost } from './host';
 import { attr, type TextScreen } from './text/textScreen';
 import { BARATTR, BARCURSOR, TITLEATTR, MENUATTR, SHADATTR, askText, errorBox, horizMenu, showHelpScreen, vertMenu } from './text/textUi';
@@ -375,16 +377,19 @@ export async function runUtility(h: RetroHost, args: string[]): Promise<void> {
   }
 }
 
-/**
- * XFERPLAY.EXE in C:\GM: the transferred-game player loads <its own name>.GAM
- * (PLAYGAME.C:665, ParseFileName of argv[0], which DOS gives in capitals), so here it says
- * what's missing, waits PauseTimeKey(4) (four seconds or a key) and quits to text mode.
- */
-export async function xferplay(h: RetroHost): Promise<void> {
+/** The transferred player opens its own basename with a .GAM extension (PLAYGAME.C:666). */
+export async function xferplay(h: RetroHost, at: ProgramLocation): Promise<void> {
   const s = h.screen;
   s.clear();
-  s.print("You are missing XFERPLAY.gam!  I can't do anything without it!");
-  for (let t = 0; t < 4000 && !h.keys.poll(); t += 50) await new Promise((r) => setTimeout(r, 50));
+  const [base] = splitName(at.name);
+  const name = base.toUpperCase() + '.gam';
+  const game = await h.gameIn(at.drive, at.parts);
+  if (game?.files.has(name.toLowerCase())) {
+    await h.playGame(game.files, name.toLowerCase(), game.title, game.notice);
+  } else {
+    s.print(`You are missing ${name}!  I can't do anything without it!`);
+    for (let t = 0; t < 4000 && !h.keys.poll(); t += 50) await new Promise((r) => setTimeout(r, 50));
+  }
   s.resetPalette();
   s.clear();
 }

@@ -7,20 +7,22 @@ import type { PageAct } from './steps';
 /** The longest a held line waits: the desk's own wait for a prompt is 30 s, plus the dialing. */
 export const HOLD_MS = 45_000;
 
+export type ActOutcome = 'shown' | 'lost' | 'timed-out';
+
 /** What the event carries: the act, and `ready` for the page to call when a held act is done. */
-export type ActDetail = PageAct & { ready?: () => void };
+export type ActDetail = PageAct & { ready?: (outcome: ActOutcome) => void };
 
 /** Sends the act; resolves at once, or (with `hold`) when the page says it is ready or the timeout passes. */
-export function askPage(act: PageAct, timeoutMs = HOLD_MS): Promise<void> {
+export function askPage(act: PageAct, timeoutMs = HOLD_MS): Promise<ActOutcome> {
   if (!act.hold) {
     window.dispatchEvent(new CustomEvent('gm-tour-act', { detail: act }));
-    return Promise.resolve();
+    return Promise.resolve('shown');
   }
-  return new Promise<void>((resolve) => {
-    const timer = setTimeout(resolve, timeoutMs);
-    const ready = () => {
+  return new Promise<ActOutcome>((resolve) => {
+    const timer = setTimeout(() => resolve('timed-out'), timeoutMs);
+    const ready = (outcome: ActOutcome) => {
       clearTimeout(timer);
-      resolve();
+      resolve(outcome);
     };
     const detail: ActDetail = { ...act, ready };
     window.dispatchEvent(new CustomEvent('gm-tour-act', { detail }));

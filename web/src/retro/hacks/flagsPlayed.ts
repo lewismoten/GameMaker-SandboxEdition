@@ -38,6 +38,7 @@ export async function setPlayed(words: string[], clear: boolean): Promise<string
   const n = arg === 'ALL' ? found.played.length : arg === 'NONE' ? 0 : /^\d+$/.test(arg) ? Number(arg) : -1;
   if (n < 0 || n > found.played.length) throw new PlayedError(`How many? 0 to ${found.played.length}, ALL or NONE`);
   const withDone = (words[2] ?? '').toUpperCase() === 'DONE';
+  if (words.length > 3 || (words.length === 3 && !withDone)) throw new PlayedError('Only DONE may follow the count');
   const r = structuredClone(await loadAchievements());
   const apply = (set: string, targets: string[], count: number) => {
     const keep = (r.sets[set] ?? []).filter((id) => !targets.includes(id));

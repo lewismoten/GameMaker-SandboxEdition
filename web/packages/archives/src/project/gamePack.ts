@@ -1,6 +1,6 @@
 // A hosted game in one file (games/<kind>/<id>/<id>.<hash>.gmpak, written by scripts/cdGames.ts):
-// its files one after another, in the order play first needs them (project/streamGame.ts,
-// packOrder), the whole gzipped. One request instead of a hundred, and smaller too: gzip
+// its files one after another, in the order supplied by the writer, the whole gzipped.
+// One request instead of a hundred, and smaller too: gzip
 // finds what the files have in common. Read as it arrives, so a game can start once its
 // .gam is in while the rest keeps coming.
 //

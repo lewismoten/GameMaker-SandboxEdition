@@ -134,7 +134,8 @@ const FILE_STEM: Record<string, string> = { home: 'home', shop: 'shop', town: 't
 function mapName(kind: string, has: (n: string) => boolean, used: Set<string>): string {
   const stem = FILE_STEM[kind] ?? 'scene';
   for (let n = 1; ; n++) {
-    const name = `${stem}${n}.map`;
+    const suffix = String(n);
+    const name = `${stem.slice(0, 8 - suffix.length)}${suffix}.map`;
     if (!has(name) && !used.has(name)) return name;
   }
 }
