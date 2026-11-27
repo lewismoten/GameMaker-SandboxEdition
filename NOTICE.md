@@ -127,6 +127,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex fixed and tested trinket loading on the box shelf.
 - OpenAI Codex fixed and tested the PLAYGAME title color in the Technical Reference memory diagram.
 - OpenAI Codex fixed and tested type-ahead on empty editor lists and keyboard entry into the Files drawer.
+- OpenAI Codex fixed and tested Escape handling during the scene exit fade.
 - OpenAI Codex fixed and tested the editor’s file count accessibility and shareware notice layout on phones.
 - OpenAI Codex fixed and tested walkthrough segment selection in the Pocket host checker.
 - OpenAI Codex fixed and tested the Switches title demo checker.
