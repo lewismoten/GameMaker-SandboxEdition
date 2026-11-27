@@ -1838,3 +1838,5 @@ The dial draws on dAcid's [Rotary Dial mechanism](https://www.thingiverse.com/th
 - **Color Doors gallery cards**: OpenAI Codex revised the blue-yellow hint and tested the copy limit for all five gallery cards.
 
 - **Specials calendar (November 26, 2026)**: OpenAI Codex fixed overnight availability and wrote the boundary tests.
+- **Embroidery compilation limits (November 25, 2026)**: OpenAI Codex added step validation, generation limits and regression tests.
+- **Embroidery EXP reader (November 25, 2026)**: OpenAI Codex added incomplete-record checks and regression tests.
