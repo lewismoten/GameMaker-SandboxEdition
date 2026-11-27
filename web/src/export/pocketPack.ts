@@ -61,9 +61,12 @@ interface PocketPacked {
 }
 
 const hex = (b: ArrayBuffer) => [...new Uint8Array(b)].map((x) => x.toString(16).padStart(2, '0')).join('');
+const digest = async (bytes: Uint8Array) => hex(await crypto.subtle.digest('SHA-1', bytes as BufferSource));
+// Retain the source digest as long as its compressed resource is in use.
+const resourceDigests = new WeakMap<Uint8Array, string>();
 /** The first 7 hex digits of the SHA-1 of the bytes. */
 export async function shortHash(bytes: Uint8Array): Promise<string> {
-  return hex(await crypto.subtle.digest('SHA-1', bytes as BufferSource)).slice(0, 7);
+  return (await digest(bytes)).slice(0, 7);
 }
 
 /** Its length (4 bytes, little endian), then the raw deflate of it: how every packed file and card is stored. */
@@ -84,9 +87,22 @@ export async function packPocketGame(src: PocketSource, store: PocketStore, pak:
     return b;
   };
   const put = async (bytes: Uint8Array, ext: string) => {
-    const name = `${await shortHash(bytes)}.${ext}`;
-    if (!store.has(name)) store.set(name, await stored(bytes, deflate));
-    return name;
+    const hash = await digest(bytes);
+    let packed: Uint8Array | undefined;
+    for (let probe = 0; probe <= 0x100000000; probe++) {
+      const stem = probe === 0 ? hash.slice(0, 7) : ((parseInt(hash.slice(0, 8), 16) + probe - 1) >>> 0).toString(16).padStart(8, '0');
+      const name = `${stem}.${ext}`;
+      if (!store.has(name)) {
+        packed ??= await stored(bytes, deflate);
+        if (!store.has(name)) {
+          resourceDigests.set(packed, hash);
+          store.set(name, packed);
+          return name;
+        }
+      }
+      if (resourceDigests.get(store.get(name)!) === hash) return name;
+    }
+    throw new Error('No Pocket resource names available');
   };
   const inPak = async (bytes: Uint8Array, always = false) => {
     const key = await shortHash(bytes);
