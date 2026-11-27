@@ -1,6 +1,6 @@
 // Puts a generated layout into a map's cells (no DOM): the blocks the generator chose, then edges and
 // corners from the set's terrain brushes for walls, trees and paths. Only ordinary cells change.
-import { LASTMM, MLEN, MWID, reindexMonsters, type GameMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { LASTMM, MLEN, MWID, reindexMonsters, type GameMap, type PlacedMonster } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { blocksWithRole, type Role, type RoleMap } from '@lewismoten/gamemaker-sandbox-tools/kit/blockRoles';
 import {
   generate,
@@ -54,13 +54,26 @@ export function usableMonsters(mons: Monster[]): number[] {
   return out;
 }
 
+function replaceable(m: PlacedMonster, { x, y, w, h }: Rect): boolean {
+  return m.monnum >= LASTMON || (m.curx >= x && m.curx < x + w && m.cury >= y && m.cury < y + h);
+}
+
+export function monsterPreview(slots: PlacedMonster[], result: GenResult): string {
+  const proposed = result.monsters.length;
+  if (!proposed) return '';
+  const available = slots.slice(0, LASTMM).filter((m) => replaceable(m, result.rect)).length;
+  const fit = Math.min(proposed, available);
+  const count = `${fit} monster${fit === 1 ? '' : 's'}`;
+  return fit === proposed ? count : `${count} fit${fit === 1 ? 's' : ''}, ${proposed - fit} omitted`;
+}
+
 /**
  * Puts a result's monsters into the map (changing it): monsters already standing inside the area go first,
  * since the layout replaced the ground under them. Returns how many were placed and how many did not fit.
  */
 export function placeMonsters(map: Pick<GameMap, 'monsters' | 'mons'>, result: GenResult): { placed: number; dropped: number } {
-  const { x, y, w, h } = result.rect;
-  for (const m of map.monsters) if (m.monnum < LASTMON && m.curx >= x && m.curx < x + w && m.cury >= y && m.cury < y + h) m.monnum = LASTMON;
+  const { x, y, w } = result.rect;
+  for (const m of map.monsters) if (m.monnum < LASTMON && replaceable(m, result.rect)) m.monnum = LASTMON;
   let placed = 0;
   for (const m of result.monsters) {
     const slot = map.monsters.findIndex((p) => p.monnum >= LASTMON);

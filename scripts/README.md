@@ -171,7 +171,7 @@ the Ghost Jack page). Snapshots and saved shots only. Tests: `web/test/look.test
 
 `heavy.mjs` (`npm run heavy -- <command...>`, root or `web/`) runs a heavy job (a build, full vitest,
 `verify:perf`, `check:games`, a walkthrough recording) in one of 2 shared slots, so agents on one Mac don't
-run them all at once. Slots are lock files in `~/.cache/gamemaker-heavy/` (outside any worktree) holding the
+run them all at once. Slots are directories in `~/.cache/gamemaker-heavy/` (outside any worktree) identifying the
 holder's pid; a dead holder's slot is freed. It waits while the 1-minute load average is over
 `HEAVY_MAX_LOAD` (default 20), passes the command's exit code through, frees the slot on exit or signal and
 appends start, wait, duration, exit code, cwd and command to `log.tsv` there. Env: `HEAVY_DIR`,
