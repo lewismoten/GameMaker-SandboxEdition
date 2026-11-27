@@ -44,11 +44,17 @@ function expectSampleFolders(pointer: string, names: Set<string>) {
   // A pointer can also mention a file extension such as .VOC.
   const codes = [...pointer.matchAll(/<code>([^<]*)<\/code>/g)].filter(([, path]) => !/^\.[A-Z0-9]{1,3}$/i.test(path));
   expect(codes.length, pointer).toBeGreaterThan(0);
-  for (const [, path] of codes) expect(names, path).toContain(path.split('\\').at(-1));
+  for (const [, raw] of codes) {
+    // Source templates escape backslashes; rendered chapter HTML has single backslashes.
+    const path = raw.replace(/\\\\/g, '\\');
+    expect(path, raw).toMatch(/^(?:D:\\SAMPLES\\)?[A-Z0-9_]{1,8}$/);
+    expect(names, path).toContain(path.split('\\').at(-1));
+  }
 }
 
 it.each([
   ['D:\\SAMPLES\\TYPO', 'TYPO'],
+  ['D:\\TYPO\\DAYNIGHT', 'TYPO'],
   ['LUCKYCAT', 'LUCKYCAT'],
 ])('rejects the Sample CD reference %s', (reference, folder) => {
   const pointer = `<code>DAYNIGHT</code> and <code>${reference}</code>`;
