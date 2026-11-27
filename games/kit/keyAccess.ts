@@ -66,7 +66,11 @@ for (const t of rows) {
   console.log(
     `${t.id.padEnd(10)} ${String(t.presses).padStart(7)}  ${pct(t.basic, t.presses).padStart(5)}  ${String(t.diagonal).padStart(9)}  ${extra.join(', ') || '-'}`,
   );
-  if (t.presses && t.basic / t.presses < ENOUGH)
+  if (!t.presses) {
+    console.log(`${t.id}: no key-down events were recorded.`);
+    continue;
+  }
+  if (t.basic / t.presses < ENOUGH)
     notes.push(
       `${t.id}: ${pct(t.presses - t.basic, t.presses)} of its walkthrough's presses are keys beyond the arrows, Space and Enter; consider moving the common actions onto those.`,
     );
@@ -75,8 +79,10 @@ for (const t of rows) {
       `${t.id}: the walkthrough presses a diagonal ${t.diagonal} times; check a straight way works too (npm run walk:auto -- ../games/${t.id}/disk --basic-keys).`,
     );
 }
-if (notes.length) console.log(`\nSuggestions (the walkthrough is one way through; a person may well find another):\n${notes.map((n) => `- ${n}`).join('\n')}`);
-else
+if (!rows.length) console.log('No matching walkthrough recordings.');
+else if (notes.length)
+  console.log(`\nSuggestions (the walkthrough is one way through; a person may well find another):\n${notes.map((n) => `- ${n}`).join('\n')}`);
+else if (rows.some((t) => t.presses > 0))
   console.log(
-    '\nEvery reported walkthrough has at least 80% basic-key presses and no keypad diagonal presses; this does not prove a basic-key-only way through.',
+    '\nEvery measured walkthrough has at least 80% basic-key presses and no keypad diagonal presses; this does not prove a basic-key-only way through.',
   );

@@ -3,7 +3,7 @@
 //
 //   1. Jet Pack: Nova as she is, with an unlimited jump. A tap in the air lifts her again, so tapping keeps her
 //                rising: up a tall cliff, then across a gap on the top.
-//   2. Double-Jump Boots: the same Nova with only two taps (hero2.chr). Each step is too tall for one jump and
+//   2. Double-Jump Boots: the same Nova starting with two taps (hero2.chr). Each step is too tall for one jump and
 //                fine for two; blue bubbles (boot charges, three in a row, one tap each) fill the boots up. A bubble
 //                is used up when touched. A ladder in the pit leads back out for anyone who falls.
 // Every edge is a hedge or a wall you can see, so Nova is never stopped by something she can't.
@@ -24,7 +24,7 @@ const WORDS: Record<string, { lines: string[]; post?: boolean }> = {
   rise: { lines: ['SPACE', 'AGAIN'] },
   fly: { lines: ['HOLD', '→'] },
   exit: { lines: ['EXIT', '→'], post: false },
-  two: { lines: ['2 JUMPS'] },
+  two: { lines: ['START', '2 JUMPS'] },
   third: { lines: ['NO', 'JUMP'] },
   walk: { lines: ['WALK', 'IN'] },
   step: { lines: ['TOO', 'TALL'] },
@@ -190,7 +190,7 @@ export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
   const { book, signs } = buildBlocks(pal);
   const levels: Level[] = [
     { file: 'one', hero: 'hero.chr', title: 'Jet Pack', hint: 'Tap in the air to rise.', map: jetPack(book, signs) },
-    { file: 'two', hero: 'hero2.chr', title: 'Double-Jump Boots', hint: 'Two taps, then fill up.', map: boots(book, signs) },
+    { file: 'two', hero: 'hero2.chr', title: 'Double-Jump Boots', hint: 'Start with two jumps.', map: boots(book, signs) },
   ];
   return { book, pal, levels };
 }

@@ -12,6 +12,10 @@ it('downloads into a fresh checkout whose path contains a space', () => {
     const scripts = join(root, 'scripts');
     mkdirSync(scripts);
     copyFileSync(new URL('./pocketFirmware.ts', import.meta.url), join(scripts, 'pocketFirmware.ts'));
+    const fw = join(root, 'public/pocket/fw');
+    mkdirSync(fw, { recursive: true });
+    const notice = readFileSync(new URL('../public/pocket/fw/NOTICES.txt', import.meta.url));
+    writeFileSync(join(fw, 'NOTICES.txt'), notice);
     const bytes = Buffer.from('fixture firmware');
     writeFileSync(
       join(scripts, 'pocketFirmware.json'),
@@ -26,6 +30,7 @@ it('downloads into a fresh checkout whose path contains a space', () => {
     const result = spawnSync(process.execPath, ['--import', stub, join(scripts, 'pocketFirmware.ts')], { encoding: 'utf8', timeout: 10000 });
     expect(result.status, result.stderr).toBe(0);
     expect(readFileSync(join(root, 'public/pocket/fw/board/firmware.bin'))).toEqual(bytes);
+    expect(readFileSync(join(fw, 'board/NOTICES.txt'))).toEqual(notice);
   } finally {
     rmSync(root, { recursive: true, force: true });
   }

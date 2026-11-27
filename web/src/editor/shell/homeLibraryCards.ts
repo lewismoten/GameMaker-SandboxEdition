@@ -152,8 +152,8 @@ export function libraryCards(
             level && starters.filter === 'all'
               ? 'Nothing is in this Level yet. Pick All levels to see every Starter.'
               : starters.filter === 'done'
-                ? 'No Starter is done yet. Pick All Starters under Show to see them all.'
-                : 'Every Starter is done. Pick All Starters under Show to see them all.',
+                ? `No Starter${level ? ' in this level' : ''} is done yet. Pick All Starters under Show to see them all.`
+                : `Every Starter${level ? ' in this level' : ''} is done. Pick All Starters under Show to see them all.`,
           )
         : emptyCollection(lib, c, ratingFilter, on),
     ];

@@ -2,7 +2,7 @@
 // PNG previews, an assembly diagram and a manifest into web/public/laser/year2000/cryptex/ (ignored by version control;
 // the box shelf lists it beside the nickel).
 //   cd web && npx vite-node ../games/year2000/laser/cryptex.ts [--sheet 12x12] [--kerf 0.2] [--out DIR] [--force]
-// Does nothing when the manifest's source key (this folder, the laser kit code and the kerf) is unchanged.
+// Does nothing when the manifest's source key (this folder, the laser kit code and the kerf) is unchanged and all listed files exist.
 import { createHash } from 'node:crypto';
 import { copyFileSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
@@ -39,8 +39,15 @@ function main() {
   const out = flag('--out') ?? join(here, '../../../web/public/laser/year2000/cryptex');
   const source = sourceKey(kerf, stock);
   const made = join(out, 'manifest.json');
-  const previous = existsSync(made) ? (JSON.parse(readFileSync(made, 'utf8')) as { source?: string; sheets?: { svg: string; preview: string }[] }) : undefined;
-  if (!args.includes('--force') && previous?.source === source) {
+  const previous = existsSync(made)
+    ? (JSON.parse(readFileSync(made, 'utf8')) as { source?: string; assembly?: string; readme?: string; sheets?: { svg: string; preview: string }[] })
+    : undefined;
+  if (
+    !args.includes('--force') &&
+    previous?.source === source &&
+    previous.sheets?.length &&
+    [previous.assembly, previous.readme, ...previous.sheets.flatMap((s) => [s.svg, s.preview])].every((f) => f && existsSync(join(out, f)))
+  ) {
     console.log('Year 2000 cryptex: up to date');
     return;
   }

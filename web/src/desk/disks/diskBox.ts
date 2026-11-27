@@ -204,7 +204,7 @@ export function openDiskBox(disks: Disk[], startId: string | undefined, onPick: 
           const hits = groupOf.filter((g, i) => g === v.id && !items[i].hidden).length;
           // while searching every group stands open, its divider kept with its count (0 too)
           v.setCount(hits, of, !!query);
-          v.setFolded(shut(v.id));
+          v.setFolded(shut(v.id), !!query);
         }
         settle();
         const first = disks.findIndex((_, i) => visible(i));

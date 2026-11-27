@@ -41,6 +41,13 @@ export function blockColorHelp(
     if (!note.firstChild?.isEqualNode(message)) clear(note, message);
   }
   const stop = onColorHelp(() => last && el.isConnected && refresh(last.px, last.w, last.h));
-  const el = h('div', { class: 'stack' }, control, preview.el, note);
-  return { el, refresh, dispose: stop };
+  const el = h('div', { class: 'stack' }, control.el, preview.el, note);
+  return {
+    el,
+    refresh,
+    dispose() {
+      stop();
+      control.dispose();
+    },
+  };
 }

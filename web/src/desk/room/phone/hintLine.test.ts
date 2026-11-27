@@ -17,7 +17,7 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 
-function phone(choices: string[], keyDelay = 1000) {
+function phone(choices: string[], keyDelay = 1000, speechMs = 500) {
   const controller = new AbortController();
   const captions: string[] = [];
   const ended = vi.fn();
@@ -42,7 +42,8 @@ function phone(choices: string[], keyDelay = 1000) {
     status,
     ended,
     wait: (seconds: number) => wait(seconds * 1000, undefined),
-    nextKey: (seconds: number) => (choices.length ? wait(keyDelay, choices.shift()!) : wait(seconds * 1000, '')),
+    nextKey: (seconds: number, prompt?: Promise<void>) =>
+      choices.length ? wait(keyDelay, choices.shift()!) : Promise.resolve(prompt).then(() => wait(seconds * 1000, '')),
     say: (_voice: unknown, text: string) => {
       captions.push(text);
       return new Promise<void>((resolve, reject) => {
@@ -56,7 +57,7 @@ function phone(choices: string[], keyDelay = 1000) {
           clearTimeout(timer);
           reject(new Error('hung up'));
         };
-        const timer = setTimeout(done, 500);
+        const timer = setTimeout(done, speechMs);
         controller.signal.addEventListener('abort', stop, { once: true });
         hush = done;
       });
@@ -76,6 +77,27 @@ describe('the Hint Giant’s fictional hint line', () => {
     expect(billedMs()).toBe(0);
     expect(p.ended).toHaveBeenCalledWith(expect.stringContaining('No charge'));
     expect(vi.getTimerCount()).toBe(0);
+  });
+
+  it('accepts a key while the prompt is still speaking', async () => {
+    const p = phone(['0'], 100, 120000);
+    const hush = vi.spyOn(p.line, 'hush');
+    const call = hintLine(p.line);
+    await vi.advanceTimersByTimeAsync(2100);
+    expect(hush).toHaveBeenCalledOnce();
+    expect(p.ended).toHaveBeenCalledWith(expect.stringContaining('No charge'));
+    await call;
+    expect(vi.getTimerCount()).toBe(0);
+  });
+
+  it('allows exactly 45 seconds of silence after a slow prompt finishes', async () => {
+    const p = phone([], 1000, 120000);
+    const call = hintLine(p.line);
+    await vi.advanceTimersByTimeAsync(2000 + 120000 + 44999);
+    expect(p.ended).not.toHaveBeenCalled();
+    await vi.advanceTimersByTimeAsync(1);
+    expect(p.ended).toHaveBeenCalledWith(expect.stringContaining('No charge'));
+    await call;
   });
 
   it('says live counselors are away, then the rate, before it asks for 1', async () => {
