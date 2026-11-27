@@ -130,6 +130,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex fixed and tested Escape handling during the scene exit fade.
 - OpenAI Codex corrected and tested the timeout for checking notices in exported downloads.
 - OpenAI Codex fixed and tested offline postcard stamps and the DOS postcard title refresh.
+- OpenAI Codex fixed and tested the Flicker and Flow animation placement and title demo checks.
 - OpenAI Codex fixed and tested the editor’s file count accessibility and shareware notice layout on phones.
 - OpenAI Codex fixed and tested walkthrough segment selection in the Pocket host checker.
 - OpenAI Codex fixed and tested the Switches title demo checker.

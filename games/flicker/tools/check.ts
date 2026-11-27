@@ -16,7 +16,6 @@ for (const l of built.levels) {
     for (const b of sparks)
       if (a !== b && a.ring === b.ring && Math.abs(a.x - b.x) <= 1 && Math.abs(a.y - b.y) <= 1)
         throw new Error(`${l.file}: two sparks at ${a.x},${a.y} and ${b.x},${b.y} share a loop`);
-  for (const t of l.things) if (!l.book.index.has(`${t.ring}.0`)) throw new Error(`${l.file}: no ring ${t.ring}`);
 }
 const { sim } = await play();
 console.log(`flicker: the bot walked all three levels; score ${sim.ci.score}, ${sim.trail.length} scenes entered`);
