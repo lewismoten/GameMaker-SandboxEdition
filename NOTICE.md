@@ -142,6 +142,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex fixed and tested the Warning First bot’s warning picture checks.
 - OpenAI Codex fixed and tested the black-light poster’s reduced-motion glance cue.
 - OpenAI Codex fixed and tested resource name collisions in Pocket Player exports.
+- OpenAI Codex corrected the Round and Round title layout and tested all four car silhouettes.
 - OpenAI Codex fixed and tested the editor’s file count accessibility and shareware notice layout on phones.
 - OpenAI Codex fixed and tested walkthrough segment selection in the Pocket host checker.
 - OpenAI Codex fixed and tested the Switches title demo checker.
