@@ -97,6 +97,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex fixed the Wired Room demo check and tested its rejection of an extra fall.
 - OpenAI Codex fixed and tested the Cutscenes bot's timed-floor check.
 - OpenAI Codex added the erosion speck check to the manger trinket regression test.
+- OpenAI Codex corrected and tested the desk message for a missing project disk.
 - OpenAI Codex corrected Kit’s placement in the Three Tokens progress shot and wrote its pixel regression test.
 - OpenAI Codex corrected the Countdown title demo timing check and wrote its regression test.
 - OpenAI Codex fixed and tested transparent padding in the Colors That Work shape check.
