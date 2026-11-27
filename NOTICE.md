@@ -1577,6 +1577,9 @@ The dial draws on dAcid's [Rotary Dial mechanism](https://www.thingiverse.com/th
   Tairne and accounts by Stacy Davidson and Cyborg Jeff remain their authors' work;
   the history links to the originals and Wayback snapshots and paraphrases them without
   reproducing their articles or artwork.
+  The Usenet account paraphrases two November 1992 posts in rec.games.programmer archived on
+  Discmaster (NN_1992_27): Andy Stone’s reply to Stacy Purcell (post 4743) and Kirk Baum’s
+  follow-up (post 4778).
 
 - **SEO housekeeping (November 2026)**: OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten, revised metadata and public download generators and added discoverability regression checks. No new third-party code or artwork was added.
 
