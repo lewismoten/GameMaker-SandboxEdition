@@ -343,6 +343,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex fixed and tested the Lights Out title demo checker.
 - OpenAI Codex fixed and tested the throw count in The Giant’s title demo checker.
 - OpenAI Codex fixed the Gusts title demo check and tested its damage and landing conditions.
+- OpenAI Codex fixed and tested the Power Up title demo checker and corrected the canyon jump instructions.
 - OpenAI Codex updated the Dig It walkthrough to demonstrate the shovel and tested its recorded controls.
 - OpenAI Codex added the browser regression test for focus in the DOS page menu.
 - OpenAI Codex fixed and tested keyboard navigation in the magazine Print menu.
