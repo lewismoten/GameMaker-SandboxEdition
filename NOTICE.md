@@ -252,6 +252,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex updated the Block Brains title demo and tested its gate and playback checks.
 - OpenAI Codex fixed and tested the Slippery and Bouncy title demo checker.
 - OpenAI Codex fixed and tested the Heat Waves evening hill check.
+- OpenAI Codex fixed and tested the Big Bug title demo checker.
 - OpenAI Codex updated the Dig It walkthrough to demonstrate the shovel and tested its recorded controls.
 - OpenAI Codex added the browser regression test for focus in the DOS page menu.
 - OpenAI Codex fixed and tested keyboard navigation in the magazine Print menu.
