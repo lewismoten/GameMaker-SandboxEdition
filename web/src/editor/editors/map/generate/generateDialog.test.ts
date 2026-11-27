@@ -133,3 +133,29 @@ it('does not launch a queued worker after the dialog is dismissed', async () => 
   await vi.runAllTimersAsync();
   expect(startPlatformBot).not.toHaveBeenCalled();
 });
+
+it('never applies a late result from the old area to the new area', async () => {
+  const { done, elements } = openPlatformDialog();
+  let resolveOld!: (result: { won: boolean; why: string; ticks: number }) => void;
+  vi.mocked(startPlatformBot).mockReturnValueOnce({ done: new Promise((res) => (resolveOld = res)), cancel: vi.fn() });
+  vi.mocked(startPlatformBot).mockReturnValue({ done: Promise.resolve({ won: false, why: 'stuck', ticks: 1 }), cancel: vi.fn() });
+  await vi.dynamicImportSettled();
+  await vi.runAllTimersAsync();
+  expect(startPlatformBot).toHaveBeenCalledTimes(1);
+  const where = elements.find((el) => el.attrs['aria-label'] === 'Where to draw')!;
+  Object.assign(where, { value: 'whole' }).fire('change');
+  await vi.dynamicImportSettled();
+  await vi.runAllTimersAsync();
+  resolveOld({ won: true, why: '', ticks: 1 });
+  await vi.runAllTimersAsync();
+  expect(
+    vi
+      .mocked(startPlatformBot)
+      .mock.calls.slice(1)
+      .map(([job]) => job.result.rect.w),
+  ).toEqual([100, 100, 100, 100]);
+  const chips = elements.filter((el) => el.className.includes('gen-chip')).map((el) => el.textContent);
+  expect(chips.slice(-4)).toEqual(['Not proven', 'Not proven', 'Not proven', 'Not proven']);
+  elements.find((el) => el.tag === 'dialog')!.fire('cancel');
+  await done;
+});
