@@ -17,3 +17,15 @@ it('reports a finding when the og directory contains no preview pictures', () =>
     rmSync(dist, { recursive: true, force: true });
   }
 });
+
+it('reports a finding, not a stack trace, when there is no og directory', () => {
+  const dist = mkdtempSync(join(tmpdir(), 'gm-og-audit-'));
+  try {
+    const result = spawnSync(process.execPath, [join(__dirname, 'ogAudit.mjs'), dist], { encoding: 'utf8' });
+    expect(result.status).toBe(1);
+    expect(result.stdout).toContain('No preview pictures found in og/');
+    expect(result.stderr).toBe('');
+  } finally {
+    rmSync(dist, { recursive: true, force: true });
+  }
+});
