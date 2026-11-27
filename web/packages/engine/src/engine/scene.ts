@@ -724,7 +724,12 @@ export async function playScene(s: Session, dosc: number, prev: number, linkIn: 
   m.keyboard.attach();
   // Return codes as in playscene: MAXSCENELINKS restarts this scene, +1 quits (Esc),
   // +2 means no lives left; anything lower is the link taken.
-  if (w.keydn[1]) newlink = MAXSCENELINKS + 1;
+  // DOS's keyboard interrupt still updates keydn during FadeAllTo. No gameplay tick runs here.
+  let escapeDown = !!w.keydn[1];
+  for (const scan of m.keyboard.events) {
+    if ((scan & 0x7f) === 1) escapeDown = scan === 1;
+  }
+  if (escapeDown) newlink = MAXSCENELINKS + 1;
   if (done === DEAD) {
     if (!s.rec.playing) s.onLifeLost?.();
     if (s.ci.lives > 0) {

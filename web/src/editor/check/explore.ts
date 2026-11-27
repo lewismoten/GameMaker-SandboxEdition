@@ -1,8 +1,8 @@
 // The scene explorer groups visits by map cell, alignment within the cell, what the hero
 // carries and which doors are open. Near lifts and timed blocks it also groups visits by
 // second. Depending on the search options, motion and combat state can distinguish visits.
-import { BACKBL, BLEN, SOLTOP } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
-import { DIESEQ, HURTSEQ } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import { BACKBL, BLEN, MONBL, SOLTOP } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { DIESEQ, frameCount, HURTSEQ, IDLESEQ } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 import { MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { bgBlock, shownBlock, LASTMM, LASTMON } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
 import { keyRoles, movesFor, steadyMoves, type Move } from './inputs';
@@ -42,7 +42,9 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
     const key = sequence.key >> 8;
     if (key) sequencesByKey.set(key, [...(sequencesByKey.get(key) ?? []), index]);
   });
-  const flying = opt.steerAirborne && continuousFlight(w);
+  // On a still top-down map, a repeating up key is ordinary walking.
+  const idle = w.chr.sequences[IDLESEQ];
+  const flying = opt.steerAirborne && continuousFlight(w) && (gravity || idle.frames.slice(0, frameCount(idle)).some((f) => f.pic2 !== MONBL && (f.x || f.y)));
   const all = movesFor(keyRoles(w.chr, gravity && !flying), gravity && !flying, opt.steerAirborne, flying).filter(
     (m) => keysAllowed(m) && (!opt.moveFilter || opt.moveFilter(m)),
   );

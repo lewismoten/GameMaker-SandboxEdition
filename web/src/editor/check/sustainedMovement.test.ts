@@ -11,7 +11,7 @@ import { RIGHT, testGame } from './testGame';
 import { autoWalk } from './walk/autoWalk';
 import { verifyWalk } from './walk/verify';
 
-it.each([true, false])('keeps held steering while idle drifts (continuous sequence: %s)', async (continuous) => {
+it.each([true, false])('keeps held steering while idle drifts (short sequence: %s)', async (short) => {
   const t = testGame(['S']);
   const start = { x: 1, y: 10 };
   t.game.scenes[0].links[0].to = start;
@@ -32,14 +32,15 @@ it.each([true, false])('keeps held steering while idle drifts (continuous sequen
     [6, -4, -1],
   ]) {
     chr.sequences[q].frames = Array.from({ length: 10 }, () => emptyFrame(true));
-    for (const frame of q === 0 || !continuous ? chr.sequences[q].frames.slice(0, 1) : chr.sequences[q].frames)
+    for (const frame of q === 0 || short ? chr.sequences[q].frames.slice(0, 1) : chr.sequences[q].frames)
       Object.assign(frame, { pic1: 0, pic2: 1, x: dx, y: dy });
+    if (short && q !== 0) Object.assign(chr.sequences[q].frames[2], { pic2: 1, y: 20 });
   }
   t.files.set('test.chr', serializeCharacter(chr));
 
   const oracle = new SceneSim(t.game, 2, t, start, startCharInfo(), 1);
   expect(directionalGravity(oracle.w)).toBe(false);
-  expect(continuousFlight(oracle.w)).toBe(continuous);
+  const flying = continuousFlight(oracle.w);
   oracle.hold([RIGHT]);
   let exit: number | undefined;
   let ticks = 0;
@@ -53,6 +54,8 @@ it.each([true, false])('keeps held steering while idle drifts (continuous sequen
   }
   expect(exit).toBe(0);
   expect(ticks + 1).toBeGreaterThan(3);
+
+  expect(flying).toBe(true);
 
   const result = await autoWalk(t.game, t, 'test', { budgetMs: 1000 });
   expect(result.won).toBe(true);

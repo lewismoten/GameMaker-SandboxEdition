@@ -187,8 +187,6 @@
     min-width: 44px;
   }
   .mon-detail summary {
-    display: inline-flex;
-    align-items: center;
     min-height: 44px;
   }
   .mon-detail .mpath-row,

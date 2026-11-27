@@ -44,7 +44,7 @@ export function cryptexModel(): AssemblyModel {
       spin: g.spin,
       parts: g.pieces.map((_, j) => first + j),
     });
-    if (g.pieces.length > 1) sections.push({ title: `${g.title}: built apart`, step: steps.length + 1 });
+    sections.push({ title: `${g.title}: built apart`, step: steps.length + 1 });
     g.pieces.forEach((piece, j) =>
       steps.push({
         kind: 'part',

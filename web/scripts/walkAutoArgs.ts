@@ -18,13 +18,13 @@ export interface WalkAutoArgs {
 /** The existing walkthrough file, with optional diagnostic evidence for a stopped keys strategy. */
 export interface WalkAutoOutput extends Walkthrough {
   diagnostics?: {
-    keys: { scene: number; name: string; cutoff: NonNullable<SceneOutcome['keys']>['cutoff']; rounds: NonNullable<SceneOutcome['keys']>['rounds'] }[];
+    keys: ({ scene: number; name: string } & NonNullable<SceneOutcome['keys']>)[];
   };
 }
 
 /** Keeps --out compatible with a walkthrough reader while preserving any stopped keys diagnostics. */
 export function walkOutput(walk: Walkthrough, scenes: readonly Omit<SceneOutcome, 'heat'>[]): WalkAutoOutput {
-  const keys = scenes.flatMap(({ scene, name, keys }) => (keys ? [{ scene, name, cutoff: keys.cutoff, rounds: keys.rounds }] : []));
+  const keys = scenes.flatMap(({ scene, name, keys }) => (keys ? [{ scene, name, ...keys }] : []));
   return keys.length ? { ...walk, diagnostics: { keys } } : walk;
 }
 

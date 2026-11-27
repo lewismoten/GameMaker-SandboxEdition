@@ -21,7 +21,14 @@ export interface PocketLibrary {
 }
 export type PocketContext = Pick<PocketLibrary, 'uid' | 'category'> & Partial<Pick<PocketLibrary, 'course' | 'categoryLabel' | 'touchScore' | 'touchQuick'>>;
 const enc = new TextEncoder();
+const titleBytes = 128;
 const byteLength = (s: string) => enc.encode(s).length;
+
+/** Keep the longest title prefix that fits the library's UTF-8 field. */
+export function pocketLibraryTitle(title: string): string {
+  const { read } = enc.encodeInto(title, new Uint8Array(titleBytes));
+  return title.slice(0, read);
+}
 
 /** Explicit site context, never guessed from gameplay assets. */
 export function pocketCategory(id: string, series?: string, kind: 'gameware' | 'shareware' = 'gameware'): Pick<PocketLibrary, 'category' | 'course'> {
@@ -49,7 +56,7 @@ export function readLibrary(bytes: Uint8Array): PocketLibrary | undefined {
       !/^[\x21-\x7e]{1,96}$/.test(v.uid) ||
       typeof v.title !== 'string' ||
       !v.title ||
-      byteLength(v.title) > 128 ||
+      byteLength(v.title) > titleBytes ||
       /[\x00-\x1f]/.test(v.title) ||
       typeof v.dosName !== 'string' ||
       !/^[A-Z0-9!#$%&'()@^_`{}~-]{1,8}$/.test(v.dosName) ||

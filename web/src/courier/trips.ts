@@ -1,8 +1,8 @@
 // Scoot's trips between screens, by capsule file (capsule.ts). Sending Scoot writes a capsule with
 // no postcards; on another screen it becomes a visitor and that screen's games stamp its postcard
 // from there (courierStore.ts addStamp); sending the visitor home writes the capsule again, and
-// home merges the postcards it brought. A capsule this screen wrote is refused politely, a trip is
-// welcomed home or hosted once only, and every check runs before the one write, so a refused file
+// home merges the postcards it brought. A capsule this screen wrote is refused politely, recent duplicate
+// homecomings and visits are refused, and every check runs before the one write, so a refused file
 // changes nothing. The home postcard never travels and no postcard from this screen comes back to it.
 import { CapsuleError, capsuleSize, decodeCapsule, encodeCapsule, gameHash, type CapsuleProblem } from './capsule';
 import { addTo, ensureHome, loadCourier, saveCourier, type Courier } from './courierStore';
@@ -15,13 +15,12 @@ type Refusal = 'mine' | 'replay' | 'busy' | 'full' | 'catalog' | CapsuleProblem;
 export type Arrival = { kind: 'home'; postcards: number } | { kind: 'visitor'; world: number } | { kind: 'refused'; why: Refusal };
 
 /** Sends this screen's Scoot on a trip (or writes the same trip's capsule again while it is away). */
-export function sendScoot(): Uint8Array {
+export function sendScoot(): Uint8Array | undefined {
   const c = loadCourier();
   const home = ensureHome(c);
   c.out ??= makeCourierId();
   const bytes = encodeCapsule({ trip: c.out, home: home.id, world: home.world, from: home.id, packages: [], postcards: [] });
-  saveCourier(c);
-  return bytes;
+  return saveCourier(c) ? bytes : undefined;
 }
 
 /** Ends a trip without its capsule; a late capsule from it is still welcomed (once). */
@@ -39,8 +38,7 @@ export function sendVisitorHome(): Uint8Array | undefined {
   if (!v) return undefined;
   const bytes = encodeCapsule({ trip: v.trip, home: v.home, world: v.world, from: ensureHome(c).id, packages: [], postcards: v.postcards });
   delete c.visitor;
-  saveCourier(c);
-  return bytes;
+  return saveCourier(c) ? bytes : undefined;
 }
 
 /** Takes in a capsule; `game` turns a stamp's hash into a public catalog id. */

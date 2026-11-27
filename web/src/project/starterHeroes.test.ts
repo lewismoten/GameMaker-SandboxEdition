@@ -2,11 +2,13 @@
 import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
+import { STORY } from '../../../games/under-the-hood/src/text';
 import { ADDED_LATER, STARTER_ORDER } from './starter';
 import { heroOfStarter, STARTER_HEROES } from './starterHeroes';
 
 const games = join(__dirname, '../../../games');
-const starters = readdirSync(games).flatMap((id) => {
+const ungroupedStarters = readdirSync(games).flatMap((id) => {
+  if (STARTER_ORDER.includes(id)) return [];
   try {
     const about = JSON.parse(readFileSync(join(games, id, 'about.json'), 'utf8')) as { series?: string; hero?: string };
     return about.series === 'starter' ? [{ id, hero: about.hero }] : [];
@@ -16,7 +18,20 @@ const starters = readdirSync(games).flatMap((id) => {
 });
 
 describe('Starter heroes', () => {
-  it.each(starters)('$id metadata agrees with the shared hero table', ({ id, hero }) => {
+  it('introduces Lian in the opening paragraph of Under the Hood', () => {
+    expect(STORY.split('\n\n')[1]).toMatch(/\bI'm Lian\b/);
+  });
+
+  it.each(STARTER_ORDER)('%s metadata agrees with the shared hero table', (id) => {
+    const { series, hero } = JSON.parse(readFileSync(join(games, id, 'about.json'), 'utf8')) as {
+      series?: string;
+      hero?: string;
+    };
+    expect(series).toBe('starter');
+    expect(hero).toBe(heroOfStarter(id));
+  });
+
+  it.each(ungroupedStarters)('$id metadata agrees with the shared hero table', ({ id, hero }) => {
     expect(hero).toBe(heroOfStarter(id));
   });
 

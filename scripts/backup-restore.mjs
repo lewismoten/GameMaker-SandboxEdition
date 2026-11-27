@@ -12,7 +12,7 @@ async function extractTar(file, folder) {
   const tar = spawn('tar', ['-xzf', file, '-C', folder], { stdio: ['ignore', 'inherit', 'inherit'] });
   await new Promise((ok, fail) => {
     tar.on('error', fail);
-    tar.on('close', (code) => (code ? fail(new Error(`tar exited ${code}`)) : ok()));
+    tar.on('close', (code, signal) => (code === 0 ? ok() : fail(new Error(`tar exited with ${signal ?? code}`))));
   });
 }
 

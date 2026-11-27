@@ -28,6 +28,20 @@ describe('gate failure policy', () => {
     expect(fingerprint(['AssertionError: expected false'])).not.toBe(exception.fingerprint);
   });
 
+  const suite = testReport('/web').testResults[0];
+  it.each([
+    { name: '/web/a', assertionResults: [{}] },
+    { ...suite, status: 'unknown' },
+    { ...suite, name: ' ' },
+    { ...suite, assertionResults: [{ fullName: 'example works', status: 'unknown' }] },
+    { ...suite, assertionResults: [{ fullName: 'example works' }] },
+    { ...suite, assertionResults: [{ status: 'passed' }] },
+  ])('rejects an incomplete or unrecognized result %j', (result) => {
+    const report = testReport('/web');
+    report.testResults = [result];
+    expect(() => assessTests(report, 0, [], '/web', { reason: 'passed', unhandledErrors: [] })).toThrow();
+  });
+
   it('requires owner, issue, revision, unique test identity and a future expiry', () => {
     const now = new Date('2026-11-06T12:00:00Z');
     expect(validateAllowlist({ version: 1, exceptions: [exception] }, now)).toEqual([exception]);

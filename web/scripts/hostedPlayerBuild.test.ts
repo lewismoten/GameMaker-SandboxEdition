@@ -44,3 +44,21 @@ describe('hosted player metadata', () => {
     expect(files['player/index.html']).toContain('name="robots" content="noindex"');
   });
 });
+
+it('serves the try page through both development aliases and keeps the download indexable', async () => {
+  type Handler = (req: { url: string }, res: { setHeader: () => void; end: (html: string) => void }, next: () => void) => void;
+  const use = vi.fn<(handler: Handler) => void>();
+  const server = { watcher: { on: vi.fn() }, middlewares: { use } };
+  (hostedPlayer().configureServer as unknown as (s: typeof server) => void)(server);
+  const handle = use.mock.calls[0][0];
+  const get = (url: string) => new Promise<string>((end, reject) => handle({ url }, { setHeader: vi.fn(), end }, () => reject(new Error(url))));
+  const download = await get('/web-player.html');
+  expect(download).toContain(`rel="canonical" href="${SITE_URL}web-player.html"`);
+  expect(download).not.toContain('noindex');
+  for (const url of ['/player/', '/player/index.html']) {
+    const html = await get(url);
+    expect(html).toContain(`rel="canonical" href="${SITE_URL}player/index.html"`);
+    expect(html).toContain('name="robots" content="noindex"');
+    expect(html).toContain('<title>Try the web player');
+  }
+});

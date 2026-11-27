@@ -80,21 +80,18 @@ export function mumble(line: Syllable[], opts: MumbleOptions = {}): Float32Array
     seed = (seed * 1103515245 + 12345) & 0x7fffffff;
     return seed / 0x3fffffff - 1;
   };
+  let index = 0;
+  let at = 0;
+  let s = line[index];
   const voice = (t: number): number => {
-    // which syllable are we in
-    let at = 0;
-    let s: Syllable | undefined;
-    let local = 0;
-    for (const syl of line) {
-      const len = syl[3] + (syl[4] ?? 0);
-      if (t < at + len) {
-        s = syl;
-        local = t - at;
-        break;
-      }
-      at += len;
+    while (s) {
+      const end = at + (s[3] + (s[4] ?? 0));
+      if (t < end) break;
+      at = end;
+      s = line[++index];
     }
-    if (!s || local > s[3]) return 0;
+    const local = t - at;
+    if (!s || s[3] === 0 || local > s[3]) return 0;
     const k = local / s[3];
     const hz = s[1] + (s[2] - s[1]) * k;
     const [a, b] = VOWEL[s[0]];

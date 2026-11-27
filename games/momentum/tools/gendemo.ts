@@ -9,7 +9,7 @@ import { recordDemo } from '../../kit/demoRecord';
 import { play } from './play';
 
 /** Ticks cut from the end of the run: the last walk to the exit door. */
-const END_SHORT = 60;
+const END_SHORT = 1;
 const { sim } = await play();
 const keys: { delta: number; key: number }[] = [];
 let carried = 0;

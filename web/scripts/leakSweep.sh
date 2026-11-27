@@ -11,8 +11,12 @@
 # Exits 1 if a build holds any hit. Hits in tracked files are for a person to judge (code, tests
 # and docs may name a secret game; players must not see it).
 sweepdir=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
-cd "$(git rev-parse --show-toplevel)" || exit 2
 dist=${1:-}
+if [ -n "$dist" ]; then
+  [[ "$dist" = /* ]] || dist="$PWD/$dist"
+  [[ -d "$dist" && -r "$dist" && -x "$dist" ]] || { echo "Cannot scan requested build folder" >&2; exit 2; }
+fi
+cd "$(git rev-parse --show-toplevel)" || exit 2
 since=${2:-HEAD~300}
 ids=()
 words=()
@@ -52,6 +56,7 @@ if [ -n "$lp" ]; then
   done <"$lp"
 fi
 echo "== extra patterns: ${#extra[@]}"
+credentials=('sk-[A-Za-z0-9]{20,}' 'ghp_[A-Za-z0-9]{20,}' 'AKIA[0-9A-Z]{16}' 'BEGIN (RSA |EC )?PRIVATE KEY')
 homeShape='/(Users|home)/[[:alnum:]_.-]+/'
 
 echo "== secret ids/titles in tracked files outside their own folders"
@@ -64,20 +69,20 @@ git log "$since"..HEAD --format=%B | grep -icE "\b($pat)\b"
 
 echo "== other patterns in tracked files (not cd/, code/, tests, AGENTS.md, CLAUDE.md)"
 pattern=0
-for p in "${extra[@]}" "$homepat" "$homeShape" '\.for-lewis' 'sk-[A-Za-z0-9]{20,}' 'ghp_[A-Za-z0-9]{20,}' 'AKIA[0-9A-Z]{16}' 'BEGIN (RSA |EC )?PRIVATE KEY'; do
+for p in "${extra[@]}" "$homepat" "$homeShape" '\.for-lewis' "${credentials[@]}"; do
   git grep -lIE -e "$p" -- . ':(exclude)cd' ':(exclude)code' ':(exclude)package-lock.json' ':(exclude)*.test.ts' ':(exclude)AGENTS.md' ':(exclude)CLAUDE.md' ':(exclude).gitignore' ':(exclude).prettierignore' >"$tmp"
   pattern=$((pattern + 1))
   echo "-- pattern $pattern: $(wc -l <"$tmp" | tr -d ' ') file(s)"
   head -6 "$tmp" | mask | sed 's/^/     /'
 done
 
-if [ -n "$dist" ] && [ -d "$dist" ]; then
+if [ -n "$dist" ]; then
   echo "== build in $dist (skipped: downloads.html, games/extra-N.json and videos/walk-HASH.json, which are loaded only once a secret game is listed, and the secret games' own folders)" | mask
   # assets/bonus-*.js is the egg system's own code (src/eggs/bonus.ts): it names the secret games' ids by design, is on no page and loads only once an egg is found
   skip=(--exclude=downloads.html --exclude='extra-*.json' --exclude='walk-*.json' --exclude='bonus-*.js')
   for i in "${ids[@]}"; do skip+=("--exclude-dir=$i"); done
   pattern=0
-  for p in "$pat" "$homepat" "$homeShape" '\.for-lewis' "${extra[@]}" 'sk-[A-Za-z0-9]{20,}' 'ghp_[A-Za-z0-9]{20,}'; do
+  for p in "$pat" "$homepat" "$homeShape" '\.for-lewis' "${extra[@]}" "${credentials[@]}"; do
     grep -rIlE "${skip[@]}" -e "$p" "$dist" >"$tmp" 2>/dev/null
     c=$(wc -l <"$tmp" | tr -d ' ')
     pattern=$((pattern + 1))

@@ -1,5 +1,9 @@
 """SQLite contract tests for the intake's canonical task read model."""
+from contextlib import closing
+import hashlib
 import importlib.util
+import tempfile
+from unittest.mock import patch
 from pathlib import Path
 import sqlite3
 import unittest
@@ -24,6 +28,32 @@ class RecordTest(unittest.TestCase):
         self.assertEqual(by_key, by_id)
         self.assertEqual(by_key[0], 'client-key')
         self.assertEqual(self.ledger.execute('SELECT count(*) FROM requests').fetchone()[0], 1)
+    def test_pending_recovery_uses_index_for_old_and_new_reservations(self):
+        self.ledger.executemany("INSERT INTO requests(key,digest) VALUES (?, 'hash')",
+                                [(str(i),) for i in range(999)])
+        with tempfile.TemporaryDirectory() as folder:
+            path = Path(folder) / 'board.sqlite'
+            with closing(sqlite3.connect(path)) as board, board:
+                board.execute('CREATE TABLE tasks(id TEXT PRIMARY KEY, idempotency_key TEXT)')
+                for key in ('998', '999'):
+                    native = 'intake-' + hashlib.sha256(key.encode()).hexdigest()
+                    board.execute('INSERT INTO tasks VALUES (?,?)', ('t_' + key, native))
+            records.prepare_reservations(self.ledger)
+            self.ledger.execute("INSERT INTO requests(key,digest) VALUES ('999','hash')")
+            with patch.object(hashlib, 'sha256', wraps=hashlib.sha256) as digest:
+                for key in ('998', '999'):
+                    records.prepare_reservations(self.ledger)
+                    self.assertEqual(records.resolve_request(self.ledger, 't_' + key, path)[0], key)
+                self.assertEqual(digest.call_count, 0)
+            plan = self.ledger.execute('EXPLAIN QUERY PLAN ' + records.RECOVERY_QUERY, (native,))
+            self.assertIn('SEARCH requests USING INDEX requests_native (native_key=?)', ' '.join(row[3] for row in plan))
+            self.ledger.execute("UPDATE requests SET task_id='t_other' WHERE key='999'")
+            with self.assertRaisesRegex(records.Failure, '^readback_mismatch$'):
+                records.resolve_request(self.ledger, 't_999', path)
+            self.ledger.execute("UPDATE requests SET native_key=? WHERE key='998'", (native,))
+            with self.assertRaisesRegex(records.Failure, '^ambiguous_record$'):
+                records.resolve_request(self.ledger, 't_999', path)
+
     def test_response_reads_branch_and_run_summary_not_events(self):
         board = sqlite3.connect(':memory:')
         self.addCleanup(board.close)

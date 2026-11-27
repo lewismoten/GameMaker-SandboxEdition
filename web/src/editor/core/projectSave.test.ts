@@ -54,6 +54,37 @@ describe('Project save state', () => {
     await two;
     expect(states.at(-1)).toBe('saved');
   });
+  it('coalesces saves behind a stalled write and reports the final write failure to every pending caller', async () => {
+    const p = project();
+    const snapshots = vi.spyOn(p.files, 'entries');
+    let release!: () => void;
+    const error = new Error('Storage full');
+    vi.mocked(saveProject)
+      .mockImplementationOnce(
+        () =>
+          new Promise<void>((resolve) => {
+            release = resolve;
+          }),
+      )
+      .mockRejectedValueOnce(error);
+    const active = p.saveNow();
+    await Promise.resolve();
+    const pending = [];
+    for (let i = 1; i <= 32; i++) {
+      p.files.set('a.txt', Uint8Array.of(i));
+      pending.push(p.saveNow());
+    }
+    expect(snapshots).toHaveBeenCalledTimes(1);
+    const results = Promise.allSettled(pending);
+    release();
+    await active;
+    expect(await results).toEqual(pending.map(() => ({ status: 'rejected', reason: error })));
+    expect(saveProject).toHaveBeenCalledTimes(2);
+    expect(vi.mocked(saveProject).mock.calls[1][3].get('a.txt')).toEqual(Uint8Array.of(32));
+    expect(p.hasUnsavedChanges).toBe(true);
+    await p.saveNow();
+    expect(p.hasUnsavedChanges).toBe(false);
+  });
   it('does not let an older completion label a newer document revision saved', async () => {
     const p = project();
     let finish!: () => void;

@@ -27,7 +27,7 @@ it('writes disk directories from a real export ZIP and refuses to overwrite exis
     expect(run()).toContain('disk 1');
     expect(readFileSync(join(output, 'DISK1', 'TEST.GAM'))).toEqual(Buffer.from([9]));
     expect(existsSync(join(output, 'DISK1', 'INSTALL.BAT'))).toBe(true);
-    expect(existsSync(join(output, 'DISK1', 'DISK1.ID'))).toBe(true);
+    expect(existsSync(join(output, 'DISK1', 'TEST.D01'))).toBe(true);
     expect(() => run()).toThrow();
     expect(readFileSync(join(output, 'DISK1', 'TEST.GAM'))).toEqual(Buffer.from([9]));
   } finally {
