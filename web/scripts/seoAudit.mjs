@@ -30,6 +30,7 @@ const secrets = readdirSync(gamesRoot).flatMap((id) => {
 const titles = new Map(),
   descs = new Map();
 const attr = (h, re) => (h.match(re) || [])[1];
+const stripCommentsAndScripts = (h) => h.replace(/<!--[\s\S]*?-->|<script\b[^>]*>[\s\S]*?<\/script>/gi, '');
 const idsByPage = new Map();
 function* attributeValues(markup, tags, name) {
   for (const tag of markup.matchAll(tags)) {
@@ -40,7 +41,7 @@ function* attributeValues(markup, tags, name) {
 }
 function hasSection(target, fragment) {
   if (!idsByPage.has(target)) {
-    const markup = readFileSync(target, 'utf8').replace(/<!--[\s\S]*?-->|<script\b[^>]*>[\s\S]*?<\/script>/gi, '');
+    const markup = stripCommentsAndScripts(readFileSync(target, 'utf8'));
     const ids = attributeValues(markup, /<[a-z][\w:-]*\s+((?:[^>"']|"[^"]*"|'[^']*')*)>/gi, 'id');
     idsByPage.set(target, new Set(Array.from(ids, decode)));
   }
@@ -108,7 +109,7 @@ for (const p of pages) {
   }
   if (!noindex && !/<h1[ >]/.test(markup)) problems.push(`${n}: no h1`);
   // internal links
-  for (const link of attributeValues(markup, /<a\s+((?:[^>"']|"[^"]*"|'[^']*')*)>/gi, 'href')) {
+  for (const link of attributeValues(stripCommentsAndScripts(h), /<a\s+((?:[^>"']|"[^"]*"|'[^']*')*)>/gi, 'href')) {
     let href = decode(link);
     if (/^(https?:|mailto:|tel:|data:|javascript:)/.test(href) && !href.startsWith(BASE)) continue;
     const absolute = href.startsWith(BASE);
