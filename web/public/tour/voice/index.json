@@ -2562,9 +2562,9 @@
   "home-games": {
     "chapter": "home",
     "where": "Home: Teddy points at Games in the header",
-    "text": "Games, up in the bar, always brings you back here.",
-    "seconds": 3.97,
-    "hash": "56cb7e7e3b77",
+    "text": "Choose Games or the Game-Maker logo to come back here.",
+    "seconds": 4.22,
+    "hash": "8b8bc2250997",
     "voice": "a50c8e805452"
   },
   "home-guide": {

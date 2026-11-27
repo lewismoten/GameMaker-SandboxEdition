@@ -2,6 +2,7 @@
 import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { pathToFileURL } from 'node:url';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import blockArt from '../src/achievements/blockArt.json';
 import {
@@ -26,7 +27,7 @@ describe('achievementArt keeps badges it did not make', () => {
   let dir: string;
   let file: string;
   beforeEach(() => {
-    dir = mkdtempSync(join(tmpdir(), 'achievement-art-'));
+    dir = mkdtempSync(join(tmpdir(), 'achievement art-'));
     file = join(dir, 'blockArt.json');
   });
   afterEach(() => rmSync(dir, { recursive: true, force: true }));
@@ -63,8 +64,8 @@ describe('achievementArt keeps badges it did not make', () => {
     expect(read().badges['play-starters']).toEqual(hand);
   });
 
-  it('starts an absent file from nothing', () => {
-    const r = updateBadgeFile(file, 'n', { 'heart-first': made('heart-first', 'new') });
+  it('creates an absent file from a URL with a space in the directory', () => {
+    const r = updateBadgeFile(pathToFileURL(file), 'n', { 'heart-first': made('heart-first', 'new') });
     expect(r.created).toEqual(['heart-first']);
     expect(Object.keys(read().badges)).toEqual(['heart-first']);
   });

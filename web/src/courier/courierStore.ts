@@ -70,6 +70,8 @@ export interface Courier {
   hosted: string[];
 }
 
+const REPLAY_LIMIT = 64;
+
 export const MAX_PACKAGES = 3;
 
 const empty = (): Courier => ({ mail: [], got: [], postcards: [], packages: [], welcomed: [], hosted: [] });
@@ -129,8 +131,8 @@ export function loadCourier(): Courier {
       got: strings(r.got),
       postcards,
       packages: strings(r.packages).slice(0, MAX_PACKAGES),
-      welcomed: strings(r.welcomed),
-      hosted: strings(r.hosted),
+      welcomed: strings(r.welcomed).slice(-REPLAY_LIMIT),
+      hosted: strings(r.hosted).slice(-REPLAY_LIMIT),
     };
     if (home) {
       c.home = home;
@@ -147,15 +149,18 @@ export function loadCourier(): Courier {
   }
 }
 
-export function saveCourier(c: Courier): void {
-  const snapshot = JSON.stringify(c);
+export function saveCourier(c: Courier): boolean {
+  const snapshot = JSON.stringify({ ...c, welcomed: c.welcomed.slice(-REPLAY_LIMIT), hosted: c.hosted.slice(-REPLAY_LIMIT) });
   try {
     localStorage.setItem(KEY, snapshot);
     unsavedCourier = undefined;
   } catch {
+    // storage blocked or full: the letter is kept for this visit only
     unsavedCourier = snapshot;
+    return false;
   }
   if (typeof window !== 'undefined') window.dispatchEvent(new Event(COURIER_CHANGED));
+  return true;
 }
 
 /**

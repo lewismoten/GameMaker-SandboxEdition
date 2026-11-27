@@ -4,7 +4,8 @@
 //   cd web && npx vite-node ../games/throw-it/tools/demoCheck.ts
 import { readFileSync } from 'node:fs';
 import { parseRecording } from '@lewismoten/gamemaker-sandbox-engine/formats/recording';
-import { TARGET } from '../src/monsters';
+import { BLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { STAR, TARGET } from '../src/monsters';
 import { SCAN_ENTER } from '../src/hero';
 import { GameSim } from './sim';
 
@@ -12,11 +13,29 @@ const keys = parseRecording(new Uint8Array(readFileSync(new URL('../disk/demo.re
 const sim = new GameSim(undefined, 1);
 const targets = () => sim.w.mm.filter((m) => m.monnum === TARGET).length;
 const outcomes: string[] = [];
-let pending: { before: number; score: number } | undefined;
+const x = (slot: number) => sim.w.mi[slot].curx[0] * BLEN + sim.w.mi[slot].curx[1];
+let pending: { before: number; target: number; startX?: number; furthestX?: number } | undefined;
 let sinceThrow = 0;
 const settle = () => {
-  if (pending && sinceThrow > 55) {
-    outcomes.push(targets() < pending.before ? 'pop' : 'miss');
+  if (!pending) return;
+  const star = sim.w.mm.findIndex((m) => m.monnum === STAR);
+  if (star >= 0) {
+    const starX = x(star);
+    pending.startX ??= starX;
+    pending.furthestX = Math.max(pending.furthestX ?? starX, starX);
+  }
+  if (sinceThrow > 55) {
+    if (targets() < pending.before) outcomes.push('pop');
+    else if (
+      star < 0 &&
+      sim.w.mm[pending.target]?.monnum === TARGET &&
+      pending.startX !== undefined &&
+      pending.furthestX !== undefined &&
+      pending.furthestX > pending.startX &&
+      pending.furthestX + BLEN <= x(pending.target)
+    )
+      outcomes.push('miss');
+    else outcomes.push('no observed short throw');
     pending = undefined;
   }
 };
@@ -32,7 +51,7 @@ for (const k of keys) {
   else {
     sim.press(scan);
     if (scan === SCAN_ENTER) {
-      pending = { before: targets(), score: sim.ci.score };
+      pending = { before: targets(), target: sim.w.mm.findIndex((m) => m.monnum === TARGET) };
       sinceThrow = 0;
     }
   }

@@ -100,7 +100,7 @@ disk.put('lost.lst', serializeSlideList([{ name: 'lostpic.gif', pause: 5 }, { na
 
 disk.put('demo.rec', demoRecording());
 disk.put('beat.gam', serializeGame(buildGame(levels)));
-disk.put('license.txt', licenseText('Power Up'));
+disk.put('license.txt', licenseText(TITLE));
 clipEveryList(disk.files);
 disk.write();
 console.log(`${TITLE}: ${book.index.size} blocks, ${heroBlocks.index.size} hero blocks`);

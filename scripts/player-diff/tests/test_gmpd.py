@@ -61,6 +61,13 @@ class SyntheticTests(unittest.TestCase):
         self.assertIn("TLINK", mz.linker_mark(m))
         self.assertIsNone(mz.detect_packer(m))
 
+    def test_invalid_file_and_header_extents(self):
+        for last_page, header_paras in ((0, 2), (32, 1), (31, 2)):
+            with self.subTest(last_page=last_page, header_paras=header_paras):
+                raw = b"MZ" + struct.pack("<13H", last_page, 1, 0, header_paras, *([0] * 9)) + bytes(4)
+                with self.assertRaises(mz.NotMZ):
+                    mz.parse(raw)
+
     def test_stamp_is_masked(self):
         slot = bytes([0xDC]) + bytes(range(1, 29)) + b"\0" + b"\1\2\3\4" + b"ijklmnopqrstuvwxyz"
         self.assertEqual(mz.stamp_slot(slot + b"\0" * 8), "stamped (contents masked)")

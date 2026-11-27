@@ -3,12 +3,24 @@
 // the click). The context starts suspended; the engine's gesture listeners resume it on the
 // first tap or click (iOS needs that resume inside a gesture, not the construction).
 export function warmDeskAudio(): () => void {
+  let disposed = false;
+  let idle: number | undefined;
   let id: ReturnType<typeof setTimeout> | undefined = setTimeout(() => {
     id = undefined;
-    const make = () => void import('@lewismoten/gamemaker-sandbox-engine/audio/context').then((m) => m.audioContext());
-    'requestIdleCallback' in window ? requestIdleCallback(make, { timeout: 2000 }) : make();
+    const make = () => {
+      idle = undefined;
+      if (!disposed) {
+        void import('@lewismoten/gamemaker-sandbox-engine/audio/context').then((m) => {
+          if (!disposed) m.audioContext();
+        });
+      }
+    };
+    if ('requestIdleCallback' in window) idle = requestIdleCallback(make, { timeout: 2000 });
+    else make();
   }, 1500);
   return () => {
+    disposed = true;
     if (id !== undefined) clearTimeout(id);
+    if (idle !== undefined) cancelIdleCallback(idle);
   };
 }

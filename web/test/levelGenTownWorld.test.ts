@@ -59,6 +59,24 @@ describe('overworld', () => {
         expect(r.terrainCells.water!.length).toBeGreaterThan(500);
       }
   }, 30_000); // a few seconds alone, over 5 s when the machine is loaded
+  it('keeps seed 4 land connected across the north and south edges of a wrapped map', () => {
+    const r = run('overworld', set([2, ['floor']], [8, ['water']]), 4, true, { x: 0, y: 0, w: 40, h: 40 });
+    expect(r.blocks[39 * 40 + 20]).toBe(2);
+    expect(r.blocks[20]).toBe(2);
+    expect(verifyReach(r).ok).toBe(true);
+  });
+  it('keeps opposite edges of a selection separate on a wrapped map', () => {
+    const o = generate(set([2, ['floor']], [8, ['water']]), {
+      kind: 'overworld',
+      seed: 4,
+      rect: { x: 10, y: 10, w: 40, h: 40 },
+      wrap: true,
+      selection: true,
+    });
+    if (!o.ok) throw new Error(o.message);
+    expect(o.result.blocks[39 * 40 + 20]).toBe(2);
+    expect(o.result.blocks[20]).toBe(8);
+  });
   it('lines the land up across the seam more when wrapping than when not', () => {
     const match = (wrap: boolean) => {
       let same = 0;

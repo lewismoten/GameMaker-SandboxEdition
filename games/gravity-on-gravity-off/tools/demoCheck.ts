@@ -20,11 +20,15 @@ const r = await replay(
   },
   { maxMinutes: 3 },
 );
-const seen = r.scenes.slice(0, 3).join(' ');
-if (r.error) console.log(r.error);
-console.log(`demo: scenes entered ${r.scenes.join(' ')}; ${r.keysLeft} keys unplayed`);
+// every scene the demo entered, not just the first three, and a replay that threw is a failure
+const seen = r.scenes.join(' ');
+console.log(`demo: scenes entered ${seen}; ${r.keysLeft} keys unplayed`);
+if (r.error) {
+  console.error(`demoCheck: the replay failed: ${String(r.error)}`);
+  process.exit(1);
+}
 if (seen !== '2 3 1' || r.keysLeft) {
-  console.error(`demoCheck: expected scenes 2 3 1 (two levels, the ending) with every key played; got ${seen}`);
+  console.error(`demoCheck: expected exactly scenes 2 3 1 (two levels, the ending) with every key played; got ${seen}`);
   process.exit(1);
 }
 console.log('demoCheck ok: jumped and fell back, walked off a ledge, then walked four ways with no gravity, reached the ending');

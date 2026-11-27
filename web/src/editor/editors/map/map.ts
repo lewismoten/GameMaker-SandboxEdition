@@ -736,7 +736,12 @@ registerEditor(['map'], (host, project, file) => {
     if (!viewport.wrapped && marks.any()) marks.redraw();
     noteView();
   }
-  const { noteView, flushView, restoreView, stopRestoring } = mapViewMemory({
+  const {
+    noteView,
+    dispose: disposeViewMemory,
+    restoreView,
+    stopRestoring,
+  } = mapViewMemory({
     project,
     file,
     host,
@@ -1004,7 +1009,7 @@ registerEditor(['map'], (host, project, file) => {
   restoreView();
   return () => {
     hideTip();
-    flushView();
+    disposeViewMemory();
     tip.remove();
     clearTimeout(redrawTimer);
     markers.dispose();

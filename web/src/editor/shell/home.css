@@ -1303,13 +1303,15 @@ a.button.with-ico {
    home route; the same rule as the rest of the shell: 44 px, or 24 px for a link inside a line). */
 @media (hover: none) and (pointer: coarse) {
   .lib-lead-more,
-  .home-start .link-btn {
+  .home-start .link-btn,
+  .home-start-dialog .link-btn {
     min-height: 44px;
     min-width: 44px;
     padding-inline: 8px;
   }
-  .home-start .meta a {
-    padding-block: 4px;
+  .home-start .meta a,
+  .home-start-dialog .meta a {
+    padding-block: max(4px, calc((24px - 1em) / 2));
   }
 }
 

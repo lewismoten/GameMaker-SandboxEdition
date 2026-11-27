@@ -8,6 +8,7 @@ import { readFileSync } from 'node:fs';
 import { decodeGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
 import { parseFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
 import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { parsePalette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 import { parseSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
 
 const disk = (n: string) => new Uint8Array(readFileSync(new URL(`../disk/${n}`, import.meta.url)));
@@ -15,6 +16,18 @@ const fail = (m: string): never => {
   console.error(`picturesCheck: ${m}`);
   process.exit(1);
 };
+
+/** The game's palette: every picture must carry it, color for color, or the screen shows wrong colors. */
+const gamePal = parsePalette(disk('pics.pal'));
+const colors = new Set<number>();
+for (let i = 0; i < 256; i++) colors.add((gamePal[i * 3] << 12) | (gamePal[i * 3 + 1] << 6) | gamePal[i * 3 + 2]);
+if (colors.size < 16) fail(`pics.pal has only ${colors.size} distinct colors`);
+
+/** The first palette entry where a picture's colors differ from the game's, or -1. */
+function paletteMismatch(pal: Uint8Array): number {
+  for (let i = 0; i < 768; i++) if (pal[i] !== gamePal[i]) return Math.floor(i / 3);
+  return -1;
+}
 
 /** The names a graphic slot ends up showing, in order (a list's entries, a single file as itself). */
 function shown(name: string): string[] {
@@ -28,6 +41,8 @@ function look(name: string): string {
   if (ext === 'gif') {
     const g = decodeGif(disk(name));
     if (g.width !== 320 || g.height !== 200) fail(`${name} is ${g.width}x${g.height}, not 320x200`);
+    const bad = paletteMismatch(g.palette);
+    if (bad >= 0) fail(`${name}: palette entry ${bad} is not pics.pal's (the picture is not in the game's palette)`);
     return 'GIF';
   }
   if (ext === 'fli') {

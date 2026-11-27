@@ -49,6 +49,13 @@ const startersButton = (id: string, label: string | RegExp, unhide?: string): Sc
     // How it works is hidden while Getting started fits inline (a wide window, 844x390 included); show it so its dialog can be measured
     if (unhide) await p.evaluate((sel) => document.querySelectorAll<HTMLElement>(sel).forEach((b) => (b.hidden = false)), unhide);
     await p.getByRole('button', { name: label }).first().click({ timeout: 8000 });
+    if (id === 'how-do-i') {
+      const question = p
+        .locator('dialog[open] .hdi-list li')
+        .filter({ has: p.locator('.hdi-q:visible') })
+        .first();
+      await question.getByRole('button', { name: /^Play this level:/ }).waitFor({ timeout: 8000 });
+    }
   },
 });
 

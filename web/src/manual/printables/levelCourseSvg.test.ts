@@ -3,7 +3,9 @@ import { describe, expect, it, vi } from 'vitest';
 import type { Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import type { CourseLayout } from './levelCourse';
 import type { Level } from './levelMapLayout';
-import { dataUrl, wholeCourseSize, wholeCourseSvg } from './levelCourseSvg';
+import { scenePixels } from '../../gfx/levelPicture';
+import { GameFiles } from '../../project/files';
+import { coursePanelUrls, wholeCourseSize, wholeCourseSvg } from './levelCourseSvg';
 
 type Drawing = { tag: string; attrs: Record<string, string | number>; children: (Drawing | string)[]; append(...children: (Drawing | string)[]): void };
 vi.mock('./worldMapArt', () => ({
@@ -97,13 +99,26 @@ describe('continuous course drawing', () => {
   });
 });
 
-describe('dataUrl', () => {
-  it('makes a data URL without a blob URL, which nothing would revoke', () => {
-    const make = vi.fn(() => 'blob:none');
-    vi.stubGlobal('URL', { createObjectURL: make });
-    const canvas = { toDataURL: () => 'data:image/png;base64,AAAA' } as unknown as HTMLCanvasElement;
-    expect(dataUrl(new Blob(['x']), canvas)).toBe('data:image/png;base64,AAAA');
-    expect(make).not.toHaveBeenCalled();
-    vi.unstubAllGlobals();
+it('encodes each poster panel once as a data URL', async () => {
+  const level = fixture();
+  level.course!.panels = [0, 1].map((a0) => ({ c0: 0, c1: 1, a0, a1: a0 + 1 }));
+  vi.mocked(scenePixels).mockReturnValue({ width: 1, height: 1, pixels: new Uint8Array(1), palette: new Uint8Array(768) });
+  const createCanvas = () => ({
+    getContext: () => ({ createImageData: (w: number, h: number) => ({ data: new Uint8ClampedArray(4 * w * h) }), putImageData: vi.fn() }),
+    toBlob: vi.fn((done: BlobCallback) => done(new Blob())),
+    toDataURL: vi.fn(() => 'data:image/png;base64,AAAA'),
   });
+  const createElement = vi.fn(createCanvas);
+  vi.stubGlobal('document', { createElement });
+  try {
+    const urls = await coursePanelUrls({ scenes: [] } as unknown as Game, new GameFiles(), level);
+    expect(urls).toEqual(['data:image/png;base64,AAAA', 'data:image/png;base64,AAAA']);
+    expect(createElement).toHaveBeenCalledTimes(2);
+    for (const { value: canvas } of createElement.mock.results) {
+      expect(canvas.toDataURL).toHaveBeenCalledTimes(1);
+      expect(canvas.toBlob).not.toHaveBeenCalled();
+    }
+  } finally {
+    vi.unstubAllGlobals();
+  }
 });

@@ -1,5 +1,5 @@
 // Integration mechanics use real disposable Git repos; expensive checks use recorded-shape results.
-import { existsSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
 import { gateOptions, runGate } from '../../scripts/merge-gate.mjs';
@@ -51,6 +51,20 @@ describe('merge gate', () => {
     expect(git(f.root, 'ls-remote', 'origin', 'refs/heads/feature/task')).toBe('');
     expect(JSON.parse(readFileSync(join(f.output, 'result.json'))).candidateTree).toBe(git(f.integration, 'rev-parse', 'HEAD^{tree}'));
     expect(existsSync(`${f.integration}.gate-lock`)).toBe(false);
+  });
+
+  it('accepts the original PNG separator and rejects conflict markers in the maintained README', () => {
+    const f = setup();
+    mkdirSync(join(f.root, 'code/Image/PNG'), { recursive: true });
+    change(f.root, 'develop', 'code/Image/PNG/PNG10.TXT', '=======\n');
+    change(f.root, 'feature/task', 'code/README.md', '# Source\n');
+    const clean = run(f);
+    expect(clean.exitCode, clean.error).toBe(0);
+    change(f.root, 'feature/markers', 'code/README.md', '# Source\n<<<<<<< HEAD\n');
+    const marked = run(f, { branches: ['feature/markers'] });
+    expect(marked.exitCode).toBe(3);
+    expect(marked.error).toContain('code/README.md:2:<<<<<<< HEAD');
+    expect(marked.steps).toEqual([]);
   });
 
   it('never pushes a failed test or falls through to game checks', () => {

@@ -14,8 +14,11 @@ picture. When a mistake happens twice, add a line. Commit `b33408537` added a ba
 
 ## 2. Commit small, push often, one branch per task
 
-Work that sits uncommitted is lost when an agent stops, and another agent cannot take it
-over. AGENTS.md asks for small commits (a few files at a time, committed by path), a pushed
+A replacement agent with access to the same worktree can pick up uncommitted edits where
+the previous agent stopped. To hand off through a fresh clone, commit the edits and push
+the branch to the shared remote.
+
+AGENTS.md asks for small commits (a few files at a time, committed by path), a pushed
 branch every few minutes and a merge back with `--no-ff`. Several agents then work at once
 without trampling each other. Merges such as `4b9e21179` and `4a93bf213` show the shape: one
 feature branch, one merge commit.
