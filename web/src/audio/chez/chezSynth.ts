@@ -114,10 +114,12 @@ export class SynthMotor implements ChezMotor {
     this.moving = true;
     const t = this.ctx.currentTime + 0.01;
     const t0 = t + SWITCH_LEAD;
-    this.clunk(t, 0.45);
-    this.clunk(t0, 1);
     const r = this.start(t, t0, this.chain[0]);
-    r.pending = this.steps(t0, this.chain[0], 1);
+    r.pending = [
+      ...this.clunk(t, 0.45).map((n): [AudioScheduledSourceNode, number] => [n, t]),
+      ...this.clunk(t0, 1).map((n): [AudioScheduledSourceNode, number] => [n, t0]),
+      ...this.steps(t0, this.chain[0], 1),
+    ];
     for (const [s, v] of CLIMB) this.at(r, t0 + s, v, s ? 'ramp' : 'set');
     this.run = r;
   }
