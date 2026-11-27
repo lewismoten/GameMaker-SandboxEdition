@@ -78,6 +78,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex corrected and tested the upper ford crossing count in the Mountain Next Door route guide.
 - OpenAI Codex added and tested the route check for collecting the upper ford pie.
 - OpenAI Codex fixed and tested laser text width measurements for unsupported characters.
+- OpenAI Codex fixed and tested the touch target for Exact numbers in the monster path editor.
 - OpenAI Codex corrected Kit’s placement in the Three Tokens progress shot and wrote its pixel regression test.
 - OpenAI Codex corrected the Countdown title demo timing check and wrote its regression test.
 - OpenAI Codex fixed and tested transparent padding in the Colors That Work shape check.
