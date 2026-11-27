@@ -16,7 +16,7 @@ const SONG = 'library.cmf';
 /** Under the Music setting: a background, not a feature. */
 const LEVEL = 0.35;
 
-export function startLibraryMusic(room: HTMLElement): void {
+export function startLibraryMusic(room: HTMLElement, loadEngine = () => import('@lewismoten/gamemaker-sandbox-engine/audio/engine')): void {
   let engine: import('@lewismoten/gamemaker-sandbox-engine/audio/engine').AudioEngine | undefined;
   let begun = false;
   let ended = false;
@@ -41,7 +41,7 @@ export function startLibraryMusic(room: HTMLElement): void {
     if (begun || ended || !room.isConnected || demoAudio() === 'none') return;
     begun = true;
     // the context is made inside the gesture's handler; the rest waits for the engine and the song
-    void import('@lewismoten/gamemaker-sandbox-engine/audio/engine').then(async ({ AudioEngine }) => {
+    void loadEngine().then(async ({ AudioEngine }) => {
       if (ended) return;
       const e = (engine = new AudioEngine());
       e.setLevel(LEVEL);

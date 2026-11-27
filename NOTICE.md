@@ -82,6 +82,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex fixed and tested the walkthrough bot’s recognition of repeating flight animations.
 - OpenAI Codex corrected the contributor guide’s verification checklist and wrote its regression test.
 - OpenAI Codex fixed and tested retries for recorded phone clips and silent handling of empty phone captions.
+- OpenAI Codex updated the muted Library music test to check when the audio engine is requested.
 - OpenAI Codex corrected Kit’s placement in the Three Tokens progress shot and wrote its pixel regression test.
 - OpenAI Codex corrected the Countdown title demo timing check and wrote its regression test.
 - OpenAI Codex fixed and tested transparent padding in the Colors That Work shape check.
