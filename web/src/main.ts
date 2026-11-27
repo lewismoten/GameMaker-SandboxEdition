@@ -16,7 +16,7 @@ import { settingsItems, settingsMenu } from './settingsMenu';
 import { viewSwitch } from './viewSwitch';
 import { tourButton } from './tour/tourButton';
 import { parseHash } from './urlState';
-import { focusNewView, takeFilenameFocus, trackPersonInput } from './routeFocus';
+import { focusNewView, takeFilenameFocus, takeNavigationFocus, trackPersonInput } from './routeFocus';
 import { noteLibraryContext } from './libraryStart';
 import { parseLinkRequest, type LinkRequest } from './linkIn/protocol';
 import { beginPage } from './pageLife';
@@ -145,7 +145,7 @@ function startModern(hash?: string): void {
         h(
           'summary',
           {
-            'aria-label': 'More: the guide on small screens, the library, achievements, the cast, and settings (with the credits)',
+            'aria-label': 'More pages and settings',
             title: 'More',
           },
           '⋯',
@@ -344,8 +344,9 @@ async function route(): Promise<void> {
   document.title = PRODUCT;
   // on the game list, the bar carries the short tagline (the page's own heading is for screen readers)
   clear(titleSlot, h('span', { class: 'topbar-tagline hide-narrow', title: FORK_NOTE }, 'Make 1994 DOS games. No programming.'));
+  const current = navigation;
   const { renderHome } = await import('./editor/shell/home');
-  if (ui !== 'modern') return;
+  if (ui !== 'modern' || current !== navigation) return;
   await renderHome(content, nav);
 }
 
@@ -395,10 +396,9 @@ function storageGone(): void {
 
 trackPersonInput();
 let navigation = 0;
-let lastHash = location.hash;
-window.addEventListener('hashchange', () => {
-  const from = lastHash;
-  const to = (lastHash = location.hash);
+window.addEventListener('hashchange', (event) => {
+  const focus = takeNavigationFocus(event) && event.newURL === location.href;
+  const to = location.hash;
   const current = ++navigation;
   const filename = takeFilenameFocus(to);
   // a link from one interface to the other (the magazine's, say): #/desk from today's web, or a
@@ -411,7 +411,7 @@ window.addEventListener('hashchange', () => {
     startModern();
   } else
     void route().then(() => {
-      if (current === navigation) focusNewView(content, from, to, filename);
+      if (current === navigation) focusNewView(content, focus, filename);
     });
 });
 

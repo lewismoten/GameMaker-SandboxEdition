@@ -5,6 +5,7 @@
 import { mkdirSync, readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { join } from 'node:path';
+import { errorNoticeMessage } from './errorNoticeMessage';
 import { arg, launch } from './perfLib';
 import { assertTheme, forceTheme } from './forceTheme';
 
@@ -32,22 +33,24 @@ try {
             await page.waitForSelector('body');
             await assertTheme(page, theme);
           }
-          await page.evaluate(() =>
+          const message = errorNoticeMessage();
+          const expected = new Error(message).toString();
+          await page.evaluate((text) => {
             setTimeout(() => {
-              throw new Error('test error on purpose');
-            }, 0),
-          );
+              throw new Error(text);
+            }, 0);
+          }, message);
           await page.waitForSelector('.gm-error-notice', { timeout: 8000 });
           await ctx.grantPermissions(['clipboard-read', 'clipboard-write']).catch(() => {});
           await page.click('.gm-error-notice button');
           await page
             .waitForFunction(
-              () =>
+              (details) =>
                 navigator.clipboard.readText().then(
-                  (t) => t.length > 0,
+                  (t) => t.includes(details),
                   () => true,
                 ),
-              null,
+              expected,
               { timeout: 3000 },
             )
             .catch(() => {});
@@ -64,7 +67,7 @@ try {
           const small = await page.evaluate(
             () => [...document.querySelectorAll('.gm-error-notice button')].filter((b) => b.getBoundingClientRect().height < 24).length,
           );
-          const bad = res.length > 0 || over > 0 || small > 0 || !clip.includes('Error: test error on purpose');
+          const bad = res.length > 0 || over > 0 || small > 0 || !clip.includes(expected);
           if (bad) fail++;
           console.log(
             bad ? 'FAIL' : 'ok  ',

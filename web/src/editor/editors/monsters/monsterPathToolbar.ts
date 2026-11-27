@@ -21,6 +21,7 @@ export function renderTabs(ed: PathEd): void {
           const to = e.key === 'ArrowLeft' || e.key === 'ArrowRight' ? (p === 0 ? 1 : 0) : e.key === 'Home' ? 0 : e.key === 'End' ? 1 : -1;
           if (to < 0) return;
           e.preventDefault();
+          if (to === p) return;
           ed.tabsEl.querySelectorAll<HTMLElement>('[role=tab]')[to]?.click();
           ed.tabsEl.querySelectorAll<HTMLElement>('[role=tab]')[to]?.focus();
         },

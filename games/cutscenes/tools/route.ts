@@ -42,7 +42,14 @@ async function waitStage(bot: StarterBot, what: string, kind: 'trap' | 'quick'):
   if (showing(bot, shut) !== `${kind}.warn` || Math.abs(warnAt - (at - warn)) > 2)
     throw new Error(`${what}: the floor should flash at tick ${at - warn}, not ${warnAt}`);
   bot.say(`${what}: the floor flashes at tick ${warnAt}`);
-  await leave(bot, bot.wait(300), `${what}: the drop`);
+  for (let tick = warnAt + 1; tick <= at; tick++) {
+    await must(bot, bot.wait(1), `${what}: watching the floor at tick ${tick}`);
+    const expected = tick === at ? 'shaft' : `${kind}.warn`;
+    const actual = showing(bot, shut);
+    if (actual !== expected) throw new Error(`${what}: expected ${expected} at tick ${tick}, saw ${actual}`);
+  }
+  // Keep the original 300-tick deadline measured from the warning.
+  await leave(bot, bot.wait(300 - (at - warnAt)), `${what}: the drop`);
   bot.say(`${what}: the drop took the hero on`);
 }
 

@@ -26,7 +26,7 @@ else {
   if (process.argv.includes('--pairs'))
     for (const p of all.filter((x) => x.hueOnly))
       console.log(
-        `${p.game} s${p.scene} ${p.kind} ${p.a}/${p.b}: light ${Math.round(p.light.normal)}/${Math.round(p.light.deutan)}, shape ${(p.shape * 100).toFixed(0)}%, pattern ${p.pattern.normal.toFixed(1)}, dE ${Math.round(p.delta.normal)}/${Math.round(p.delta.protan)}/${Math.round(p.delta.deutan)}/${Math.round(p.delta.tritan)}`,
+        `${p.game} s${p.scene} ${p.kind} ${p.a}/${p.b}: ${p.identicalArtwork ? 'identical artwork, ' : ''}light ${Math.round(p.light.normal)}/${Math.round(p.light.deutan)}, shape ${(p.shape * 100).toFixed(0)}%, pattern ${p.pattern.normal.toFixed(1)}, dE ${Math.round(p.delta.normal)}/${Math.round(p.delta.protan)}/${Math.round(p.delta.deutan)}/${Math.round(p.delta.tritan)}`,
       );
   const withPairs = ids.filter((id) => all.some((p) => p.game === id));
   console.log(`\n${ids.length} games, ${withPairs.length} with pairs to tell apart, ${all.length} pairs, ${all.filter((p) => p.hueOnly).length} hue-alone`);

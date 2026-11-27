@@ -14,16 +14,26 @@ const keys = parseRecording(new Uint8Array(readFileSync(new URL('../disk/demo.re
 const sim = new GameSim(undefined, 1);
 const { book } = buildLevels();
 const gate = book.n('gate_silver');
+const silverKey = book.n('key_silver');
+const snapshot = () => ({
+  closed: sim.blockAt(ORIGIN + DOOR_X, ORIGIN + GROUND - 1) === gate,
+  keyOnLedge: sim.blockAt(ORIGIN + 21, ORIGIN + 2) === silverKey,
+  balance: sim.meter(KEYS), // the raw counter starts at 1, so bronze alone reads 2
+});
+let previous = snapshot();
 let bumpedShut = false;
+let pickedUpSilver = false;
 let openedAfterKey = false;
 const step = async () => {
   await sim.tick();
   if (sim.trail.length !== 1) return;
-  const closed = sim.blockAt(ORIGIN + DOOR_X, ORIGIN + GROUND - 1) === gate;
+  const current = snapshot();
   const p = sim.pos;
   const atDoor = (p.x - ORIGIN) * 20 + p.sx >= (DOOR_X - 1) * 20;
-  if (closed && atDoor && sim.meter(KEYS) === 2) bumpedShut = true; // carrying only the bronze key
-  if (!closed && bumpedShut) openedAfterKey = true;
+  if (current.closed && current.keyOnLedge && atDoor && current.balance === 2) bumpedShut = true;
+  if (bumpedShut && current.closed && previous.keyOnLedge && !current.keyOnLedge && previous.balance === 2 && current.balance === 4) pickedUpSilver = true;
+  if (pickedUpSilver && previous.closed && !current.closed && previous.balance === 4 && current.balance === 2) openedAfterKey = true;
+  previous = current;
 };
 for (const k of keys) {
   for (let i = 0; i < k.delta; i++) await step();
@@ -31,9 +41,11 @@ for (const k of keys) {
   else sim.press(k.key & 0x7f);
 }
 for (let i = 0; i < 40; i++) await step();
-console.log(`demo: bumped the shut door ${bumpedShut}, opened it later ${openedAfterKey}; ${sim.trail.length} scenes entered; deaths ${sim.deaths}`);
+console.log(
+  `demo: bumped the shut door ${bumpedShut}, collected silver ${pickedUpSilver}, paid two to open it ${openedAfterKey}; ${sim.trail.length} scenes entered; deaths ${sim.deaths}`,
+);
 if (!bumpedShut || !openedAfterKey || sim.deaths) {
-  console.error('demoCheck: expected the hero to bump the shut silver door, fetch the silver key and open it, without dying');
+  console.error('demoCheck: expected the hero to bump the shut silver door, collect the silver key and pay two to open it, without dying');
   process.exit(1);
 }
 console.log('demoCheck ok: the demo shows the shut door and then the open one');

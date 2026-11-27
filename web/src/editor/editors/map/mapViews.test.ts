@@ -31,6 +31,12 @@ describe('map views', () => {
     expect(recallView('p', 'M5.MAP', s)?.x).toBe(99);
     expect(JSON.parse(s.getItem('gm-map-views')!).views).toHaveLength(MAX_MAP_VIEWS);
   });
+  it.each(['sx', 'sy', 'w', 'h'])('uses the saved center when %s is damaged', (field) => {
+    const center = { z: 2, x: 12, y: 8 };
+    const view = { ...center, sx: 0, sy: 1, w: 320, h: 500, [field]: 'oops' };
+    const storage = { getItem: () => JSON.stringify({ views: [['a/A.MAP', view]] }) };
+    expect(recallView('a', 'a.map', storage)).toEqual(center);
+  });
   it('ignores damaged storage', () => {
     expect(recallView('a', 'X', { getItem: () => '{"views":[["a",{"z":"x"}],5]}' })).toBeUndefined();
     expect(lastZoom({ getItem: () => 'oops' })).toBe(1);

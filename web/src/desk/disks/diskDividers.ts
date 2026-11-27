@@ -16,7 +16,7 @@ export interface GroupView {
   /** The tab above the case that jumps here. */
   jump: HTMLButtonElement;
   setCount: (shown: number, of: number, filtering: boolean) => void;
-  setFolded: (folded: boolean) => void;
+  setFolded: (folded: boolean, searching?: boolean) => void;
 }
 
 let ids = 0;
@@ -57,9 +57,10 @@ export function groupView(id: DiskGroup, place: number, onFold: () => void, onJu
       jump.title = `Go to ${meta.name}: ${what}`;
       none.hidden = !filtering || shown > 0;
     },
-    setFolded(folded) {
+    setFolded(folded, searching = false) {
+      fold.disabled = searching;
       fold.setAttribute('aria-expanded', String(!folded));
-      fold.title = folded ? `Open ${meta.name}` : `Fold ${meta.name} shut`;
+      fold.title = searching ? 'Clear the search to fold this group.' : folded ? `Open ${meta.name}` : `Fold ${meta.name} shut`;
       section.classList.toggle('folded', folded);
       list.hidden = folded;
     },

@@ -83,8 +83,72 @@ function boxDist(b: number[], p: number[]): number {
   return Math.hypot(Math.max(b[0] - p[0], 0, p[0] - b[3]), Math.max(b[1] - p[1], 0, p[1] - b[4]), Math.max(b[2] - p[2], 0, p[2] - b[5]));
 }
 
-/** Closest approach of every mesh to the lead stubs and to the bodies, from the triangles' corners, edge midpoints and centers
- *  (so a coarse mesh is not flattered). Only approaches closer than SEARCH are searched for; farther reads as Infinity. */
+const dot = (a: number[], b: number[]) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+const minus = (a: number[], b: number[]) => a.map((v, i) => v - b[i]);
+const cross = (a: number[], b: number[]) => [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
+const along = (p: number[], d: number[], t: number) => p.map((v, i) => v + t * d[i]);
+
+function triangleBody(vertices: number[][], body: Body, result: Gap) {
+  const box = body.bbox;
+  const edges = vertices.map((p, i) => minus(vertices[(i + 1) % 3], p));
+  // Along a triangle edge the squared distance is quadratic between successive box planes.
+  for (const [i, p] of vertices.entries()) {
+    const d = edges[i];
+    const cuts = [0, 1];
+    for (const [k, plane] of box.entries()) {
+      const t = (plane - p[k % 3]) / d[k % 3];
+      if (t > 0 && t < 1) cuts.push(t);
+    }
+    cuts.sort((a, b) => a - b);
+    for (let j = 1; j < cuts.length; j++) {
+      const lo = cuts[j - 1],
+        hi = cuts[j];
+      const mid = along(p, d, (lo + hi) / 2);
+      let slope = 0,
+        curvature = 0;
+      for (let k = 0; k < 3; k++) {
+        if (mid[k] >= box[k] && mid[k] <= box[k + 3]) continue;
+        const plane = mid[k] < box[k] ? box[k] : box[k + 3];
+        slope += (p[k] - plane) * d[k];
+        curvature += d[k] * d[k];
+      }
+      const q = along(p, d, curvature ? Math.max(lo, Math.min(hi, -slope / curvature)) : lo);
+      better(result, boxDist(box, q), q, body.id);
+    }
+  }
+  // For a closest point inside the triangle, project each box edge onto its plane.
+  // Clip the edge parameter to projections inside all three triangle half-planes.
+  const normal = cross(edges[0], edges[1]);
+  const length = Math.hypot(...normal);
+  if (!length || result.gap === 0) return;
+  const unit = normal.map((v) => v / length);
+  const inward = edges.map((d) => cross(unit, d));
+  for (let axis = 0; axis < 3; axis++) {
+    for (let corner = 0; corner < 4; corner++) {
+      const p = box.slice(0, 3);
+      for (let j = 1; j <= 2; j++) {
+        const k = (axis + j) % 3;
+        if (corner & (1 << (j - 1))) p[k] = box[k + 3];
+      }
+      let lo = 0,
+        hi = box[axis + 3] - p[axis];
+      for (const [i, side] of inward.entries()) {
+        const offset = dot(side, minus(p, vertices[i]));
+        if (side[axis] > 0) lo = Math.max(lo, -offset / side[axis]);
+        else if (side[axis] < 0) hi = Math.min(hi, -offset / side[axis]);
+        else if (offset < 0) hi = -1;
+      }
+      if (lo > hi) continue;
+      const height = dot(unit, minus(p, vertices[0]));
+      const t = unit[axis] ? Math.max(lo, Math.min(hi, -height / unit[axis])) : lo;
+      p[axis] += t;
+      const gap = height + t * unit[axis];
+      better(result, Math.abs(gap), along(p, unit, -gap), body.id);
+    }
+  }
+}
+
+/** Measure lead stubs at corners, edge midpoints and centers, and body boxes against entire candidate triangles. */
 export function measure(meshes: MeshIn[], leads: Lead[], bodies: Body[], regionOf: (id: string, minY: number, p: number[]) => string | null): PartGap[] {
   const cell = 4;
   const key = (i: number, j: number) => `${i},${j}`;
@@ -96,10 +160,24 @@ export function measure(meshes: MeshIn[], leads: Lead[], bodies: Body[], regionO
   const reach = SEARCH + LEAD_R;
   return meshes.map((m) => {
     const res: PartGap = { id: m.id, lead: { ...far }, body: { ...far }, regions: {} };
-    let minY = Infinity;
-    for (let i = 1; i < m.pos.length; i += 3) minY = Math.min(minY, m.pos[i]);
+    const lower = [Infinity, Infinity, Infinity],
+      upper = [-Infinity, -Infinity, -Infinity];
+    for (let i = 0; i < m.pos.length; i += 3) {
+      for (let k = 0; k < 3; k++) {
+        lower[k] = Math.min(lower[k], m.pos[i + k]);
+        upper[k] = Math.max(upper[k], m.pos[i + k]);
+      }
+    }
+    const minY = lower[1];
+    const overlapsMesh = (bounds: number[], k: number) => bounds[k + 3] >= lower[k] - reach && bounds[k] <= upper[k] + reach;
+    const inGridRange = (value: number, axis: number) => {
+      const bucket = Math.floor(value / cell);
+      return bucket >= Math.floor((lower[axis] - reach) / cell) && bucket <= Math.floor((upper[axis] + reach) / cell);
+    };
+    const hasLeads = leads.some((l) => inGridRange(l.x, 0) && inGridRange(l.z, 2));
     const P = (a: number) => [m.pos[a * 3], m.pos[a * 3 + 1], m.pos[a * 3 + 2]];
-    const near = bodies.filter((b) => !isExempt(m.id, b.id));
+    const near = bodies.filter((b) => !isExempt(m.id, b.id) && [0, 1, 2].every((k) => overlapsMesh(b.bbox, k)));
+    if (!hasLeads && !near.length) return res;
     for (let t = 0; t < m.idx.length; t += 3) {
       const A = P(m.idx[t]);
       const B = P(m.idx[t + 1]);
@@ -107,12 +185,21 @@ export function measure(meshes: MeshIn[], leads: Lead[], bodies: Body[], regionO
       const lo = [0, 1, 2].map((k) => Math.min(A[k], B[k], C[k]) - reach);
       const hi = [0, 1, 2].map((k) => Math.max(A[k], B[k], C[k]) + reach);
       const cand: Lead[] = [];
-      for (let i = Math.floor(lo[0] / cell); i <= Math.floor(hi[0] / cell); i++)
-        for (let j = Math.floor(lo[2] / cell); j <= Math.floor(hi[2] / cell); j++) cand.push(...(grid.get(key(i, j)) ?? []));
+      if (hasLeads)
+        for (let i = Math.floor(lo[0] / cell); i <= Math.floor(hi[0] / cell); i++)
+          for (let j = Math.floor(lo[2] / cell); j <= Math.floor(hi[2] / cell); j++) cand.push(...(grid.get(key(i, j)) ?? []));
       const bs = near.filter(
         (b) => b.bbox[3] >= lo[0] && b.bbox[0] <= hi[0] && b.bbox[4] >= lo[1] && b.bbox[1] <= hi[1] && b.bbox[5] >= lo[2] && b.bbox[2] <= hi[2],
       );
-      if (!cand.length && !bs.length) continue;
+      for (const body of bs) {
+        const { bbox } = body;
+        // The distance between bounding boxes is a lower bound for this triangle.
+        const dx = Math.max(bbox[0] - Math.max(A[0], B[0], C[0]), Math.min(A[0], B[0], C[0]) - bbox[3], 0);
+        const dy = Math.max(bbox[1] - Math.max(A[1], B[1], C[1]), Math.min(A[1], B[1], C[1]) - bbox[4], 0);
+        const dz = Math.max(bbox[2] - Math.max(A[2], B[2], C[2]), Math.min(A[2], B[2], C[2]) - bbox[5], 0);
+        if (Math.hypot(dx, dy, dz) < res.body.gap) triangleBody([A, B, C], body, res.body);
+      }
+      if (!cand.length) continue;
       const mid = (p: number[], q: number[]) => [(p[0] + q[0]) / 2, (p[1] + q[1]) / 2, (p[2] + q[2]) / 2];
       const pts = [A, B, C, mid(A, B), mid(B, C), mid(C, A), [(A[0] + B[0] + C[0]) / 3, (A[1] + B[1] + C[1]) / 3, (A[2] + B[2] + C[2]) / 3]];
       for (const p of pts) {
@@ -122,7 +209,6 @@ export function measure(meshes: MeshIn[], leads: Lead[], bodies: Body[], regionO
           better(res.lead, g, p, l.ref);
           if (region) better((res.regions[region] ??= { ...far }), g, p, l.ref);
         }
-        for (const b of bs) better(res.body, boxDist(b.bbox, p), p, b.id);
       }
     }
     return res;

@@ -3,7 +3,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { createZip } from '@lewismoten/gamemaker-sandbox-archives/project/zip';
 import { peekGameFile } from './files';
-import { findZipFile, onlyStockPlayers } from './hostedZip';
+import { findZipFile, onlyStockPlayers, readHostedZip } from './hostedZip';
 
 const path = new URL('../../../cd/gm/xferplay.exe', import.meta.url);
 const stock = existsSync(path) ? new Uint8Array(readFileSync(path)) : undefined;
@@ -61,6 +61,19 @@ describe('peekGameFile', () => {
     const fetchMock = await serve(['x.abc']);
     expect(await peekGameFile(entry, 'x.gam', './b/')).toBeUndefined();
     expect(fetchMock).toHaveBeenCalledTimes(1); // the fallback reused the zip already fetched
+  });
+
+  it.each(['x.gam', 'x.game'])('matches the full reader when X.GAM and %s share a DOS name', async (secondName) => {
+    const zip = await createZip([
+      { name: 'X.GAM', data: Uint8Array.of(1), store: true },
+      { name: secondName, data: Uint8Array.of(2), store: true },
+    ]);
+    const fetchMock = vi.fn(() => Promise.resolve(new Response(zip as unknown as BodyInit)));
+    vi.stubGlobal('fetch', fetchMock);
+    const full = (await readHostedZip(zip)).get('x.gam');
+    expect(full).toEqual(Uint8Array.of(2));
+    expect(await peekGameFile(entry, 'x.gam', `./collision-${secondName}/`)).toEqual(full);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
   });
 
   it('inflates a zip once for many files', async () => {

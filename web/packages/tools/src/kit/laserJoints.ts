@@ -87,12 +87,16 @@ export interface EdgeSpec {
   target?: number;
 }
 
-/** The cell row of an edge of length E: where it starts, how wide each cell is, and how many (odd). */
+/** The cell row of an edge of length E. Limit each edge to 255 cells before building its notch rectangles. */
 export function cellRow(E: number, t: number, s: Pick<EdgeSpec, 'cubeStart' | 'cubeEnd' | 'target'>) {
+  const target = s.target ?? 9;
+  if (![E, t, target].every((n) => Number.isFinite(n) && n > 0)) throw new RangeError('Edge length, thickness, and target width must be finite and positive');
   const a0 = s.cubeStart ? t : 0;
   const a1 = E - (s.cubeEnd ? t : 0);
-  let m = Math.max(1, Math.round((a1 - a0) / (s.target ?? 9)));
+  if (a1 <= a0) throw new RangeError('Corner cubes must leave room for the cell row');
+  let m = Math.max(1, Math.round((a1 - a0) / target));
   if (m % 2 === 0) m += 1;
+  if (m > 255) throw new RangeError('A joint edge can have at most 255 cells');
   return { a0, a1, m, cw: (a1 - a0) / m };
 }
 

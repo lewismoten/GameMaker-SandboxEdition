@@ -13,7 +13,8 @@ import { Screen } from '@lewismoten/gamemaker-sandbox-engine/gfx/screen';
 import { SCAN } from '../../kit/starter/ids';
 import { StarterBot } from '../../kit/starter/bot';
 import { ORIGIN } from '../../kit/starter/map';
-import { HALL_DOORS, LANDMARK_ROWS, LIGHT_X, SWATCH_X, TABLE_X } from '../src/levels';
+import { HALL_BACK, SCENE } from '../src/game';
+import { GALLERY_END, HALL_DOORS, LANDMARK_ROWS, LIGHT_X, SWATCH_X, TABLE_X } from '../src/levels';
 import { VIEWS } from '../src/views';
 import { GameSim } from './sim';
 
@@ -31,10 +32,23 @@ const W = (): any => (sim as any).w;
 const topPx = (): number => W().my * 20 + W().scroll.ny + W().scroll.littleShifty;
 const mapRow = (px: number): number => px / 20 - ORIGIN;
 
-if (!inHall) {
-  await bot.walk(HALL_DOORS[viewIx], 'door', 2000);
-  await bot.wait(20);
+async function enterDoor(column: number, scene: number): Promise<void> {
+  const result = await bot.walk(column, 'door', 2000);
+  if (result !== 'link') throw new Error(`Door at column ${column}: ${result ?? 'no link fired'}`);
+  const settled = await bot.wait(20);
+  if (settled || sim.scene !== scene)
+    throw new Error(`Expected scene ${scene} after door at column ${column}, reached scene ${sim.scene} (${settled ?? 'settled'})`);
 }
+
+if (!inHall) {
+  // Each earlier door fires on contact. Return beside it to reach the next door.
+  for (let i = 0; i < viewIx; i++) {
+    await enterDoor(HALL_DOORS[i], VIEWS[i].scene);
+    await enterDoor(GALLERY_END, HALL_BACK);
+  }
+  await enterDoor(HALL_DOORS[viewIx], VIEWS[viewIx].scene);
+}
+const expectedScene = inHall ? SCENE.hall : VIEWS[viewIx].scene;
 const palFile = sim.game.scenes[sim.scene].files[0];
 const pal = (sim as unknown as { files: Map<string, Uint8Array> }).files.get(palFile)!;
 
@@ -58,19 +72,26 @@ const tries: [string, boolean, boolean][] = [
 shot(`${inHall ? 'hall' : 'gallery' + viewIx}-0-before`);
 for (const bx of spots) {
   for (const [label, up, walk] of tries) {
-    await bot.walk(bx, 'x', 2000);
-    await bot.wait(30);
+    const result = await bot.walk(bx, 'x', 2000);
+    if (result) throw new Error(`Walk to column ${bx}: ${result}`);
+    const settled = await bot.wait(30);
+    if (settled || sim.scene !== expectedScene || Math.abs(bot.px.x - bx * 20) > 6) {
+      throw new Error(`Expected column ${bx} in scene ${expectedScene}, reached ${bot.px.x / 20} in scene ${sim.scene} (${settled ?? 'settled'})`);
+    }
     if (up) sim.press(SCAN.up);
     sim.press(SCAN.space);
-    if (walk) sim.press(SCAN.right);
+    // Jump away from the first door when starting beside it in the hall.
+    const steer = inHall && bx === 11 ? SCAN.left : SCAN.right;
+    if (walk) sim.press(steer);
     for (let t = 0; t < 70; t++) {
       if (t === 2) sim.release(SCAN.space);
-      if (t === 12) sim.release(SCAN.right);
+      if (t === 12) sim.release(steer);
       await sim.tick();
     }
     sim.release(SCAN.up);
     sim.releaseAll();
     await bot.wait(60);
+    if (sim.scene !== expectedScene) throw new Error(`Jump from column ${bx} reached scene ${sim.scene}, expected ${expectedScene}`);
     const top = mapRow(topPx());
     const cut = rows.filter(([, a, b]) => a < top - 0.25 || b + 1 > top + VISIBLE_H / 20).map(([name]) => name);
     console.log(
