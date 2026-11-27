@@ -158,6 +158,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex tested the order and timing of Lucky Cat’s countdown bells.
 - OpenAI Codex fixed manual loading and tested retrying a missing Starter lesson.
 - OpenAI Codex corrected and tested the release guide’s instructions for retaining site deployments.
+- OpenAI Codex fixed and tested silence timing in the DOSBox WAV analyzer.
 - OpenAI Codex fixed and tested the editor’s file count accessibility and shareware notice layout on phones.
 - OpenAI Codex fixed and tested walkthrough segment selection in the Pocket host checker.
 - OpenAI Codex fixed and tested the Switches title demo checker.
