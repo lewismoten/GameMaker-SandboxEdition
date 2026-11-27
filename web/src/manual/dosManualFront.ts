@@ -159,12 +159,12 @@ export function frontPages(shots: GameShot[]): BookletPage[] {
       <h3>Small sample games</h3>
       <p>The Sample CD holds short games, one idea each, in the <code>SAMPLES</code> folder (D:\\SAMPLES): dozens of them, and <code>DIR SAMPLES /W</code> lists them all on one screen. The first three are also on the Sample Disk, a diskette. Start with these six:</p>
       <table>
-        <tr><td><b>First Steps</b></td><td><code>FIRSTSTP</code></td><td>Walking, jumping, the exit.</td></tr>
-        <tr><td><b>Keys and Doors</b></td><td><code>KEYSDOOR</code></td><td>A key and the door it fits.</td></tr>
-        <tr><td><b>Meet the Monsters</b></td><td><code>MONSTERS</code></td><td>Foes that patrol, chase, shoot.</td></tr>
-        <tr><td><b>Room to Room</b></td><td><code>ROOMS</code></td><td>Doors and stairs between maps.</td></tr>
-        <tr><td><b>Coins and Score</b></td><td><code>COINS</code></td><td>Treasure, points and counters.</td></tr>
-        <tr><td><b>Watch Your Step</b></td><td><code>HAZARDS</code></td><td>Hazards, hit points and lives.</td></tr>
+        <tr><th scope="row">First Steps</th><td><code>FIRSTSTP</code></td><td>Walking, jumping, the exit.</td></tr>
+        <tr><th scope="row">Keys and Doors</th><td><code>KEYSDOOR</code></td><td>A key and the door it fits.</td></tr>
+        <tr><th scope="row">Meet the Monsters</th><td><code>MONSTERS</code></td><td>Foes that patrol, chase, shoot.</td></tr>
+        <tr><th scope="row">Room to Room</th><td><code>ROOMS</code></td><td>Doors and stairs between maps.</td></tr>
+        <tr><th scope="row">Coins and Score</th><td><code>COINS</code></td><td>Treasure, points and counters.</td></tr>
+        <tr><th scope="row">Watch Your Step</th><td><code>HAZARDS</code></td><td>Hazards, hit points and lives.</td></tr>
       </table>
       <p>Load one by its folder (<code>SAMPLES\\FIRSTSTP</code>, say); <b>Design</b> shows how it is made.</p>`,
     ),

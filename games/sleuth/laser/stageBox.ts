@@ -38,11 +38,17 @@ function main() {
   const out = flag('--out') ?? join(here, '../../../web/public/laser/sleuth/stage-box');
   const source = sourceKey(kerf, stock);
   const made = join(out, 'manifest.json');
-  const previous = existsSync(made)
-    ? (JSON.parse(readFileSync(made, 'utf8')) as { source?: string; assembly?: string; readme?: string; sheets?: { svg: string; preview: string }[] })
-    : undefined;
+  const force = args.includes('--force');
+  let previous: { source?: string; assembly?: string; readme?: string; sheets?: { svg: string; preview: string }[] } | undefined;
+  if (existsSync(made)) {
+    try {
+      previous = JSON.parse(readFileSync(made, 'utf8')) as typeof previous;
+    } catch (error) {
+      if (!force || !(error instanceof SyntaxError)) throw error;
+    }
+  }
   if (
-    !args.includes('--force') &&
+    !force &&
     previous?.source === source &&
     previous.sheets &&
     [previous.assembly, previous.readme, ...previous.sheets.flatMap((s) => [s.svg, s.preview])].every((file) => file && existsSync(join(out, file)))

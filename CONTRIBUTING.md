@@ -30,8 +30,9 @@ npx tsc --noEmit -p .
 npx vitest run
 ```
 
-`npm run verify:changed` checks changed files and related tests and typechecks the whole project, and root
-`npm run verify` runs everything. If you changed a game, rebuild it and run
+`npm run verify:changed` checks changed files and related tests and typechecks the whole project.
+From the repository root, `npm run verify` checks formatting, runs lint, typechecks the project,
+runs tests, verifies packages, and checks release notes. If you changed a game, rebuild it and run
 `npm run check:games -- --game <id>`; it also checks that two independent builds match byte for
 byte. Generated `disk/` folders are never committed. Bump the game's `"version"` in `about.json`
 once if its built content changed since the last push to `master`.

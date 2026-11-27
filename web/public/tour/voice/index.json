@@ -1066,9 +1066,9 @@
   "edit-around-groups": {
     "chapter": "edit-around",
     "where": "Editor: Watt points at the first group heading",
-    "text": "The cards sit under headings: Levels, Heroes, Monsters, Pictures and movies, Sounds and music, and Words and screens.",
-    "seconds": 8.45,
-    "hash": "b21fbe901422",
+    "text": "The cards sit under headings: Levels, Heroes, Monsters, Pictures and movies, Sounds and music, Words and screens, and Colors and other files.",
+    "seconds": 9.76,
+    "hash": "15faeca222ad",
     "voice": "131d8cb8ad55"
   },
   "edit-around-guide": {

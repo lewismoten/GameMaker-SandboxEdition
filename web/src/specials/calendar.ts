@@ -135,25 +135,26 @@ function inHours(win: Window, now: Date): boolean {
   return from <= to ? h >= from && h < to : h >= from || h < to;
 }
 
-/** The window's stretch holding `now` (ignoring daily hours), or undefined. `extra` days are added to its end (a BBS that keeps a file a little longer). */
-function spanAround(win: Window, now: Date, extra = 0): Span | undefined {
+/** The open stretch holding `now`, or undefined. A BBS with extra days keeps the file available around the clock. */
+export function openSpan(win: Window, now: Date, extraDays = 0): Span | undefined {
+  if (extraDays <= 0 && !inHours(win, now)) return undefined;
   const y = now.getFullYear();
   for (const year of [y - 1, y, y + 1])
-    for (const s of spansIn(win, year)) {
-      const end = extra ? local(s.end.getFullYear(), s.end.getMonth() + 1, s.end.getDate() + extra) : s.end;
-      if (now >= s.start && now < end) return { start: s.start, end };
+    for (const { start, end } of spansIn(win, year)) {
+      if (extraDays) end.setDate(end.getDate() + extraDays);
+      else if (win.from !== undefined && win.to !== undefined && win.from > win.to) {
+        start.setHours(win.from);
+        end.setHours(win.to); // The last night closes on the following date.
+      }
+      if (now >= start && now < end) return { start, end };
     }
   return undefined;
 }
 
 /** Whether the window is open at `now` (in its days and, if it has them, its hours). */
 export function isOpen(win: Window, now: Date, extraDays = 0): boolean {
-  return !!spanAround(win, now, extraDays) && (extraDays > 0 ? true : inHours(win, now));
+  return !!openSpan(win, now, extraDays);
 }
-
-/** The stretch of days open at `now`, or undefined. */
-export const openSpan = (win: Window, now: Date, extraDays = 0): Span | undefined =>
-  isOpen(win, now, extraDays) ? spanAround(win, now, extraDays) : undefined;
 
 /** The first day the window opens after `now` (its first whole-day stretch starting later), or undefined within two years. */
 export function nextOpening(win: Window, now: Date): Date | undefined {

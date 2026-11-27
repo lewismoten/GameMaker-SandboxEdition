@@ -3,7 +3,10 @@ import { describe, expect, it } from 'vitest';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { inflateRawSync } from 'node:zlib';
 import { GameFiles } from '@lewismoten/gamemaker-sandbox-engine/core/gameFiles';
+import { newGame, serializeGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { encodeGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
 import { exportPocket } from './exportPocket';
+import { pocketThumbnail } from './pocketThumbnail';
 import { readBundle, writeBundle } from './pocketFile';
 import { gamCrc32, pocketCategory, pocketProjectUid, readLibrary, uniqueGmpName, writeLibrary, type PocketLibrary } from './pocketLibrary';
 import { emptyCompanion, parseCompanion, serializeCompanion } from '../project/companion';
@@ -74,6 +77,34 @@ it('does not overwrite colliding 8.3 names', () => {
   expect(uniqueGmpName('ABCDEFGH.GMP', 'catalog:second', used)).toBe(other);
 });
 describe('new GMP in legacy container', () => {
+  it('preserves every pixel when all 256 thumbnail colors fit RGB565', async () => {
+    const pixels = new Uint8Array(320 * 200);
+    const palette = new Uint8Array(256 * 3);
+    const expected = new Uint16Array(96 * 60);
+    // Give each of the first 256 thumbnail pixels its own color. Leave the rest black.
+    for (let i = 0; i < 256; i++) {
+      const red = i % 32;
+      const green = Math.floor(i / 32) * 8;
+      palette.set([2 * red, green, 0], i * 3);
+      expected[i] = (red << 11) | (green << 5);
+      const x = i % 96;
+      const y = Math.floor(i / 96);
+      for (let row = Math.floor((y * 200) / 60); row < Math.floor(((y + 1) * 200) / 60); row++)
+        pixels.fill(i, row * 320 + Math.floor((x * 320) / 96), row * 320 + Math.floor(((x + 1) * 320) / 96));
+    }
+    const game = newGame('Palette test');
+    game.scenes[0].files[0] = 'TITLE.GIF';
+    const files = new GameFiles([
+      ['TEST.GAM', serializeGame(game)],
+      ['TITLE.GIF', encodeGif({ width: 320, height: 200, pixels, palette })],
+    ]);
+    const thumbnail = await pocketThumbnail(files, 'TEST.GAM', (bytes) => bytes);
+    const raw = Buffer.from(thumbnail!.subarray(4));
+    const actual = Uint16Array.from(raw.subarray(524), (index) => raw.readUInt16LE(12 + 2 * index));
+    expect(new Set(actual).size).toBe(256);
+    expect(actual).toEqual(expected);
+  });
+
   it('keeps GMP 1 and adds independently readable metadata and one indexed preview', async () => {
     const url = new URL('../../../cd/gameware/peach/', import.meta.url);
     const files = new GameFiles(readdirSync(url).map((n) => [n, new Uint8Array(readFileSync(new URL(n, url)))]));

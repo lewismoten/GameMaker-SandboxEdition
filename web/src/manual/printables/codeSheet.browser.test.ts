@@ -47,3 +47,45 @@ it('selects a square with Enter and reveals the puzzle square with the answer bu
     await browser.close();
   }
 });
+
+it('labels the columns with their group heading on the printed and live cards', async () => {
+  const sheet: CodeSheetItem = {
+    kind: 'codesheet',
+    title: 'Signal card',
+    heading: 'Signals',
+    grids: [
+      {
+        title: 'Flags',
+        rowHead: 'Station',
+        colHead: 'Band',
+        rows: ['High', 'Low'],
+        cols: ['East', 'West'],
+        cells: [
+          ['A', 'B'],
+          ['C', 'D'],
+        ],
+      },
+    ],
+    puzzles: [],
+  };
+  const script = await build({
+    entryPoints: ['src/manual/printables/codeSheet.ts'],
+    bundle: true,
+    write: false,
+    format: 'iife',
+    globalName: 'codeSheet',
+    define: { 'import.meta.env': '{}' },
+    loader: { '.css': 'empty' },
+  });
+  const browser = await chromium.launch();
+  try {
+    const page = await browser.newPage();
+    await page.addScriptTag({ content: script.outputFiles[0].text });
+    await page.addScriptTag({ content: `document.body.append(codeSheet.codeSheetLive(${JSON.stringify(sheet)}));` });
+    const group = page.locator('th[scope="colgroup"]');
+    expect(await group.allTextContents()).toEqual(['Band']);
+    expect(await group.getAttribute('colspan')).toBe('2');
+  } finally {
+    await browser.close();
+  }
+});

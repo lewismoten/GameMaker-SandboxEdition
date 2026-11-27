@@ -10,21 +10,7 @@ import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import type { Page } from 'playwright-core';
 import { arg, launch } from './perfLib';
-
-type Clip = { x: number; y: number; width: number; height: number };
-const SCREEN: Clip = { x: 420, y: 60, width: 600, height: 440 };
-
-/** Waits until the clip stops changing (two identical screenshots a beat apart). */
-export async function settle(page: Page, clip: Clip = SCREEN, timeout = 15000): Promise<void> {
-  const end = Date.now() + timeout;
-  let last = '';
-  while (Date.now() < end) {
-    const now = (await page.screenshot({ clip })).toString('base64');
-    if (now === last) return;
-    last = now;
-    await page.waitForTimeout(250);
-  }
-}
+import { SCREEN, settle } from './deskSettle';
 
 /** Loads the desk, boots, and gets to the Game-Maker menu with the CD in. */
 export async function bootGameMaker(page: Page, base: string): Promise<void> {

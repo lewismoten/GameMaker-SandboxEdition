@@ -5,6 +5,7 @@ import { h, clear } from '../editor/core/ui';
 import { BOOK_TITLE, COMING, COURSES, courseById, type Course, type Part } from './courses';
 
 const ROOT = '#/art-courses';
+const courseHref = (course: Course) => `./art-courses-${course.id}.html`;
 const figures = import.meta.glob<string>('./figures/*.png', { eager: true, query: '?url', import: 'default' });
 
 const part = (p: Part): HTMLElement => {
@@ -29,7 +30,7 @@ function contents(el: HTMLElement): void {
       h(
         'ul',
         { class: 'ac-list' },
-        ...COURSES.map((c) => h('li', null, h('a', { href: `${ROOT}/${c.id}` }, h('strong', null, c.title), h('span', { class: 'ac-about' }, c.about)))),
+        ...COURSES.map((c) => h('li', null, h('a', { href: courseHref(c) }, h('strong', null, c.title), h('span', { class: 'ac-about' }, c.about)))),
       ),
       ...(COMING.length
         ? [
@@ -50,7 +51,7 @@ function coursePage(el: HTMLElement, c: Course): void {
   const prev = COURSES[i - 1];
   const next = COURSES[i + 1];
   const link = (to: Course | undefined, text: string, cls: string) =>
-    to ? h('a', { href: `${ROOT}/${to.id}`, class: cls }, text, h('br'), h('strong', null, to.title)) : h('span');
+    to ? h('a', { href: courseHref(to), class: cls }, text, h('br'), h('strong', null, to.title)) : h('span');
   el.append(
     h(
       'main',

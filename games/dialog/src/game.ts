@@ -2,7 +2,7 @@
 // one a talk, and last each level again without its card, for the talks to come back to.
 // A level's scene lists the files it loads in slots (palette, map, blocks, monsters, monster
 // blocks, character, character blocks, sounds, song, card) and links its door to the next scene.
-import { ADVTYPE, MAXSCENELINKS, NOSCENE, emptyScene, newGame, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { ADVTYPE, MAXSCENELINKS, NOSCENE, emptyScene, newGame, type Game, type Link } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import type { StarterMap } from '../../kit/starter/map';
 import { addReturnScenes } from '../../kit/starter/returnScenes';
 import { addSceneSequence } from '../../kit/starter/sceneSequence';
@@ -66,6 +66,7 @@ export function buildGame(levels: Level[], pass: StarterMap): Game {
 
   // the talks: a link on the friend's bottom block takes the hero to the talk's scene, and its own link brings him back
   const [px, py] = pass.exits[0].from;
+  const talkExits: Link[] = [];
   let n = 0;
   levels.forEach((l, li) => {
     l.talks.forEach((t) => {
@@ -90,6 +91,7 @@ export function buildGame(levels: Level[], pass: StarterMap): Game {
       ];
       scene.links = Array.from({ length: MAXSCENELINKS }, () => ({ toScene: NOSCENE, from: { x: 0, y: 0 }, to: { x: 0, y: 0 } }));
       scene.links[0] = { toScene: li + 2, from: { x: px, y: py }, to: { x: t.back[0], y: t.back[1] } };
+      talkExits.push(scene.links[0]);
       game.scenes.push(scene);
       n++;
     });
@@ -99,6 +101,7 @@ export function buildGame(levels: Level[], pass: StarterMap): Game {
   addReturnScenes(
     game,
     levels.map((_, i) => i + 2),
+    talkExits,
   );
 
   return game;

@@ -637,7 +637,7 @@ export class Workspace implements AssistantHost {
       },
       project: true,
       companion: () => this.project.companion,
-      setPreviews: (on) => this.project.setExportPreviews(on),
+      setPreviews: this.looking ? undefined : (on) => this.project.setExportPreviews(on),
     });
   }
 }

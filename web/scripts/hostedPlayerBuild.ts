@@ -62,7 +62,9 @@ ${page === 'try' ? '<meta name="robots" content="noindex" />\n' : ''}${headTags(
 <style>${style}</style>
 </head>
 <body class="wp-body">
-<div id="wp-root"><noscript><h1>${escapeHtml(PAGES[page].h1)}</h1><p>The Game-Maker web player needs JavaScript to play the games.</p></noscript></div>
+<div id="wp-root"><main><h1>${escapeHtml(PAGES[page].h1)}</h1>
+<p>The web player is one HTML file that plays Game-Maker games in a browser. Put it on a web server beside the game folders; it reads the files from those folders. An optional games.json file lists the games to choose from.</p>
+<p>The engine, music and styles are inside the player file. Saves and high scores are kept in the visitor’s browser for that site. JavaScript is needed to play.</p></main></div>
 <script>${script}</script>
 </body>
 </html>

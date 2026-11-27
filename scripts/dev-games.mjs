@@ -33,7 +33,7 @@ else {
   const child = spawn(process.execPath, [heavy, process.execPath, script], {
     detached: true,
     env: { ...process.env, GM_BUILD_PROGRESS: '1' },
-    stdio: ['ignore', fd, 'inherit'],
+    stdio: ['ignore', fd, process.stderr.isTTY ? 'inherit' : fd],
   });
   writeFileSync(pidFile, String(child.pid));
   child.unref();

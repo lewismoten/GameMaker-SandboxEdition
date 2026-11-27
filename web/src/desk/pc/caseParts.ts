@@ -1,7 +1,6 @@
-// The front of the PC case: a two-digit seven-segment MHz display, the hard disk's light, and two
-// 5.25" bay for the CD-ROM drive (bright white faceplate, tray, headphone jack, volume wheel, busy
-// light, eject button), a smaller 3.5" bay with the floppy drive turned on its side (slot, activity
-// light and eject push-button), the key lock and the brand badge. Sizes are mm from one factor.
+// The PC case front has a two-digit seven-segment MHz display, a hard disk light, a key lock
+// and a brand badge. Two bays sit side by side: a 5.25-inch bay for the CD-ROM drive and a
+// 3.5-inch bay for the floppy drive with its horizontal slot. Both use the same mm scale.
 import { h } from '../../editor/core/ui';
 import type { DriveSound } from './driveSounds';
 

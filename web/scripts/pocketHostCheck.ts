@@ -21,7 +21,9 @@ import { Screen } from '@lewismoten/gamemaker-sandbox-engine/gfx/screen';
 import { GameSim, readDisk } from '@lewismoten/gamemaker-sandbox-tools/kit/gameSim';
 import { LASTSND } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
 import { decodeKeys, type Walkthrough } from './../src/walkthrough/format';
+import { decodePicker } from './pocketPicker';
 
+import { meterDifference, meterField } from './pocketHostMeters';
 import { nextHostSegment } from './pocketHostSegment';
 
 const args = process.argv.slice(2);
@@ -100,20 +102,11 @@ async function checkGame(id: string): Promise<string> {
       }
       lastKeyTick = tickNo + 1;
       if (key === dropKey) {
-        // The walkthrough holds the drop picker's keys (Right per column, Down for row two, Enter) after D.
-        // The engine here has no picker window: read the slot from them, hand it over, and leave them out.
-        let col = 0,
-          row = 0,
-          j = ki + 1;
-        for (; j < segs[seg].length && segs[seg][j].key !== 28; j++) {
-          if (segs[seg][j].key === 77) col++;
-          if (segs[seg][j].key === 80) row = 1;
-        }
-        if (j < segs[seg].length) {
-          const slot = row * 5 + col;
+        const { slot, consumed } = decodePicker(segs[seg], ki);
+        for (const index of consumed) skip.add(seg * 1e6 + index);
+        if (slot >= 0) {
           sim.dropSlot = slot;
           script.push(`K ${tickNo + 1} ${256 + slot}`);
-          for (let q = ki + 1; q <= j + 1 && q < segs[seg].length; q++) skip.add(seg * 1e6 + q);
         }
       }
       script.push(`K ${tickNo + 1} ${key}`);
@@ -139,7 +132,7 @@ async function checkGame(id: string): Promise<string> {
     const code = r === 'link' ? 'L' : r === 'dead' ? 'D' : r === 'end' ? 'W' : '-';
     const c = w.chr;
     const s = w.scroll;
-    const meters = w.ci.meter.slice(0, 30).reduce((a, b) => (a + b) | 0, 0);
+    const meters = meterField(w.ci.meter);
     expected.push(
       [
         'S',
@@ -200,8 +193,10 @@ async function checkGame(id: string): Promise<string> {
     if (got[i] !== expected[i]) {
       const a = expected[i].split(' '),
         b = (got[i] ?? '').split(' ');
-      const diffs = names.map((n, k) => (a[k] !== b[k] ? `${n}: engine ${a[k]}, board ${b[k]}` : '')).filter(Boolean);
-      return `FAIL  ${id}: tick ${i + 1} of ${total}: ${diffs.slice(0, 4).join('; ')}`;
+      const metersIndex = names.indexOf('meters');
+      const inventory = a[metersIndex] !== b[metersIndex] ? [meterDifference(a[metersIndex], b[metersIndex])] : [];
+      const diffs = names.map((n, k) => (k !== metersIndex && a[k] !== b[k] ? `${n}: engine ${a[k]}, board ${b[k]}` : '')).filter(Boolean);
+      return `FAIL  ${id}: tick ${i + 1} of ${total}: ${[...inventory, ...diffs].slice(0, 4).join('; ')}`;
     }
   }
   if (gotQ !== sounds.join('\n')) {

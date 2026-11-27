@@ -37,6 +37,10 @@ function shownAsLoadFailure(reason: unknown): boolean {
   return typeof reason === 'object' && reason !== null && loadFailures.has(reason);
 }
 
+function aborted(reason: unknown): boolean {
+  return reason instanceof Error && reason.name === 'AbortError';
+}
+
 function report(info: ErrorInfo): void {
   if (ignorable(info.message)) return;
   void import('./notice').then((m) => m.showError(info));
@@ -49,12 +53,12 @@ export function watchErrors(): void {
   started = true;
   addEventListener('vite:preloadError', noteLoadFailure);
   addEventListener('error', (e) => {
-    if (refusedChange(e.error)) return;
+    if (aborted(e.error) || refusedChange(e.error)) return;
     const file = e.filename ? e.filename.split('/').pop() : '';
     report({ message: e.message || messageOf(e.error), at: file ? `${file}:${e.lineno}:${e.colno}` : undefined });
   });
   addEventListener('unhandledrejection', (e) => {
-    if (refusedChange(e.reason) || shownAsLoadFailure(e.reason)) return;
+    if (aborted(e.reason) || refusedChange(e.reason) || shownAsLoadFailure(e.reason)) return;
     report({ message: messageOf(e.reason) });
   });
 }

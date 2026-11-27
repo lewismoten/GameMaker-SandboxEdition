@@ -109,6 +109,23 @@ describe('hosted file fetching', () => {
     expect(calls).toEqual(['./t6/catalog.json', './t6/details/s.json']);
   });
 
+  it('reports missing Starter lesson pages and retries the details on the next manual open', async () => {
+    const base = './starter-manual/';
+    const manual = { title: 'Lessons', pages: [] };
+    const index = [{ id: 'sample', series: 'starter', details: true, original: { manual } }];
+    const pages = [{ head: 'First lesson', html: '<p>Open the map.</p>' }];
+    let available = false;
+    vi.stubGlobal('fetch', async (url: string) => {
+      if (url === base + 'index.json') return Response.json(index);
+      if (url === base + 'details/sample.json' && available) return Response.json({ original: { manual: { ...manual, pages } } });
+      throw new Error('offline');
+    });
+    const [listed] = await loadCatalog(base);
+    await expect(withDetails(listed, base, { requireManual: true })).rejects.toThrow(/manual/i);
+    available = true;
+    expect((await withDetails(listed, base, { requireManual: true })).original?.manual?.pages).toEqual(pages);
+  });
+
   it('uses the full catalog where there is no short one', async () => {
     vi.stubGlobal('fetch', async (url: string) =>
       url.endsWith('index.json')

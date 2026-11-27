@@ -1,4 +1,5 @@
 // Plane geometry for stitch generation: outlines of circles and stars, insetting, containment, resampling.
+import { checkStitches } from './limits';
 import type { Poly, Pt } from './types';
 
 export const dist = (a: Pt, b: Pt): number => Math.hypot(a[0] - b[0], a[1] - b[1]);
@@ -99,6 +100,7 @@ export function evenly(path: Pt[], step: number, closed = false): Pt[] {
   const total = cum[cum.length - 1];
   const n = Math.max(1, Math.round(total / step));
   const out: Pt[] = [];
+  checkStitches(n + 1);
   let seg = 1;
   for (let k = 0; k <= n; k++) {
     const s = (total * k) / n;

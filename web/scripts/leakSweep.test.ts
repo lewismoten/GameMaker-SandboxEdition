@@ -15,7 +15,7 @@ function sweep(root: string, dist: string, patterns: string) {
   });
 }
 
-function fixture(term: string, check: (dist: string, run: () => ReturnType<typeof sweep>) => void) {
+function fixture(term: string, check: (dist: string, run: (build?: string, cwd?: string) => ReturnType<typeof sweep>) => void) {
   const root = mkdtempSync(join(tmpdir(), 'leak-sweep-'));
   try {
     const git = (...args: string[]) => spawnSync('git', args, { cwd: root, encoding: 'utf8' });
@@ -28,11 +28,29 @@ function fixture(term: string, check: (dist: string, run: () => ReturnType<typeo
     writeFileSync(patterns, `${term}\nAbsentPrivateTerm\n`);
     const dist = join(root, `${term}-dist`);
     mkdirSync(dist);
-    check(dist, () => sweep(root, dist, patterns));
+    check(dist, (build = dist, cwd = root) => sweep(cwd, build, patterns));
   } finally {
     rmSync(root, { recursive: true, force: true });
   }
 }
+
+it('rejects an unavailable build folder', () => {
+  fixture('FixturePrivateSurname', (dist, run) => {
+    const result = run(join(dist, 'missing'));
+    expect(result.status).toBe(2);
+    expect(result.stderr).toMatch(/build folder/i);
+  });
+});
+
+it("scans a build folder relative to the caller's directory", () => {
+  fixture('FixturePrivateSurname', (dist, run) => {
+    mkdirSync(join(dist, 'build output'));
+    writeFileSync(join(dist, 'build output/index.html'), 'FixturePrivateSurname');
+    const result = run('build output', dist);
+    expect(result.status, result.stderr).toBe(1);
+    expect(result.stdout).toContain('index.html');
+  });
+});
 
 it.each(['FixturePrivateSurname', 'FixturePrivate#Surname'])('redacts %s and matching paths while preserving build exit codes', (term) => {
   fixture(term, (dist, run) => {
@@ -78,6 +96,19 @@ it.each([
     expect(run().status).toBe(1);
   });
 });
+it.each([
+  ['private key header', 'BEGIN PRIVATE KEY'],
+  ['AWS access key ID', 'AKIA' + '0'.repeat(16)],
+])('flags %s markers in a generated build', (_name, marker) => {
+  fixture('FixturePrivateSurname', (dist, run) => {
+    writeFileSync(join(dist, 'index.html'), marker);
+    const result = run();
+    expect(result.status, result.stderr).toBe(1);
+    expect(result.stdout).toContain('index.html');
+    expect(result.stdout + result.stderr).not.toContain(marker);
+  });
+});
+
 it('scans the phone book chunk and accepts SVG coordinates and known domains', () => {
   fixture('FixturePrivateSurname', (dist, run) => {
     const file = join(dist, 'phoneBook-test.js');
