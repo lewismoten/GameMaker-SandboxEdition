@@ -586,7 +586,7 @@ game folder opens in the browser unchanged.
   LUNCHMEAT's flood on The Sofa (`web/src/retro/bbs/sofaSpam.ts`). What they suggested came
   to the project as notes and ideas, through Lewis.
 - **Dialog accessibility checks and fixes**: **Hermes Agent running OpenAI Codex GPT-6.1 Sol**, directed by Lewis Moten, added dialog naming, phone-layout regressions, expanded browser audit coverage, and live-announcement routing, progress and terminal-outcome fixes with regression tests.
-- **Headless PLAYGAME audio capture** (`tools/dosbox-286/`): capture scripts, tests, and documentation implemented and verified with **Hermes Agent using OpenAI Codex GPT-6.1 Sol**, directed by Lewis Moten. DOSBox-X is an external tool by the DOSBox-X Team; no emulator binaries or source are bundled.
+- **Headless PLAYGAME audio capture** (`tools/dosbox-286/`): capture scripts, tests, and documentation implemented and verified with **Hermes Agent using OpenAI Codex GPT-6.1 Sol**, directed by Lewis Moten. DOSBox-X is an external tool by the DOSBox-X Team; no emulator binaries or source are bundled. OpenAI Codex corrected the staged DOS configuration size, streamed the final WAV checksum, and added regression tests for both changes.
 - **Dialog accessibility checks and fixes**: **Hermes Agent running OpenAI Codex GPT-6.1 Sol**, directed by Lewis Moten, added dialog naming, phone-layout regressions, and expanded browser audit coverage. The same agent added contextual DOS-capacity explanations and regression checks for monster sets, generated map monsters, and block sets.
 - **OpenAI Codex** (through Visual Studio Code, directed by Lewis): from October 27 to 30,
   2026, while Claude was out of its weekly tokens, Codex worked on the fork with four OpenAI
