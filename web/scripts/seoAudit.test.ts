@@ -60,6 +60,16 @@ describe('built-site SEO audit', () => {
     });
   });
 
+  it('ignores links in HTML comments while checking live links', () => {
+    fixture((dir) => {
+      const links = '<a href="#home">Home</a><!--\n<a href="#nonexistent">Old link</a>\n--><a href="#missing">Broken</a>';
+      writeFileSync(join(dir, 'index.html'), page().replace('<h1>', `<h1 id="home">`).replace('</body>', `${links}</body>`));
+      const result = spawnSync(process.execPath, [script, dir], { encoding: 'utf8' });
+      expect(result.status).toBe(1);
+      expect(result.stdout.trim().split('\n').slice(1)).toEqual(['index.html: broken link #missing']);
+    });
+  });
+
   it('fails on long descriptions, missing language or Twitter tags, and secret content', () => {
     fixture((dir) => {
       const games = join(__dirname, '../../games');
