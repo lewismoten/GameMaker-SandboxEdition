@@ -241,6 +241,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex fixed and tested Pi sound recovery after a failed game file read and music startup while browser audio resumes.
 - OpenAI Codex fixed the collision probe’s life counter and tested both monster collisions.
 - OpenAI Codex fixed and tested the Disk labels layout audit’s fixture and selection checks.
+- OpenAI Codex fixed and tested route validation in the Color Doors viewport checker.
 - OpenAI Codex fixed and tested validation before writing Level Maps metadata.
 - OpenAI Codex fixed and tested the Sound Board walkthrough’s sound-cutoff check.
 - OpenAI Codex corrected and tested the game version and Frost Lot crossing deadline for the fifteen-level edition of The Thank-You Parade.
