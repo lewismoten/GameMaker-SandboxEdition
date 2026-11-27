@@ -101,6 +101,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex wrote the regression test for sentence and splice timing on the recorded phone line.
 - OpenAI Codex fixed and tested retries for Level Maps thumbnails and the viewer.
 - OpenAI Codex fixed and tested navigation away from the home page while it loads.
+- OpenAI Codex fixed and tested the silver key pickup and door payment checks in the Stronger Keys title demo.
 - OpenAI Codex corrected Kit’s placement in the Three Tokens progress shot and wrote its pixel regression test.
 - OpenAI Codex corrected the Countdown title demo timing check and wrote its regression test.
 - OpenAI Codex fixed and tested transparent padding in the Colors That Work shape check.
