@@ -91,6 +91,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex fixed build folder handling and credential matching in the leak sweep and wrote their regression tests.
 - OpenAI Codex fixed and tested incomplete HTTP transfer detection in page-load performance traces.
 - OpenAI Codex corrected the Starter opening's block timing comment and wrote its regression test.
+- OpenAI Codex fixed local walkthrough URL construction and wrote its regression tests.
 - OpenAI Codex corrected Kit’s placement in the Three Tokens progress shot and wrote its pixel regression test.
 - OpenAI Codex corrected the Countdown title demo timing check and wrote its regression test.
 - OpenAI Codex fixed and tested transparent padding in the Colors That Work shape check.
