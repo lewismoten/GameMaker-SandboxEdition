@@ -22,11 +22,12 @@ describe('already', () => {
   });
 
   it('ranks files by distinct words, then lines', () => {
-    const ranked = rankFiles({ x: { 'p.ts': 1, 'q.ts': 9 }, y: { 'p.ts': 1 } });
+    const ranked = rankFiles({ x: { 'p.ts': [1], 'q.ts': [1, 2, 3, 4, 5, 6, 7, 8, 9] }, y: { 'p.ts': [1] } });
     expect(ranked.map((r) => r.file)).toEqual(['p.ts', 'q.ts']);
+    expect(ranked[0].lines).toBe(1); // the same line for both words counts once
   });
 
-  it('labels two words on one line as two word-line matches', () => {
+  it('counts two words on one line as one line', () => {
     const cwd = mkdtempSync(join(tmpdir(), 'already-'));
     const git = (...args) => execFileSync('git', args, { cwd });
     try {
@@ -38,8 +39,8 @@ describe('already', () => {
       git('update-ref', 'refs/remotes/origin/develop', 'HEAD');
       const script = fileURLToPath(new URL('../../scripts/already.mjs', import.meta.url));
       const output = execFileSync(process.execPath, [script, 'cat', 'dog'], { cwd, encoding: 'utf8' });
-      expect(output).toContain('both.txt [2/2, 2 word-line matches]');
-      expect(output).toContain('one.txt [1/2, 1 word-line match]');
+      expect(output).toContain('both.txt [2/2, 1 line]');
+      expect(output).toContain('one.txt [1/2, 1 line]');
     } finally {
       rmSync(cwd, { recursive: true, force: true });
     }
