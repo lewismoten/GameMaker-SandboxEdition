@@ -135,11 +135,16 @@ for (const id of selected) if (!games.includes(id)) throw new Error(`Unknown gam
 for (const id of games) {
   if (selected.length && !selected.includes(id)) continue;
   if (!existsSync(join(root, id, 'disk'))) throw new Error(`Build the disk for ${id} before auditing recordings`);
-  if (mode !== 'walkthrough' && existsSync(join(root, id, 'disk', 'demo.rec'))) {
-    try {
-      if (!(await demo(id))) failed = true;
-    } catch (e) {
-      console.error(id, 'demo FAIL', e);
+  if (mode !== 'walkthrough') {
+    if (existsSync(join(root, id, 'disk', 'demo.rec'))) {
+      try {
+        if (!(await demo(id))) failed = true;
+      } catch (e) {
+        console.error(id, 'demo FAIL', e);
+        failed = true;
+      }
+    } else if (Object.hasOwn(demoScenes, id)) {
+      console.error(id, 'demo FAIL missing demo.rec');
       failed = true;
     }
   }

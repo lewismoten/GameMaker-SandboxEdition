@@ -1,10 +1,10 @@
 // Final Curtain's paper spyglass: a magnifying glass drawn in black ink (a knurled rim, an
 // engraved handle with its maker's mark, a moon and star), with a round hole where the lens
 // goes. On paper you cut it out and tape red cellophane behind the hole. On screen the same
-// drawing is the red film: `spyglassElement()` is what the box viewer drags over the evidence
+// drawing is the red film: `spyglassFilm()` is what the box viewer drags over the evidence
 // sheet (RedFilm takes it in place of the plain rectangle), its lens the same red view the
 // hint book's circle uses (redFilm.ts ensureRedView, .rf-lens in paper.css).
-import { ensureRedView } from './redFilm';
+import { ensureRedView, RedFilm } from './redFilm';
 
 const NS = 'http://www.w3.org/2000/svg';
 const INK = '#141414';
@@ -100,15 +100,53 @@ export function spyglassSvg(cut: boolean): SVGSVGElement {
 }
 
 /** The glass on screen: the drawing over a round red lens that shows the sheet as red film would. */
-export function spyglassElement(): HTMLElement {
+export function spyglassFilm(stage: HTMLElement): RedFilm {
   ensureRedView();
   const box = document.createElement('div');
   box.className = 'sg-glass';
   box.hidden = true;
   box.setAttribute('role', 'img');
-  box.setAttribute('aria-label', 'Spyglass with a red film lens (drag it over the evidence sheet)');
+  box.setAttribute('aria-label', 'Spyglass');
   const lens = document.createElement('div');
   lens.className = 'sg-lens';
   box.append(lens, spyglassSvg(false));
-  return box;
+  let index = 0;
+  const film = new RedFilm(box);
+  function selectCard(key: string): boolean {
+    const prints = stage.querySelectorAll('.sgp-cell .rf-picture');
+    if (!prints.length) return false;
+    if (key === 'Home') index = 0;
+    else if (key === 'End') index = prints.length - 1;
+    else if (key === 'ArrowRight' || key === 'ArrowUp') index = Math.min(index + 1, prints.length - 1);
+    else if (key === 'ArrowLeft' || key === 'ArrowDown') index = Math.max(index - 1, 0);
+    else return false;
+    const print = prints[index];
+    box.setAttribute('role', 'slider');
+    box.setAttribute('aria-description', 'Use the arrow keys to examine each print.');
+    box.setAttribute('aria-valuemin', '1');
+    box.setAttribute('aria-valuemax', String(prints.length));
+    box.setAttribute('aria-valuenow', String(index + 1));
+    box.setAttribute('aria-valuetext', print.closest('figure')!.querySelector('figcaption b')!.textContent);
+    film.align(lens, print);
+    return true;
+  }
+  box.addEventListener('focus', () => selectCard('Home'));
+  box.addEventListener(
+    'keydown',
+    (event) => {
+      if (selectCard(event.key)) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+      }
+    },
+    true,
+  );
+  const freeDrag = () => {
+    box.setAttribute('role', 'img');
+    for (const attr of ['valuemin', 'valuemax', 'valuenow', 'valuetext']) box.removeAttribute('aria-' + attr);
+    box.setAttribute('aria-description', 'Use the arrow keys to move the film.');
+  };
+  box.addEventListener('pointerdown', freeDrag);
+  box.addEventListener('blur', freeDrag);
+  return film;
 }

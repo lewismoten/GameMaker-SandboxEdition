@@ -13,6 +13,7 @@ import { decodeGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
 import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { parseBackdrop, parseSlideList, textLines } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
 
+import { cardDifference } from './pocketCardDifference';
 import { pocketOutDir, pocketRepoDir, requirePocketRepo } from './pocketRepo';
 
 requirePocketRepo('pocketCardsCheck');
@@ -136,8 +137,7 @@ for (const id of ids) {
   const same = a.length === b.length && a.every((l, i) => l === b[i]);
   if (!same) {
     bad++;
-    const i = a.findIndex((l, k) => l !== b[k]);
-    console.log(`${id.padEnd(24)} DIFFERS (${a.length} vs ${b.length}) first: ${a[i]} | ${b[i]}`);
+    console.log(`${id.padEnd(24)} DIFFERS (${a.length} vs ${b.length}) first: ${cardDifference(a, b)}`);
   } else console.log(`${id.padEnd(24)} ok ${a.length} cards/pages`);
 }
 console.log(bad ? `${bad} games differ` : 'all match');

@@ -581,14 +581,26 @@ export class RedFilm {
     if (this.caption) parent.append(this.caption);
   }
 
-  private place(x: number, y: number): void {
+  private place(x: number, y: number, minY = 0): void {
     const w = this.el.offsetWidth || 300;
     const hh = this.el.offsetHeight || 180;
     this.x = Math.max(-w / 2, Math.min(window.innerWidth - w / 2, x));
-    this.y = Math.max(0, Math.min(window.innerHeight - 40, y));
+    this.y = Math.max(minY, Math.min(window.innerHeight - 40, y));
     this.el.style.transform = `translate(${this.x}px, ${this.y}px) rotate(-2deg)`;
     if (this.caption) this.caption.style.transform = this.el.style.transform;
     void hh;
+  }
+
+  /** Align the center of a part of the film with a print, including the film's rotation. */
+  align(part: Element, target: Element): void {
+    target.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+    const from = part.getBoundingClientRect();
+    const to = target.getBoundingClientRect();
+    this.place(
+      this.x + to.left - from.left + (to.width - from.width) / 2,
+      this.y + to.top - from.top + (to.height - from.height) / 2,
+      -this.el.offsetWidth / 2,
+    );
   }
 
   ownsArrow(event: KeyboardEvent): boolean {

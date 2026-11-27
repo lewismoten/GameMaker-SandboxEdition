@@ -8,7 +8,7 @@ import { BLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import type { Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { parseCharacter, type Character } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
-import { MLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { MLEN, type PlacedMonster } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { KINDS, MIN_SIDE, checkNeeds, kindInfo, type GenKind, type GenResult, type Rect } from '@lewismoten/gamemaker-sandbox-tools/kit/levelGen';
 import { readRoles } from '../../blocks/blockRoles';
 import { loadBrushes } from '../tools/brushStore';
@@ -16,7 +16,7 @@ import type { Terrain } from '../tools/autotile';
 import type { MapSelection } from '../tools/selection';
 import { missingRoles } from './missingRoles';
 import { makeScenes, planScenes } from './makeScenes';
-import { WHOLE, offers, usableMonsters, type Offer } from './place';
+import { WHOLE, monsterPreview, offers, usableMonsters, type Offer } from './place';
 import { NOT_CHECKED, NOT_CHECKED_SIDE } from './verifyOffer';
 import type { BotRun } from './platformBot';
 import type { RunningBot } from './platformBotClient';
@@ -35,6 +35,7 @@ interface GenerateHost {
   /** The block set's blocks (for the reach check) and the scene's monsters (for placing some). */
   blockSet: () => Block[];
   monsters: () => Monster[];
+  placedMonsters: () => PlacedMonster[];
   /** The map wraps over its edges (an overworld's land then lines up across the seam). */
   wrap?: () => boolean;
   /** The hero's character file and its blocks, and the monster blocks, as the scene names them (a side view is sized to his jump). */
@@ -68,9 +69,8 @@ function drawOffer(canvas: HTMLCanvasElement, blocks: Uint8Array, rect: Rect, im
 
 const NO_MONSTERS = new Set<GenKind>(['home', 'shop', 'town', 'overworld']);
 
-/** What a bot's play of a side view came to, by the layout (kind, seed, difficulty, area): not run yet, playing, or its result. */
+/** What a bot's play of a side view came to, for this generated offer: not run yet, playing, or its result. */
 type BotState = 'playing' | BotRun;
-const botKey = (o: Offer, difficulty: number) => `${o.seed}:${difficulty}:${o.outcome.ok ? o.outcome.result.rect.x + ',' + o.outcome.result.rect.y : ''}`;
 
 const LINK_TARGET: Record<string, string> = {
   home: 'a home interior',
@@ -98,7 +98,7 @@ export async function generateDialog(host: GenerateHost): Promise<void> {
   let addMonsters = monsterIds.length > 0;
   let current: Offer[] = [];
   let difficulty = 80;
-  const bots = new Map<string, BotState>();
+  const bots = new WeakMap<Offer, BotState>();
   let botRun = 0;
   /** The bot playing now, in its worker; stopped when the offers change or the dialog closes. */
   let running: RunningBot | undefined;
@@ -110,7 +110,14 @@ export async function generateDialog(host: GenerateHost): Promise<void> {
     hero = undefined;
   }
 
-  await modal<void>('Generate a layout', (close) => {
+  let dismiss = () => {};
+  const build = (close: (value: void | undefined) => void) => {
+    const finish = () => {
+      botRun++;
+      running?.cancel();
+      close(undefined);
+    };
+    dismiss = finish;
     const rect = () => (inSelection && sel ? sel : WHOLE);
     const usesHref = `#/p/${host.project.id}/${encodeURIComponent(host.bbl)}?tab=uses`;
     const kindSel = h('select', { 'aria-label': 'Kind of layout' }, ...KINDS.map((k) => h('option', { value: k.id, selected: k.id === kind }, k.label)));
@@ -142,7 +149,7 @@ export async function generateDialog(host: GenerateHost): Promise<void> {
     /** The chip of an offer: for a side view, whether a bot has played it, else the proof the generator holds; `more` follows the chip's words in the button's name. */
     function chipOf(o: Offer): { text: string; ok: boolean; more: string } {
       if (kind === 'platform') {
-        const b = bots.get(botKey(o, difficulty));
+        const b = bots.get(o);
         if (b && b !== 'playing' && b.won) return { text: 'Bot won', ok: true, more: 'verified on the real engine' };
         if (b && b !== 'playing') return { text: 'Not proven', ok: false, more: 'the bot could not follow the route' };
         if (o.check?.verified) return { text: 'Jump math', ok: true, more: 'verified reachable by jump math' };
@@ -172,11 +179,11 @@ export async function generateDialog(host: GenerateHost): Promise<void> {
       for (let i = 0; i < current.length; i++) {
         const o = current[i];
         if (token !== botRun) return;
-        const key = botKey(o, difficulty);
-        if (!o.outcome.ok || !o.blocks || bots.has(key)) continue;
-        bots.set(key, 'playing');
+        if (!o.outcome.ok || !o.blocks || bots.has(o)) continue;
+        bots.set(o, 'playing');
         pick();
         await new Promise((res) => setTimeout(res, 0));
+        if (token !== botRun) return;
         let run: BotRun;
         let mine: RunningBot | undefined;
         try {
@@ -188,16 +195,17 @@ export async function generateDialog(host: GenerateHost): Promise<void> {
           });
           run = await mine.done;
         } catch (e) {
+          if (token !== botRun) return;
           if ((e as Error).name === 'AbortError') {
-            bots.delete(key);
+            bots.delete(o);
             return;
           }
           run = { won: false, why: `The bot could not play it (${(e as Error).message}).`, ticks: 0 };
         } finally {
           if (running === mine) running = undefined;
         }
-        bots.set(key, run);
         if (token !== botRun) return;
+        bots.set(o, run);
         const c = chipOf(o);
         const chip = chips[i];
         if (chip) {
@@ -270,7 +278,7 @@ export async function generateDialog(host: GenerateHost): Promise<void> {
     /** The sentences about a side view: what it asks of the hero, and the proof it holds (jump math, and a bot's play). */
     function sideNote(o: Offer, res: GenResult): string {
       const p = res.platform;
-      const b = bots.get(botKey(o, difficulty));
+      const b = bots.get(o);
       const asks = p
         ? `Drawn at ${Math.round(p.difficulty * 100)}% of his most: pits up to ${p.asked.gap} blocks wide and steps up to ${p.asked.rise} high (he clears ${p.can.gap} across and ${p.can.rise} up).`
         : '';
@@ -347,7 +355,7 @@ export async function generateDialog(host: GenerateHost): Promise<void> {
           ? `Layout drawn and ${n} scene${n === 1 ? '' : 's'} made (${out.made.map((m) => m.label).join(', ')}). Undo takes back the layout, not the scenes.${left}`
           : `Layout drawn, but no scene was made.${left}`,
       );
-      close(undefined);
+      finish();
     }
     function pick(): void {
       buttons.forEach((b, i) => b.setAttribute('aria-pressed', String(i === chosen)));
@@ -367,7 +375,7 @@ export async function generateDialog(host: GenerateHost): Promise<void> {
         res.furniture.filter((f) => !f.open).length ? `${res.furniture.filter((f) => !f.open).length} pieces of furniture` : '',
         res.shopkeeper !== undefined ? `shopkeeper could stand at ${cellText(res.rect, res.shopkeeper)}` : '',
         res.locks.length ? `${res.locks.length} locked door${res.locks.length > 1 ? 's' : ''}` : '',
-        res.monsters.length ? `${res.monsters.length} monsters` : '',
+        monsterPreview(host.placedMonsters(), res),
       ].filter(Boolean);
       note.textContent = [
         `Seed ${o.seed}: hero could start at ${cellText(res.rect, res.entry)}, ${furnished ? 'door' : res.links.length ? 'far end' : 'exit'} at ${cellText(res.rect, res.exit)}; nothing is linked.${has.length ? ` ${has.join(', ')}.` : ''}${res.links.length ? ` ${res.links.length} doors and sites could link to other scenes.` : ''}`,
@@ -395,7 +403,7 @@ export async function generateDialog(host: GenerateHost): Promise<void> {
       const o = current[chosen];
       if (!o?.blocks) return;
       host.apply(o.blocks, `${kindInfo(kind).label} layout`, addMonsters && !NO_MONSTERS.has(kind) && o.outcome.ok ? o.outcome.result : undefined);
-      close(undefined);
+      finish();
     });
     const monBox = h('input', { type: 'checkbox', checked: addMonsters, 'aria-label': 'Add monsters' });
     monBox.addEventListener('change', () => ((addMonsters = monBox.checked), refresh()));
@@ -438,9 +446,9 @@ export async function generateDialog(host: GenerateHost): Promise<void> {
         grid,
         note,
         linksBox,
-        h('div', { class: 'toolbar' }, use, h('button', { type: 'button', onclick: () => close(undefined) }, 'Cancel')),
+        h('div', { class: 'toolbar' }, use, h('button', { type: 'button', onclick: finish }, 'Cancel')),
       ),
     );
-  });
-  running?.cancel();
+  };
+  await modal<void>('Generate a layout', build, () => dismiss());
 }

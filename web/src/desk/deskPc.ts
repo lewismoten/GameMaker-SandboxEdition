@@ -41,8 +41,9 @@ export function deskPc(scene: Scene, hooks: PcHooks) {
   const speed: SpeedSetting = { slowPc: machineCosts(machine, turbo) };
   // the dialog's code: fetched when the desk is idle and when the pointer or focus comes to the lights
   const machineCode = () => import('./pc/machineDialog');
-  machineBtn.addEventListener('pointerenter', () => void machineCode(), { once: true });
-  machineBtn.addEventListener('focus', () => void machineCode(), { once: true });
+  const preloadMachine = () => void machineCode().catch(() => {});
+  machineBtn.addEventListener('pointerenter', preloadMachine, { once: true });
+  machineBtn.addEventListener('focus', preloadMachine, { once: true });
   machineBtn.addEventListener('click', () => {
     void machineCode().then(({ openMachineDialog }) =>
       openMachineDialog(
@@ -72,7 +73,10 @@ export function deskPc(scene: Scene, hooks: PcHooks) {
       computer = new Computer(crt, {
         speed,
         turbo: () => turbo,
-        cpuName: () => CPU_CHOICES.find((c) => c.id === machine.cpu)!.name,
+        cpuName: () => {
+          const cpu = CPU_CHOICES.find((c) => c.id === machine.cpu)!;
+          return 'postName' in cpu ? cpu.postName : cpu.name;
+        },
         openModern: (projectId, file) => hooks.openModern(projectId, file),
         // The designers take the whole window; afterwards, go back to how the user had it.
         // vga stays in the monitor like the real thing.

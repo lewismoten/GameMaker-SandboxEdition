@@ -107,7 +107,7 @@ finger stop with an arm over the holes at 4 o'clock, hole 1 at 3 o'clock, 30 deg
   spiral spring in one piece with a frame, a clip-on finger stop, a headed center screw through a stack that prints flat, and digits printed under the holes. This
   dial differs: a ratchet clutch so that only the return counts (that dial reads both ways with an optical sensor and software), tactile switches in place of the
   optical slotted disc, a bigger plate with 13 mm holes, a separate cam wheel, a grease damper, a heat-free self-tapping screw, and every dimension is new
-  (no STL, mesh or spring parameter was copied or adapted, so NOTICE.md has no entry for it).
+  (no STL, mesh or spring parameter was copied or adapted).
 
 ### Assemble the module and the case
 
@@ -150,7 +150,7 @@ A code is silkscreen where a module is light and bare soldermask where it is dar
 site code on the Deluxe board (0.45 mm), which had to be a little smaller to fit. The codes scan in the rendered preview. No one has tried scanning these small modules
 with a phone camera on a real board.
 
-`tools/dex_art.py` draws Dex from his sprite. `tools/silkart.py` draws the codes using OpenCV's QR encoder (Apache-2.0).
+`tools/dex_art.py` draws Dex from his sprite. `tools/silkart.py` draws the codes, and `tools/qr_layout.py` reserves their encoded dimensions on the standard board. The codes use OpenCV's QR encoder (Apache-2.0).
 `tools/qrscan.py` decodes the rendered preview and compares each result with its URL.
 
 ## Rebuild everything

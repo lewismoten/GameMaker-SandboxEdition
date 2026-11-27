@@ -24,10 +24,17 @@ export function feelieList(base: string, items: TrinketItem[], phone: boolean, k
   ];
 }
 
-/** Game `id`'s feelies (none for a game without files, which includes every secret game). */
+/** Start both loads together so the shelf can show trinkets while optional manifests arrive. */
+export function loadFeelieGroups(id: string) {
+  const base = trinketBase(id);
+  const trinkets = loadTrinkets(id).then((items) => feelieList(base, items, false, []));
+  const kitsAndPhone = Promise.all([loadLaserKits(id), id === PHONE_GAME ? hasPhone() : false]).then(([kits, phone]) => feelieList(base, [], phone, kits));
+  return [trinkets, kitsAndPhone] as const;
+}
+
+/** Game `id`'s complete list for the box contents. */
 export async function loadFeelies(id: string): Promise<Feelie[]> {
-  const [items, phone, kits] = await Promise.all([loadTrinkets(id), id === PHONE_GAME ? hasPhone() : false, loadLaserKits(id)]);
-  return feelieList(trinketBase(id), items, phone, kits);
+  return (await Promise.all(loadFeelieGroups(id))).flat();
 }
 
 /** A picture file already rendered for a feelie (the nickel's front), or undefined when its thumbnail is drawn in 3D. */

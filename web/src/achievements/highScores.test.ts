@@ -18,15 +18,16 @@ vi.mock('../project/storage', () => ({
 }));
 vi.mock('../project/files', async (original) => ({
   ...(await original<object>()),
-  loadLeanCatalogList: async () => [
+  loadLeanCatalogList: vi.fn(async () => [
     { id: 'one', gam: 'ONE.GAM' },
     { id: 'two', gam: 'ONE.GAM' },
-  ],
+  ]),
 }));
 vi.mock('../tinHearts/tinHearts', () => ({ huntStates: async () => [] }));
 vi.mock('../eggs/eggState', () => ({ eggStates: async () => [] }));
 import { playSaves } from './playSaves';
 import { achievementsWritten, forgetForTests, loadAchievements, resetAchievements, FILE, SAVE_ID } from './store';
+import { loadLeanCatalogList } from '../project/files';
 import { scanHighScores } from './highScores';
 import { wholeTable } from './highScoreTable';
 import { achievements as backupAchievements } from '../backup/sections/achievements';
@@ -150,4 +151,21 @@ it('does not unlock while the guided tour is playing', async () => {
   await playSaves('game:one', 'one.gam').onFileWrite!('one.his', table());
   await scanHighScores();
   expect((await loadAchievements()).unlocked['play-all-mine']).toBeUndefined();
+});
+
+it('preserves the earned badge if Reset cannot enumerate games and forgets it on retry', async () => {
+  state.saves['game:one'] = { 'one.his': table() };
+  await scanHighScores();
+  await achievementsWritten();
+  const earned = (await loadAchievements()).unlocked['play-all-mine'];
+  expect(earned).toBeTypeOf('number');
+  vi.mocked(loadLeanCatalogList).mockRejectedValueOnce(new Error('offline'));
+  await expect(resetAchievements()).rejects.toThrow();
+  forgetForTests();
+  await scanHighScores();
+  expect((await loadAchievements()).unlocked['play-all-mine']).toBe(earned);
+  await resetAchievements();
+  forgetForTests();
+  await scanHighScores();
+  expect((await loadAchievements()).unlocked).toEqual({});
 });

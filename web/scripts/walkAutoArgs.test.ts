@@ -44,11 +44,11 @@ describe('sceneLine', () => {
           tried: ['runner', 'search', 'keys'],
           keys: {
             cutoff: 'no-reachable-state',
+            candidates: [{ counter: 20, cell: 301 }],
             rounds: [
               {
                 kind: 'key',
                 source: { counter: 20, cell: 301 },
-                candidates: [{ counter: 20, cell: 301 }],
                 complete: true,
                 budgetMs: 1000,
                 ms: 10,
@@ -78,6 +78,23 @@ describe('walk:auto output', () => {
       chapters: [],
       timeline: { fps: 60, frames: 0, chapters: [] },
     } as Walkthrough;
+    const candidates = [
+      { counter: 20, cell: 301 },
+      { counter: 20, cell: 310 },
+    ];
+    const rounds = candidates.map((source) => ({
+      kind: 'key' as const,
+      source,
+      complete: false,
+      budgetMs: 1000,
+      ms: 10,
+      places: 12,
+      nearestGoalDistance: 0,
+      exits: 0,
+      deaths: 0,
+      incidents: 0,
+      cutoff: null,
+    }));
     const output = JSON.parse(
       JSON.stringify(
         walkOutput(walk, [
@@ -85,15 +102,15 @@ describe('walk:auto output', () => {
             scene: 3,
             name: 'Cave',
             tried: ['keys'],
-            keys: { cutoff: 'budget', rounds: [] },
+            keys: { cutoff: 'round-limit', candidates, rounds },
           },
         ]),
       ),
     );
+    expect(output.diagnostics.keys[0]).toEqual({ scene: 3, name: 'Cave', cutoff: 'round-limit', candidates, rounds });
     expect(output).toMatchObject({
       version: 1,
       game: 'test',
-      diagnostics: { keys: [{ scene: 3, name: 'Cave', cutoff: 'budget', rounds: [] }] },
     });
   });
 });

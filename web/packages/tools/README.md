@@ -173,7 +173,10 @@ Laser helpers use millimeters and take caller-supplied designs:
 Wildcard paths expose existing modules, not arbitrary filenames. The
 [public source tree](https://github.com/lewismoten/GameMaker-SandboxEdition/tree/master/web/packages/tools/src)
 and [export map](https://github.com/lewismoten/GameMaker-SandboxEdition/blob/master/web/packages/tools/package.json)
-list their modules and signatures. Embroidery output has not been tested on a real machine;
+list their modules and signatures. Embroidery compilation requires finite, positive stitch steps.
+A fill pass can generate up to 50,000 rows. A pattern can contain up to 100,000 stitch
+records, including jumps, trims, color changes and the end marker. The same 100,000-point
+limit applies to intermediate stitch paths. Embroidery output has not been tested on a real machine;
 sew a test on scrap before using a design.
 
 ## Development and license

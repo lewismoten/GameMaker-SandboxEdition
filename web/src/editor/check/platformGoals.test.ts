@@ -9,6 +9,7 @@ function jumping(rows: string[]) {
   const w = new SceneSim(t.game, 2, t, { x: 1, y: 1 }).w;
   const s = w.chr.sequences[7];
   s.key = 0x4800;
+  s.ground = 1;
   w.ci.seqon[7] = true;
   w.ci.meter[7] = 32767;
   Object.assign(s.frames[0], { x: 0, y: -10, pic1: 50, pic2: 0 });
@@ -93,6 +94,7 @@ it('allows a retracted block to become a footing on a later animation phase', ()
 
 it('leaves continuous flight to the ordinary search instead of requiring landings', () => {
   const w = jumping(['########', '#......#', '#......#', '########']);
+  w.chr.sequences[7].ground = 0;
   for (const f of w.chr.sequences[7].frames) Object.assign(f, { x: 0, y: -2, pic1: 50, pic2: 0 });
   expect(platformGoals(w, [102])).toBeUndefined();
 });

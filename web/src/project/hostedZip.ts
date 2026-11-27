@@ -40,12 +40,14 @@ export async function readHostedZip(bytes: Uint8Array): Promise<Map<string, Uint
 /** Each zip's directory and the entries read from it so far: a box or label that reads a few files inflates only those, once each. */
 const listed = new WeakMap<Uint8Array, { list: ZipListing[]; read: Map<ZipListing, Promise<Uint8Array | undefined>> }>();
 
-/** One file of a zip by any of `names` (compared in lower case), as stored: no player is read. */
+/** Peek only when the stored name is unambiguous. The full reader resolves DOS names and CD aliases. */
 export async function findZipFile(bytes: Uint8Array, names: string[]): Promise<Uint8Array | undefined> {
   let zip = listed.get(bytes);
   if (!zip) listed.set(bytes, (zip = { list: listZip(bytes), read: new Map() }));
-  const e = zip.list.find((l) => names.includes(l.name.toLowerCase()));
-  if (!e) return undefined;
+  const aliases = names.map(cdName);
+  const matches = zip.list.filter((entry) => aliases.includes(cdName(entry.name)));
+  const [e] = matches;
+  if (matches.length !== 1 || !names.includes(e.name.toLowerCase())) return undefined;
   let data = zip.read.get(e);
   if (!data) zip.read.set(e, (data = e.read()));
   return data;
