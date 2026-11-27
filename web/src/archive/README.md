@@ -10,6 +10,7 @@ Entry point: `archive.html` loads `archive.ts`.
   `offline.json` list if that fails. It fetches the selected files with four workers, retries
   each failed fetch once and reports unavailable-file counts without showing names. It
   registers no service worker and writes no storage.
+- `fetchOne.ts`: fetches a file, waiting up to five retries when a server says it is still preparing.
 - `plan.ts`: what to fetch and in what order. The default selection leaves out game packs,
   phone files and the large kit files; `?games=1` includes those groups. The shell comes
   first, followed by startup code and data, the remaining files, then the optional groups.
@@ -19,6 +20,6 @@ Entry point: `archive.html` loads `archive.ts`.
 Must not: show a file's or a game's name (a secret game would show), register a service worker,
 or write storage. Keep this entry point focused on fetching and counts; it is not an offline installer.
 
-Tests: `plan.test.ts`.
+Tests: `plan.test.ts`, `fetchOne.test.ts`.
 
 Check: `cd web && npm run heavy -- npx vitest run src/archive`.

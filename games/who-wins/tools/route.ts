@@ -2,6 +2,8 @@
 // would press, level by level, taking every coin on the way. Each sign's lesson is acted out,
 // the mistake included, once: level 1 waits for the big one to pop the pips (no throwing), and
 // level 2's first star is thrown at the big one and used up. The checks here fail if anything else happens.
+import { monPicNum, picChkTouch } from '@lewismoten/gamemaker-sandbox-engine/engine/monsters';
+import { BLEN, SIZEX, SIZEY } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
 import type { Result, StarterBot } from '../../kit/starter/bot';
 import { ORIGIN } from '../../kit/starter/map';
 import { BIG, BIG_STILL, FIZZLE, MID, PIP, POP_SCORE, STAR } from '../src/monsters';
@@ -27,15 +29,30 @@ export function alive(bot: StarterBot, n: number): number {
 /** Ticks a star lives (monsters.ts STAR_LIFE) and the sparkle after it, so a throw has finished by then. */
 const THROW_WATCH = 60;
 
-/** Presses Enter like a person (a tap), then waits for the star to land; true if it was seen to fizzle. */
+/** Tap Enter and watch this shot. The lesson needs a visible hit on the stationary big one. */
 export async function throwStar(bot: StarterBot, what: string): Promise<boolean> {
-  bot.sim.press(SCAN_ENTER);
-  await must(bot, bot.wait(3), 'throwing');
-  bot.sim.release(SCAN_ENTER);
+  const w = bot.sim.w;
+  const start = w.clock;
+  const big = w.mm.findIndex((m) => m.monnum === BIG_STILL);
+  let slot = -1;
+  let expires = 0;
   let fizzled = false;
-  for (let t = 0; t < THROW_WATCH; t += 2) {
-    await must(bot, bot.wait(2), 'watching the star');
-    if (alive(bot, FIZZLE)) fizzled = true;
+  bot.sim.press(SCAN_ENTER);
+  for (let t = 0; t < 3 + THROW_WATCH; t++) {
+    if (t === 3) bot.sim.release(SCAN_ENTER);
+    const flying = slot >= 0 && w.mm[slot].monnum === STAR;
+    const starPic = flying ? w.mblk[monPicNum(w, slot)] : undefined;
+    await must(bot, bot.wait(1), 'watching the star');
+    if (slot < 0) {
+      slot = w.mm.findIndex((m, i) => m.monnum === STAR && w.mi[i].fromchar === 1 && w.mi[i].birthTime > start);
+      if (slot >= 0) expires = w.mi[slot].birthTime + w.mon[STAR].end;
+    } else if (starPic && w.mm[slot].monnum === FIZZLE && w.clock < expires && big >= 0 && w.mm[big].monnum === BIG_STILL) {
+      // PLAYGAME transforms the star in place. Its final position is the contact position.
+      const hit = w.mi[slot].scrPos;
+      const target = w.mi[big].scrPos;
+      if (hit.x >= 0 && hit.x + BLEN <= SIZEX && hit.y >= 0 && hit.y + BLEN <= SIZEY)
+        fizzled = picChkTouch(target.x, target.y, w.mblk[monPicNum(w, big)].pixels, hit.x, hit.y, starPic.pixels);
+    }
   }
   bot.say(`threw a star ${what}, score ${bot.sim.ci.score}`);
   return fizzled;

@@ -38,8 +38,15 @@ function main() {
   const out = flag('--out') ?? join(here, '../../../web/public/laser/sleuth/stage-box');
   const source = sourceKey(kerf, stock);
   const made = join(out, 'manifest.json');
-  const previous = existsSync(made) ? (JSON.parse(readFileSync(made, 'utf8')) as { source?: string; sheets?: { svg: string; preview: string }[] }) : undefined;
-  if (!args.includes('--force') && previous?.source === source) {
+  const previous = existsSync(made)
+    ? (JSON.parse(readFileSync(made, 'utf8')) as { source?: string; assembly?: string; readme?: string; sheets?: { svg: string; preview: string }[] })
+    : undefined;
+  if (
+    !args.includes('--force') &&
+    previous?.source === source &&
+    previous.sheets &&
+    [previous.assembly, previous.readme, ...previous.sheets.flatMap((s) => [s.svg, s.preview])].every((file) => file && existsSync(join(out, file)))
+  ) {
     console.log('Stage Box: up to date');
     return;
   }

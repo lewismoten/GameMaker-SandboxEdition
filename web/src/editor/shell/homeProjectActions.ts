@@ -84,14 +84,18 @@ async function move(p: ProjectSummary, imported: boolean, refresh: () => Promise
   await refresh();
 }
 
+let disposeActiveUndo: (() => void) | undefined;
+
 /**
  * A notice with an Undo button, for a few seconds. It waits while the pointer is over it or focus
  * is in it, and a screen reader hears it (the live region is in the page before its words are).
  */
 export function undoToast(message: string, undo: () => Promise<void>, ms = UNDO_MS, onExpire?: () => void): void {
-  document.querySelector('.home-undo')?.remove();
+  disposeActiveUndo?.();
   let timer: ReturnType<typeof setTimeout> | undefined;
   const done = () => {
+    if (disposeActiveUndo !== done) return;
+    disposeActiveUndo = undefined;
     clearTimeout(timer);
     note.remove();
     onExpire?.();
@@ -112,6 +116,7 @@ export function undoToast(message: string, undo: () => Promise<void>, ms = UNDO_
   note.addEventListener('pointerleave', () => !note.contains(document.activeElement) && wait());
   note.addEventListener('focusin', () => clearTimeout(timer));
   note.addEventListener('focusout', () => !note.matches(':hover') && wait());
+  disposeActiveUndo = done;
   wait();
   document.body.append(note);
   setTimeout(() => (text.textContent = message), 50);

@@ -1,7 +1,7 @@
 // Re-records the title screen's demo into src/demo.ts: the bot's own run through all three levels, one
 // unbroken list of keys (the demo recorder counts game ticks across scene changes, so the second level's
-// keys follow the first's after the ticks between them). It shows each lesson once: a held Space hops once,
-// a held Up lifts Kit above the cliff, a held Enter dashes once and each press crosses a wider gap.
+// keys follow the first's after the ticks between them). The arrows move Kit, Enter throws stars at jellies,
+// Space then Right crosses gaps, and Q and E leap to the optional shelves.
 // Rebuild afterwards.
 //   cd web && npx vite-node ../games/home-keys/tools/gendemo.ts && npx vite-node ../games/home-keys/build.ts
 //   cd web && npx vite-node ../games/home-keys/tools/demoCheck.ts      (plays the recording on the real engine)

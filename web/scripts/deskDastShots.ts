@@ -6,6 +6,7 @@
 // Needs a server you started (never port 5173). Headless Playwright Chromium, closed in a finally.
 import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
+import { deskShotClip } from './deskShotClip';
 import { arg, launch } from './perfLib';
 import { assertTheme, forceTheme } from './forceTheme';
 
@@ -66,12 +67,10 @@ try {
     await page.screenshot({ path: join(out, `room-${theme}-${name}.png`) });
     for (const sel of ['.game-shelf', '.egg-perch', '.heart-trophy', '.score-trophy-best', '.score-trophy-total', '.room-door', '.wall-clock']) {
       const el = page.locator(sel).first();
-      if ((await el.count()) && (await el.boundingBox())?.width) {
-        const box = (await el.boundingBox())!;
-        const x = Math.max(0, box.x - 20);
-        const y = Math.max(0, box.y - 20);
-        const clip = { x, y, width: Math.min(w - x, box.width + 40), height: Math.min(h - y, box.height + 40) };
-        if (clip.width <= 0 || clip.height <= 0) continue; // off the window (the phone layout hides some)
+      const box = (await el.count()) ? await el.boundingBox() : null;
+      if (box?.width) {
+        const clip = deskShotClip(box, w, h);
+        if (!clip) continue;
         await page.screenshot({ path: join(out, `close-${theme}-${name}-${sel.replace(/\W/g, '')}.png`), clip });
         console.log(`${name} ${sel} ${Math.round(box.width)}x${Math.round(box.height)}`);
       }

@@ -41,8 +41,12 @@ describe('update notice', () => {
     const reload = vi.fn();
     setPendingUpdate(reload);
     const seen = vi.fn();
-    watchPendingUpdate(seen);
+    const page = new AbortController();
+    watchPendingUpdate(seen, page.signal);
     expect(seen).toHaveBeenCalledWith(reload);
+    page.abort();
+    setPendingUpdate(undefined);
+    expect(seen).toHaveBeenCalledTimes(1);
   });
 
   it('fades out and goes after about 15 s', () => {

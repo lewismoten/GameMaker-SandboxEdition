@@ -35,7 +35,7 @@
     },
     {
       "head": "How this level is made",
-      "html": "<h1>How level 3 is made</h1><p>Open the game scene chart. <b>Splashes and Pools</b> and <b>Rainy Palette</b> both load <b>two.map</b> and <b>two.bbl</b>. Their palette slots differ: <b>rain.pal</b> and <b>storm.pal</b>. Storm darkens only the sky, grass, dirt and stone ranges. The same pixel numbers now choose darker colors; Lian, text and rain highlights keep their colors.</p><p>The door links to a new scene with the same entrance. The engine reloads the scene, fades it in and restarts its block clocks. See <b>Day and Night</b> for a fuller palette lesson.</p>"
+      "html": "<h1>How level 3 is made</h1><p>Open the game scene chart. <b>Splashes and Pools</b> and <b>Rainy Palette</b> both load <b>two.map</b> and <b>two.bbl</b>. Their palette slots differ: <b>rain.pal</b> and <b>storm.pal</b>. Storm darkens only the sky, grass, dirt, stone, brick and deep water colors. The same pixel numbers now choose darker colors; Lian, text and rain highlights keep their colors.</p><p>The door links to a new scene with the same entrance. The engine reloads the scene, fades it in and restarts its block clocks. See <b>Day and Night</b> for a fuller palette lesson.</p>"
     },
     {
       "head": "What it cannot do",
@@ -43,7 +43,7 @@
     },
     {
       "head": "Make it yours",
-      "html": "<h1>Make it yours</h1><ul><li>Change all four rain Times from 1 to 2 for slower drops. Keep them equal if you want the offsets to stay apart.</li><li>Paint the same start frame across the sky, play, then scatter the four starts again.</li><li>Redraw the streaks as shorter drops, still thin and blue-white.</li><li>Move a whole three-cell puddle, keeping its pieces on the same frame, and the three <b>wet</b> blocks above it.</li><li>Make the splash longer: add another <b>step</b> block to the chain.</li><li>Edit only the sky range in <b>storm.pal</b>, then compare the two scenes.</li></ul><p>New weather art, code, words and original FM music by Hermes with OpenAI Codex GPT-6.1 Sol. Finer rain, the house, the stepping splash and its sound by Claude Sonnet 5.5 (Anthropic). Shared Starter assets retain their existing project credits.</p>"
+      "html": "<h1>Make it yours</h1><ul><li>Change all four rain Times from 1 to 2 for slower drops. Keep them equal if you want the offsets to stay apart.</li><li>Paint the same start frame across the sky, play, then scatter the four starts again.</li><li>Redraw the streaks as shorter drops, still thin and blue-white.</li><li>Move a whole three-cell puddle, keeping its pieces on the same frame, and the three <b>wet</b> blocks above it.</li><li>Make the splash longer: add another <b>step</b> block to the chain.</li><li>Edit only the sky range in <b>storm.pal</b>, then compare the two scenes.</li></ul><p>New weather art, code, words and original FM music by Hermes with OpenAI Codex GPT-6.1 Sol. Finer rain, the house, the stepping splash and its sound by Claude Sonnet 5.5 (Anthropic). Storm puddle correction by OpenAI Codex. Shared Starter assets retain their existing project credits.</p>"
     }
   ]
 }

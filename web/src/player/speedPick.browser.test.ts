@@ -12,12 +12,13 @@ it('switches between DOS input and native toolbar navigation', async () => {
         const canvas = document.querySelector('canvas');
         const corner = document.querySelector('.gm-corner');
         const keyboard = new Keyboard();
-        const speed = {};
+        import { costsFor } from '@lewismoten/gamemaker-sandbox-engine/engine/slowPc';
+        const speed = { slowPc: { ...costsFor('286') } };
         keyboard.attach();
         toolbarKeyboard(canvas, corner, speedPick(corner, speed), () => keyboard.releaseAll());
         corner.querySelector('button').onclick = () => document.body.dataset.activated = 'yes';
         canvas.focus();
-        export { keyboard, speed };`,
+        export { keyboard, speed, speedPick };`,
       resolveDir: process.cwd(),
     },
     bundle: true,
@@ -37,6 +38,10 @@ it('switches between DOS input and native toolbar navigation', async () => {
     expect(await typed()).toEqual(['Tab']);
     await page.keyboard.press('Shift+F6');
     expect(await select.evaluate((el) => el === document.activeElement)).toBe(true);
+    expect(await select.inputValue()).toBe('286');
+    await page.keyboard.press('Home');
+    expect(await select.inputValue()).toBe('today');
+    expect(await page.evaluate('fixture.speed.slowPc')).toBeUndefined();
     for (const preset of ['486', '386', '286'] as const) {
       await page.keyboard.press('ArrowDown');
       expect(await select.inputValue()).toBe(preset);
@@ -61,6 +66,18 @@ it('switches between DOS input and native toolbar navigation', async () => {
     await page.keyboard.press('Tab');
     expect(await typed()).toEqual(['Tab', 'Shift', 'Shift', 'Tab']);
     expect(await page.evaluate('fixture.keyboard.down.size')).toBe(0);
+    const custom = await page.evaluate(`(() => {
+      const costs = { ...fixture.speed.slowPc, tickMs: 6 };
+      const speed = { slowPc: costs };
+      const picker = fixture.speedPick(document.body, speed);
+      const label = picker.selectedOptions[0].text;
+      picker.value = 'today';
+      picker.dispatchEvent(new Event('change'));
+      picker.value = 'custom';
+      picker.dispatchEvent(new Event('change'));
+      return { label, restored: speed.slowPc === costs };
+    })()`);
+    expect(custom).toEqual({ label: 'Custom speed', restored: true });
   } finally {
     await browser.close();
   }

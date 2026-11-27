@@ -55,5 +55,5 @@ export function fromCp437(s: string): string {
 
 /** A DOS text file as Unicode, retaining ASCII controls (CR/LF, TAB, NUL, ^Z) for its reader. */
 export function cp437Text(bytes: Uint8Array): string {
-  return latin1.decode(bytes).replace(/[^\x00-\x7f]/g, (ch) => fromCp437(ch));
+  return latin1.decode(bytes).replace(/[^\x00-\x7e]/g, (ch) => fromCp437(ch));
 }

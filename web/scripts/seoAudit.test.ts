@@ -41,6 +41,25 @@ describe('built-site SEO audit', () => {
     });
   });
 
+  it('checks section IDs in the linked document and accepts app routes', () => {
+    fixture((dir) => {
+      writeFileSync(join(dir, 'index.html'), page().replace('<h1>', '<h1 id="home">'));
+      const links = ['#section', '#home', 'index.html#home', 'index.html#section', './#/help', '#/desk', 'absent.html#/help'];
+      writeFileSync(
+        join(dir, 'guide.html'),
+        `<html lang="en"><head><title>Guide</title><meta name="robots" content="noindex"></head><body>
+          <h1 id="section">Guide</h1>${links.map((href) => `<a href="${href}">Next</a>`).join('')}</body></html>`,
+      );
+      const result = spawnSync(process.execPath, [script, dir], { encoding: 'utf8' });
+      expect(result.stdout.trim().split('\n').slice(1)).toEqual([
+        'guide.html: broken link #home',
+        'guide.html: broken link index.html#section',
+        'guide.html: broken link absent.html#/help',
+      ]);
+      expect(result.status).toBe(1);
+    });
+  });
+
   it('fails on long descriptions, missing language or Twitter tags, and secret content', () => {
     fixture((dir) => {
       const games = join(__dirname, '../../games');

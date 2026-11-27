@@ -11,8 +11,7 @@ Nothing starts a bulk download until the visitor chooses Download (Y on the desk
   blobs (including Starter kit files) stay with their sole consuming group, or Core when
   several public groups need them. Specials holds the limited-time games marked `series: "special"`.
   Feelies & library adds craft files and library resources. Spoken tour & phone adds the
-  recordings and tour effects. Hardware & native exports adds firmware, installer files
-  and native players. In-game sound stays with its game pack. Videos need the internet.
+  recordings and tour effects. Hardware & native exports adds native players. In-game sound stays with its game pack. Videos need the internet.
 - `offlineCopy.ts`: reads the production inventory, resolves the selected tiers and
   already-revealed games, checks actual cached bodies and storage estimates, and prepares
   or removes the copy. The default first selection is Core; subsequent visits use the

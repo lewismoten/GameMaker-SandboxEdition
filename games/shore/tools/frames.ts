@@ -3,16 +3,21 @@
 import type { Level } from '../src/levels';
 
 /** The block name each timed block shows `tick` ticks in. */
-export function shownAt(level: Level, tick: number): Map<string, string> {
+export function shownAt(level: Pick<Level, 'timed'>, tick: number): Map<string, string> {
   const next = new Map(level.timed.map((t) => [t.name, t]));
   const out = new Map<string, string>();
   for (const t of level.timed) {
     let at = t;
-    let due = t.ticks;
-    // every ring is short; walk it until the time is reached
-    for (let i = 0; i < 100000 && due <= tick; i++) {
+    let duration = 0;
+    do {
+      duration += at.ticks;
       at = next.get(at.next)!;
-      due += at.ticks;
+    } while (at !== t);
+
+    let elapsed = tick % duration;
+    while (elapsed >= at.ticks) {
+      elapsed -= at.ticks;
+      at = next.get(at.next)!;
     }
     out.set(t.name, at.name);
   }

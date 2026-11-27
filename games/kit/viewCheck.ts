@@ -58,7 +58,7 @@ export async function hiddenMonstersOfGame(id: string): Promise<HiddenMonster[]>
   if (!existsSync(path) || !existsSync(join(games, id, 'disk'))) return [];
   const walk = JSON.parse(readFileSync(path, 'utf8')) as Walkthrough;
   const found = new Map<string, HiddenMonster>();
-  const runs = new Map<number, { key: string; last: number; start: number; len: number }>(); // per monster slot
+  const runs = new Map<number, { key: string; last: number; first: HiddenMonster['first']; len: number }>(); // per monster slot
   await replay(id, walk, {
     onWorld(w, scene, frame) {
       for (let i = 0; i < LASTMM; i++) {
@@ -74,29 +74,29 @@ export async function hiddenMonstersOfGame(id: string): Promise<HiddenMonster[]>
         if (cx > 40 || cy > 40) continue; // wrapped round the map: far away
         const cellX = cx * BLEN - w.scroll.nx;
         const cellY = cy * BLEN - w.scroll.ny;
-        const edges = edgesHiding(cellX, cellY, cellX + mi.curx[1], cellY + mi.cury[1]);
+        const x = cellX + mi.curx[1];
+        const y = cellY + mi.cury[1];
+        const edges = edgesHiding(cellX, cellY, x, y);
         if (!edges) continue;
         const key = `${scene}/${type}`;
         const run = runs.get(i);
         if (run && run.key === key && frame - run.last <= 2) {
           run.last = frame;
           run.len++;
-        } else runs.set(i, { key, last: frame, start: frame, len: 1 });
+        } else runs.set(i, { key, last: frame, first: { frame, cell: [mi.curx[0], mi.cury[0]], at: [x, y] }, len: 1 });
         const cur = runs.get(i)!;
-        const x = cellX + mi.curx[1];
-        const y = cellY + mi.cury[1];
         const e = found.get(key) ?? {
           scene,
           monster: type,
           frames: 0,
           longest: 0,
-          first: { frame, cell: [mi.curx[0], mi.cury[0]] as [number, number], at: [x, y] as [number, number] },
+          first: cur.first,
           edges: [],
         };
         e.frames++;
         if (cur.len > e.longest) {
           e.longest = cur.len;
-          e.first = { frame: cur.start, cell: [mi.curx[0], mi.cury[0]], at: [x, y] };
+          e.first = cur.first;
         }
         for (const edge of edges) if (!e.edges.includes(edge)) e.edges.push(edge);
         found.set(key, e);

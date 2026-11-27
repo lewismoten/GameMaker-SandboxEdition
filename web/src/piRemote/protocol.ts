@@ -58,17 +58,30 @@ const MAX_LINE = 65536;
 /** Splits the bytes the Pi sends into lines, however the reads break them up. */
 export class LineSplitter {
   private pending = '';
+  private discarding = false;
   private readonly decoder = new TextDecoder('ascii');
 
   /** The whole lines `bytes` completes, without their "\r\n" or "\n". */
   push(bytes: Uint8Array): string[] {
-    this.pending += this.decoder.decode(bytes, { stream: true });
-    const parts = this.pending.split('\n');
-    this.pending = parts.pop() ?? '';
-    if (this.pending.length > MAX_LINE) {
-      parts.push(this.pending);
+    const lines: string[] = [];
+    for (let start = 0; start < bytes.length;) {
+      const newline = bytes.indexOf(10, start);
+      const end = newline < 0 ? bytes.length : newline;
+      if (!this.discarding) {
+        const keep = Math.min(end - start, MAX_LINE - this.pending.length);
+        this.pending += this.decoder.decode(bytes.subarray(start, start + keep));
+        if (start + keep < end) {
+          lines.push(this.pending);
+          this.pending = '';
+          this.discarding = true;
+        }
+      }
+      if (newline < 0) break;
+      if (!this.discarding) lines.push(this.pending.endsWith('\r') ? this.pending.slice(0, -1) : this.pending);
       this.pending = '';
+      this.discarding = false;
+      start = newline + 1;
     }
-    return parts.map((p) => (p.endsWith('\r') ? p.slice(0, -1) : p));
+    return lines;
   }
 }
