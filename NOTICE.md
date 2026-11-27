@@ -1734,3 +1734,4 @@ The dial draws on dAcid's [Rotary Dial mechanism](https://www.thingiverse.com/th
 - OpenAI Codex documented The Thank-You Parade's contributor tools and tested the command list.
 
 - **Release version checks (November 26, 2026)**: OpenAI Codex fixed the release cutter's version ordering and wrote its downgrade regression test.
+- **Color Doors gallery cards**: OpenAI Codex revised the blue-yellow hint and tested the copy limit for all five gallery cards.
