@@ -351,6 +351,7 @@ from the slim home-page catalog. Copying a selected file still reads its origina
   requires a positive integer round count and exits 1 on zero cases or any bad, hang or memory. Same `--seed`, same cases. `--save` writes the failing inputs to a folder.
 
 - `pocketColorCheck.ts`: host check of the Pocket Player's level colors (`pocket-out/data/` (made by `pocketData.ts`)): the same palette and byte-order math, compared with the engine's render, written as a side-by-side PNG (`npx vite-node scripts/pocketColorCheck.ts out.png`).
+- `pocketPicker.ts` decodes the inventory choice in a recorded walkthrough and identifies which key events the picker consumed.
 - `pocketHostCheck.ts`: the Pocket Player's play rules (the Pocket repository's `src/gmcore.h`) against the real engine, game by game: each packed game's committed walkthrough replays on the engine's headless player, the same keys replay through `host/hosttest.cpp` (built with `c++` and zlib), and position, frame, scroll, score, hit points, lives, counters and a picture hash must match on every tick, and the PC speaker effects it starts (tick, number, frequencies) must be the same; one line per game (`npx vite-node scripts/pocketHostCheck.ts [id ...]`).
   `pocketHostSegment.ts` matches scene entries to the next recorded segment.
 - `pocketSetupDrive.py PORT MIRROR ORIENT COLORS [WIRING]`: drives the three-step display setup with pretend BOOT presses and taps, then touch calibration; orientation takes 0 to 5 presses. Needs a board and PlatformIO's Python.
