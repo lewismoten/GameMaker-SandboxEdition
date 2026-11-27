@@ -262,12 +262,16 @@ export async function packPocketGame(src: PocketSource, store: PocketStore, pak:
     if (!name) return;
     const find = (n: string) => names.find((d) => d.toLowerCase() === n.toLowerCase());
     let cols: Uint8Array | undefined; // the palette of the last picture shown in this list (the engine's `cols`)
+    const activeLists = new Set<string>();
     const one = async (fname: string, pause: number | undefined, dflt: number): Promise<void> => {
       const real = find(fname);
       const e = fname.split('.').pop()!.toLowerCase();
       if (!real) return;
       if (e === 'lst') {
+        if (activeLists.has(real)) throw new Error(`Circular slide list: ${[...activeLists, real].join(' -> ')}`);
+        activeLists.add(real);
         for (const x of parseSlideList(file(real))) await one(x.name, x.pause ?? 0xffff, 0xffff);
+        activeLists.delete(real);
       } else if (e === 'gif') {
         const im = decodeGif(file(real));
         if (im.width !== 320 || im.height !== 200) {

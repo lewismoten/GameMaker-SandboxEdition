@@ -15,6 +15,7 @@ import { Sim, type SimScene } from './sim';
 import { readWalkPaths } from '../../kit/walkPaths';
 import { Bot } from './bot';
 import { buildCharBlocks, buildMonsterBlocks } from '../src/sprites/sprites';
+import { carGates, checkCarGate } from './carLane';
 import { align } from './align';
 
 if (align()) throw new Error('year2000: a multi-block object is out of line (above)');
@@ -159,36 +160,7 @@ async function keysAndCar(): Promise<void> {
   if (!door.solid || door.effect !== CTR.keys || (door.eamt ?? 0) >= 0) throw new Error('year2000: the CitiCar door does not take the keys');
   const ring = set.def('keys_grass');
   if ((ring.eamt ?? 0) < 3) throw new Error('year2000: the key ring must open the garage gate, the keys gate and the car');
-  // The gates are the only way to the car: with every gate solid, the door cannot be reached from the start.
-  const start = lm.at('start');
-  const seen = new Set<string>([`${start.x},${start.y}`]);
-  const todo = [[start.x, start.y]];
-  while (todo.length) {
-    const [x, y] = todo.pop()!;
-    for (const [dx, dy] of [
-      [1, 0],
-      [-1, 0],
-      [0, 1],
-      [0, -1],
-    ]) {
-      const nx = x + dx;
-      const ny = y + dy;
-      if (nx < 0 || ny < 0 || nx >= 48 || ny >= 32 || seen.has(`${nx},${ny}`)) continue;
-      const d = set.def(lm.get(nx, ny));
-      // the top row of the car is open sky only above the roof; the garage gate counts as open (keys come before it)
-      if (d.solid && !(lm.get(nx, ny) === 'garagedoor')) continue;
-      seen.add(`${nx},${ny}`);
-      todo.push([nx, ny]);
-    }
-  }
-  for (const [dx, dy] of [
-    [0, 1],
-    [0, -1],
-    [1, 0],
-    [-1, 0],
-  ])
-    if (seen.has(`${exit.x + dx},${exit.y + dy}`))
-      throw new Error(`year2000: the CitiCar's door can be reached around the gates (from ${exit.x + dx},${exit.y + dy})`);
+  for (const gate of carGates) checkCarGate(lm, gate);
   const scene: SimScene = {
     map: { ...lm.done(), monsters: lm.done().monsters.map((m) => ({ ...m, monnum: MON.none })) },
     bbl: set.build(),

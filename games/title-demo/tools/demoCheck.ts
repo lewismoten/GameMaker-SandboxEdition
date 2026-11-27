@@ -1,18 +1,32 @@
 // Plays the built title demo (disk/demo.rec) on the headless engine and checks it walks Kit along the
 // first hall to the third sign, without going through the door, and that it has no more than the
 // 1,000 key changes a recording can hold (RECLEN in code/GM/PLAYGAME.C). It prints what it saw.
+// The size is judged on the raw file and on the source list, not on parseRecording's result: like
+// PLAYGAME's fread, the parser stops at RECLEN whole records, and serializeRecording drops keys past
+// RECLEN, so a parsed or built recording can never show more than 1,000.
 //   cd web && npx vite-node ../games/title-demo/tools/demoCheck.ts
 import { readFileSync } from 'node:fs';
-import { parseRecording } from '@lewismoten/gamemaker-sandbox-engine/formats/recording';
+import { RECLEN, parseRecording } from '@lewismoten/gamemaker-sandbox-engine/formats/recording';
 import { ORIGIN } from '../../kit/starter/map';
+import { RECORDED } from '../src/demo';
 import { SIGNS_ONE } from '../src/levels';
 import { GameSim } from './sim';
 
-const all = parseRecording(new Uint8Array(readFileSync(new URL('../disk/demo.rec', import.meta.url))));
-if (all.length > 1000) {
-  console.error(`demoCheck: ${all.length} key changes; a recording holds 1,000`);
+const fail = (m: string): never => {
+  console.error(`demoCheck: ${m}`);
   process.exit(1);
-}
+};
+const bytes = new Uint8Array(readFileSync(new URL('../disk/demo.rec', import.meta.url)));
+// 3 bytes a record (a 16-bit delta and a key); a part record at the end is a broken file
+if (bytes.length % 3) fail(`demo.rec is ${bytes.length} bytes, not a whole number of 3-byte records`);
+if (bytes.length / 3 > RECLEN) fail(`demo.rec has ${bytes.length / 3} key changes; a recording holds ${RECLEN.toLocaleString('en-US')}`);
+// the source list plus the closing Esc press and release must fit too, or the build cut it short
+const wanted = RECORDED.length / 2 + 2;
+if (wanted > RECLEN) fail(`src/demo.ts has ${wanted} key changes with the Esc; a recording holds ${RECLEN.toLocaleString('en-US')}`);
+const all = parseRecording(bytes);
+if (all.length !== wanted) fail(`demo.rec has ${all.length} key changes; src/demo.ts makes ${wanted}`);
+const [press, release] = all.slice(-2).map((k) => k.key);
+if (press !== 1 || release !== 129) fail('demo.rec should end with Esc pressed and released');
 const keys = all.slice(0, -2); // without the Esc
 const sim = new GameSim(undefined, 1);
 const heroX = () => (sim.pos.x - ORIGIN) * 20 + sim.pos.sx;

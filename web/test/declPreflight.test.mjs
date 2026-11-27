@@ -55,6 +55,11 @@ describe('staleDeclarations', () => {
 });
 
 describe('decl-preflight --web', () => {
+  it('fails when the rebuild working directory is missing', () => {
+    const web = join(setup([], [], []), 'missing', 'web');
+    const r = spawnSync(process.execPath, [script, '--web', web, '--fix']);
+    expect(r.status).toBe(1);
+  });
   it('checks the tree it is given, not the checkout the script lives in', () => {
     const root = setup([100], [300], ['engine']); // stale: source newer than dist/types
     const run = (web) => spawnSync(process.execPath, [script, '--web', web], { encoding: 'utf8' });

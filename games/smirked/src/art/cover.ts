@@ -522,7 +522,7 @@ export function coverRgb(t: number): Uint8Array {
     ellipse(gx, gy, 5, 5, (nx, ny) => shade([248, 200, 160], nx, ny));
     ellipse(gx + 7, gy + 3, 5, 5, (nx, ny) => shade([248, 200, 160], nx, ny));
     // the foam sword: a fat orange foam blade, soft rounded edges and tip, a darker underside, a white
-    // stripe and FOAM lettered on it, a yellow crossguard, the price tag still on
+    // stripe, a yellow crossguard, the price tag still on
     const ang = -2.05 + shake * 0.02;
     const bx = gx - 3;
     const by = gy - 5;

@@ -36,6 +36,21 @@ describe('the to-do list', () => {
     expect(todos(p)).toEqual(again);
   });
 
+  it('keeps all 40 saved tasks when the coach suggests another', () => {
+    const p = host();
+    for (let i = 1; i <= 40; i++) addTodo(p, `task ${i}`);
+    const saved = todos(p);
+    refreshTodos(p, ['New suggestion'], 'coach');
+    expect(todos(p)).toEqual(saved);
+  });
+
+  it('distinguishes Japanese and symbol-only titles while ignoring duplicate suggestions', () => {
+    const p = host();
+    for (const title of ['入口', '出口', '★', '☆', '☀️', '☁️']) addTodo(p, title);
+    refreshTodos(p, ['入口！', '★', '新規'], 'coach');
+    expect(todos(p).map((x) => x.text)).toEqual(['新規', '入口', '出口', '★', '☆', '☀️', '☁️']);
+  });
+
   it('moves items through Doing, To do and Done, and the coach leaves the assistant’s items alone', () => {
     const p = host();
     const [a, b] = refreshTodos(p, ['One', 'Two'], 'check');

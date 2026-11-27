@@ -27,7 +27,7 @@ describe('FLAGS command line', () => {
     expect(parseFlags(['/RESTORE'])).toEqual({ kind: 'restore' });
   });
   it('reads SET, CLEAR and RESET with their words', () => {
-    expect(parseFlags(['set', 'hearts', '3'])).toEqual({ kind: 'do', verb: 'SET', what: 'HEARTS', words: ['3'] });
+    expect(parseFlags(['set', 'hearts', '3'])).toEqual({ kind: 'do', verb: 'SET', what: 'hearts', words: ['3'] });
     expect(parseFlags(['RESET', 'ALL'])).toMatchObject({ kind: 'do', verb: 'RESET', what: 'ALL' });
   });
   it('says plainly what it will not do', () => {
@@ -155,6 +155,23 @@ describe('FLAGS PLAYED', () => {
 });
 
 describe('FLAGS and the bonus games', () => {
+  it.each(['SET', 'CLEAR', 'RESET'])('%s echoes a hidden name like an unknown name', async (verb) => {
+    vi.stubGlobal('localStorage', memory());
+    const output = async (name: string) => {
+      const lines: string[] = [];
+      await runFlags({ screen: { print: (t: string) => lines.push(t) } } as never, [verb, name]);
+      return lines.join('');
+    };
+    for (const [hidden, unknown] of [
+      ['bonus', 'bogus'],
+      ['BoNuS', 'BoGuS'],
+    ]) {
+      const ordinary = await output(unknown);
+      expect(ordinary).toContain(`Don't know "${unknown}"`);
+      expect(await output(hidden)).toBe(ordinary.replace(unknown, hidden));
+    }
+  });
+
   it('does not explain how they open while none is revealed', async () => {
     vi.stubGlobal('localStorage', memory());
     vi.stubGlobal('window', { dispatchEvent: () => true });

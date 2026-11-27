@@ -1,6 +1,6 @@
-// Re-records the title screen's demo into src/demo.ts: the first stretch of the bot's own run
-// through the first level (the three throws: a pop, a star that falls short, a pop), then rebuild.
-//   cd web && npx vite-node ../games/throw-it/tools/gendemo.ts && npx vite-node ../games/throw-it/build.ts
+// Re-records the start of Stargazing Hill into src/demo.ts. Stick Man walks under the low stars
+// and jumps to pick the high ones. Run from the repository root to record and rebuild.
+//   cd web && npx vite-node ../games/stick-man-stars/tools/gendemo.ts && npx vite-node ../games/stick-man-stars/build.ts
 import { recordDemo } from '../../kit/demoRecord';
 import { play } from './play';
 

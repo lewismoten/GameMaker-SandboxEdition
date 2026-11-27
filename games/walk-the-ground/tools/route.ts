@@ -6,7 +6,7 @@
 //   level 2: step onto the soil trapdoor and sink; tunnel right under the spikes (they stay unharmed overhead); climb the
 //            ladder out to the surface; no life lost and no hit point lost
 import type { Result, StarterBot } from '../../kit/starter/bot';
-import { SCAN } from '../../kit/starter/ids';
+import { SCAN, SEQ } from '../../kit/starter/ids';
 import { ORIGIN } from '../../kit/starter/map';
 import { L1, L2 } from '../src/levels';
 
@@ -109,8 +109,17 @@ export async function theSink(bot: StarterBot): Promise<void> {
   await must(bot, bot.walk(9, 'the spikes sign'), 'to the second sign');
   await must(bot, bot.wait(LOOK), 'reading the spikes sign');
   await must(bot, bot.walk(s0 - 1, 'the trapdoor'), 'to the trapdoor');
-  // step onto the soil: it gives way and Kit sinks to the tunnel floor
-  await must(bot, bot.walk(s0 + 0.5, 'onto the soil'), 'onto the soil');
+  // Stop over the shaft before walk() would wait for a landing.
+  bot.sim.press(SCAN.right);
+  for (let t = 0; col(bot) < s0 && t < PATIENCE; t++) await must(bot, bot.tick(), 'stepping onto the soil');
+  bot.sim.release(SCAN.right);
+  if (col(bot) < s0 || row(bot) >= L2.floor - 1) throw new Error('Kit should be over the soil trapdoor');
+  const enter = 28;
+  bot.sim.press(enter);
+  await must(bot, bot.tick(), 'starting the scoop');
+  if (bot.sim.w.chr.cseq !== SEQ.dig) throw new Error('Enter should start the scoop over the trapdoor');
+  await must(bot, bot.wait(9), 'scooping the soil');
+  bot.sim.release(enter);
   await must(bot, bot.wait(LOOK), 'sinking');
   if (row(bot) < L2.floor - 1) throw new Error(`Kit should have sunk to the tunnel floor (row ${L2.floor - 1}); he is at row ${row(bot).toFixed(1)}`);
   bot.say(`Kit sank to row ${row(bot).toFixed(1)}`);
