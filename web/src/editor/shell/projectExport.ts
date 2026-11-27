@@ -1,7 +1,7 @@
 // Downloading a game of yours from the home page: its Download button and its ⋯ More menu's
 // Download… item open the chooser (download.ts, loaded when pressed) for the stored project.
 import { h, toast } from '../core/ui';
-import { loadProject, saveExportPreviews, saveProject } from '../../project/storage';
+import { loadProject, updateCompanion } from '../../project/storage';
 import { parseCompanion, setExportPreviews } from '../../project/companion';
 import { parseGame, gameTitle } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import type { DownloadGame } from './download';
@@ -18,12 +18,18 @@ async function projectGame(id: string): Promise<DownloadGame | undefined> {
   const title = gameTitle(parseGame(p.files.get(p.record.gam)!)) || p.record.name;
   return {
     title,
+    // Each remembered choice changes only the stored companion, as it is when chosen: the files
+    // read when the chooser opened are never written back over another tab's edits.
     pocketContext: async () => {
       const { pocketProjectUid } = await import('../../export/pocketLibrary');
-      const c = parseCompanion(p.record.companion);
-      const uid = pocketProjectUid(c);
-      p.record.companion = c;
-      await saveProject(id, p.record.name, p.record.gam, p.files, c);
+      let uid = '';
+      const kept = await updateCompanion(id, (stored) => {
+        const c = parseCompanion(stored);
+        uid = pocketProjectUid(c);
+        return c;
+      });
+      if (kept) p.record.companion = kept;
+      else uid = pocketProjectUid((p.record.companion = parseCompanion(p.record.companion)));
       const { isImported } = await import('./homeOrigin');
       return { uid, category: isImported(id) ? ['imported', 'unsorted'] : ['mine'] };
     },
@@ -36,7 +42,16 @@ async function projectGame(id: string): Promise<DownloadGame | undefined> {
       const c = parseCompanion(p.record.companion);
       setExportPreviews(c, on);
       p.record.companion = c;
-      void saveExportPreviews(id, on);
+      void updateCompanion(id, (stored) => {
+        const next = parseCompanion(stored);
+        setExportPreviews(next, on);
+        return next;
+      }).then(
+        (kept) => {
+          if (kept) p.record.companion = kept;
+        },
+        (e: unknown) => console.error('Could not remember the previews choice', e),
+      );
     },
   };
 }

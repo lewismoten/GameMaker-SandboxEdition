@@ -5,9 +5,12 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { readdirSync, readFileSync, existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { addStamp, loadCourier } from './courierStore';
-import { stampFor, type Known } from './stamps';
+import { earnStamp, stampFor, type Known } from './stamps';
 import { STAMP_WORDS, WORLDS } from './tables';
 import { stampText } from './courierText';
+
+const { loadGameList } = vi.hoisted(() => ({ loadGameList: vi.fn() }));
+vi.mock('../project/files', () => ({ loadGameList }));
 
 const stored = new Map<string, string>();
 beforeEach(() => {
@@ -42,6 +45,15 @@ const CATALOG: Known[] = [
 ];
 
 describe('earning stamps', () => {
+  it('stores an anonymous stamp for a recognized secret while the catalog is offline', async () => {
+    loadGameList.mockRejectedValue(new Error('offline'));
+    const [{ id }] = secrets();
+    expect(await earnStamp(`game:${id}`, 'played')).toBe(true);
+    expect(loadGameList).not.toHaveBeenCalled();
+    expect(loadCourier().postcards[0].stamps).toEqual([{ kind: 'mystery' }]);
+    expect(stored.get('gm-courier')).not.toContain(id);
+  });
+
   it('a catalog game played to its ending stamps its id; playing alone does not', () => {
     expect(stampFor('game:snow', 'played', CATALOG)).toBeUndefined();
     expect(stampFor('game:snow', 'won', CATALOG)).toEqual({ kind: 'game', game: 'snow' });

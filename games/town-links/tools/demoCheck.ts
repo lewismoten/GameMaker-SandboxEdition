@@ -6,6 +6,7 @@ import { readFileSync } from 'node:fs';
 import { parseRecording } from '@lewismoten/gamemaker-sandbox-engine/formats/recording';
 import { encodeKeys } from '../../../web/src/walkthrough/format';
 import { replay } from '../../kit/walkthrough';
+import { checkDemo } from './demoVerdict';
 
 const keys = parseRecording(new Uint8Array(readFileSync(new URL('../disk/demo.rec', import.meta.url)))).slice(0, -2); // without the Esc
 const r = await replay(
@@ -20,14 +21,8 @@ const r = await replay(
   },
   { maxMinutes: 8 },
 );
-const WANT = '2 3 2 3 4 3 4 1';
-const seen = r.scenes.slice(0, 8).join(' ');
-if (r.error) console.log(r.error);
 console.log(`demo: scenes entered ${r.scenes.join(' ')}; ${r.keysLeft} keys unplayed`);
-if (seen !== WANT || r.keysLeft) {
-  console.error(`demoCheck: expected scenes ${WANT} (the world, the town, the house, the ending) with every key played; got ${seen}`);
-  process.exit(1);
-}
+checkDemo(r);
 console.log(
   'demoCheck ok: stepped onto the town block, bumped the locked gate, went back out to the world for the key, came in again, through the house door and out and in once more, reached the ending',
 );

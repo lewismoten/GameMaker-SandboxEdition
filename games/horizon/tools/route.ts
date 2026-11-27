@@ -44,21 +44,40 @@ const solidAt = (bot: StarterBot, x: number, y: number): boolean => bot.sim.w.bg
 /** 1. Over the Hill: balls roll out of the hill and grow as they come. */
 export async function overTheHill(bot: StarterBot): Promise<void> {
   const lanes = new Set<number>();
-  const last = new Map<number, number>();
   const seen = new Set<number>();
-  let grown = 0;
-  let born = 0;
+  // each ball's own life, slot by slot: the sizes it showed, in order, from birth until its slot empties
+  const life = new Map<number, number[]>();
+  const done: number[][] = [];
+  let looks = 0;
   let first: { x: number; y: number } | undefined;
+  const end = (id: number) => {
+    done.push(life.get(id)!);
+    life.delete(id);
+  };
   const look = () => {
-    for (const b of balls(bot)) {
+    const now = balls(bot);
+    for (const id of [...life.keys()]) if (!now.some((b) => b.id === id)) end(id);
+    for (const b of now) {
       lanes.add(b.lane);
-      // a slot is reused by the next ball, so count each time one shows the next size up
-      if (b.size === 0 && last.get(b.id) !== 0) born++;
-      if (b.size === 3 && last.get(b.id) === 2) grown++;
-      last.set(b.id, b.size);
       seen.add(b.size);
       first ??= { x: b.x, y: b.y };
+      let sizes = life.get(b.id);
+      // a slot can be reused by the next ball with no empty tick between: a smaller size starts a new life
+      if (sizes && b.size < sizes[sizes.length - 1]) {
+        end(b.id);
+        sizes = undefined;
+      }
+      if (!sizes) {
+        // only a ball already rolling when Kit lands may be first seen past its smallest size
+        if (b.size !== 0 && looks) throw new Error(`level 1: a ball in lane ${b.lane} was born at size ${b.size}, not at the horizon's smallest`);
+        life.set(b.id, [b.size]);
+      } else if (b.size !== sizes[sizes.length - 1]) {
+        if (b.size !== sizes[sizes.length - 1] + 1)
+          throw new Error(`level 1: a ball in lane ${b.lane} grew from size ${sizes[sizes.length - 1]} to ${b.size}, skipping a size`);
+        sizes.push(b.size);
+      }
     }
+    looks++;
   };
   const watch = async (ticks: number) => {
     for (let i = 0; i < ticks; i++) {
@@ -74,9 +93,14 @@ export async function overTheHill(bot: StarterBot): Promise<void> {
   if (first.y > 70) throw new Error(`level 1: the first ball should start at the horizon, not at y ${first.y}`);
   if (lanes.size !== 3) throw new Error(`level 1: balls should roll in all three lanes; saw ${[...lanes]}`);
   if (seen.size !== 4) throw new Error(`level 1: balls should show all four sizes; saw ${[...seen]}`);
-  if (born < 6 || grown < born - 1)
-    throw new Error(`level 1: ${born} balls were born and ${grown} grew through their sizes; expected 6 or more and all but the last`);
-  bot.say(`${lanes.size} lanes, ${born} balls born, ${grown} grown through all four sizes`);
+  // a ball that rolled away must have shown every size in order; one still rolling must be on its way
+  const full = (sizes: number[]) => sizes.join() === '0,1,2,3';
+  const born = done.filter((sizes) => sizes[0] === 0);
+  const short = born.filter((sizes) => !full(sizes));
+  if (short.length)
+    throw new Error(`level 1: ${short.length} balls rolled away without growing through all four sizes (${short.map((x) => x.join('>')).join(' ')})`);
+  if (born.length < 6) throw new Error(`level 1: ${born.length} balls were born and grew through all four sizes; expected 6 or more`);
+  bot.say(`${lanes.size} lanes, ${born.length} balls grown through all four sizes in order, ${life.size} still rolling`);
   await leave(bot, bot.walk(DOOR_COL, 'the exit'), 'the exit');
 }
 

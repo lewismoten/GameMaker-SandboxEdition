@@ -6,7 +6,7 @@
 import './monitor.css';
 import { TextScreen } from '../text/textScreen';
 import { TextKeys } from '../text/textInput';
-import { Shell } from '../dos/shell';
+import { Shell, type ProgramLocation } from '../dos/shell';
 import { FileSystem, file, folder, liveFolder, textFile, deskDate, DOS_DATE, type DosNode, type ProgramRef } from '../dos/vfs';
 import { hardDiskGames, hdFiles, type HdGame } from '../dos/hardDisk';
 import { Downloads, type InsertedDisk } from '../host';
@@ -26,7 +26,7 @@ import { gmProgramRef } from '../dos/gmPrograms';
 
 export abstract class ComputerDrives {
   // Defined by a later layer (see the chain in the header comment).
-  abstract run(ref: ProgramRef, _args: string[]): Promise<void>;
+  abstract run(ref: ProgramRef, _args: string[], at: ProgramLocation): Promise<void>;
   abstract makeDir(drive: string, parts: string[]): Promise<string | undefined>;
 
   readonly screen: TextScreen;
@@ -73,7 +73,7 @@ export abstract class ComputerDrives {
       screen: this.screen,
       keys: this.keys,
       fs: this.fs,
-      run: (ref, args) => this.run(ref, args),
+      run: (ref, args, at) => this.run(ref, args, at),
       makeDir: (drive, parts) => this.makeDir(drive, parts),
     });
     this.downloads.onChange = () => this.opts.onDisksChanged?.();

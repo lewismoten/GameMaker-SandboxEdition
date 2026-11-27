@@ -4,7 +4,7 @@
 // the water. Three to five sites (towns, dungeon entrances, a castle) stand on open ground, each a
 // cleared patch with a door block in the middle, and a road is cut between them (through forest, over
 // mountains at a cost, never across water). Sites are proposals for scene links; nothing is linked here.
-import { DECOR, DOORC, FLOOR, PATH, ROCK, TREE, WATER, closed, distances, newArea, type Area, type Stream } from './grid';
+import { neighbor, DECOR, DOORC, FLOOR, PATH, ROCK, TREE, WATER, closed, distances, newArea, type Area, type Stream } from './grid';
 import { route } from './forest';
 import type { SceneLink } from './town';
 
@@ -23,6 +23,7 @@ export interface OverworldUses {
   decor: boolean;
   /** The map wraps over its edges: the land lines up across the seam. */
   wrap: boolean;
+  selection?: boolean;
 }
 
 const smooth = (t: number) => t * t * (3 - 2 * t);
@@ -57,6 +58,7 @@ const quantile = (v: Float32Array, share: number) => [...v].sort((a, b) => a - b
 /** An overworld filling a w by h area (at least 40 by 40). */
 export function overworld(w: number, h: number, r: Stream, u: OverworldUses): Overworld {
   const area = newArea(w, h, FLOOR);
+  area.wrap = u.wrap && !u.selection;
   const at = (x: number, y: number) => y * w + x;
   const n1 = noise(w, h, r, 16, u.wrap),
     n2 = noise(w, h, r, 8, u.wrap),
@@ -94,10 +96,8 @@ export function overworld(w: number, h: number, r: Stream, u: OverworldUses): Ov
         [0, 1],
         [0, -1],
       ]) {
-        const nx = x + dx,
-          ny = y + dy;
-        if (nx < 0 || ny < 0 || nx >= w || ny >= h) continue;
-        const n = at(nx, ny);
+        const n = neighbor(area, x + dx, y + dy);
+        if (n < 0) continue;
         if (seen[n] < 0 && land(area.cells[n])) ((seen[n] = id), stack.push(n));
       }
     }
@@ -125,7 +125,7 @@ export function overworld(w: number, h: number, r: Stream, u: OverworldUses): Ov
     for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) area.cells[at(sx + dx, sy + dy)] = FLOOR;
   }
   // roads: each site to the nearest one already joined, over land with trees and rocks passable at a cost
-  const pass: Area = { w, h, cells: area.cells.map((c) => (c === WATER ? WATER : FLOOR)) };
+  const pass: Area = { ...area, cells: area.cells.map((c) => (c === WATER ? WATER : FLOOR)) };
   const cost = new Float32Array(w * h);
   for (let i = 0; i < cost.length; i++) cost[i] = area.cells[i] === ROCK ? 14 : area.cells[i] === TREE ? 4 : 1 + r.next() * 0.6;
   const joined = sites.length ? [sites[0]] : [];

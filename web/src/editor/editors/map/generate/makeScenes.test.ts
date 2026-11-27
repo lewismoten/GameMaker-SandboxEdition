@@ -61,6 +61,13 @@ describe('make scenes from a layout’s links', () => {
     }
     expect(new Set(out.made.map((m) => m.map)).size).toBe(out.made.length);
   });
+  it('keeps dungeon map names within DOS 8.3 when the suffix reaches ten', () => {
+    const result = town();
+    result.links = [{ ...result.links[0], kind: 'dungeon' }];
+    const files = new Map<string, Uint8Array>();
+    for (let n = 1; n <= 9; n++) files.set(`dungeon${n}.map`, new Uint8Array());
+    expect(run(hostGame(), result, files).made.map((scene) => scene.map)).toEqual(['dungeo10.map']);
+  });
   it('makes only as many scenes as the host has free links, and says what it skipped', () => {
     const r = town();
     const game = hostGame(MAXSCENELINKS - 2);

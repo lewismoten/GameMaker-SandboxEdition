@@ -325,14 +325,17 @@ for (const c of csses) {
 }
 
 const rel = (f: string): string => relative(root, f);
+const showExports = !only || only === 'exports';
+const showFiles = !only || only === 'files';
+const showCss = !only || only === 'css';
 if (asJson) {
   console.log(
     JSON.stringify(
       {
-        publicExports: publicExports.map((e) => ({ ...e, file: rel(e.file) })),
-        unusedExports: unusedExports.map((e) => ({ ...e, file: rel(e.file) })),
-        unreferencedFiles: unreferencedFiles.map(rel),
-        unusedClasses: unusedClasses.map((c) => ({ ...c, file: rel(c.file) })),
+        publicExports: showExports ? publicExports.map((e) => ({ ...e, file: rel(e.file) })) : undefined,
+        unusedExports: showExports ? unusedExports.map((e) => ({ ...e, file: rel(e.file) })) : undefined,
+        unreferencedFiles: showFiles ? unreferencedFiles.map(rel) : undefined,
+        unusedClasses: showCss ? unusedClasses.map((c) => ({ ...c, file: rel(c.file) })) : undefined,
       },
       null,
       1,
@@ -344,19 +347,19 @@ if (asJson) {
     for (const x of xs) m.set(rel(x.file), [...(m.get(rel(x.file)) ?? []), x]);
     return m;
   };
-  if (!only || only === 'exports') {
+  if (showExports) {
     console.log(`Public package exports without an observed importer: ${publicExports.length} (listed in --json)`);
     const dead = unusedExports.filter((e) => e.kind === 'dead');
     console.log(`Unused exports: ${unusedExports.length} (${dead.length} dead, ${unusedExports.length - dead.length} used only in their own file)`);
     for (const [f, xs] of byFile(unusedExports)) console.log(`  ${f}: ${xs.map((x) => (x.kind === 'dead' ? x.name : `${x.name}~`)).join(', ')}`);
     console.log('  (~ = still used inside its file; only the `export` is extra)\n');
   }
-  if (!only || only === 'files') {
+  if (showFiles) {
     console.log(`Unreachable source modules: ${unreferencedFiles.length}`);
     for (const f of unreferencedFiles) console.log(`  ${rel(f)}`);
     console.log('');
   }
-  if (!only || only === 'css') {
+  if (showCss) {
     console.log(`CSS classes without a reference in JavaScript, TypeScript or HTML: ${unusedClasses.length}`);
     for (const [f, xs] of byFile(unusedClasses)) console.log(`  ${f}: ${xs.map((x) => x.cls).join(' ')}`);
   }

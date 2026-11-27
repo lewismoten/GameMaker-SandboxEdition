@@ -6,7 +6,7 @@ import { gridMove } from './rovingGrid';
 /** The next index whose label starts with the typed text, searching after `from` and wrapping; -1 when none. */
 export function typeAheadIndex(labels: string[], from: number, typed: string): number {
   const q = typed.toLowerCase();
-  if (!q) return -1;
+  if (!q || labels.length === 0) return -1;
   const n = labels.length;
   // the same letter repeated (aaa) steps through items that start with it
   const same = [...q].every((c) => c === q[0]);
@@ -39,6 +39,8 @@ export function rovingFocus(container: HTMLElement, itemSelector: string, opts: 
       if (el.getAttribute('tabindex') !== ti) el.setAttribute('tabindex', ti);
     }
   };
+  // Opening the Files drawer or crossing its breakpoint changes layout outside the container.
+  new ResizeObserver(sync).observe(container);
   let busy = false;
   new MutationObserver(() => {
     if (busy) return;

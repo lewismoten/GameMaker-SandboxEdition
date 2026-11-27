@@ -9,11 +9,12 @@ import { serializeGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game
 import { emptyMonster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { parseCharacter, serializeCharacter } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 import { GameFiles } from '../../../project/files';
+import { runChecks } from '../report';
 import { scenesOf, type SceneData } from '../sceneData';
 import { testGame, type TestGame } from '../testGame';
 import { flashing, flashesPerSecond } from './flashing';
 import { changingKeys, keyHabits } from './keyHabits';
-import { fakeExits, music, noWayOut, untitledGame } from './levelExits';
+import { fakeExits, music, noWayOut } from './levelExits';
 import { screenText } from './screenText';
 import { shotPrize } from './shotPrize';
 import { stakes } from './stakes';
@@ -124,14 +125,19 @@ describe('exits, music and flashing', () => {
     expect(noWayOut(scenesOf(t.game, t)[0], t.game).map((f) => f.severity)).toEqual(['error']);
   });
 
-  it('notes a game whose menu name is still UnTitled, on scene 0 only', () => {
+  it('reports an UnTitled menu name only in the whole-game check', async () => {
     const t = testGame(ROWS);
-    const d = scenesOf(t.game, t)[0];
+    const findings = async (scene?: number) => {
+      t.files.set('test.gam', serializeGame(t.game));
+      const report = await runChecks(new GameFiles(t.files), { play: false, scene });
+      return report.findings.filter((f) => f.check === 'untitled');
+    };
     t.game.scenes[0].desc = 'UnTitled';
-    expect(untitledGame({ ...d, scene: 0 }, t.game).map((f) => f.severity)).toEqual(['info']);
-    expect(untitledGame({ ...d, scene: 2 }, t.game)).toEqual([]);
+    expect(await findings()).toMatchObject([{ severity: 'info', where: { scene: 0 } }]);
+    expect(await findings(2)).toEqual([]);
     t.game.scenes[0].desc = 'Tin Hearts';
-    expect(untitledGame({ ...d, scene: 0 }, t.game)).toEqual([]);
+    t.game.scenes[2].desc = 'UnTitled';
+    expect(await findings()).toEqual([]);
   });
 
   it('notes a level with no song, and warns of a song DOS won’t play', () => {

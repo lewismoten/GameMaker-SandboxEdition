@@ -334,11 +334,26 @@ export function mountMagazine(host: HTMLElement, o: MagazineOptions): () => void
   };
   window.addEventListener('afterprint', afterPrint);
   const item = (label: string, which: 'page' | 'spread' | 'all') => h('button', { type: 'button', role: 'menuitem', onclick: () => void print(which) }, label);
-  printMenu.append(item('This page', 'page'), item('The pages in view', 'spread'), item('The whole issue', 'all'));
+  const choices = [item('This page', 'page'), item('The pages in view', 'spread'), item('The whole issue', 'all')];
+  printMenu.append(...choices);
   const togglePrint = (open = printMenu.hidden) => {
     printMenu.hidden = !open;
     printBtn.setAttribute('aria-expanded', String(open));
+    if (open) choices[0].focus();
+    else printBtn.focus();
   };
+  printMenu.addEventListener('keydown', (e) => {
+    const index = choices.findIndex((choice) => choice === e.target);
+    const last = choices.length - 1;
+    if (e.key === 'Escape') togglePrint(false);
+    else if (e.key === 'Home') choices[0].focus();
+    else if (e.key === 'End') choices[last].focus();
+    else if (e.key === 'ArrowDown') choices[(index + 1) % choices.length].focus();
+    else if (e.key === 'ArrowUp') choices[(index + last) % choices.length].focus();
+    else return;
+    e.preventDefault();
+    e.stopPropagation();
+  });
 
   // ---- links: the ones that open something on top run here; the rest are plain links
   root.addEventListener('click', (e) => {
@@ -359,6 +374,7 @@ export function mountMagazine(host: HTMLElement, o: MagazineOptions): () => void
   const onKey = (e: KeyboardEvent) => {
     // only while the magazine has the keys (not a box opened from it)
     if (!root.isConnected || !(root.contains(document.activeElement) || document.activeElement === document.body)) return;
+    if (printMenu.contains(document.activeElement)) return;
     if (view === 'scroll' && zoomKey(e, sizes, 'width')) {
       if (o.onClose) e.stopImmediatePropagation();
       return;

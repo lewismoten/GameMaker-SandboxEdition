@@ -2,7 +2,7 @@
 // perfTrace.ts (bytes and requests per page) and perfTasks.ts --budget 1 (INP per click at 4x CPU
 // slowdown). Prints budget, measured and delta per item and exits 1 when anything is over.
 // Budgets are in perfBudgets.json; --update rewrites them on purpose (a reviewed diff).
-//   npm run verify:perf [-- --update] [--port 5190] [--dist <existing scratch build>] [--runs 3]
+//   npm run verify:perf [-- --update [--runs 3]] [--port 5190] [--dist <existing scratch build>]
 // Never uses 5173.
 import { spawnSync } from 'node:child_process';
 import { mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
@@ -14,6 +14,7 @@ import { arg } from './perfLib';
 const FILE = resolve('scripts/perfBudgets.json');
 const PAGES = ['home', 'editor map', 'desk', 'library', 'dos.html', 'play.html blaster'];
 const update = process.argv.includes('--update');
+if (!update && process.argv.includes('--runs')) throw new Error('--runs requires --update');
 const runs = Number(arg('runs') ?? (update ? 3 : 1));
 const vite = resolve('../node_modules/vite/bin/vite.js');
 const viteNode = resolve('../node_modules/vite-node/vite-node.mjs');

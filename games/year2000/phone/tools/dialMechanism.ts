@@ -30,8 +30,6 @@ export interface WalkResult {
   /** Closing edges of SW2 seen while SW3 was closed, during the wind and during the return. */
   windPulses: number;
   returnPulses: number;
-  /** Cam angle (deg, counterclockwise travel) when the walk ended. */
-  camEnd: number;
   /** The last pulse closed this many degrees of plate travel before SW3 opened (the plate was this far from rest). */
   lastPulseFromRestDeg: number;
 }
@@ -68,7 +66,7 @@ export function walk(windDeg: number, p: DialParams = dialParams, step = 0.25): 
     }
     sw2 = now;
   }
-  return { windPulses, returnPulses, camEnd: ridges * pitch, lastPulseFromRestDeg: lastClose };
+  return { windPulses, returnPulses, lastPulseFromRestDeg: lastClose };
 }
 
 /** Angle of the hole for digit d (1..9, 0) at rest, clockwise from the top. */

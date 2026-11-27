@@ -208,6 +208,7 @@ it('keeps climbing actual footings rather than chasing nearby platforms in the a
   ]) {
     const s = chr.sequences[seq];
     s.key = key << 8;
+    s.norepeat = 1;
     for (let i = 0; i < 4; i++) Object.assign(s.frames[i], { x: dx, y: i === 3 ? -10 : -12, pic1: 50, pic2: 0, pause: 1 });
   }
   t.files.set('test.chr', serializeCharacter(chr));

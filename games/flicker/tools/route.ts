@@ -30,13 +30,24 @@ interface Seen {
   runs: number[];
 }
 
+/** Checks every recorded placement, including cells that share a ring. */
+function placedRings(bot: StarterBot, level: number): Record<string, number> {
+  const placed: Record<string, number> = {};
+  for (const { ring, x, y } of levels[level].things) {
+    const tile = bot.sim.blockAt(x + ORIGIN, y + ORIGIN);
+    if (tile !== levels[level].book.n(`${ring}.0`)) throw new Error(`${ring} starts on the wrong map frame`);
+    placed[ring] = tile;
+  }
+  return placed;
+}
+
 /** Records the frame (0 to 3) of the rings `rings` of `level` for `ticks` ticks as the bot waits. */
-async function watch(bot: StarterBot, level: number, rings: string[], ticks: number, placed?: Record<string, number>): Promise<Record<string, Seen>> {
+async function watch(bot: StarterBot, level: number, rings: string[], ticks: number, placed: Record<string, number>): Promise<Record<string, Seen>> {
   const { book } = levels[level];
   const names = [...book.index.keys()];
   const out: Record<string, Seen> = Object.fromEntries(rings.map((r) => [r, { frames: [], runs: [] }]));
   for (let t = 0; t < ticks; t++) {
-    for (const r of rings) out[r].frames.push(Number(names[bot.sim.w.blkmap[placed?.[r] ?? book.n(`${r}.0`)]].split('.').pop()));
+    for (const r of rings) out[r].frames.push(Number(names[bot.sim.w.blkmap[placed[r]]].split('.').pop()));
     await must(bot, bot.tick(), 'watching');
   }
   for (const s of Object.values(out)) {
@@ -62,13 +73,14 @@ export async function torchHall(bot: StarterBot): Promise<void> {
   await must(bot, bot.walk(7, 'the first sign'), 'to the first sign');
   await must(bot, bot.wait(LOOK), 'reading');
   await must(bot, bot.walk(14, 'the pulse torches'), 'to the pulse torches');
-  const pulse = (await watch(bot, 0, ['pulse'], 130)).pulse;
+  const placed = placedRings(bot, 0);
+  const pulse = (await watch(bot, 0, ['pulse'], 130, placed)).pulse;
   if (pulse.runs.length < 4 || distinct(pulse.runs) !== 1) throw new Error(`the pulse torch should change at even gaps, not ${pulse.runs.join(' ')}`);
   bot.say(`the pulse: a new frame every ${pulse.runs[0]} ticks`);
   await must(bot, bot.walk(20, 'the second sign'), 'to the second sign');
   await must(bot, bot.wait(LOOK), 'reading');
   await must(bot, bot.walk(28, 'the flickering torches'), 'to the flickering torches');
-  const fl = await watch(bot, 0, ['flameA', 'flameB'], 220);
+  const fl = await watch(bot, 0, ['flameA', 'flameB'], 220, placed);
   for (const r of ['flameA', 'flameB']) if (distinct(fl[r].runs) < 3) throw new Error(`${r} should change at uneven gaps, not ${fl[r].runs.join(' ')}`);
   const same = frac(fl.flameA.frames, fl.flameB.frames);
   if (same > 0.5) throw new Error(`the two flicker loops should differ; they are at the same frame ${Math.round(same * 100)}% of the time`);
@@ -78,7 +90,7 @@ export async function torchHall(bot: StarterBot): Promise<void> {
   await must(bot, bot.walk(44, 'the flag sign'), 'to the flag sign');
   await must(bot, bot.wait(LOOK), 'reading');
   await must(bot, bot.walk(46, 'the flags'), 'to the flags');
-  const flag = await watch(bot, 0, ['flagA', 'flagB'], 100);
+  const flag = await watch(bot, 0, ['flagA', 'flagB'], 100, placed);
   if (flag.flagA.frames.some((f, i) => f !== flag.flagB.frames[i])) throw new Error("the flag's two blocks should always show the same frame");
   if (distinct(flag.flagA.runs) !== 1 || distinct(flag.flagA.frames) !== 4) throw new Error('the flag should wave through four frames at even gaps');
   bot.say(`the flag: four frames, a new one every ${flag.flagA.runs[0]} ticks, both blocks in step`);
@@ -91,12 +103,7 @@ export async function theFalls(bot: StarterBot): Promise<void> {
   await must(bot, bot.walk(8, 'the first sign'), 'to the first sign');
   await must(bot, bot.wait(LOOK), 'reading');
   await must(bot, bot.walk(19, 'the fall'), 'to the fall');
-  const placed: Record<string, number> = {};
-  for (const { ring, x, y } of levels[1].things) {
-    const tile = bot.sim.blockAt(x + ORIGIN, y + ORIGIN);
-    if (tile !== levels[1].book.n(`${ring}.0`)) throw new Error(`${ring} starts on the wrong map frame`);
-    placed[ring] = tile;
-  }
+  const placed = placedRings(bot, 1);
   const w = await watch(bot, 1, Object.keys(placed), 160, placed);
   const body = w.fallL;
   if (body.runs.length < 6 || distinct(body.runs) !== 1) throw new Error(`the fall should step at even gaps, not ${body.runs.join(' ')}`);
@@ -115,7 +122,7 @@ export async function fireOnTheHill(bot: StarterBot): Promise<void> {
   await must(bot, bot.walk(8, 'the first sign'), 'to the first sign');
   await must(bot, bot.wait(LOOK), 'reading');
   await must(bot, bot.walk(16, 'the fire'), 'to the fire');
-  const w = await watch(bot, 2, ['fire.tl', 'fire.br', 'spark0', 'spark1', 'spark2'], 260);
+  const w = await watch(bot, 2, ['fire.tl', 'fire.br', 'spark0', 'spark1', 'spark2'], 260, placedRings(bot, 2));
   if (distinct(w['fire.tl'].runs) < 3) throw new Error(`the fire should step at uneven gaps, not ${w['fire.tl'].runs.join(' ')}`);
   if (w['fire.tl'].frames.some((f, i) => f !== w['fire.br'].frames[i])) throw new Error("the fire's blocks should step together");
   for (const s of ['spark0', 'spark1', 'spark2']) {

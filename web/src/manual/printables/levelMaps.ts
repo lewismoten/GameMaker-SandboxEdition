@@ -97,7 +97,7 @@ function painter(game: Game, files: GameFiles, mint: Mint): Painter {
 /** Draws a course's panels (once) and gives the URL of each, in order. */
 export type CoursePainter = (l: Level) => Promise<string[]>;
 
-function coursePainter(game: Game, files: GameFiles, mint: Mint): CoursePainter {
+function coursePainter(game: Game, files: GameFiles, mint?: Mint): CoursePainter {
   const done = new Map<Level, Promise<string[]>>();
   return (l) => {
     let p = done.get(l);
@@ -123,6 +123,16 @@ function blankUnseen(pic: { width: number; pixels: Uint8Array }, l: Level, files
     }
 }
 
+/** Concurrent callers share one load. Keep its result, but allow another attempt after failure. */
+function cachedLoad<T>(start: () => Promise<T>): () => Promise<T> {
+  let pending: Promise<T> | undefined;
+  return () =>
+    (pending ??= start().catch((error: unknown) => {
+      pending = undefined;
+      throw error;
+    }));
+}
+
 /** Each game's levels as laid out (courses and all), shared by the thumbnail and the reader, which both want them. */
 const laidOut = new WeakMap<Game, Level[]>();
 
@@ -139,11 +149,9 @@ export function levelMaps(ctx: PrintContext):
   if (!hasSecrets(ctx.entry.id)) return undefined;
   // the open viewer's pictures are blobs, revoked by release(); small pictures are data URLs, so closing the viewer leaves them be
   let blobs = new Set<string>();
-  let loaded: Promise<Loaded | undefined> | undefined;
-  let thumb: Promise<Loaded | undefined> | undefined;
-  let source: ReturnType<typeof loadLevels> | undefined;
-  const make = (keep?: Set<string>) =>
-    (source ??= loadLevels(ctx.entry)).then(async (x) => {
+  const source = cachedLoad(() => loadLevels(ctx.entry));
+  const make = (keep?: Set<string>): Promise<Loaded | undefined> =>
+    source().then(async (x) => {
       if (!x) return undefined;
       const [secret, views] = await Promise.all([loadSecrets(ctx.entry.id), loadViews(ctx.entry.id)]);
       if (!secret) return undefined;
@@ -171,14 +179,14 @@ export function levelMaps(ctx: PrintContext):
         seen,
         every,
         paint: painter(x.game, x.files, minter(keep)),
-        paintCourse: coursePainter(x.game, x.files, minter(keep)),
+        paintCourse: coursePainter(x.game, x.files, keep && minter(keep)),
         crop: cropper(),
         full: pageCounts(ctx.entry.id, x.game, seen).full <= MOST_PAGES,
         all: false,
       };
     });
-  const load = () => (loaded ??= make(blobs));
-  const loadThumb = () => (thumb ??= make());
+  let load = cachedLoad(() => make(blobs));
+  const loadThumb = cachedLoad(() => make());
   return {
     /** Lets go of the viewer's blob pictures (when the box viewer closes); the next open paints them again. */
     release() {
@@ -187,7 +195,7 @@ export function levelMaps(ctx: PrintContext):
       // a picture still being painted for the closed viewer lands here later: let go of it as it arrives
       gone.add = (url) => (URL.revokeObjectURL(url), gone);
       blobs = new Set();
-      loaded = undefined;
+      load = cachedLoad(() => make(blobs));
     },
     async render() {
       const x = await load();

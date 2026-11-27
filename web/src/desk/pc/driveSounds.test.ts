@@ -8,9 +8,18 @@ import type { SoundPart } from './driveSwitches';
 /** A Web Audio stand-in: any node method or parameter works and counts what starts. */
 function fakeContext() {
   let starts = 0;
+  let lastEnvelopeEnd = 0;
   const node = (): unknown =>
     new Proxy(function () {}, {
-      get: (_t, k) => (k === 'start' ? () => void starts++ : k === 'connect' ? (n: unknown) => n ?? node() : node()),
+      get: (_t, k) => {
+        if (k === 'linearRampToValueAtTime')
+          return (_value: number, time: number) => {
+            lastEnvelopeEnd = Math.max(lastEnvelopeEnd, time);
+          };
+        if (k === 'start') return () => void starts++;
+        if (k === 'connect') return (n: unknown) => n ?? node();
+        return node();
+      },
       set: () => true,
       apply: () => node(),
     });
@@ -22,7 +31,7 @@ function fakeContext() {
     createGain: () => node(),
     createOscillator: () => node(),
   };
-  return { ctx: ctx as unknown as BaseAudioContext, count: () => starts };
+  return { ctx: ctx as unknown as BaseAudioContext, count: () => starts, envelopeEnd: () => lastEnvelopeEnd };
 }
 
 const KINDS: DriveSound[] = ['floppy-insert', 'floppy-read', 'floppy-eject', 'tray-open', 'tray-close', 'cd-spin', 'cd-read'];
@@ -34,6 +43,13 @@ describe('renderDriveSound', () => {
     expect(count()).toBeGreaterThan(0);
     expect(dur).toBeGreaterThan(0.2);
     expect(dur).toBeLessThan(3);
+  });
+
+  it('reports enough time for the floppy insert motor envelope', () => {
+    const { ctx, envelopeEnd } = fakeContext();
+    const at = 5;
+    const duration = renderDriveSound(ctx, ctx.createGain(), 'floppy-insert', at);
+    expect(at + duration).toBeGreaterThanOrEqual(envelopeEnd());
   });
 
   it('the insert has the seat, the recalibration and the FAT read: more than the eject', () => {

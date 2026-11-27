@@ -1,4 +1,9 @@
 // Tests for the ranking in scripts/already.mjs (npm run already): more of the words wins, then the newer date.
+import { execFileSync } from 'node:child_process';
+import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import { rankCommits, rankFiles, scoreNote, searchWords } from '../../scripts/already.mjs';
 
@@ -19,6 +24,25 @@ describe('already', () => {
   it('ranks files by distinct words, then lines', () => {
     const ranked = rankFiles({ x: { 'p.ts': 1, 'q.ts': 9 }, y: { 'p.ts': 1 } });
     expect(ranked.map((r) => r.file)).toEqual(['p.ts', 'q.ts']);
+  });
+
+  it('labels two words on one line as two word-line matches', () => {
+    const cwd = mkdtempSync(join(tmpdir(), 'already-'));
+    const git = (...args) => execFileSync('git', args, { cwd });
+    try {
+      git('init', '-q');
+      writeFileSync(join(cwd, 'both.txt'), 'cat dog\n');
+      writeFileSync(join(cwd, 'one.txt'), 'cat cat\n');
+      git('add', 'both.txt', 'one.txt');
+      git('-c', 'user.name=Test', '-c', 'user.email=test@example.invalid', 'commit', '-qm', 'Fixture');
+      git('update-ref', 'refs/remotes/origin/develop', 'HEAD');
+      const script = fileURLToPath(new URL('../../scripts/already.mjs', import.meta.url));
+      const output = execFileSync(process.execPath, [script, 'cat', 'dog'], { cwd, encoding: 'utf8' });
+      expect(output).toContain('both.txt [2/2, 2 word-line matches]');
+      expect(output).toContain('one.txt [1/2, 1 word-line match]');
+    } finally {
+      rmSync(cwd, { recursive: true, force: true });
+    }
   });
 
   it('scores a note by path and title above a heading, and by distinct words', () => {

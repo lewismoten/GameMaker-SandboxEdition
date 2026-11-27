@@ -27,6 +27,12 @@ describe('wayback helpers', () => {
     expect((init.headers as Record<string, string>)['User-Agent']).toBe(USER_AGENT);
   });
 
+  it('reports a permanent HTTP lookup error without retrying', async () => {
+    const f = vi.fn(async () => json({}, 403));
+    expect(await lookup('u', f, nap)).toEqual({ snapshot: null, error: 'HTTP 403' });
+    expect(f).toHaveBeenCalledTimes(1);
+  });
+
   it('reports no snapshot, and gives up after three refusals', async () => {
     expect((await lookup('u', async () => json({ archived_snapshots: {} }), nap)).snapshot).toBeNull();
     const f = vi.fn(async () => json({}, 429));

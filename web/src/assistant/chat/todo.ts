@@ -27,7 +27,10 @@ const TODO = 'assistantTodo';
 const CREDITS = 'assistantCredits';
 const MAX = 40;
 
-const key = (t: string) => t.toLowerCase().replace(/\W+/g, ' ').trim();
+function key(text: string): string {
+  const title = text.trim().toLowerCase().normalize('NFC');
+  return /[\p{L}\p{N}_]/u.test(title) ? title.replace(/[^\p{L}\p{M}\p{N}_]+/gu, ' ').trim() : title;
+}
 const isItem = (v: unknown): v is TodoItem =>
   !!v && typeof v === 'object' && typeof (v as TodoItem).text === 'string' && typeof (v as TodoItem).id === 'string';
 
@@ -63,7 +66,10 @@ export function refreshTodos(p: TodoHost, texts: string[], from: 'coach' | 'chec
   const list = todos(p);
   const keep = list.filter((x) => x.done || x.from === 'you' || x.from === 'ai');
   const seen = new Set(keep.map((x) => key(x.text)));
-  const fresh = texts.filter((t) => t.trim() && !seen.has(key(t)) && (seen.add(key(t)), true)).map((t) => item(t, from, now));
+  const fresh = texts
+    .filter((t) => t.trim() && !seen.has(key(t)) && (seen.add(key(t)), true))
+    .slice(0, Math.max(0, MAX - keep.length))
+    .map((t) => item(t, from, now));
   return save(p, [...fresh, ...keep.filter((x) => !x.done), ...keep.filter((x) => x.done)]);
 }
 

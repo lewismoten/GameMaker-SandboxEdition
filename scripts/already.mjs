@@ -139,7 +139,7 @@ function main() {
   const files = rankFiles(fileCounts(words, cwd)).slice(0, 10);
   for (const f of files) {
     const date = git(['log', '-1', '--date=short', '--format=%ad', '--', f.file], cwd).trim();
-    console.log(`  ${date} ${f.file} [${f.words.length}/${words.length}, ${f.lines} lines]`);
+    console.log(`  ${date} ${f.file} [${f.words.length}/${words.length}, ${f.lines} word-line ${f.lines === 1 ? 'match' : 'matches'}]`);
   }
   if (!files.length) console.log('  none');
 

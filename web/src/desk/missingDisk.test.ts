@@ -25,6 +25,9 @@ describe('a disk the desk does not have', () => {
 
   it('names no other game and blames no disk the player put in', () => {
     expect(missingDiskNote('cd:hidden-thing', catalog)).toBe('That game isn’t in the disk box, so drive A: was left empty.');
-    expect(missingDiskNote('project:abc', catalog)).toMatch(/made in another browser/);
+  });
+
+  it('reports a missing project disk without guessing where it was made', () => {
+    expect(missingDiskNote('project:abc', catalog)).toBe('That project disk is unavailable in this browser.');
   });
 });

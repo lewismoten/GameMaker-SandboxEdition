@@ -2,7 +2,7 @@
 // (the gamemaker-pocket repository) to read from the pocket folder on its microSD card. Packed by pocketPack.ts
 // (the same packer as web/scripts/pocketData.ts), bundled by pocketFile.ts. What the board can't play
 // comes back as plain advice: `notes` when it still plays, an error when it can't.
-import { gamCrc32, type PocketContext, type PocketLibrary } from './pocketLibrary';
+import { gamCrc32, pocketLibraryTitle, type PocketContext, type PocketLibrary } from './pocketLibrary';
 import { pocketThumbnail } from './pocketThumbnail';
 import type { GameFiles } from '@lewismoten/gamemaker-sandbox-engine/core/gameFiles';
 import { newCards, packPocketGame, POCKET_MAX_LEVELS, POCKET_MAX_LINKS, type PocketSource, type PocketStore } from './pocketPack';
@@ -56,7 +56,7 @@ export async function exportPocket(
     schema: 'gmp-library',
     version: 1,
     uid: options.library?.uid ?? `legacy:gam:${gamCrc32(files.get(options.gam)!)}:${id}`,
-    title: options.title,
+    title: pocketLibraryTitle(options.title),
     dosName: options.gam.replace(/\.gam$/i, '').toUpperCase(),
     category: ['imported', 'unsorted'],
     ...options.library,

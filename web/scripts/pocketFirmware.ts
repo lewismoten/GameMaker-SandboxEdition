@@ -50,6 +50,18 @@ for (const e of pin.files) {
     bad++;
   }
 }
+const notice = readFileSync(new URL('../public/pocket/fw/NOTICES.txt', import.meta.url));
+for (const board of new Set(pin.files.map((e) => e.board))) {
+  const path = new URL(`../public/pocket/fw/${board}/NOTICES.txt`, import.meta.url);
+  if (checkOnly) {
+    if (!existsSync(path) || !readFileSync(path).equals(notice)) {
+      console.error(`MISSING or WRONG  ${board}/NOTICES.txt`);
+      bad++;
+    }
+  } else if (!bad) {
+    writeFileSync(path, notice);
+  }
+}
 if (bad) {
   console.error(`Pocket firmware: ${bad} file(s) not usable. The release ${pin.tag} must exist on ${pin.repo} (scripts/release_fw.py --publish there).`);
   process.exit(1);

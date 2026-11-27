@@ -9,6 +9,7 @@
 import { deltaEBytes as deltaE, simulateBytes as simulate, type Rgb, type Vision } from '@lewismoten/gamemaker-sandbox-engine/gfx/colorVision';
 import { skyOf } from '../../kit/starter/palette';
 import { buildLevels } from '../src/levels';
+import { hasInk, shapeDifference } from './blockInk';
 
 const { book, pal } = buildLevels();
 const sky = skyOf(pal);
@@ -16,19 +17,10 @@ const rgb = (i: number): Rgb => [0, 1, 2].map((k) => (pal.pal[i * 3 + k] << 2) |
 
 /** The mean color of a block's own pixels (not the sky around it), as `v` sees it (or untouched). */
 function mean(name: string, v?: Vision): Rgb {
-  const px = [...book.pics.get(name)!.px].filter((c) => c !== sky && c !== 255);
+  const px = [...book.pics.get(name)!.px].filter((c) => hasInk(c, sky));
   const sum = [0, 0, 0];
   for (const c of px) (v ? simulate(rgb(c), v) : rgb(c)).forEach((x, k) => (sum[k] += x));
   return sum.map((x) => x / px.length) as Rgb;
-}
-
-/** The share of cells where exactly one of the two blocks has ink. */
-function shapeDifference(a: string, b: string): number {
-  const pa = book.pics.get(a)!.px;
-  const pb = book.pics.get(b)!.px;
-  let diff = 0;
-  for (let i = 0; i < pa.length; i++) if ((pa[i] === sky) !== (pb[i] === sky)) diff++;
-  return diff / pa.length;
 }
 
 const KINDS: (Vision | undefined)[] = [undefined, 'deutan', 'protan', 'tritan'];
@@ -39,7 +31,7 @@ const LEVELS: { level: number; safe: string; hot: string; mustTell: Partial<Reco
 
 let bad = 0;
 for (const { level, safe, hot, mustTell } of LEVELS) {
-  const shape = shapeDifference(safe, hot);
+  const shape = shapeDifference(book.pics.get(safe)!.px, book.pics.get(hot)!.px, sky);
   for (const v of KINDS) {
     const color = deltaE(mean(safe, v), mean(hot, v));
     const tells = color >= 25 || shape >= 0.2;
