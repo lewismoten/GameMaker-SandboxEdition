@@ -18,6 +18,24 @@ const unpack = (b: Uint8Array) => {
 };
 
 describe('exportPocket', () => {
+  it('identifies circular slide lists during export', async () => {
+    const files = peach();
+    files.set('end.lst', new TextEncoder().encode('second.lst'));
+    files.set('second.lst', new TextEncoder().encode('END.LST'));
+    await expect(exportPocket(files, { title: 'Peach', gam: 'PEACH.GAM' })).rejects.toThrow(/end.lst -> second.lst -> end.lst/i);
+  });
+
+  it('plays a nested list again when it appears twice', async () => {
+    const files = peach();
+    files.set('end.lst', new TextEncoder().encode('second.lst 10\nsecond.lst 20'));
+    files.set('second.lst', new TextEncoder().encode('items.txt'));
+    const { bytes } = await exportPocket(files, { title: 'Peach', gam: 'PEACH.GAM' });
+    const cards = text(readBundle(bytes).get('peach.cfg')!.bytes)
+      .split('\n')
+      .filter((line) => line.startsWith('card w '));
+    expect(cards.map((line) => line.split(' ')[4])).toEqual(['10', '20']);
+  });
+
   it('writes the same bytes twice', async () => {
     const a = await exportPocket(peach(), { title: 'Peach', gam: 'PEACH.GAM' });
     const b = await exportPocket(peach(), { title: 'Peach', gam: 'PEACH.GAM' });

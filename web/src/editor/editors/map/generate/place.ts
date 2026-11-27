@@ -98,9 +98,19 @@ export function offers(
   rect: Rect,
   extra: { monsters?: number[]; bg?: Block[]; wrap?: boolean; hero?: Character; difficulty?: number } = {},
 ): Offer[] {
+  const selection = rect.x !== 0 || rect.y !== 0 || rect.w !== MLEN || rect.h !== MWID;
   return [0, 1, 2, 3].map((i) => {
     const s = offerSeed(seed, i);
-    const outcome = generate(roles, { kind, seed: s, rect, monsters: extra.monsters, wrap: extra.wrap, hero: extra.hero, difficulty: extra.difficulty });
+    const outcome = generate(roles, {
+      kind,
+      seed: s,
+      rect,
+      monsters: extra.monsters,
+      wrap: extra.wrap,
+      selection,
+      hero: extra.hero,
+      difficulty: extra.difficulty,
+    });
     const placed = outcome.ok ? place(blocks, outcome.result, roles, terrains).blocks : undefined;
     return { seed: s, outcome, blocks: placed, check: outcome.ok ? checkLayout(outcome.result, placed!, extra.bg) : undefined };
   });

@@ -58,3 +58,25 @@ it('keeps DOS player controls at least 44px tall in touch landscape', async () =
     await page.close();
   }
 });
+
+it.each([
+  { width: 320, height: 568 },
+  { width: 568, height: 320 },
+])('sizes Getting started dialog touch targets at $width × $height', async (viewport) => {
+  const page = await browser.newPage({ viewport, hasTouch: true });
+  try {
+    await page.setContent(
+      '<dialog class="modal"><div class="home-start-dialog"><ul><li><button class="link-btn">AI setup</button></li></ul><p class="meta"><a href="#/help">Read the Guide →</a></p></div></dialog>',
+    );
+    for (const file of ['editor.css', 'dialogsPhone.css', 'home.css']) {
+      await page.addStyleTag({ content: readFileSync(`src/editor/shell/${file}`, 'utf8') });
+    }
+    await page.locator('dialog').evaluate((dialog: HTMLDialogElement) => dialog.showModal());
+    const button = await page.getByRole('button').boundingBox();
+    expect.soft(button!.height).toBeGreaterThanOrEqual(44);
+    expect.soft(button!.width).toBeGreaterThanOrEqual(44);
+    expect.soft((await page.getByRole('link').boundingBox())!.height).toBeGreaterThanOrEqual(24);
+  } finally {
+    await page.close();
+  }
+});

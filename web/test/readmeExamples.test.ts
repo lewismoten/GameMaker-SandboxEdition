@@ -2,7 +2,7 @@
 // checks what each prints against its `// prints:` line, so the READMEs cannot drift from the code.
 // Skipped when the packages are not built (npm run build:packages).
 import { execFileSync } from 'node:child_process';
-import { existsSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
@@ -20,26 +20,24 @@ function block(readme: string, heading: string): string {
   return text.slice(start, text.indexOf('\n```', start)) + '\n';
 }
 
-function run(code: string, name: string): string {
-  const file = join(web, `.readme-example-${name}.mjs`); // inside web/ so the packages resolve
-  writeFileSync(file, code);
-  try {
-    return execFileSync('node', [file], { cwd: root, encoding: 'utf8' }).trim();
-  } finally {
-    rmSync(file, { force: true });
-  }
+function run(code: string): string {
+  return execFileSync('node', ['--input-type=module'], { cwd: root, input: code, encoding: 'utf8' }).trim();
 }
 
+it('runs the snippet without a script file', () => {
+  expect(run('console.log(process.argv[1] ?? "stdin")')).toBe('stdin');
+});
+
 describe.skipIf(!built)('README examples', () => {
-  for (const [readme, heading, name] of [
-    ['engine/README.md', '## Read a game file in Node.js', 'engine'],
-    ['archives/README.md', '## ZIP reading and writing', 'archives'],
+  for (const [readme, heading] of [
+    ['engine/README.md', '## Read a game file in Node.js'],
+    ['archives/README.md', '## ZIP reading and writing'],
   ]) {
     it(`${readme} prints what its comment says`, () => {
       const code = block(readme, heading);
       const expected = /^\/\/ prints: (.*)$/m.exec(code)?.[1];
       expect(expected).toBeTruthy();
-      expect(run(code, name)).toBe(expected);
+      expect(run(code)).toBe(expected);
     });
   }
 });

@@ -7,6 +7,7 @@
 // the very error Vite handed to "vite:preloadError" (the event that notice answers), when it comes
 // back as an unhandled rejection. Anything else, a TypeError after the failed import included,
 // still shows the box.
+import { ReadOnlyError } from '../project/readOnlyError';
 import { messageOf, type ErrorInfo } from './details';
 
 /** Errors that are not the player's trouble (a resize loop, a cancelled fetch). */
@@ -16,10 +17,10 @@ export function ignorable(message: string): boolean {
 
 /**
  * A look-only game refusing a change (editor/core/readOnly.ts): its own dialog already says what
- * happened. Matched by name, so this tiny listener imports nothing from the editor.
+ * happened.
  */
 export function refusedChange(reason: unknown): boolean {
-  return reason instanceof Error && reason.name === 'ReadOnlyError';
+  return reason instanceof ReadOnlyError;
 }
 
 /** The errors Vite reported in "vite:preloadError", which the load-failure notice already shows. */

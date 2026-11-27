@@ -8,10 +8,12 @@ import { decodeVoc } from '@lewismoten/gamemaker-sandbox-engine/formats/voc';
 // 65535 x 65535 image header with a few bytes of LZW data (the review's 38-byte repro, shortened).
 const hugeGif = Uint8Array.from([...Buffer.from('GIF89a'), 1, 0, 1, 0, 0, 0, 0, 0x2c, 0, 0, 0, 0, 0xff, 0xff, 0xff, 0xff, 0, 2, 2, 0x44, 1, 0]);
 
-// A VOC of many silence blocks, each 65536 samples, repeated by a repeat block.
-function silenceVoc(blocks: number): Uint8Array {
+// Each silence block holds 65536 samples. A repeat count adds that many extra plays.
+function silenceVoc(blocks: number, repeats = 0): Uint8Array {
   const out: number[] = [...Buffer.from('Creative Voice File\x1a'), 0x1a, 0, 0x0a, 0x01, 0x29, 0x11];
+  if (repeats) out.push(6, 2, 0, 0, repeats, 0);
   for (let i = 0; i < blocks; i++) out.push(3, 3, 0, 0, 0xff, 0xff, 0x83);
+  if (repeats) out.push(7, 0, 0, 0);
   out.push(0);
   return Uint8Array.from(out);
 }
@@ -23,6 +25,9 @@ describe('input limits', () => {
   });
   it('refuses a VOC whose silence blocks add up to hours', () => {
     expect(() => decodeVoc(silenceVoc(1000))).toThrow(/too long/);
+  });
+  it('plays a silence block three times when asked to repeat twice', () => {
+    expect(decodeVoc(silenceVoc(1, 2)).samples.length).toBe(3 * 65536);
   });
   it('still decodes a short VOC with silence', () => {
     expect(decodeVoc(silenceVoc(2)).samples.length).toBe(2 * 65536);

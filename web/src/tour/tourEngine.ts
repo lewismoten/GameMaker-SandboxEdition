@@ -27,7 +27,7 @@ import { hushDemos } from '../media/demoAudio';
 
 /** Asks the page's game preview to start or stop (homeShowcase.ts listens). */
 const tourDemo = (what: 'play' | 'stop') => window.dispatchEvent(new CustomEvent('gm-tour-demo', { detail: what }));
-import { askPage } from './pageAct';
+import { askPage, type ActOutcome } from './pageAct';
 import { onDosPage, pageHere, pageOf } from './tourPages';
 import { requestFilenameFocus } from '../routeFocus';
 import { parseHash, setHashParams } from '../urlState';
@@ -82,7 +82,7 @@ export class Tour {
   private focusLater?: HTMLElement;
   private releaseFocusHold?: () => void;
   /** Steps whose page act was asked for (once a tour), and the chapters they were in. */
-  private acted = new Set<string>();
+  private acted = new Map<string, Promise<ActOutcome>>();
   private actedIn = new Set<Chapter>();
   /** What the chapter shown changed and puts back when it is left (steps.ts Keep). */
   private kept?: { chapter: Chapter; storage: [string, string | null][]; selected?: string; params: Record<string, string | undefined> };
@@ -320,7 +320,7 @@ export class Tour {
     if (target) await this.stage.bringIntoView(target);
     if (!this.live(token)) return;
     this.stage.clearBar(target);
-    this.caption.textContent = captionOf(chapter, step);
+    this.caption.textContent = step.act?.hold ? '' : captionOf(chapter, step);
     const clip = this.clipUrl(chapter, step);
     if (clip && !(await availableOffline(clip))) {
       if (!this.live(token)) return;
@@ -332,11 +332,15 @@ export class Tour {
     }
     // the clip starts with the bubble (after the hosts have walked), never before it
     let voice: Promise<number> = Promise.resolve(0);
-    const speak = () => (voice = this.sound.speak(this.clipUrl(chapter, step)));
+    const speak = () => {
+      if (step.act?.hold) this.caption.textContent = captionOf(chapter, step);
+      voice = this.sound.speak(this.clipUrl(chapter, step));
+    };
     // the next steps' clips load while this one plays (a clip that is late stays silent)
     for (const up of this.flat.slice(this.i + 1, this.i + 3)) this.sound.prefetch(this.clipUrl(up.chapter, up.step));
-    await this.act(chapter, step, target, token, speak);
+    const outcome = await this.act(chapter, step, target, token, speak);
     if (!this.live(token)) return;
+    if (outcome && outcome !== 'shown') return skip();
     const said = await voice;
     if (!this.live(token)) return;
     await this.clock.wait(Math.max(stepMs(step), said), this.paused);
@@ -455,7 +459,7 @@ export class Tour {
 
   // ---- the hosts ---------------------------------------------------------------------------
 
-  private async act(chapter: Chapter, step: TourStep, target: HTMLElement | undefined, token: number, speak: () => void): Promise<void> {
+  private async act(chapter: Chapter, step: TourStep, target: HTMLElement | undefined, token: number, speak: () => void): Promise<ActOutcome | void> {
     const actorId = step.actor ?? chapter.actor;
     const speakerId = step.speaker ?? chapter.speaker;
     const actor = this.stage.host(actorId);
@@ -491,18 +495,19 @@ export class Tour {
         if (!this.live(token)) return;
       }
     } else this.sound.effect(step.sound);
-    let held: Promise<void> = Promise.resolve();
-    if (step.act && !this.acted.has(step.id)) {
-      this.acted.add(step.id);
+    let held = this.acted.get(step.id);
+    if (step.act && !held) {
       this.actedIn.add(chapter);
       held = pageAct(step.act);
+      this.acted.set(step.id, held);
     }
     if (step.demo && (step.demo === 'stop' || !this.still)) tourDemo(step.demo);
     if (!this.live(token)) return;
     if (step.action === 'enter' && actor) await actor.hop(this.still);
     if (!this.live(token)) return;
     // a held line waits for the page (the BBS's handle prompt on the screen)
-    await held;
+    const outcome = await held;
+    if (outcome && outcome !== 'shown') return outcome;
     if (!this.live(token)) return;
     this.stage.say(step, speaker, box);
     speak();

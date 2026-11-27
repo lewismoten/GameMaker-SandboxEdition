@@ -47,3 +47,15 @@ describe(`printed parts keep ${MIN_GAP} mm from a ${LEAD} mm lead stub and from 
     });
   }
 });
+
+it.each([
+  [-1, 1, 0],
+  [2, 3, 2],
+])('measures the triangle interior against a body spanning y=%s to %s', (lo, hi, expected) => {
+  const mesh = { id: 'tray', pos: [0, 0, 0, 30, 0, 0, 0, 0, 30], idx: [0, 1, 2] };
+  const [{ body }] = measure([mesh], [], [{ id: 'part', bbox: [4, lo, 4, 6, hi, 6] }], () => null);
+  expect(body.gap).toBe(expected);
+  expect(body.at[1]).toBe(0);
+  for (const axis of [0, 2]) expect(body.at[axis]).toBeGreaterThanOrEqual(4);
+  for (const axis of [0, 2]) expect(body.at[axis]).toBeLessThanOrEqual(6);
+});

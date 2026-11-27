@@ -19,7 +19,7 @@ import { downloadButton } from './downloadButton';
 import { catalogDownloadable } from '../../export/downloadable';
 import { fictionNote } from '../../export/fiction';
 import { fillRating } from './homeRatings';
-import { deferHomeDemo, mayStartHomeDemo } from './homeDemoStart';
+import { deferHomeDemo, mayStartHomeDemo, prepareHomeDemo } from './homeDemoStart';
 
 const KIND_LABEL: Record<GameKind, string> = {
   mine: 'My game',
@@ -265,9 +265,8 @@ export function showcase(nav: HomeNav, refresh: () => Promise<void>, life?: Abor
     clear(notes);
     // Even asking whether a demo exists can fetch the ZIP; notes inspect the same files.
     // Keep both behind the same start gate as the player, including on data-saving visits.
-    let checked: Promise<boolean> | undefined;
-    const prepareDemo = async (explicit: boolean) => {
-      checked ??= (async () => {
+    const prepareDemo = prepareHomeDemo(
+      async () => {
         if (game.health?.released) clear(notes, healthNote({ ...game.health, notes: demoNotes }));
         const yes = await game.hasDemo();
         if (gen !== generation || !el.isConnected || life?.aborted) return false;
@@ -277,15 +276,17 @@ export function showcase(nav: HomeNav, refresh: () => Promise<void>, life?: Abor
           if (dialog) actions.insertBefore(dialog, actions.querySelector('.card-more'));
         }
         return yes;
-      })().catch(() => {
-        checked = undefined;
-        return false;
-      });
-      const yes = await checked;
-      if (gen !== generation || !el.isConnected || life?.aborted || !yes || demo) return;
-      if (!explicit && document.hidden) scheduleDemoStart();
-      else if (explicit || (mayStartHomeDemo() && !demosStopped())) play();
-    };
+      },
+      (explicit) => {
+        if (gen !== generation || !el.isConnected || life?.aborted || demo) return false;
+        if (!explicit && document.hidden) {
+          scheduleDemoStart();
+          return false;
+        }
+        return explicit || (mayStartHomeDemo() && !demosStopped());
+      },
+      play,
+    );
     const scheduleDemoStart = () => {
       cancelDemoStart = deferHomeDemo(
         screen,

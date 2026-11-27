@@ -6,7 +6,7 @@ import about from '../about.json';
 export const STORY = wrap(`
 |150 BLOCKS
 
-A game gets 150 blocks to draw with, and no more.
+A background set gets 150 blocks to draw with, and no more. Levels can use different sets.
 
 A small explorer in a red beanie walks past a tower that is one big picture, then past a village built from a few blocks used again and again.
 
@@ -41,6 +41,8 @@ Made with GAME-MAKER 3.0 from Recreational Software Designs.
 One of the Starters: small games that each show one idea.
 
 Raised starts, scroll framing and tiled signs by OpenAI Codex (GPT-6.1 Sol), directed by Lewis Moten.
+
+Block limit wording corrected by OpenAI Codex (GPT-6).
 `),
 );
 
