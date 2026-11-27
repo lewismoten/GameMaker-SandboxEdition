@@ -211,6 +211,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex fixed and tested Starter lead appearances on the Cast page.
 - OpenAI Codex tested event registration and removal for editor undo shortcuts.
 - OpenAI Codex fixed and tested the editor’s file count accessibility and shareware notice layout on phones.
+- OpenAI Codex fixed and tested monster counts in the map generator preview.
 - OpenAI Codex fixed and tested walkthrough segment selection in the Pocket host checker.
 - OpenAI Codex fixed and tested the Switches title demo checker.
 - OpenAI Codex fixed and tested how the SDK README examples run from standard input.
