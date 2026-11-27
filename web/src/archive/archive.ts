@@ -3,25 +3,12 @@
 // shows counts only: never a file's or a game's name.
 import { fetchOrder, partCount, takePart, type Manifest } from './plan';
 import { progressAnnouncements } from '../editor/core/progressAnnouncements';
+import { fetchOne } from './fetchOne';
 
 const AT_ONCE = 4;
 
 const $ = (id: string) => document.getElementById(id) as HTMLElement;
 const say = (text: string) => ($('status').textContent = text);
-
-async function fetchOne(url: string): Promise<boolean> {
-  for (let tries = 0; tries < 2; tries++) {
-    try {
-      // 'reload': past the browser's cache, so the archive's crawler sees the request
-      const r = await fetch(url, { cache: 'reload' });
-      await r.arrayBuffer();
-      if (r.ok) return true;
-    } catch {
-      /* try once more */
-    }
-  }
-  return false;
-}
 
 async function run(): Promise<void> {
   const q = new URLSearchParams(location.search);

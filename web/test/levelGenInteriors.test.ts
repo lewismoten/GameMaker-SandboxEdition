@@ -2,6 +2,9 @@ import { describe, expect, it } from 'vitest';
 import type { Facing, RoleMap } from '@lewismoten/gamemaker-sandbox-tools/kit/blockRoles';
 import { generate, proveResult, verifyReach, type GenKind, type GenResult } from '@lewismoten/gamemaker-sandbox-tools/kit/levelGen';
 
+import { castle } from '../packages/tools/src/kit/levelGen/castle';
+import { WALL, distances, stream } from '../packages/tools/src/kit/levelGen/grid';
+
 type E = { roles: string[]; facing?: Facing; pair?: number };
 const map = (e: Record<number, E>): RoleMap => e as unknown as RoleMap;
 // blocks 20..23 are chairs facing N, E, S, W; 30..33 beds; 40..43 shelves; 50..53 counters
@@ -148,6 +151,12 @@ describe('castle', () => {
       expect(res.blocks[res.exit]).toBeDefined();
     }
   });
+  it('connects every open cell to the gate in a minimum-size castle', () => {
+    const { area, entry } = castle(30, 24, stream(7), { path: true, decorate: true });
+    const steps = distances(area, entry);
+    expect(area.cells.filter((kind, i) => kind !== WALL && steps[i] < 0)).toHaveLength(0);
+  });
+
   it('uses the door block at the gate and refuses a small area', () => {
     const res = run('castle', roles, 5, { x: 0, y: 0, w: 40, h: 30 });
     expect(res.blocks[res.rect.h * res.rect.w - res.rect.w / 2]).toBe(3);

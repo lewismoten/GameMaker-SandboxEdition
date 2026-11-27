@@ -5,5 +5,5 @@ import { PATCHES } from '@lewismoten/gamemaker-sandbox-engine/player/patchTable'
 
 it('preserves the complete DOS player patch table', () => {
   expect(PATCHES).toHaveLength(139);
-  expect(createHash('sha256').update(JSON.stringify(PATCHES)).digest('hex')).toBe('83bdc016d33c710d3d0ef997623d366bc3f969ab6062c3f34ee440d178e88d0d');
+  expect(createHash('sha256').update(JSON.stringify(PATCHES)).digest('hex')).toBe('d5813332e71784bec6d99e0e33e7b0cb871db9b296e2728798c0bb428d2e19ca');
 });

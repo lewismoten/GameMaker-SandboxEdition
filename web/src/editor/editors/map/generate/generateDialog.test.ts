@@ -105,3 +105,31 @@ it.each([
   elements.find((el) => el.tag === 'dialog')!.fire('cancel');
   await done;
 });
+
+it('ignores a worker result after the dialog is dismissed', async () => {
+  const { done, elements } = openPlatformDialog();
+  let resolve!: (result: { won: boolean; why: string; ticks: number }) => void;
+  const cancel = vi.fn();
+  vi.mocked(startPlatformBot).mockReturnValue({ done: new Promise((res) => (resolve = res)), cancel });
+  await vi.dynamicImportSettled();
+  await vi.runAllTimersAsync();
+  expect(startPlatformBot).toHaveBeenCalledTimes(1);
+  const chip = elements.find((el) => el.className.includes('gen-chip'))!;
+  const text = chip.textContent;
+  elements.find((el) => el.tag === 'dialog')!.fire('cancel');
+  await done;
+  expect(cancel).toHaveBeenCalledOnce();
+  resolve({ won: true, why: '', ticks: 1 });
+  await vi.runAllTimersAsync();
+  expect(chip.textContent).toBe(text);
+  expect(startPlatformBot).toHaveBeenCalledTimes(1);
+});
+
+it('does not launch a queued worker after the dialog is dismissed', async () => {
+  const { done, elements } = openPlatformDialog();
+  await vi.dynamicImportSettled();
+  elements.find((el) => el.tag === 'dialog')!.fire('cancel');
+  await done;
+  await vi.runAllTimersAsync();
+  expect(startPlatformBot).not.toHaveBeenCalled();
+});

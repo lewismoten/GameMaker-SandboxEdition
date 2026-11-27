@@ -2,6 +2,8 @@
 
 Part of the [source map](../README.md).
 
+The editor throws the shared class in `readOnlyError.ts` when a look-only game refuses a change. The global error watcher recognizes that class because the editor already explains the refusal.
+
 Portable `GameFiles` and 8.3 names belong to the [engine package](../../packages/engine/README.md) (`src/core/gameFiles.ts`). ZIP, game packs, import scanning, leftovers and customized-player recovery belong to the [archives package](../../packages/archives/README.md) (`src/project/`). Below, `gamePack.ts`, `zip.ts`, `importScan.ts`, `importLeftovers.ts`, `importPlayer.ts` and `extensionNames.ts` refer to the archives package; `gameFiles.ts` refers to the engine package. The other filenames refer to this folder's site integration.
 
 A game's files (`files.ts`: the public facade and local file loading; `catalogFiles.ts`: catalog types, loading and hydration; `hostedFiles.ts`: hosted transport and shared caches),

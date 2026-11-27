@@ -130,9 +130,10 @@ window.open(…?receive…)  ─────────────────
    `files` may also hold a single .zip, .gmpak or exported .html, which is opened like a link.
    Folders in file names (`SNOWDAY/SNOWDAY.MAP`) are dropped, as DOS names have none.
 
-4. **Read the answer.** Once a `gm-files` message has arrived, you get `gm-received`
-   (`{type, name, files}`) when the visitor has said yes and the game is kept: `name` is the
-   game's display title and `files` is the number of files, not the `files` object you sent.
+4. **Read the answer.** After the visitor accepts, Game-Maker sends `gm-received`. Its `name` is the
+   game's display title and `files` is the number of files. The optional `shareware: true`
+   field means Game-Maker recognized the game and opens the catalog copy. For other games,
+   Game-Maker keeps an imported copy.
    Otherwise you get `gm-error` (`{type, reason, message}`). Its `reason` is one of:
    - `declined`: the visitor said no;
    - `invalid`: the message or a file is malformed or damaged;
@@ -160,27 +161,56 @@ Game-Maker. The heart of it:
 ```html
 <input id="files" type="file" multiple />
 <button id="send">Open in Game-Maker</button>
+<p id="log" role="status"></p>
 <script>
   const GM = 'https://lewismoten.github.io/GameMaker-SandboxEdition/';
   const GM_ORIGIN = new URL(GM).origin;
 
+  const log = document.getElementById('log');
+  let active;
   document.getElementById('send').addEventListener('click', () => {
+    active?.();
     const picked = [...document.getElementById('files').files];
     const url = `${GM}?receive&in=web&mode=play&from=${encodeURIComponent(location.origin)}`;
     const gm = window.open(url, 'gamemaker'); // in the click itself; no "noopener"
-    const payload = Promise.all(picked.map(async (f) => [f.name, await f.arrayBuffer()]));
+    if (!gm) {
+      log.textContent = 'Allow pop-ups for this page and try again.';
+      return;
+    }
+    log.textContent = 'Waiting for Game-Maker…';
     let sent = false;
-    addEventListener('message', async function onMessage(event) {
+    async function onMessage(event) {
       if (event.source !== gm || event.origin !== GM_ORIGIN) return;
       if (event.data?.type === 'gm-ready' && !sent) {
         sent = true;
-        const entries = await payload;
+        let entries;
+        try {
+          entries = await Promise.all(picked.map(async (f) => [f.name, await f.arrayBuffer()]));
+        } catch {
+          if (active === stop) {
+            log.textContent = 'Could not read the selected files. Try again.';
+            stop();
+          }
+          return;
+        }
+        if (active !== stop) return;
         gm.postMessage({ type: 'gm-files', files: Object.fromEntries(entries) }, GM_ORIGIN, entries.map(([, b]) => b));
       } else if (event.data?.type === 'gm-received' || event.data?.type === 'gm-error') {
-        removeEventListener('message', onMessage);
-        console.log(event.data);
+        stop();
+        log.textContent = event.data.type === 'gm-received' ? 'Game-Maker opened the game.' : event.data.message;
       }
-    });
+    }
+    function stop() {
+      clearTimeout(timer);
+      removeEventListener('message', onMessage);
+      active = undefined;
+    }
+    const timer = setTimeout(() => {
+      stop();
+      log.textContent = 'Game-Maker timed out. Try again.';
+    }, 60000);
+    active = stop;
+    addEventListener('message', onMessage);
   });
 </script>
 ```

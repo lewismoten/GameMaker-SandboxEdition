@@ -13,12 +13,13 @@ export interface SampleFolder {
   entry: CatalogEntry;
 }
 
-/** The name a Starter gets when its about.json has no dosName: its id's letters and digits (8 at most), or 6 and "~n" when that is taken. */
+/** The name a Starter gets when its about.json has no dosName: its id's letters and digits (8 at most), shortened to fit "~n" when needed. */
 function sampleDirName(id: string, taken: Set<string>): string {
   const base = id.toUpperCase().replace(/[^A-Z0-9]/g, '') || 'GAME';
   let name = base.slice(0, 8);
   for (let n = 1; taken.has(name) || base.length > 8; n++) {
-    name = `${base.slice(0, 6)}~${n}`;
+    const suffix = `~${n}`;
+    name = base.slice(0, 8 - suffix.length) + suffix;
     if (!taken.has(name)) break;
   }
   taken.add(name);

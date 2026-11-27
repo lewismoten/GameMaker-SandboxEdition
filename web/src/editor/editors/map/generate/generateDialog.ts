@@ -110,7 +110,14 @@ export async function generateDialog(host: GenerateHost): Promise<void> {
     hero = undefined;
   }
 
-  await modal<void>('Generate a layout', (close) => {
+  let dismiss = () => {};
+  const build = (close: (value: void | undefined) => void) => {
+    const finish = () => {
+      botRun++;
+      running?.cancel();
+      close(undefined);
+    };
+    dismiss = finish;
     const rect = () => (inSelection && sel ? sel : WHOLE);
     const usesHref = `#/p/${host.project.id}/${encodeURIComponent(host.bbl)}?tab=uses`;
     const kindSel = h('select', { 'aria-label': 'Kind of layout' }, ...KINDS.map((k) => h('option', { value: k.id, selected: k.id === kind }, k.label)));
@@ -176,6 +183,7 @@ export async function generateDialog(host: GenerateHost): Promise<void> {
         bots.set(o, 'playing');
         pick();
         await new Promise((res) => setTimeout(res, 0));
+        if (token !== botRun) return;
         let run: BotRun;
         let mine: RunningBot | undefined;
         try {
@@ -187,6 +195,7 @@ export async function generateDialog(host: GenerateHost): Promise<void> {
           });
           run = await mine.done;
         } catch (e) {
+          if (token !== botRun) return;
           if ((e as Error).name === 'AbortError') {
             bots.delete(o);
             return;
@@ -195,8 +204,8 @@ export async function generateDialog(host: GenerateHost): Promise<void> {
         } finally {
           if (running === mine) running = undefined;
         }
-        bots.set(o, run);
         if (token !== botRun) return;
+        bots.set(o, run);
         const c = chipOf(o);
         const chip = chips[i];
         if (chip) {
@@ -346,7 +355,7 @@ export async function generateDialog(host: GenerateHost): Promise<void> {
           ? `Layout drawn and ${n} scene${n === 1 ? '' : 's'} made (${out.made.map((m) => m.label).join(', ')}). Undo takes back the layout, not the scenes.${left}`
           : `Layout drawn, but no scene was made.${left}`,
       );
-      close(undefined);
+      finish();
     }
     function pick(): void {
       buttons.forEach((b, i) => b.setAttribute('aria-pressed', String(i === chosen)));
@@ -394,7 +403,7 @@ export async function generateDialog(host: GenerateHost): Promise<void> {
       const o = current[chosen];
       if (!o?.blocks) return;
       host.apply(o.blocks, `${kindInfo(kind).label} layout`, addMonsters && !NO_MONSTERS.has(kind) && o.outcome.ok ? o.outcome.result : undefined);
-      close(undefined);
+      finish();
     });
     const monBox = h('input', { type: 'checkbox', checked: addMonsters, 'aria-label': 'Add monsters' });
     monBox.addEventListener('change', () => ((addMonsters = monBox.checked), refresh()));
@@ -437,9 +446,9 @@ export async function generateDialog(host: GenerateHost): Promise<void> {
         grid,
         note,
         linksBox,
-        h('div', { class: 'toolbar' }, use, h('button', { type: 'button', onclick: () => close(undefined) }, 'Cancel')),
+        h('div', { class: 'toolbar' }, use, h('button', { type: 'button', onclick: finish }, 'Cancel')),
       ),
     );
-  });
-  running?.cancel();
+  };
+  await modal<void>('Generate a layout', build, () => dismiss());
 }
