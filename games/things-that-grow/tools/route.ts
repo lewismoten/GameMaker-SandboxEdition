@@ -78,8 +78,10 @@ export async function emptyNest(bot: StarterBot): Promise<void> {
     throw new Error('level 2: the nest should have turned into an empty nest when touched');
   bot.say('the path nest is empty');
   await waitUntil(bot, () => alive(bot, BLUEBIRD) === 0, 'waiting for the blue birds to go');
-  await must(bot, bot.wait(SHELF_QUIET), 'a quiet moment');
-  if (alive(bot, BLUEBIRD) !== 0) throw new Error('level 2: the emptied nest should hatch no more');
+  for (let tick = 0; tick < SHELF_QUIET; tick++) {
+    await must(bot, bot.wait(1), 'a quiet moment');
+    if (alive(bot, BLUEBIRD) !== 0) throw new Error('level 2: the emptied nest should hatch no more');
+  }
   await must(bot, bot.walk(40, 'on'), 'on past the nest');
   coins(bot, score, 6, 'level 2 before the exit');
   await leave(bot, bot.walk(43, 'the exit'), 'the exit');

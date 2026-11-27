@@ -6,14 +6,9 @@
 // copy) is the shell's (editor/shell/released.ts); this file has no DOM.
 import type { Project } from './project';
 import type { GameFiles } from '../../project/files';
+import { ReadOnlyError } from '../../project/readOnlyError';
 
-/** Thrown where a change was refused, so the rest of that change (a rename's delete, say) never runs. */
-export class ReadOnlyError extends Error {
-  constructor(what: string) {
-    super(`This game is open to look at only: ${what} was not changed.`);
-    this.name = 'ReadOnlyError';
-  }
-}
+export { ReadOnlyError };
 
 /**
  * Companion sections (project/companion.ts) a look-only game may still keep, in memory only:

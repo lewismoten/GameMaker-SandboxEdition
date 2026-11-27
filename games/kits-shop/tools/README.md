@@ -2,7 +2,7 @@
 
 - `check.ts`: the bot plays the level and must win without losing a life. `route.ts` asserts what the signs teach: six coins on the path, the gold and silver key stalls each take three, the heart stall does nothing with no coins left (a bump), two more coins from the ladder, the heart (a fourth life), two gates, the exit.
 - `walkthrough.ts`, `gendemo.ts`: re-record the walkthrough and the title demo (the whole level, up to the exit).
-- `demoCheck.ts`: plays the built `demo.rec` on the real engine and checks both keys were bought with no coins left, then the heart.
+- `demoCheck.ts`: plays the built `demo.rec` on the real engine and checks both keys were bought, the hero tried the heart stall with no coins and stayed in place, then bought the heart.
 - `preview.ts`: PNGs of the blocks, the hero, the level and every picture.
 
 ## What the engine does here

@@ -2,7 +2,7 @@
 // round clearings, only the biggest open region kept (the rest becomes trees), then a winding path
 // (the cheapest walk over noisy costs) from the entry to the farthest open cell, rocks and flowers
 // in the open. Cells beside the path stay open, so the path never has to squeeze.
-import { DECOR, FLOOR, PATH, ROCK, TREE, closed, farthest, newArea, openAround, type Area, type Stream } from './grid';
+import { neighbor, DECOR, FLOOR, PATH, ROCK, TREE, closed, farthest, newArea, openAround, type Area, type Stream } from './grid';
 
 function smooth(a: Area): void {
   const { w, h, cells } = a;
@@ -115,10 +115,8 @@ export function route(a: Area, from: number, to: number, cost: Float32Array): nu
       [0, 1],
       [0, -1],
     ]) {
-      const nx = x + dx,
-        ny = y + dy;
-      if (nx < 0 || ny < 0 || nx >= a.w || ny >= a.h) continue;
-      const n = ny * a.w + nx;
+      const n = neighbor(a, x + dx, y + dy);
+      if (n < 0) continue;
       if (closed(a.cells[n])) continue;
       const nd = d + cost[n];
       if (nd < best[n]) ((best[n] = nd), (from_[n] = c), push([nd, n]));

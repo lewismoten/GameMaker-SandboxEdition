@@ -27,6 +27,20 @@ describe('dialog measurements', () => {
     await browser?.close();
   });
 
+  it.each([
+    [400, 60, 1, 0],
+    [320, 90, 0, 1],
+    [400, 90, 1, 1],
+  ])('classifies marked list overflow for %i by %i content', (width, height, hard, allowed) =>
+    withPage({}, async (page) => {
+      await page.setContent(
+        `<dialog open aria-label="Questions"><div data-list-area="questions" style="width:320px;height:60px;overflow:auto"><div style="width:${width}px;height:${height}px"></div></div><button style="height:30px">Close</button></dialog>`,
+      );
+      const { problems } = await measure(page);
+      expect(problems.filter((problem) => !problem.includes('[allowed list]'))).toHaveLength(hard);
+      expect(problems.filter((problem) => problem.includes('[allowed list]'))).toHaveLength(allowed);
+    }));
+
   it('keeps a full-size checkbox target when its separate caption is shorter', () =>
     withPage({}, async (page) => {
       await page.setContent(

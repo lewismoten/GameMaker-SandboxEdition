@@ -21,6 +21,11 @@ const read = (f: string) => new Uint8Array(readFileSync(join(disk, f)));
 const ext = (e: string) => files.filter((f) => f.endsWith(`.${e}`));
 const game = hasDisk ? parseGame(read('maximus.gam')) : (undefined as never);
 
+it('prints the disk size to one decimal place', async () => {
+  const pages = await MAXIMUS.pages({ games: [], game: () => undefined, mag: ISSUES[2] });
+  expect(JSON.stringify(pages)).toContain('7.0 MB, with');
+});
+
 describe.skipIf(!hasDisk)('the Maximus feature', async () => {
   const pages = await MAXIMUS.pages({ games: [], game: () => undefined, mag: ISSUES[2] });
   const text = JSON.stringify(pages);

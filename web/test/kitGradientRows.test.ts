@@ -14,6 +14,8 @@ describe('gradient rows', () => {
     expect(p.px[159 * 320]).toBe(14);
     // every step between shows up
     expect(new Set(p.px)).toEqual(new Set([11, 12, 13, 14]));
+    // Rounding alone would give shade 11 on every row from 16 through 23.
+    expect(new Set(p.px.subarray(16 * 320, 24 * 320))).toEqual(new Set([11, 12]));
   });
 
   it('keeps the 4x4 pattern unless asked', () => {

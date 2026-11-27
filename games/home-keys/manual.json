@@ -81,11 +81,11 @@
     },
     {
       "head": "Level 3: Leap Shelves",
-      "html": "<h1>Level 3: Leap Shelves</h1><p>The way to the door is flat: walk, with the arrows. Two shelves of coins sit higher than a jump reaches. Stand a little left of the first one and press <kbd>E</kbd>: Mara leaps up and to the right and lands on it. Walk off the end, and from the right of the second shelf press <kbd>Q</kbd> to leap up and to the left. They are extras. Nothing in the level needs them.</p>"
+      "html": "<h1>Level 3: Leap Shelves</h1><p>The way to the door is flat: walk, with the arrows. Two shelves of coins sit higher than a jump reaches. Stand a little left of the first one and press <kbd>E</kbd>: Mara leaps up and to the right and lands on it. From that landing, press <kbd>Q</kbd> to leap up and left if you want the three coins on the upper ledge. Walk off its right end to drop back onto the first shelf, then walk down to the ground. From the right of the second shelf press <kbd>Q</kbd> to leap up and to the left. They are extras. Nothing in the level needs them.</p>"
     },
     {
       "head": "How this level is made",
-      "html": "<h1>How level 3 is made</h1><ul><li><b>Q and E.</b> Two sequences, each on its own key (scan codes 16 and 18). Each is a push up (16 pixels a frame, a little more than a jump) and a push to the side (11 pixels a frame), with the Momentum setting on so gravity takes the push back. One press does what Space with an arrow does, only higher.</li><li><b>The shelves.</b> Open <b>three.map</b>: planks four blocks above the ground, so a jump of three and a bit falls short, and Mara can come up through a plank from below but stands on it from above.</li><li><b>Optional on purpose.</b> The door and its path are on the ground. The check that comes with the game plays it twice: once with only the arrows, Space and Enter, and once with the leaps.</li></ul>"
+      "html": "<h1>How level 3 is made</h1><ul><li><b>Q and E.</b> Two sequences, each on its own key (scan codes 16 and 18). Each is a push up (16 pixels a frame, a little more than a jump) and a push to the side (11 pixels a frame), with the Momentum setting on so gravity takes the push back. One press does what Space with an arrow does, only higher.</li><li><b>The shelves.</b> Open <b>three.map</b>: planks four blocks above the ground, so a jump of three and a bit falls short, and Mara can come up through a plank from below but stands on it from above. The upper planks sit four blocks above the first shelf and extend to its left.</li><li><b>Optional on purpose.</b> The door and its path are on the ground. The check that comes with the game plays it twice: once with only the arrows, Space and Enter, and once with the leaps.</li></ul>"
     },
     {
       "head": "The number pad's diagonals: a little history",
@@ -97,7 +97,7 @@
     },
     {
       "head": "Make it yours",
-      "html": "<h1>Make it yours</h1><p>Try one change at a time, and play after each:</p><ul><li>Change the jump key on the Character tab to a different key, then fix the sign and the controls list to match.</li><li>Make a third leap on the number pad's 7 (scan code 71) the same as Q.</li><li>Lower a shelf until a plain jump reaches it, and see how the level feels without a reason for E.</li><li>Add a second jelly beside the first, and throw twice.</li></ul><p>The home page's <b>Starters</b> tab has more small games like this one. Mara's Moves shows what a key does while it is held.</p>"
+      "html": "<h1>Make it yours</h1><p>Try one change at a time, and play after each:</p><ul><li>Change the jump key on the Character tab to a different key, then fix the sign and the controls list to match.</li><li>Make a third leap on the number pad's 7 (scan code 71) the same as Q.</li><li>Lower a shelf until a plain jump reaches it, and see how the level feels without a reason for E.</li><li>Add a second jelly beside the first, and throw twice.</li></ul><p>The home page's <b>Starters</b> tab has more small games like this one. Kit's Moves shows what a key does while it is held.</p>"
     }
   ]
 }

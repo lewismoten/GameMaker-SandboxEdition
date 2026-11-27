@@ -7,7 +7,7 @@ import { stockProblems } from '@lewismoten/gamemaker-sandbox-tools/kit/laserStoc
 import { checkStockCuts } from './laserStockAssertions';
 import { CUT, ENGRAVE } from '@lewismoten/gamemaker-sandbox-tools/kit/laserSvg';
 import { buildPlowedStreet, fittingTable } from '../../games/snowbound/laser/plowedBuild';
-import { MALL, PITCH, STEM, STREET, STREETS, checkLock, plate } from '../../games/snowbound/laser/plowedDims';
+import { MALL, PITCH, START, STEM, STREET, STREETS, checkLock, plate } from '../../games/snowbound/laser/plowedDims';
 import { assemblySvg } from '../../games/snowbound/laser/plowedSteps';
 
 const box = buildPlowedStreet();
@@ -52,10 +52,33 @@ describe('Plowed Street box sheets', () => {
   });
 });
 
+function isStreetTree(streets: typeof STREETS): boolean {
+  const edges = streets.map(([a, b, c, d]) => [`${a},${b}`, `${c},${d}`]);
+  const cells = new Set(edges.flat());
+  const reached = new Set([START.join(',')]);
+  for (const cell of reached) {
+    for (const [from, to] of edges) {
+      if (cell === from) reached.add(to);
+      if (cell === to) reached.add(from);
+    }
+  }
+  return streets.length === cells.size - 1 && reached.size === cells.size && cells.has(START.join(','));
+}
+
 describe('Plowed Street street map', () => {
+  it('rejects a square loop beside a disconnected street', () => {
+    expect(
+      isStreetTree([
+        [0, 0, 1, 0],
+        [1, 0, 1, 1],
+        [1, 1, 0, 1],
+        [0, 1, 0, 0],
+        [2, 0, 2, 1],
+      ]),
+    ).toBe(false);
+  });
   it('is a tree (no loops), so no piece of the lid is cut loose', () => {
-    const cells = new Set(STREETS.flatMap(([a, b, c, d]) => [`${a},${b}`, `${c},${d}`]));
-    expect(STREETS.length).toBe(cells.size - 1);
+    expect(isStreetTree(STREETS)).toBe(true);
   });
   it('keeps the walls between streets at least as thick as the plywood', () => {
     expect(PITCH - STREET).toBeGreaterThanOrEqual(3);

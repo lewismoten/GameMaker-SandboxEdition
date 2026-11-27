@@ -55,7 +55,7 @@ export function buildThrower(heroBlocks: Parameters<typeof buildHero>[0]): Chara
   const steps: [string, string, number][] = [['hurt.top', 'hurt', 10], ...ERASE.map(([t, b]) => [t, b, 8] as [string, string, number])];
   steps.forEach(([t, b, pause], i) => (die.frames[i] = { ...first, pic1: heroBlocks.n(t), pic2: heroBlocks.n(b), pause }));
   // the kit's jump already sits on Space; the ladder-climbing keys go quiet
-  Object.assign(ch.sequences[SEQ.jump], { key: KEY.space, jstkMov: 1, jstkBut: 1 });
+  ch.sequences[SEQ.jump].key = KEY.space;
   for (const q of [SEQ.up, SEQ.upW, SEQ.down, SEQ.downS]) ch.sequences[q].key = 0;
   Object.assign(ch.sequences[SEQ.up], { jstkMov: 0 });
   Object.assign(ch.sequences[SEQ.down], { jstkMov: 0 });

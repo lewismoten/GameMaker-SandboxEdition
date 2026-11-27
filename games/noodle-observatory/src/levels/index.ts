@@ -1,5 +1,4 @@
-// THE NOODLE OBSERVATORY's scenes in order: six chapters of three levels each, and three scenes you watch unfold
-// (a story from clear winter dusk in the kitchen to the indigo night on the roof).
+// THE NOODLE OBSERVATORY’s scenes in play order, from winter dusk in the kitchen to night on the roof.
 //   First Lens (watch)                          the tin monkey rolls the first lens into the scope; the moon
 //   1 Cupboard Astronomy: hinges, drawers, topshelf, scope      parts for the telescope
 //   2 Pantry Orbit: roundway, narrow, uphill, larder          up the pantry in the pasta ring

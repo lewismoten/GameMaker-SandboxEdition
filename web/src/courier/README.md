@@ -33,8 +33,8 @@ the desk and SCOOT.EXE on the PC, so it loads nothing from `src/desk/` (the PC i
   version, checksum and every count and id before anything is written.
 - `trips.ts`: Send Scoot on a trip, a visitor arriving, sending it home and welcoming Scoot home.
   This screen's home postcard never travels and no postcard from this screen comes back to it; a
-  capsule this screen wrote is refused politely; a trip visits a screen once and comes home once
-  (deduped by trip id); one visitor at a time.
+  capsule this screen wrote is refused politely; each screen remembers its last 64 visits and last 64 homecomings separately.
+  Older trip files can be accepted again. Only one visitor stays at a time.
 - `capsuleFile.ts`: saving SCOOT.SCT through the browser's download and opening one through its
   file picker (the card's Setup and SCOOT.EXE's Setup).
 - `scootExe.ts`: SCOOT.EXE in `C:\COMM`, a text-mode reader with Mail, Postcards, Packages and

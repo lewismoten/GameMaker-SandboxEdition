@@ -1,4 +1,4 @@
-// Authentication and staging with a fake extractor: no tar or external process is run.
+// Verify authentication and staged publication during backup restore.
 import { expect, it, vi } from 'vitest';
 import { createCipheriv, scryptSync } from 'node:crypto';
 import { existsSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
@@ -33,6 +33,19 @@ it('authenticates before extraction and cleans up a failed restore', async () =>
     ).rejects.toThrow('extract failed');
     expect(existsSync(dest)).toBe(false);
     expect(readdirSync(dir)).toEqual(['backup.enc']);
+    if (process.platform !== 'win32') {
+      const tar = join(dir, 'tar');
+      writeFileSync(tar, '#!/bin/sh\ntouch "$4/partial"\nkill -TERM "$$"\n', { mode: 0o700 });
+      vi.stubEnv('PATH', dir + ':' + process.env.PATH);
+      try {
+        await expect(restoreBackup(file, dest, 'test-passphrase')).rejects.toThrow('SIGTERM');
+        expect(existsSync(dest)).toBe(false);
+        expect(readdirSync(dir).sort()).toEqual(['backup.enc', 'tar']);
+      } finally {
+        vi.unstubAllEnvs();
+        rmSync(tar);
+      }
+    }
     await restoreBackup(file, dest, 'test-passphrase', async (archive: string, staged: string) => {
       expect(readFileSync(archive)).toEqual(plain);
       expect(existsSync(dest)).toBe(false);
