@@ -149,6 +149,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex corrected the VOC buffer allocation row in the Programmer’s Guide and wrote its regression test.
 - OpenAI Codex fixed and tested level selector validation for the Thank-You Parade picture exporter.
 - OpenAI Codex fixed and tested the quiet-period bird check in Seeds and Nests.
+- OpenAI Codex fixed and tested return links between Starter scenes with intro cards.
 - OpenAI Codex fixed and tested the editor’s file count accessibility and shareware notice layout on phones.
 - OpenAI Codex fixed and tested walkthrough segment selection in the Pocket host checker.
 - OpenAI Codex fixed and tested the Switches title demo checker.
