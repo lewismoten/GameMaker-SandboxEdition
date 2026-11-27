@@ -1,4 +1,5 @@
 // Tests for agent usage counting, on a small synthetic log.
+import { execFileSync } from 'node:child_process';
 import { describe, expect, it } from 'vitest';
 import { csvCell, readUsage, taskTitle, usageCsv, usageHead, usageRow } from './agentUsageLib';
 
@@ -68,6 +69,13 @@ describe('agent usage', () => {
     expect(row).toHaveLength(usageHead.length);
     expect(row.slice(0, 5)).toEqual([u.first, u.last, 's1', 'a1', 'Do it']);
     expect(row.slice(5)).toEqual(['model-a', 'general', 'Do it', 'completed', 1, 2, 3, 4, 10]);
+  });
+
+  it('round-trips a lone carriage return in the raw task as one CSV field', () => {
+    const row = usageRow('s', 'agent-a.jsonl', { description: 'one\rtwo' }, readUsage(''));
+    const parse = 'import csv, io, json, sys; print(json.dumps(list(csv.reader(io.StringIO(sys.stdin.buffer.read().decode(), newline="")))))';
+    const parsed = execFileSync('python3', ['-c', parse], { input: usageCsv([row]), encoding: 'utf8' });
+    expect(JSON.parse(parsed)).toEqual([usageHead, row.map(String)]);
   });
 
   it('writes a non-empty, correctly quoted title in every CSV row', () => {

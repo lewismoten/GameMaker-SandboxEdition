@@ -10,6 +10,8 @@ import { starterGroupOf } from '../../project/starter';
 import { unlockAchievement } from '../../achievements';
 import { playHref, seeHref } from './howDoIGo';
 
+let latestAction = 0;
+
 /** The two buttons for one question, with names that say which question they are for. */
 export function questionButtons(entry: CatalogEntry, q: Question, onGo?: () => void): HTMLElement {
   const go = (label: string, href: (e: CatalogEntry, q: Question) => Promise<string | undefined>, primary = false) => {
@@ -20,19 +22,30 @@ export function questionButtons(entry: CatalogEntry, q: Question, onGo?: () => v
         class: primary ? 'primary' : '',
         'aria-label': `${label}: ${q.q}`,
         onclick: () => {
+          const action = ++latestAction;
+          const hash = location.hash;
+          let left = false;
+          const leave = () => {
+            left = true;
+          };
+          window.addEventListener('hashchange', leave);
+          const active = () => action === latestAction && !left && location.hash === hash && b.isConnected;
           b.disabled = true;
           b.textContent = 'Opening…';
           void href(entry, q)
-            .then((to) =>
-              to
-                ? ((location.hash = to),
-                  onGo?.(),
-                  primary || unlockAchievement('learn-lesson'),
-                  toast(`${primary ? 'Starting' : 'Opened the map of'} ${entry.title}, level ${q.level}.`))
-                : toast('That level could not be opened.'),
-            )
-            .catch(() => toast('That level could not be opened.'))
+            .then((to) => {
+              if (!active()) return;
+              if (!to) return toast('That level could not be opened.');
+              location.hash = to;
+              onGo?.();
+              if (!primary) unlockAchievement('learn-lesson');
+              toast(`${primary ? 'Starting' : 'Opened the map of'} ${entry.title}, level ${q.level}.`);
+            })
+            .catch(() => {
+              if (active()) toast('That level could not be opened.');
+            })
             .finally(() => {
+              window.removeEventListener('hashchange', leave);
               b.disabled = false;
               b.textContent = label;
             });

@@ -101,7 +101,7 @@ export const STARTERS: CastMember[] = [
         as: 'rides the bed of a truck while the scenery slides past, then watches a little car drive a loop and waits for three laps to open the door',
       },
       { game: 'momentum', as: 'glides on after letting go, and runs up to hop wide gaps' },
-      { game: 'jump-boots', as: 'taps up a tall cliff like a jet pack, then jumps twice in boots that hold only two jumps' },
+      { game: 'jump-boots', as: 'taps up a tall cliff like a jet pack, then jumps twice in boots that start with two jumps' },
       { game: 'diagonal-wrap', as: 'follows a road down the map and out of the bottom, then round the map three times on a tilted one' },
       { game: 'shore', as: 'crosses a pier over a sea that turns itself, then walks a beach where the waves run up the sand and back' },
       { game: 'twinkle', as: 'walks a night meadow under stars that blink all at once, then under stars that twinkle in no step' },

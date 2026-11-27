@@ -5,6 +5,7 @@
 - `walkthrough.ts`, `gendemo.ts`: re-record the walkthrough and the title demo. The demo is level 1: Kit takes the plain coins and the first coin, and its number rises and goes.
 - `demoCheck.ts`: plays the built `demo.rec` headless and checks one coin paid 100, its number appeared and is gone, and two coins are untouched.
 - `preview.ts`: PNGs of the blocks, the hero, the monsters, each level and every picture. `shots.ts`: PNGs of the lessons for the progress shots.
+- `frames.ts <outDir>`: writes one strip of engine frames per pickup across both levels and checks each score change.
 
 ## Starter rule: show the mistake once
 

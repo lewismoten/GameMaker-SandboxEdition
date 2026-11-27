@@ -3,6 +3,7 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest';
 
 const saves: Record<string, Record<string, Uint8Array>> = {};
+vi.mock('./highScores', () => ({ allMineTables: async () => ({}) }));
 vi.mock('../project/storage', () => ({
   loadSaveData: async (id: string) => ({ ...(saves[id] ?? {}) }),
   writeSaveFile: async (id: string, name: string, bytes: Uint8Array) => {

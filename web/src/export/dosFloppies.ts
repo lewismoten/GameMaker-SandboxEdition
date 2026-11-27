@@ -1,6 +1,6 @@
 // Lay a DOS export out on formatted 1.44 MB FAT12 disks. Files are never sliced or rewritten.
 import type { ZipEntry } from '@lewismoten/gamemaker-sandbox-archives/zip';
-import { dosInstallFiles, isGeneratedDosInstall } from './dosInstall';
+import { diskMarker, dosInstallFiles, isGeneratedDosInstall } from './dosInstall';
 
 const room = 2847 * 512;
 const slots = 224;
@@ -12,7 +12,7 @@ export function splitDosFiles(entries: ZipEntry[], stem: string): ZipEntry[][] {
     const name = e.name.toUpperCase();
     if (!/^[A-Z0-9_'\-~!@#$%^&()]{1,8}(\.[A-Z0-9_'\-~!@#$%^&()]{1,3})?$/.test(name)) throw new Error(`Not a flat DOS name: ${e.name}`);
     if (names.has(name)) throw new Error(`Duplicate DOS name: ${name}`);
-    if (/^DISK\d+\.ID$/.test(name)) throw new Error(`${name} is reserved for disk markers.`);
+    if (/^(?:DISK\d+\.ID|.+\.D\d{2})$/.test(name)) throw new Error(`${name} is reserved for disk markers.`);
     if (/^INSTALL\.(BAT|TXT)$/.test(name) && !isGeneratedDosInstall(name, e.data, stem))
       throw new Error(`Keep the author's own ${name}; not generated installation support.`);
     names.add(name);
@@ -51,6 +51,10 @@ export function splitDosFiles(entries: ZipEntry[], stem: string): ZipEntry[][] {
       count = disks.length;
       continue;
     }
-    return disks.map((disk, i) => [...support, { name: `DISK${i + 1}.ID`, data: new TextEncoder().encode(`${stem} disk ${i + 1} of ${count}\r\n`) }, ...disk]);
+    return disks.map((disk, i) => [
+      ...support,
+      { name: diskMarker(stem, i + 1), data: new TextEncoder().encode(`${stem} disk ${i + 1} of ${count}\r\n`) },
+      ...disk,
+    ]);
   }
 }

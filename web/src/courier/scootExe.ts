@@ -100,10 +100,13 @@ export async function runScootExe(ui: Ui): Promise<void> {
   let asking = false;
   /** What the last trip action did, shown in Setup. */
   let said = '';
-  // catalog games' titles for their stamps, in by the time Postcards is reached (until then a stamp says "A game")
+  let redrawPostcards: (() => void) | undefined;
   let title: (id: string) => string | undefined = () => undefined;
   void catalogTitles()
-    .then((t) => (title = t))
+    .then((t) => {
+      title = t;
+      redrawPostcards?.();
+    })
     .catch(() => undefined);
 
   const frame = (keys: string) => {
@@ -162,14 +165,17 @@ export async function runScootExe(ui: Ui): Promise<void> {
         });
         if (c.mail.some((m) => !m.read)) s.write(X + 2, TOP + 2 + ROWS - 1, DIM, toCp437(fit('* new letter', IN)));
       } else if (section === 'Postcards') {
-        // each postcard's name, then its stamps two to a row; ↑↓ scroll a long rack (cur is the top row)
-        const rows = c.postcards.flatMap(
-          (p, i) => [...(i ? [['']] : []), [postcardTitle(p)], ...stampRows(p, title, IN).map((r) => [r, DIM])] as [string, number?][],
-        );
-        cur = Math.max(0, Math.min(cur, rows.length - ROWS));
-        frame(rows.length > ROWS ? ' ←→ Section  ↑↓ Scroll  Esc Quit' : ' ←→ Section  Esc Quit');
-        if (!c.postcards.length) lines([[EMPTY.Postcards]]);
-        else lines(rows.slice(cur, cur + ROWS));
+        redrawPostcards = () => {
+          // each postcard's name, then its stamps two to a row; ↑↓ scroll a long rack (cur is the top row)
+          const rows = c.postcards.flatMap(
+            (p, i) => [...(i ? [['']] : []), [postcardTitle(p)], ...stampRows(p, title, IN).map((r) => [r, DIM])] as [string, number?][],
+          );
+          cur = Math.max(0, Math.min(cur, rows.length - ROWS));
+          frame(rows.length > ROWS ? ' ←→ Section  ↑↓ Scroll  Esc Quit' : ' ←→ Section  Esc Quit');
+          if (!c.postcards.length) lines([[EMPTY.Postcards]]);
+          else lines(rows.slice(cur, cur + ROWS));
+        };
+        redrawPostcards();
       } else if (section === 'Packages') {
         frame(' ←→ Section  Esc Quit');
         lines(c.packages.length ? [[`In the satchel (${MAX_PACKAGES} at most):`], ...c.packages.map((p) => [`  ${p}`] as [string])] : [[EMPTY.Packages]]);
@@ -186,6 +192,7 @@ export async function runScootExe(ui: Ui): Promise<void> {
       }
 
       const k = await ui.keys.next();
+      redrawPostcards = undefined;
       const key = k.key.length === 1 ? k.key.toUpperCase() : k.key;
       if (asking) {
         const id = reading ?? c.mail[cur]?.id;
@@ -220,6 +227,7 @@ export async function runScootExe(ui: Ui): Promise<void> {
       }
     }
   } finally {
+    redrawPostcards = undefined;
     s.resetPalette();
     s.clear();
   }

@@ -65,6 +65,14 @@ function packParts(): void {
 async function main() {
   if (!existsSync(join(phone, 'kicad'))) return;
   mkdirSync(join(out, 'deluxe'), { recursive: true });
+  const required = readFileSync(join(phone, 'tools/gerber-files.txt'), 'utf8').trim().split(/\s+/);
+  for (const b of BUILDS) {
+    for (const name of required) {
+      const file = join(b.dir, 'gerbers', name);
+      const stat = statSync(file, { throwIfNoEntry: false });
+      if (!stat?.isFile() || !stat.size) throw new Error(`Missing or empty fabrication file: ${file}`);
+    }
+  }
   packParts();
   const stl: ZipEntry[] = [
     text(
@@ -86,7 +94,7 @@ async function main() {
     board.push(...firmware(b.dir, b.folder));
     for (const f of walk(join(b.dir, 'kicad'))) board.push(entry(`${b.folder}/kicad/${relative(join(b.dir, 'kicad'), f)}`, f));
     const gerbers = join(b.dir, 'gerbers');
-    if (existsSync(gerbers)) for (const f of walk(gerbers)) board.push(entry(`${b.folder}/gerbers/${relative(gerbers, f)}`, f));
+    for (const f of walk(gerbers)) board.push(entry(`${b.folder}/gerbers/${relative(gerbers, f)}`, f));
     for (const [from, to] of [
       ['bom.csv', 'parts-list.csv'],
       ['PARTS.md', 'PARTS.md'],

@@ -65,7 +65,7 @@ export class StarterBot {
 
   /** Walks to level column `bx` (its left edge at bx * 20 pixels), jumping when a wall stops him.
    *  `jumpWhenJittering` also jumps when a solid monster shoves him back and forth with no net progress (6 ticks). */
-  async walk(bx: number, label = '', max = 900, opts: { jumpWhenJittering?: boolean } = {}): Promise<Result> {
+  async walk(bx: number, label = '', max = 900, opts: { jumpWhenJittering?: boolean; afterWalkTick?: () => void } = {}): Promise<Result> {
     const goal = bx * 20;
     const dir: Dir = goal > this.px.x ? 'right' : 'left';
     const done = () => (dir === 'right' ? this.px.x >= goal : this.px.x <= goal);
@@ -74,6 +74,7 @@ export class StarterBot {
     for (let t = 0; t < max && !done(); t++) {
       const r = await this.tick();
       if (r) return (this.sim.releaseAll(), r);
+      opts.afterWalkTick?.();
       if (stuck.update(this.px.x)) {
         // blocked: tap Space while still holding the way, so the jump carries him over
         this.sim.press(SCAN.space);

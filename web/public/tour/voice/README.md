@@ -46,7 +46,7 @@ records every clip again.
 | [home-shareware-notice.ogg](home/home-shareware-notice.ogg) | They’re other people’s games, so most just play here, exactly as released. Each keeps its author’s notice. | Home: Teddy points at the shareware games | 6.97 |
 | [home-search.ogg](home/home-search.ogg) | Looking for one game? Type part of its name here. | Home: Teddy points at the Find a game box | 3.82 |
 | [home-new.ogg](home/home-new.ogg) | New game starts one of your own: ready to play, empty, or described in words for your own AI to build. | Home: Teddy presses the New game button | 7.32 |
-| [home-games.ogg](home/home-games.ogg) | Games, up in the bar, always brings you back here. | Home: Teddy points at Games in the header | 3.97 |
+| [home-games.ogg](home/home-games.ogg) | Choose Games or the Game-Maker logo to come back here. | Home: Teddy points at Games in the header | 4.22 |
 | [home-guide.ogg](home/home-guide.ogg) | The Guide explains making games, one part at a time. | Home: Teddy points at Guide in the header | 4.27 |
 | [home-library.ogg](home/home-library.ogg) | The Library has things to read and print: manuals, maps, sticker sheets and a magazine. | Home: Teddy points at Library in the header | 6.27 |
 | [home-achievements.ogg](home/home-achievements.ogg) | Achievements keeps track of what you’ve done, here and on the 1994 desk. | Home: Teddy points at Achievements in the header | 5.77 |

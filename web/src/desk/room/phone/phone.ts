@@ -134,23 +134,32 @@ export function phoneLineFor(el: HTMLElement): WallPhoneLine {
           signal.addEventListener('abort', stop, { once: true });
           later();
         }),
-      nextKey: (seconds) =>
+      nextKey: (seconds, prompt) =>
         new Promise((resolve, reject) => {
           if (signal.aborted) return reject(new HungUp());
-          const done = (k: string) => {
+          let t: ReturnType<typeof setTimeout> | undefined;
+          const cleanup = () => {
             clearTimeout(t);
             onKey = undefined;
             signal.removeEventListener('abort', stop);
+          };
+          const done = (k: string) => {
+            cleanup();
             resolve(k);
           };
-          const stop = () => {
-            clearTimeout(t);
-            onKey = undefined;
-            reject(new HungUp());
+          const fail = (error: unknown) => {
+            if (onKey !== done) return;
+            cleanup();
+            reject(error);
           };
-          const t = setTimeout(() => done(''), seconds * 1000);
+          const stop = () => fail(new HungUp());
+          const arm = () => {
+            if (onKey === done) t = setTimeout(() => done(''), seconds * 1000);
+          };
           onKey = done;
           signal.addEventListener('abort', stop, { once: true });
+          if (prompt) void prompt.then(arm, fail);
+          else arm();
         }),
       caption: (who, text) => pad?.caption(who, text),
       hush() {

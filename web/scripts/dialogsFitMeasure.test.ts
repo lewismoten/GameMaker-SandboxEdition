@@ -24,6 +24,21 @@ describe('dialog measurements', () => {
     expect(await axeOn(page, readFileSync('../node_modules/axe-core/axe.min.js', 'utf8'))).toContain('button-name x1');
   });
 
+  it.each([
+    [400, 60, 1, 0],
+    [320, 90, 0, 1],
+    [400, 90, 1, 1],
+  ])('classifies marked list overflow for %i by %i content', async (width, height, hard, allowed) => {
+    const page = await browser.newPage();
+    await page.setContent(
+      `<dialog open aria-label="Questions"><div data-list-area="questions" style="width:320px;height:60px;overflow:auto"><div style="width:${width}px;height:${height}px"></div></div><button style="height:30px">Close</button></dialog>`,
+    );
+    const { problems } = await measure(page);
+    expect(problems.filter((problem) => !problem.includes('[allowed list]'))).toHaveLength(hard);
+    expect(problems.filter((problem) => problem.includes('[allowed list]'))).toHaveLength(allowed);
+    await page.close();
+  });
+
   it('keeps a full-size checkbox target when its separate caption is shorter', async () => {
     const page = await browser.newPage();
     await page.setContent(

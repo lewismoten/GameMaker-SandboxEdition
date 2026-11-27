@@ -19,7 +19,6 @@
 import { deflateRawSync } from 'node:zlib';
 import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { forLewis } from './mainCheckout';
 import { FONT8X8 } from '@lewismoten/gamemaker-sandbox-engine/gfx/font8x8';
 import { GameFiles } from '@lewismoten/gamemaker-sandbox-engine/core/gameFiles';
 import { newCards, packPocketGame, shortHash, type PocketStore } from '../src/export/pocketPack';
@@ -29,6 +28,7 @@ import { pocketOutDir } from './pocketRepo';
 import { gmpName, readBundle, writeBundle, writeGmp, writeOsGmp } from '../src/export/pocketFile';
 
 const args = process.argv.slice(2);
+if (args.includes('--out') && args.includes('--gmp')) throw new Error('--out and --gmp cannot be used together.');
 const opt = (n: string) => (args.includes(n) ? (args[args.indexOf(n) + 1] ?? '').split(',').filter(Boolean) : []);
 const only = opt('--only');
 const forced = new Set(opt('--force'));
@@ -106,6 +106,7 @@ if (gmpDir && existsSync(outDir))
   }
 
 // A checkout-independent optional research input; --scores overrides the local maintainer path.
+const { forLewis } = await import('./mainCheckout');
 const scoresFile = opt('--scores')[0] ?? join(forLewis, 'research/pocket/cyd-friendly.json');
 const scores = new Map<string, number>(
   existsSync(scoresFile)
