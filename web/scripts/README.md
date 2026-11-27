@@ -431,6 +431,7 @@ Run selected files with `npx vitest run scripts/<file>.test.ts`. Browser tests u
 - `dialogLayouts.test.ts` — checks the Community proposal form and the speaker-enabled sound effect footer on narrow phones.
 - `dialogTargets.test.ts` — checks visible dialog controls’ hit targets.
 - `dialogsFitSummary.ts` formats the summary table using the selected themes and viewport sizes.
+- `dialogsFitAxe.ts` runs axe on the top open dialog, the same one `dialogsFitMeasure.ts` measures.
 - `dialogsFitMeasure.test.ts` — checks checkbox hit areas, collapsed details and dialog measurements.
 - `diskDiff.test.ts` — checks disk diff summaries, format changes and deterministic output.
 - `diskDiffArgs.test.ts` — checks two-path and game-at-revision command arguments.
