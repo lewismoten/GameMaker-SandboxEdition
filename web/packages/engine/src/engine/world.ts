@@ -92,6 +92,8 @@ export interface CharInfo {
   gravx: number;
   gravy: number;
   hitpts: number;
+  /** Set to zero to count damage from touches across scenes. Healing leaves this total alone. */
+  damageTaken?: number;
   /** Lives left; -1 before the first scene sets it from the character's meter. */
   lives: number;
   /** Game clock tick at which the character next moves. */
