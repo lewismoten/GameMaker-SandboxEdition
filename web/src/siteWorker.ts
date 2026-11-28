@@ -199,7 +199,7 @@ self.addEventListener('message', (event) => {
  * Cache API hands back the decoded body, so a stored Content-Encoding (and a weak ETag that
  * named that encoding) no longer describes it: sizes come from the bytes, and both go.
  * A request's If-Range must match a strong stored ETag or the stored Last-Modified, or the
- * whole file answers (never a slice of bytes the client's earlier bytes may not match).
+ * whole file answers. Encoded responses cannot use those validators for their decoded bytes.
  */
 async function withRange(req, res) {
   const range = req.headers.get('range');
@@ -208,6 +208,7 @@ async function withRange(req, res) {
   if (!m || (m[1] === '' && m[2] === '')) return res;
   const ifRange = req.headers.get('if-range');
   if (ifRange !== null) {
+    if (res.headers.has('content-encoding')) return res;
     const etag = res.headers.get('etag');
     const modified = res.headers.get('last-modified');
     const v = ifRange.trim();
