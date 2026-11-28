@@ -262,6 +262,19 @@ describe('range requests', () => {
     }
   });
 
+  it('does not use encoded representation validators to slice decoded bytes', async () => {
+    for (const [header, validator] of [
+      ['ETag', '"gz"'],
+      ['Last-Modified', 'Sat, 28 Nov 2026 10:00:00 GMT'],
+    ]) {
+      const h = await withClip({ 'Content-Encoding': 'gzip', [header]: validator });
+      for (const range of ['bytes=4-6', 'bytes=20-']) {
+        const res = await h.request(clip, 'no-cors', 'default', { Range: range, 'If-Range': validator });
+        expect([res.status, await res.text()]).toEqual([200, 'OggS012345']);
+      }
+    }
+  });
+
   it('streams a network response without waiting for its whole body', async () => {
     const h = await withClip({});
     let finish: () => void = () => {};
