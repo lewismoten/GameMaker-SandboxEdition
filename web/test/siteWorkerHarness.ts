@@ -45,13 +45,14 @@ export function harness(version: string, options: Partial<Parameters<typeof site
     URL,
     Request,
     Response,
+    Headers,
     Set,
   });
   const lifecycle = (type: string) => new Promise<void>((resolve, reject) => handlers.get(type)!({ waitUntil: (p: Promise<void>) => p.then(resolve, reject) }));
-  const request = (path: string, mode = 'cors', cache = 'default') =>
+  const request = (path: string, mode = 'cors', cache = 'default', headers: HeadersInit = {}) =>
     new Promise<Response>((resolve, reject) =>
       handlers.get('fetch')!({
-        request: { url: base + path, method: 'GET', mode, cache, headers: new Headers() },
+        request: { url: base + path, method: 'GET', mode, cache, headers: new Headers(headers) },
         respondWith: (p: Promise<Response>) => p.then(resolve, reject),
       }),
     );

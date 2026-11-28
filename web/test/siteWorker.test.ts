@@ -194,3 +194,25 @@ it('downloads and activates the shell on a fresh install', async () => {
   expect(h.skipWaiting).toHaveBeenCalledOnce();
   expect(await h.caches.has('gm-site-v2')).toBe(false);
 });
+
+it('answers a media range request from the cache as 206 with that slice', async () => {
+  const h = harness('one', { precache: ['index.html'] });
+  h.registration.active = false;
+  h.fetcher.mockResolvedValueOnce(new Response('first shell'));
+  await h.lifecycle('install');
+  await h.lifecycle('activate');
+  const browsing = await h.caches.open(offlineNames(base).browsing);
+  await browsing.put(base + 'tour/voice/home/home-hello.ogg', new Response('0123456789', { headers: { 'Content-Type': 'audio/ogg' } }));
+  const whole = await h.request('tour/voice/home/home-hello.ogg', 'no-cors', 'default', { Range: 'bytes=0-' });
+  expect(whole.status).toBe(206);
+  expect(whole.headers.get('Content-Range')).toBe('bytes 0-9/10');
+  expect(whole.headers.get('Content-Type')).toBe('audio/ogg');
+  expect(await whole.text()).toBe('0123456789');
+  const tail = await h.request('tour/voice/home/home-hello.ogg', 'no-cors', 'default', { Range: 'bytes=-3' });
+  expect([tail.status, tail.headers.get('Content-Range'), await tail.text()]).toEqual([206, 'bytes 7-9/10', '789']);
+  const middle = await h.request('tour/voice/home/home-hello.ogg', 'no-cors', 'default', { Range: 'bytes=2-4' });
+  expect([middle.headers.get('Content-Length'), await middle.text()]).toEqual(['3', '234']);
+  expect((await h.request('tour/voice/home/home-hello.ogg', 'no-cors', 'default', { Range: 'bytes=20-' })).status).toBe(416);
+  const plain = await h.request('tour/voice/home/home-hello.ogg');
+  expect([plain.status, await plain.text()]).toEqual([200, '0123456789']);
+});

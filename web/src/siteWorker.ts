@@ -191,6 +191,28 @@ self.addEventListener('message', (event) => {
   }))));
 });
 
+/**
+ * A media element asks for a range (Range: bytes=0-). A cached file answered whole makes
+ * Chrome treat an Ogg clip as a stream it can't seek, with no duration, so the tour's voice
+ * never played offline: a stored 200 answers a range request as 206 with that slice.
+ */
+async function withRange(req, res) {
+  const range = req.headers.get('range');
+  if (!range || res.status !== 200 || res.type === 'opaque' || res.headers.has('content-encoding')) return res;
+  const m = /^bytes=(\\d*)-(\\d*)$/.exec(range.trim());
+  if (!m || (m[1] === '' && m[2] === '')) return res;
+  const body = await res.arrayBuffer();
+  const size = body.byteLength;
+  const start = m[1] === '' ? Math.max(0, size - Number(m[2])) : Number(m[1]);
+  const end = m[1] === '' || m[2] === '' ? size - 1 : Math.min(Number(m[2]), size - 1);
+  if (start >= size || start > end) return new Response(null, { status: 416, headers: { 'Content-Range': 'bytes */' + size } });
+  const headers = new Headers(res.headers);
+  headers.set('Content-Range', 'bytes ' + start + '-' + end + '/' + size);
+  headers.set('Content-Length', String(end - start + 1));
+  headers.set('Accept-Ranges', 'bytes');
+  return new Response(body.slice(start, end + 1), { status: 206, statusText: 'Partial Content', headers });
+}
+
 // Relative shell resources need the registration directory as their document base.
 function fallbackHome(req, home) {
   return new URL('./', req.url).href === SCOPE ? home : Response.redirect(SCOPE);
@@ -242,7 +264,7 @@ self.addEventListener('fetch', (event) => {
       if (client) client.postMessage({ type: 'offline-missing' });
       throw err;
     }
-  })());
+  })().then((res) => withRange(req, res)));
 });
 `;
 }
