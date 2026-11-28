@@ -6,7 +6,7 @@ import { SITE_URL } from '../src/seo/site';
 vi.mock('./singlePageBuild', () => ({ bundleOnePage: () => Promise.resolve({ script: '', style: '' }) }));
 
 describe('hosted player metadata', () => {
-  it('emits distinct titles and descriptions, canonical and matching social tags for each copy', async () => {
+  it('emits distinct titles and descriptions, matching social tags and a canonical identity only for the site copy', async () => {
     const plugin = hostedPlayer();
     (plugin.configResolved as (config: { command: string }) => void)({ command: 'build' });
     const files: Record<string, string> = {};
@@ -26,8 +26,13 @@ describe('hosted player metadata', () => {
       expect(description.length).toBeLessThanOrEqual(160);
       expect(html).toContain('<html lang="en">');
       expect(html.match(/<h1>/g)).toHaveLength(1);
-      expect(html).toContain(`rel="canonical" href="${SITE_URL}${name}"`);
-      expect(html).toContain(`property="og:url" content="${SITE_URL}${name}"`);
+      if (name === 'web-player.html') {
+        expect(html).not.toContain('rel="canonical"');
+        expect(html).not.toContain('property="og:url"');
+      } else {
+        expect(html).toContain(`rel="canonical" href="${SITE_URL}${name}"`);
+        expect(html).toContain(`property="og:url" content="${SITE_URL}${name}"`);
+      }
       for (const prefix of ['og', 'twitter']) {
         expect(html).toContain(`${prefix}:title" content="${title}"`);
         expect(html).toContain(`${prefix}:description" content="${description}"`);
@@ -48,7 +53,8 @@ it('serves the try page through both development aliases and keeps the download 
   const handle = use.mock.calls[0][0];
   const get = (url: string) => new Promise<string>((end, reject) => handle({ url }, { setHeader: vi.fn(), end }, () => reject(new Error(url))));
   const download = await get('/web-player.html');
-  expect(download).toContain(`rel="canonical" href="${SITE_URL}web-player.html"`);
+  expect(download).not.toContain('rel="canonical"');
+  expect(download).not.toContain('property="og:url"');
   expect(download).not.toContain('noindex');
   for (const url of ['/player/', '/player/index.html']) {
     const html = await get(url);
