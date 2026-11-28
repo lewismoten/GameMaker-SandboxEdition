@@ -71,6 +71,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex corrected the Pocket exporter and its regression test for untimed menu-list pictures.
 - OpenAI Codex strengthened the patching manual test for extension offsets and stock bytes.
 - OpenAI Codex fixed and tested damage accounting in the Pass the Pie walkthrough check.
+- OpenAI Codex fixed and tested the duplicate awning block and overwritten flower placement in Kit's Shop.
 - OpenAI Codex fixed and tested the CD library's Gameware and Shareware maker order.
 - OpenAI Codex fixed and tested cancellation of the synthesized startup clunk for THE CHEZ.
 - OpenAI Codex added and tested keyboard panning in the phone model viewer.

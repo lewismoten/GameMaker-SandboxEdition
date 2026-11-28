@@ -101,7 +101,7 @@ function shop(book: Book, pal: Pal, signs: Record<SignName, Sign>): StarterMap {
   const m = cash(new StarterMap(book, rows), rows);
   // the building: a dim brick wall behind the stalls, an awning across the front, the roof's edge, two windows and the SHOP board over the doorway
   for (let x = 25; x <= 49; x++) for (let y = 4; y < GROUND; y++) if (x !== 48) m.set(x, y, 'backWall');
-  for (let x = 24; x <= 50; x++) m.set(x, 3, x % 2 ? 'stripeB' : 'stripeA').set(x, 2, 'roofCap');
+  for (let x = 24; x <= 50; x++) m.set(x, 3, 'stripe').set(x, 2, 'roofCap');
   for (const x of [32, 36]) m.set(x, 5, 'window');
   SHOP_BOARD.forEach((name, i) => m.set(24 + i, 1, name));
   for (const [x, item, price] of [
