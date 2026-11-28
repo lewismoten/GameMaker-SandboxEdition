@@ -5,15 +5,15 @@ export function progressAnnouncements(
   interval = 5000,
   now: () => number = () => performance.now(),
 ): {
-  progress: (text: string) => void;
+  progress: (text: string, phaseChange?: boolean) => void;
   finish: (text: string) => void;
 } {
   let last = -Infinity;
   let previous: string | undefined;
   let finished = false;
   return {
-    progress(text) {
-      if (finished || text === previous || now() - last < interval) return;
+    progress(text, phaseChange = false) {
+      if (finished || text === previous || (!phaseChange && now() - last < interval)) return;
       previous = text;
       last = now();
       say(text);

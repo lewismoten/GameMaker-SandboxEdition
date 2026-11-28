@@ -54,9 +54,9 @@ export function botDemoDialog(project: Project, title = 'Let the bot play'): Pro
       running = startBotDemo(
         project.files,
         { gam: project.gam, id: project.id, scene, seconds, esc, budgetMs: budget * 1000, walk: reuse ? saved?.walk : undefined },
-        (what) => {
+        (what, phaseChange) => {
           line.textContent = what;
-          speech.progress(what);
+          speech.progress(what, phaseChange);
         },
       );
       sync();

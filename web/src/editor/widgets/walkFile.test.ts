@@ -31,3 +31,8 @@ describe('checkWalkFile', () => {
     expect(checkWalkFile('{"version":1}', 'A.GAM', 1).ok).toBe(false);
   });
 });
+
+it.each([null, { title: 'First' }, { title: 7, frame: 0 }, { title: 'First', frame: -1 }])('refuses a malformed timeline chapter (%j)', (chapter) => {
+  const result = checkWalkFile(walk({ timeline: { frames: 10, chapters: [chapter] } }), 'ADAM_2!.GAM', 9);
+  expect(result).toEqual({ ok: false, why: 'Each timeline chapter needs a title and a starting frame.' });
+});

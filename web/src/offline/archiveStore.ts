@@ -21,9 +21,9 @@ export async function readOfflineCopy(base: string): Promise<Copy | undefined> {
   return copy && (copy.cache === 'gm-site' || copy.cache.startsWith(names.prefix)) && (await caches.has(copy.cache)) ? copy : undefined;
 }
 /** Serializes publication/removal across tabs. */
-export async function offlineLock<T>(base: string, run: () => Promise<T>): Promise<T> {
+export async function offlineLock<T>(base: string, run: () => Promise<T>, signal?: AbortSignal): Promise<T> {
   if (!navigator.locks) throw new Error('This browser needs Web Locks to safely replace an offline copy.');
-  return navigator.locks.request(`gm-offline:${base}`, run);
+  return navigator.locks.request(`gm-offline:${base}`, { signal }, run);
 }
 const siteUrl = (base: string, path: string) => {
   const url = new URL(path, base);

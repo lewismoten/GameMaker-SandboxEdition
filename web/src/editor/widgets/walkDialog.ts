@@ -47,12 +47,22 @@ const styleName = (id?: string) => (id === MINE.id ? MINE.name : (STRATEGIES.fin
 const secs = (ticks?: number) => ((ticks ?? 0) / 18.2).toFixed(0);
 
 /** Opens a walkthrough the bot made in the walkthrough player (a CD game's `entry`: its own address and DOS player look). */
-export async function watchMade(project: Project, walk: Walkthrough, entry?: CatalogEntry, redo?: RedoOptions): Promise<void> {
+export async function watchMade(project: Project, walk: Walkthrough, entry?: CatalogEntry, redo?: RedoOptions, signal?: AbortSignal): Promise<void> {
   const [{ watchWalkthrough }, { companionPatches }] = await Promise.all([import('../../walkthrough/player'), import('../../dosPlayer/playerRecord')]);
-  if (entry) return watchWalkthrough(entry, () => Promise.resolve(project.files), undefined, walk, undefined, undefined, redo);
+  if (signal?.aborted) return;
+  if (entry) return watchWalkthrough(entry, () => Promise.resolve(project.files), undefined, walk, undefined, undefined, redo, signal);
   const title = gameTitle(project.game()) || project.name;
   const mine = { id: `project:${project.id}`, title, gam: project.gam, kind: 'mine', path: '', files: [] } as unknown as CatalogEntry;
-  return watchWalkthrough(mine, () => Promise.resolve(project.files), undefined, walk, undefined, companionPatches(project.companion, project.gam), redo);
+  return watchWalkthrough(
+    mine,
+    () => Promise.resolve(project.files),
+    undefined,
+    walk,
+    undefined,
+    companionPatches(project.companion, project.gam),
+    redo,
+    signal,
+  );
 }
 
 /** What making it again is asked to do: redo a level of this walkthrough, or all of it (and come back to the player when it wins). */
@@ -172,25 +182,31 @@ async function makeDialog(project: Project, opt: WalkDialogOptions, redoing?: Re
     h('div', { class: 'toolbar' }, shippedBtn, watchBtn),
   );
   // a walkthrough file from disk (the bot's <GAM>.walkthrough.json): checked against this game, then played
-  const fileMsg = h('p', { class: 'meta', role: 'status', 'aria-live': 'polite' });
+  const fileMsg = h('p', { class: 'meta wd-file-status', role: 'status', 'aria-live': 'polite' });
   const fileInput = h('input', { type: 'file', accept: '.json,application/json', hidden: true, tabindex: '-1' });
+  let selection: AbortController | undefined;
   fileInput.onchange = () => {
     const f = fileInput.files?.[0];
     fileInput.value = '';
     if (!f) return;
+    selection?.abort();
+    selection = new AbortController();
+    const { signal } = selection;
     void f
       .text()
       .then(async (text) => {
+        if (signal.aborted) return;
         const r = checkWalkFile(text, project.gam, game().scenes.length);
         if (!r.ok) {
           fileMsg.textContent = r.why;
           return;
         }
         fileMsg.textContent = `Playing ${f.name}…`;
-        await watchMade(project, r.walk, opt.entry);
-        fileMsg.textContent = '';
+        await watchMade(project, r.walk, opt.entry, undefined, signal);
+        if (!signal.aborted) fileMsg.textContent = '';
       })
       .catch((e: unknown) => {
+        if (signal.aborted) return;
         fileMsg.textContent = `Could not open walkthrough “${f.name}”.${e instanceof Error && e.message ? ` ${e.message}` : ''}`;
       });
   };
@@ -509,6 +525,7 @@ async function makeDialog(project: Project, opt: WalkDialogOptions, redoing?: Re
       ),
     );
   });
+  selection?.abort();
   running?.cancel();
   return { finished };
 }

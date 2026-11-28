@@ -21,6 +21,7 @@ class MemoryCache {
     return [...this.entries.keys()].map((k) => new Request(k));
   }
 }
+const locks = { request: (_key: string, _options: LockOptions, run: () => Promise<unknown>) => run() };
 function setup() {
   const stores = new Map<string, MemoryCache>();
   vi.stubGlobal('caches', {
@@ -186,7 +187,7 @@ it.each(['cd', 'sandbox', 'specials'] as const)('adds only revealed %s extras an
     { path: 'games/originals/revealed/', pack: 'game.zip', ...(tier === 'cd' ? {} : { original: {}, series: tier === 'specials' ? 'special' : undefined }) },
   ];
   vi.stubGlobal('location', { href: base });
-  vi.stubGlobal('navigator', { serviceWorker: {}, locks: { request: (_key: string, run: () => Promise<unknown>) => run() }, storage: {} });
+  vi.stubGlobal('navigator', { serviceWorker: {}, locks, storage: {} });
   vi.stubGlobal('localStorage', { getItem: () => null, setItem: vi.fn() });
   const bytes = new TextEncoder().encode('private');
   const extra = { path: 'games/originals/revealed/game.zip', wire: bytes.length, stored: bytes.length, sha256: await contentHash(bytes.buffer), tier };
@@ -220,7 +221,7 @@ it('remembers an interrupted selection when the dialog reopens and reports only 
   const saved = new Map<string, string>();
   vi.stubGlobal('localStorage', { getItem: (key: string) => saved.get(key) ?? null, setItem: (key: string, value: string) => saved.set(key, value) });
   vi.stubGlobal('location', { href: base });
-  vi.stubGlobal('navigator', { serviceWorker: {}, locks: { request: (_key: string, run: () => Promise<unknown>) => run() }, storage: {} });
+  vi.stubGlobal('navigator', { serviceWorker: {}, locks, storage: {} });
   const perFile = fetcher.getMockImplementation()!;
   fetcher.mockImplementation(async (url) => {
     if (url === base + 'offline.json') return new Response(JSON.stringify(m), { headers: { 'content-type': 'application/json' } });
@@ -261,7 +262,7 @@ it.each(['localStorage', 'committed copy'])('migrates a legacy Sandbox selection
     await control.put(base + '__gm-offline.json', new Response(JSON.stringify({ ...copy, tierVersion: undefined })));
   }
   vi.stubGlobal('location', { href: base });
-  vi.stubGlobal('navigator', { serviceWorker: {}, locks: { request: (_key: string, run: () => Promise<unknown>) => run() }, storage: {} });
+  vi.stubGlobal('navigator', { serviceWorker: {}, locks, storage: {} });
   vi.stubGlobal('localStorage', { getItem: (key: string) => saved.get(key) ?? null, setItem: (key: string, value: string) => saved.set(key, value) });
   const perFile = fetcher.getMockImplementation()!;
   fetcher.mockImplementation(async (url) =>
@@ -284,7 +285,7 @@ it('reports an older partial stage as removable without a completion flag or rea
   const stage = offlineNames(base).prefix + 'old-selection';
   await (await caches.open(stage)).put(base + 'old.txt', new Response('partial'));
   vi.stubGlobal('location', { href: base });
-  vi.stubGlobal('navigator', { serviceWorker: {}, locks: { request: (_key: string, run: () => Promise<unknown>) => run() }, storage: {} });
+  vi.stubGlobal('navigator', { serviceWorker: {}, locks, storage: {} });
   vi.stubGlobal('localStorage', { getItem: () => null, removeItem: vi.fn() });
   fetcher.mockImplementation(async () => new Response(JSON.stringify(m), { headers: { 'content-type': 'application/json' } }));
   const status = await offlineStatus(['core']);
@@ -301,7 +302,7 @@ it.each(['intact', 'missing', 'damaged'] as const)('publishes saved choices befo
   const { m, fetcher } = await fixture();
   const { offlineStatus, makeOffline } = await import('./offlineCopy');
   vi.stubGlobal('location', { href: base });
-  vi.stubGlobal('navigator', { serviceWorker: {}, locks: { request: (_key: string, run: () => Promise<unknown>) => run() }, storage: {} });
+  vi.stubGlobal('navigator', { serviceWorker: {}, locks, storage: {} });
   vi.stubGlobal('localStorage', {
     getItem: (key: string) => (key === 'gm-offline-tiers' ? JSON.stringify({ version: 2, tiers: ['core', 'cd'] }) : 'one'),
     setItem: vi.fn(),
