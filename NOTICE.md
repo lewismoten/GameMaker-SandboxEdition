@@ -65,6 +65,7 @@ game folder opens in the browser unchanged.
 ## Credits
 
 - OpenAI Codex fixed and tested the byte comparison used to clean up damaged project copies.
+- OpenAI Codex fixed and tested keeping damaged project copies whose Recently deleted write fails.
 - OpenAI Codex fixed and tested the CD library's Gameware and Shareware maker order.
 - OpenAI Codex fixed and tested cancellation of the synthesized startup clunk for THE CHEZ.
 - OpenAI Codex added and tested keyboard panning in the phone model viewer.
