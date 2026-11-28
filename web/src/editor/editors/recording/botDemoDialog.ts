@@ -2,6 +2,7 @@
 // and its run becomes a demo recording: pick the scene and how many seconds of it, watch the
 // demo on the real engine, and keep it. Resolves with the .REC bytes, or nothing.
 import { h, modal, numberField, checkField, selectField } from '../../core/ui';
+import { progressAnnouncements } from '../../core/progressAnnouncements';
 import type { Project } from '../../core/project';
 import { sceneName } from '../../core/uses';
 import type { Walkthrough } from '../../../walkthrough/format';
@@ -30,7 +31,8 @@ export function botDemoDialog(project: Project, title = 'Let the bot play'): Pro
   let running: RunningDemo | undefined;
   let demo: BotDemo | undefined;
 
-  const status = h('p', { class: 'meta rec-bot-status', role: 'status', 'aria-live': 'polite' });
+  const line = h('p', { class: 'meta rec-bot-status', 'aria-hidden': 'true' });
+  const status = h('p', { class: 'sr-only', role: 'status' });
   const runBtn = h('button', { type: 'button' }, '🤖 Let it play');
   const watchBtn = h('button', { type: 'button', disabled: true, title: 'Play the demo in the game, as the title screen will' }, '▶ Watch it');
   const keepBtn = h('button', { type: 'submit', class: 'primary', disabled: true }, 'Keep it');
@@ -38,26 +40,32 @@ export function botDemoDialog(project: Project, title = 'Let the bot play'): Pro
     runBtn.textContent = running ? '■ Stop' : demo ? '🤖 Play again' : '🤖 Let it play';
     watchBtn.disabled = keepBtn.disabled = !!running || !demo?.rec;
   };
-  status.textContent = levels.length
+  line.textContent = status.textContent = levels.length
     ? 'The bot plays from the first level (where every demo starts) to the scene, then on for the seconds you choose.'
     : 'This game has no levels yet.';
 
   async function run(): Promise<void> {
     demo = undefined;
     last = { scene, seconds, esc };
-    status.textContent = 'Starting the bot…';
-    running = startBotDemo(
-      project.files,
-      { gam: project.gam, id: project.id, scene, seconds, esc, budgetMs: budget * 1000, walk: reuse ? saved?.walk : undefined },
-      (what) => (status.textContent = what),
-    );
-    sync();
+    const speech = progressAnnouncements((text) => (status.textContent = text), 2000);
+    line.textContent = 'Starting the bot…';
+    speech.progress(line.textContent);
     try {
+      running = startBotDemo(
+        project.files,
+        { gam: project.gam, id: project.id, scene, seconds, esc, budgetMs: budget * 1000, walk: reuse ? saved?.walk : undefined },
+        (what) => {
+          line.textContent = what;
+          speech.progress(what);
+        },
+      );
+      sync();
       demo = await running.done;
-      status.textContent = demo.rec ? `Made a demo: ${demo.message}` : demo.message;
+      line.textContent = demo.rec ? `Made a demo: ${demo.message}` : demo.message;
     } catch (e) {
-      status.textContent = (e as Error).name === 'AbortError' ? 'Stopped.' : `The bot failed: ${(e as Error).message}`;
+      line.textContent = (e as Error).name === 'AbortError' ? 'Stopped.' : `The bot failed: ${(e as Error).message}`;
     } finally {
+      speech.finish(line.textContent);
       running = undefined;
       sync();
     }
@@ -131,6 +139,7 @@ export function botDemoDialog(project: Project, title = 'Let the bot play'): Pro
             'Quicker, but only right if the game hasn’t changed since',
           )
         : null,
+      line,
       status,
       h(
         'p',

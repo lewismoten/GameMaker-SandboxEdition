@@ -2,6 +2,7 @@
 import './offline.css';
 import { inArchiveReplay } from './replay';
 import { h, clear, modal } from '../editor/core/ui';
+import { progressAnnouncements } from '../editor/core/progressAnnouncements';
 import { hasRoom, makeOffline, offlineStatus, removeOffline, sizeText, type OfflineStatus } from './offlineCopy';
 import { offlineTiers, type OfflineTier } from './tiers';
 
@@ -16,6 +17,7 @@ export async function openOfflineDialog(): Promise<void> {
     body.append(status, content);
     const closeButton = () => h('button', { type: 'button', onclick: () => close(undefined) }, 'Close');
     const show = (s: OfflineStatus, note = '', checking = false) => {
+      status.className = '';
       if (!s.supported) {
         status.textContent = s.reason ?? 'An offline copy cannot be made here.';
         clear(content, closeButton());
@@ -91,15 +93,20 @@ export async function openOfflineDialog(): Promise<void> {
       ++generation;
       stop = new AbortController();
       const bar = h('progress', { max: String(s.wireTotal || 1), value: '0', 'aria-label': 'Verified files' });
-      const line = h('p', { class: 'meta' });
+      const start = 'Preparing the offline copy…';
+      const line = h('p', { class: 'meta' }, start);
       clear(content, bar, line, h('button', { type: 'button', onclick: () => stop.abort() }, 'Cancel'));
-      status.textContent = 'Preparing the offline copy…';
+      status.className = 'sr-only';
+      const speech = progressAnnouncements((text) => (status.textContent = text));
+      speech.progress(start);
       try {
         const result = await makeOffline(
           s,
           (p) => {
             bar.value = p.bytes;
-            line.textContent = `${p.done} of ${p.total} files verified · ${sizeText(p.bytes)} of ${sizeText(p.totalBytes)}`;
+            const verified = `${p.done} of ${p.total} files verified`;
+            line.textContent = `${verified} · ${sizeText(p.bytes)} of ${sizeText(p.totalBytes)}`;
+            speech.progress(verified);
           },
           stop.signal,
         );

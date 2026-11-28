@@ -86,7 +86,7 @@ it('renders saved choices while verification is pending without claiming readine
   expect(elements.some((el) => el.textContent.includes('Ready offline'))).toBe(true);
 });
 
-it('announces preparation once across file callbacks and announces the terminal outcome', async () => {
+it('samples verified counts during a long download and announces the terminal outcome immediately', async () => {
   const doc = new FakeDoc();
   const elements: FakeEl[] = [];
   const create = doc.createElement.bind(doc);
@@ -96,6 +96,8 @@ it('announces preparation once across file callbacks and announces the terminal 
     return el;
   };
   vi.stubGlobal('document', doc);
+  let now = 0;
+  vi.stubGlobal('performance', { now: () => now });
   vi.mocked(hasRoom).mockReturnValueOnce(true);
   vi.mocked(offlineStatus).mockResolvedValue({
     supported: true,
@@ -106,7 +108,10 @@ it('announces preparation once across file callbacks and announces the terminal 
     wireMissing: 10,
   } as unknown as OfflineStatus);
   vi.mocked(makeOffline).mockImplementation(async (_selection, progress) => {
-    for (let done = 1; done <= 10; done++) progress({ done, total: 10, bytes: done, totalBytes: 10 });
+    for (let done = 1; done <= 42; done++) {
+      now += 250;
+      progress({ done, total: 50, bytes: done, totalBytes: 50 });
+    }
     return { ok: false, reason: 'canceled', message: 'Download canceled.' };
   });
   await openOfflineDialog();
@@ -114,6 +119,7 @@ it('announces preparation once across file callbacks and announces the terminal 
   const writes: string[] = [];
   Object.defineProperty(status, 'textContent', { set: (text: string) => writes.push(text) });
   elements.find((el) => el.tag === 'button' && el.children.some((c) => c.textContent.startsWith('Download ')))!.fire('click');
+  expect(elements.some((el) => el.textContent?.startsWith('42 of 50 files verified'))).toBe(true);
   await vi.waitFor(() => expect(writes).toContain('Download canceled.'));
-  expect(writes).toEqual(['Preparing the offline copy…', 'Download canceled.']);
+  expect(writes).toEqual(['Preparing the offline copy…', '20 of 50 files verified', '40 of 50 files verified', 'Download canceled.']);
 });
