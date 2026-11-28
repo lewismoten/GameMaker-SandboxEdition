@@ -69,6 +69,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex fixed and tested the Starter question dialog’s count for an empty list and its scroll hint.
 - OpenAI Codex fixed and tested demo availability retries and hidden-tab playback on the home showcase.
 - OpenAI Codex corrected the Pocket exporter and its regression test for untimed menu-list pictures.
+- OpenAI Codex strengthened the patching manual test for extension offsets and stock bytes.
 - OpenAI Codex fixed and tested the CD library's Gameware and Shareware maker order.
 - OpenAI Codex fixed and tested cancellation of the synthesized startup clunk for THE CHEZ.
 - OpenAI Codex added and tested keyboard panning in the phone model viewer.
