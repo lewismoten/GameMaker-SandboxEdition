@@ -18,14 +18,21 @@ const NETWORKS: Record<string, { downloadThroughput: number; uploadThroughput: n
   'slow-4g': { downloadThroughput: (1.6 * 1024 * 1024) / 8, uploadThroughput: (750 * 1024) / 8, latency: 562.5 },
 };
 
+/** Resolved test conditions saved with each run; null means an unrestricted network. */
+export function perfConditions() {
+  const name = arg('network');
+  if (process.argv.includes('--network') && (!name || name.startsWith('--'))) throw new Error('--network requires 4g or slow-4g');
+  if (name && !NETWORKS[name]) throw new Error(`--network ${name}: use ${Object.keys(NETWORKS).join(' or ')}`);
+  const rate = Number(arg('throttle') ?? 1);
+  return { throttle: rate > 1 ? rate : 1, network: name ?? null };
+}
+
 /** Applies --throttle N (CPU N times slower) and --network 4g|slow-4g to a page's CDP session. */
 export async function applySlowdown(cdp: CDPSession): Promise<void> {
-  const rate = Number(arg('throttle') ?? 1);
+  const { throttle: rate, network: name } = perfConditions();
   if (rate > 1) await cdp.send('Emulation.setCPUThrottlingRate', { rate });
-  const name = arg('network');
   if (!name) return;
   const net = NETWORKS[name];
-  if (!net) throw new Error(`--network ${name}: use ${Object.keys(NETWORKS).join(' or ')}`);
   await cdp.send('Network.enable');
   await cdp.send('Network.emulateNetworkConditions', { offline: false, ...net });
 }

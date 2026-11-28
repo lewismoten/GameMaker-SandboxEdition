@@ -194,3 +194,103 @@ it('downloads and activates the shell on a fresh install', async () => {
   expect(h.skipWaiting).toHaveBeenCalledOnce();
   expect(await h.caches.has('gm-site-v2')).toBe(false);
 });
+
+it('answers a media range request from the cache as 206 with that slice', async () => {
+  const h = harness('one', { precache: ['index.html'] });
+  h.registration.active = false;
+  h.fetcher.mockResolvedValueOnce(new Response('first shell'));
+  await h.lifecycle('install');
+  await h.lifecycle('activate');
+  const browsing = await h.caches.open(offlineNames(base).browsing);
+  await browsing.put(base + 'tour/voice/home/home-hello.ogg', new Response('0123456789', { headers: { 'Content-Type': 'audio/ogg' } }));
+  const whole = await h.request('tour/voice/home/home-hello.ogg', 'no-cors', 'default', { Range: 'bytes=0-' });
+  expect(whole.status).toBe(206);
+  expect(whole.headers.get('Content-Range')).toBe('bytes 0-9/10');
+  expect(whole.headers.get('Content-Type')).toBe('audio/ogg');
+  expect(await whole.text()).toBe('0123456789');
+  const tail = await h.request('tour/voice/home/home-hello.ogg', 'no-cors', 'default', { Range: 'bytes=-3' });
+  expect([tail.status, tail.headers.get('Content-Range'), await tail.text()]).toEqual([206, 'bytes 7-9/10', '789']);
+  const middle = await h.request('tour/voice/home/home-hello.ogg', 'no-cors', 'default', { Range: 'bytes=2-4' });
+  expect([middle.headers.get('Content-Length'), await middle.text()]).toEqual(['3', '234']);
+  expect((await h.request('tour/voice/home/home-hello.ogg', 'no-cors', 'default', { Range: 'bytes=20-' })).status).toBe(416);
+  const plain = await h.request('tour/voice/home/home-hello.ogg');
+  expect([plain.status, await plain.text()]).toEqual([200, '0123456789']);
+});
+
+describe('range requests', () => {
+  const clip = 'tour/voice/home/home-hello.ogg';
+  async function withClip(headers: Record<string, string>) {
+    const h = harness('one', { precache: ['index.html'] });
+    h.registration.active = false;
+    h.fetcher.mockResolvedValueOnce(new Response('first shell'));
+    await h.lifecycle('install');
+    await h.lifecycle('activate');
+    const browsing = await h.caches.open(offlineNames(base).browsing);
+    await browsing.put(base + clip, new Response('OggS012345', { headers }));
+    return h;
+  }
+
+  it('slices a cached body saved with Content-Encoding by its decoded length, without that header', async () => {
+    const h = await withClip({ 'Content-Type': 'audio/ogg', 'Content-Encoding': 'gzip', ETag: 'W/"gz"', 'Content-Length': '4' });
+    const res = await h.request(clip, 'no-cors', 'default', { Range: 'bytes=0-' });
+    expect([res.status, res.headers.get('Content-Range'), res.headers.get('Content-Encoding'), res.headers.get('ETag')]).toEqual([
+      206,
+      'bytes 0-9/10',
+      null,
+      null,
+    ]);
+    expect(await res.text()).toBe('OggS012345');
+    const part = await h.request(clip, 'no-cors', 'default', { Range: 'bytes=4-6' });
+    expect([part.headers.get('Content-Length'), await part.text()]).toEqual(['3', '012']);
+  });
+
+  it('matches the byte unit in any case', async () => {
+    const h = await withClip({ 'Content-Type': 'audio/ogg' });
+    const res = await h.request(clip, 'no-cors', 'default', { Range: 'Bytes=0-1' });
+    expect([res.status, await res.text()]).toEqual([206, 'Og']);
+  });
+
+  it('answers the whole file when If-Range does not match what is stored', async () => {
+    const h = await withClip({ ETag: '"v2"', 'Last-Modified': 'Sat, 28 Nov 2026 10:00:00 GMT' });
+    for (const stale of ['"v1"', 'W/"v2"', 'Fri, 27 Nov 2026 10:00:00 GMT']) {
+      const res = await h.request(clip, 'no-cors', 'default', { Range: 'bytes=4-', 'If-Range': stale });
+      expect([stale, res.status, await res.text()]).toEqual([stale, 200, 'OggS012345']);
+    }
+    for (const fresh of ['"v2"', 'Sat, 28 Nov 2026 10:00:00 GMT']) {
+      const res = await h.request(clip, 'no-cors', 'default', { Range: 'bytes=4-', 'If-Range': fresh });
+      expect([fresh, res.status, await res.text()]).toEqual([fresh, 206, '012345']);
+    }
+  });
+
+  it('does not use encoded representation validators to slice decoded bytes', async () => {
+    for (const [header, validator] of [
+      ['ETag', '"gz"'],
+      ['Last-Modified', 'Sat, 28 Nov 2026 10:00:00 GMT'],
+    ]) {
+      const h = await withClip({ 'Content-Encoding': 'gzip', [header]: validator });
+      for (const range of ['bytes=4-6', 'bytes=20-']) {
+        const res = await h.request(clip, 'no-cors', 'default', { Range: range, 'If-Range': validator });
+        expect([res.status, await res.text()]).toEqual([200, 'OggS012345']);
+      }
+    }
+  });
+
+  it('streams a network response without waiting for its whole body', async () => {
+    const h = await withClip({});
+    let finish: () => void = () => {};
+    const stream = new ReadableStream<Uint8Array>({
+      start(c) {
+        c.enqueue(new TextEncoder().encode('AB'));
+        finish = () => (c.enqueue(new TextEncoder().encode('CD')), c.close());
+      },
+    });
+    h.fetcher.mockResolvedValueOnce(new Response(stream, { status: 200 }));
+    const res = await Promise.race([
+      h.request('other/slow.bin', 'cors', 'default', { Range: 'bytes=0-0' }),
+      new Promise<'slow'>((r) => setTimeout(() => r('slow'), 500)),
+    ]);
+    finish();
+    expect(res).not.toBe('slow');
+    expect((res as Response).status).toBe(200);
+  });
+});

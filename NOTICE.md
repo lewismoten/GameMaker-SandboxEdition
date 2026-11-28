@@ -66,6 +66,16 @@ game folder opens in the browser unchanged.
 
 - OpenAI Codex removed the unused inline image option for download cards and tested the build helper’s signature.
 - OpenAI Codex corrected the downloadable web player’s canonical metadata and updated its regression test.
+- OpenAI Codex fixed and tested the phone kit download builder’s required firmware inputs.
+- OpenAI Codex fixed and tested parchment edge detection in the card text-fit check.
+- OpenAI Codex fixed and tested the Starter question dialog’s count for an empty list and its scroll hint.
+- OpenAI Codex fixed and tested demo availability retries and hidden-tab playback on the home showcase.
+- OpenAI Codex corrected the Pocket exporter and its regression test for untimed menu-list pictures.
+- OpenAI Codex strengthened the patching manual test for extension offsets and stock bytes.
+- OpenAI Codex fixed and tested damage accounting in the Pass the Pie walkthrough check.
+- OpenAI Codex fixed and tested the duplicate awning block and overwritten flower placement in Kit's Shop.
+- OpenAI Codex fixed and tested the byte comparison used to clean up damaged project copies.
+- OpenAI Codex fixed and tested keeping damaged project copies whose Recently deleted write fails.
 - OpenAI Codex fixed and tested the CD library's Gameware and Shareware maker order.
 - OpenAI Codex fixed and tested cancellation of the synthesized startup clunk for THE CHEZ.
 - OpenAI Codex added and tested keyboard panning in the phone model viewer.
@@ -220,6 +230,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex fixed manual loading and tested retrying a missing Starter lesson.
 - OpenAI Codex corrected and tested the release guide’s instructions for retaining site deployments.
 - OpenAI Codex fixed and tested silence timing in the DOSBox WAV analyzer.
+- OpenAI Codex fixed and tested the filtered dialog audit summary.
 - OpenAI Codex fixed and tested the sample table row headers in the Owner’s Guide.
 - OpenAI Codex fixed and tested the Wayback save queue and lookup error reporting.
 - OpenAI Codex corrected the Privacy page’s backup instructions and tested the clearing guidance.

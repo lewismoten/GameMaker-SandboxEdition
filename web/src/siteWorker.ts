@@ -191,6 +191,44 @@ self.addEventListener('message', (event) => {
   }))));
 });
 
+/**
+ * A media element asks for a range (Range: bytes=0-). A cached file answered whole makes
+ * Chrome treat an Ogg clip as a stream it can't seek, with no duration, so the tour's voice
+ * never played offline: a stored 200 answers a range request as 206 with that slice.
+ * Only for a response read from a cache (network responses pass through, streaming). The
+ * Cache API hands back the decoded body, so a stored Content-Encoding (and a weak ETag that
+ * named that encoding) no longer describes it: sizes come from the bytes, and both go.
+ * A request's If-Range must match a strong stored ETag or the stored Last-Modified, or the
+ * whole file answers. Encoded responses cannot use those validators for their decoded bytes.
+ */
+async function withRange(req, res) {
+  const range = req.headers.get('range');
+  if (!range || !res || res.status !== 200 || res.type === 'opaque') return res;
+  const m = /^bytes=(\\d*)-(\\d*)$/i.exec(range.trim());
+  if (!m || (m[1] === '' && m[2] === '')) return res;
+  const ifRange = req.headers.get('if-range');
+  if (ifRange !== null) {
+    if (res.headers.has('content-encoding')) return res;
+    const etag = res.headers.get('etag');
+    const modified = res.headers.get('last-modified');
+    const v = ifRange.trim();
+    const same = v.startsWith('"') || v.startsWith('W/') ? etag !== null && !etag.startsWith('W/') && !v.startsWith('W/') && v === etag : modified !== null && v === modified;
+    if (!same) return res;
+  }
+  const body = await res.arrayBuffer();
+  const size = body.byteLength;
+  const start = m[1] === '' ? Math.max(0, size - Number(m[2])) : Number(m[1]);
+  const end = m[1] === '' || m[2] === '' ? size - 1 : Math.min(Number(m[2]), size - 1);
+  if (start >= size || start > end) return new Response(null, { status: 416, headers: { 'Content-Range': 'bytes */' + size } });
+  const headers = new Headers(res.headers);
+  headers.delete('content-encoding');
+  if (res.headers.has('content-encoding') || (headers.get('etag') || '').startsWith('W/')) headers.delete('etag');
+  headers.set('Content-Range', 'bytes ' + start + '-' + end + '/' + size);
+  headers.set('Content-Length', String(end - start + 1));
+  headers.set('Accept-Ranges', 'bytes');
+  return new Response(body.slice(start, end + 1), { status: 206, statusText: 'Partial Content', headers });
+}
+
 // Relative shell resources need the registration directory as their document base.
 function fallbackHome(req, home) {
   return new URL('./', req.url).href === SCOPE ? home : Response.redirect(SCOPE);
@@ -206,7 +244,7 @@ self.addEventListener('fetch', (event) => {
     if (req.cache === 'no-store') return fetch(req);
     const copy = await offlineCopy();
     const snapshot = copy && await copy.store.match(req, { ignoreSearch: true, ignoreVary: true });
-    if (copy && copy.version === VERSION && snapshot) return snapshot;
+    if (copy && copy.version === VERSION && snapshot) return withRange(req, snapshot);
     const cache = await caches.open(CACHE);
     // With an older complete copy, network failure must choose that snapshot BEFORE the
     // new shell/partial browsing cache, keeping its unversioned catalog and data coherent.
@@ -217,7 +255,7 @@ self.addEventListener('fetch', (event) => {
         if (fresh.type === 'basic' && !req.headers.has('range')) await cache.put(req, fresh.clone()).catch(() => undefined);
         return fresh;
       } catch {
-        if (snapshot) return snapshot;
+        if (snapshot) return withRange(req, snapshot);
         if (req.mode === 'navigate') {
           const home = await copy.store.match(SCOPE);
           if (home) return fallbackHome(req, home);
@@ -225,7 +263,7 @@ self.addEventListener('fetch', (event) => {
       }
     }
     const hit = await cache.match(req, { ignoreSearch: true, ignoreVary: true }); // a host's Vary: Origin would miss a module script's request
-    if (hit) return hit;
+    if (hit) return withRange(req, hit);
     try {
       const res = await fetch(req);
       if (res.ok && res.type === 'basic' && !req.headers.has('range')) cache.put(req, res.clone()).catch(() => undefined);

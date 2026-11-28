@@ -7,6 +7,12 @@ interface Clearance {
   bay: { min: number; holder: number[]; capsule: number[]; gaps: { id: string; gap: number | null }[] };
 }
 
+function expectBayGaps({ gaps, min }: Pick<Clearance['bay'], 'gaps' | 'min'>) {
+  const ids = gaps.map(({ id }) => id);
+  for (const id of ['back-tray', 'front-cover', 'battery-door']) expect(ids).toContain(id);
+  for (const g of gaps) if (g.gap !== null) expect(g.gap, `${g.id} to the holder or capsule`).toBeGreaterThanOrEqual(min);
+}
+
 describe('the battery bay', () => {
   for (const [name, sub] of [
     ['Junior Lab', ''],
@@ -20,8 +26,15 @@ describe('the battery bay', () => {
       expect(c.bay.holder[0]).toBeGreaterThan(0);
       expect(c.bay.holder[3]).toBeLessThan(mech.board.width);
       expect(c.bay.capsule[2]).toBeGreaterThan(c.bay.holder[5]);
-      expect(c.bay.gaps.length).toBeGreaterThan(0);
-      for (const g of c.bay.gaps) if (g.gap !== null) expect(g.gap, `${g.id} to the holder or capsule`).toBeGreaterThanOrEqual(c.bay.min);
+      expectBayGaps(c.bay);
     });
   }
+
+  it('rejects a clearance report missing the battery door', () => {
+    const gaps = [
+      { id: 'back-tray', gap: 1 },
+      { id: 'front-cover', gap: 1 },
+    ];
+    expect(() => expectBayGaps({ min: 0.1, gaps })).toThrow(/battery-door/);
+  });
 });

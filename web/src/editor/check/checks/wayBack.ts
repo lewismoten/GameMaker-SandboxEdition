@@ -213,7 +213,9 @@ function chainTo(ex: Exploration, i: number): number[] {
  * steady run reached, and the move the ordinary run made there.
  */
 export function steadyFindings(main: SceneRun, steady: SceneRun, d: SceneData | undefined, minTicks: number): Finding[] {
-  const ways = onward(main, main.ex.exits).sort((a, b) => a.tick - b.tick);
+  // SceneData.links counts every configured link, including links back to the entry scene.
+  const ways = [...main.ex.exits].sort((a, b) => a.tick - b.tick);
+  if (steady.ex.exits.length) return [];
   if (!ways.length) {
     // only where the scene has a way out the bot didn't reach: none for an ending, a win scene or a scene the game leaves
     // another way (no link to touch), where there's nothing to compare slower hands with by design
@@ -221,7 +223,6 @@ export function steadyFindings(main: SceneRun, steady: SceneRun, d: SceneData | 
     const note = noRouteNote(Math.round(minTicks * TICK_S * 1000), hasAirTaps(d), main.ex.complete);
     return [{ check: 'steady', severity: 'info', ...note, where: { scene: main.scene, map: d?.names.map } }];
   }
-  if (onward(steady, steady.ex.exits).length) return [];
   const e = ways[0];
   const chain = [...chainTo(main.ex, e.via.parent)];
   let spot = chain[chain.length - 1];

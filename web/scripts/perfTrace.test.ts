@@ -8,6 +8,7 @@ vi.mock('node:fs', () => ({ mkdirSync: vi.fn(), writeFileSync }));
 vi.mock('./perfLib', () => ({
   arg: (name: string) => (name === 'only' ? 'home' : undefined),
   applySlowdown: vi.fn(),
+  perfConditions: () => ({ throttle: 4, network: '4g' }),
   OBSERVE: '',
   target: () => ({ base: 'http://localhost', stop: vi.fn() }),
   launch: () => ({
@@ -60,5 +61,5 @@ it('accepts finished transfers including zero bytes and ignores pending local UR
     cdp.emit('Network.loadingFinished', { requestId: '2', encodedDataLength: 0 });
   });
   await expect(import('./perfTrace')).rejects.toThrow('Trace exited successfully');
-  expect(JSON.parse(String(writeFileSync.mock.calls[0][1])).rows).toMatchObject([{ requests: 3, kb: 2 }]);
+  expect(JSON.parse(String(writeFileSync.mock.calls[0][1]))).toMatchObject({ throttle: 4, network: '4g', rows: [{ requests: 3, kb: 2 }] });
 });

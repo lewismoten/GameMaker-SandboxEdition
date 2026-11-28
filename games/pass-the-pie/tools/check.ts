@@ -5,6 +5,9 @@ import { play } from './play';
 import { BUMP_BUDGET } from './route';
 
 const { sim } = await play();
-const lost = 100 - sim.ci.hitpts;
-console.log(`pass-the-pie: the bot played all thirteen levels; score ${sim.ci.score}, ${sim.trail.length} scenes entered, ${sim.ci.hitpts} hit points left`);
+const lost = sim.ci.damageTaken;
+if (lost === undefined) throw new Error('the walkthrough did not track damage');
+console.log(
+  `pass-the-pie: the bot played all thirteen levels; score ${sim.ci.score}, ${sim.trail.length} scenes entered, ${sim.ci.hitpts} hit points left, ${lost} damage taken`,
+);
 if (lost > BUMP_BUDGET) throw new Error(`the bot lost ${lost} hit points to bumps, more than the ${BUMP_BUDGET} a walkthrough should`);

@@ -422,9 +422,8 @@ export function cardOverflow(c: CardScreen): string[] {
   if (x1 - x0 < 100 || y1 - y0 < 30 || y1 - y0 > 90) return [];
   const frame = new Set<number>();
   for (let x = Math.max(0, x0 - 6); x <= Math.min(W - 1, x1 + 6); x++) for (let y = Math.max(0, y0 - 6); y < y0; y++) frame.add(at(x, y));
-  // the frame's sides are read only beside the box's top rows, above any words, so words that spill
-  // over an edge are not mistaken for frame colors
-  for (let y = y0; y <= Math.min(y1, y0 + 6); y++) for (const x of [x0 - 1, x0 - 2, x0 - 3, x1 + 1, x1 + 2, x1 + 3]) frame.add(at(x, y));
+  // Row 16 is blank on the Starter template and already supplies the parchment's horizontal bounds.
+  for (const x of [x0 - 1, x0 - 2, x0 - 3, x1 + 1, x1 + 2, x1 + 3]) if (x >= 0 && x < W) frame.add(at(x, 16));
   const ink = new Set<number>();
   for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) if (at(x, y) !== fill && !frame.has(at(x, y))) ink.add(at(x, y));
   const problems: string[] = [];

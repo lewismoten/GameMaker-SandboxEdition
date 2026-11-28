@@ -1,6 +1,6 @@
 // The front of the shop, so the brick reads as a small building and not a floating wall:
 //   roofCap       the roof's edge (solid): a red cap with a dark line, a lit top and a shadow under it
-//   stripeA/B     a striped awning across the whole front, red and white like the stalls' (solid)
+//   stripe        a striped awning across the whole front, red and white like the stalls' (solid)
 //   backWall      a dim brick wall behind the stalls (passable, the hero walks in front of it)
 //   window        a window with one pane and a sill (passable)
 //   shopL/M/R     the SHOP board on the roof, over the doorway (passable)
@@ -22,14 +22,13 @@ function roofCap(pal: Pal): Pixels {
   return p;
 }
 
-/** One block of the awning stripes: `phase` shifts the stripes so two blocks side by side don't repeat awkwardly. */
-function stripe(pal: Pal, phase: number): Pixels {
+function stripe(pal: Pal): Pixels {
   const p = new Pixels(20, 20, skyOf(pal));
   const ink = pal.c('ink', 0);
   const red = pal.r('red');
   const white = pal.r('white');
   for (let x = 0; x < 20; x++) {
-    const on = Math.floor((x + phase) / 5) % 2 === 0;
+    const on = Math.floor(x / 5) % 2 === 0;
     p.rect(x, 0, 1, 15, on ? red[2] : white[3]);
     p.rect(x, 15, 1, 3, on ? red[1] : white[2]);
   }
@@ -81,8 +80,7 @@ function board(pal: Pal): Pixels {
 /** Adds the front's blocks (add them after the rest, so no other block's number moves). */
 export function addFront(book: Book, pal: Pal): void {
   book.add('roofCap', roofCap(pal), { solid: SOLID });
-  book.add('stripeA', stripe(pal, 0), { solid: SOLID });
-  book.add('stripeB', stripe(pal, 10), { solid: SOLID });
+  book.add('stripe', stripe(pal), { solid: SOLID });
   book.add('backWall', backWall(pal), { grav: PULL.down });
   book.add('window', windowBlock(pal), { grav: PULL.down });
   const pic = board(pal);
