@@ -6,6 +6,8 @@ import { progressAnnouncements } from '../editor/core/progressAnnouncements';
 import { hasRoom, makeOffline, offlineStatus, removeOffline, sizeText, type OfflineStatus } from './offlineCopy';
 import { offlineTiers, type OfflineTier } from './tiers';
 
+const readyMessage = '✓ Ready offline. Your selected tiers are kept in this browser.';
+
 export async function openOfflineDialog(): Promise<void> {
   if (inArchiveReplay()) return;
   let stop = new AbortController();
@@ -19,17 +21,18 @@ export async function openOfflineDialog(): Promise<void> {
     const show = (s: OfflineStatus, note = '', checking = false) => {
       status.className = '';
       if (!s.supported) {
-        status.textContent = s.reason ?? 'An offline copy cannot be made here.';
+        status.textContent = note || (s.reason ?? 'An offline copy cannot be made here.');
         clear(content, closeButton());
         return;
       }
-      status.textContent =
+      const message =
         note ||
         (s.ready
-          ? '✓ Ready offline. Your selected tiers are kept in this browser.'
+          ? readyMessage
           : s.copy === 'outdated'
             ? 'An update is available. The previous complete copy stays until this selection is ready.'
             : 'Choose what to keep. Verified files are reused when you update or resume.');
+      if (status.textContent !== message) status.textContent = message;
       const choices = h('fieldset', { class: 'offline-tiers' });
       choices.append(h('legend', null, 'Keep in this browser'));
       for (const [tier, label] of Object.entries(offlineTiers) as [OfflineTier, string][]) {
@@ -90,9 +93,9 @@ export async function openOfflineDialog(): Promise<void> {
       );
     };
     const download = async (s: OfflineStatus) => {
-      ++generation;
+      const request = ++generation;
       stop = new AbortController();
-      const bar = h('progress', { max: String(s.wireTotal || 1), value: '0', 'aria-label': 'Verified files' });
+      const bar = h('progress', { max: String(s.wireTotal || 1), value: '0', 'aria-label': 'Verified bytes' });
       const start = 'Preparing the offline copy…';
       const line = h('p', { class: 'meta' }, start);
       clear(content, bar, line, h('button', { type: 'button', onclick: () => stop.abort() }, 'Cancel'));
@@ -110,7 +113,13 @@ export async function openOfflineDialog(): Promise<void> {
           },
           stop.signal,
         );
-        show(await offlineStatus(s.tiers), result.ok ? '' : result.message);
+        if (request !== generation) return;
+        const outcome = result.ok ? readyMessage : result.message;
+        clear(content, closeButton());
+        status.className = '';
+        speech.finish(outcome);
+        const next = await offlineStatus(s.tiers).catch(() => undefined);
+        if (next?.supported && request === generation) show(next, result.ok ? '' : outcome);
       } catch (e) {
         show(s, `The offline copy could not finish: ${(e as Error).message}`);
       }

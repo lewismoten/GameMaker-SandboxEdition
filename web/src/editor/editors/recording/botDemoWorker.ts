@@ -21,7 +21,7 @@ export interface BotDemoRequest {
   walk?: Walkthrough;
 }
 
-export type BotDemoMessage = { kind: 'progress'; what: string } | { kind: 'done'; demo: BotDemo } | { kind: 'error'; message: string };
+export type BotDemoMessage = { kind: 'progress' | 'phase'; what: string } | { kind: 'done'; demo: BotDemo } | { kind: 'error'; message: string };
 
 const post = (m: BotDemoMessage) => (self as unknown as Worker).postMessage(m);
 
@@ -51,7 +51,7 @@ self.onmessage = async (e: MessageEvent<BotDemoRequest>) => {
       }
       walk = r.walk;
     }
-    post({ kind: 'progress', what: 'Playing it on the engine and writing down the keys…' });
+    post({ kind: 'phase', what: 'Playing it on the engine and writing down the keys…' });
     const demo = await walkToDemo(files, req.gam, walk, req.scene, req.seconds, req.esc);
     post({ kind: 'done', demo });
   } catch (err) {

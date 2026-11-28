@@ -15,6 +15,8 @@ const appFiles = [
   'scripts/editorOverviewTouch.test.ts',
   'scripts/machineSettingsBrowser.test.ts',
   'scripts/phoneFilesLabel.test.ts',
+  'src/editor/widgets/walkDialog.test.ts',
+  'src/offline/offlineDialog.test.ts',
   'src/seo/seoPages.test.ts',
 ];
 

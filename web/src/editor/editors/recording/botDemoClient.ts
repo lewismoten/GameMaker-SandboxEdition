@@ -8,19 +8,18 @@ export interface RunningDemo {
   cancel(): void;
 }
 
-export function startBotDemo(files: GameFiles, req: Omit<BotDemoRequest, 'files'>, progress?: (what: string) => void): RunningDemo {
+export function startBotDemo(files: GameFiles, req: Omit<BotDemoRequest, 'files'>, progress?: (what: string, phaseChange: boolean) => void): RunningDemo {
   const worker = new Worker(new URL('./botDemoWorker.ts', import.meta.url), { type: 'module', name: 'demo-bot' });
   let stop: (e: Error) => void = () => undefined;
   const done = new Promise<BotDemo>((resolve, reject) => {
     stop = reject;
     worker.onmessage = (e: MessageEvent<BotDemoMessage>) => {
       const m = e.data;
-      if (m.kind === 'progress') progress?.(m.what);
-      else {
+      if (m.kind === 'done' || m.kind === 'error') {
         worker.terminate();
         if (m.kind === 'done') resolve(m.demo);
         else reject(new Error(m.message));
-      }
+      } else progress?.(m.what, m.kind === 'phase');
     };
     worker.onerror = (e) => {
       worker.terminate();

@@ -18,7 +18,7 @@ it.each([
   const base = prefix + '/.for-lewis/research/archive-walks';
   const index = base + '/index.tsv';
   const file = base + '/archive%20%232/G%231.GAM.walkthrough.json';
-  const walk = { version: 1, game: 'g#1', segments: [], timeline: { frames: 1 } };
+  const walk = { version: 1, game: 'g#1', segments: [], timeline: { frames: 1, chapters: [] } };
   const fetchFile = vi.fn((url: string) => {
     if (url === index) return new Response('zip\tgam\ttotal\twon\tstatus\narchive #2\tG#1.GAM\t1\t1\twon');
     if (url === file) return Response.json(walk);

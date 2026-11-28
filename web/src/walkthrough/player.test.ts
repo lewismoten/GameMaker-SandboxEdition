@@ -77,3 +77,26 @@ it('clears copy feedback on close and ignores a clipboard write that finishes af
   await vi.advanceTimersByTimeAsync(0);
   expect(vi.getTimerCount()).toBe(0);
 });
+
+it('abandons playback when the file selection is dismissed during loading', async () => {
+  const loading = deferred();
+  const selection = new AbortController();
+  const ready = vi.fn();
+  const watching = watchWalkthrough(
+    { id: 'test', title: 'Test', gam: 'TEST.GAM', kind: 'gameware', path: '' },
+    async () => {
+      await loading.promise;
+      return new GameFiles();
+    },
+    ready,
+    { version: 1, game: 'test', rand: { seed: 1, per: 'game' }, segments: [], chapters: [], timeline: { fps: 60, frames: 60, chapters: [] } },
+    undefined,
+    {},
+    undefined,
+    selection.signal,
+  );
+  selection.abort();
+  loading.resolve();
+  await watching;
+  expect(ready).not.toHaveBeenCalled();
+});

@@ -10,7 +10,7 @@ import { botDemoDialog } from './botDemoDialog';
 vi.mock('./botDemoClient', () => ({ startBotDemo: vi.fn() }));
 afterEach(() => vi.unstubAllGlobals());
 
-it.each(['done', 'error', 'stop'])('updates the visible line on every tick and announces %s immediately', async (outcome) => {
+function openDemo() {
   const doc = new FakeDoc();
   vi.stubGlobal('document', doc);
   let now = 0;
@@ -30,9 +30,14 @@ it.each(['done', 'error', 'stop'])('updates the visible line on every tick and a
   const button = nodes.find((el) => el.textContent.includes('Let it play'))!;
   button.fire('click');
   const progress = vi.mocked(startBotDemo).mock.lastCall![2]!;
+  return { doc, status, line, button, progress, finish, fail, dialog, advance: (ms: number) => (now += ms) };
+}
+
+it.each(['done', 'error', 'stop'])('updates the visible line on every tick and announces %s immediately', async (outcome) => {
+  const { doc, status, line, button, progress, finish, fail, dialog, advance } = openDemo();
   for (let i = 1; i <= 9; i++) {
-    now += 250;
-    progress(`Tried ${i}`);
+    advance(250);
+    progress(`Tried ${i}`, false);
     expect(line.textContent).toBe(`Tried ${i}`);
     expect(status.textContent).toBe(i < 8 ? 'Starting the bot…' : 'Tried 8');
   }
@@ -42,6 +47,26 @@ it.each(['done', 'error', 'stop'])('updates the visible line on every tick and a
   await Promise.resolve();
   expect(status.textContent).toBe(outcome === 'done' ? 'Made a demo: Finished.' : outcome === 'error' ? 'The bot failed: Worker failed.' : 'Stopped.');
   expect(line.textContent).toBe(status.textContent);
+  doc.body.children[0].fire('cancel');
+  await dialog;
+});
+
+it('announces the engine phase once before silence and then announces completion', async () => {
+  const { doc, status, progress, finish, dialog, advance } = openDemo();
+  const writes: string[] = [];
+  Object.defineProperty(status, 'textContent', { set: (text: string) => writes.push(text) });
+  const scene = 'Scene 2: walking, 10 places tried';
+  const engine = 'Playing it on the engine and writing down the keys…';
+  advance(2100);
+  progress(scene, false);
+  advance(120);
+  progress(engine, true);
+  advance(2150);
+  expect(writes).toEqual([scene, engine]);
+  progress(engine, true);
+  finish({ rec: new Uint8Array(1), ticks: 1, shown: 1, sceneAt: 0, keys: 1, truncated: false, message: 'Finished.' });
+  await Promise.resolve();
+  expect(writes).toEqual([scene, engine, 'Made a demo: Finished.']);
   doc.body.children[0].fire('cancel');
   await dialog;
 });

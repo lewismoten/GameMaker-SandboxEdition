@@ -240,7 +240,8 @@ export async function makeOffline(status: OfflineStatus, onProgress: (p: Offline
   const listed = new Set(selectedFiles(status.manifest.files, status.tiers).map((f) => f.path));
   const extras = status.files.filter((f) => !listed.has(f.path));
   try {
-    await offlineLock(siteBase().href, () => installFiles(siteBase().href, status.manifest!, extras, status.tiers, onProgress, signal));
+    const base = siteBase().href;
+    await offlineLock(base, () => installFiles(base, status.manifest!, extras, status.tiers, onProgress, signal), signal);
     rememberCopy(status.version);
     unlockAchievement('offline-copy');
     return { ok: true };

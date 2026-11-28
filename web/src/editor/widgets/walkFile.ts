@@ -17,6 +17,9 @@ export function checkWalkFile(text: string, gam: string, sceneCount: number): Wa
   if (!w || typeof w !== 'object' || !Array.isArray(w.segments) || !w.timeline || typeof w.timeline.frames !== 'number')
     return { ok: false, why: 'That file is not a walkthrough (no segments or timeline).' };
   if (w.version !== 1) return { ok: false, why: `That walkthrough is version ${String(w.version)}; only version 1 plays here.` };
+  if (!Array.isArray(w.timeline.chapters)) return { ok: false, why: 'This walkthrough file is missing its timeline chapters.' };
+  if (w.timeline.chapters.some((chapter) => !chapter || typeof chapter.title !== 'string' || !Number.isInteger(chapter.frame) || chapter.frame < 0))
+    return { ok: false, why: 'Each timeline chapter needs a title and a starting frame.' };
   if (typeof w.game !== 'string' || w.game.toLowerCase() !== stem(gam))
     return { ok: false, why: `That walkthrough is for “${String(w.game)}”, not this game (${gam}). It was not played.` };
   if (w.segments.some((s) => !(s.scene >= 0 && s.scene < sceneCount)))

@@ -107,12 +107,13 @@ export async function watchWalkthrough(
   player?: PlayerPatches,
   /** Redo… on the player (redoMenu.ts): the choice is heard after the player has closed. */
   redo?: RedoOptions,
+  signal?: AbortSignal,
 ): Promise<void> {
   // the page's demos stop now (and none starts while it is open); another player taking over pauses this one
   let lose = () => {};
   const release = claimMediaFocus('player', () => lose());
   try {
-    await watch(entry, loadFiles, onReady, (f) => (lose = f), given, chapter, player, redo);
+    await watch(entry, loadFiles, onReady, (f) => (lose = f), given, chapter, player, redo, signal);
   } finally {
     release?.();
   }
@@ -127,6 +128,7 @@ async function watch(
   chapter?: number,
   player?: PlayerPatches,
   redo?: RedoOptions,
+  signal?: AbortSignal,
 ): Promise<void> {
   // a walkthrough handed in (the editor's walkthrough bot made it), else the catalog's
   const [walk, files] = await Promise.all([given ? Promise.resolve(given) : loadWalkthrough(entry), loadFiles()]);
@@ -137,6 +139,7 @@ async function watch(
   const gam = entry.gam;
   // a catalog game's own DOS player look (an original game's player.json) unless a project's was handed in
   player ??= catalogPatches(await withDetails(entry).catch(() => entry));
+  if (signal?.aborted) return;
   const tl = walk.timeline;
   const total = tl.frames;
   /** Played to the end: the game's, or where a bot's walkthrough that stopped partway stops. */

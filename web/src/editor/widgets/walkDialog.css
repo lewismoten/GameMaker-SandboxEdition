@@ -70,6 +70,9 @@
 .wd-part > p {
   margin: 0;
 }
+.wd-file-status {
+  overflow-wrap: anywhere;
+}
 
 /* a phone held sideways: the file and watch parts on the left, making one on the right, so less scrolling */
 @media (max-height: 500px) and (min-width: 700px) {
