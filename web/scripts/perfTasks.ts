@@ -9,7 +9,7 @@
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import type { CDPSession, Page } from 'playwright-core';
-import { applySlowdown, arg, launch, OBSERVE, target } from './perfLib';
+import { applySlowdown, arg, launch, OBSERVE, perfConditions, target } from './perfLib';
 
 interface Hot {
   fn: string;
@@ -258,7 +258,7 @@ try {
 const out = resolve(arg('out') ?? '../.for-lewis/research/perf');
 mkdirSync(out, { recursive: true });
 const file = join(out, `tasks-${new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19)}.json`);
-writeFileSync(file, JSON.stringify({ base: srv.base, throttle: arg('throttle') ?? 1, steps }, null, 2));
+writeFileSync(file, JSON.stringify({ base: srv.base, ...perfConditions(), steps }, null, 2));
 console.log('\nstep | ready ms | INP | long tasks (max) | heap MB | frames med/p95/max');
 for (const s of steps) console.log([s.step, s.readyMs, s.inpMs, `${s.longTasks} (${s.longestMs})`, s.heapMb, s.frames ?? ''].join(' | '));
 console.log('\nHot functions (self ms) for slow steps');

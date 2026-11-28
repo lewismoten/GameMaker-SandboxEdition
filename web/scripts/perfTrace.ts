@@ -7,7 +7,7 @@
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import type { CDPSession, Page } from 'playwright-core';
-import { applySlowdown, arg, launch, OBSERVE, target } from './perfLib';
+import { applySlowdown, arg, launch, OBSERVE, perfConditions, target } from './perfLib';
 import { TRACE_PAGES, waitForTraceContent } from './perfTracePages';
 
 interface Row {
@@ -209,7 +209,7 @@ try {
 const out = resolve(arg('out') ?? '../.for-lewis/research/perf');
 mkdirSync(out, { recursive: true });
 const file = join(out, `trace-${new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19)}.json`);
-writeFileSync(file, JSON.stringify({ base: srv.base, rows }, null, 2));
+writeFileSync(file, JSON.stringify({ base: srv.base, ...perfConditions(), rows }, null, 2));
 console.log('page | req | KB | js files/KB | ready ms | LCP | CLS | long (max) | script/layout/style ms | heap MB | live blobs KB | workers');
 for (const r of rows)
   console.log(
