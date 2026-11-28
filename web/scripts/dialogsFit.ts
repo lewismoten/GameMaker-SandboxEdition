@@ -7,9 +7,11 @@
 // Usage: npm run check:dialogs [-- --only id,id] [--webkit] [--quick] [--block substring] [--port 5193] [--out dir] [--landscape-fails] [--axe]
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { webkit, type Browser, type Page } from 'playwright-core';
+import { webkit, type Browser } from 'playwright-core';
 import { arg, launch, target } from './perfLib';
 import { assertTheme, forceTheme } from './forceTheme';
+import { formatSummary } from './dialogsFitSummary';
+import { axeOn } from './dialogsFitAxe';
 import { scenes } from './dialogsFitScenes';
 import { measure, type Measure } from './dialogsFitMeasure';
 
@@ -33,15 +35,6 @@ const themes = (quick ? (['light'] as const) : (['light', 'dark'] as const)).fil
 const selectedSizes = (quick ? sizes.slice(0, 1) : sizes).filter(([size]) => !arg('size') || arg('size') === size);
 if (!themes.length || !selectedSizes.length) throw new Error('Unknown --theme or --size; no dialog cases would run.');
 if (only.some((id) => !scenes.some((scene) => scene.id === id))) throw new Error('Unknown --only dialog ID; refusing incomplete coverage.');
-
-async function axeOn(page: Page): Promise<string[]> {
-  await page.addScriptTag({ content: axeSrc });
-  return page.evaluate(async () => {
-    // @ts-expect-error axe is a page global once injected
-    const res = await axe.run(document.querySelector('dialog[open]') ?? document, { resultTypes: ['violations'] });
-    return res.violations.filter((v: { impact?: string }) => v.impact !== 'minor').map((v: { id: string; nodes: unknown[] }) => `${v.id} x${v.nodes.length}`);
-  });
-}
 
 const srv = await target(5193);
 const browser: Browser = useWebkit ? await webkit.launch() : await launch();
@@ -83,7 +76,7 @@ try {
           m = await measure(page);
           if (out) await page.screenshot({ path: `${out}/${scene.id}-${sz}-${theme}.png` });
           if (runAxe && m.open) {
-            ax = await axeOn(page);
+            ax = await axeOn(page, axeSrc);
             if (ax.length) res.notes.push(`axe ${theme}: ${ax.join(', ')}`);
           }
         } catch (e) {
@@ -114,19 +107,13 @@ try {
   await browser.close();
   srv.stop();
 }
-for (const [id, r] of results)
-  console.log(
-    `${id.padEnd(22)} ${r.cells.slice(0, 4).join(' ').padEnd(24)} | ${r.cells.slice(4).join(' ').padEnd(24)}${
-      r.notes.length
-        ? '\n' +
-          r.notes
-            .slice(0, 4)
-            .map((n) => '    ' + n)
-            .join('\n')
-        : ''
-    }`,
-  );
-console.log(`\n${'dialog'.padEnd(22)} light 375 390 360 844L   | dark 375 390 360 844L`);
+console.log(
+  formatSummary(
+    themes,
+    selectedSizes.map(([size]) => size),
+    results,
+  ),
+);
 console.log(`${failures} failing cell(s) (${landscapeFails ? 'all requested sizes' : 'portrait'}), ${advisories} tight in landscape.`);
 console.log(
   JSON.stringify({

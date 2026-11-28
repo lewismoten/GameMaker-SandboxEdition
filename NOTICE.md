@@ -225,6 +225,7 @@ game folder opens in the browser unchanged.
 - OpenAI Codex fixed manual loading and tested retrying a missing Starter lesson.
 - OpenAI Codex corrected and tested the release guide’s instructions for retaining site deployments.
 - OpenAI Codex fixed and tested silence timing in the DOSBox WAV analyzer.
+- OpenAI Codex fixed and tested the filtered dialog audit summary.
 - OpenAI Codex fixed and tested the sample table row headers in the Owner’s Guide.
 - OpenAI Codex fixed and tested the Wayback save queue and lookup error reporting.
 - OpenAI Codex corrected the Privacy page’s backup instructions and tested the clearing guidance.
