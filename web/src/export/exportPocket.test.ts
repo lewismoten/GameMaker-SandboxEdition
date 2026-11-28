@@ -43,7 +43,9 @@ describe('exportPocket', () => {
     const cards = text(readBundle(bytes).get('peach.cfg')!.bytes)
       .split('\n')
       .filter((line) => line.startsWith('card w '));
-    expect(cards.map((line) => line.split(' ')[4])).toEqual(['10', '20']);
+    // PLAYGAME's FileListClass stores the inherited time one slot past the entry it just read,
+    // so an untimed picture in a nested list keeps 0xFFFF (its type's default) both times.
+    expect(cards.map((line) => line.split(' ')[4])).toEqual(['65535', '65535']);
   });
 
   it('writes the same bytes twice', async () => {

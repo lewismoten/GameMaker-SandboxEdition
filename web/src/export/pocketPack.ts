@@ -299,7 +299,7 @@ export async function packPocketGame(src: PocketSource, store: PocketStore, pak:
       if (e === 'lst') {
         if (activeLists.has(real)) throw new Error(`Circular slide list: ${[...activeLists, real].join(' -> ')}`);
         activeLists.add(real);
-        for (const x of parseSlideList(file(real))) await one(x.name, x.pause ?? pause ?? 0xffff, 0xffff);
+        for (const x of parseSlideList(file(real))) await one(x.name, x.pause ?? 0xffff, 0xffff);
         activeLists.delete(real);
       } else if (e === 'gif') {
         const im = decodeGif(file(real));

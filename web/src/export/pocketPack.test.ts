@@ -50,7 +50,7 @@ describe('Pocket DOS menu cards', () => {
     expect(p.why).toEqual([]);
     const cards = p.lines.filter((l) => l.startsWith('card ')).map((l) => l.split(' '));
     expect(cards.map((w) => [w[1], w[2], w[4]])).toEqual([
-      ['m', 'g', '0'],
+      ['m', 'g', '65535'],
       ['c', 'g', '65535'],
       ['c', 't', '7'],
       ['b', 'g', '0'],
