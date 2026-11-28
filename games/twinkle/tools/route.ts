@@ -6,6 +6,7 @@
 //   level 2: the night scene's sky is the second kind, all the way along
 import type { Result, StarterBot } from '../../kit/starter/bot';
 import { buildLevels } from '../src/levels';
+import { hasChanged } from './checks';
 
 /** A person's look at what just happened, in ticks (about a second and a half). */
 const LOOK = 40;
@@ -44,20 +45,22 @@ async function watch(
   level: number,
   set: 'sync' | 'star',
   ticks: number,
-): Promise<{ together: number; brightest: number; seen: Set<number>; stars: number }> {
+): Promise<{ together: number; brightest: number; seen: Set<number>; stars: number; changed: boolean }> {
   let together = 0;
   let brightest = 0;
   const seen = new Set<number>();
   let stars = 0;
+  const samples: number[][] = [];
   for (let t = 0; t < ticks; t++) {
     const b = brightness(bot, level, set);
+    samples.push(b);
     stars = b.length;
     if (b.length > 1 && b.every((v) => v === b[0])) together++;
     brightest = Math.max(brightest, b.filter((v) => v === 2).length / Math.max(1, b.length));
     b.forEach((v) => seen.add(v));
     await must(bot, bot.tick(), 'watching the sky');
   }
-  return { together, brightest, seen, stars };
+  return { together, brightest, seen, stars, changed: hasChanged(samples) };
 }
 
 /** 1. All at Once: the first sky blinks together; the second does not. */
@@ -74,6 +77,7 @@ export async function allAtOnce(bot: StarterBot): Promise<void> {
   await must(bot, bot.walk(38, 'under the second sky'), 'to the second sky');
   const right = await watch(bot, 0, 'star', 200);
   if (right.stars < 4) throw new Error(`the second sky should have stars in view, not ${right.stars}`);
+  if (!right.changed) throw new Error('the second sky should twinkle');
   if (right.together > 5) throw new Error(`under the second sky the stars should not be at the same frame together; they were at ${right.together} ticks`);
   if (right.brightest > 0.7) throw new Error(`under the second sky no more than ${Math.round(right.brightest * 100)}% of the stars should be bright at once`);
   bot.say(`the second sky: ${right.stars} stars, together at ${right.together} of 200 ticks, at most ${Math.round(right.brightest * 100)}% bright at once`);
@@ -91,6 +95,7 @@ export async function nightSky(bot: StarterBot): Promise<void> {
   const sky = await watch(bot, 1, 'star', 200);
   if (sky.together > 5) throw new Error(`the night sky's stars should not be at the same frame together; they were at ${sky.together} ticks`);
   if (sky.stars < 4) throw new Error(`the night sky should have stars in view, not ${sky.stars}`);
+  if (!sky.changed) throw new Error('the night sky should twinkle');
   bot.say(`the night sky: ${sky.stars} stars, together at ${sky.together} of 200 ticks`);
   await must(bot, bot.walk(46, 'under the moon'), 'under the moon');
   await must(bot, bot.wait(LOOK), 'looking at the moon');
