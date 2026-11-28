@@ -6,9 +6,9 @@ import { deleteProject, listDamagedCopies, listProjects, restoreDamagedCopy } fr
 import { originalOf } from '../../project/damagedCopies';
 import { shelve } from './deletedShelf';
 
-/** Sends a kept copy to Recently deleted. */
+/** Sends a kept copy to Recently deleted; it is only deleted once the shelf holds it, and throws otherwise. */
 async function letGo(copyId: string): Promise<void> {
-  await shelve(copyId);
+  if (!(await shelve(copyId))) throw new Error('The copy could not be put in Recently deleted.');
   await deleteProject(copyId);
 }
 
@@ -71,8 +71,13 @@ export async function showDamagedCopies(refresh: () => unknown): Promise<void> {
     };
     all.onclick = async () => {
       if (!(await confirmDialog('Delete all damaged copies', 'They go to Recently deleted, where each stays for 7 days.', 'Delete all'))) return;
-      for (const c of await listDamagedCopies()) await letGo(c.id);
-      toast('Deleted the damaged copies.');
+      let kept = 0;
+      for (const c of await listDamagedCopies()) await letGo(c.id).catch(() => kept++);
+      toast(
+        kept
+          ? `${kept === 1 ? 'One copy' : `${kept} copies`} could not be deleted and ${kept === 1 ? 'is' : 'are'} still here.`
+          : 'Deleted the damaged copies.',
+      );
       await refresh();
       await draw();
     };

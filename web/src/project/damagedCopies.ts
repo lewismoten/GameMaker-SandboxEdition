@@ -15,16 +15,26 @@ export const originalOf = (copyId: string): string => copyId.slice(0, -DAMAGED_S
 
 const isObject = (v: unknown): v is Record<string, unknown> => !!v && typeof v === 'object';
 
-/** Deep equality of stored values: bytes by content, arrays and objects by their entries. */
+function bytes(value: unknown): Uint8Array | undefined {
+  if (value instanceof ArrayBuffer) return new Uint8Array(value);
+  if (ArrayBuffer.isView(value)) return new Uint8Array(value.buffer, value.byteOffset, value.byteLength);
+  return undefined;
+}
+
+function plain(value: object): boolean {
+  const prototype: unknown = Object.getPrototypeOf(value);
+  return prototype === null || prototype === Object.prototype;
+}
+
+/** Deep equality of stored values: bytes by content, arrays and plain records by their entries. */
 function same(a: unknown, b: unknown): boolean {
-  if (a === b) return true;
-  if (ArrayBuffer.isView(a) || ArrayBuffer.isView(b)) {
-    if (!ArrayBuffer.isView(a) || !ArrayBuffer.isView(b) || a.byteLength !== b.byteLength) return false;
-    const x = new Uint8Array(a.buffer, a.byteOffset, a.byteLength);
-    const y = new Uint8Array(b.buffer, b.byteOffset, b.byteLength);
-    return x.every((v, i) => v === y[i]);
-  }
-  if (!isObject(a) || !isObject(b) || Array.isArray(a) !== Array.isArray(b)) return false;
+  if (!isObject(a) || !isObject(b)) return a === b;
+  const x = bytes(a);
+  const y = bytes(b);
+  if (x || y) return !!x && !!y && x.length === y.length && x.every((v, i) => v === y[i]);
+  if (Array.isArray(a) || Array.isArray(b)) {
+    if (!Array.isArray(a) || !Array.isArray(b) || a.length !== b.length) return false;
+  } else if (!plain(a) || !plain(b)) return false;
   const ka = Object.keys(a);
   return ka.length === Object.keys(b).length && ka.every((k) => Object.prototype.hasOwnProperty.call(b, k) && same(a[k], b[k]));
 }
