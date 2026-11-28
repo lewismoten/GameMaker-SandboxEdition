@@ -64,6 +64,7 @@ game folder opens in the browser unchanged.
 
 ## Credits
 
+- OpenAI Codex fixed and tested screen reader announcements for demo recording, offline downloads, walkthrough files, and game versions.
 - OpenAI Codex removed the unused inline image option for download cards and tested the build helper’s signature.
 - OpenAI Codex corrected the downloadable web player’s canonical metadata and updated its regression test.
 - OpenAI Codex fixed and tested the phone kit download builder’s required firmware inputs.

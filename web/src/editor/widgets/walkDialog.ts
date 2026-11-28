@@ -178,16 +178,21 @@ async function makeDialog(project: Project, opt: WalkDialogOptions, redoing?: Re
     const f = fileInput.files?.[0];
     fileInput.value = '';
     if (!f) return;
-    void f.text().then(async (text) => {
-      const r = checkWalkFile(text, project.gam, game().scenes.length);
-      if (!r.ok) {
-        fileMsg.textContent = r.why;
-        return;
-      }
-      fileMsg.textContent = `Playing ${f.name}…`;
-      await watchMade(project, r.walk, opt.entry);
-      fileMsg.textContent = '';
-    });
+    void f
+      .text()
+      .then(async (text) => {
+        const r = checkWalkFile(text, project.gam, game().scenes.length);
+        if (!r.ok) {
+          fileMsg.textContent = r.why;
+          return;
+        }
+        fileMsg.textContent = `Playing ${f.name}…`;
+        await watchMade(project, r.walk, opt.entry);
+        fileMsg.textContent = '';
+      })
+      .catch((e: unknown) => {
+        fileMsg.textContent = `Could not open walkthrough “${f.name}”.${e instanceof Error && e.message ? ` ${e.message}` : ''}`;
+      });
   };
   const openPart = h(
     'section',
