@@ -277,9 +277,24 @@ export function showcase(nav: HomeNav, refresh: () => Promise<void>, life?: Abor
         }
         return yes;
       },
-      (explicit) => gen === generation && el.isConnected && !life?.aborted && !demo && (explicit || (mayStartHomeDemo() && !demosStopped())),
+      (explicit) => {
+        if (gen !== generation || !el.isConnected || life?.aborted || demo) return false;
+        if (!explicit && document.hidden) {
+          scheduleDemoStart();
+          return false;
+        }
+        return explicit || (mayStartHomeDemo() && !demosStopped());
+      },
       play,
     );
+    const scheduleDemoStart = () => {
+      cancelDemoStart = deferHomeDemo(
+        screen,
+        shown,
+        () => mayStartHomeDemo() && !demosStopped() && ((!how.featured && !how.resume) || (game.entry?.bytes ?? 0) <= AUTOPLAY_BYTES),
+        () => void prepareDemo(false),
+      );
+    };
     if (game.gam) {
       playBtn.hidden = false;
       setPlaying(false);
@@ -289,12 +304,7 @@ export function showcase(nav: HomeNav, refresh: () => Promise<void>, life?: Abor
           return;
         }
         if (gen !== generation) return;
-        cancelDemoStart = deferHomeDemo(
-          screen,
-          shown,
-          () => mayStartHomeDemo() && !demosStopped() && ((!how.featured && !how.resume) || (game.entry?.bytes ?? 0) <= AUTOPLAY_BYTES),
-          () => void prepareDemo(false),
-        );
+        scheduleDemoStart();
       })();
     }
   };
