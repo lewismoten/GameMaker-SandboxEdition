@@ -161,6 +161,24 @@ describe('slower hands', () => {
 });
 
 describe('slower hands when the bot found no route', () => {
+  it('accepts a reached link back to the entry scene', async () => {
+    const t = testGame(LEDGE);
+    const main = (await playtestScene(t.game, t, 2))!;
+    const d = scenesOf(t.game, t).find((s) => s.scene === 2)!;
+    const back = { ...main, from: { ...main.from, scene: main.ex.exits[0].toScene } };
+    expect(steadyFindings(back, back, d, 6)).toEqual([]);
+    const noSteadyExit = { ...back, ex: { ...back.ex, exits: [] } };
+    expect(steadyFindings(back, noSteadyExit, d, 6)[0].title).toMatch(/^In the bot’s runs with slower hands/);
+  });
+
+  it('says nothing when only the steady run reaches an exit', async () => {
+    const t = testGame(LEDGE);
+    const steady = (await playtestScene(t.game, t, 2))!;
+    const d = scenesOf(t.game, t).find((s) => s.scene === 2)!;
+    const main = { ...steady, ex: { ...steady.ex, exits: [] } };
+    expect(steadyFindings(main, steady, d, 6)).toEqual([]);
+  });
+
   it('says plainly that slower hands were not checked, as a suggestion, and what the tool cannot see', () => {
     const n = noRouteNote(330, false);
     expect(n.title).toBe('Slower hands were not checked here: no route was found');
