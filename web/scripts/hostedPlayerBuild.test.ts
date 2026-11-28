@@ -53,7 +53,8 @@ it('serves the try page through both development aliases and keeps the download 
   const handle = use.mock.calls[0][0];
   const get = (url: string) => new Promise<string>((end, reject) => handle({ url }, { setHeader: vi.fn(), end }, () => reject(new Error(url))));
   const download = await get('/web-player.html');
-  expect(download).toContain(`rel="canonical" href="${SITE_URL}web-player.html"`);
+  expect(download).not.toContain('rel="canonical"');
+  expect(download).not.toContain('property="og:url"');
   expect(download).not.toContain('noindex');
   for (const url of ['/player/', '/player/index.html']) {
     const html = await get(url);
